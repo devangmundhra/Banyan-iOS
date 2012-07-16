@@ -3,7 +3,7 @@
 //  Banyan
 //
 //  Created by Devang Mundhra on 7/15/12.
-//  Copyright (c) 2012 Oracle. All rights reserved.
+//  Copyright (c) 2012 Devang Mundhra. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
