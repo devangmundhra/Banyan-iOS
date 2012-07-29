@@ -22,9 +22,19 @@
 @synthesize userManagementModule = _userManagementModule;
 @synthesize dataSource = _dataSource;
 
+- (NSMutableArray *)dataSource
+{
+    return [BanyanDataSource shared];
+}
+
+- (void)setDataSource:(NSMutableArray *)dataSource
+{
+    [[BanyanDataSource shared] setArray:dataSource];
+}
+
 - (UserManagementModule *)userManagementModule
 {
-    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
     delegate.userManagementModule.owningViewController = self;
 
     return delegate.userManagementModule;
@@ -231,7 +241,7 @@
     [ParseConnection loadStoriesFromParseWithBlock:^(NSMutableArray *retValue){
         [retValue filterUsingPredicate:predicate];
         dispatch_async(dispatch_get_main_queue(), ^{
-            _dataSource = retValue;
+            self.dataSource = retValue;
             [_pull refreshLastUpdatedDate];
             [self.tableView reloadData];
             [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
@@ -385,24 +395,6 @@
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc that aren't in use.
-}
-
-# pragma mark dataSource Lookup functions
-// This is temporary. Ideally, all the stories should be listed somewhere else
-// and dataSource for this view controller should be derived from the bigger
-// data source
-- (Story *)lookForStoryId:(NSString *)storyId
-{
-    for (Story *story in self.dataSource)
-    {
-        // First search in data source
-        if ([story.storyId isEqualToString:storyId])
-            return story;
-    }
-    
-    // Now search in the documents
-    // Returns nil if the story is not available in disk as well
-    return [StoryDocuments loadStoryFromDisk:storyId];
 }
 
 @end

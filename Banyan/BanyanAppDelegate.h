@@ -1,5 +1,5 @@
 //
-//  AppDelegate.h
+//  BanyanAppDelegate.h
 //  Banyan
 //
 //  Created by Devang Mundhra on 7/15/12.
@@ -24,7 +24,7 @@
 #define PARSE_MASTER_KEY @"WJij4dz437hs7h9RHQyaIrOMR1CTUYXsIxhYN0nu"
 #endif
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate> {
+@interface BanyanAppDelegate : UIResponder <UIApplicationDelegate> {
     UserManagementModule *userManagementModule;
 }
 

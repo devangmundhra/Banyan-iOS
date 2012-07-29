@@ -1,16 +1,16 @@
 //
-//  AppDelegate.m
+//  BanyanAppDelegate.m
 //  Banyan
 //
 //  Created by Devang Mundhra on 7/15/12.
 //  Copyright (c) 2012 Devang Mundhra. All rights reserved.
 //
 
-#import "AppDelegate.h"
+#import "BanyanAppDelegate.h"
 #import "ParseAPIEngine.h"
 #import "BanyanAPIEngine.h"
 
-@implementation AppDelegate
+@implementation BanyanAppDelegate
 
 @synthesize window = _window;
 @synthesize userManagementModule;
@@ -18,8 +18,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
-    //    [NIOverview applicationDidFinishLaunching];
-    //    [NIOverview addOverviewToWindow:self.window];
     
 #define TESTING 1
 #ifdef TESTING
@@ -47,6 +45,7 @@
         [servicesDisabledAlert show];
         [TestFlight passCheckpoint:@"AppDelegate All location services disabled alert"];
     }
+    
     [self appearances];
     
     [Parse setApplicationId:PARSE_APP_ID 
@@ -147,5 +146,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
 didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [PFPush handlePush:userInfo];
 }
+
 @end
 

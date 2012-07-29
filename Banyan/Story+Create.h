@@ -14,5 +14,6 @@
 @interface Story (Create) <PF_FBDialogDelegate>
 
 + (Story *)createStoryWithAttributes:(NSMutableDictionary *)attributes;
++ (void) createStoryOnServer:(Story *)story;
 
 @end

@@ -106,7 +106,7 @@
         // Get the first character of each name
         NSDictionary *friend = [self.listContacts objectAtIndex:i];
         char alphabet = [[friend objectForKey:@"name"] characterAtIndex:0];
-        NSString *uniChar = [NSString stringWithFormat:@"%C", alphabet];
+        NSString *uniChar = [NSString stringWithFormat:@"%hhd", alphabet];
         // add each letter to the index array
         if (![_contactIndex containsObject:uniChar])
             [_contactIndex addObject:uniChar];
@@ -115,7 +115,7 @@
 
 - (UserManagementModule *)userManagementModule
 {
-    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
     delegate.userManagementModule.owningViewController = self;
     
     return delegate.userManagementModule;

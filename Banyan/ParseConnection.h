@@ -10,6 +10,7 @@
 #import <Parse/Parse.h>
 #import "Story.h"
 #import "Scene.h"
+#import "BanyanDataSource.h"
 
 @interface ParseConnection : NSObject
 

@@ -11,7 +11,7 @@
 #import "Story_Defines.h"
 #import "Story+Edit.h"
 #import "ModifySceneViewController.h"
-#import "AppDelegate.h"
+#import "BanyanAppDelegate.h"
 #import "UIImageView+AFNetworking.h"
 #import <Parse/Parse.h>
 #import "User_Defines.h"

@@ -15,9 +15,13 @@
 @implementation Scene (Create)
 
 + (Scene *)createSceneForStory:(Story *) story
-                    attributes:(NSDictionary *)attributes
+                    attributes:(NSMutableDictionary *)attributes
                           afterScene:(Scene *)previousScene
 {
+    BNOperationObject *obj = nil;
+    BNOperation *operation = nil;
+    BNOperationDependency *dep = nil;
+    
     if (![[ParseAPIEngine sharedEngine] isReachable]) {
         NSLog(@"%s Can't connect to internet", __PRETTY_FUNCTION__);
         [ParseAPIEngine showNetworkUnavailableAlert];
@@ -28,8 +32,65 @@
     
     Scene *scene = [Scene createSceneOnDiskForStory:story attributes:attributes afterScene:previousScene];
     
-    [Scene createSceneOnNetworkForScene:scene story:story attributes:attributes afterScene:previousScene];
+    // Create the object and operation
+    obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeScene
+                                                 tempId:scene.sceneId
+                                                storyId:story.storyId];
 
+    operation = [[BNOperation alloc] initWithObject:obj
+                                             action:BNOperationActionCreate
+                                       dependencies:nil];
+    
+    if (!story.initialized) {
+        // If story is not initialized, mark this operation being dependent on the initialization of the story
+        BNOperationDependency *stObj = [[BNOperationDependency alloc] initWithObjectType:BNOperationObjectTypeStory
+                                                                                 tempId:story.storyId
+                                                                                storyId:story.storyId
+                                                                                  field:SCENE_STORY];
+        [operation addDependencyObject:stObj];
+    }
+    
+    if (scene.previousScene && !scene.previousScene.initialized) {
+        // If previous scene is not initialized, mark this operation being dependent on the initialization of the previous scene
+        BNOperationDependency *prevObj = [[BNOperationDependency alloc] initWithObjectType:BNOperationObjectTypeScene
+                                                                                    tempId:scene.previousScene.sceneId
+                                                                                   storyId:story.storyId
+                                                                                     field:SCENE_PREVIOUSSCENE];
+        
+        [operation addDependencyObject:prevObj];
+    }
+
+    if (scene.nextScene && !scene.nextScene.initialized) {
+        // If next scene is not initialized, mark this operation being dependent on the initialization of the next scene
+        BNOperationDependency *nextObj = [[BNOperationDependency alloc] initWithObjectType:BNOperationObjectTypeScene
+                                                                                    tempId:scene.nextScene.sceneId
+                                                                                   storyId:story.storyId
+                                                                                     field:SCENE_NEXTSCENE];
+        
+        [operation addDependencyObject:nextObj];
+    }
+    
+    [[BNOperationQueue shared] addOperation:operation];
+    
+    // Note order is important: First new scene is created, then update the values for scene's previous and next scenes
+    if (scene.previousScene) {
+        // Edit Previous Scene's Next Object
+        obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeScene tempId:scene.previousScene.sceneId storyId:scene.story.storyId];
+        operation = [[BNOperation alloc] initWithObject:obj action:BNOperationActionEdit dependencies:nil];
+        dep = [[BNOperationDependency alloc] initWithObjectType:BNOperationObjectTypeScene tempId:scene.sceneId storyId:scene.story.storyId field:SCENE_NEXTSCENE];
+        [operation addDependencyObject:dep];
+        [[BNOperationQueue shared] addOperation:operation];
+    }
+    
+    if (scene.nextScene) {
+        // Edit Next Scene's Previous Object
+        obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeScene tempId:scene.nextScene.sceneId storyId:scene.story.storyId];
+        operation = [[BNOperation alloc] initWithObject:obj action:BNOperationActionEdit dependencies:nil];
+        dep = [[BNOperationDependency alloc] initWithObjectType:BNOperationObjectTypeScene tempId:scene.sceneId storyId:scene.story.storyId field:SCENE_PREVIOUSSCENE];
+        [operation addDependencyObject:dep];
+        [[BNOperationQueue shared] addOperation:operation];
+    }
+    
     NSLog(@"Done adding scene %@", scene);
     return scene;
 }
@@ -83,125 +144,70 @@
     return scene;
 }
 
-+ (void)createSceneOnNetworkForScene:(Scene *)scene
-                               story:(Story *)story
-                          attributes:(NSDictionary *)attributes
-                          afterScene:(Scene *)previousScene
++ (void) createSceneOnServer:(Scene *)scene
 {
-    // Create this Scene
-    if (!story.initialized) {        
-        [story addObserver:scene forKeyPath:STORY_ID 
-                   options:NSKeyValueObservingOptionNew 
-                   context:nil];
-        NSLog(@"%s Scene doesn't have a corresponding story id", __PRETTY_FUNCTION__);
-    }
-    else {
-        NSMutableDictionary *sceneParams = [NSMutableDictionary dictionaryWithCapacity:1];
-        
-        [sceneParams setObject:[attributes objectForKey:SCENE_TEXT] forKey:SCENE_TEXT];
-        [sceneParams setObject:story.storyId forKey:SCENE_STORY];
-        [sceneParams setObject:[NSNumber numberWithInt:0] forKey:SCENE_NUMBER];
-        if (previousScene) {
-            [sceneParams setObject:scene.nextScene.sceneId ? scene.nextScene.sceneId : [NSNull null] forKey:SCENE_NEXTSCENE];
-            [sceneParams setObject:previousScene.sceneId ? previousScene.sceneId : [NSNull null] forKey:SCENE_PREVIOUSSCENE];
-        } else {
-            [sceneParams setObject:[NSNull null] forKey:SCENE_NEXTSCENE];
-            [sceneParams setObject:[NSNull null] forKey:SCENE_PREVIOUSSCENE];
+    NSMutableDictionary *attributes = [scene getAttributesInDictionary];
+    Story *story = scene.story;
+    [attributes setObject:[PFUser currentUser].objectId forKey:SCENE_AUTHOR];
+    
+    // Add image for this scene
+    void (^addImageForScene)(NSString *) = ^(NSString *thisSceneId) {
+        if (![[attributes objectForKey:SCENE_IMAGE] isEqual:[NSNull null]] && [attributes objectForKey:SCENE_IMAGE])
+        {
+            NSData *imageData = UIImagePNGRepresentation([attributes objectForKey:SCENE_IMAGE]);
+            PFFile *imageFile = [PFFile fileWithName:[thisSceneId stringByAppendingString:@".png"] data:imageData];
+            [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (succeeded) {
+                    scene.imageURL = imageFile.url;
+                    NSMutableDictionary *imageURLParam = [NSMutableDictionary dictionaryWithObject:imageFile.url
+                                                                                            forKey:SCENE_IMAGE_URL];
+                    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Scene", thisSceneId)
+                                                                                       params:imageURLParam
+                                                                                   httpMethod:@"PUT"
+                                                                                          ssl:YES];
+                    [op onCompletion:^(MKNetworkOperation *completedOperation) {
+                        NSLog(@"Updated scene with imageURL %@", imageFile.url);
+                    }
+                             onError:PARSE_ERROR_BLOCK()];
+                    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+                }
+                else {
+                    NSLog(@"%s Error %@: Can't save image for scene", __PRETTY_FUNCTION__, error);
+                }
+            }];
         }
-        [sceneParams setObject:[PFUser currentUser].objectId forKey:SCENE_AUTHOR];
-        
-        [sceneParams setObject:[NSNumber numberWithInt:0] forKey:SCENE_NUM_LIKES];
-        [sceneParams setObject:[NSNumber numberWithInt:0] forKey:SCENE_NUM_VIEWS];
-        [sceneParams setObject:[NSNumber numberWithInt:0] forKey:SCENE_NUM_CONTRIBUTORS];
-        
-        // Get previous scene for next Scene as this scene
-        void (^prevSceneForNextScene)(NSString *) = ^(NSString *thisSceneId) {
-            if (![[sceneParams objectForKey:SCENE_NEXTSCENE] isEqual:[NSNull null]]) {
-                // Set previous scene for Next scene as this scene
-                NSString *nextSceneId = [sceneParams objectForKey:SCENE_NEXTSCENE];
-                MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Scene", nextSceneId) 
-                                                          params:[NSMutableDictionary dictionaryWithObject:thisSceneId forKey:SCENE_PREVIOUSSCENE] 
-                                                      httpMethod:@"PUT" 
-                                                             ssl:YES];
-                
-                [op onCompletion:^(MKNetworkOperation *completedOperation) {
-                    NSDictionary *response = [completedOperation responseJSON];
-                    NSLog(@"Got response for updating story at %@", [response objectForKey:@"updatedAt"]);
-                }  
-                         onError:PARSE_ERROR_BLOCK()];
-                [[ParseAPIEngine sharedEngine] enqueueOperation:op];
-            }
-        };
-        
-        // Get next scene for previous scene as this scene
-        void (^nextSceneForPreviousScene)(NSString *) = ^(NSString *thisSceneId){
-            // Set next object for previous scene as this scene
-            NSString *previousSceneId = [sceneParams objectForKey:SCENE_PREVIOUSSCENE];
-            MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Scene", previousSceneId) 
-                                                                               params:[NSMutableDictionary dictionaryWithObject:thisSceneId forKey:SCENE_NEXTSCENE] 
-                                                                           httpMethod:@"PUT" 
-                                                                                  ssl:YES];
-            
-            [op onCompletion:^(MKNetworkOperation *completedOperation) {
-                NSDictionary *response = [completedOperation responseJSON];
-                NSLog(@"Got response for updating story at %@", [response objectForKey:@"updatedAt"]);
-            }  
-                     onError:PARSE_ERROR_BLOCK()];
-            [[ParseAPIEngine sharedEngine] enqueueOperation:op];
-        };
-        
-        // Add image for this scene
-        void (^addImageForScene)(NSString *) = ^(NSString *thisSceneId) {
-            if (![[attributes objectForKey:SCENE_IMAGE] isEqual:[NSNull null]] && [attributes objectForKey:SCENE_IMAGE])
-            {
-                NSData *imageData = UIImagePNGRepresentation([attributes objectForKey:SCENE_IMAGE]);
-                PFFile *imageFile = [PFFile fileWithName:[thisSceneId stringByAppendingString:@".png"] data:imageData];
-                [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                    if (succeeded) {
-                        scene.imageURL = imageFile.url;
-                        NSMutableDictionary *imageURLParam = [NSMutableDictionary dictionaryWithObject:imageFile.url 
-                                                                                                forKey:SCENE_IMAGE_URL];
-                        MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Scene", thisSceneId) 
-                                                                  params:imageURLParam
-                                                              httpMethod:@"PUT" 
-                                                                     ssl:YES];
-                        [op onCompletion:^(MKNetworkOperation *completedOperation) {
-                            NSLog(@"Updated scene with imageURL %@", imageFile.url);
-                        }  
-                                 onError:PARSE_ERROR_BLOCK()];
-                        [[ParseAPIEngine sharedEngine] enqueueOperation:op];
-                    }
-                    else {
-                        NSLog(@"%s Error %@: Can't save image for scene", __PRETTY_FUNCTION__, error);
-                    }
-                }];
-            }
-        };
-        
-        MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_CLASS_URL(@"Scene") 
-                                                                           params:sceneParams 
-                                                                       httpMethod:@"POST" 
-                                                                              ssl:YES];
-        [op 
-         onCompletion:^(MKNetworkOperation *completedOperation) {
-             NSDictionary *response = [completedOperation responseJSON];
-             NSLog(@"Got response for creating scene %@", [response objectForKey:@"objectId"]);
-             scene.sceneId = [response objectForKey:@"objectId"];
-             scene.initialized = YES;
-             // Increment the length of story
-             [story incrementStoryAttribute:STORY_LENGTH byAmount:[NSNumber numberWithInt:1]];
-             if (previousScene) {
-                 prevSceneForNextScene([response objectForKey:@"objectId"]);
-                 nextSceneForPreviousScene([response objectForKey:@"objectId"]);
-             } else {
-                 [story startingSceneForStory:scene];
-             }
-             addImageForScene([response objectForKey:@"objectId"]);
-         }  
-         onError:PARSE_ERROR_BLOCK()];
-        
-        [[ParseAPIEngine sharedEngine] enqueueOperation:op];
-    }
+    };
+    
+    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_CLASS_URL(@"Scene")
+                                                                       params:attributes
+                                                                   httpMethod:@"POST"
+                                                                          ssl:YES];
+    [op
+     onCompletion:^(MKNetworkOperation *completedOperation) {
+         NSDictionary *response = [completedOperation responseJSON];
+         NSLog(@"Got response for creating scene %@", [response objectForKey:@"objectId"]);
+         NSString *newId = [response objectForKey:@"objectId"];
+         NSMutableDictionary *ht = [BanyanDataSource hashTable];
+         [ht setObject:newId forKey:scene.sceneId];
+         scene.sceneId = newId;
+         scene.initialized = YES;
+         
+         // Increment the length of story
+         BNOperationObject *obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeStory
+                                                                         tempId:story.storyId
+                                                                        storyId:story.storyId];
+         BNOperation *op = [[BNOperation alloc] initWithObject:obj action:BNOperationActionIncrementAttribute dependencies:nil];
+         op.action.context = [NSDictionary dictionaryWithObjectsAndKeys:STORY_LENGTH, @"attribute", [NSNumber numberWithInt:1], @"amount", nil];
+         [[BNOperationQueue shared] addOperation:op];
+         
+//         addImageForScene([response objectForKey:@"objectId"]);
+         
+         [StoryDocuments saveStoryToDisk:story];
+         DONE_WITH_NETWORK_OPERATION();
+     }
+     onError:PARSE_ERROR_BLOCK()];
+    
+    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -215,7 +221,7 @@
         [attributes setObject:self.imageURL forKey:SCENE_IMAGE_URL];
     
     [object removeObserver:self forKeyPath:keyPath];
-    [Scene createSceneOnNetworkForScene:self story:object attributes:attributes afterScene:self.previousScene];                                                                                                                      
+//    [Scene createSceneOnNetworkForScene:self story:object attributes:attributes afterScene:self.previousScene];                                                                                                                      
     
     if ([keyPath isEqualToString:STORY_ID])
     {

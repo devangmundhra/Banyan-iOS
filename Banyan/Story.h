@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ParseAPIEngine.h"
 #import <CoreLocation/CoreLocation.h>
+
+#define REPLACE_NULL_FOR_NIL(__value__) __value__ ? __value__ : [NSNull null]
 
 @class Scene, User;
 
@@ -42,5 +43,6 @@
 @property BOOL initialized;
 
 - (NSString *)description;
+- (NSMutableDictionary *)getAttributesInDictionary;
 
 @end

@@ -133,6 +133,33 @@
     return [self initWithTitle:title canContribute:canContribute canView:canView invitedToContribute:invitedContributers invitedToView:invitedToView lengthOfStory:lengthOfStory publicContributors:publicContributors publicViewers:publicViewers storyId:storyId imageURL:imageURL contributors:contributors startingScene:startingScene createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors liked:liked viewed:viewed favourite:favourite scenes:scenes initialized:initialized location:location isLocationEnabled:isLocationEnabled geocodedLocation:geocodedLocation];
 }
 
+- (NSMutableDictionary *)getAttributesInDictionary
+{
+    NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+    CLLocationCoordinate2D coord = [self.location coordinate];
+    
+    [attributes setObject:REPLACE_NULL_FOR_NIL(self.invitedToContribute) forKey:STORY_INVITED_TO_CONTRIBUTE];
+    [attributes setObject:REPLACE_NULL_FOR_NIL(self.invitedToView) forKey:STORY_INVITED_TO_VIEW];
+    [attributes setObject:self.lengthOfStory forKey:STORY_LENGTH];
+    [attributes setObject:[NSNumber numberWithBool:self.publicContributors] forKey:STORY_PUBLIC_CONTRIBUTORS];
+    [attributes setObject:[NSNumber numberWithBool:self.publicViewers] forKey:STORY_PUBLIC_VIEWERS];
+    [attributes setObject:self.title forKey:STORY_TITLE];
+    [attributes setObject:REPLACE_NULL_FOR_NIL(self.imageURL) forKey:STORY_IMAGE_URL];
+    [attributes setObject:REPLACE_NULL_FOR_NIL(self.contributors) forKey:STORY_CONTRIBUTORS];
+    [attributes setObject:self.startingScene.sceneId forKey:STORY_STARTING_SCENE];
+    [attributes setObject:self.numberOfLikes forKey:STORY_NUM_LIKES];
+    [attributes setObject:self.numberOfViews forKey:STORY_NUM_VIEWS];
+    [attributes setObject:self.numberOfContributors forKey:STORY_NUM_CONTRIBUTORS];
+    [attributes setObject:[NSNumber numberWithBool:self.isLocationEnabled] forKey:STORY_LOCATION_ENABLED];
+    [attributes setObject:self.geocodedLocation forKey:STORY_GEOCODEDLOCATION];
+    [attributes setObject:[NSNumber numberWithDouble:coord.latitude]
+                             forKey:STORY_LATITUDE];
+    [attributes setObject:[NSNumber numberWithDouble:coord.longitude]
+                             forKey:STORY_LONGITUDE];
+    
+    return attributes;
+}
+
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"{Story\n Title: %@\n Length: %@\n Starting Scene: %@\n}", self.title, self.lengthOfStory, self.startingScene];

@@ -14,6 +14,8 @@
 
 @interface Scene (Create)
 + (Scene *)createSceneForStory:(Story *) story
-                    attributes:(NSDictionary *)attributes
+                    attributes:(NSMutableDictionary *)attributes
                     afterScene:(Scene *)previousScene;
++ (void) createSceneOnServer:(Scene *)scene;
+
 @end

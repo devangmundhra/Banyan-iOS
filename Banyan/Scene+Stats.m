@@ -7,9 +7,9 @@
 //
 
 #import "Scene+Stats.h"
-#import "Scene_Defines.h"
-#import "User_Defines.h"
 #import "Scene+Edit.h"
+#import "User+Edit.h"
+#import "ParseAPIEngine.h"
 
 @implementation Scene (Stats)
 
@@ -24,19 +24,9 @@
     if (scene.viewed)
         return;
     
-    if (!scene.sceneId) {
-        NSLog(@"%s Remember to correct this later. Proper counting for views", __PRETTY_FUNCTION__);
-        return;
-    }
-    
     PFUser *currentUser = [PFUser currentUser];
     if (!currentUser)
         return;
-
-    if (!scene.initialized) {
-        NSLog(@"%s Scene not yet initialized", __PRETTY_FUNCTION__);
-        return;
-    }
 
     PFUser *user = [PFQuery getUserObjectWithId:currentUser.objectId];
     NSArray *alreadyViewedSceneId = [user objectForKey:USER_SCENES_VIEWED];
@@ -46,27 +36,16 @@
     {
         if ([alreadyViewedSceneId containsObject:scene.sceneId])
             return;
-        
-        [scene incrementSceneAttribute:SCENE_NUM_VIEWS byAmount:[NSNumber numberWithInt:1]];
+        INCREMENT_SCENE_ATTRIBUTE_OPERATION(scene, SCENE_NUM_VIEWS, 1);
         [mutArray addObjectsFromArray:alreadyViewedSceneId];
         [mutArray addObject:scene.sceneId];
     } else {
-        [scene incrementSceneAttribute:SCENE_NUM_VIEWS byAmount:[NSNumber numberWithInt:1]];
+        INCREMENT_SCENE_ATTRIBUTE_OPERATION(scene, SCENE_NUM_VIEWS, 1);
         [mutArray addObject:scene.sceneId];
     }
     
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[mutArray copy] forKey:USER_SCENES_VIEWED];
-    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_USER_URL(currentUser.objectId)
-                                                                       params:params
-                                                                   httpMethod:@"PUT" 
-                                                                          ssl:YES];
-    [op addHeaders:[NSDictionary dictionaryWithObject:currentUser.sessionToken forKey:@"X-Parse-Session-Token"]];
-    [op onCompletion:^(MKNetworkOperation *completedOperation) {
-        NSDictionary *response = [completedOperation responseJSON];
-        NSLog(@"Got response for updating user at %@", [response objectForKey:@"updatedAt"]);
-    }  
-             onError:PARSE_ERROR_BLOCK()];
-    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+    [User editUser:currentUser withAttributes:params];
     
     scene.viewed = YES;
     scene.numberOfViews = [NSNumber numberWithInt:([scene.numberOfViews intValue] + 1)];    
@@ -98,16 +77,6 @@
         return;
     PFUser *user = [PFQuery getUserObjectWithId:currentUser.objectId];
     
-    if (!scene.sceneId) {
-        NSLog(@"%s Remember to correct this later. Proper like count for views", __PRETTY_FUNCTION__);
-        return;
-    }
-    
-    if (!scene.initialized) {
-        NSLog(@"%s Scene not yet initialized", __PRETTY_FUNCTION__);
-        return;
-    }
-    
     NSArray *alreadyLikedSceneId = [user objectForKey:USER_SCENES_LIKED];
     NSMutableArray *mutArray = nil;
     
@@ -118,27 +87,16 @@
     
     if (scene.liked) {
         // unlike scene
-        [scene incrementSceneAttribute:SCENE_NUM_LIKES byAmount:[NSNumber numberWithInt:-1]];
+        INCREMENT_SCENE_ATTRIBUTE_OPERATION(scene, SCENE_NUM_LIKES, -1);
         [mutArray removeObject:scene.sceneId];
     }
     else {
         // like scene
-        [scene incrementSceneAttribute:SCENE_NUM_LIKES byAmount:[NSNumber numberWithInt:1]];
+        INCREMENT_SCENE_ATTRIBUTE_OPERATION(scene, SCENE_NUM_LIKES, 1);
         [mutArray addObject:scene.sceneId];
     }
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[mutArray copy] forKey:USER_SCENES_LIKED];
-    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_USER_URL(currentUser.objectId)
-                                                                       params:params
-                                                                   httpMethod:@"PUT" 
-                                                                          ssl:YES];
-    [op addHeaders:[NSDictionary dictionaryWithObject:currentUser.sessionToken forKey:@"X-Parse-Session-Token"]];
-    
-    [op onCompletion:^(MKNetworkOperation *completedOperation) {
-        NSDictionary *response = [completedOperation responseJSON];
-        NSLog(@"Got response for updating user at %@", [response objectForKey:@"updatedAt"]);
-    }  
-             onError:PARSE_ERROR_BLOCK()];
-    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+    [User editUser:currentUser withAttributes:params];
 
     if (scene.liked) {
         scene.liked = NO;
@@ -174,16 +132,6 @@
         return;
     PFUser *user = [PFQuery getUserObjectWithId:currentUser.objectId];
     
-    if (!scene.sceneId) {
-        NSLog(@"%s Remember to correct this later. Proper favourite for views", __PRETTY_FUNCTION__);
-        return;
-    }
-    
-    if (!scene.initialized) {
-        NSLog(@"%s Scene not yet initialized", __PRETTY_FUNCTION__);
-        return;
-    }
-    
     NSArray *alreadyFavouritedSceneId = [user objectForKey:USER_SCENES_FAVOURITES];
     NSMutableArray *mutArray = nil;
     
@@ -201,17 +149,7 @@
         [mutArray addObject:scene.sceneId];
     }
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[mutArray copy] forKey:USER_SCENES_FAVOURITES];
-    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_USER_URL(currentUser.objectId)
-                                                                       params:params
-                                                                   httpMethod:@"PUT" 
-                                                                          ssl:YES];
-    [op addHeaders:[NSDictionary dictionaryWithObject:currentUser.sessionToken forKey:@"X-Parse-Session-Token"]];
-    [op onCompletion:^(MKNetworkOperation *completedOperation) {
-        NSDictionary *response = [completedOperation responseJSON];
-        NSLog(@"Got response for updating user at %@", [response objectForKey:@"updatedAt"]);
-    }  
-             onError:PARSE_ERROR_BLOCK()];
-    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+    [User editUser:currentUser withAttributes:params];
     
     scene.favourite = !scene.favourite;
 }

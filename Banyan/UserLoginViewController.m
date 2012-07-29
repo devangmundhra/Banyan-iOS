@@ -7,7 +7,7 @@
 //
 
 #import "UserLoginViewController.h"
-#import "AppDelegate.h"
+#import "BanyanAppDelegate.h"
 
 @interface UserLoginViewController ()
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;

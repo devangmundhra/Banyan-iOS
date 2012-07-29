@@ -7,12 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5110A7BF15B3EB0A00D4FBD1 /* BNOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5110A7BE15B3EB0A00D4FBD1 /* BNOperation.m */; };
+		5110A7C715B5DB3700D4FBD1 /* BNOperationQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 5110A7C615B5DB3700D4FBD1 /* BNOperationQueue.m */; };
+		5138D7E615B7E138007B4D7D /* BanyanDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 5138D7E515B7E138007B4D7D /* BanyanDataSource.m */; };
 		5189B2B815B387E200562DD0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2B715B387E200562DD0 /* UIKit.framework */; };
 		5189B2BA15B387E200562DD0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2B915B387E200562DD0 /* Foundation.framework */; };
 		5189B2BC15B387E200562DD0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2BB15B387E200562DD0 /* CoreGraphics.framework */; };
 		5189B2C215B387E200562DD0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5189B2C015B387E200562DD0 /* InfoPlist.strings */; };
 		5189B2C415B387E200562DD0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2C315B387E200562DD0 /* main.m */; };
-		5189B2C815B387E200562DD0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2C715B387E200562DD0 /* AppDelegate.m */; };
+		5189B2C815B387E200562DD0 /* BanyanAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2C715B387E200562DD0 /* BanyanAppDelegate.m */; };
 		5189B32715B395F300562DD0 /* AFParseAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2D615B395F300562DD0 /* AFParseAPIClient.m */; };
 		5189B32815B395F300562DD0 /* ArrayToDataTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2D815B395F300562DD0 /* ArrayToDataTransformer.m */; };
 		5189B32915B395F300562DD0 /* BanyanAPIEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2DA15B395F300562DD0 /* BanyanAPIEngine.m */; };
@@ -86,9 +89,20 @@
 		5189B3C915B39BE700562DD0 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3C815B39BE700562DD0 /* AudioToolbox.framework */; };
 		5189B3CB15B39E7400562DD0 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5189B3CA15B39E7400562DD0 /* MainStoryboard.storyboard */; };
 		5189B45715B3A38E00562DD0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3C415B39BD100562DD0 /* QuartzCore.framework */; };
+		519AFA6B15C11F3600F68F3C /* BNOperationAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 519AFA6A15C11F3600F68F3C /* BNOperationAction.m */; };
+		519AFA7215C26F5D00F68F3C /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */; };
+		519AFA7615C4B9DE00F68F3C /* User+Edit.m in Sources */ = {isa = PBXBuildFile; fileRef = 519AFA7515C4B9DE00F68F3C /* User+Edit.m */; };
+		51CF3E2D15BFEBA700FFC0D1 /* BNOperationDependency.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CF3E2C15BFEBA700FFC0D1 /* BNOperationDependency.m */; };
+		51CF3E3015BFEDB200FFC0D1 /* BNOperationObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CF3E2F15BFEDB200FFC0D1 /* BNOperationObject.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5110A7BD15B3EB0A00D4FBD1 /* BNOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNOperation.h; path = Banyan/BNOperation.h; sourceTree = "<group>"; };
+		5110A7BE15B3EB0A00D4FBD1 /* BNOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNOperation.m; path = Banyan/BNOperation.m; sourceTree = "<group>"; };
+		5110A7C515B5DB3700D4FBD1 /* BNOperationQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNOperationQueue.h; sourceTree = "<group>"; };
+		5110A7C615B5DB3700D4FBD1 /* BNOperationQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNOperationQueue.m; sourceTree = "<group>"; };
+		5138D7E415B7E138007B4D7D /* BanyanDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BanyanDataSource.h; sourceTree = "<group>"; };
+		5138D7E515B7E138007B4D7D /* BanyanDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BanyanDataSource.m; sourceTree = "<group>"; };
 		5189B2B315B387E200562DD0 /* Banyan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Banyan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5189B2B715B387E200562DD0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		5189B2B915B387E200562DD0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -97,8 +111,8 @@
 		5189B2C115B387E200562DD0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		5189B2C315B387E200562DD0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		5189B2C515B387E200562DD0 /* Banyan-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Banyan-Prefix.pch"; sourceTree = "<group>"; };
-		5189B2C615B387E200562DD0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		5189B2C715B387E200562DD0 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		5189B2C615B387E200562DD0 /* BanyanAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BanyanAppDelegate.h; sourceTree = "<group>"; };
+		5189B2C715B387E200562DD0 /* BanyanAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BanyanAppDelegate.m; sourceTree = "<group>"; };
 		5189B2D515B395F300562DD0 /* AFParseAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFParseAPIClient.h; path = Banyan/AFParseAPIClient.h; sourceTree = "<group>"; };
 		5189B2D615B395F300562DD0 /* AFParseAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFParseAPIClient.m; path = Banyan/AFParseAPIClient.m; sourceTree = "<group>"; };
 		5189B2D715B395F300562DD0 /* ArrayToDataTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ArrayToDataTransformer.h; path = Banyan/ArrayToDataTransformer.h; sourceTree = "<group>"; };
@@ -228,6 +242,15 @@
 		5189B3C615B39BE100562DD0 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		5189B3C815B39BE700562DD0 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		5189B3CA15B39E7400562DD0 /* MainStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MainStoryboard.storyboard; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
+		519AFA6915C11F3600F68F3C /* BNOperationAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNOperationAction.h; sourceTree = "<group>"; };
+		519AFA6A15C11F3600F68F3C /* BNOperationAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNOperationAction.m; sourceTree = "<group>"; };
+		519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		519AFA7415C4B9DE00F68F3C /* User+Edit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "User+Edit.h"; sourceTree = "<group>"; };
+		519AFA7515C4B9DE00F68F3C /* User+Edit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "User+Edit.m"; sourceTree = "<group>"; };
+		51CF3E2B15BFEBA700FFC0D1 /* BNOperationDependency.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNOperationDependency.h; sourceTree = "<group>"; };
+		51CF3E2C15BFEBA700FFC0D1 /* BNOperationDependency.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNOperationDependency.m; sourceTree = "<group>"; };
+		51CF3E2E15BFEDB200FFC0D1 /* BNOperationObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNOperationObject.h; sourceTree = "<group>"; };
+		51CF3E2F15BFEDB200FFC0D1 /* BNOperationObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNOperationObject.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -235,6 +258,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				519AFA7215C26F5D00F68F3C /* AssetsLibrary.framework in Frameworks */,
 				5189B45715B3A38E00562DD0 /* QuartzCore.framework in Frameworks */,
 				5189B3C915B39BE700562DD0 /* AudioToolbox.framework in Frameworks */,
 				5189B3C715B39BE100562DD0 /* MobileCoreServices.framework in Frameworks */,
@@ -277,6 +301,7 @@
 		5189B2B615B387E200562DD0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */,
 				5189B3C815B39BE700562DD0 /* AudioToolbox.framework */,
 				5189B3C615B39BE100562DD0 /* MobileCoreServices.framework */,
 				5189B3C415B39BD100562DD0 /* QuartzCore.framework */,
@@ -307,8 +332,8 @@
 				5189B35815B396FA00562DD0 /* Data handling */,
 				5189B35B15B3976700562DD0 /* Story List */,
 				5189B35C15B397BD00562DD0 /* Helpful Categories */,
-				5189B2C615B387E200562DD0 /* AppDelegate.h */,
-				5189B2C715B387E200562DD0 /* AppDelegate.m */,
+				5189B2C615B387E200562DD0 /* BanyanAppDelegate.h */,
+				5189B2C715B387E200562DD0 /* BanyanAppDelegate.m */,
 				5189B2BE15B387E200562DD0 /* Supporting Files */,
 			);
 			path = Banyan;
@@ -334,6 +359,7 @@
 				5189B2DA15B395F300562DD0 /* BanyanAPIEngine.m */,
 				5189B2E815B395F300562DD0 /* ParseAPIEngine.h */,
 				5189B2E915B395F300562DD0 /* ParseAPIEngine.m */,
+				519AFA7715C4C38B00F68F3C /* BNOperation */,
 			);
 			name = "Networking Extensions";
 			path = ..;
@@ -471,6 +497,8 @@
 				5189B31615B395F300562DD0 /* StoryListStoryCell.m */,
 				5189B31715B395F300562DD0 /* StoryListTableViewController.h */,
 				5189B31815B395F300562DD0 /* StoryListTableViewController.m */,
+				5138D7E415B7E138007B4D7D /* BanyanDataSource.h */,
+				5138D7E515B7E138007B4D7D /* BanyanDataSource.m */,
 			);
 			name = "Story List";
 			path = ..;
@@ -492,6 +520,8 @@
 				5189B31F15B395F300562DD0 /* User_Defines.h */,
 				5189B32015B395F300562DD0 /* User.h */,
 				5189B32115B395F300562DD0 /* User.m */,
+				519AFA7415C4B9DE00F68F3C /* User+Edit.h */,
+				519AFA7515C4B9DE00F68F3C /* User+Edit.m */,
 			);
 			name = User;
 			sourceTree = "<group>";
@@ -609,6 +639,23 @@
 			name = "Licensed Softwares";
 			sourceTree = "<group>";
 		};
+		519AFA7715C4C38B00F68F3C /* BNOperation */ = {
+			isa = PBXGroup;
+			children = (
+				51CF3E2B15BFEBA700FFC0D1 /* BNOperationDependency.h */,
+				51CF3E2C15BFEBA700FFC0D1 /* BNOperationDependency.m */,
+				519AFA6915C11F3600F68F3C /* BNOperationAction.h */,
+				519AFA6A15C11F3600F68F3C /* BNOperationAction.m */,
+				51CF3E2E15BFEDB200FFC0D1 /* BNOperationObject.h */,
+				51CF3E2F15BFEDB200FFC0D1 /* BNOperationObject.m */,
+				5110A7BD15B3EB0A00D4FBD1 /* BNOperation.h */,
+				5110A7BE15B3EB0A00D4FBD1 /* BNOperation.m */,
+				5110A7C515B5DB3700D4FBD1 /* BNOperationQueue.h */,
+				5110A7C615B5DB3700D4FBD1 /* BNOperationQueue.m */,
+			);
+			name = BNOperation;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -682,7 +729,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5189B2C415B387E200562DD0 /* main.m in Sources */,
-				5189B2C815B387E200562DD0 /* AppDelegate.m in Sources */,
+				5189B2C815B387E200562DD0 /* BanyanAppDelegate.m in Sources */,
 				5189B32715B395F300562DD0 /* AFParseAPIClient.m in Sources */,
 				5189B32815B395F300562DD0 /* ArrayToDataTransformer.m in Sources */,
 				5189B32915B395F300562DD0 /* BanyanAPIEngine.m in Sources */,
@@ -734,6 +781,13 @@
 				5189B3A115B39AE300562DD0 /* MKNetworkOperation.m in Sources */,
 				5189B3A215B39AE300562DD0 /* Reachability.m in Sources */,
 				5189B3AB15B39B1500562DD0 /* PullToRefreshView.m in Sources */,
+				5110A7BF15B3EB0A00D4FBD1 /* BNOperation.m in Sources */,
+				5110A7C715B5DB3700D4FBD1 /* BNOperationQueue.m in Sources */,
+				5138D7E615B7E138007B4D7D /* BanyanDataSource.m in Sources */,
+				51CF3E2D15BFEBA700FFC0D1 /* BNOperationDependency.m in Sources */,
+				51CF3E3015BFEDB200FFC0D1 /* BNOperationObject.m in Sources */,
+				519AFA6B15C11F3600F68F3C /* BNOperationAction.m in Sources */,
+				519AFA7615C4B9DE00F68F3C /* User+Edit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

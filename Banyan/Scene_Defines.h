@@ -17,7 +17,7 @@
 #define SCENE_TEXT @"text"
 #define SCENE_AUTHOR @"author"
 #define SCENE_STATS @"stats"
-#define SCENE_STORY @"Story"
+#define SCENE_STORY @"story"
 #define SCENE_PREVIOUSSCENE @"previousScene"
 #define SCENE_NEXTSCENE @"nextScene"
 #define SCENE_FONT @"HelveticaNeue-CondensedBold"

@@ -7,7 +7,8 @@
 //
 
 #import "MKNetworkEngine.h"
-#import "AppDelegate.h"
+#import "BanyanAppDelegate.h"
+#import "BNOperationQueue.h"
 
 @interface ParseAPIEngine : MKNetworkEngine
 
@@ -18,6 +19,7 @@
 #define PARSE_ERROR_BLOCK() ^(NSError *error) {\
                                 NSLog(@"%@\t%@\t%@\t%@", [error localizedDescription], [error localizedFailureReason], \
                                                [error localizedRecoveryOptions], [error localizedRecoverySuggestion]); \
+                                                DONE_WITH_NETWORK_OPERATION();                                           \
                                             }
 
 + (ParseAPIEngine *)sharedEngine;

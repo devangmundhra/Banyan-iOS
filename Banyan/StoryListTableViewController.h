@@ -13,18 +13,17 @@
 #import "Scene+Create.h"
 #import "NewStoryViewController.h"
 #import "ScenesViewController.h"
-#import "AppDelegate.h"
+#import "BanyanAppDelegate.h"
 #import "UserLoginViewController.h"
 #import "UserManagementModule.h"
 #import "PullToRefreshView.h"
 #import "MBProgressHUD.h"
+#import "BanyanDataSource.h"
 
 @interface StoryListTableViewController : UITableViewController <NewStoryViewControllerDelegate, ScenesViewControllerDelegate, PullToRefreshViewDelegate> {
     PullToRefreshView *_pull;
 }
 
 @property (nonatomic, strong) NSMutableArray *dataSource;
-
-- (Story *)lookForStoryId:(NSString *)storyId;
 
 @end

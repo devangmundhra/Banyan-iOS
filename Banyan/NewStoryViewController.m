@@ -8,7 +8,7 @@
 
 #import "NewStoryViewController.h"
 #import "Story_Defines.h"
-#import "AppDelegate.h"
+#import "BanyanAppDelegate.h"
 
 @interface NewStoryViewController ()
 {

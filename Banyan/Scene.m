@@ -10,7 +10,6 @@
 #import "Story.h"
 #import "User.h"
 
-
 @implementation Scene
 
 @synthesize image = _image;
@@ -99,6 +98,23 @@
     BOOL initialized = [aDecoder decodeBoolForKey:SCENE_IS_INITIALIZED];
     
     return [self initWithText:text sceneId:sceneId sceneNumberInStory:sceneNumberInStory imageURL:imageURL author:author nextScene:nextScene previousScene:previousScence createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors story:story liked:liked viewed:viewed favourite:favourite initialized:initialized];
+}
+
+- (NSMutableDictionary *)getAttributesInDictionary
+{
+    NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+    
+    [attributes setObject:self.text forKey:SCENE_TEXT];
+    [attributes setObject:REPLACE_NULL_FOR_NIL(self.imageURL) forKey:SCENE_IMAGE_URL];
+//    [attributes setObject:self.author forKey:SCENE_AUTHOR];
+    [attributes setObject:REPLACE_NULL_FOR_NIL(self.nextScene.sceneId) forKey:SCENE_NEXTSCENE];
+    [attributes setObject:REPLACE_NULL_FOR_NIL(self.previousScene.sceneId) forKey:SCENE_PREVIOUSSCENE];
+    [attributes setObject:REPLACE_NULL_FOR_NIL(self.story.storyId) forKey:SCENE_STORY];
+    [attributes setObject:self.numberOfLikes forKey:SCENE_NUM_LIKES];
+    [attributes setObject:self.numberOfViews forKey:SCENE_NUM_VIEWS];
+    [attributes setObject:self.numberOfContributors forKey:SCENE_NUM_CONTRIBUTORS];
+    
+    return attributes;
 }
 
 - (NSString *)description

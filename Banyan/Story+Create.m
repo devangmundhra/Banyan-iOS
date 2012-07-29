@@ -11,6 +11,7 @@
 #import "StoryDocuments.h"
 #import "Scene_Defines.h"
 #import "User_Defines.h"
+#import "BanyanDataSource.h"
 
 @implementation Story (Create)
 
@@ -57,10 +58,9 @@
     
     [Story cleanUpStoryAttributes:attributes];
     
-    Story *story = [Story createStoryOnDiskWithAttributes:attributes];
+    Story *story = [Story createStoryOnDiskWithAttributes:attributes];    
     
-    // Creating the network operations snippet for offline support    
-    [Story createStoryOnNetworkWithAttributes:attributes forStory:story];
+//    [Story createStoryOnNetworkWithAttributes:attributes forStory:story];
     NSLog(@"Done adding story with title %@", story.title);
     
     [[NSNotificationCenter defaultCenter] postNotificationName:STORY_NEW_STORY_NOTIFICATION
@@ -75,6 +75,29 @@
         [sceneParams setObject:story.image forKey:SCENE_IMAGE];
     
     [Scene createSceneForStory:story attributes:sceneParams afterScene:nil];
+    
+    // Creating the network operations snippet for offline support
+    BNOperationObject *obj = [[BNOperationObject alloc] 
+                                         initWithObjectType:BNOperationObjectTypeStory 
+                                         tempId:story.storyId 
+                                         storyId:story.storyId];
+    
+    BNOperation *operation = [[BNOperation alloc] 
+                                         initWithObject:obj
+                                         action:BNOperationActionCreate 
+                                         dependencies:nil];
+    
+    if (!story.startingScene.initialized) {
+        BNOperationDependency *dObj = [[BNOperationDependency alloc] 
+                                       initWithObjectType:BNOperationObjectTypeScene
+                                       tempId:story.startingScene.sceneId
+                                       storyId:story.startingScene.story.storyId
+                                       field:STORY_STARTING_SCENE];
+        
+        [operation addDependencyObject:dObj];
+    }
+    
+    [[BNOperationQueue shared] addOperation:operation];
     
     return story;
 }
@@ -134,8 +157,11 @@
     return story;
 }
 
-+ (void)createStoryOnNetworkWithAttributes:(NSMutableDictionary *)attributes forStory:(Story *)story
+//+ (void)createStoryOnNetworkWithAttributes:(NSMutableDictionary *)attributes forStory:(Story *)story
++ (void) createStoryOnServer:(Story *)story
 {
+    NSMutableDictionary *attributes = [story getAttributesInDictionary];
+    
     //    PARSE
     // Add image for this story
     void (^addImageForStory)(NSString *) = ^(NSString *thisStoryId) {
@@ -251,13 +277,19 @@
      onCompletion:^(MKNetworkOperation *completedOperation) {
          NSDictionary *response = [completedOperation responseJSON];
          NSLog(@"Got response for creating story %@", [response objectForKey:@"objectId"]);
+         NSString *newId = [response objectForKey:@"objectId"];
          [StoryDocuments deleteStoryFromDisk:story];
+         NSMutableDictionary *ht = [BanyanDataSource hashTable];
+         [ht setObject:newId forKey:story.storyId];
+         story.storyId = newId;
+         
          story.initialized = YES;
-         story.storyId = [response objectForKey:@"objectId"];
          [StoryDocuments saveStoryToDisk:story];
          addImageForStory(story.storyId);
          if (story.invitedToContribute)
              sendRequestToContributors(story.invitedToContribute, story);
+         
+         DONE_WITH_NETWORK_OPERATION();
      }
      onError:PARSE_ERROR_BLOCK()];
 

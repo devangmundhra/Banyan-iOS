@@ -53,17 +53,30 @@
     // Update scene
     [sceneParams setObject:scene.text forKey:SCENE_TEXT];
     
+    BNOperationObject *obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeScene tempId:scene.sceneId storyId:scene.story.storyId];
+    BNOperation *operation = [[BNOperation alloc] initWithObject:obj action:BNOperationActionEdit dependencies:nil];
+    operation.action.context = sceneParams;
+    ADD_OPERATION_TO_QUEUE(operation);
+
+    [StoryDocuments saveStoryToDisk:scene.story];
+    
+    return;
+}
+
++ (void) editScene:(Scene *)scene withAttributes:(NSMutableDictionary *)sceneParams
+{
     MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Scene", scene.sceneId) 
                                                                        params:sceneParams
                                                                    httpMethod:@"PUT" 
                                                                           ssl:YES];
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
         NSDictionary *response = [completedOperation responseJSON];
-        NSLog(@"Got response for updating scene parameters at %@", [response objectForKey:@"updatedAt"]);
+        NSLog(@"Got response for updating scene parameters %@ at %@", sceneParams, [response objectForKey:@"updatedAt"]);
+        DONE_WITH_NETWORK_OPERATION();        
     }  
              onError:PARSE_ERROR_BLOCK()];
     [[ParseAPIEngine sharedEngine] enqueueOperation:op];
-
+    
     [StoryDocuments saveStoryToDisk:scene.story];
     
     return;
@@ -85,6 +98,7 @@
      onCompletion:^(MKNetworkOperation *completedOperation) {
          NSDictionary *response = [completedOperation responseJSON];
          NSLog(@"Got response for updating scene %@ at %@", attribute, [response objectForKey:@"updatedAt"]);
+         DONE_WITH_NETWORK_OPERATION();
      } 
      onError:PARSE_ERROR_BLOCK()];
     

@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "UserManagementModule.h"
 #import <Parse/Parse.h>
-#import "AppDelegate.h"
+#import "BanyanAppDelegate.h"
 
 @class InvitedTableViewController;
 

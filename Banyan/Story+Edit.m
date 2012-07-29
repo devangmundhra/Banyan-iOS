@@ -7,8 +7,8 @@
 //
 
 #import "Story+Edit.h"
-#import "Story_Defines.h"
 #import "StoryDocuments.h"
+#import "ParseAPIEngine.h"
 
 @implementation Story (Edit)
 
@@ -71,45 +71,30 @@
     else
         [storyParams setObject:[NSNull null] forKey:STORY_INVITED_TO_VIEW];
     
-    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Story", story.storyId) 
-                                                                       params:storyParams
-                                                                   httpMethod:@"PUT" 
-                                                                          ssl:YES];
-    [op
-     onCompletion:^(MKNetworkOperation *completedOperation) {
-         NSDictionary *response = [completedOperation responseJSON];
-         NSLog(@"Got response for updating story parameters at %@", [response objectForKey:@"updatedAt"]);
-     } 
-     onError:PARSE_ERROR_BLOCK()];
-    
-    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+    BNOperationObject *obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeStory tempId:story.storyId storyId:story.storyId];
+    BNOperation *operation = [[BNOperation alloc] initWithObject:obj action:BNOperationActionEdit dependencies:nil];
+    operation.action.context = storyParams;
+    ADD_OPERATION_TO_QUEUE(operation);
 
     [StoryDocuments saveStoryToDisk:story];
 }
 
-- (void)startingSceneForStory:(Scene *)scene
++ (void) editStory:(Story *)story withAttributes:(NSMutableDictionary *)storyParams
 {
-    if (![[ParseAPIEngine sharedEngine] isReachable]) {
-        NSLog(@"%s Can't connect to internet", __PRETTY_FUNCTION__);
-        [ParseAPIEngine showNetworkUnavailableAlert];
-        return;
-    }
-    
-    NSMutableDictionary *storyEditParams = [NSMutableDictionary dictionaryWithCapacity:1];
-    [storyEditParams setObject:scene.sceneId forKey:STORY_STARTING_SCENE];
-    
-    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Story", self.storyId) 
-                                                                       params:storyEditParams
-                                                                   httpMethod:@"PUT" 
+    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Story", story.storyId)
+                                                                       params:storyParams
+                                                                   httpMethod:@"PUT"
                                                                           ssl:YES];
     [op
      onCompletion:^(MKNetworkOperation *completedOperation) {
          NSDictionary *response = [completedOperation responseJSON];
-         NSLog(@"Got response for updating story with starting scene at %@", [response objectForKey:@"updatedAt"]);
-     } 
+         NSLog(@"Got response for updating story parameters %@ at %@", storyParams, [response objectForKey:@"updatedAt"]);
+     }
      onError:PARSE_ERROR_BLOCK()];
     
     [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+    
+    [StoryDocuments saveStoryToDisk:story];
 }
 
 - (void)incrementStoryAttribute:(NSString *)attribute byAmount:(NSNumber *)inc
@@ -128,6 +113,7 @@
      onCompletion:^(MKNetworkOperation *completedOperation) {
          NSDictionary *response = [completedOperation responseJSON];
          NSLog(@"Got response for updating story attr %@ at %@", attribute, [response objectForKey:@"updatedAt"]);
+         DONE_WITH_NETWORK_OPERATION();
      } 
      onError:PARSE_ERROR_BLOCK()];
     

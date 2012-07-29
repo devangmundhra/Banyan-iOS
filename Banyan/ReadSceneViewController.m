@@ -11,6 +11,7 @@
 #import "Scene+Stats.h"
 #import "Story+Stats.h"
 #import <QuartzCore/QuartzCore.h>
+#import "ParseAPIEngine.h"
 
 @interface ReadSceneViewController ()
 @property (weak, nonatomic) IBOutlet UIView *contentView;
@@ -53,7 +54,7 @@
 
 - (UserManagementModule *)userManagementModule
 {
-    AppDelegate *delegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
     delegate.userManagementModule.owningViewController = self;
     
     return delegate.userManagementModule;
@@ -158,7 +159,7 @@
                                  forState:UIControlStateNormal];
     }
     else {
-        [self.contributorsButton setTitle:[NSString stringWithFormat:@"%lu contributors invited", 
+        [self.contributorsButton setTitle:[NSString stringWithFormat:@"%u contributors invited",
                                            [self.scene.story.invitedToContribute count]] 
                                  forState:UIControlStateNormal];
     }
@@ -178,8 +179,8 @@
 // refreshed
 - (void)refreshView
 {    
-    self.viewsLabel.text = [NSString stringWithFormat:@"%lu views", [self.scene.numberOfViews unsignedIntValue]];
-    self.likesLabel.text = [NSString stringWithFormat:@"%lu likes", [self.scene.numberOfLikes unsignedIntValue]];
+    self.viewsLabel.text = [NSString stringWithFormat:@"%u views", [self.scene.numberOfViews unsignedIntValue]];
+    self.likesLabel.text = [NSString stringWithFormat:@"%u likes", [self.scene.numberOfLikes unsignedIntValue]];
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
     [dateFormat setDateStyle:NSDateFormatterMediumStyle];
     
@@ -271,7 +272,7 @@
     else {
         [self.likeButton setTitle:@"Like" forState:UIControlStateNormal];
     }
-    self.likesLabel.text = [NSString stringWithFormat:@"%lu likes", [self.scene.numberOfLikes unsignedIntValue]];
+    self.likesLabel.text = [NSString stringWithFormat:@"%u likes", [self.scene.numberOfLikes unsignedIntValue]];
 }
 
 - (void)toggleSceneFollowButtonLabel
@@ -312,6 +313,12 @@
 {
     if (!self.scene.story.initialized) {
         NSLog(@"%s Can't share yet as story with title %@ is not initialized", __PRETTY_FUNCTION__, self.scene.story.title);
+        return;
+    }
+    
+    if (![[ParseAPIEngine sharedEngine] isReachable]) {
+        NSLog(@"%s Can't connect to internet", __PRETTY_FUNCTION__);
+        [ParseAPIEngine showNetworkUnavailableAlert];
         return;
     }
     

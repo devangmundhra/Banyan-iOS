@@ -152,15 +152,15 @@
 // Done modifying scene. Now save all the changes.
 - (IBAction)done:(UIBarButtonItem *)sender 
 {
+    NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+    
     if (self.editMode == add)
     {
-        NSMutableDictionary *mutableAttributes = [NSMutableDictionary dictionaryWithCapacity:2];
-               [mutableAttributes setObject:self.sceneTextView.text ? self.sceneTextView.text : [NSNull null]
-                              forKey:SCENE_TEXT];
-        [mutableAttributes setObject:self.imageView.image ? self.imageView.image : [NSNull null] 
-                              forKey:SCENE_IMAGE];
+        [attributes setObject:self.sceneTextView.text ? self.sceneTextView.text : [NSNull null]
+                       forKey:SCENE_TEXT];
+        [attributes setObject:self.imageView.image ? self.imageView.image : [NSNull null]
+                       forKey:SCENE_IMAGE];
         
-        NSDictionary *attributes = [mutableAttributes copy];
         Scene *scene = [Scene createSceneForStory:self.scene.story attributes:attributes afterScene:self.scene];
         if (scene)
         {
@@ -264,9 +264,10 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     [self dismissViewControllerAnimated:YES completion:nil];
     
     UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
+    self.scene.imageURL = [(NSURL *)[info objectForKey:@"UIImagePickerControllerReferenceURL"] absoluteString];
+    NSLog(@"%s Asset Lib location: %@", __PRETTY_FUNCTION__, self.scene.imageURL);
     [self.imageView cancelImageRequestOperation];
     self.imageChanged = YES;
-//    self.imageView.image = image;
     [NSThread detachNewThreadSelector:@selector(useImage:) toTarget:self withObject:image];
     self.doneButton.enabled = [self checkForChanges];
 }

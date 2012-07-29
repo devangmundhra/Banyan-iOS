@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ParseAPIEngine.h"
 
 @class Scene, Story, User;
 
@@ -33,5 +32,6 @@
 @property BOOL initialized;
 
 - (NSString *)description;
+- (NSMutableDictionary *)getAttributesInDictionary;
 
 @end
