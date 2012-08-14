@@ -24,12 +24,11 @@
     if (scene.viewed)
         return;
     
-    PFUser *currentUser = [PFUser currentUser];
+    User *currentUser = [User currentUser];
     if (!currentUser)
         return;
 
-    PFUser *user = [PFQuery getUserObjectWithId:currentUser.objectId];
-    NSArray *alreadyViewedSceneId = [user objectForKey:USER_SCENES_VIEWED];
+    NSArray *alreadyViewedSceneId = currentUser.scenesViewed;
     NSMutableArray *mutArray = [NSMutableArray arrayWithCapacity:1];
     
     if (alreadyViewedSceneId)
@@ -44,8 +43,10 @@
         [mutArray addObject:scene.sceneId];
     }
     
+    currentUser.scenesViewed = [mutArray copy];
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[mutArray copy] forKey:USER_SCENES_VIEWED];
-    [User editUser:currentUser withAttributes:params];
+
+    [User editUserNoOp:currentUser withAttributes:params];
     
     scene.viewed = YES;
     scene.numberOfViews = [NSNumber numberWithInt:([scene.numberOfViews intValue] + 1)];    
@@ -54,12 +55,11 @@
 
 + (BOOL) isSceneViewed:(PFObject *)pfScene
 {
-    PFUser *currentUser = [PFUser currentUser];
+    User *currentUser = [User currentUser];
     if (!currentUser)
         return NO;
-    PFUser *user = [PFQuery getUserObjectWithId:currentUser.objectId];
     
-    NSArray *alreadyViewedSceneId = [user objectForKey:USER_SCENES_VIEWED];
+    NSArray *alreadyViewedSceneId = currentUser.scenesViewed;
     
     if ([alreadyViewedSceneId isEqual:[NSNull null]])
         return NO;
@@ -72,15 +72,14 @@
 
 + (void) toggleLikedScene:(Scene *)scene
 {
-    PFUser *currentUser = [PFUser currentUser];
+    User *currentUser = [User currentUser];
     if (!currentUser)
         return;
-    PFUser *user = [PFQuery getUserObjectWithId:currentUser.objectId];
     
-    NSArray *alreadyLikedSceneId = [user objectForKey:USER_SCENES_LIKED];
+    NSArray *alreadyLikedSceneId = currentUser.scenesLiked;
     NSMutableArray *mutArray = nil;
     
-    if ([alreadyLikedSceneId isEqual:[NSNull null]])
+    if (!alreadyLikedSceneId)
         mutArray = [NSMutableArray arrayWithCapacity:1];
     else 
         mutArray = [NSMutableArray arrayWithArray:alreadyLikedSceneId];
@@ -95,8 +94,9 @@
         INCREMENT_SCENE_ATTRIBUTE_OPERATION(scene, SCENE_NUM_LIKES, 1);
         [mutArray addObject:scene.sceneId];
     }
+    currentUser.scenesLiked = [mutArray copy];
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[mutArray copy] forKey:USER_SCENES_LIKED];
-    [User editUser:currentUser withAttributes:params];
+    [User editUserNoOp:currentUser withAttributes:params];
 
     if (scene.liked) {
         scene.liked = NO;
@@ -109,12 +109,11 @@
 
 + (BOOL) isSceneLiked:(PFObject *)pfScene
 {
-    PFUser *currentUser = [PFUser currentUser];
+    User *currentUser = [User currentUser];
     if (!currentUser)
         return NO;
-    PFUser *user = [PFQuery getUserObjectWithId:currentUser.objectId];
 
-    NSArray *alreadyLikedScene = [user objectForKey:USER_SCENES_LIKED];
+    NSArray *alreadyLikedScene = currentUser.scenesLiked;
     
     if ([alreadyLikedScene isEqual:[NSNull null]])
         return NO;
@@ -127,12 +126,11 @@
 
 + (void) toggleFavouritedScene:(Scene *)scene
 {
-    PFUser *currentUser = [PFUser currentUser];
+    User *currentUser = [User currentUser];
     if (!currentUser)
         return;
-    PFUser *user = [PFQuery getUserObjectWithId:currentUser.objectId];
     
-    NSArray *alreadyFavouritedSceneId = [user objectForKey:USER_SCENES_FAVOURITES];
+    NSArray *alreadyFavouritedSceneId = currentUser.scenesFavourited;
     NSMutableArray *mutArray = nil;
     
     if ([alreadyFavouritedSceneId isEqual:[NSNull null]])
@@ -148,20 +146,20 @@
         // favourite scene
         [mutArray addObject:scene.sceneId];
     }
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[mutArray copy] forKey:USER_SCENES_FAVOURITES];
-    [User editUser:currentUser withAttributes:params];
+    currentUser.scenesFavourited = [mutArray copy];
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[mutArray copy] forKey:USER_SCENES_FAVOURITED];
+    [User editUserNoOp:currentUser withAttributes:params];
     
     scene.favourite = !scene.favourite;
 }
 
 + (BOOL) isSceneFavourited:(PFObject *)pfScene
 {
-    PFUser *currentUser = [PFUser currentUser];
+    User *currentUser = [User currentUser];
     if (!currentUser)
         return NO;
-    PFUser *user = [PFQuery getUserObjectWithId:currentUser.objectId];
     
-    NSArray *alreadyFavouritedScene = [user objectForKey:USER_SCENES_FAVOURITES];
+    NSArray *alreadyFavouritedScene = currentUser.scenesFavourited;
     if ([alreadyFavouritedScene isEqual:[NSNull null]])
         return NO;
     

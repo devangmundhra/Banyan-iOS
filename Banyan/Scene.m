@@ -30,8 +30,12 @@
 @synthesize viewed = _viewed;
 @synthesize favourite = _favourite;
 @synthesize initialized = _initialized;
+@synthesize location = _location;
+@synthesize geocodedLocation = _geocodedLocation;
+// Session properties
+@synthesize imageChanged = _imageChanged;
 
-- (id)initWithText:(NSString *)text sceneId:(NSString *)sceneId sceneNumberInStory:(NSNumber *)sceneNumberInStory imageURL:(NSString *)imageURL author:(User *)author nextScene:(Scene *)nextScene previousScene:(Scene *)previousScene createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors story:(Story *)story liked:(BOOL)liked viewed:(BOOL)viewed favourite:(BOOL)favourite initialized:(BOOL) initialized
+- (id)initWithText:(NSString *)text sceneId:(NSString *)sceneId sceneNumberInStory:(NSNumber *)sceneNumberInStory imageURL:(NSString *)imageURL author:(User *)author nextScene:(Scene *)nextScene previousScene:(Scene *)previousScene createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors story:(Story *)story liked:(BOOL)liked viewed:(BOOL)viewed favourite:(BOOL)favourite initialized:(BOOL) initialized location:(CLLocation *)location geocodedLocation:(NSString *)geocodedLocation
 {
     if ((self = [super init])) {
         _text = text;
@@ -51,6 +55,8 @@
         _viewed = viewed;
         _favourite = favourite;
         _initialized = initialized;
+        _location = location;
+        _geocodedLocation = geocodedLocation;
     }
     return self;
 }
@@ -75,6 +81,9 @@
     [aCoder encodeBool:_viewed forKey:SCENE_VIEWED];
     [aCoder encodeBool:_favourite forKey:SCENE_FAVOURITE];
     [aCoder encodeBool:_initialized forKey:SCENE_IS_INITIALIZED];
+    [aCoder encodeObject:_location forKey:SCENE_LOCATION];
+    [aCoder encodeObject:_geocodedLocation forKey:SCENE_GEOCODEDLOCATION];
+
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder
@@ -96,24 +105,33 @@
     BOOL favourite = [aDecoder decodeBoolForKey:SCENE_VIEWED];
     BOOL viewed = [aDecoder decodeBoolForKey:SCENE_FAVOURITE];
     BOOL initialized = [aDecoder decodeBoolForKey:SCENE_IS_INITIALIZED];
+    CLLocation *location = [aDecoder decodeObjectForKey:SCENE_LOCATION];
+    NSString *geocodedLocation = [aDecoder decodeObjectForKey:SCENE_GEOCODEDLOCATION];
+
     
-    return [self initWithText:text sceneId:sceneId sceneNumberInStory:sceneNumberInStory imageURL:imageURL author:author nextScene:nextScene previousScene:previousScence createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors story:story liked:liked viewed:viewed favourite:favourite initialized:initialized];
+    return [self initWithText:text sceneId:sceneId sceneNumberInStory:sceneNumberInStory imageURL:imageURL author:author nextScene:nextScene previousScene:previousScence createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors story:story liked:liked viewed:viewed favourite:favourite initialized:initialized location:location geocodedLocation:geocodedLocation];
 }
 
 - (NSMutableDictionary *)getAttributesInDictionary
 {
     NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+    CLLocationCoordinate2D coord = [self.location coordinate];
     
     [attributes setObject:self.text forKey:SCENE_TEXT];
-    [attributes setObject:REPLACE_NULL_FOR_NIL(self.imageURL) forKey:SCENE_IMAGE_URL];
+    [attributes setObject:REPLACE_NIL_WITH_NULL(self.imageURL) forKey:SCENE_IMAGE_URL];
 //    [attributes setObject:self.author forKey:SCENE_AUTHOR];
-    [attributes setObject:REPLACE_NULL_FOR_NIL(self.nextScene.sceneId) forKey:SCENE_NEXTSCENE];
-    [attributes setObject:REPLACE_NULL_FOR_NIL(self.previousScene.sceneId) forKey:SCENE_PREVIOUSSCENE];
-    [attributes setObject:REPLACE_NULL_FOR_NIL(self.story.storyId) forKey:SCENE_STORY];
+    [attributes setObject:REPLACE_NIL_WITH_NULL(self.nextScene.sceneId) forKey:SCENE_NEXTSCENE];
+    [attributes setObject:REPLACE_NIL_WITH_NULL(self.previousScene.sceneId) forKey:SCENE_PREVIOUSSCENE];
+    [attributes setObject:REPLACE_NIL_WITH_NULL(self.story.storyId) forKey:SCENE_STORY];
     [attributes setObject:self.numberOfLikes forKey:SCENE_NUM_LIKES];
     [attributes setObject:self.numberOfViews forKey:SCENE_NUM_VIEWS];
     [attributes setObject:self.numberOfContributors forKey:SCENE_NUM_CONTRIBUTORS];
-    
+    [attributes setObject:[NSNumber numberWithDouble:coord.latitude]
+                   forKey:SCENE_LATITUDE];
+    [attributes setObject:[NSNumber numberWithDouble:coord.longitude]
+                   forKey:SCENE_LONGITUDE];
+    [attributes setObject:REPLACE_NIL_WITH_NULL(self.geocodedLocation) forKey:SCENE_GEOCODEDLOCATION];
+
     return attributes;
 }
 

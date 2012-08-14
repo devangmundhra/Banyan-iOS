@@ -30,7 +30,11 @@
 @property (weak, nonatomic) IBOutlet UIButton *followButton;
 @property (weak, nonatomic) IBOutlet UIButton *shareButton;
 
+@property (weak, nonatomic) IBOutlet UILabel *locationLabel;
+
 @property (weak, nonatomic) UserManagementModule *userManagementModule;
+
+@property (strong, nonatomic) BNLocationManager *locationManager;
 
 @end
 
@@ -48,9 +52,11 @@
 @synthesize likeButton = _likeButton;
 @synthesize followButton = _followButton;
 @synthesize shareButton = _shareButton;
+@synthesize locationLabel = _locationLabel;
 @synthesize userManagementModule = _userManagementModule;
 @synthesize scene = _scene;
 @synthesize delegate = _delegate;
+@synthesize locationManager = _locationManager;
 
 - (UserManagementModule *)userManagementModule
 {
@@ -74,13 +80,25 @@
     [super viewWillAppear:animated];
     [self setWantsFullScreenLayout:YES];
 
-    [super viewDidAppear:animated];
     self.imageView.frame = [[UIScreen mainScreen] bounds];
     self.imageView.contentMode = UIViewContentModeScaleAspectFill;
     self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     
-    [self.imageView setImageWithURL:[NSURL URLWithString:self.scene.imageURL] placeholderImage:self.scene.image];
-//    [self.imageView setPathToNetworkImage:self.scene.imageURL contentMode:UIViewContentModeScaleAspectFill];
+    if (self.scene.imageURL && [self.scene.imageURL rangeOfString:@"asset"].location == NSNotFound) {
+        [self.imageView setImageWithURL:[NSURL URLWithString:self.scene.imageURL] placeholderImage:self.scene.image];
+    } else if (self.scene.imageURL) {
+        ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
+        [library assetForURL:[NSURL URLWithString:self.scene.imageURL] resultBlock:^(ALAsset *asset) {
+            ALAssetRepresentation *rep = [asset defaultRepresentation];
+            CGImageRef imageRef = [rep fullScreenImage];
+            UIImage *image = [UIImage imageWithCGImage:imageRef];
+            [self.imageView setImage:image];
+        }
+                failureBlock:^(NSError *error) {
+                    NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
+                }
+         ];
+    }
     
     self.sceneTextView.backgroundColor = [UIColor clearColor];
     self.storyTitleLabel.backgroundColor = [UIColor clearColor];
@@ -91,6 +109,13 @@
     self.sceneTextView.text = self.scene.text;
     self.storyTitleLabel.text = self.scene.story.title;
     
+    if (![self.scene.geocodedLocation isEqual:[NSNull null]] && self.scene.geocodedLocation)
+        self.locationLabel.text = self.scene.geocodedLocation;
+    else if (self.scene.story.isLocationEnabled && ![self.scene.location isEqual:[NSNull null]]) {
+        self.locationManager = [[BNLocationManager alloc] init];
+        self.locationManager.delegate = self;
+        [self.locationManager reverseGeoCodedLocation:self.scene.location];
+    }
 
     if (self.scene.image || self.scene.imageURL) {
         self.sceneTextView.textColor = self.storyTitleLabel.textColor = [UIColor whiteColor];
@@ -126,6 +151,30 @@
                                             withAnimation:UIStatusBarAnimationNone];
     [self.navigationController setNavigationBarHidden:![self.delegate readSceneControllerEditMode] 
                                              animated:NO];
+}
+
+- (void)locationUpdated
+{
+    self.locationLabel.text = self.locationManager.locationStatus;
+    self.scene.geocodedLocation = self.locationManager.locationStatus;
+    // TODO: This should be done at the server
+    // Edit this scene with the geolocated data
+    BNOperationObject *obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeScene
+                                                                    tempId:self.scene.sceneId
+                                                                   storyId:self.scene.story.storyId];
+    BNOperation *op = [[BNOperation alloc] initWithObject:obj action:BNOperationActionEdit dependencies:nil];
+    op.action.context = [NSDictionary dictionaryWithObject:self.scene.geocodedLocation forKey:SCENE_GEOCODEDLOCATION];
+    ADD_OPERATION_TO_QUEUE(op);
+    
+    if (self.scene.previousScene == nil) {
+        self.scene.story.geocodedLocation = self.scene.geocodedLocation;
+        obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeStory
+                                                     tempId:self.scene.story.storyId
+                                                    storyId:self.scene.story.storyId];
+        op = [[BNOperation alloc] initWithObject:obj action:BNOperationActionEdit dependencies:nil];
+        op.action.context = [NSDictionary dictionaryWithObject:self.scene.story.geocodedLocation forKey:STORY_GEOCODEDLOCATION];
+        ADD_OPERATION_TO_QUEUE(op);
+    }
 }
 
 - (void) userLoginStatusChanged
@@ -205,6 +254,7 @@
 
 - (void)viewDidUnload
 {
+    [self setLocationLabel:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -223,6 +273,8 @@
     [self setFollowButton:nil];
     [self setShareButton:nil];
     [self setContributorsButton:nil];
+    self.locationManager.delegate = nil;
+    [self setLocationManager:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

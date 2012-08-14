@@ -23,6 +23,6 @@
 - (void)addDependencyObject:(BNOperationDependency *)object;
 - (void)removeDependencyObject:(BNOperationDependency *)object;
 - (BOOL)checkDependencyForObject:(BNOperationDependency *)object;
-- (BOOL)isReady;
-- (BOOL)performOperation;
+- (void)completeOperationWithError:(BOOL)error;
+
 @end

@@ -16,6 +16,7 @@
 #import "Story_Defines.h"
 #import "UIImageView+AFNetworking.h"
 #import "UIImage+SizeAndOrientation.h"
+#import <AssetsLibrary/AssetsLibrary.h>
 
 @interface ModifySceneViewController ()
 
@@ -28,12 +29,17 @@
 @property (weak, nonatomic) IBOutlet UIButton *modifyImageButton;
 @property (weak, nonatomic) IBOutlet UIButton *deleteSceneButton;
 @property (weak, nonatomic) IBOutlet UIToolbar *keyboardToolbar;
+@property (weak, nonatomic) IBOutlet UILabel *locationLabel;
+
+@property (strong, nonatomic) NSString *localImageURL;
+@property (nonatomic) BOOL imageChanged;
 
 @property (strong, nonatomic) UITapGestureRecognizer *tapRecognizer;
 
 @property (nonatomic) BOOL keyboardIsShown;
-@property (nonatomic) BOOL imageChanged;
 @property (nonatomic) NSUInteger contentViewDispositionOnKeyboard;
+
+@property (strong, nonatomic) BNLocationManager *locationManager;
 
 @end
 
@@ -57,6 +63,9 @@
 @synthesize tapRecognizer = _tapRecognizer;
 @synthesize imageChanged = _imageChanged;
 @synthesize contentViewDispositionOnKeyboard = _contentViewDispositionOnKeyboard;
+@synthesize localImageURL = _localImageURL;
+@synthesize locationManager = _locationManager;
+@synthesize locationLabel = _locationLabel;
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -81,16 +90,39 @@
     self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapAnywhere:)];
     self.tapRecognizer.delegate = self;
     
+    if (self.scene.geocodedLocation && ![self.scene.geocodedLocation isEqual:[NSNull null]]) {
+        self.locationLabel.text = self.scene.geocodedLocation;
+    }
+    
     if (self.editMode == add)
     {
         self.navigationBar.topItem.title = @"Add Scene";
         self.deleteSceneButton.hidden = YES;
+        self.locationManager = [[BNLocationManager alloc] init];
+        self.locationManager.delegate = self;
+        if (self.scene.story.isLocationEnabled) {
+            [self.locationManager beginUpdatingLocation];
+        }
     }
     else if (self.editMode == edit)
     {
         self.imageView.contentMode = UIViewContentModeScaleAspectFill;
-        self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        [self.imageView setImageWithURL:[NSURL URLWithString:self.scene.imageURL] placeholderImage:self.scene.image];
+//        self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        if (self.scene.imageURL && [self.scene.imageURL rangeOfString:@"asset"].location == NSNotFound) {
+            [self.imageView setImageWithURL:[NSURL URLWithString:self.scene.imageURL] placeholderImage:self.scene.image];
+        } else if (self.scene.imageURL) {
+            ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
+            [library assetForURL:[NSURL URLWithString:self.scene.imageURL] resultBlock:^(ALAsset *asset) {
+                ALAssetRepresentation *rep = [asset defaultRepresentation];
+                CGImageRef imageRef = [rep fullScreenImage];
+                UIImage *image = [UIImage imageWithCGImage:imageRef];
+                [self.imageView setImage:image];
+            }
+                    failureBlock:^(NSError *error) {
+                        NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
+                    }
+             ];
+        }
         self.sceneTextView.text = self.scene.text;
         self.deleteSceneButton.hidden = NO;
         self.navigationBar.topItem.title = @"Edit";
@@ -119,6 +151,9 @@
 
 - (void)viewDidUnload
 {
+    if (self.scene.story.isLocationEnabled) {
+        [self.locationManager stopUpdatingLocation:self.locationLabel.text];
+    }
     [self setImageView:nil];
     [self setNavigationBar:nil];
     [self setSceneTextView:nil];
@@ -128,6 +163,10 @@
     [self setDeleteSceneButton:nil];
     [self setKeyboardToolbar:nil];
     [self setContentView:nil];
+    [self setLocalImageURL:nil];
+    [self setLocationLabel:nil];
+    self.locationManager.delegate = nil;
+    [self setLocationManager:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -153,13 +192,26 @@
 - (IBAction)done:(UIBarButtonItem *)sender 
 {
     NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+    [attributes setObject:self.sceneTextView.text ? self.sceneTextView.text : [NSNull null]
+                   forKey:SCENE_TEXT];
+    //        [attributes setObject:self.imageView.image ? self.imageView.image : [NSNull null]
+    //                       forKey:SCENE_IMAGE];
+    [attributes setObject:REPLACE_NIL_WITH_NULL(self.localImageURL) forKey:SCENE_IMAGE_URL];
     
     if (self.editMode == add)
     {
-        [attributes setObject:self.sceneTextView.text ? self.sceneTextView.text : [NSNull null]
-                       forKey:SCENE_TEXT];
-        [attributes setObject:self.imageView.image ? self.imageView.image : [NSNull null]
-                       forKey:SCENE_IMAGE];
+        if (self.scene.story.isLocationEnabled == YES) {
+            if (self.locationManager.location) {
+                
+                CLLocationCoordinate2D coord = [self.locationManager.location coordinate];
+                
+                [attributes setObject:[NSNumber numberWithDouble:coord.latitude]
+                                         forKey:SCENE_LATITUDE];
+                [attributes setObject:[NSNumber numberWithDouble:coord.longitude]
+                                         forKey:SCENE_LONGITUDE];
+                [attributes setObject:REPLACE_NIL_WITH_NULL(self.locationManager.locationString) forKey:SCENE_GEOCODEDLOCATION];
+            }
+        }
         
         Scene *scene = [Scene createSceneForStory:self.scene.story attributes:attributes afterScene:self.scene];
         if (scene)
@@ -178,13 +230,18 @@
         {
             NSLog(@"ModifySceneViewController_Editing story");
             self.scene.story.title = self.sceneTextView.text;
-            if (self.imageChanged)
-                self.scene.story.image = self.imageView.image;
+            if (self.imageChanged) {
+                self.scene.story.imageURL = self.localImageURL;
+                self.scene.story.imageChanged = YES;
+//                self.scene.story.image = self.imageView.image;
+            }
             [Story editStory:self.scene.story];
         }
         self.scene.text = self.sceneTextView.text;
         if (self.imageChanged) {
-            self.scene.image = self.imageView.image;
+            self.scene.imageURL = self.localImageURL;
+            self.scene.imageChanged = YES;
+//            self.scene.image = self.imageView.image;
         }
         [Scene editScene:self.scene];
         [self.delegate modifySceneViewController:self didFinishEditingScene:self.scene];
@@ -237,6 +294,7 @@
     else if (buttonIndex == actionSheet.destructiveButtonIndex) {
         // MAYBE EXPLICITLY DELETE IMAGE IN FUTURE
         self.imageView.image = nil;
+        self.localImageURL = nil;
         self.imageChanged = YES;
         self.doneButton.enabled = [self checkForChanges];
     }
@@ -264,8 +322,23 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     [self dismissViewControllerAnimated:YES completion:nil];
     
     UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
-    self.scene.imageURL = [(NSURL *)[info objectForKey:@"UIImagePickerControllerReferenceURL"] absoluteString];
-    NSLog(@"%s Asset Lib location: %@", __PRETTY_FUNCTION__, self.scene.imageURL);
+    self.localImageURL = [(NSURL *)[info objectForKey:@"UIImagePickerControllerReferenceURL"] absoluteString];
+    
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+    if( [picker sourceType] == UIImagePickerControllerSourceTypeCamera )
+    {
+        UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+        [library writeImageToSavedPhotosAlbum:image.CGImage orientation:(ALAssetOrientation)image.imageOrientation completionBlock:^(NSURL *assetURL, NSError *error )
+         {
+             if (assetURL) {
+                 NSLog(@"%s Image saved to photo albums %@", __PRETTY_FUNCTION__, assetURL);
+                 self.localImageURL = [assetURL absoluteString];
+             } else {
+                 NSLog(@"%s Error saving image: %@",error);
+             }
+         }];
+    }
+
     [self.imageView cancelImageRequestOperation];
     self.imageChanged = YES;
     [NSThread detachNewThreadSelector:@selector(useImage:) toTarget:self withObject:image];
@@ -274,6 +347,8 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker 
 {
+    self.localImageURL = nil;
+    self.imageChanged = NO;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -284,6 +359,12 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     UIImage* newImage = [UIImage imageWithImage:image scaledToSize:screenSize.size];
     
     [self.imageView setImage:newImage];
+}
+
+# pragma mark BNLocationManagerDelegate
+- (void) locationUpdated
+{
+    self.locationLabel.text = self.locationManager.locationString;
 }
 
 # pragma mark - Keyboard notifications

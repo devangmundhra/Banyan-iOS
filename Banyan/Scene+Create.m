@@ -22,12 +22,6 @@
     BNOperation *operation = nil;
     BNOperationDependency *dep = nil;
     
-    if (![[ParseAPIEngine sharedEngine] isReachable]) {
-        NSLog(@"%s Can't connect to internet", __PRETTY_FUNCTION__);
-        [ParseAPIEngine showNetworkUnavailableAlert];
-        return NULL;
-    }
-    
     NSLog(@"Adding scene for story %@", story);
     
     Scene *scene = [Scene createSceneOnDiskForStory:story attributes:attributes afterScene:previousScene];
@@ -41,6 +35,26 @@
                                              action:BNOperationActionCreate
                                        dependencies:nil];
     
+    BNOperationDependency *imageDependency = nil;
+    
+    if (scene.imageURL)
+    {
+        scene.imageChanged = NO;
+
+        // Upload the image (ie, create a network request for that)
+        BNOperationObject *imgObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeFile
+                                                                           tempId:scene.imageURL
+                                                                          storyId:nil];
+        BNOperation *imgOperation = [[BNOperation alloc] initWithObject:imgObj action:BNOperationActionCreate dependencies:nil];
+        ADD_OPERATION_TO_QUEUE(imgOperation);
+        
+        // Create a dependency object
+        imageDependency = [[BNOperationDependency alloc] initWithBNObject:imgObj
+                                                                    field:SCENE_IMAGE_URL];
+        [operation addDependencyObject:imageDependency];
+
+    }
+    
     if (!story.initialized) {
         // If story is not initialized, mark this operation being dependent on the initialization of the story
         BNOperationDependency *stObj = [[BNOperationDependency alloc] initWithObjectType:BNOperationObjectTypeStory
@@ -48,7 +62,18 @@
                                                                                 storyId:story.storyId
                                                                                   field:SCENE_STORY];
         [operation addDependencyObject:stObj];
+    } else {
+        // Increment the length of story
+        // If story is not yet initialized, then there is no need to increment the lenght because the create story will
+        // automatically upload the correct length when it uploads.
+        BNOperationObject *obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeStory
+                                                                        tempId:story.storyId
+                                                                       storyId:story.storyId];
+        BNOperation *op = [[BNOperation alloc] initWithObject:obj action:BNOperationActionIncrementAttribute dependencies:nil];
+        op.action.context = [NSDictionary dictionaryWithObjectsAndKeys:STORY_LENGTH, @"attribute", [NSNumber numberWithInt:1], @"amount", nil];
+        [[BNOperationQueue shared] addOperation:op];
     }
+    
     
     if (scene.previousScene && !scene.previousScene.initialized) {
         // If previous scene is not initialized, mark this operation being dependent on the initialization of the previous scene
@@ -100,7 +125,7 @@
                           afterScene:(Scene *)previousScene
 {
     Scene *scene = [[Scene alloc] init];
-    NSString *tempId = [[NSProcessInfo processInfo] globallyUniqueString];
+    NSString *tempId = [NSString stringWithFormat:@"temp%@", [[NSProcessInfo processInfo] globallyUniqueString]];
     
     // DISK
     scene.sceneId = tempId;
@@ -110,8 +135,15 @@
     
     if (![[attributes objectForKey:SCENE_TEXT] isEqual:[NSNull null]])
         scene.text = [attributes objectForKey:SCENE_TEXT];
-    if (![[attributes objectForKey:SCENE_IMAGE] isEqual:[NSNull null]])
-        scene.image = [attributes objectForKey:SCENE_IMAGE];
+    if (![[attributes objectForKey:SCENE_IMAGE_URL] isEqual:[NSNull null]])
+        scene.imageURL = [attributes objectForKey:SCENE_IMAGE_URL];
+    
+    if (story.isLocationEnabled) {
+        double latitude = [[attributes objectForKey:SCENE_LATITUDE] doubleValue];
+        double longitude = [[attributes objectForKey:SCENE_LONGITUDE] doubleValue];
+        scene.location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+        scene.geocodedLocation = [attributes objectForKey:SCENE_GEOCODEDLOCATION];
+    }
     
     if (!previousScene) {
         // This is the starting scene of the story
@@ -130,7 +162,7 @@
         scene.previousScene = previousScene;
         scene.nextScene.previousScene = scene;
         previousScene.nextScene = scene;
-        scene.author = [ParseConnection getUserForPfUser:[PFUser currentUser]];
+        scene.author = [User currentUser];
         
         scene.story.lengthOfStory = [NSNumber numberWithUnsignedInt:([scene.story.lengthOfStory unsignedIntegerValue] + 1)];
     }
@@ -146,37 +178,11 @@
 
 + (void) createSceneOnServer:(Scene *)scene
 {
+    NSLog(@"%s scene: %@", __PRETTY_FUNCTION__, scene);
+    assert(scene);
     NSMutableDictionary *attributes = [scene getAttributesInDictionary];
     Story *story = scene.story;
     [attributes setObject:[PFUser currentUser].objectId forKey:SCENE_AUTHOR];
-    
-    // Add image for this scene
-    void (^addImageForScene)(NSString *) = ^(NSString *thisSceneId) {
-        if (![[attributes objectForKey:SCENE_IMAGE] isEqual:[NSNull null]] && [attributes objectForKey:SCENE_IMAGE])
-        {
-            NSData *imageData = UIImagePNGRepresentation([attributes objectForKey:SCENE_IMAGE]);
-            PFFile *imageFile = [PFFile fileWithName:[thisSceneId stringByAppendingString:@".png"] data:imageData];
-            [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                if (succeeded) {
-                    scene.imageURL = imageFile.url;
-                    NSMutableDictionary *imageURLParam = [NSMutableDictionary dictionaryWithObject:imageFile.url
-                                                                                            forKey:SCENE_IMAGE_URL];
-                    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Scene", thisSceneId)
-                                                                                       params:imageURLParam
-                                                                                   httpMethod:@"PUT"
-                                                                                          ssl:YES];
-                    [op onCompletion:^(MKNetworkOperation *completedOperation) {
-                        NSLog(@"Updated scene with imageURL %@", imageFile.url);
-                    }
-                             onError:PARSE_ERROR_BLOCK()];
-                    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
-                }
-                else {
-                    NSLog(@"%s Error %@: Can't save image for scene", __PRETTY_FUNCTION__, error);
-                }
-            }];
-        }
-    };
     
     MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_CLASS_URL(@"Scene")
                                                                        params:attributes
@@ -187,25 +193,15 @@
          NSDictionary *response = [completedOperation responseJSON];
          NSLog(@"Got response for creating scene %@", [response objectForKey:@"objectId"]);
          NSString *newId = [response objectForKey:@"objectId"];
-         NSMutableDictionary *ht = [BanyanDataSource hashTable];
-         [ht setObject:newId forKey:scene.sceneId];
+         [[BanyanDataSource hashTable] setObject:newId forKey:scene.sceneId];
+         [BanyanDataSource archiveHashTable];
          scene.sceneId = newId;
          scene.initialized = YES;
-         
-         // Increment the length of story
-         BNOperationObject *obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeStory
-                                                                         tempId:story.storyId
-                                                                        storyId:story.storyId];
-         BNOperation *op = [[BNOperation alloc] initWithObject:obj action:BNOperationActionIncrementAttribute dependencies:nil];
-         op.action.context = [NSDictionary dictionaryWithObjectsAndKeys:STORY_LENGTH, @"attribute", [NSNumber numberWithInt:1], @"amount", nil];
-         [[BNOperationQueue shared] addOperation:op];
-         
-//         addImageForScene([response objectForKey:@"objectId"]);
-         
+
          [StoryDocuments saveStoryToDisk:story];
-         DONE_WITH_NETWORK_OPERATION();
+         NETWORK_OPERATION_COMPLETE();
      }
-     onError:PARSE_ERROR_BLOCK()];
+     onError:BN_ERROR_BLOCK_OPERATION_INCOMPLETE()];
     
     [[ParseAPIEngine sharedEngine] enqueueOperation:op];
 }

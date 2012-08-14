@@ -50,7 +50,7 @@
              [Scene removeSceneWithId:[scene objectForKey:@"objectId"]];
          }
      } 
-     onError:PARSE_ERROR_BLOCK()];
+     onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
     [[ParseAPIEngine sharedEngine] enqueueOperation:op];
 
     // Delete Object
@@ -78,7 +78,7 @@
      onCompletion:^(MKNetworkOperation *completedOperation) {
          NSLog(@"Story with id %@ deleted", storyId);
      } 
-     onError:PARSE_ERROR_BLOCK()];
+     onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
     [[ParseAPIEngine sharedEngine] enqueueOperation:op];
 }
 @end

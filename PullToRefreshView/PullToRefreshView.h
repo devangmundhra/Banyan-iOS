@@ -30,7 +30,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 typedef enum {
-  PullToRefreshViewStateNormal = 0,
+    PullToRefreshViewStateNormal = 0,
 	PullToRefreshViewStateReady,
 	PullToRefreshViewStateLoading
 } PullToRefreshViewState;
@@ -46,7 +46,7 @@ typedef enum {
 	UIActivityIndicatorView *activityView;
 }
 
-@property (nonatomic, weak) UIScrollView *scrollView;
+@property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, weak) id<PullToRefreshViewDelegate> delegate;
 
 - (void)refreshLastUpdatedDate;

@@ -31,7 +31,7 @@
 
 @end
 
-@interface ReadSceneViewController : UIViewController <UIGestureRecognizerDelegate, ModifySceneViewControllerDelegate, InvitedTableViewControllerDelegate>
+@interface ReadSceneViewController : UIViewController <UIGestureRecognizerDelegate, ModifySceneViewControllerDelegate, InvitedTableViewControllerDelegate, BNLocationManagerDelegate>
 
 @property (strong, nonatomic) Scene *scene;
 @property (weak, nonatomic) IBOutlet id <ReadSceneViewControllerDelegate> delegate;

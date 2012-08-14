@@ -24,6 +24,14 @@ static NSString * const kParseAPIBaseURLString = @"api/v1";
         _sharedEngine = [[BanyanAPIEngine alloc] initWithHostName:@"banyan.io"
                                                          apiPath:kParseAPIBaseURLString 
                                               customHeaderFields:nil];
+        _sharedEngine.reachabilityChangedHandler = ^(NetworkStatus ns) {
+            if (ns != NotReachable) {
+                [[BNOperationQueue shared] setSuspended:NO];
+            } else {
+                [[BNOperationQueue shared] setSuspended:YES];
+                [[BNOperationQueue shared] archiveOperations];
+            }
+        };
     });
     
     return _sharedEngine;

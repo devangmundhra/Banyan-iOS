@@ -11,7 +11,9 @@
 
 typedef enum {
     BNOperationObjectTypeScene = 1,
-    BNOperationObjectTypeStory = 2
+    BNOperationObjectTypeStory = 2,
+    BNOperationObjectTypeUser = 3,
+    BNOperationObjectTypeFile = 4,
     
 } BNOperationObjectType;
 

@@ -18,4 +18,6 @@
                   tempId:(NSString *)tempId
                  storyId:(NSString *)storyId
                    field:(NSString *)field;
+- (id)initWithBNObject:(BNOperationObject *)object
+                 field:(NSString *)field;
 @end

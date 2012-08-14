@@ -11,17 +11,30 @@
 
 @class BNOperation, BNOperationObject;
 
-#define DONE_WITH_NETWORK_OPERATION() [BNOperationQueue shared].processingOperation = NO; NSLog(@"Setting processing op NO");
+#define NETWORK_OPERATION_COMPLETE() [[BNOperationQueue shared] doneWithOperationWithError:NO]
+#define NETWORK_OPERATION_INCOMPLETE() [[BNOperationQueue shared] doneWithOperationWithError:YES]
 #define ADD_OPERATION_TO_QUEUE(__operation__) [[BNOperationQueue shared] addOperation:__operation__]
 
-@interface BNOperationQueue : NSObject
+#define BN_ERROR_BLOCK_OPERATION_COMPLETE() ^(NSError *error) {                        \
+NSLog(@"%@\t%@\t%@\t%@", [error localizedDescription], [error localizedFailureReason], \
+[error localizedRecoveryOptions], [error localizedRecoverySuggestion]);                \
+NETWORK_OPERATION_COMPLETE();                                                          \
+}
 
-@property (assign, nonatomic) BOOL processingOperation;
-@property (strong, nonatomic) NSMutableArray *operations;
+#define BN_ERROR_BLOCK_OPERATION_INCOMPLETE() ^(NSError *error) {                        \
+NSLog(@"%@\t%@\t%@\t%@", [error localizedDescription], [error localizedFailureReason], \
+[error localizedRecoveryOptions], [error localizedRecoverySuggestion]);                \
+NETWORK_OPERATION_INCOMPLETE();                                                        \
+}
+
+@interface BNOperationQueue : NSOperationQueue
+
+@property (weak, atomic) BNOperation *ongoingOperation;
 
 +(BNOperationQueue *)shared;
-- (void) updateQueuewithOldDependency:(BNOperationObject *)oldObject 
+- (void) updateQueuewithOldDependency:(BNOperationObject *)oldObject
                     withNewDependency:(BNOperationObject *)newDep;
 - (void) addOperation:(BNOperation *)operation;
-- (void) process;
+- (void) doneWithOperationWithError:(BOOL)error;
+- (void) archiveOperations;
 @end

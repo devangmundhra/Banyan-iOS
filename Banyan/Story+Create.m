@@ -48,12 +48,6 @@
 
 + (Story *)createStoryWithAttributes:(NSMutableDictionary *)attributes
 {
-    if (![[ParseAPIEngine sharedEngine] isReachable]) {
-        NSLog(@"%s Can't connect to internet", __PRETTY_FUNCTION__);
-        [ParseAPIEngine showNetworkUnavailableAlert];
-        return NULL;
-    }
-         
     NSLog(@"Adding story with attributes %@", attributes);
     
     [Story cleanUpStoryAttributes:attributes];
@@ -73,6 +67,15 @@
         [sceneParams setObject:story.title forKey:SCENE_TEXT];
     if (![story.image isEqual:[NSNull null]] && story.image)
         [sceneParams setObject:story.image forKey:SCENE_IMAGE];
+    if (story.isLocationEnabled) {
+        CLLocationCoordinate2D coord = [story.location coordinate];
+        [sceneParams setObject:[NSNumber numberWithDouble:coord.latitude]
+                       forKey:SCENE_LATITUDE];
+        [sceneParams setObject:[NSNumber numberWithDouble:coord.longitude]
+                       forKey:SCENE_LONGITUDE];
+        [sceneParams setObject:story.geocodedLocation
+                        forKey:SCENE_GEOCODEDLOCATION];
+    }
     
     [Scene createSceneForStory:story attributes:sceneParams afterScene:nil];
     
@@ -99,16 +102,17 @@
     
     [[BNOperationQueue shared] addOperation:operation];
     
+    [StoryDocuments saveStoryToDisk:story];
+
     return story;
 }
 
 + (Story *)createStoryOnDiskWithAttributes:(NSMutableDictionary *)attributes
 {
     Story *story = [[Story alloc] init];
-    NSString *tempId = [[NSProcessInfo processInfo] globallyUniqueString];
+    NSString *tempId = [NSString stringWithFormat:@"temp%@", [[NSProcessInfo processInfo] globallyUniqueString]];
     
     // DISK
-    
     story.storyId = tempId;
     story.initialized = NO;
     
@@ -151,18 +155,18 @@
     story.numberOfContributors = [NSNumber numberWithInt:0];
     story.numberOfLikes = [NSNumber numberWithInt:0];
     story.numberOfViews = [NSNumber numberWithInt:0];
-    
-    [StoryDocuments saveStoryToDisk:story];
-    
+
     return story;
 }
 
-//+ (void)createStoryOnNetworkWithAttributes:(NSMutableDictionary *)attributes forStory:(Story *)story
 + (void) createStoryOnServer:(Story *)story
 {
+    assert(story);
+    NSLog(@"%s story: %@", __PRETTY_FUNCTION__, story);
     NSMutableDictionary *attributes = [story getAttributesInDictionary];
     
     //    PARSE
+    /*
     // Add image for this story
     void (^addImageForStory)(NSString *) = ^(NSString *thisStoryId) {
         if (![[attributes objectForKey:STORY_IMAGE] isEqual:[NSNull null]] && [attributes objectForKey:STORY_IMAGE])
@@ -182,7 +186,7 @@
                      onCompletion:^(MKNetworkOperation *completedOperation) {
                          NSLog(@"Updating story with imageURL %@", imageFile.url);
                      } 
-                     onError:PARSE_ERROR_BLOCK()];
+                     onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
                     
                     [[ParseAPIEngine sharedEngine] enqueueOperation:op];
                 }
@@ -192,7 +196,8 @@
             }];
         }
     };
-
+     */
+    
     void (^sendRequestToContributors)(NSArray *, Story *) = ^(NSArray *contributorsList, Story *story) {
         NSMutableArray *fbIds = [NSMutableArray arrayWithCapacity:1];
         for (NSDictionary *contributor in contributorsList)
@@ -214,9 +219,9 @@
         */
         // send push notifications
         
-        UIRemoteNotificationType types = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
-        if (types == UIRemoteNotificationTypeNone)
-            return;
+//        UIRemoteNotificationType types = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
+//        if (types == UIRemoteNotificationTypeNone)
+//            return;
         
         for (NSString *fbId in fbIds)
         {
@@ -262,8 +267,9 @@
                  [push setData:data];
                  [push sendPushInBackground];
                  [TestFlight passCheckpoint:@"Push notifications sent to contribute to a new story"];
+                 NETWORK_OPERATION_COMPLETE();
              } 
-             onError:PARSE_ERROR_BLOCK()];
+             onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
             [[ParseAPIEngine sharedEngine] enqueueOperation:op];
         }
     };
@@ -279,19 +285,19 @@
          NSLog(@"Got response for creating story %@", [response objectForKey:@"objectId"]);
          NSString *newId = [response objectForKey:@"objectId"];
          [StoryDocuments deleteStoryFromDisk:story];
-         NSMutableDictionary *ht = [BanyanDataSource hashTable];
-         [ht setObject:newId forKey:story.storyId];
+         [[BanyanDataSource hashTable] setObject:newId forKey:story.storyId];
+         [BanyanDataSource archiveHashTable];
          story.storyId = newId;
          
          story.initialized = YES;
          [StoryDocuments saveStoryToDisk:story];
-         addImageForStory(story.storyId);
+         /* addImageForStory(story.storyId); */
          if (story.invitedToContribute)
              sendRequestToContributors(story.invitedToContribute, story);
          
-         DONE_WITH_NETWORK_OPERATION();
+         NETWORK_OPERATION_COMPLETE();
      }
-     onError:PARSE_ERROR_BLOCK()];
+     onError:BN_ERROR_BLOCK_OPERATION_INCOMPLETE()];
 
     [[ParseAPIEngine sharedEngine] enqueueOperation:op];
 }

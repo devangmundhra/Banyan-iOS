@@ -18,6 +18,5 @@
 + (void) resetPermissionsForStories:(NSMutableArray *)stories;
 + (void) resetPermissionsForStory:(Story *)story;
 + (void)loadScenesForStory:(Story *)story;
-+ (User *)getUserForPfUser:(PFUser *)pfUser;
 
 @end

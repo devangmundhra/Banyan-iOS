@@ -14,12 +14,6 @@
 
 + (void) editStory:(Story *)story
 {
-    if (![[ParseAPIEngine sharedEngine] isReachable]) {
-        NSLog(@"%s Can't connect to internet", __PRETTY_FUNCTION__);
-        [ParseAPIEngine showNetworkUnavailableAlert];
-        return;
-    }
-    
      NSLog(@"Edit Story %@", story);
     [[NSNotificationCenter defaultCenter] postNotificationName:STORY_EDIT_STORY_NOTIFICATION
                                                         object:self 
@@ -27,34 +21,30 @@
                                                                                            forKey:@"Story"]];
 
     NSMutableDictionary *storyParams = [NSMutableDictionary dictionaryWithCapacity:1];
-    // Maybe delete the image that was stored previously if another image has
-    // come in
-    PFFile *imageFile = nil;
-    if (story.image)
+    BNOperationDependency *imageDependency = nil;
+    
+    if (story.imageChanged)
     {
-        NSData *imageData = UIImagePNGRepresentation(story.image);
-        imageFile = [PFFile fileWithName:[story.storyId stringByAppendingString:@".png"] data:imageData];
-        [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if (succeeded) {
-                story.imageURL = imageFile.url;
-                
-                MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Story", story.storyId) 
-                                                                                   params:[NSMutableDictionary dictionaryWithObject:imageFile.url 
-                                                                                                                             forKey:STORY_IMAGE_URL] 
-                                                                               httpMethod:@"PUT" 
-                                                                                      ssl:YES];
-                [op
-                 onCompletion:^(MKNetworkOperation *completedOperation) {
-                     NSLog(@"Updating story with imageURL %@", imageFile.url);
-                 } 
-                 onError:PARSE_ERROR_BLOCK()];
-                
-                [[ParseAPIEngine sharedEngine] enqueueOperation:op];
-            }
-            else {
-                NSLog(@"%s Error %@: Can't save image for story", __PRETTY_FUNCTION__, error);
-            }
-        }];
+        story.imageChanged = NO;
+        // Maybe delete the image that was stored previously if another image has
+        // come in
+        
+        if (story.imageURL)
+        {
+            // Upload the image (ie, create a network request for that)
+            BNOperationObject *imgObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeFile
+                                                                               tempId:story.imageURL
+                                                                              storyId:nil];
+            BNOperation *operation = [[BNOperation alloc] initWithObject:imgObj action:BNOperationActionCreate dependencies:nil];
+            ADD_OPERATION_TO_QUEUE(operation);
+            
+            // Create a dependency object
+            imageDependency = [[BNOperationDependency alloc] initWithBNObject:imgObj
+                                                                        field:STORY_IMAGE_URL];
+        } else {
+            // Scene image was deleted
+            [storyParams setObject:[NSNull null] forKey:STORY_IMAGE_URL];
+        }
     }
     
     // Update the story
@@ -74,6 +64,9 @@
     BNOperationObject *obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeStory tempId:story.storyId storyId:story.storyId];
     BNOperation *operation = [[BNOperation alloc] initWithObject:obj action:BNOperationActionEdit dependencies:nil];
     operation.action.context = storyParams;
+    if (imageDependency) {
+        [operation addDependencyObject:imageDependency];
+    }
     ADD_OPERATION_TO_QUEUE(operation);
 
     [StoryDocuments saveStoryToDisk:story];
@@ -89,8 +82,9 @@
      onCompletion:^(MKNetworkOperation *completedOperation) {
          NSDictionary *response = [completedOperation responseJSON];
          NSLog(@"Got response for updating story parameters %@ at %@", storyParams, [response objectForKey:@"updatedAt"]);
+         NETWORK_OPERATION_COMPLETE();
      }
-     onError:PARSE_ERROR_BLOCK()];
+     onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
     
     [[ParseAPIEngine sharedEngine] enqueueOperation:op];
     
@@ -113,9 +107,9 @@
      onCompletion:^(MKNetworkOperation *completedOperation) {
          NSDictionary *response = [completedOperation responseJSON];
          NSLog(@"Got response for updating story attr %@ at %@", attribute, [response objectForKey:@"updatedAt"]);
-         DONE_WITH_NETWORK_OPERATION();
+         NETWORK_OPERATION_COMPLETE();
      } 
-     onError:PARSE_ERROR_BLOCK()];
+     onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
     
     [[ParseAPIEngine sharedEngine] enqueueOperation:op];
 }

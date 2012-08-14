@@ -10,7 +10,7 @@
 
 @interface User ()
 
-#define USER_ID @"objectId"
+#define USER_ID @"userId"
 #define USER_NAME @"name"
 #define USER_FIRSTNAME @"firstName"
 #define USER_LASTNAME @"lastName"
@@ -25,8 +25,8 @@
 #define USER_STORIES_LIKED @"storiesLikes"
 #define USER_SCENES_VIEWED @"scenesViewed"
 #define USER_STORIES_VIEWED @"storiesViewed"
-#define USER_SCENES_FAVOURITES @"scenesFavourites"
-#define USER_STORIES_FAVOURITES @"storiesFavourites"
+#define USER_SCENES_FAVOURITED @"scenesFavourites"
+#define USER_STORIES_FAVOURITED @"storiesFavourites"
 #define USER_FACEBOOK_ID @"facebookId"
 
 @end

@@ -31,6 +31,11 @@
 #define SCENE_VIEWED @"viewed"
 #define SCENE_FAVOURITE @"favourite"
 
+#define SCENE_LATITUDE @"latitude"
+#define SCENE_LONGITUDE @"longitude"
+#define SCENE_LOCATION @"location"
+#define SCENE_GEOCODEDLOCATION @"geocodedLocation"
+
 #define SCENE_IS_INITIALIZED @"sceneInitialized"
 
 @end

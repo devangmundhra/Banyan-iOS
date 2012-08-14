@@ -11,6 +11,15 @@
 #import <Parse/Parse.h>
 #import "ParseAPIEngine.h"
 
+#define DELETE_STORY(__story__) \
+do {\
+BNOperationObject *obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeStory\
+tempId:__story__.storyId\
+storyId:__story__.storyId];\
+BNOperation *op = [[BNOperation alloc] initWithObject:obj action:BNOperationActionDelete dependencies:nil];\
+ADD_OPERATION_TO_QUEUE(op);\
+} while(0)
+
 @interface Story (Delete)
 
 + (void) removeStory:(Story *)story;

@@ -7,8 +7,6 @@
 //
 
 #import "BanyanAppDelegate.h"
-#import "ParseAPIEngine.h"
-#import "BanyanAPIEngine.h"
 
 @implementation BanyanAppDelegate
 
@@ -53,11 +51,6 @@
     userManagementModule = [[UserManagementModule alloc] init];
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
      UIRemoteNotificationTypeAlert];
-    
-    // There seems to be a problem with calling these functions the first time (giving false negatives)
-    // So just call them here as a null function
-    [[ParseAPIEngine sharedEngine] isReachable];
-    [[BanyanAPIEngine sharedEngine] isReachable];
     
     return YES;
 }

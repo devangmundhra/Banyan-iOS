@@ -97,12 +97,12 @@
     
     CGImageRef imageRef = [sourceImage CGImage];
     CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(imageRef);
-    CGColorSpaceRef colorSpaceInfo = CGImageGetColorSpace(imageRef);
     
     if (bitmapInfo == kCGImageAlphaNone) {
         bitmapInfo = kCGImageAlphaNoneSkipLast;
     }
-    
+
+    CGColorSpaceRef colorSpaceInfo = CGImageGetColorSpace(imageRef);
     CGContextRef bitmap;
     
     if (sourceImage.imageOrientation == UIImageOrientationUp || sourceImage.imageOrientation == UIImageOrientationDown) {
@@ -111,7 +111,17 @@
     } else {
         bitmap = CGBitmapContextCreate(NULL, targetHeight, targetWidth, CGImageGetBitsPerComponent(imageRef), CGImageGetBytesPerRow(imageRef), colorSpaceInfo, bitmapInfo);
         
-    }   
+    }
+    
+//    CGContextRef bitmap = CGBitmapContextCreate(
+//                                                NULL,
+//                                                targetWidth,
+//                                                targetHeight,
+//                                                8, /* bits per channel */
+//                                                (targetWidth * 4), /* 4 channels per pixel * numPixels/row */
+//                                                CGColorSpaceCreateDeviceRGB(),
+//                                                kCGImageAlphaPremultipliedLast
+//                                                );
     
     if (sourceImage.imageOrientation == UIImageOrientationLeft) {
         CGContextRotateCTM (bitmap, radians(90));

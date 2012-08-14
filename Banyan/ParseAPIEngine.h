@@ -16,11 +16,10 @@
 #define PARSE_API_OBJECT_URL(__class__, __objectId__) [NSString stringWithFormat:@"classes/%@/%@", __class__, __objectId__]
 #define PARSE_API_USER_URL(__userId__) [NSString stringWithFormat:@"users/%@", __userId__]
 
-#define PARSE_ERROR_BLOCK() ^(NSError *error) {\
-                                NSLog(@"%@\t%@\t%@\t%@", [error localizedDescription], [error localizedFailureReason], \
-                                               [error localizedRecoveryOptions], [error localizedRecoverySuggestion]); \
-                                                DONE_WITH_NETWORK_OPERATION();                                           \
-                                            }
+#define PARSE_ERROR_BLOCK() ^(NSError *error) {                        \
+NSLog(@"%@\t%@\t%@\t%@", [error localizedDescription], [error localizedFailureReason], \
+[error localizedRecoveryOptions], [error localizedRecoverySuggestion]);                \
+}
 
 + (ParseAPIEngine *)sharedEngine;
 - (void)enqueueOperation:(MKNetworkOperation *)request;

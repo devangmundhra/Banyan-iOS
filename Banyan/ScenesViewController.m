@@ -47,7 +47,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated
-{
+{    
     [super viewWillAppear:animated];
     [self setWantsFullScreenLayout:YES];
 }
@@ -173,6 +173,7 @@
         hud.mode = MBProgressHUDModeText;
         hud.labelText = @"End of story";
         hud.detailsLabelText = self.story.title;
+        self.view.gestureRecognizers = nil;
         [self performSelector:@selector(hideHUDAndDone) withObject:self afterDelay:HUD_STAY_DELAY];   
         return nil;
     }
@@ -197,7 +198,8 @@
         hud.mode = MBProgressHUDModeText;
         hud.labelText = @"Beginning of story";
         hud.detailsLabelText = @"Going back to story list";
-        [self performSelector:@selector(hideHUDAndDone) withObject:self afterDelay:HUD_STAY_DELAY];   
+        self.view.gestureRecognizers = nil;
+        [self performSelector:@selector(hideHUDAndDone) withObject:self afterDelay:HUD_STAY_DELAY];
         return nil;
     }
     else {

@@ -32,7 +32,9 @@
 @synthesize searchDisplayController;
 @synthesize searchBar;
 
-- (id) initWithSearchBarAndNavigationControllerForInvitationType:(NSString *)invitationType delegate:(id<InvitedTableViewControllerDelegate>)delegate selectedContacts:(NSArray *)selectedContacts
+- (id) initWithSearchBarAndNavigationControllerForInvitationType:(NSString *)invitationType
+                                                        delegate:(id<InvitedTableViewControllerDelegate>)delegate
+                                                selectedContacts:(NSArray *)selectedContacts
 {
     if ((self = [super init])) {
         
@@ -101,12 +103,11 @@
     if (!_contactIndex)
         _contactIndex = [[NSMutableArray alloc] init];
         
-    for (int i = 0; i < [self.listContacts count]-1; i++)
+    for (NSDictionary *friend in self.listContacts)
     {
         // Get the first character of each name
-        NSDictionary *friend = [self.listContacts objectAtIndex:i];
         char alphabet = [[friend objectForKey:@"name"] characterAtIndex:0];
-        NSString *uniChar = [NSString stringWithFormat:@"%hhd", alphabet];
+        NSString *uniChar = [NSString stringWithFormat:@"%c", alphabet];
         // add each letter to the index array
         if (![_contactIndex containsObject:uniChar])
             [_contactIndex addObject:uniChar];

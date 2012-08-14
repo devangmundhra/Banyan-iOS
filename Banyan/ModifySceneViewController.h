@@ -10,6 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "Scene.h"
 #import "Story.h"
+#import "BNLocationManager.h"
 
 @class  ModifySceneViewController;
 
@@ -32,7 +33,7 @@ typedef enum {add, edit} EditModes;
 @end
 
 @interface ModifySceneViewController : UIViewController <UITextViewDelegate, UINavigationControllerDelegate, 
-    UIImagePickerControllerDelegate, UINavigationBarDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate>
+    UIImagePickerControllerDelegate, UINavigationBarDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate, BNLocationManagerDelegate>
 
 @property (strong, nonatomic) Scene *scene;
 @property (nonatomic) EditModes editMode;

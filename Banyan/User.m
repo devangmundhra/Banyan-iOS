@@ -26,13 +26,71 @@
 @synthesize stories = _stories;
 @synthesize scenesLiked = _scenesLiked;
 @synthesize storiesLiked = _storiesLiked;
-@synthesize scenesFavourites = _scenesFavourites;
-@synthesize storiesFavourites = _storiesFavourites;
+@synthesize scenesFavourited = _scenesFavourited;
+@synthesize storiesFavourited = _storiesFavourited;
 @synthesize scenesViewed = _scenesViewed;
 @synthesize storiesViewed = _storiesViewed;
+@synthesize userId = _userId;
+@synthesize sessionToken = _sessionToken;
 
+static User *_currentUser = nil;
+
++ (User *)currentUser
+{
+    if (!_currentUser) {
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            [User updateCurrentUser];
+        });
+    }
+    return _currentUser;
+}
+
++ (void)updateCurrentUser
+{
+    PFUser *currentUser = [PFUser currentUser];
+    _currentUser = [User getUserForPfUser:currentUser];
+}
+
++ (User *)getUserForPfUser:(PFUser *)pfUser
+{
+    if (!pfUser) {
+        return nil;
+    }
+    
+    User *user = [[User alloc] init];
+    [pfUser fetchIfNeeded];
+    user.userId = pfUser.objectId;
+    user.username = REPLACE_NULL_WITH_NIL([pfUser objectForKey:USER_USERNAME]);
+    user.emailAddress = REPLACE_NULL_WITH_NIL([pfUser objectForKey:USER_EMAIL]);
+    user.firstName = REPLACE_NULL_WITH_NIL([pfUser objectForKey:USER_FIRSTNAME]);
+    user.lastName = REPLACE_NULL_WITH_NIL([pfUser objectForKey:USER_LASTNAME]);
+    user.name = REPLACE_NULL_WITH_NIL([pfUser objectForKey:USER_NAME]);
+    user.scenesViewed = REPLACE_NULL_WITH_EMPTY_ARRAY([pfUser objectForKey:USER_SCENES_VIEWED]);
+    user.scenesLiked = REPLACE_NULL_WITH_EMPTY_ARRAY([pfUser objectForKey:USER_SCENES_LIKED]);
+    user.scenesFavourited = REPLACE_NULL_WITH_EMPTY_ARRAY([pfUser objectForKey:USER_SCENES_FAVOURITED]);
+    user.storiesViewed = REPLACE_NULL_WITH_EMPTY_ARRAY([pfUser objectForKey:USER_STORIES_VIEWED]);
+    user.storiesLiked = REPLACE_NULL_WITH_EMPTY_ARRAY([pfUser objectForKey:USER_STORIES_LIKED]);
+    user.storiesFavourited = REPLACE_NULL_WITH_EMPTY_ARRAY([pfUser objectForKey:USER_STORIES_FAVOURITED]);
+    user.sessionToken = pfUser.sessionToken;
+    return user;
+}
+
++ (User *)userWithId:(NSString *)id
+{
+    if (!id) {
+        return nil;
+    }
+    
+    if ([_currentUser.userId isEqualToString:id]) {
+        return _currentUser;
+    } else {
+        PFUser *pfUser = [PFQuery getUserObjectWithId:id];
+        return [User getUserForPfUser:pfUser];
+    }
+}
 #pragma mark NSCoding
-- (id) initWithUsername:(NSString *)username firstName:(NSString *)firstName lastName:(NSString *)lastName name:(NSString *)name dateCreated:(NSDate *)dateCreated emailAddress:(NSString *)emailAddress facebookKey:(NSString *)facebookKey profilePic:(id)profilePic stories:(NSArray *)stories scenes:(NSArray *)scenes scenesLiked:(NSArray *)scenesLiked storiesLiked:(NSArray *)storiesLiked scenesViewed:(NSArray *)scenesViewed storiesViewed:(NSArray *)storiesViewed scenesFavourites:(NSArray *)scenesFavourites storiesFavourites:(NSArray *)storiesFavourites
+- (id) initWithUsername:(NSString *)username firstName:(NSString *)firstName lastName:(NSString *)lastName name:(NSString *)name dateCreated:(NSDate *)dateCreated emailAddress:(NSString *)emailAddress facebookKey:(NSString *)facebookKey profilePic:(id)profilePic stories:(NSArray *)stories scenes:(NSArray *)scenes scenesLiked:(NSArray *)scenesLiked storiesLiked:(NSArray *)storiesLiked scenesViewed:(NSArray *)scenesViewed storiesViewed:(NSArray *)storiesViewed scenesFavourited:(NSArray *)scenesFavourited storiesFavourited:(NSArray *)storiesFavourited userId:(NSString *)userId
 {
     if ((self = [super init])) {
         _username = username;
@@ -47,8 +105,9 @@
         _storiesLiked = storiesLiked;
         _scenesViewed = scenesViewed;
         _storiesViewed = storiesViewed;
-        _scenesFavourites = scenesFavourites;
-        _storiesFavourites = storiesFavourites;
+        _scenesFavourited = scenesFavourited;
+        _storiesFavourited = storiesFavourited;
+        _userId = userId;
     }
     return self;
 }
@@ -67,10 +126,11 @@
     [aCoder encodeObject:_stories forKey:USER_STORIES];
     [aCoder encodeObject:_scenesLiked forKey:USER_SCENES_LIKED];
     [aCoder encodeObject:_storiesLiked forKey:USER_STORIES_LIKED];
-    [aCoder encodeObject:_scenesFavourites forKey:USER_SCENES_FAVOURITES];
-    [aCoder encodeObject:_storiesFavourites forKey:USER_STORIES_FAVOURITES];
+    [aCoder encodeObject:_scenesFavourited forKey:USER_SCENES_FAVOURITED];
+    [aCoder encodeObject:_storiesFavourited forKey:USER_STORIES_FAVOURITED];
     [aCoder encodeObject:_scenesViewed forKey:USER_SCENES_VIEWED];
     [aCoder encodeObject:_storiesViewed forKey:USER_STORIES_VIEWED];
+    [aCoder encodeObject:_userId forKey:USER_ID];
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder
@@ -89,37 +149,45 @@
     NSArray *storiesLiked = [aDecoder decodeObjectForKey:USER_STORIES_LIKED];
     NSArray *scenesViewed = [aDecoder decodeObjectForKey:USER_SCENES_VIEWED];
     NSArray *storiesViewed = [aDecoder decodeObjectForKey:USER_STORIES_VIEWED];
-    NSArray *scenesFavourites = [aDecoder decodeObjectForKey:USER_SCENES_FAVOURITES];
-    NSArray *storiesFavourites = [aDecoder decodeObjectForKey:USER_STORIES_FAVOURITES];
+    NSArray *scenesFavourited = [aDecoder decodeObjectForKey:USER_SCENES_FAVOURITED];
+    NSArray *storiesFavourited = [aDecoder decodeObjectForKey:USER_STORIES_FAVOURITED];
+    NSString *userId = [aDecoder decodeObjectForKey:USER_ID];
     
-    return [self initWithUsername:username firstName:firstName lastName:lastName name:name dateCreated:dateCreated emailAddress:emailAddress facebookKey:facebookKey profilePic:profilePic stories:stories scenes:scenes scenesLiked:scenesLiked storiesLiked:storiesLiked scenesViewed:scenesViewed storiesViewed:storiesViewed scenesFavourites:scenesFavourites storiesFavourites:storiesFavourites];
+    return [self initWithUsername:username firstName:firstName lastName:lastName name:name dateCreated:dateCreated emailAddress:emailAddress facebookKey:facebookKey profilePic:profilePic stories:stories scenes:scenes scenesLiked:scenesLiked storiesLiked:storiesLiked scenesViewed:scenesViewed storiesViewed:storiesViewed scenesFavourited:scenesFavourited storiesFavourited:storiesFavourited userId:userId];
+}
+
+- (BOOL)initialized
+{
+    // For now, user is always initialized
+    return YES;
 }
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"{User\n name: %@\n}", self.name];
+    return [NSString stringWithFormat:@"{User\n id: %@ name: %@\n}", self.userId, self.name];
 }
 
-////Change so that Users can be compared
-//- (NSUInteger)hash
-//{
-//    return [self.username hash];
-//}
-//
-//- (BOOL)isEqual:(id)other {
-//    if (other == self)
-//        return YES;
-//    if (!other || ![other isKindOfClass:[self class]])
-//        return NO;
-//    return [self isEqualToUser:other];
-//}
-//
-//- (BOOL)isEqualToUser:(User *)user
-//{
-//    if (self == user)
-//        return YES;
-//    if (![self.username isEqualToString:user.username])
-//        return NO;
-//    return YES;
-//}
+//Change so that Users can be compared
+- (NSUInteger)hash
+{
+    return [self.userId hash];
+}
+
+- (BOOL)isEqual:(id)other {
+    if (other == self)
+        return YES;
+    if (!other || ![other isKindOfClass:[self class]])
+        return NO;
+    return [self isEqualToUser:other];
+}
+
+- (BOOL)isEqualToUser:(User *)user
+{
+    if (self == user)
+        return YES;
+    if (![self.userId isEqualToString:user.userId])
+        return NO;
+    return YES;
+}
+
 @end

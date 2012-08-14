@@ -38,9 +38,7 @@
 @property (strong, nonatomic) NSMutableDictionary *storyAttributes;
 @property (nonatomic) BOOL keyboardIsShown;
 
-@property (nonatomic, strong) CLLocationManager *locationManager;
-@property (nonatomic, strong) CLLocation *location;
-@property (nonatomic) BOOL isLocationSet;
+@property (strong, nonatomic) BNLocationManager *locationManager;
 
 @end
 
@@ -73,8 +71,6 @@
 @synthesize locationLabel = _locationLabel;
 @synthesize storyAttributes = _storyAttributes;
 @synthesize locationManager = _locationManager;
-@synthesize location = _location;
-@synthesize isLocationSet = _isLocationSet;
 
 - (NSString *) storyTitle
 {
@@ -85,6 +81,13 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+    
+    self.locationManager = [[BNLocationManager alloc] init];
+    self.locationManager.delegate = self;
+    if (self.showLocationSwitch.on) {
+        [self.locationManager beginUpdatingLocation];
+    }
+    
     self.viewerSegmentedControl.alpha = 0;
     self.inviteViewersButton.alpha = 0;
     self.inviteContributorsButton.alpha = 0;
@@ -97,12 +100,14 @@
     self.invitedToContributeList = [NSMutableArray array];
     self.invitedToViewList = [NSMutableArray array];
     self.storyAttributes = [NSMutableDictionary dictionary];
-    self.locationManager = [[CLLocationManager alloc] init];
     self.scrollView.contentSize = CGSizeMake(self.addStorySubView.frame.size.width, self.addStorySubView.frame.size.height);
 }
 
 - (void)viewDidUnload
 {
+    if (self.showLocationSwitch.on) {
+        [self.locationManager stopUpdatingLocation:self.locationLabel.text];
+    }
     [self setStoryTitle:nil];
     [self setStoryTitleTextField:nil];
     [self setContributorSegmenedControl:nil];
@@ -118,10 +123,10 @@
     [self setContributorInvitationLabel:nil];
     [self setShowLocationSwitch:nil];
     [self setLocationLabel:nil];
-    [self setLocationManager:nil];
     [self setStoryAttributes:nil];
-    [self setLocation:nil];
     [self setScrollView:nil];
+    self.locationManager.delegate = nil;
+    [self setLocationManager:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -130,18 +135,12 @@
 {
     [super viewDidAppear:animated];
     [self registerForKeyboardNotifications];
-    if (self.showLocationSwitch.on) {
-        [self beginUpdatingLocation];
-    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
     [self unregisterForKeyboardNotifications];
-    if (self.showLocationSwitch.on) {
-        [self stopUpdatingLocation:self.locationLabel.text];
-    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -224,24 +223,20 @@
         
     }
 
-    if ([CLLocationManager locationServicesEnabled] == YES && self.showLocationSwitch.on == YES) {
-        if (self.isLocationSet) {
-            CLLocationCoordinate2D coord = [self.location coordinate];
-            [self.storyAttributes setObject:[NSNumber numberWithBool:YES] forKey:STORY_LOCATION_ENABLED];
+    if (self.showLocationSwitch.on == YES) {
+        [self.storyAttributes setObject:[NSNumber numberWithBool:YES] forKey:STORY_LOCATION_ENABLED];
+        if (self.locationManager.location) {
+            
+            CLLocationCoordinate2D coord = [self.locationManager.location coordinate];
+            
             [self.storyAttributes setObject:[NSNumber numberWithDouble:coord.latitude]
                                      forKey:STORY_LATITUDE];
             [self.storyAttributes setObject:[NSNumber numberWithDouble:coord.longitude]
                                      forKey:STORY_LONGITUDE];
-            [self.storyAttributes setObject:self.locationLabel.text forKey:STORY_GEOCODEDLOCATION];
-        } else {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Location Unavailable"
-                                                            message:@"Please wait while location becomes available or switch off \'Show Location with Story\' to proceed."
-                                                           delegate:nil
-                                                  cancelButtonTitle:NSLocalizedString(@"Dismiss", @"")
-                                                  otherButtonTitles:nil];
-            [alert show];
-            return;
+            [self.storyAttributes setObject:REPLACE_NIL_WITH_NULL(self.locationManager.locationString) forKey:STORY_GEOCODEDLOCATION];
         }
+    } else  {
+        [self.storyAttributes setObject:[NSNumber numberWithBool:NO] forKey:STORY_LOCATION_ENABLED];
     }
     
     Story *story = [Story createStoryWithAttributes:self.storyAttributes];
@@ -274,6 +269,22 @@
     } else {
         self.inviteViewersButton.alpha = 0;
     }
+}
+
+# pragma mark location settings
+- (IBAction)showLocationSwitchToggled:(UISwitch *)sender
+{
+    if (self.showLocationSwitch.on) {
+        [self.locationManager beginUpdatingLocation];
+    } else {
+        [self.locationManager stopUpdatingLocation:nil];
+    }
+}
+
+# pragma mark BNLocationManagerDelegate
+- (void) locationUpdated
+{   
+    self.locationLabel.text = self.locationManager.locationStatus;
 }
 
 # pragma mark - Keyboard notifications
@@ -321,7 +332,7 @@
     self.keyboardIsShown = YES; 
 }
 
-// Called when the UIKeyboardWillHideNotification is sent
+// Called when the UIKeyboardWillBeHidden is sent
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification
 {
     if(!self.keyboardIsShown)
@@ -352,106 +363,6 @@
     return YES;
 }
 
-# pragma mark CLLocationManagerDelegate
-/*
- * We want to get and store a location measurement that meets the desired accuracy. For this example, we are
- *      going to use horizontal accuracy as the deciding factor. In other cases, you may wish to use vertical
- *      accuracy, or both together.
- */
-- (void)locationManager:(CLLocationManager *)manager 
-    didUpdateToLocation:(CLLocation *)newLocation 
-           fromLocation:(CLLocation *)oldLocation 
-{
-    // test the age of the location measurement to determine if the measurement is cached
-    // in most cases you will not want to rely on cached measurements
-    NSTimeInterval locationAge = -[newLocation.timestamp timeIntervalSinceNow];
-    if (locationAge > 5.0) return;
-    // test that the horizontal accuracy does not indicate an invalid measurement
-    if (newLocation.horizontalAccuracy < 0) return;
-    // test the measurement to see if it is more accurate than the previous measurement
-    if (self.location == nil || self.location.horizontalAccuracy > newLocation.horizontalAccuracy) {
-        // store the location as the "best effort"
-        self.location = newLocation;
-        
-        CLGeocoder *geocoder = [[CLGeocoder alloc] init];
-        [geocoder reverseGeocodeLocation:self.location completionHandler:^(NSArray *placemarks, NSError *error) {
-            if (error) {
-                NSLog(@"%s Error in geocoding location data. Error %@", __PRETTY_FUNCTION__, error);
-                [self beginUpdatingLocation];
-            } else {
-                if(placemarks && placemarks.count > 0)
-                {
-                    //do something   
-                    CLPlacemark *topResult = [placemarks objectAtIndex:0];
-                    NSString *addressTxt = [NSString stringWithFormat:@"at %@, %@ %@", 
-                                            [topResult thoroughfare],
-                                            [topResult locality], [topResult administrativeArea]];
-                    NSLog(@"%@",addressTxt);
-                    self.isLocationSet = YES;
-                    self.locationLabel.text = addressTxt;
-                    
-                    [TestFlight passCheckpoint:@"Got story location"];
-                }
-            }
-        }];
-        
-        // test the measurement to see if it meets the desired accuracy
-        if (newLocation.horizontalAccuracy <= self.locationManager.desiredAccuracy) {
-            [self stopUpdatingLocation:self.locationLabel.text];
-        }
-    }
-}
-
-- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
-    // The location "unknown" error simply means the manager is currently unable to get the location.
-    // We can ignore this error for the scenario of getting a single location fix, because we already have a 
-    // timeout that will stop the location manager to save power.
-    if ([error code] != kCLErrorLocationUnknown) {
-        switch ([error code]) {
-            case kCLErrorDenied:
-                [self stopUpdatingLocation:NSLocalizedString(@"Location Services Disabled by User", @"Location Services Disabled by User")];
-                break;
-            case kCLErrorNetwork:
-                [self stopUpdatingLocation:NSLocalizedString(@"Network Unavailable", @"Network Unavailable")];
-                break;
-            default:
-                [self stopUpdatingLocation:NSLocalizedString(@"Error finding location", @"Error finding location")];
-                break;
-        }
-    }
-}
-
-# pragma mark location settings
-- (IBAction)showLocationSwitchToggled:(UISwitch *)sender 
-{
-    if (self.showLocationSwitch.on) {
-        [self beginUpdatingLocation];
-    } else {
-        [self stopUpdatingLocation:nil];
-        self.isLocationSet = NO;
-        self.location = nil;
-    }
-}
-
-- (void)beginUpdatingLocation
-{
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(stopUpdatingLocation:) object:nil];
-    self.locationManager.delegate = self;
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
-    [self.locationManager startUpdatingLocation];
-    if (!self.isLocationSet) {
-//        [self performSelector:@selector(stopUpdatingLocation:) withObject:@"Timed Out" afterDelay:kFindLocationTimeOut];
-        self.locationLabel.text = @"Finding location...";
-    }
-}
-
-- (void)stopUpdatingLocation:(NSString *)state 
-{
-//    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(stopUpdatingLocation:) object:@"Timed Out"];
-    self.locationLabel.text = state;
-    [self.locationManager stopUpdatingLocation];
-    self.locationManager.delegate = nil;
-}
 
 # pragma mark segues
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender

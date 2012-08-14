@@ -9,38 +9,40 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 
-#define REPLACE_NULL_FOR_NIL(__value__) __value__ ? __value__ : [NSNull null]
-
 @class Scene, User;
 
 @interface Story : NSObject <NSCoding>
 
 @property (assign) BOOL canContribute;
 @property (assign) BOOL canView;
-@property (strong) id image;
-@property (strong) NSArray *invitedToContribute;
-@property (strong) NSArray *invitedToView;
-@property (strong) NSNumber * lengthOfStory;
+@property (strong, nonatomic) id image;
+@property (strong, nonatomic) NSArray *invitedToContribute;
+@property (strong, nonatomic) NSArray *invitedToView;
+@property (strong, nonatomic) NSNumber * lengthOfStory;
 @property (assign) BOOL publicContributors;
 @property (assign) BOOL publicViewers;
-@property (strong) NSString * storyId;
-@property (strong) NSString * title;
-@property (strong) NSString * imageURL;
-@property (strong) NSArray *contributors;
-@property (strong) Scene *startingScene; // because a strong pointer is already declared for scenes
-@property (strong) NSArray *scenes;
-@property (strong) NSDate * dateCreated;
-@property (strong) NSDate * dateModified;
-@property (strong) NSNumber * numberOfContributors;
-@property (strong) NSNumber * numberOfLikes;
-@property (strong) NSNumber * numberOfViews;
-@property (strong) CLLocation *location;
-@property (strong) NSString *geocodedLocation;
+@property (strong, nonatomic) NSString * storyId;
+@property (strong, nonatomic) NSString * title;
+@property (strong, nonatomic) NSString * imageURL;
+@property (strong, nonatomic) NSArray *contributors;
+@property (strong, nonatomic) Scene *startingScene;
+@property (strong, nonatomic) NSArray *scenes;
+@property (strong, nonatomic) NSDate * dateCreated;
+@property (strong, nonatomic) NSDate * dateModified;
+@property (strong, nonatomic) NSNumber * numberOfContributors;
+@property (strong, nonatomic) NSNumber * numberOfLikes;
+@property (strong, nonatomic) NSNumber * numberOfViews;
+@property (strong, nonatomic) CLLocation *location;
+@property (strong, nonatomic) NSString *geocodedLocation;
 @property BOOL isLocationEnabled;
 @property BOOL liked;
 @property BOOL favourite;
 @property BOOL viewed;
 @property BOOL initialized;
+
+// Session variables. No need to archive
+@property BOOL imageChanged;
+@property BOOL storyBeingRead;
 
 - (NSString *)description;
 - (NSMutableDictionary *)getAttributesInDictionary;

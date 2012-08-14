@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreLocation/CoreLocation.h>
 
 @class Scene, Story, User;
 
@@ -29,7 +30,12 @@
 @property BOOL liked;
 @property BOOL favourite;
 @property BOOL viewed;
+@property (strong, nonatomic) CLLocation *location;
+@property (strong, nonatomic) NSString *geocodedLocation;
 @property BOOL initialized;
+
+// Session variables. No need to archive
+@property BOOL imageChanged;
 
 - (NSString *)description;
 - (NSMutableDictionary *)getAttributesInDictionary;

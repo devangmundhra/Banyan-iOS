@@ -7,6 +7,8 @@
 //
 
 #import "MKNetworkEngine.h"
+#import "BanyanAppDelegate.h"
+#import "BNOperationQueue.h"
 
 @interface BanyanAPIEngine : MKNetworkEngine
 

@@ -13,54 +13,63 @@
 #import "StoryDocuments.h"
 #import "Scene+Stats.h"
 #import "Story+Stats.h"
+#import "ParseAPIEngine.h"
 
 @implementation ParseConnection
 
 + (void)loadStoriesFromParseWithBlock:(void (^)(NSMutableArray *stories))successBlock onCompletion:(void (^)())completionBlock
 {
 #define QUERY_LIMIT 10
-    PFQuery *query = [PFQuery queryWithClassName:@"Story"];
-    query.limit = QUERY_LIMIT;
-    [query orderByDescending:@"updatedAt"];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *storyArray, NSError *error) {
-        dispatch_queue_t postFetchQueue = dispatch_queue_create("parse completion queue", NULL);
-        dispatch_async(postFetchQueue, ^ {
-            if (!error) {
-                Story *story = nil;
-                NSMutableArray *pStories = [[NSMutableArray alloc] initWithCapacity:QUERY_LIMIT];
-//                [StoryDocuments deleteStoriesFromDisk];
-                
-                for (PFObject *pfStory in storyArray)
-                {
-                    story = [[Story alloc] init];
-                    [ParseConnection fillStory:story withPfStory:pfStory];
-                    if (story.canView || story.canContribute) {
-                        [pStories addObject:story];
-                        [StoryDocuments saveStoryToDisk:story];
+    // If there is no internet connection, load stories from the disk
+    if (![[ParseAPIEngine sharedEngine] isReachable]) {
+        NSMutableArray *dStories = [StoryDocuments loadStoriesFromDisk];
+        successBlock(dStories);
+        completionBlock();
+    }
+    else {
+        // else
+        if ([[BNOperationQueue shared] operationCount] == 0)
+            [StoryDocuments deleteStoriesFromDisk];
+        PFQuery *query = [PFQuery queryWithClassName:@"Story"];
+        query.limit = QUERY_LIMIT;
+        [query orderByDescending:@"updatedAt"];
+        [query findObjectsInBackgroundWithBlock:^(NSArray *storyArray, NSError *error) {
+            dispatch_queue_t postFetchQueue = dispatch_queue_create("parse completion queue", NULL);
+            dispatch_async(postFetchQueue, ^ {
+                if (!error) {
+                    Story *story = nil;
+                    NSMutableArray *pStories = [[NSMutableArray alloc] initWithCapacity:QUERY_LIMIT];                    
+                    for (PFObject *pfStory in storyArray)
+                    {
+                        story = [[Story alloc] init];
+                        [ParseConnection fillStory:story withPfStory:pfStory];
+                        if (story.canView || story.canContribute) {
+                            [pStories addObject:story];
+                        }
                     }
+                    successBlock(pStories);
+                } else {
+                    NSLog(@"Error %@ in loading stories in Parse", error);
                 }
-                successBlock(pStories);
-            } else {
-                NSLog(@"Error %@ in loading stories in Parse", error);
-            }
-            completionBlock();
-        });
-        dispatch_release(postFetchQueue);
-    }];
+                completionBlock();
+            });
+            dispatch_release(postFetchQueue);
+        }];
+    }
 }
 
 + (void)fillStory:(Story *)story withPfStory:(PFObject *)pfStory
 {
     // Fill in the story detials
-    story.title = [pfStory objectForKey:STORY_TITLE];
-    story.publicViewers = [[pfStory objectForKey:STORY_PUBLIC_VIEWERS] boolValue];
-    story.publicContributors = [[pfStory objectForKey:STORY_PUBLIC_CONTRIBUTORS] boolValue];
+    story.title = REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_TITLE]);
+    story.publicViewers = [REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_PUBLIC_VIEWERS]) boolValue];
+    story.publicContributors = [REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_PUBLIC_CONTRIBUTORS]) boolValue];
     story.storyId = [pfStory objectId];
-    story.lengthOfStory = [pfStory objectForKey:STORY_LENGTH];
+    story.lengthOfStory = REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_LENGTH]);
     
-    story.numberOfLikes = [pfStory objectForKey:STORY_NUM_LIKES];
-    story.numberOfContributors = [pfStory objectForKey:STORY_NUM_CONTRIBUTORS];
-    story.numberOfViews = [pfStory objectForKey:STORY_NUM_VIEWS];
+    story.numberOfLikes = REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_NUM_LIKES]);
+    story.numberOfContributors = REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_NUM_CONTRIBUTORS]);
+    story.numberOfViews = REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_NUM_VIEWS]);
     story.dateCreated = pfStory.createdAt;
     story.dateModified = pfStory.updatedAt;
     
@@ -69,35 +78,39 @@
     story.viewed = [Story isStoryViewed:pfStory];
     Scene *scene = [[Scene alloc] init];
     story.startingScene = scene;
-    story.startingScene.sceneId = [pfStory objectForKey:STORY_STARTING_SCENE];
+    story.startingScene.sceneId = REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_STARTING_SCENE]);
     
     if ([[pfStory objectForKey:STORY_LOCATION_ENABLED] isEqualToNumber:[NSNumber numberWithBool:YES]])
     {
         story.isLocationEnabled = YES;
-        double latitude = [[pfStory objectForKey:STORY_LATITUDE] doubleValue];
-        double longitude = [[pfStory objectForKey:STORY_LONGITUDE] doubleValue];
+        double latitude = [REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_LATITUDE]) doubleValue];
+        double longitude = [REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_LONGITUDE]) doubleValue];
         story.location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
-        story.geocodedLocation = [pfStory objectForKey:STORY_GEOCODEDLOCATION];
+        story.geocodedLocation = REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_GEOCODEDLOCATION]);
     } else 
     {
         story.isLocationEnabled = NO;
     }
     story.initialized = YES;
 
-    if (![[pfStory objectForKey:SCENE_IMAGE_URL] isEqual:[NSNull null]])
-        story.imageURL = [pfStory objectForKey:STORY_IMAGE_URL];
+    story.imageURL = REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_IMAGE_URL]);
     
     [ParseConnection resetPermission:story forPfStory:pfStory];
 }
 
 + (void)loadScenesForStory:(Story *)story
 {
+    if (![[ParseAPIEngine sharedEngine] isReachable]) {
+        NSLog(@"%s No internet connection to load scenes for story: %@", __PRETTY_FUNCTION__, story.storyId);
+        return;
+    }
     PFQuery *query = [PFQuery queryWithClassName:@"Scene"];
     PFObject *pfScene = [query getObjectWithId:story.startingScene.sceneId];
     if (pfScene) {
         NSMutableArray *sceneArray = [[NSMutableArray alloc] initWithCapacity:[story.lengthOfStory unsignedIntValue]];
         [ParseConnection fillScene:story.startingScene withPfScene:pfScene forStory:story inArray:sceneArray];
         story.scenes = [sceneArray mutableCopy];
+        [StoryDocuments saveStoryToDisk:story];
     } else {
         NSLog(@"%s Could not find a starting scene for story %@!!\n", __PRETTY_FUNCTION__, story);
     }
@@ -108,28 +121,33 @@
          forStory:(Story *)story 
           inArray:(NSMutableArray *)sceneArray;
 {
-    scene.text = [pfScene objectForKey:SCENE_TEXT];
+    scene.text = REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_TEXT]);
     scene.sceneId = [pfScene objectId];
-    scene.sceneNumberInStory = [pfScene objectForKey:SCENE_NUMBER];
+    scene.sceneNumberInStory = REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_NUMBER]);
     scene.story = story;
-    scene.author = [ParseConnection getUserForPfUser:[PFQuery getUserObjectWithId:[pfScene objectForKey:SCENE_AUTHOR]]];
-    scene.numberOfLikes = [pfScene objectForKey:SCENE_NUM_LIKES];
-    scene.numberOfContributors = [pfScene objectForKey:SCENE_NUM_CONTRIBUTORS];
-    scene.numberOfViews = [pfScene objectForKey:SCENE_NUM_VIEWS];
+    scene.author = [User getUserForPfUser:[PFQuery getUserObjectWithId:REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_AUTHOR])]];
+    scene.numberOfLikes = REPLACE_NULL_WITH_ZERO([pfScene objectForKey:SCENE_NUM_LIKES]);
+    scene.numberOfContributors = REPLACE_NULL_WITH_ZERO([pfScene objectForKey:SCENE_NUM_CONTRIBUTORS]);
+    scene.numberOfViews = REPLACE_NULL_WITH_ZERO([pfScene objectForKey:SCENE_NUM_VIEWS]);
     scene.dateCreated = pfScene.createdAt;
     scene.dateModified = pfScene.updatedAt;
     scene.liked = [Scene isSceneLiked:pfScene];
     scene.favourite = [Scene isSceneFavourited:pfScene];
     scene.viewed = [Scene isSceneViewed:pfScene];
     scene.initialized = YES;
+    if (story.isLocationEnabled) {
+        double latitude = [REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_LATITUDE]) doubleValue];
+        double longitude = [REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_LONGITUDE]) doubleValue];
+        scene.location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+        scene.geocodedLocation = REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_GEOCODEDLOCATION]);
+    }
     
-    if (![[pfScene objectForKey:SCENE_IMAGE_URL] isEqual:[NSNull null]])
-        scene.imageURL = [pfScene objectForKey:SCENE_IMAGE_URL];
+    scene.imageURL = REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_IMAGE_URL]);
     
     PFQuery *query = [PFQuery queryWithClassName:@"Scene"];
-    NSString *pfPreviousSceneId = [pfScene objectForKey:SCENE_PREVIOUSSCENE];
+    NSString *pfPreviousSceneId = REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_PREVIOUSSCENE]);
     Scene *previousScene = nil;
-    if (!scene.previousScene && ![pfPreviousSceneId isEqual:[NSNull null]])
+    if (!scene.previousScene && pfPreviousSceneId)
     {
         PFObject *pfPreviousScene = [[query getObjectWithId:pfPreviousSceneId] fetchIfNeeded];
         previousScene = [[Scene alloc] init];
@@ -143,8 +161,8 @@
     }
     
     Scene *nextScene = nil;
-    NSString *pfNextSceneId = [pfScene objectForKey:SCENE_NEXTSCENE];
-    if (!scene.nextScene && ![pfNextSceneId isEqual:[NSNull null]])
+    NSString *pfNextSceneId = REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_NEXTSCENE]);
+    if (!scene.nextScene && pfNextSceneId)
     {
         PFObject *pfNextScene = [[query getObjectWithId:pfNextSceneId] fetchIfNeeded];
         nextScene = [[Scene alloc] init];
@@ -202,8 +220,8 @@
             story.canContribute = YES;
         } else 
         { // Invited contributors
-            NSArray *contributorsList = [pfStory objectForKey:STORY_INVITED_TO_CONTRIBUTE];
-            story.invitedToContribute = [contributorsList copy];
+            NSArray *contributorsList = REPLACE_NULL_WITH_EMPTY_ARRAY([pfStory objectForKey:STORY_INVITED_TO_CONTRIBUTE]);
+            story.invitedToContribute = contributorsList;
             NSDictionary *myAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
                                           [userInfo objectForKey:@"name"], 
                                           @"name", 
@@ -226,10 +244,10 @@
             story.canView = YES;
         } else 
         { // Invited viewers
-            NSMutableArray *allAudience = [NSMutableArray arrayWithArray:[pfStory objectForKey:STORY_INVITED_TO_VIEW]];
-            [allAudience addObjectsFromArray:[pfStory objectForKey:STORY_INVITED_TO_CONTRIBUTE]];
+            NSMutableArray *allAudience = [NSMutableArray arrayWithArray:REPLACE_NULL_WITH_EMPTY_ARRAY([pfStory objectForKey:STORY_INVITED_TO_VIEW])];
+            [allAudience addObjectsFromArray:REPLACE_NULL_WITH_EMPTY_ARRAY([pfStory objectForKey:STORY_INVITED_TO_CONTRIBUTE])];
             NSArray *viewersList = [allAudience copy];
-            story.invitedToView = [viewersList copy];
+            story.invitedToView = viewersList;
             NSDictionary *myAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
                                           [userInfo objectForKey:@"name"], 
                                           @"name", 
@@ -256,14 +274,4 @@
     }
 }
 
-+ (User *)getUserForPfUser:(PFUser *)pfUser
-{
-    User *user = [[User alloc] init];
-    user.username = [pfUser objectForKey:USER_USERNAME];
-    user.emailAddress = [pfUser objectForKey:USER_EMAIL];
-    user.firstName = [pfUser objectForKey:USER_FIRSTNAME];
-    user.lastName = [pfUser objectForKey:USER_LASTNAME];
-    user.name = [pfUser objectForKey:USER_NAME];
-    return user;
-}
 @end

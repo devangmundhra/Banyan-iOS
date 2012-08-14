@@ -94,12 +94,14 @@
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationBeginsFromCurrentState:YES];
     [UIView setAnimationDuration:0.4];
+    [UIView setAnimationDelay:0.09];
     CGRect statusRect = [[UIApplication sharedApplication] statusBarFrame];
     CGRect viewRect = loginTabbarViewController.view.frame;
     loginTabbarViewController.view.frame = CGRectMake(0, 0 - viewRect.size.height + statusRect.size.height, 
                                                       viewRect.size.width, viewRect.size.height);
     loginTabbarViewController.view.alpha = 0;
     [UIView commitAnimations];
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
     [self.owningViewController presentViewController:userLoginViewController animated:YES completion:nil];
 }
 
@@ -110,7 +112,8 @@
     [defaults synchronize];
     [PFPush unsubscribeFromChannelInBackground:[[PFUser currentUser] objectId]];
     [PFUser logOut];
-    [[NSNotificationCenter defaultCenter] postNotificationName:USER_MANAGEMENT_MODULE_USER_LOGOUT_NOTIFICATION 
+    [User updateCurrentUser];
+    [[NSNotificationCenter defaultCenter] postNotificationName:USER_MANAGEMENT_MODULE_USER_LOGOUT_NOTIFICATION
                                                         object:self];
     return;
 }
@@ -123,6 +126,7 @@
     NSLog(@"Getting user info");
     [self getUserInfo:self];
     [PFPush subscribeToChannelInBackground:[[PFUser currentUser] objectId]];
+    [User updateCurrentUser];
     // View refreshed after login notification sent    
 }
 
@@ -137,7 +141,8 @@
                                                       viewRect.size.width, viewRect.size.height);
     loginTabbarViewController.view.alpha = 1;
     [UIView commitAnimations];
-    
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+
     [self.owningViewController.presentedViewController dismissViewControllerAnimated:YES completion:nil];
 }
 

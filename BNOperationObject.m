@@ -56,15 +56,27 @@
             
         case BNOperationObjectTypeStory:
             object = [BanyanDataSource lookForStoryId:self.tempId];
+            break;
+            
+        case BNOperationObjectTypeFile:
+            object = [[File alloc] initWithUrl:self.tempId];
+            break;
+            
+        case BNOperationObjectTypeUser:
+            object = [User userWithId:self.tempId];
+            break;
             
         default:
             break;
     }
-    
+
     if ([object respondsToSelector:@selector(initialized)]) {
-        return [object initialized];
+        BOOL isInit = [object initialized];
+        NSLog(@"%s self: %@\n object: %@\n initialized: %d ", __PRETTY_FUNCTION__, self, object, isInit);
+        return isInit;
     }
     else {
+        NSLog(@"%s self: %@\n object (unid): %@\n initialized: 0 ", __PRETTY_FUNCTION__, self, object);
         return NO;
     }
 }
@@ -93,9 +105,33 @@
     return YES;
 }
 
--(NSString *)description
+- (NSString *)description
 {
-    return [NSString stringWithFormat:@"Id: %@\n Type: %@", self.tempId, self.type == 1 ? @"Scene" : @"Story"];
+    return [NSString stringWithFormat:@"Id: %@\n Type: %@", self.tempId, [self typeString]];
 }
 
+- (NSString *)typeString
+{
+    switch (self.type) {
+        case BNOperationObjectTypeScene:
+            return @"Scene";
+            break;
+            
+        case BNOperationObjectTypeStory:
+            return @"Story";
+            break;
+            
+        case BNOperationObjectTypeUser:
+            return @"User";
+            break;
+            
+        case BNOperationObjectTypeFile:
+            return @"File";
+            break;
+            
+        default:
+            return @"Unknown type";
+            break;
+    }
+}
 @end

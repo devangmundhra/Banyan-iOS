@@ -40,9 +40,9 @@
     return delegate.userManagementModule;
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     self.navigationController.navigationBar.translucent = NO;
     self.navigationController.navigationBarHidden = NO;
     self.navigationController.toolbarHidden = YES;
@@ -113,12 +113,6 @@
                                              selector:@selector(changeInStoryList:) 
                                                  name:STORY_EDIT_STORY_NOTIFICATION
                                                object:nil];
-    
-    if (!self.dataSource) {
-        // Get data from Parse and store it in Documents and StoryList
-        // This is so that the user is not left waiting while stories are loaded from the network
-        self.dataSource = [StoryDocuments loadStoriesFromDisk];
-    }
 
     [self refreshView];
     
@@ -188,11 +182,27 @@
     
     cell.storyTitleLabel.text = story.title;
     cell.storyTitleLabel.font = [UIFont fontWithName:STORY_FONT size:20];
+    
     // So that the cell does not show any image from before
+    [cell.storyImageView cancelImageRequestOperation];
     cell.storyImageView.image = nil;
-    [cell.storyImageView setImageWithURL:[NSURL URLWithString:story.imageURL] placeholderImage:story.image];
-//    [cell.storyImageView setPathToNetworkImage:story.imageURL contentMode:UIViewContentModeScaleAspectFill];
-    if (story.isLocationEnabled) {
+    if (story.imageURL && [story.imageURL rangeOfString:@"asset"].location == NSNotFound) {
+        [cell.storyImageView setImageWithURL:[NSURL URLWithString:story.imageURL] placeholderImage:story.image];
+    } else if (story.imageURL){
+        ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
+        [library assetForURL:[NSURL URLWithString:story.imageURL] resultBlock:^(ALAsset *asset) {
+            ALAssetRepresentation *rep = [asset defaultRepresentation];
+            CGImageRef imageRef = [rep fullScreenImage];
+            UIImage *image = [UIImage imageWithCGImage:imageRef];
+            [cell.storyImageView setImage:image];
+        }
+                failureBlock:^(NSError *error) {
+                    NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
+                }
+         ];
+    }
+
+    if (story.isLocationEnabled && ![story.geocodedLocation isEqual:[NSNull null]]) {
         // add the location information about the cells
         cell.storyLocationLabel.text = story.geocodedLocation;
     }
@@ -202,19 +212,32 @@
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     Story *story = [self.dataSource objectAtIndex:indexPath.row];
+    story.storyBeingRead = TRUE;
+    UIAlertView *networkUnavailableAlert = [[UIAlertView alloc] initWithTitle:@"Network unavailable"
+                                                                      message:@"We are unable to access the network and so can't load the story"
+                                                                     delegate:nil
+                                                            cancelButtonTitle:@"OK"
+                                                            otherButtonTitles:nil];
     if (!story.scenes)
-    {
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        hud.labelText = @"Loading";
-        hud.detailsLabelText = story.title;
-
-        NSLog(@"Loading story scenes");
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
-        [ParseConnection loadScenesForStory:story];
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
+    {        
+        Story *alreadyExistingStory = [StoryDocuments loadStoryFromDisk:story.storyId];
+        if (alreadyExistingStory) {
+            story.scenes = [NSArray arrayWithArray:story.scenes];
+            [NSThread detachNewThreadSelector:@selector(loadScenesForStory:) toTarget:[ParseConnection class] withObject:story];
+        } else {
+            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            hud.labelText = @"Loading";
+            hud.detailsLabelText = story.title;
+            NSLog(@"Loading story scenes");
+            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+            [ParseConnection loadScenesForStory:story];
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+        }
+        
     }
-    else {
-        NSLog(@"Story scenes already loaded");
+    if (!story.scenes || [story.scenes count] == 0) {
+        [networkUnavailableAlert show];
+        return nil;
     }
     return indexPath;
 }
@@ -249,7 +272,10 @@
     } 
                                       onCompletion:^{
                                           dispatch_async(dispatch_get_main_queue(), ^{
-                                              [_pull finishedLoading];  
+                                              [_pull finishedLoading];
+                                              if ([[ParseAPIEngine sharedEngine] isReachable] && [[BanyanAPIEngine sharedEngine] isReachable]) {
+                                                  [[BNOperationQueue shared] setSuspended:NO];
+                                              }
                                           });
                                       }];
 }
@@ -345,6 +371,7 @@
 - (void)scenesViewContollerDone:(ScenesViewController *)scenesViewController
 {
     [self.navigationController popViewControllerAnimated:YES];
+    scenesViewController.story.storyBeingRead = NO;
     [self refreshView];
 }
 
@@ -385,11 +412,12 @@
 #pragma Memory Management
 - (void)didReceiveMemoryWarning
 {
-    [self.tableView removeObserver:_pull forKeyPath:@"contentOffset"];
-    
     // Release all the scene information from the stories. This can be added later
     for (Story *story in self.dataSource) {
-        story.scenes = nil;
+        if (!story.storyBeingRead) {
+            story.scenes = nil;
+            NSLog(@"Scenes for story %@ are nulled", story.storyId);
+        }
     }
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];

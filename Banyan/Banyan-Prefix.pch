@@ -16,3 +16,8 @@
 #endif
 
 #define NSLog TFLog
+
+#define REPLACE_NIL_WITH_NULL(__value__) (__value__ ? __value__ : [NSNull null])
+#define REPLACE_NULL_WITH_NIL(__value__) ([__value__ isEqual:[NSNull null]] ? nil : __value__)
+#define REPLACE_NULL_WITH_ZERO(__value__) ([__value__ isEqual:[NSNull null]] ? [NSNumber numberWithInt:0] : __value__)
+#define REPLACE_NULL_WITH_EMPTY_ARRAY(__value__) ([__value__ isEqual:[NSNull null]] ? [NSArray array] : __value__)

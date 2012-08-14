@@ -15,39 +15,31 @@
 
 + (void) editScene:(Scene *)scene
 {
-    if (![[ParseAPIEngine sharedEngine] isReachable]) {
-        NSLog(@"%s Can't connect to internet", __PRETTY_FUNCTION__);
-        [ParseAPIEngine showNetworkUnavailableAlert];
-        return;
-    }
-    
     NSMutableDictionary *sceneParams = [NSMutableDictionary dictionaryWithCapacity:1];
+    BNOperationDependency *imageDependency = nil;
     
-    PFFile *imageFile = nil;
-    if (scene.image)
+    if (scene.imageChanged)
     {
+        scene.imageChanged = NO;
         // Maybe delete the image that was stored previously if another image has
         // come in
-        NSData *imageData = UIImagePNGRepresentation(scene.image);
-        imageFile= [PFFile fileWithName:[scene.sceneId stringByAppendingString:@".png"] data:imageData];
-        [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if (succeeded) {
-                scene.imageURL = imageFile.url;
-                NSMutableDictionary *imageURLParam = [NSMutableDictionary dictionaryWithObject:imageFile.url 
-                                                                                        forKey:SCENE_IMAGE_URL];
-                MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Scene", scene.sceneId) 
-                                                                                   params:imageURLParam
-                                                                               httpMethod:@"PUT" 
-                                                                                      ssl:YES];
-                [op onCompletion:^(MKNetworkOperation *completedOperation) {
-                    NSLog(@"Updating scene with imageURL %@", imageFile.url);
-                }  
-                         onError:PARSE_ERROR_BLOCK()];
-                [[ParseAPIEngine sharedEngine] enqueueOperation:op];
-            }
-            else
-                NSLog(@"%s Error %@: Can't save image for scene", __PRETTY_FUNCTION__, error);
-        }];
+        
+        if (scene.imageURL)
+        {
+            // Upload the image (ie, create a network request for that)
+            BNOperationObject *imgObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeFile
+                                                                               tempId:scene.imageURL
+                                                                              storyId:nil];
+            BNOperation *imgOperation = [[BNOperation alloc] initWithObject:imgObj action:BNOperationActionCreate dependencies:nil];
+            ADD_OPERATION_TO_QUEUE(imgOperation);
+            
+            // Create a dependency object
+            imageDependency = [[BNOperationDependency alloc] initWithBNObject:imgObj
+                                                                        field:SCENE_IMAGE_URL];
+        } else {
+            // Scene image was deleted
+            [sceneParams setObject:[NSNull null] forKey:SCENE_IMAGE_URL];
+        }
     }
     
     // Update scene
@@ -56,6 +48,9 @@
     BNOperationObject *obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeScene tempId:scene.sceneId storyId:scene.story.storyId];
     BNOperation *operation = [[BNOperation alloc] initWithObject:obj action:BNOperationActionEdit dependencies:nil];
     operation.action.context = sceneParams;
+    if (imageDependency) {
+        [operation addDependencyObject:imageDependency];
+    }
     ADD_OPERATION_TO_QUEUE(operation);
 
     [StoryDocuments saveStoryToDisk:scene.story];
@@ -72,9 +67,9 @@
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
         NSDictionary *response = [completedOperation responseJSON];
         NSLog(@"Got response for updating scene parameters %@ at %@", sceneParams, [response objectForKey:@"updatedAt"]);
-        DONE_WITH_NETWORK_OPERATION();        
+        NETWORK_OPERATION_COMPLETE();
     }  
-             onError:PARSE_ERROR_BLOCK()];
+             onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
     [[ParseAPIEngine sharedEngine] enqueueOperation:op];
     
     [StoryDocuments saveStoryToDisk:scene.story];
@@ -98,9 +93,9 @@
      onCompletion:^(MKNetworkOperation *completedOperation) {
          NSDictionary *response = [completedOperation responseJSON];
          NSLog(@"Got response for updating scene %@ at %@", attribute, [response objectForKey:@"updatedAt"]);
-         DONE_WITH_NETWORK_OPERATION();
+         NETWORK_OPERATION_COMPLETE();
      } 
-     onError:PARSE_ERROR_BLOCK()];
+     onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
     
     [[ParseAPIEngine sharedEngine] enqueueOperation:op];
 }

@@ -33,7 +33,7 @@
             [op onCompletion:^(MKNetworkOperation *completedOperation) {
                 NSLog(@"%s Next Scene for Previous Scene set", __PRETTY_FUNCTION__);
             }  
-                     onError:PARSE_ERROR_BLOCK()];
+                     onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
             [[ParseAPIEngine sharedEngine] enqueueOperation:op];
             
             NSMutableDictionary *prevSceneParam = [NSMutableDictionary dictionaryWithObject:nextSceneId forKey:SCENE_PREVIOUSSCENE];
@@ -45,7 +45,7 @@
             [op onCompletion:^(MKNetworkOperation *completedOperation) {
                 NSLog(@"%s Next Scene for Previous Scene set", __PRETTY_FUNCTION__);
             }  
-                     onError:PARSE_ERROR_BLOCK()];
+                     onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
             [[ParseAPIEngine sharedEngine] enqueueOperation:op];
         } else {
             NSMutableDictionary *nextSceneParam = [NSMutableDictionary dictionaryWithObject:nextSceneId forKey:SCENE_NEXTSCENE];
@@ -56,7 +56,7 @@
             [op onCompletion:^(MKNetworkOperation *completedOperation) {
                 NSLog(@"%s Next Scene for Previous Scene set", __PRETTY_FUNCTION__);
             }  
-                     onError:PARSE_ERROR_BLOCK()];
+                     onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
             [[ParseAPIEngine sharedEngine] enqueueOperation:op];
         }
     };
@@ -70,7 +70,7 @@
         linkNextSceneAndPreviousSceneForScene(sceneFields);
         [Scene removeSceneWithId:[sceneFields objectForKey:@"objectId"]];
     }  
-             onError:PARSE_ERROR_BLOCK()];
+             onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
     [[ParseAPIEngine sharedEngine] enqueueOperation:op];
     
     // Delete scene
@@ -108,7 +108,7 @@
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
         NSLog(@"Scene with id %@ deleted", sceneId);
     }  
-             onError:PARSE_ERROR_BLOCK()];
+             onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
     [[ParseAPIEngine sharedEngine] enqueueOperation:op];
 }
 @end

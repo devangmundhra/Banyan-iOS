@@ -67,16 +67,23 @@
 
 + (Story *)loadStoryFromDisk:(NSString *)storyId
 {
-    NSLog(@"%s, storyId %@", __PRETTY_FUNCTION__, storyId);
+    NSLog(@"%s storyId %@", __PRETTY_FUNCTION__, storyId);
     Story *story = [NSKeyedUnarchiver unarchiveObjectWithFile:[StoryDocuments getPathToStoryDocumentWithStoryId:storyId]];
-
+    if (story) {
+        NSLog(@"Story found with scenes: %@", story.scenes);
+    }
     return story;
 }
 
 + (void)saveStoryToDisk:(Story *)story 
 {
+//    if (!story.scenes) {
+//        return;
+//    }
+    
     NSString *path = [StoryDocuments getPathToStoryDocumentWithStory:story];
-
+    assert(story.scenes);
+    
     BOOL success = [NSKeyedArchiver archiveRootObject:story toFile:path];
     if (!success) {
         NSLog(@"Error creating story at path: %@", path);
@@ -114,6 +121,12 @@
         if ([file.pathExtension compare:@"story" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
             NSString *path = [documentsDirectory stringByAppendingPathComponent:file];
             if ([[NSFileManager defaultManager] isDeletableFileAtPath:path]) {
+                
+                // Do not delete stories that are not initialized yet. They will be deleted later.
+                Story *story = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+                if (!story.initialized)
+                    continue;
+                
                 NSLog(@"%s Deleting story at path %@", __PRETTY_FUNCTION__, path);
                 
                 BOOL success = [[NSFileManager defaultManager] removeItemAtPath:path error:&error];  

@@ -41,6 +41,19 @@
     return self;
 }
 
+- (id)initWithBNObject:(BNOperationObject *)object
+                 field:(NSString *)field
+{
+    if((self = [super init])) {
+        _object = [[BNOperationObject alloc] initWithObjectType:object.type
+                                                         tempId:object.tempId
+                                                        storyId:object.storyId];
+        _field = field;
+    }
+    
+    return self;
+}
+
 // Change so that objects can be compared
 - (NSUInteger)hash
 {
@@ -68,4 +81,10 @@
 {
     return [NSString stringWithFormat:@"Dep Object: %@\n Field: %@", self.object, self.field];
 }
+
+- (void)dealloc
+{
+    NSLog(@"Deallocating dependency %@", self);
+}
+
 @end
