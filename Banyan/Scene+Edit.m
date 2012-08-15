@@ -60,17 +60,14 @@
 
 + (void) editScene:(Scene *)scene withAttributes:(NSMutableDictionary *)sceneParams
 {
-    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Scene", scene.sceneId) 
-                                                                       params:sceneParams
-                                                                   httpMethod:@"PUT" 
-                                                                          ssl:YES];
-    [op onCompletion:^(MKNetworkOperation *completedOperation) {
-        NSDictionary *response = [completedOperation responseJSON];
-        NSLog(@"Got response for updating scene parameters %@ at %@", sceneParams, [response objectForKey:@"updatedAt"]);
-        NETWORK_OPERATION_COMPLETE();
-    }  
-             onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
-    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+    [[AFParseAPIClient sharedClient] putPath:PARSE_API_OBJECT_URL(@"Scene", scene.sceneId)
+                                  parameters:sceneParams
+                                     success:^(AFHTTPRequestOperation *operations, id responseObject) {
+                                         NSDictionary *response = responseObject;
+                                         NSLog(@"Got response for updating scene parameters %@ at %@", sceneParams, [response objectForKey:@"updatedAt"]);
+                                         NETWORK_OPERATION_COMPLETE();
+                                     }
+                                     failure:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
     
     [StoryDocuments saveStoryToDisk:scene.story];
     
@@ -85,19 +82,14 @@
                                     inc, @"amount", nil];
     [sceneEditParams setObject:sceneAttrInc forKey:attribute];
     
-    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Scene", self.sceneId) 
-                                                                       params:sceneEditParams
-                                                                   httpMethod:@"PUT" 
-                                                                          ssl:YES];
-    [op
-     onCompletion:^(MKNetworkOperation *completedOperation) {
-         NSDictionary *response = [completedOperation responseJSON];
-         NSLog(@"Got response for updating scene %@ at %@", attribute, [response objectForKey:@"updatedAt"]);
-         NETWORK_OPERATION_COMPLETE();
-     } 
-     onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
-    
-    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+    [[AFParseAPIClient sharedClient] putPath:PARSE_API_OBJECT_URL(@"Scene", self.sceneId)
+                                  parameters:sceneEditParams
+                                     success:^(AFHTTPRequestOperation *operations, id responseObject) {
+                                         NSDictionary *response = responseObject;
+                                         NSLog(@"Got response for updating scene %@ at %@", attribute, [response objectForKey:@"updatedAt"]);
+                                         NETWORK_OPERATION_COMPLETE();
+                                     }
+                                     failure:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
 }
 
 @end

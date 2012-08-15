@@ -81,9 +81,8 @@
     [self setWantsFullScreenLayout:YES];
 
     self.imageView.frame = [[UIScreen mainScreen] bounds];
-    self.imageView.contentMode = UIViewContentModeScaleAspectFill;
-    self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    
+//    self.imageView.contentMode = UIViewContentModeScaleAspectFill;
+//    self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     if (self.scene.imageURL && [self.scene.imageURL rangeOfString:@"asset"].location == NSNotFound) {
         [self.imageView setImageWithURL:[NSURL URLWithString:self.scene.imageURL] placeholderImage:self.scene.image];
     } else if (self.scene.imageURL) {
@@ -98,6 +97,9 @@
                     NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
                 }
          ];
+    } else {
+        [self.imageView cancelImageRequestOperation];
+        [self.imageView setImageWithURL:nil];
     }
     
     self.sceneTextView.backgroundColor = [UIColor clearColor];
@@ -368,7 +370,7 @@
         return;
     }
     
-    if (![[ParseAPIEngine sharedEngine] isReachable]) {
+    if (![[BanyanAPIEngine sharedEngine] isReachable]) {
         NSLog(@"%s Can't connect to internet", __PRETTY_FUNCTION__);
         [ParseAPIEngine showNetworkUnavailableAlert];
         return;

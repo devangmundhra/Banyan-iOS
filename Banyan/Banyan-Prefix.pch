@@ -15,6 +15,10 @@
     #import "TestFlight.h"
 #endif
 
+#ifdef __APPLE__
+#include "TargetConditionals.h"
+#endif
+
 #define NSLog TFLog
 
 #define REPLACE_NIL_WITH_NULL(__value__) (__value__ ? __value__ : [NSNull null])

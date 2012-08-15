@@ -399,8 +399,8 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  
  @see HTTPRequestOperationWithRequest:success:failure
  */
-- (void)postPath:(NSString *)path 
-      parameters:(NSDictionary *)parameters 
+- (void)postPath:(NSString *)path
+      parameters:(NSDictionary *)parameters
          success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
          failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
@@ -414,8 +414,8 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  
  @see HTTPRequestOperationWithRequest:success:failure
  */
-- (void)putPath:(NSString *)path 
-     parameters:(NSDictionary *)parameters 
+- (void)putPath:(NSString *)path
+     parameters:(NSDictionary *)parameters
         success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
         failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
@@ -429,8 +429,8 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  
  @see HTTPRequestOperationWithRequest:success:failure
  */
-- (void)deletePath:(NSString *)path 
-        parameters:(NSDictionary *)parameters 
+- (void)deletePath:(NSString *)path
+        parameters:(NSDictionary *)parameters
            success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
            failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
@@ -445,7 +445,7 @@ extern NSString * AFQueryStringFromParametersWithEncoding(NSDictionary *paramete
  @see HTTPRequestOperationWithRequest:success:failure
  */
 - (void)patchPath:(NSString *)path
-       parameters:(NSDictionary *)parameters 
+       parameters:(NSDictionary *)parameters
           success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 @end

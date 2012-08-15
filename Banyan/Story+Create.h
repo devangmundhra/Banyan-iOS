@@ -8,8 +8,7 @@
 
 #import "Story.h"
 #import "Scene+Create.h"
-#import <Parse/Parse.h>
-#import "ParseAPIEngine.h"
+#import "AFParseAPIClient.h"
 
 @interface Story (Create) <PF_FBDialogDelegate>
 

@@ -32,15 +32,29 @@ return _sharedClient;
     [self registerHTTPOperationClass:[AFJSONRequestOperation class]];
     [self setParameterEncoding:AFJSONParameterEncoding];
     [self setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus isNetworkReachable) {
-        [self.operationQueue setSuspended:!isNetworkReachable];
-        if (!isNetworkReachable)
-            NSLog(@"Oops.. Network not reachable!!");
+        if (isNetworkReachable == AFNetworkReachabilityStatusReachableViaWiFi || isNetworkReachable == AFNetworkReachabilityStatusReachableViaWWAN) {
+            [[BNOperationQueue shared] setSuspended:NO];
+        } else {
+            [[BNOperationQueue shared] setSuspended:YES];
+            [[BNOperationQueue shared] archiveOperations];
+            NSLog(@"Network to parse.com not reachable!!");
+        }
     }];
     
     // Accept HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
-    [self setDefaultHeader:@"X-Parse-Application-Id" value:@"Q82knolRSmsGKKNK13WCvISIReVVoR3yFP3qTF1J"];
-	[self setDefaultHeader:@"X-Parse-REST-API-Key" value:@"iHiN4Hlw835d7aig6vtcTNhPOkNyJpjpvAL2aSoL"];
+    [self setDefaultHeader:@"X-Parse-Application-Id" value:PARSE_APP_ID];
+	[self setDefaultHeader:@"X-Parse-REST-API-Key" value:PARSE_REST_API_KEY];
     return self;
+}
+
+- (BOOL)isReachable
+{
+    if (self.networkReachabilityStatus == AFNetworkReachabilityStatusReachableViaWiFi
+        || self.networkReachabilityStatus == AFNetworkReachabilityStatusReachableViaWWAN) {
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 @end

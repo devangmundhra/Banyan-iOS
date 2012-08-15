@@ -8,8 +8,7 @@
 
 #import "Story.h"
 #import "Scene.h"
-#import <Parse/Parse.h>
-#import "ParseAPIEngine.h"
+#import "AFParseAPIClient.h"
 
 #define DELETE_STORY(__story__) \
 do {\

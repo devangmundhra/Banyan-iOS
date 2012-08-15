@@ -13,7 +13,7 @@
 #import "StoryDocuments.h"
 #import "Scene+Stats.h"
 #import "Story+Stats.h"
-#import "ParseAPIEngine.h"
+#import "AFParseAPIClient.h"
 
 @implementation ParseConnection
 
@@ -21,7 +21,7 @@
 {
 #define QUERY_LIMIT 10
     // If there is no internet connection, load stories from the disk
-    if (![[ParseAPIEngine sharedEngine] isReachable]) {
+    if (![[AFParseAPIClient sharedClient] isReachable]) {
         NSMutableArray *dStories = [StoryDocuments loadStoriesFromDisk];
         successBlock(dStories);
         completionBlock();
@@ -100,7 +100,7 @@
 
 + (void)loadScenesForStory:(Story *)story
 {
-    if (![[ParseAPIEngine sharedEngine] isReachable]) {
+    if (![[AFParseAPIClient sharedClient] isReachable]) {
         NSLog(@"%s No internet connection to load scenes for story: %@", __PRETTY_FUNCTION__, story.storyId);
         return;
     }

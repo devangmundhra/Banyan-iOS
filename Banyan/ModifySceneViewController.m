@@ -106,8 +106,11 @@
     }
     else if (self.editMode == edit)
     {
-        self.imageView.contentMode = UIViewContentModeScaleAspectFill;
+        [self setWantsFullScreenLayout:YES];
+        self.imageView.frame = [[UIScreen mainScreen] bounds];
+//        self.imageView.contentMode = UIViewContentModeScaleAspectFill;
 //        self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        self.localImageURL = self.scene.imageURL;
         if (self.scene.imageURL && [self.scene.imageURL rangeOfString:@"asset"].location == NSNotFound) {
             [self.imageView setImageWithURL:[NSURL URLWithString:self.scene.imageURL] placeholderImage:self.scene.image];
         } else if (self.scene.imageURL) {
@@ -122,7 +125,11 @@
                         NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
                     }
              ];
+        } else {
+            [self.imageView cancelImageRequestOperation];
+            [self.imageView setImageWithURL:nil];
         }
+        
         self.sceneTextView.text = self.scene.text;
         self.deleteSceneButton.hidden = NO;
         self.navigationBar.topItem.title = @"Edit";
@@ -194,8 +201,6 @@
     NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
     [attributes setObject:self.sceneTextView.text ? self.sceneTextView.text : [NSNull null]
                    forKey:SCENE_TEXT];
-    //        [attributes setObject:self.imageView.image ? self.imageView.image : [NSNull null]
-    //                       forKey:SCENE_IMAGE];
     [attributes setObject:REPLACE_NIL_WITH_NULL(self.localImageURL) forKey:SCENE_IMAGE_URL];
     
     if (self.editMode == add)
@@ -233,7 +238,6 @@
             if (self.imageChanged) {
                 self.scene.story.imageURL = self.localImageURL;
                 self.scene.story.imageChanged = YES;
-//                self.scene.story.image = self.imageView.image;
             }
             [Story editStory:self.scene.story];
         }
@@ -257,7 +261,11 @@
 {    
     [self dismissKeyboard:sender];
 
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Modify Photo" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:self.imageView.image ? @"Delete Photo" : nil otherButtonTitles:nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Modify Photo"
+                                                             delegate:self
+                                                    cancelButtonTitle:@"Cancel"
+                                               destructiveButtonTitle:self.localImageURL ? @"Delete Photo" : nil
+                                                    otherButtonTitles:nil];
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
         [actionSheet addButtonWithTitle:CAMERA];
     [actionSheet addButtonWithTitle:PHOTO_LIB];
@@ -293,7 +301,8 @@
     }
     else if (buttonIndex == actionSheet.destructiveButtonIndex) {
         // MAYBE EXPLICITLY DELETE IMAGE IN FUTURE
-        self.imageView.image = nil;
+        [self.imageView cancelImageRequestOperation];
+        [self.imageView setImageWithURL:nil];
         self.localImageURL = nil;
         self.imageChanged = YES;
         self.doneButton.enabled = [self checkForChanges];

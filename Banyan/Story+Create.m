@@ -166,38 +166,6 @@
     NSMutableDictionary *attributes = [story getAttributesInDictionary];
     
     //    PARSE
-    /*
-    // Add image for this story
-    void (^addImageForStory)(NSString *) = ^(NSString *thisStoryId) {
-        if (![[attributes objectForKey:STORY_IMAGE] isEqual:[NSNull null]] && [attributes objectForKey:STORY_IMAGE])
-        {
-            NSData *imageData = UIImagePNGRepresentation([attributes objectForKey:STORY_IMAGE]);
-            PFFile *imageFile = [PFFile fileWithName:[thisStoryId stringByAppendingString:@".png"] data:imageData];
-            [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                if (succeeded) {
-                    story.imageURL = imageFile.url;
-                    
-                    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Story", thisStoryId) 
-                                                                                       params:[NSMutableDictionary dictionaryWithObject:imageFile.url 
-                                                                                                                          forKey:STORY_IMAGE_URL] 
-                                                                                   httpMethod:@"PUT" 
-                                                                                          ssl:YES];
-                    [op
-                     onCompletion:^(MKNetworkOperation *completedOperation) {
-                         NSLog(@"Updating story with imageURL %@", imageFile.url);
-                     } 
-                     onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
-                    
-                    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
-                }
-                else {
-                    NSLog(@"%s Error %@: Can't save image for story", __PRETTY_FUNCTION__, error);
-                }
-            }];
-        }
-    };
-     */
-    
     void (^sendRequestToContributors)(NSArray *, Story *) = ^(NSArray *contributorsList, Story *story) {
         NSMutableArray *fbIds = [NSMutableArray arrayWithCapacity:1];
         for (NSDictionary *contributor in contributorsList)
@@ -240,66 +208,56 @@
             
             NSMutableDictionary *getUsersForFbId = [NSMutableDictionary dictionaryWithObject:json forKey:@"where"];
             
-            MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_USER_URL(@"")
-                                                                               params:getUsersForFbId
-                                                                           httpMethod:@"GET" 
-                                                                                  ssl:YES];
-            [op 
-             onCompletion:^(MKNetworkOperation *completedOperation) {
-                 NSDictionary *response = [completedOperation responseJSON];
-                 NSArray *users = [response objectForKey:@"results"];
-                 NSMutableArray *usersContributing = [NSMutableArray arrayWithCapacity:1];
-                 for (NSDictionary *user in users)
-                 {
-                     [usersContributing addObject:[user objectForKey:@"objectId"]];
-                 }
-                 NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
-                                       [NSString stringWithFormat:@"%@ has invited you to contribute to a story titled %@",
-                                        [[PFUser currentUser] objectForKey:USER_NAME], story.title], @"alert",
-                                       [NSNumber numberWithInt:1], @"badge",
-                                       story.title, @"Story title",
-                                       nil];
-                 // send push notication to this user id
-                 PFPush *push = [[PFPush alloc] init];
-                 [push setChannels:usersContributing];
-                 [push setPushToAndroid:false];
-                 [push expireAfterTimeInterval:86400];
-                 [push setData:data];
-                 [push sendPushInBackground];
-                 [TestFlight passCheckpoint:@"Push notifications sent to contribute to a new story"];
-                 NETWORK_OPERATION_COMPLETE();
-             } 
-             onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
-            [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+            [[AFParseAPIClient sharedClient] getPath:PARSE_API_USER_URL(@"")
+                                          parameters:getUsersForFbId
+                                             success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                                 NSDictionary *response = responseObject;
+                                                 NSArray *users = [response objectForKey:@"results"];
+                                                 NSMutableArray *usersContributing = [NSMutableArray arrayWithCapacity:1];
+                                                 for (NSDictionary *user in users)
+                                                 {
+                                                     [usersContributing addObject:[user objectForKey:@"objectId"]];
+                                                 }
+                                                 NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                                       [NSString stringWithFormat:@"%@ has invited you to contribute to a story titled %@",
+                                                                        [[PFUser currentUser] objectForKey:USER_NAME], story.title], @"alert",
+                                                                       [NSNumber numberWithInt:1], @"badge",
+                                                                       story.title, @"Story title",
+                                                                       nil];
+                                                 // send push notication to this user id
+                                                 PFPush *push = [[PFPush alloc] init];
+                                                 [push setChannels:usersContributing];
+                                                 [push setPushToAndroid:false];
+                                                 [push expireAfterTimeInterval:86400];
+                                                 [push setData:data];
+                                                 [push sendPushInBackground];
+                                                 [TestFlight passCheckpoint:@"Push notifications sent to contribute to a new story"];
+                                                 NETWORK_OPERATION_COMPLETE();
+                                             }
+                                             failure:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
         }
     };
     
-    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_CLASS_URL(@"Story") 
-                                                                       params:attributes
-                                                                   httpMethod:@"POST" 
-                                                                          ssl:YES];
-    
-    [op 
-     onCompletion:^(MKNetworkOperation *completedOperation) {
-         NSDictionary *response = [completedOperation responseJSON];
-         NSLog(@"Got response for creating story %@", [response objectForKey:@"objectId"]);
-         NSString *newId = [response objectForKey:@"objectId"];
-         [StoryDocuments deleteStoryFromDisk:story];
-         [[BanyanDataSource hashTable] setObject:newId forKey:story.storyId];
-         [BanyanDataSource archiveHashTable];
-         story.storyId = newId;
-         
-         story.initialized = YES;
-         [StoryDocuments saveStoryToDisk:story];
-         /* addImageForStory(story.storyId); */
-         if (story.invitedToContribute)
-             sendRequestToContributors(story.invitedToContribute, story);
-         
-         NETWORK_OPERATION_COMPLETE();
-     }
-     onError:BN_ERROR_BLOCK_OPERATION_INCOMPLETE()];
-
-    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+    [[AFParseAPIClient sharedClient] postPath:PARSE_API_CLASS_URL(@"Story")
+                                   parameters:attributes
+                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                          NSDictionary *response = responseObject;
+                                          NSLog(@"Got response for creating story %@", [response objectForKey:@"objectId"]);
+                                          NSString *newId = [response objectForKey:@"objectId"];
+                                          [StoryDocuments deleteStoryFromDisk:story];
+                                          [[BanyanDataSource hashTable] setObject:newId forKey:story.storyId];
+                                          [BanyanDataSource archiveHashTable];
+                                          story.storyId = newId;
+                                          
+                                          story.initialized = YES;
+                                          [StoryDocuments saveStoryToDisk:story];
+                                          /* addImageForStory(story.storyId); */
+                                          if (story.invitedToContribute) {
+                                              sendRequestToContributors(story.invitedToContribute, story);
+                                          }
+                                          NETWORK_OPERATION_COMPLETE();
+                                      }
+                                      failure:BN_ERROR_BLOCK_OPERATION_INCOMPLETE()];
 }
 
 # pragma mark PF_FBDialogDelegate

@@ -19,20 +19,18 @@
         PFFile *imageFile = nil;
         
         ALAssetRepresentation *rep = [asset defaultRepresentation];
-        CGImageRef imageRef = [rep fullResolutionImage];
+        CGImageRef imageRef = [rep fullScreenImage]; // not fullResolutionImage
         UIImage *image = [UIImage imageWithCGImage:imageRef];
         
         // For now, compress the image before sending.
         // When PUT API is done, compress on the server
         // PUT_API_TODO
-        image = [UIImage imageWithImage:image scaledToSizeWithSameAspectRatio:[[UIScreen mainScreen] bounds].size];
+//        image = [UIImage imageWithImage:image scaledToSizeWithSameAspectRatio:[[UIScreen mainScreen] bounds].size];
         //
         imageData = UIImagePNGRepresentation(image);
         imageFile = [PFFile fileWithData:imageData];
         
         [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            void (^BNErrorBlockOpIncomplete)(NSError *)= BN_ERROR_BLOCK_OPERATION_INCOMPLETE();
-            
             if (succeeded) {
                 // So that we know the file has been uploaded (aka initialized)
                 [[BanyanDataSource hashTable] setObject:imageFile.url forKey:url];
@@ -40,7 +38,9 @@
                 NSLog(@"Image saved");
                 NETWORK_OPERATION_COMPLETE();
             } else {
-                BNErrorBlockOpIncomplete(error);
+                NSLog(@"%@\t%@\t%@\t%@", [error localizedDescription], [error localizedFailureReason],
+                      [error localizedRecoveryOptions], [error localizedRecoverySuggestion]);
+                NETWORK_OPERATION_INCOMPLETE();
             }
         }];
     }

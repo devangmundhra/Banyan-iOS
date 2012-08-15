@@ -7,7 +7,6 @@
 //
 
 #import "User+Edit.h"
-#import "ParseAPIEngine.h"
 
 @implementation User (Edit)
 
@@ -18,18 +17,16 @@
         NETWORK_OPERATION_COMPLETE();
         return;
     }
-    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_USER_URL(user.userId)
-                                                                       params:userParams
-                                                                   httpMethod:@"PUT"
-                                                                          ssl:YES];
-    [op addHeaders:[NSDictionary dictionaryWithObject:user.sessionToken forKey:@"X-Parse-Session-Token"]];
-    [op onCompletion:^(MKNetworkOperation *completedOperation) {
-        NSDictionary *response = [completedOperation responseJSON];
-        NSLog(@"Got response for updating user at %@", [response objectForKey:@"updatedAt"]);
-        NETWORK_OPERATION_COMPLETE();
-    }
-             onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
-    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+    
+    [[AFParseAPIClient sharedClient] setDefaultHeader:@"X-Parse-Session-Token" value:user.sessionToken];
+    [[AFParseAPIClient sharedClient] putPath:PARSE_API_USER_URL(user.userId)
+                                  parameters:userParams
+                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                         NSDictionary *response = responseObject;
+                                         NSLog(@"Got response for updating user at %@", [response objectForKey:@"updatedAt"]);
+                                         NETWORK_OPERATION_COMPLETE();
+                                     }
+                                     failure:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
 }
 
 + (void) editUserNoOp:(User *)user withAttributes:(NSMutableDictionary *)userParams
@@ -38,16 +35,14 @@
         NSLog(@"%s Can't find session data for user: %@", __PRETTY_FUNCTION__, user);
         return;
     }
-    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_USER_URL(user.userId)
-                                                                       params:userParams
-                                                                   httpMethod:@"PUT"
-                                                                          ssl:YES];
-    [op addHeaders:[NSDictionary dictionaryWithObject:user.sessionToken forKey:@"X-Parse-Session-Token"]];
-    [op onCompletion:^(MKNetworkOperation *completedOperation) {
-        NSDictionary *response = [completedOperation responseJSON];
-        NSLog(@"Got response for updating user at %@", [response objectForKey:@"updatedAt"]);
-    }
-             onError:PARSE_ERROR_BLOCK()];
-    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+    
+    [[AFParseAPIClient sharedClient] setDefaultHeader:@"X-Parse-Session-Token" value:user.sessionToken];
+    [[AFParseAPIClient sharedClient] putPath:PARSE_API_USER_URL(user.userId)
+                                  parameters:userParams
+                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                         NSDictionary *response = responseObject;
+                                         NSLog(@"Got response for updating user at %@", [response objectForKey:@"updatedAt"]);
+                                     }
+                                     failure:AF_PARSE_ERROR_BLOCK()];
 }
 @end

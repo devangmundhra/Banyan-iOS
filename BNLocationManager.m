@@ -24,6 +24,7 @@ static CLLocationManager *_sharedLocationManager;
     [self.delegate locationUpdated];
 }
 
+# pragma mark class methods
 + (void ) initialize
 {
     if (!_sharedLocationManager) {
@@ -34,6 +35,13 @@ static CLLocationManager *_sharedLocationManager;
             NSLog(@"%s Initialized shared location manager", __PRETTY_FUNCTION__);
         });
     }
+}
+
++ (void) dealloc
+{
+    NSLog(@"%s Dealloc'ed shared location manager", __PRETTY_FUNCTION__);
+    _sharedLocationManager.delegate = nil;
+    _sharedLocationManager = nil;
 }
 
 # pragma mark CLLocationManagerDelegate

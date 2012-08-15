@@ -9,8 +9,7 @@
 #import "Scene.h"
 #import "Story+Create.h"
 #import "Story+Edit.h"
-#import <Parse/Parse.h>
-#import "ParseAPIEngine.h"
+#import "AFParseAPIClient.h"
 
 @interface Scene (Create)
 + (Scene *)createSceneForStory:(Story *) story

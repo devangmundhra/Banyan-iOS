@@ -24,6 +24,7 @@ static NSString * const kParseAPIBaseURLString = @"1";
         _sharedEngine = [[ParseAPIEngine alloc] initWithHostName:@"api.parse.com"
                                                          apiPath:kParseAPIBaseURLString 
                                               customHeaderFields:headerFields];
+        /*
         _sharedEngine.reachabilityChangedHandler = ^(NetworkStatus ns) {
             if (ns != NotReachable) {
                 [[BNOperationQueue shared] setSuspended:NO];
@@ -32,6 +33,7 @@ static NSString * const kParseAPIBaseURLString = @"1";
                 [[BNOperationQueue shared] archiveOperations];
             }
         };
+         */
     });
     
     return _sharedEngine;

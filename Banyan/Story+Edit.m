@@ -74,19 +74,14 @@
 
 + (void) editStory:(Story *)story withAttributes:(NSMutableDictionary *)storyParams
 {
-    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Story", story.storyId)
-                                                                       params:storyParams
-                                                                   httpMethod:@"PUT"
-                                                                          ssl:YES];
-    [op
-     onCompletion:^(MKNetworkOperation *completedOperation) {
-         NSDictionary *response = [completedOperation responseJSON];
-         NSLog(@"Got response for updating story parameters %@ at %@", storyParams, [response objectForKey:@"updatedAt"]);
-         NETWORK_OPERATION_COMPLETE();
-     }
-     onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
-    
-    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+    [[AFParseAPIClient sharedClient] putPath:PARSE_API_OBJECT_URL(@"Story", story.storyId)
+                                  parameters:storyParams
+                                     success:^(AFHTTPRequestOperation *operations, id responseObject) {
+                                         NSDictionary *response = responseObject;
+                                         NSLog(@"Got response for updating story parameters %@ at %@", storyParams, [response objectForKey:@"updatedAt"]);
+                                         NETWORK_OPERATION_COMPLETE();
+                                     }
+                                     failure:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
     
     [StoryDocuments saveStoryToDisk:story];
 }
@@ -99,19 +94,14 @@
                                     inc, @"amount", nil];
     [storyEditParams setObject:storyAttrInc forKey:attribute];
     
-    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Story", self.storyId) 
-                                                                       params:storyEditParams
-                                                                   httpMethod:@"PUT" 
-                                                                          ssl:YES];
-    [op
-     onCompletion:^(MKNetworkOperation *completedOperation) {
-         NSDictionary *response = [completedOperation responseJSON];
-         NSLog(@"Got response for updating story attr %@ at %@", attribute, [response objectForKey:@"updatedAt"]);
-         NETWORK_OPERATION_COMPLETE();
-     } 
-     onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
-    
-    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+    [[AFParseAPIClient sharedClient] putPath:PARSE_API_OBJECT_URL(@"Story", self.storyId)
+                                  parameters:storyEditParams
+                                     success:^(AFHTTPRequestOperation *operations, id responseObject) {
+                                         NSDictionary *response = responseObject;
+                                         NSLog(@"Got response for updating story attr %@ at %@", attribute, [response objectForKey:@"updatedAt"]);
+                                         NETWORK_OPERATION_COMPLETE();
+                                     }
+                                     failure:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
 }
 
 @end

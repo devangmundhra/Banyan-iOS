@@ -184,26 +184,21 @@
     Story *story = scene.story;
     [attributes setObject:[PFUser currentUser].objectId forKey:SCENE_AUTHOR];
     
-    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_CLASS_URL(@"Scene")
-                                                                       params:attributes
-                                                                   httpMethod:@"POST"
-                                                                          ssl:YES];
-    [op
-     onCompletion:^(MKNetworkOperation *completedOperation) {
-         NSDictionary *response = [completedOperation responseJSON];
-         NSLog(@"Got response for creating scene %@", [response objectForKey:@"objectId"]);
-         NSString *newId = [response objectForKey:@"objectId"];
-         [[BanyanDataSource hashTable] setObject:newId forKey:scene.sceneId];
-         [BanyanDataSource archiveHashTable];
-         scene.sceneId = newId;
-         scene.initialized = YES;
-
-         [StoryDocuments saveStoryToDisk:story];
-         NETWORK_OPERATION_COMPLETE();
-     }
-     onError:BN_ERROR_BLOCK_OPERATION_INCOMPLETE()];
-    
-    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+    [[AFParseAPIClient sharedClient] postPath:PARSE_API_CLASS_URL(@"Scene")
+                                   parameters:attributes
+                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                          NSDictionary *response = responseObject;
+                                          NSLog(@"Got response for creating scene %@", [response objectForKey:@"objectId"]);
+                                          NSString *newId = [response objectForKey:@"objectId"];
+                                          [[BanyanDataSource hashTable] setObject:newId forKey:scene.sceneId];
+                                          [BanyanDataSource archiveHashTable];
+                                          scene.sceneId = newId;
+                                          scene.initialized = YES;
+                                          
+                                          [StoryDocuments saveStoryToDisk:story];
+                                          NETWORK_OPERATION_COMPLETE();                                          
+                                      }
+                                      failure:BN_ERROR_BLOCK_OPERATION_INCOMPLETE()];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context

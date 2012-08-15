@@ -26,52 +26,42 @@
         
         if (nextSceneId) {   
             NSMutableDictionary *nextSceneParam = [NSMutableDictionary dictionaryWithObject:nextSceneId forKey:SCENE_NEXTSCENE];
-            MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Scene", previousSceneId) 
-                                                                                params:nextSceneParam
-                                                                            httpMethod:@"PUT" 
-                                                                                   ssl:YES];
-            [op onCompletion:^(MKNetworkOperation *completedOperation) {
-                NSLog(@"%s Next Scene for Previous Scene set", __PRETTY_FUNCTION__);
-            }  
-                     onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
-            [[ParseAPIEngine sharedEngine] enqueueOperation:op];
             
-            NSMutableDictionary *prevSceneParam = [NSMutableDictionary dictionaryWithObject:nextSceneId forKey:SCENE_PREVIOUSSCENE];
+            [[AFParseAPIClient sharedClient] putPath:PARSE_API_OBJECT_URL(@"Scene", previousSceneId)
+                                          parameters:nextSceneParam
+                                             success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                                 NSLog(@"%s Next Scene for Previous Scene set", __PRETTY_FUNCTION__);
+                                             }
+                                             failure:AF_PARSE_ERROR_BLOCK()];
             
-            op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Scene", previousSceneId) 
-                                                           params:prevSceneParam
-                                                       httpMethod:@"PUT" 
-                                                              ssl:YES];
-            [op onCompletion:^(MKNetworkOperation *completedOperation) {
-                NSLog(@"%s Next Scene for Previous Scene set", __PRETTY_FUNCTION__);
-            }  
-                     onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
-            [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+            NSMutableDictionary *prevSceneParam = [NSMutableDictionary dictionaryWithObject:previousSceneId forKey:SCENE_PREVIOUSSCENE];
+            
+            [[AFParseAPIClient sharedClient] putPath:PARSE_API_OBJECT_URL(@"Scene", nextSceneId)
+                                          parameters:prevSceneParam
+                                             success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                                 NSLog(@"%s Previous Scene for Next Scene set", __PRETTY_FUNCTION__);
+                                             }
+                                             failure:AF_PARSE_ERROR_BLOCK()];
         } else {
             NSMutableDictionary *nextSceneParam = [NSMutableDictionary dictionaryWithObject:nextSceneId forKey:SCENE_NEXTSCENE];
-            MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Scene", previousSceneId) 
-                                                                               params:nextSceneParam
-                                                                           httpMethod:@"PUT" 
-                                                                                  ssl:YES];
-            [op onCompletion:^(MKNetworkOperation *completedOperation) {
-                NSLog(@"%s Next Scene for Previous Scene set", __PRETTY_FUNCTION__);
-            }  
-                     onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
-            [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+            
+            [[AFParseAPIClient sharedClient] putPath:PARSE_API_OBJECT_URL(@"Scene", previousSceneId)
+                                          parameters:nextSceneParam
+                                             success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                                 NSLog(@"%s Next Scene for Previous Scene set as null", __PRETTY_FUNCTION__);
+                                             }
+                                             failure:AF_PARSE_ERROR_BLOCK()];
         }
     };
     
-    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Scene", scene.sceneId) 
-                                                                       params:nil
-                                                                   httpMethod:@"GET" 
-                                                                          ssl:YES];
-    [op onCompletion:^(MKNetworkOperation *completedOperation) {
-        NSDictionary *sceneFields = [completedOperation responseJSON];
-        linkNextSceneAndPreviousSceneForScene(sceneFields);
-        [Scene removeSceneWithId:[sceneFields objectForKey:@"objectId"]];
-    }  
-             onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
-    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+    [[AFParseAPIClient sharedClient] getPath:PARSE_API_OBJECT_URL(@"Scene", scene.sceneId)
+                                  parameters:nil
+                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                         NSDictionary *sceneFields = responseObject;
+                                         linkNextSceneAndPreviousSceneForScene(sceneFields);
+                                         [Scene removeSceneWithId:[sceneFields objectForKey:@"objectId"]];
+                                     }
+                                     failure:AF_PARSE_ERROR_BLOCK()];
     
     // Delete scene
     if (scene.image || scene.imageURL)
@@ -79,7 +69,7 @@
         NSLog(@"Scene Image still needs to be deleted");
     }
     
-    [story incrementStoryAttribute:STORY_LENGTH byAmount:[NSNumber numberWithInt:-1]];
+    INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_LENGTH, -1);
     
     // ARCHIVE    
     NSMutableArray *currentScenes = [story.scenes mutableCopy];
@@ -100,15 +90,12 @@
 }
 
 + (void) removeSceneWithId:(NSString *)sceneId
-{    
-    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Scene", sceneId) 
-                                                                       params:nil
-                                                                   httpMethod:@"DELETE" 
-                                                                          ssl:YES];
-    [op onCompletion:^(MKNetworkOperation *completedOperation) {
-        NSLog(@"Scene with id %@ deleted", sceneId);
-    }  
-             onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
-    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+{
+    [[AFParseAPIClient sharedClient] deletePath:PARSE_API_OBJECT_URL(@"Scene", sceneId)
+                                     parameters:nil
+                                        success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                            NSLog(@"Scene with id %@ deleted", sceneId);
+                                        }
+                                        failure:AF_PARSE_ERROR_BLOCK()];
 }
 @end

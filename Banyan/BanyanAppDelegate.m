@@ -48,6 +48,7 @@
     
     [Parse setApplicationId:PARSE_APP_ID 
                   clientKey:PARSE_CLIENT_KEY];
+    
     userManagementModule = [[UserManagementModule alloc] init];
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
      UIRemoteNotificationTypeAlert];

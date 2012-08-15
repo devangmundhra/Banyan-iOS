@@ -102,6 +102,7 @@
         bitmapInfo = kCGImageAlphaNoneSkipLast;
     }
 
+#if !(TARGET_IPHONE_SIMULATOR)
     CGColorSpaceRef colorSpaceInfo = CGImageGetColorSpace(imageRef);
     CGContextRef bitmap;
     
@@ -112,17 +113,17 @@
         bitmap = CGBitmapContextCreate(NULL, targetHeight, targetWidth, CGImageGetBitsPerComponent(imageRef), CGImageGetBytesPerRow(imageRef), colorSpaceInfo, bitmapInfo);
         
     }
-    
-//    CGContextRef bitmap = CGBitmapContextCreate(
-//                                                NULL,
-//                                                targetWidth,
-//                                                targetHeight,
-//                                                8, /* bits per channel */
-//                                                (targetWidth * 4), /* 4 channels per pixel * numPixels/row */
-//                                                CGColorSpaceCreateDeviceRGB(),
-//                                                kCGImageAlphaPremultipliedLast
-//                                                );
-    
+# else
+    CGContextRef bitmap = CGBitmapContextCreate(
+                                                NULL,
+                                                targetWidth,
+                                                targetHeight,
+                                                8, /* bits per channel */
+                                                (targetWidth * 4), /* 4 channels per pixel * numPixels/row */
+                                                CGColorSpaceCreateDeviceRGB(),
+                                                kCGImageAlphaPremultipliedLast
+                                                );
+#endif
     if (sourceImage.imageOrientation == UIImageOrientationLeft) {
         CGContextRotateCTM (bitmap, radians(90));
         CGContextTranslateCTM (bitmap, 0, -targetHeight);

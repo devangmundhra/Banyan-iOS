@@ -49,6 +49,7 @@ static User *_currentUser = nil;
 + (void)updateCurrentUser
 {
     PFUser *currentUser = [PFUser currentUser];
+    [currentUser fetch];
     _currentUser = [User getUserForPfUser:currentUser];
 }
 

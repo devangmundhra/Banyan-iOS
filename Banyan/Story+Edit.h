@@ -8,8 +8,8 @@
 
 #import "Story.h"
 #import "Scene.h"
-#import <Parse/Parse.h>
 #import "Story_Defines.h"
+#import "AFParseAPIClient.h"
 
 #define INCREMENT_STORY_ATTRIBUTE_OPERATION(__story__, __attribute__, __amount__) \
 do {\

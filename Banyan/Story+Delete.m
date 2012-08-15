@@ -37,21 +37,18 @@
     
     NSMutableDictionary *getScenesForStory = [NSMutableDictionary dictionaryWithObject:json forKey:@"where"];
     
-    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_CLASS_URL(@"Scene") 
-                                                                       params:getScenesForStory 
-                                                                   httpMethod:@"GET" 
-                                                                          ssl:YES];
-    [op 
-     onCompletion:^(MKNetworkOperation *completedOperation) {
-         NSDictionary *response = [completedOperation responseJSON];
-         NSArray *scenes = [response objectForKey:@"results"];
-         for (NSDictionary *scene in scenes)
-         {
-             [Scene removeSceneWithId:[scene objectForKey:@"objectId"]];
-         }
-     } 
-     onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
-    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+    [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(@"Scene")
+                                  parameters:getScenesForStory
+                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                         NSDictionary *response = responseObject;
+                                         NSArray *scenes = [response objectForKey:@"results"];
+                                         for (NSDictionary *scene in scenes)
+                                         {
+                                             [Scene removeSceneWithId:[scene objectForKey:@"objectId"]];
+                                         }
+                                         
+                                     }
+                                     failure:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
 
     // Delete Object
     if (story.image || story.imageURL)
@@ -69,16 +66,12 @@
 }
 
 + (void) removeStoryWithId:(NSString *)storyId
-{    
-    MKNetworkOperation *op = [[ParseAPIEngine sharedEngine] operationWithPath:PARSE_API_OBJECT_URL(@"Story", storyId) 
-                                                                       params:nil 
-                                                                   httpMethod:@"DELETE" 
-                                                                          ssl:YES];
-    [op 
-     onCompletion:^(MKNetworkOperation *completedOperation) {
-         NSLog(@"Story with id %@ deleted", storyId);
-     } 
-     onError:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
-    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+{
+    [[AFParseAPIClient sharedClient] deletePath:PARSE_API_OBJECT_URL(@"Story", storyId)
+                                     parameters:nil
+                                        success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                            NSLog(@"Story with id %@ deleted", storyId);
+                                        }
+                                        failure:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
 }
 @end

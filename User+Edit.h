@@ -7,8 +7,8 @@
 //
 
 #import "User.h"
-#import <Parse/Parse.h>
 #import "User_Defines.h"
+#import "AFParseAPIClient.h"
 
 @interface User (Edit)
 

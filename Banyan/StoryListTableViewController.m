@@ -95,6 +95,13 @@
                                                  name:UIApplicationWillEnterForegroundNotification 
                                                object:nil];
     */
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(foregroundRefresh:)
+                                                 name:AFNetworkingReachabilityDidChangeNotification
+                                               object:nil];
+    
+    
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(foregroundRefresh:) 
                                                  name:UIApplicationDidFinishLaunchingNotification 
@@ -261,27 +268,36 @@
 {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(canView == YES) OR (canContribute == YES)"];
     
-    [ParseConnection loadStoriesFromParseWithBlock:^(NSMutableArray *retValue){
-        [retValue filterUsingPredicate:predicate];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.dataSource = retValue;
-            [_pull refreshLastUpdatedDate];
-            [self.tableView reloadData];
-            [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-        });
-    } 
-                                      onCompletion:^{
-                                          dispatch_async(dispatch_get_main_queue(), ^{
-                                              [_pull finishedLoading];
-                                              if ([[ParseAPIEngine sharedEngine] isReachable] && [[BanyanAPIEngine sharedEngine] isReachable]) {
-                                                  [[BNOperationQueue shared] setSuspended:NO];
-                                              }
-                                          });
-                                      }];
+    [ParseConnection
+     loadStoriesFromParseWithBlock:^(NSMutableArray *retValue){
+         [retValue filterUsingPredicate:predicate];
+         dispatch_async(dispatch_get_main_queue(), ^{
+             self.dataSource = retValue;
+             [_pull refreshLastUpdatedDate];
+             [self.tableView reloadData];
+             [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+         });
+     }
+     onCompletion:^{
+         dispatch_async(dispatch_get_main_queue(), ^{
+             [_pull finishedLoading];
+             if ([[AFParseAPIClient sharedClient] isReachable]) {
+                 [[BNOperationQueue shared] setSuspended:NO];
+             }
+         });
+     }];
 }
 
 -(void)foregroundRefresh:(NSNotification *)notification
 {
+    if ([notification.name isEqualToString:AFNetworkingReachabilityDidChangeNotification]) {
+        // This is only for the initial part when the status of reachability is Unknown.
+        // We don't want to keep getting this notification and refreshing the story table.
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:AFNetworkingReachabilityDidChangeNotification object:nil];
+        if (![[AFParseAPIClient sharedClient] isReachable]) {
+            return;
+        }
+    }
     self.tableView.contentOffset = CGPointMake(0, -65);
     [_pull setState:PullToRefreshViewStateLoading];
     [self performSelectorInBackground:@selector(loadDataSource) withObject:nil];
