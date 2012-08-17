@@ -15,6 +15,7 @@
 
 @property (assign) BOOL canContribute;
 @property (assign) BOOL canView;
+@property (assign) BOOL isInvited;
 @property (strong, nonatomic) id image;
 @property (strong, nonatomic) NSArray *invitedToContribute;
 @property (strong, nonatomic) NSArray *invitedToView;

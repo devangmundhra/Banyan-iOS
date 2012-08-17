@@ -77,16 +77,30 @@
     return self.storyTitleTextField.text;
 }
 
-- (void)viewDidLoad
+- (void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-    
+    [super viewDidAppear:animated];
+    [self registerForKeyboardNotifications];
     self.locationManager = [[BNLocationManager alloc] init];
     self.locationManager.delegate = self;
     if (self.showLocationSwitch.on) {
         [self.locationManager beginUpdatingLocation];
     }
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [self unregisterForKeyboardNotifications];
+    if (self.showLocationSwitch.on) {
+        [self.locationManager stopUpdatingLocation:self.locationLabel.text];
+    }
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+	// Do any additional setup after loading the view, typically from a nib.
     
     self.viewerSegmentedControl.alpha = 0;
     self.inviteViewersButton.alpha = 0;
@@ -95,6 +109,7 @@
     
     self.storyTitleTextField.delegate = self;
     [self.storyTitleTextField becomeFirstResponder];
+    self.storyTitleTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
     
     self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapAnywhere:)];
     self.invitedToContributeList = [NSMutableArray array];
@@ -105,9 +120,6 @@
 
 - (void)viewDidUnload
 {
-    if (self.showLocationSwitch.on) {
-        [self.locationManager stopUpdatingLocation:self.locationLabel.text];
-    }
     [self setStoryTitle:nil];
     [self setStoryTitleTextField:nil];
     [self setContributorSegmenedControl:nil];
@@ -129,18 +141,6 @@
     [self setLocationManager:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    [self registerForKeyboardNotifications];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-    [self unregisterForKeyboardNotifications];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -190,30 +190,26 @@
                                         @"id", nil];
         [self.invitedToViewList addObject:selfInvitation];
         [self.invitedToContributeList addObject:selfInvitation];
-    }
-    else {
+    } else {
         NSLog(@"NewStoryViewController:doneNewStory:sender "
               "Cound not invite self");
     }
     
     [self.storyAttributes setObject:![self.storyTitle isEqualToString:@""] ? self.storyTitle : [self defaultStoryTitle]
                           forKey:STORY_TITLE];
-    if (self.contributorSegmenedControl.selectedSegmentIndex == PUBLIC)
-    {
+    if (self.contributorSegmenedControl.selectedSegmentIndex == PUBLIC) {
         [self.storyAttributes setObject:[NSNumber numberWithBool:YES]
                           forKey:STORY_PUBLIC_CONTRIBUTORS];
         
         [self.storyAttributes setObject:[NSNumber numberWithBool:YES]                          
                               forKey:STORY_PUBLIC_VIEWERS];
-    } else 
-    {
+    } else {
         [self.storyAttributes setObject:[NSNumber numberWithBool:NO]
                               forKey:STORY_PUBLIC_CONTRIBUTORS];
         
         [self.storyAttributes setObject:self.invitedToContributeList forKey:STORY_INVITED_TO_CONTRIBUTE];
         
-        if (self.viewerSegmentedControl.selectedSegmentIndex == PUBLIC)
-        {
+        if (self.viewerSegmentedControl.selectedSegmentIndex == PUBLIC) {
             [self.storyAttributes setObject:[NSNumber numberWithBool:YES] forKey:STORY_PUBLIC_VIEWERS];
 
         } else {

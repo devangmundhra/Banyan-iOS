@@ -15,6 +15,7 @@
 
 @synthesize canContribute = _canContribute;
 @synthesize canView = _canView;
+@synthesize isInvited = _isInvited;
 @synthesize image = _image;
 @synthesize invitedToContribute = _invitedToContribute;
 @synthesize invitedToView = _invitedToView;
@@ -45,12 +46,13 @@
 
 #pragma mark NSCoding
 
-- (id) initWithTitle:(NSString *)title canContribute:(BOOL)canContribute canView:(BOOL)canView invitedToContribute:(NSArray *)invitedToContribute invitedToView:(NSArray *)invitedToView lengthOfStory:(NSNumber *)lengthOfStory publicContributors:(BOOL)publicContributors publicViewers:(BOOL)publicViewers storyId:(NSString *)storyId  imageURL:(NSString *)imageURL contributors:(NSArray *)contributors startingScene:(Scene *)startingScene createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors liked:(BOOL)liked viewed:(BOOL)viewed favourite:(BOOL)favourite scenes:(NSArray *)scenes initialized:(BOOL) initialized location:(CLLocation *)location isLocationEnabled:(BOOL) isLocationEnabled geocodedLocation:(NSString *)geocodedLocation
+- (id) initWithTitle:(NSString *)title canContribute:(BOOL)canContribute canView:(BOOL)canView isInvited:(BOOL)isInvited invitedToContribute:(NSArray *)invitedToContribute invitedToView:(NSArray *)invitedToView lengthOfStory:(NSNumber *)lengthOfStory publicContributors:(BOOL)publicContributors publicViewers:(BOOL)publicViewers storyId:(NSString *)storyId  imageURL:(NSString *)imageURL contributors:(NSArray *)contributors startingScene:(Scene *)startingScene createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors liked:(BOOL)liked viewed:(BOOL)viewed favourite:(BOOL)favourite scenes:(NSArray *)scenes initialized:(BOOL) initialized location:(CLLocation *)location isLocationEnabled:(BOOL) isLocationEnabled geocodedLocation:(NSString *)geocodedLocation
 {
     if ((self = [super init])) {
         _title = title;
         _canContribute = canContribute;
         _canView = canView;
+        _isInvited = isInvited;
         _invitedToContribute = invitedToContribute;
         _invitedToView = invitedToView;
         _lengthOfStory = lengthOfStory;
@@ -81,6 +83,7 @@
 {    
     [aCoder encodeBool:_canContribute forKey:STORY_CAN_CONTRIBUTE];
     [aCoder encodeBool:_canView forKey:STORY_CAN_VIEW];
+    [aCoder encodeBool:_isInvited forKey:STORY_IS_INVITED];
     [aCoder encodeObject:_invitedToContribute forKey:STORY_INVITED_TO_CONTRIBUTE];
     [aCoder encodeObject:_invitedToView forKey:STORY_INVITED_TO_VIEW];
     [aCoder encodeObject:_lengthOfStory forKey:STORY_LENGTH];
@@ -110,6 +113,7 @@
 {
     BOOL canContribute = [aDecoder decodeBoolForKey:STORY_CAN_CONTRIBUTE];
     BOOL canView = [aDecoder decodeBoolForKey:STORY_CAN_VIEW];
+    BOOL isInvited = [aDecoder decodeBoolForKey:STORY_IS_INVITED];
     NSArray *invitedContributers = [aDecoder decodeObjectForKey:STORY_INVITED_TO_CONTRIBUTE];
     NSArray *invitedToView = [aDecoder decodeObjectForKey:STORY_INVITED_TO_VIEW];
     NSNumber *lengthOfStory = [aDecoder decodeObjectForKey:STORY_LENGTH];
@@ -134,7 +138,7 @@
     BOOL initialized = [aDecoder decodeBoolForKey:STORY_IS_INITIALIZED];
     NSString *geocodedLocation = [aDecoder decodeObjectForKey:STORY_GEOCODEDLOCATION];
     
-    return [self initWithTitle:title canContribute:canContribute canView:canView invitedToContribute:invitedContributers invitedToView:invitedToView lengthOfStory:lengthOfStory publicContributors:publicContributors publicViewers:publicViewers storyId:storyId imageURL:imageURL contributors:contributors startingScene:startingScene createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors liked:liked viewed:viewed favourite:favourite scenes:scenes initialized:initialized location:location isLocationEnabled:isLocationEnabled geocodedLocation:geocodedLocation];
+    return [self initWithTitle:title canContribute:canContribute canView:canView isInvited:isInvited invitedToContribute:invitedContributers invitedToView:invitedToView lengthOfStory:lengthOfStory publicContributors:publicContributors publicViewers:publicViewers storyId:storyId imageURL:imageURL contributors:contributors startingScene:startingScene createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors liked:liked viewed:viewed favourite:favourite scenes:scenes initialized:initialized location:location isLocationEnabled:isLocationEnabled geocodedLocation:geocodedLocation];
 }
 
 - (NSMutableDictionary *)getAttributesInDictionary

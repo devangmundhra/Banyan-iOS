@@ -126,6 +126,7 @@
         story.publicContributors = YES;
     else
     {
+        story.isInvited = YES;
         story.publicContributors = NO;
         NSArray *invited = [attributes objectForKey:STORY_INVITED_TO_CONTRIBUTE];
         story.invitedToContribute = invited;
@@ -135,6 +136,7 @@
         story.publicViewers = YES;
     else
     {
+        story.isInvited = YES;
         story.publicViewers = NO;
         NSArray *invited = [attributes objectForKey:STORY_INVITED_TO_VIEW];
         story.invitedToView = invited;

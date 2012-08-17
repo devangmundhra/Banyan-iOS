@@ -212,38 +212,37 @@
 {
     // Permission management
     // I am :
+    story.isInvited = NO;
     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:@"User Info"];
-    if (userInfo)
-    {
-        if ([[pfStory objectForKey:STORY_PUBLIC_CONTRIBUTORS] isEqualToNumber:[NSNumber numberWithBool:YES]])
-        { // Public contributors
+    if (userInfo) {
+        if ([[pfStory objectForKey:STORY_PUBLIC_CONTRIBUTORS] isEqualToNumber:[NSNumber numberWithBool:YES]]) {
+            // Public contributors
             story.canContribute = YES;
-        } else 
-        { // Invited contributors
+        } else {
+            // Invited contributors
             NSArray *contributorsList = REPLACE_NULL_WITH_EMPTY_ARRAY([pfStory objectForKey:STORY_INVITED_TO_CONTRIBUTE]);
             story.invitedToContribute = contributorsList;
             NSDictionary *myAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-                                          [userInfo objectForKey:@"name"], 
-                                          @"name", 
-                                          [userInfo objectForKey:@"id"], 
+                                          [userInfo objectForKey:@"name"],
+                                          @"name",
+                                          [userInfo objectForKey:@"id"],
                                           @"id", nil];
             
             story.canContribute = NO;
-            for (NSDictionary *contributor in contributorsList)
-            {
-                if ([contributor isEqualToDictionary:myAttributes])
-                {
+            for (NSDictionary *contributor in contributorsList) {
+                if ([contributor isEqualToDictionary:myAttributes]) {
                     story.canContribute = YES;
+                    story.isInvited =YES;
                     break;
                 }
             }
         }
         
-        if ([[pfStory objectForKey:STORY_PUBLIC_VIEWERS] isEqualToNumber:[NSNumber numberWithBool:YES]])
-        { // Public viewers
+        if ([[pfStory objectForKey:STORY_PUBLIC_VIEWERS] isEqualToNumber:[NSNumber numberWithBool:YES]]) {
+            // Public viewers
             story.canView = YES;
-        } else 
-        { // Invited viewers
+        } else {
+            // Invited viewers
             NSMutableArray *allAudience = [NSMutableArray arrayWithArray:REPLACE_NULL_WITH_EMPTY_ARRAY([pfStory objectForKey:STORY_INVITED_TO_VIEW])];
             [allAudience addObjectsFromArray:REPLACE_NULL_WITH_EMPTY_ARRAY([pfStory objectForKey:STORY_INVITED_TO_CONTRIBUTE])];
             NSArray *viewersList = [allAudience copy];
@@ -255,18 +254,16 @@
                                           @"id", nil];
             
             story.canView = NO;
-            for (NSDictionary *viewer in viewersList)
-            {
-                if ([viewer isEqualToDictionary:myAttributes])
-                {
+            for (NSDictionary *viewer in viewersList) {
+                if ([viewer isEqualToDictionary:myAttributes]) {
                     story.canView = YES;
+                    story.isInvited = YES;
                     break;
                 }
             }
         }
     }
-    else 
-    {
+    else {
         // Can't find user info!
         NSLog(@"%s Can't find user info", __PRETTY_FUNCTION__);
         story.canView = story.publicViewers;

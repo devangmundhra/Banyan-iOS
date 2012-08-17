@@ -24,6 +24,7 @@
 #define STORY_INVITED_TO_VIEW @"invitedToView"
 #define STORY_CAN_VIEW @"canView"
 #define STORY_CAN_CONTRIBUTE @"canContribute"
+#define STORY_IS_INVITED @"isInvited"
 #define STORY_FONT @"Georgia-BoldItalic"
 
 #define STORY_LOCATION_ENABLED @"locationEnabled"

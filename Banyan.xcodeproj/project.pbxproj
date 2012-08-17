@@ -9,7 +9,10 @@
 /* Begin PBXBuildFile section */
 		5110A7BF15B3EB0A00D4FBD1 /* BNOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5110A7BE15B3EB0A00D4FBD1 /* BNOperation.m */; };
 		5110A7C715B5DB3700D4FBD1 /* BNOperationQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 5110A7C615B5DB3700D4FBD1 /* BNOperationQueue.m */; };
+		5123CF3615CDFEA100970A3E /* File.m in Sources */ = {isa = PBXBuildFile; fileRef = 5123CF3515CDFEA100970A3E /* File.m */; };
+		5123CF3A15CDFEB100970A3E /* File+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 5123CF3915CDFEB100970A3E /* File+Create.m */; };
 		5138D7E615B7E138007B4D7D /* BanyanDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 5138D7E515B7E138007B4D7D /* BanyanDataSource.m */; };
+		517D164A15D23529005F38C8 /* BNLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 517D164915D23529005F38C8 /* BNLocationManager.m */; };
 		5189B2B815B387E200562DD0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2B715B387E200562DD0 /* UIKit.framework */; };
 		5189B2BA15B387E200562DD0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2B915B387E200562DD0 /* Foundation.framework */; };
 		5189B2BC15B387E200562DD0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2BB15B387E200562DD0 /* CoreGraphics.framework */; };
@@ -35,7 +38,6 @@
 		5189B33915B395F300562DD0 /* Scene+Delete.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F715B395F300562DD0 /* Scene+Delete.m */; };
 		5189B33A15B395F300562DD0 /* Scene+Edit.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F915B395F300562DD0 /* Scene+Edit.m */; };
 		5189B33B15B395F300562DD0 /* Scene+Stats.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2FB15B395F300562DD0 /* Scene+Stats.m */; };
-		5189B33C15B395F300562DD0 /* SceneDocuments.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2FD15B395F300562DD0 /* SceneDocuments.m */; };
 		5189B33E15B395F300562DD0 /* ScenesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B30115B395F300562DD0 /* ScenesViewController.m */; };
 		5189B34215B395F300562DD0 /* Story.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B30A15B395F300562DD0 /* Story.m */; };
 		5189B34315B395F300562DD0 /* Story+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B30C15B395F300562DD0 /* Story+Create.m */; };
@@ -74,7 +76,6 @@
 		5189B3A915B39B1500562DD0 /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 5189B3A415B39B1500562DD0 /* arrow.png */; };
 		5189B3AA15B39B1500562DD0 /* arrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5189B3A515B39B1500562DD0 /* arrow@2x.png */; };
 		5189B3AB15B39B1500562DD0 /* PullToRefreshView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B3A715B39B1500562DD0 /* PullToRefreshView.m */; };
-		5189B3AC15B39B1500562DD0 /* README in Resources */ = {isa = PBXBuildFile; fileRef = 5189B3A815B39B1500562DD0 /* README */; };
 		5189B3B215B39B1F00562DD0 /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3AE15B39B1F00562DD0 /* libTestFlight.a */; };
 		5189B3B315B39B1F00562DD0 /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5189B3AF15B39B1F00562DD0 /* README.txt */; };
 		5189B3B415B39B1F00562DD0 /* release_notes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 5189B3B015B39B1F00562DD0 /* release_notes.txt */; };
@@ -101,8 +102,14 @@
 		5110A7BE15B3EB0A00D4FBD1 /* BNOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNOperation.m; path = Banyan/BNOperation.m; sourceTree = "<group>"; };
 		5110A7C515B5DB3700D4FBD1 /* BNOperationQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNOperationQueue.h; sourceTree = "<group>"; };
 		5110A7C615B5DB3700D4FBD1 /* BNOperationQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNOperationQueue.m; sourceTree = "<group>"; };
+		5123CF3415CDFEA100970A3E /* File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = File.h; sourceTree = "<group>"; };
+		5123CF3515CDFEA100970A3E /* File.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = File.m; sourceTree = "<group>"; };
+		5123CF3815CDFEB100970A3E /* File+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "File+Create.h"; sourceTree = "<group>"; };
+		5123CF3915CDFEB100970A3E /* File+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "File+Create.m"; sourceTree = "<group>"; };
 		5138D7E415B7E138007B4D7D /* BanyanDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BanyanDataSource.h; sourceTree = "<group>"; };
 		5138D7E515B7E138007B4D7D /* BanyanDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BanyanDataSource.m; sourceTree = "<group>"; };
+		517D164815D23529005F38C8 /* BNLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNLocationManager.h; sourceTree = "<group>"; };
+		517D164915D23529005F38C8 /* BNLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNLocationManager.m; sourceTree = "<group>"; };
 		5189B2B315B387E200562DD0 /* Banyan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Banyan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5189B2B715B387E200562DD0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		5189B2B915B387E200562DD0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -149,8 +156,6 @@
 		5189B2F915B395F300562DD0 /* Scene+Edit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Scene+Edit.m"; path = "Banyan/Scene+Edit.m"; sourceTree = "<group>"; };
 		5189B2FA15B395F300562DD0 /* Scene+Stats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Scene+Stats.h"; path = "Banyan/Scene+Stats.h"; sourceTree = "<group>"; };
 		5189B2FB15B395F300562DD0 /* Scene+Stats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Scene+Stats.m"; path = "Banyan/Scene+Stats.m"; sourceTree = "<group>"; };
-		5189B2FC15B395F300562DD0 /* SceneDocuments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SceneDocuments.h; path = Banyan/SceneDocuments.h; sourceTree = "<group>"; };
-		5189B2FD15B395F300562DD0 /* SceneDocuments.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SceneDocuments.m; path = Banyan/SceneDocuments.m; sourceTree = "<group>"; };
 		5189B30015B395F300562DD0 /* ScenesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScenesViewController.h; path = Banyan/ScenesViewController.h; sourceTree = "<group>"; };
 		5189B30115B395F300562DD0 /* ScenesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScenesViewController.m; path = Banyan/ScenesViewController.m; sourceTree = "<group>"; };
 		5189B30815B395F300562DD0 /* Story_Defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Story_Defines.h; path = Banyan/Story_Defines.h; sourceTree = "<group>"; };
@@ -226,7 +231,6 @@
 		5189B3A515B39B1500562DD0 /* arrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrow@2x.png"; sourceTree = "<group>"; };
 		5189B3A615B39B1500562DD0 /* PullToRefreshView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PullToRefreshView.h; sourceTree = "<group>"; };
 		5189B3A715B39B1500562DD0 /* PullToRefreshView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PullToRefreshView.m; sourceTree = "<group>"; };
-		5189B3A815B39B1500562DD0 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		5189B3AE15B39B1F00562DD0 /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
 		5189B3AF15B39B1F00562DD0 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		5189B3B015B39B1F00562DD0 /* release_notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = release_notes.txt; sourceTree = "<group>"; };
@@ -280,6 +284,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5123CF3B15CDFEB700970A3E /* File */ = {
+			isa = PBXGroup;
+			children = (
+				5123CF3415CDFEA100970A3E /* File.h */,
+				5123CF3515CDFEA100970A3E /* File.m */,
+				5123CF3815CDFEB100970A3E /* File+Create.h */,
+				5123CF3915CDFEB100970A3E /* File+Create.m */,
+			);
+			name = File;
+			sourceTree = "<group>";
+		};
 		5189B2A815B387E100562DD0 = {
 			isa = PBXGroup;
 			children = (
@@ -372,6 +387,9 @@
 				5189B2D815B395F300562DD0 /* ArrayToDataTransformer.m */,
 				5189B2DB15B395F300562DD0 /* ImageToDataTransformer.h */,
 				5189B2DC15B395F300562DD0 /* ImageToDataTransformer.m */,
+				517D164815D23529005F38C8 /* BNLocationManager.h */,
+				517D164915D23529005F38C8 /* BNLocationManager.m */,
+				5123CF3B15CDFEB700970A3E /* File */,
 				5189B35D15B397D900562DD0 /* User */,
 				5189B35715B396E700562DD0 /* Scene */,
 				5189B35A15B3975100562DD0 /* Story */,
@@ -453,8 +471,6 @@
 				5189B2EB15B395F300562DD0 /* ParseConnection.m */,
 				5189B31315B395F300562DD0 /* StoryDocuments.h */,
 				5189B31415B395F300562DD0 /* StoryDocuments.m */,
-				5189B2FC15B395F300562DD0 /* SceneDocuments.h */,
-				5189B2FD15B395F300562DD0 /* SceneDocuments.m */,
 			);
 			name = "Data handling";
 			path = ..;
@@ -611,7 +627,6 @@
 				5189B3A515B39B1500562DD0 /* arrow@2x.png */,
 				5189B3A615B39B1500562DD0 /* PullToRefreshView.h */,
 				5189B3A715B39B1500562DD0 /* PullToRefreshView.m */,
-				5189B3A815B39B1500562DD0 /* README */,
 			);
 			path = PullToRefreshView;
 			sourceTree = "<group>";
@@ -714,7 +729,6 @@
 				5189B34E15B395F300562DD0 /* UserLoginViewController.xib in Resources */,
 				5189B3A915B39B1500562DD0 /* arrow.png in Resources */,
 				5189B3AA15B39B1500562DD0 /* arrow@2x.png in Resources */,
-				5189B3AC15B39B1500562DD0 /* README in Resources */,
 				5189B3B315B39B1F00562DD0 /* README.txt in Resources */,
 				5189B3B415B39B1F00562DD0 /* release_notes.txt in Resources */,
 				5189B3CB15B39E7400562DD0 /* MainStoryboard.storyboard in Resources */,
@@ -746,7 +760,6 @@
 				5189B33915B395F300562DD0 /* Scene+Delete.m in Sources */,
 				5189B33A15B395F300562DD0 /* Scene+Edit.m in Sources */,
 				5189B33B15B395F300562DD0 /* Scene+Stats.m in Sources */,
-				5189B33C15B395F300562DD0 /* SceneDocuments.m in Sources */,
 				5189B33E15B395F300562DD0 /* ScenesViewController.m in Sources */,
 				5189B34215B395F300562DD0 /* Story.m in Sources */,
 				5189B34315B395F300562DD0 /* Story+Create.m in Sources */,
@@ -788,6 +801,9 @@
 				51CF3E3015BFEDB200FFC0D1 /* BNOperationObject.m in Sources */,
 				519AFA6B15C11F3600F68F3C /* BNOperationAction.m in Sources */,
 				519AFA7615C4B9DE00F68F3C /* User+Edit.m in Sources */,
+				5123CF3615CDFEA100970A3E /* File.m in Sources */,
+				5123CF3A15CDFEB100970A3E /* File+Create.m in Sources */,
+				517D164A15D23529005F38C8 /* BNLocationManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -827,8 +843,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				PROVISIONING_PROFILE = "F6704EEE-0D00-4FB5-843C-8CBAC789D299";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "F6704EEE-0D00-4FB5-843C-8CBAC789D299";
+				PROVISIONING_PROFILE = "BF84F2EB-5C3A-4E3F-A68D-DB2D6F05A1DF";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "BF84F2EB-5C3A-4E3F-A68D-DB2D6F05A1DF";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -849,8 +865,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "F6704EEE-0D00-4FB5-843C-8CBAC789D299";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "F6704EEE-0D00-4FB5-843C-8CBAC789D299";
+				PROVISIONING_PROFILE = "BF84F2EB-5C3A-4E3F-A68D-DB2D6F05A1DF";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "BF84F2EB-5C3A-4E3F-A68D-DB2D6F05A1DF";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};

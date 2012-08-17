@@ -46,6 +46,11 @@ static NSMutableDictionary *_hashTable = nil;
     return _sharedDatasource;
 }
 
++ (void) setSharedDatasource:(NSArray *)array
+{
+    [_sharedDatasource setArray:array];
+}
+
 + (Story *)lookForStoryId:(NSString *)storyId
 {
     storyId = UPDATED(storyId);

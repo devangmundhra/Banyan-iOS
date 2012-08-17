@@ -10,27 +10,22 @@
 #import "ParseConnection.h"
 #import "StoryDocuments.h"
 
+#define FILTER_STORIES_SEGMENT_INDEX_POPULAR 0
+#define FILTER_STORIES_SEGMENT_INDEX_INVITED 1
+
 @interface StoryListTableViewController ()
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *addStory;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *leftButton;
 @property (weak, nonatomic) UserManagementModule *userManagementModule;
+@property (strong, nonatomic) IBOutlet UISegmentedControl *filterStoriesSegmentedControl;
 @end
 
 @implementation StoryListTableViewController
 @synthesize addStory = _addStory;
 @synthesize leftButton = _leftButton;
 @synthesize userManagementModule = _userManagementModule;
+@synthesize filterStoriesSegmentedControl = _filterStoriesSegmentedControl;
 @synthesize dataSource = _dataSource;
-
-- (NSMutableArray *)dataSource
-{
-    return [BanyanDataSource shared];
-}
-
-- (void)setDataSource:(NSMutableArray *)dataSource
-{
-    [[BanyanDataSource shared] setArray:dataSource];
-}
 
 - (UserManagementModule *)userManagementModule
 {
@@ -78,6 +73,18 @@
         self.addStory = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd 
                                                                       target:(self) 
                                                                       action:@selector(addStorySegue:)];
+    
+    if (!self.filterStoriesSegmentedControl) {
+        self.filterStoriesSegmentedControl = [[UISegmentedControl alloc]
+                                              initWithItems:[NSArray arrayWithObjects:@"Popular", @"Invited", nil]];
+        [self.filterStoriesSegmentedControl addTarget:self
+                                               action:@selector(filterStories:)
+                                     forControlEvents:UIControlEventValueChanged];
+        self.filterStoriesSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+        self.filterStoriesSegmentedControl.selectedSegmentIndex = FILTER_STORIES_SEGMENT_INDEX_POPULAR;
+        [self.navigationItem setTitleView:self.filterStoriesSegmentedControl];
+    }
+    
     // Notifications to handle permission controls
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(userLoginStatusChanged:) 
@@ -121,6 +128,8 @@
                                                  name:STORY_EDIT_STORY_NOTIFICATION
                                                object:nil];
 
+    self.dataSource = [NSMutableArray array];
+    [self filterStoriesForTableDataSource];
     [self refreshView];
     
     [TestFlight passCheckpoint:@"RootViewController view loaded"];
@@ -155,7 +164,9 @@
     _pull = nil;
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+    [self setFilterStoriesSegmentedControl:nil];
     [super viewDidUnload];
+    NSLog(@"Root View Controller Unloaded");
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -263,18 +274,35 @@
     }    
 }
 #pragma mark Data Source Loading / Reloading Methods
+- (IBAction)filterStories:(UISegmentedControl *)sender
+{
+    [self filterStoriesForTableDataSource];
+}
+
+- (void) filterStoriesForTableDataSource
+{
+    NSPredicate *predicate = nil;
+    if (self.filterStoriesSegmentedControl.selectedSegmentIndex == FILTER_STORIES_SEGMENT_INDEX_POPULAR) {
+        predicate = [NSPredicate predicateWithFormat:@"(canView == YES) OR (canContribute == YES)"];
+    } else {
+        predicate = [NSPredicate predicateWithFormat:@"(isInvited == YES)"];
+    }
+    [self.dataSource setArray:[BanyanDataSource shared]];
+    [self.dataSource filterUsingPredicate:predicate];
+    [self.tableView reloadData];
+}
 
 - (void) loadDataSource
 {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(canView == YES) OR (canContribute == YES)"];
     
     [ParseConnection
-     loadStoriesFromParseWithBlock:^(NSMutableArray *retValue){
+     loadStoriesFromParseWithBlock:^(NSMutableArray *retValue) {
          [retValue filterUsingPredicate:predicate];
          dispatch_async(dispatch_get_main_queue(), ^{
-             self.dataSource = retValue;
+             [BanyanDataSource setSharedDatasource:retValue];
+             [self filterStoriesForTableDataSource];
              [_pull refreshLastUpdatedDate];
-             [self.tableView reloadData];
              [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
          });
      }
@@ -311,6 +339,7 @@
     if ([notification.name isEqualToString:STORY_NEW_STORY_NOTIFICATION]){
         NSLog(@"%s %@ added", __PRETTY_FUNCTION__, story);
         [self.dataSource insertObject:story atIndex:0];
+        [[BanyanDataSource shared] insertObject:story atIndex:0];
         NSArray *insertIndexPaths = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]];
         [self.tableView beginUpdates];
         [self.tableView insertRowsAtIndexPaths:insertIndexPaths withRowAnimation:UITableViewRowAnimationTop];
@@ -324,18 +353,20 @@
         }
         NSArray *deleteIndexPaths = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:indexOfStory inSection:0]];
         [self.dataSource removeObject:story];
+        [[BanyanDataSource shared] removeObject:story];
         [self.tableView beginUpdates];
         [self.tableView deleteRowsAtIndexPaths:deleteIndexPaths withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView endUpdates];
     } else if ([notification.name isEqualToString:STORY_EDIT_STORY_NOTIFICATION]) {
         NSLog(@"%s %@ edit", __PRETTY_FUNCTION__, story);
-        NSUInteger indexOfStory = [self. dataSource indexOfObject:story];
+        NSUInteger indexOfStory = [self.dataSource indexOfObject:story];
         if (indexOfStory == NSNotFound) {
             NSLog(@"%s Can't find story in the datasource", __PRETTY_FUNCTION__);
             return;
         }
         NSArray *editIndexPaths = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:indexOfStory inSection:0]];
         [self.dataSource replaceObjectAtIndex:indexOfStory withObject:story];
+        [[BanyanDataSource shared] replaceObjectAtIndex:[[BanyanDataSource shared] indexOfObject:story] withObject:story];
         [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:editIndexPaths withRowAnimation:UITableViewRowAnimationNone];
         [self.tableView endUpdates];
@@ -400,10 +431,8 @@
 - (void) userLoginStatusChanged:(NSNotification *)notification
 {
     if ([[notification name] isEqualToString:USER_MANAGEMENT_MODULE_USER_LOGOUT_NOTIFICATION]) {
-        [ParseConnection resetPermissionsForStories:self.dataSource];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(canView == YES) OR (canContribute == YES)"];
-        [self.dataSource filterUsingPredicate:predicate];
-        [self.tableView reloadData];
+        [ParseConnection resetPermissionsForStories:[BanyanDataSource shared]];
+        [self filterStoriesForTableDataSource];
         [self refreshView];
     } else if ([[notification name] isEqualToString:USER_MANAGEMENT_MODULE_USER_LOGIN_NOTIFICATION]) {
         [self loadDataSource];
@@ -429,8 +458,8 @@
 - (void)didReceiveMemoryWarning
 {
     // Release all the scene information from the stories. This can be added later
-    for (Story *story in self.dataSource) {
-        if (!story.storyBeingRead) {
+    for (Story *story in [BanyanDataSource shared]) {
+        if (!story.storyBeingRead && story.initialized) {
             story.scenes = nil;
             NSLog(@"Scenes for story %@ are nulled", story.storyId);
         }

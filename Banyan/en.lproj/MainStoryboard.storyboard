@@ -5,7 +5,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1498"/>
     </dependencies>
     <scenes>
-        <!--Story List Table View Controller - Banyan-->
+        <!--Story List Table View Controller-->
         <scene sceneID="Jwn-F9-Gq6">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DWC-2f-f96" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -53,8 +53,20 @@
                         </prototypes>
                         <sections/>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Banyan" id="JUa-cz-O2f">
+                    <navigationItem key="navigationItem" id="JUa-cz-O2f">
+                        <nil key="title"/>
                         <barButtonItem key="leftBarButtonItem" title="Sign Out" id="04U-um-zSa"/>
+                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="y7u-zR-p7n">
+                            <rect key="frame" x="83" y="7" width="164" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <segments>
+                                <segment title="Popular"/>
+                                <segment title="Invited"/>
+                            </segments>
+                            <connections>
+                                <action selector="filterStories:" destination="5Ih-3Q-Est" eventType="valueChanged" id="pXO-ax-Q8f"/>
+                            </connections>
+                        </segmentedControl>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="1ek-dP-Vvn">
                             <connections>
                                 <action selector="addStorySegue:" destination="5Ih-3Q-Est" id="mzv-eb-3oC"/>
@@ -65,6 +77,7 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
                     <connections>
                         <outlet property="addStory" destination="1ek-dP-Vvn" id="Z02-1q-4QG"/>
+                        <outlet property="filterStoriesSegmentedControl" destination="y7u-zR-p7n" id="kKa-ro-WiN"/>
                         <outlet property="leftButton" destination="04U-um-zSa" id="wFZ-kc-WpY"/>
                     </connections>
                 </tableViewController>
@@ -322,6 +335,7 @@
         <class className="InvitedTableViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/InvitedTableViewController.h"/>
             <relationships>
+                <relationship kind="action" name="doneInviting:" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="searchBar" candidateClass="UISearchBar"/>
                 <relationship kind="outlet" name="searchDisplayController" candidateClass="UISearchDisplayController"/>
             </relationships>
@@ -329,11 +343,6 @@
         <class className="NewStoryViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NewStoryViewController.h"/>
             <relationships>
-                <relationship kind="action" name="dismissKeyboard:"/>
-                <relationship kind="action" name="doneNewStory:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="action" name="showLocationSwitchToggled:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="storyContributors:" candidateClass="UISegmentedControl"/>
-                <relationship kind="action" name="storyViewers:" candidateClass="UISegmentedControl"/>
                 <relationship kind="outlet" name="addStorySubView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="contributorInvitationLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="contributorSegmenedControl" candidateClass="UISegmentedControl"/>
@@ -367,7 +376,9 @@
             <source key="sourceIdentifier" type="project" relativePath="./Classes/StoryListTableViewController.h"/>
             <relationships>
                 <relationship kind="action" name="addStorySegue:" candidateClass="UIBarButtonItem"/>
+                <relationship kind="action" name="filterStories:" candidateClass="UISegmentedControl"/>
                 <relationship kind="outlet" name="addStory" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="filterStoriesSegmentedControl" candidateClass="UISegmentedControl"/>
                 <relationship kind="outlet" name="leftButton" candidateClass="UIBarButtonItem"/>
             </relationships>
         </class>

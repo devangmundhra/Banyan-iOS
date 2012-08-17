@@ -18,6 +18,8 @@
 @interface BanyanDataSource : NSObject
 
 + (NSMutableArray *)shared;
++ (void) setSharedDatasource:(NSArray *)array;
+
 + (NSMutableDictionary *)hashTable;
 + (Story *)lookForStoryId:(NSString *)storyId;
 + (Scene *)lookForSceneId:(NSString *)sceneId inStoryId:(NSString *)storyId;

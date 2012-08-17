@@ -26,7 +26,6 @@
     self = [super init];
     if (self) {
         [PFFacebookUtils initializeWithApplicationId:@"244613942300893"];
-        [User updateCurrentUser];
         loginTabbarViewController = [[LoginTabbarViewController alloc] init];
         loginTabbarViewController.module = self;
         owningViewController = nil;
@@ -36,7 +35,7 @@
 
 - (BOOL) isUserSignedIntoApp
 {
-    PFUser *currentUser = [PFUser currentUser];
+    User *currentUser = [User currentUser];
     if (currentUser)
     {
         [self removeLoginTabbar];
