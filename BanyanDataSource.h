@@ -15,6 +15,8 @@
 
 #define UPDATED(__id__) [BanyanDataSource getUpdatedValueForId:__id__]
 
+extern NSString * const BanyanDataSourceUpdatedNotification;
+
 @interface BanyanDataSource : NSObject
 
 + (NSMutableArray *)shared;

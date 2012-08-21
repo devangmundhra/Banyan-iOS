@@ -19,7 +19,6 @@
 #define USER_USERNAME @"username"
 #define USER_SCENES @"scenes"
 #define USER_STORIES @"stories"
-#define USER_FACEBOOKKEY @"facebookKey"
 #define USER_PROFILEPIC @"profilePic"
 #define USER_SCENES_LIKED @"scenesLiked"
 #define USER_STORIES_LIKED @"storiesLikes"

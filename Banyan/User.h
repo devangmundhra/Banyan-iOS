@@ -14,7 +14,7 @@
 @property (nonatomic, strong) NSString *userId;
 @property (nonatomic, strong) NSDate * dateCreated;
 @property (nonatomic, strong) NSString * emailAddress;
-@property (nonatomic, strong) NSString * facebookKey;
+@property (nonatomic, strong) NSString * facebookId;
 @property (nonatomic, strong) NSString * firstName;
 @property (nonatomic, strong) NSString * lastName;
 @property (nonatomic, strong) NSString * name;
@@ -31,12 +31,13 @@
 // Session variables. No need to archive
 @property (nonatomic, strong) NSString *sessionToken;
 
-- (id) initWithUsername:(NSString *)username firstName:(NSString *)firstName lastName:(NSString *)lastName name:(NSString *)name dateCreated:(NSDate *)dateCreated emailAddress:(NSString *)emailAddress facebookKey:(NSString *)facebookKey profilePic:(id)profilePic stories:(NSArray *)stories scenes:(NSArray *)scenes scenesLiked:(NSArray *)scenesLiked storiesLiked:(NSArray *)storiesLiked scenesViewed:(NSArray *)scenesViewed storiesViewed:(NSArray *)storiesViewed scenesFavourited:(NSArray *)scenesFavourited storiesFavourited:(NSArray *)storiesFavourited userId:(NSString *)userId;
-
 + (User *)currentUser;
 + (User *)getUserForPfUser:(PFUser *)pfUser;
 + (void)updateCurrentUser;
 + (User *)userWithId:(NSString *)id;
 - (BOOL) initialized;
 
++ (void) archiveCurrentUser;
++ (void) unarchiveCurrentUser;
++ (void) deleteCurrentUserFromDisk;
 @end

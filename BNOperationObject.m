@@ -100,7 +100,7 @@
 {
     if (self == object  )
         return YES;
-    if (![self.tempId isEqualToString:object.tempId] || (self.type != object.type) || ![self.storyId isEqualToString:object.storyId])
+    if (![UPDATED(self.tempId) isEqualToString:UPDATED(object.tempId)] || (self.type != object.type) || ![UPDATED(self.storyId) isEqualToString:UPDATED(object.storyId)])
         return NO;
     return YES;
 }

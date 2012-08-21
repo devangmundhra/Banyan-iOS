@@ -15,16 +15,30 @@
 
 @implementation Story (Delete)
 
-+ (void) removeStory:(Story *)story
++ (void) deleteStoryFromDisk:(Story *)story
 {
-    NSLog(@"Remove Story %@", story);
+    NSLog(@"%s Story id: %@", __PRETTY_FUNCTION__, story.storyId);
     [[NSNotificationCenter defaultCenter] postNotificationName:STORY_DELETE_STORY_NOTIFICATION
-                                                        object:self 
-                                                      userInfo:[NSDictionary dictionaryWithObject:story 
+                                                        object:self
+                                                      userInfo:[NSDictionary dictionaryWithObject:story
                                                                                            forKey:@"Story"]];
+    
+    // Delete Object
+    if (story.image || story.imageURL)
+    {
+        NSLog(@"Story Image still needs to be deleted");
+    }
+    
+    [StoryDocuments deleteStoryFromDisk:story];
+    story = nil;
+}
+
++ (void) deleteStoryFromServerWithId:(NSString *)storyId
+{
+    NSLog(@"%s Story id: %@", __PRETTY_FUNCTION__, storyId);
 
     NSDictionary *jsonDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                    story.storyId, SCENE_STORY, nil];
+                                    storyId, SCENE_STORY, nil];
     
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
@@ -48,21 +62,9 @@
                                          }
                                          
                                      }
-                                     failure:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
-
-    // Delete Object
-    if (story.image || story.imageURL)
-    {
-        NSLog(@"Story Image still needs to be deleted");
-    }
+                                     failure:AF_PARSE_ERROR_BLOCK()];
     
-    [Story removeStoryWithId:story.storyId];
-
-    // ARCHIVES
-    
-    [StoryDocuments deleteStoryFromDisk:story];
-    NSLog(@"%s Deleted story %@", __PRETTY_FUNCTION__, story);
-    story = nil;
+    [Story removeStoryWithId:storyId];
 }
 
 + (void) removeStoryWithId:(NSString *)storyId
@@ -71,7 +73,8 @@
                                      parameters:nil
                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                             NSLog(@"Story with id %@ deleted", storyId);
+                                            NETWORK_OPERATION_COMPLETE();
                                         }
-                                        failure:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
+                                        failure:BN_ERROR_BLOCK_OPERATION_INCOMPLETE()];
 }
 @end

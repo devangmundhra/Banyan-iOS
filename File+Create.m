@@ -35,7 +35,7 @@
                 // So that we know the file has been uploaded (aka initialized)
                 [[BanyanDataSource hashTable] setObject:imageFile.url forKey:url];
                 [BanyanDataSource archiveHashTable];
-                NSLog(@"Image saved");
+                NSLog(@"Image saved on server");
                 NETWORK_OPERATION_COMPLETE();
             } else {
                 NSLog(@"%@\t%@\t%@\t%@", [error localizedDescription], [error localizedFailureReason],

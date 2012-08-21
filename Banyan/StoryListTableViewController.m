@@ -82,26 +82,15 @@
                                      forControlEvents:UIControlEventValueChanged];
         self.filterStoriesSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         self.filterStoriesSegmentedControl.selectedSegmentIndex = FILTER_STORIES_SEGMENT_INDEX_POPULAR;
-        [self.navigationItem setTitleView:self.filterStoriesSegmentedControl];
     }
     
-    // Notifications to handle permission controls
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(userLoginStatusChanged:) 
-                                                 name:USER_MANAGEMENT_MODULE_USER_LOGIN_NOTIFICATION 
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(userLoginStatusChanged:) 
-                                                 name:USER_MANAGEMENT_MODULE_USER_LOGOUT_NOTIFICATION 
-                                               object:nil];
     
     // Notifications to refresh data
-    /*
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(foregroundRefresh:) 
-                                                 name:UIApplicationWillEnterForegroundNotification 
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(filterStories:)
+                                                 name:BanyanDataSourceUpdatedNotification
                                                object:nil];
-    */
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(foregroundRefresh:)
@@ -145,11 +134,15 @@
     {
         [self.navigationItem setLeftBarButtonItem:self.leftButton animated:YES];
         [self.navigationItem setRightBarButtonItem:self.addStory animated:YES];
+        [self.navigationItem setTitleView:self.filterStoriesSegmentedControl];
     }
     else {
         [self.navigationItem setLeftBarButtonItem:nil animated:YES];
         [self.navigationItem setRightBarButtonItem:nil animated:YES];
+        [self.navigationItem setTitle:@"Banyan"];
+        [self.navigationItem setTitleView:nil];
     }
+
     // Don't reload data here as it is called everytime it comes back from sceneviewcontroller
 }
 
@@ -192,21 +185,31 @@
 {
     static NSString *CellIdentifier = @"Story Cell";
     StoryListStoryCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil)
+    if (cell == nil) {
         cell = [[StoryListStoryCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
     
     // Configure the cell...
     Story *story = [self.dataSource objectAtIndex:indexPath.row];
     
     cell.storyTitleLabel.text = story.title;
     cell.storyTitleLabel.font = [UIFont fontWithName:STORY_FONT size:20];
-    
+
     // So that the cell does not show any image from before
     [cell.storyImageView cancelImageRequestOperation];
     cell.storyImageView.image = nil;
+    
+    if (story.imageURL) {
+        cell.storyTitleLabel.textColor = [UIColor whiteColor];
+        cell.storyLocationLabel.textColor = [UIColor whiteColor];
+    } else {
+        cell.storyTitleLabel.textColor = [UIColor blackColor];
+        cell.storyLocationLabel.textColor = [UIColor grayColor];
+    }
+    
     if (story.imageURL && [story.imageURL rangeOfString:@"asset"].location == NSNotFound) {
         [cell.storyImageView setImageWithURL:[NSURL URLWithString:story.imageURL] placeholderImage:story.image];
-    } else if (story.imageURL){
+    } else if (story.imageURL) {
         ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
         [library assetForURL:[NSURL URLWithString:story.imageURL] resultBlock:^(ALAsset *asset) {
             ALAssetRepresentation *rep = [asset defaultRepresentation];
@@ -240,7 +243,8 @@
     {        
         Story *alreadyExistingStory = [StoryDocuments loadStoryFromDisk:story.storyId];
         if (alreadyExistingStory) {
-            story.scenes = [NSArray arrayWithArray:story.scenes];
+            // If a story is already existing, load that story while a background thread fetches the updated stories.
+            story.scenes = [NSArray arrayWithArray:alreadyExistingStory.scenes];
             [NSThread detachNewThreadSelector:@selector(loadScenesForStory:) toTarget:[ParseConnection class] withObject:story];
         } else {
             MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
@@ -254,6 +258,7 @@
         
     }
     if (!story.scenes || [story.scenes count] == 0) {
+        NSLog(@"%s story.scenes %@ story count: %d", __PRETTY_FUNCTION__, story.scenes, [story.scenes count]);
         [networkUnavailableAlert show];
         return nil;
     }
@@ -269,18 +274,21 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         Story *story = [self.dataSource objectAtIndex:indexPath.row];
-        [Story removeStory:story];
+        DELETE_STORY(story);
         [TestFlight passCheckpoint:@"Story deleted by swipe"];
     }    
 }
 #pragma mark Data Source Loading / Reloading Methods
-- (IBAction)filterStories:(UISegmentedControl *)sender
+// Called by both data source updated notification and by clicking on the filter segmented control
+- (IBAction)filterStories:(id)sender
 {
     [self filterStoriesForTableDataSource];
 }
 
 - (void) filterStoriesForTableDataSource
 {
+    [_pull finishedLoading];
+    
     NSPredicate *predicate = nil;
     if (self.filterStoriesSegmentedControl.selectedSegmentIndex == FILTER_STORIES_SEGMENT_INDEX_POPULAR) {
         predicate = [NSPredicate predicateWithFormat:@"(canView == YES) OR (canContribute == YES)"];
@@ -290,30 +298,6 @@
     [self.dataSource setArray:[BanyanDataSource shared]];
     [self.dataSource filterUsingPredicate:predicate];
     [self.tableView reloadData];
-}
-
-- (void) loadDataSource
-{
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(canView == YES) OR (canContribute == YES)"];
-    
-    [ParseConnection
-     loadStoriesFromParseWithBlock:^(NSMutableArray *retValue) {
-         [retValue filterUsingPredicate:predicate];
-         dispatch_async(dispatch_get_main_queue(), ^{
-             [BanyanDataSource setSharedDatasource:retValue];
-             [self filterStoriesForTableDataSource];
-             [_pull refreshLastUpdatedDate];
-             [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-         });
-     }
-     onCompletion:^{
-         dispatch_async(dispatch_get_main_queue(), ^{
-             [_pull finishedLoading];
-             if ([[AFParseAPIClient sharedClient] isReachable]) {
-                 [[BNOperationQueue shared] setSuspended:NO];
-             }
-         });
-     }];
 }
 
 -(void)foregroundRefresh:(NSNotification *)notification
@@ -328,7 +312,7 @@
     }
     self.tableView.contentOffset = CGPointMake(0, -65);
     [_pull setState:PullToRefreshViewStateLoading];
-    [self performSelectorInBackground:@selector(loadDataSource) withObject:nil];
+    [[BanyanDataSource class] performSelectorInBackground:@selector(loadDataSource) withObject:nil];
 }
 
 - (void)changeInStoryList:(NSNotification *)notification
@@ -428,30 +412,16 @@
     [self.userManagementModule logout];
 }
 
-- (void) userLoginStatusChanged:(NSNotification *)notification
-{
-    if ([[notification name] isEqualToString:USER_MANAGEMENT_MODULE_USER_LOGOUT_NOTIFICATION]) {
-        [ParseConnection resetPermissionsForStories:[BanyanDataSource shared]];
-        [self filterStoriesForTableDataSource];
-        [self refreshView];
-    } else if ([[notification name] isEqualToString:USER_MANAGEMENT_MODULE_USER_LOGIN_NOTIFICATION]) {
-        [self loadDataSource];
-        [self refreshView];
-    } else {
-        NSLog(@"%s Unknown notification %@", __PRETTY_FUNCTION__, [notification name]);
-    }
-}
-
 #pragma PullToRefreshView delegate methods
 // called when the user pulls-to-refresh
 - (void)pullToRefreshViewShouldRefresh:(PullToRefreshView *)view
 {
-    [self performSelectorInBackground:@selector(loadDataSource) withObject:nil];
+    [[BanyanDataSource class] performSelectorInBackground:@selector(loadDataSource) withObject:nil];
 }
 // called when the date shown needs to be updated, optional
 -(NSDate *)pullToRefreshViewLastUpdated:(PullToRefreshView *)view
 {
-    return [NSDate date];
+    return [[NSUserDefaults standardUserDefaults] objectForKey:USER_DEFAULTS_LAST_SUCCESSFUL_UPDATE_TIME];
 }
 
 #pragma Memory Management

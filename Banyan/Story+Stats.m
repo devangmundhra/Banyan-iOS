@@ -46,7 +46,8 @@
     currentUser.storiesViewed = [mutArray copy];
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[mutArray copy] forKey:USER_STORIES_VIEWED];
     [User editUserNoOp:currentUser withAttributes:params];
-
+    [User archiveCurrentUser];
+    
     story.viewed = YES;
     story.numberOfViews = [NSNumber numberWithInt:([story.numberOfViews intValue] + 1)];
 }
@@ -101,6 +102,7 @@
     currentUser.storiesLiked = [mutArray copy];
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[mutArray copy] forKey:USER_STORIES_LIKED];
     [User editUserNoOp:currentUser withAttributes:params];
+    [User archiveCurrentUser];
 }
 
 + (BOOL) isStoryLiked:(PFObject *)pfStory
@@ -145,6 +147,7 @@
     currentUser.storiesFavourited = [mutArray copy];
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[mutArray copy] forKey:USER_STORIES_FAVOURITED];
     [User editUserNoOp:currentUser withAttributes:params];
+    [User archiveCurrentUser];
     
     story.favourite = !story.favourite;
 }

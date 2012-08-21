@@ -10,8 +10,10 @@
 #import "BanyanDataSource.h"
 #import "Story+Create.h"
 #import "Story+Edit.h"
+#import "Story+Delete.h"
 #import "Scene+Create.h"
 #import "Scene+Edit.h"
+#import "Scene+Delete.h"
 #import "Story_Defines.h"
 #import "Scene_Defines.h"
 #import "File+Create.h"
@@ -100,9 +102,10 @@
     
     [self willChangeValueForKey:@"isExecuting"];
     [self willChangeValueForKey:@"isFinished"];
+    [BNOperationQueue shared].ongoingOperation = nil;
     
     _executing = NO;
-    _finished = !error;
+    _finished = YES;
     
     [self didChangeValueForKey:@"isExecuting"];
     [self didChangeValueForKey:@"isFinished"];
@@ -161,6 +164,9 @@
         // Add edit operation for the other dependencies
         for (BNOperationDependency *depObj in self.dependency)
         {
+            // An object being deleted cannot have any dependencies
+            assert(self.action.actionType != BNOperationActionDelete);
+            
             if (![depObj.object isObjectInitialized]) {
                 NSLog(@"Dep object not initialized: %@", depObj);
                 BNOperation *operation = [[BNOperation alloc] initWithObject:self.object
@@ -178,17 +184,16 @@
             }
         }
         
-        NSLog(@"%s Parameters that will be edited: %@", __PRETTY_FUNCTION__, editParams);
-        
-        if (self.action.actionType == BNOperationActionEdit || self.action.actionType == BNOperationActionIncrementAttribute) {
-            assert([self.object isObjectInitialized]);
-        }
-        
         if (self.action.actionType == BNOperationActionEdit) {
             if (!editParams) {
                 editParams = [NSMutableDictionary dictionary];
             }
             [editParams addEntriesFromDictionary:self.action.context];
+        }
+        
+        if (self.action.actionType == BNOperationActionEdit || self.action.actionType == BNOperationActionIncrementAttribute) {
+            NSLog(@"%s Parameters that will be edited: %@", __PRETTY_FUNCTION__, editParams);
+            assert([self.object isObjectInitialized]);
         }
         
         // Execute the network operation
@@ -212,6 +217,10 @@
                     case BNOperationActionIncrementAttribute:
                         [scene incrementSceneAttribute:[self.action.context objectForKey:@"attribute"]
                                               byAmount:[self.action.context objectForKey:@"amount"]];
+                        break;
+                        
+                    case BNOperationActionDelete:
+                        [Scene deleteSceneFromServerWithId:self.object.tempId];
                         break;
                         
                     default:
@@ -239,6 +248,10 @@
                     case BNOperationActionIncrementAttribute:
                         [story incrementStoryAttribute:[self.action.context objectForKey:@"attribute"]
                                               byAmount:[self.action.context objectForKey:@"amount"]];
+                        break;
+                        
+                    case BNOperationActionDelete:
+                        [Story deleteStoryFromServerWithId:self.object.tempId];
                         break;
                         
                     default:

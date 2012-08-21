@@ -14,11 +14,40 @@
 
 @implementation Scene (Delete)
 
-+ (void) removeScene:(Scene *)scene
++ (void) deleteSceneFromDisk:(Scene *)scene
 {
-    NSLog(@"Remove Scene %@", scene);    
+    NSLog(@"%s SceneId: %@", __PRETTY_FUNCTION__, scene.sceneId);
+    
     Story *story = scene.story;
     
+    // Delete scene
+    if (scene.image || scene.imageURL)
+    {
+        NSLog(@"Scene Image still needs to be deleted");
+    }
+    
+    INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_LENGTH, -1);
+    
+    // ARCHIVE
+    NSMutableArray *currentScenes = [story.scenes mutableCopy];
+    [currentScenes removeObject:scene];
+    story.scenes = [currentScenes copy];
+    story.lengthOfStory = [NSNumber numberWithInt:([story.lengthOfStory intValue] - 1)];
+    
+    if (scene.nextScene != nil)
+    {
+        scene.previousScene.nextScene = scene.nextScene;
+        scene.nextScene.previousScene = scene.previousScene;
+    } else {
+        scene.previousScene.nextScene = nil;
+    }
+    
+    [StoryDocuments saveStoryToDisk:story];
+    scene = nil;
+}
+
++ (void) deleteSceneFromServerWithId:(NSString *)sceneId
+{
     // PARSE
     void (^linkNextSceneAndPreviousSceneForScene)(NSDictionary *) = ^(NSDictionary *sceneParams) {
         NSString *previousSceneId = [sceneParams objectForKey:SCENE_PREVIOUSSCENE];
@@ -54,7 +83,7 @@
         }
     };
     
-    [[AFParseAPIClient sharedClient] getPath:PARSE_API_OBJECT_URL(@"Scene", scene.sceneId)
+    [[AFParseAPIClient sharedClient] getPath:PARSE_API_OBJECT_URL(@"Scene", sceneId)
                                   parameters:nil
                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                          NSDictionary *sceneFields = responseObject;
@@ -63,30 +92,7 @@
                                      }
                                      failure:AF_PARSE_ERROR_BLOCK()];
     
-    // Delete scene
-    if (scene.image || scene.imageURL)
-    {
-        NSLog(@"Scene Image still needs to be deleted");
-    }
-    
-    INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_LENGTH, -1);
-    
-    // ARCHIVE    
-    NSMutableArray *currentScenes = [story.scenes mutableCopy];
-    [currentScenes removeObject:scene];
-    story.scenes = [currentScenes copy];
-    story.lengthOfStory = [NSNumber numberWithInt:([story.lengthOfStory intValue] - 1)];
-    
-    if (scene.nextScene != nil)
-    {
-        scene.previousScene.nextScene = scene.nextScene;
-        scene.nextScene.previousScene = scene.previousScene;
-    } else {
-        scene.previousScene.nextScene = nil;
-    }
-    
-    [StoryDocuments saveStoryToDisk:story];
-    scene = nil;
+ 
 }
 
 + (void) removeSceneWithId:(NSString *)sceneId
@@ -95,7 +101,8 @@
                                      parameters:nil
                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                             NSLog(@"Scene with id %@ deleted", sceneId);
+                                            NETWORK_OPERATION_COMPLETE();
                                         }
-                                        failure:AF_PARSE_ERROR_BLOCK()];
+                                        failure:BN_ERROR_BLOCK_OPERATION_INCOMPLETE()];
 }
 @end

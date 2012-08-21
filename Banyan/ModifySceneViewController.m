@@ -17,6 +17,7 @@
 #import "UIImageView+AFNetworking.h"
 #import "UIImage+SizeAndOrientation.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "MBProgressHUD.h"
 
 @interface ModifySceneViewController ()
 
@@ -46,6 +47,7 @@
 @implementation ModifySceneViewController
 
 #define MAX_CHAR_IN_SCENE 160
+#define MEM_WARNING_USER_DEFAULTS_TEXT_FIELD @"ModufySceneViewControllerText"
 
 @synthesize contentView = _contentView;
 @synthesize imageView = _imageView;
@@ -106,7 +108,6 @@
     }
     else if (self.editMode == edit)
     {
-        [self setWantsFullScreenLayout:YES];
         self.imageView.frame = [[UIScreen mainScreen] bounds];
 //        self.imageView.contentMode = UIViewContentModeScaleAspectFill;
 //        self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
@@ -129,11 +130,19 @@
             [self.imageView cancelImageRequestOperation];
             [self.imageView setImageWithURL:nil];
         }
-        
         self.sceneTextView.text = self.scene.text;
         self.deleteSceneButton.hidden = NO;
         self.navigationBar.topItem.title = @"Edit";
     }
+    
+    // if there is a saved mem object due to a memory warning, get that field
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *previousSceneText = [defaults objectForKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
+    if (previousSceneText) {
+        self.sceneTextView.text = previousSceneText;
+    }
+    [defaults removeObjectForKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
+    
     
     self.sceneTextView.editable = YES;
     self.doneButton.enabled = NO;
@@ -258,7 +267,7 @@
 #define CAMERA @"Camera"
 #define PHOTO_LIB @"Photo Library"
 - (IBAction)modifyImage:(id)sender 
-{    
+{
     [self dismissKeyboard:sender];
 
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Modify Photo"
@@ -278,14 +287,14 @@
     if (self.scene.previousScene == nil)
     {
         NSLog(@"ModifySceneViewController_Deleting story");
-        [Story removeStory:self.scene.story];
+        DELETE_STORY(self.scene.story);
         [self.delegate modifySceneViewControllerDeletedStory:self];
         [TestFlight passCheckpoint:@"Story deleted"];
     }
     else
     {
         NSLog(@"ModifySceneViewController_Deleting scene");
-        [Scene removeScene:self.scene];
+        DELETE_SCENE(self.scene);
         [self.delegate modifySceneViewController:self];
         [TestFlight passCheckpoint:@"Scene deleted"];
     }
@@ -336,6 +345,10 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     if( [picker sourceType] == UIImagePickerControllerSourceTypeCamera )
     {
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.labelText = @"Saving Picture";
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+        
         UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
         [library writeImageToSavedPhotosAlbum:image.CGImage orientation:(ALAssetOrientation)image.imageOrientation completionBlock:^(NSURL *assetURL, NSError *error )
          {
@@ -345,6 +358,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
              } else {
                  NSLog(@"%s Error saving image: %@",error);
              }
+             [MBProgressHUD hideHUDForView:self.view animated:YES];
          }];
     }
 
@@ -530,6 +544,10 @@ shouldChangeTextInRange:(NSRange)range
 #pragma Memory Management
 - (void)didReceiveMemoryWarning
 {
+    // This usually happens when taking a picture from the camera
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:REPLACE_NIL_WITH_NULL(self.sceneTextView.text) forKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
+    
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     // Release any cached data, images, etc that aren't in use.

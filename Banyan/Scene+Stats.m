@@ -47,6 +47,7 @@
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[mutArray copy] forKey:USER_SCENES_VIEWED];
 
     [User editUserNoOp:currentUser withAttributes:params];
+    [User archiveCurrentUser];
     
     scene.viewed = YES;
     scene.numberOfViews = [NSNumber numberWithInt:([scene.numberOfViews intValue] + 1)];    
@@ -97,7 +98,8 @@
     currentUser.scenesLiked = [mutArray copy];
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[mutArray copy] forKey:USER_SCENES_LIKED];
     [User editUserNoOp:currentUser withAttributes:params];
-
+    [User archiveCurrentUser];
+    
     if (scene.liked) {
         scene.liked = NO;
         scene.numberOfLikes = [NSNumber numberWithInt:([scene.numberOfLikes intValue] - 1)];
@@ -149,6 +151,7 @@
     currentUser.scenesFavourited = [mutArray copy];
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[mutArray copy] forKey:USER_SCENES_FAVOURITED];
     [User editUserNoOp:currentUser withAttributes:params];
+    [User archiveCurrentUser];
     
     scene.favourite = !scene.favourite;
 }

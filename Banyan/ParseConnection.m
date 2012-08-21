@@ -17,19 +17,20 @@
 
 @implementation ParseConnection
 
-+ (void)loadStoriesFromParseWithBlock:(void (^)(NSMutableArray *stories))successBlock onCompletion:(void (^)())completionBlock
++ (void)loadStoriesFromParseWithBlock:(void (^)(NSMutableArray *stories))successBlock
 {
 #define QUERY_LIMIT 10
     // If there is no internet connection, load stories from the disk
     if (![[AFParseAPIClient sharedClient] isReachable]) {
+        NSLog(@"ParseConnection: Loading stories from disk");
         NSMutableArray *dStories = [StoryDocuments loadStoriesFromDisk];
         successBlock(dStories);
-        completionBlock();
     }
     else {
-        // else
-        if ([[BNOperationQueue shared] operationCount] == 0)
+        NSLog(@"ParseConnection: Loading stories from network");
+        if ([[BNOperationQueue shared] operationCount] == 0) {
             [StoryDocuments deleteStoriesFromDisk];
+        }
         PFQuery *query = [PFQuery queryWithClassName:@"Story"];
         query.limit = QUERY_LIMIT;
         [query orderByDescending:@"updatedAt"];
@@ -47,11 +48,14 @@
                             [pStories addObject:story];
                         }
                     }
+                    // Save the time of last successful update
+                    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                    [defaults setObject:[NSDate date] forKey:USER_DEFAULTS_LAST_SUCCESSFUL_UPDATE_TIME];
+                    
                     successBlock(pStories);
                 } else {
                     NSLog(@"Error %@ in loading stories in Parse", error);
                 }
-                completionBlock();
             });
             dispatch_release(postFetchQueue);
         }];
@@ -213,8 +217,16 @@
     // Permission management
     // I am :
     story.isInvited = NO;
-    NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:@"User Info"];
-    if (userInfo) {
+    User *currentUser = [User currentUser];
+//    NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:@"User Info"];
+    if (currentUser) {
+        //            NSDictionary *myAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
+        //                                          [userInfo objectForKey:@"name"],
+        //                                          @"name",
+        //                                          [userInfo objectForKey:@"id"],
+        //                                          @"id", nil];
+        NSDictionary *myAttributes = [NSDictionary dictionaryWithObjectsAndKeys:currentUser.name, @"name", currentUser.facebookId, @"id", nil];
+        
         if ([[pfStory objectForKey:STORY_PUBLIC_CONTRIBUTORS] isEqualToNumber:[NSNumber numberWithBool:YES]]) {
             // Public contributors
             story.canContribute = YES;
@@ -222,11 +234,6 @@
             // Invited contributors
             NSArray *contributorsList = REPLACE_NULL_WITH_EMPTY_ARRAY([pfStory objectForKey:STORY_INVITED_TO_CONTRIBUTE]);
             story.invitedToContribute = contributorsList;
-            NSDictionary *myAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-                                          [userInfo objectForKey:@"name"],
-                                          @"name",
-                                          [userInfo objectForKey:@"id"],
-                                          @"id", nil];
             
             story.canContribute = NO;
             for (NSDictionary *contributor in contributorsList) {
@@ -247,11 +254,6 @@
             [allAudience addObjectsFromArray:REPLACE_NULL_WITH_EMPTY_ARRAY([pfStory objectForKey:STORY_INVITED_TO_CONTRIBUTE])];
             NSArray *viewersList = [allAudience copy];
             story.invitedToView = viewersList;
-            NSDictionary *myAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-                                          [userInfo objectForKey:@"name"], 
-                                          @"name", 
-                                          [userInfo objectForKey:@"id"], 
-                                          @"id", nil];
             
             story.canView = NO;
             for (NSDictionary *viewer in viewersList) {

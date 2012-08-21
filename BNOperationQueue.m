@@ -80,6 +80,23 @@ static BNOperationQueue *_sharedBanyanNetworkOperationQueue;
             }
         }
     }
+    
+    // If it is a delete operation, cancel any other operations that might be here involving this object
+    if (newOperation.action.actionType == BNOperationActionDelete)
+    {
+        for (BNOperation *operation in self.operations) {
+            if (operation.object == newOperation.object || UPDATED(operation.object.storyId) == UPDATED(newOperation.object.tempId)) {
+                [operation cancel];
+            }
+        }
+        
+        // If this object has not been initialized yet, there is no need to delete this object either.
+        for (BNOperation *operation in self.operations) {
+            if (operation.object == newOperation.object && operation.action.actionType == BNOperationActionCreate) {
+                return;
+            }
+        }
+    }
     [super addOperation:newOperation];
     [self archiveOperations];
 }
@@ -139,7 +156,7 @@ static BNOperationQueue *_sharedBanyanNetworkOperationQueue;
 }
 
 - (void) deleteArchives
-{
+{    
     NSString *path = [BNOperationQueue pathToArchivedBNOperations];
     
     NSError *error = nil;
@@ -171,6 +188,7 @@ static BNOperationQueue *_sharedBanyanNetworkOperationQueue;
 + (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
                          change:(NSDictionary *)change context:(void *)context
 {
+    NSLog(@"%s operationCountChanged: count %d, ongoing operation:%@\n", __PRETTY_FUNCTION__, _sharedBanyanNetworkOperationQueue.operationCount, _sharedBanyanNetworkOperationQueue.ongoingOperation);
     if (object == _sharedBanyanNetworkOperationQueue && [keyPath isEqualToString:@"operationCount"] && _sharedBanyanNetworkOperationQueue.operationCount == 0) {
         [_sharedBanyanNetworkOperationQueue deleteArchives];
         [BanyanDataSource deleteArchives];

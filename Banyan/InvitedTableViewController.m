@@ -32,6 +32,8 @@
 @synthesize searchDisplayController;
 @synthesize searchBar;
 
+#define USER_DEFAULTS_FACEBOOK_FRIENDS @"Facebook Friends"
+
 - (id) initWithSearchBarAndNavigationControllerForInvitationType:(NSString *)invitationType
                                                         delegate:(id<InvitedTableViewControllerDelegate>)delegate
                                                 selectedContacts:(NSArray *)selectedContacts
@@ -140,6 +142,11 @@
     self.tableView.scrollEnabled = YES;
     self.navigationItem.title = self.invitationType;
 
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSArray *array = [defaults objectForKey:USER_DEFAULTS_FACEBOOK_FRIENDS];
+    self.listContacts = array;
+    [self setContactIndex];
+    
     [TestFlight passCheckpoint:[NSString stringWithFormat:@"Invitation view loaded for type %@", self.invitationType]];
 }
 
@@ -329,6 +336,10 @@
 {
     NSDictionary *resultsDict = result;
     NSArray *array = [resultsDict objectForKey:@"data"];
+    // Save this list of Facebook Friends for offline use the next time
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:array forKey:USER_DEFAULTS_FACEBOOK_FRIENDS];
+    
     self.listContacts = array;
     [self setContactIndex];
     [self.tableView reloadData];

@@ -16,7 +16,7 @@
 
 @synthesize dateCreated = _dateCreated;
 @synthesize emailAddress = _emailAddress;
-@synthesize facebookKey = _facebookKey;
+@synthesize facebookId = _facebookId;
 @synthesize firstName = _firstName;
 @synthesize lastName = _lastName;
 @synthesize name = _name;
@@ -40,7 +40,10 @@ static User *_currentUser = nil;
     if (!_currentUser) {
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
-            [User updateCurrentUser];
+            [User unarchiveCurrentUser];
+            if (!_currentUser) {
+                [User updateCurrentUser];
+            }
         });
     }
     return _currentUser;
@@ -49,8 +52,15 @@ static User *_currentUser = nil;
 + (void)updateCurrentUser
 {
     PFUser *currentUser = [PFUser currentUser];
-    [currentUser fetch];
+    if (currentUser) {
+        [currentUser fetch];
+    }
     _currentUser = [User getUserForPfUser:currentUser];
+    if (_currentUser) {
+        [User deleteCurrentUserFromDisk];
+    } else {
+        [User archiveCurrentUser];
+    }
 }
 
 + (User *)getUserForPfUser:(PFUser *)pfUser
@@ -73,6 +83,7 @@ static User *_currentUser = nil;
     user.storiesViewed = REPLACE_NULL_WITH_EMPTY_ARRAY([pfUser objectForKey:USER_STORIES_VIEWED]);
     user.storiesLiked = REPLACE_NULL_WITH_EMPTY_ARRAY([pfUser objectForKey:USER_STORIES_LIKED]);
     user.storiesFavourited = REPLACE_NULL_WITH_EMPTY_ARRAY([pfUser objectForKey:USER_STORIES_FAVOURITED]);
+    user.facebookId = REPLACE_NULL_WITH_NIL([pfUser objectForKey:USER_FACEBOOK_ID]);
     user.sessionToken = pfUser.sessionToken;
     return user;
 }
@@ -91,7 +102,7 @@ static User *_currentUser = nil;
     }
 }
 #pragma mark NSCoding
-- (id) initWithUsername:(NSString *)username firstName:(NSString *)firstName lastName:(NSString *)lastName name:(NSString *)name dateCreated:(NSDate *)dateCreated emailAddress:(NSString *)emailAddress facebookKey:(NSString *)facebookKey profilePic:(id)profilePic stories:(NSArray *)stories scenes:(NSArray *)scenes scenesLiked:(NSArray *)scenesLiked storiesLiked:(NSArray *)storiesLiked scenesViewed:(NSArray *)scenesViewed storiesViewed:(NSArray *)storiesViewed scenesFavourited:(NSArray *)scenesFavourited storiesFavourited:(NSArray *)storiesFavourited userId:(NSString *)userId
+- (id) initWithUsername:(NSString *)username firstName:(NSString *)firstName lastName:(NSString *)lastName name:(NSString *)name dateCreated:(NSDate *)dateCreated emailAddress:(NSString *)emailAddress profilePic:(id)profilePic stories:(NSArray *)stories scenes:(NSArray *)scenes scenesLiked:(NSArray *)scenesLiked storiesLiked:(NSArray *)storiesLiked scenesViewed:(NSArray *)scenesViewed storiesViewed:(NSArray *)storiesViewed scenesFavourited:(NSArray *)scenesFavourited storiesFavourited:(NSArray *)storiesFavourited userId:(NSString *)userId facebookId:(NSString *)facebookId
 {
     if ((self = [super init])) {
         _username = username;
@@ -109,6 +120,7 @@ static User *_currentUser = nil;
         _scenesFavourited = scenesFavourited;
         _storiesFavourited = storiesFavourited;
         _userId = userId;
+        _facebookId = facebookId;
     }
     return self;
 }
@@ -117,7 +129,7 @@ static User *_currentUser = nil;
 {    
     [aCoder encodeObject:_dateCreated forKey:USER_DATE_CREATED];
     [aCoder encodeObject:_emailAddress forKey:USER_EMAIL];
-    [aCoder encodeObject:_facebookKey forKey:USER_FACEBOOKKEY];
+    [aCoder encodeObject:_facebookId forKey:USER_FACEBOOK_ID];
     [aCoder encodeObject:_firstName forKey:USER_FIRSTNAME];
     [aCoder encodeObject:_lastName forKey:USER_LASTNAME];
     [aCoder encodeObject:_name forKey:USER_NAME];
@@ -138,7 +150,7 @@ static User *_currentUser = nil;
 {
     NSDate * dateCreated = [aDecoder decodeObjectForKey:USER_DATE_CREATED];
     NSString * emailAddress  = [aDecoder decodeObjectForKey:USER_EMAIL];
-    NSString * facebookKey = [aDecoder decodeObjectForKey:USER_FACEBOOKKEY];
+    NSString * facebookId = [aDecoder decodeObjectForKey:USER_FACEBOOK_ID];
     NSString * firstName = [aDecoder decodeObjectForKey:USER_FIRSTNAME];
     NSString * lastName = [aDecoder decodeObjectForKey:USER_LASTNAME];
     NSString * name = [aDecoder decodeObjectForKey:USER_NAME];
@@ -154,7 +166,61 @@ static User *_currentUser = nil;
     NSArray *storiesFavourited = [aDecoder decodeObjectForKey:USER_STORIES_FAVOURITED];
     NSString *userId = [aDecoder decodeObjectForKey:USER_ID];
     
-    return [self initWithUsername:username firstName:firstName lastName:lastName name:name dateCreated:dateCreated emailAddress:emailAddress facebookKey:facebookKey profilePic:profilePic stories:stories scenes:scenes scenesLiked:scenesLiked storiesLiked:storiesLiked scenesViewed:scenesViewed storiesViewed:storiesViewed scenesFavourited:scenesFavourited storiesFavourited:storiesFavourited userId:userId];
+    return [self initWithUsername:username firstName:firstName lastName:lastName name:name dateCreated:dateCreated emailAddress:emailAddress profilePic:profilePic stories:stories scenes:scenes scenesLiked:scenesLiked storiesLiked:storiesLiked scenesViewed:scenesViewed storiesViewed:storiesViewed scenesFavourited:scenesFavourited storiesFavourited:storiesFavourited userId:userId facebookId:facebookId];
+}
+
+#pragma mark Archiving and Unarchiving operations
++ (NSString *)pathToArchiveCurrentUser
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+    NSString *currentUserPath = [paths objectAtIndex:0];
+    currentUserPath = [currentUserPath stringByAppendingPathComponent:@"currentUser"];
+    
+    return currentUserPath;
+}
+
++ (void) archiveCurrentUser
+{
+    if (!_currentUser) {
+        return;
+    }
+    
+    NSString *path = [User pathToArchiveCurrentUser];
+    
+    BOOL success = [NSKeyedArchiver archiveRootObject:_currentUser toFile:path];
+    if (!success) {
+        NSLog(@"%s Error archiving current user at path: %@", __PRETTY_FUNCTION__, path);
+    }
+}
+
++ (void) unarchiveCurrentUser
+{
+    NSString *path = [User pathToArchiveCurrentUser];
+    // Do nothing if there are no archived operations
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        NSLog(@"%s No archived current user on disk.", __PRETTY_FUNCTION__);
+        return;
+    }
+    
+    _currentUser = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+}
+
++ (void) deleteCurrentUserFromDisk
+{
+    NSString *path = [User pathToArchiveCurrentUser];
+    
+    NSError *error = nil;
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path] &&[[NSFileManager defaultManager] isDeletableFileAtPath:path]) {
+        NSLog(@"%s Deleting current user from disk at path %@", __PRETTY_FUNCTION__, path);
+        
+        BOOL success = [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
+        if (!success) {
+            NSLog(@"Error removing current user from path: %@", error.localizedDescription);
+        }
+    } else if ([[NSFileManager defaultManager] isDeletableFileAtPath:path]) {
+        NSLog(@"%s Archived current user can not be deleted at path %@", __PRETTY_FUNCTION__, path);
+    }
 }
 
 - (BOOL)initialized

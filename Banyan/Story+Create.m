@@ -91,7 +91,7 @@
                                          dependencies:nil];
     
     if (!story.startingScene.initialized) {
-        BNOperationDependency *dObj = [[BNOperationDependency alloc] 
+        BNOperationDependency *dObj = [[BNOperationDependency alloc]
                                        initWithObjectType:BNOperationObjectTypeScene
                                        tempId:story.startingScene.sceneId
                                        storyId:story.startingScene.story.storyId

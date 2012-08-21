@@ -12,9 +12,11 @@
 #import "Scene.h"
 #import "BanyanDataSource.h"
 
+#define USER_DEFAULTS_LAST_SUCCESSFUL_UPDATE_TIME @"LastSuccessfulDataUpdate"
+
 @interface ParseConnection : NSObject
 
-+ (void)loadStoriesFromParseWithBlock:(void (^)(NSMutableArray *stories))successBlock onCompletion:(void (^)())completionBlock;
++ (void)loadStoriesFromParseWithBlock:(void (^)(NSMutableArray *stories))successBlock;
 + (void) resetPermissionsForStories:(NSMutableArray *)stories;
 + (void) resetPermissionsForStory:(Story *)story;
 + (void)loadScenesForStory:(Story *)story;
