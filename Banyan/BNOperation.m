@@ -23,7 +23,7 @@
 @property (assign, atomic) BOOL executing;
 @property (assign, atomic) BOOL finished;
 #define MAX_NUM_TRIALS_FOR_OPERATION 10
-@property (assign, nonatomic) BOOL numTried;
+@property (atomic) NSUInteger numTried;
 
 @end
 
@@ -71,6 +71,22 @@
     return self;
 }
 
+- (void)removeBNOpDependencyOnBNOpObject:(BNOperationObject *)object
+{
+    if (!self.dependency) {
+        return;
+    }
+    NSMutableSet *localDependencySet = [NSMutableSet setWithSet:self.dependency];
+    
+    for (BNOperationDependency *dep in self.dependency) {
+        if ([dep.object isEqual:object]) {
+            // Remove dependency from this object
+            [localDependencySet removeObject:dep];
+        }
+    }
+    self.dependency = localDependencySet;
+}
+
 - (void)addDependencyObject:(BNOperationDependency *)object
 {
     if (!self.dependency)
@@ -87,7 +103,7 @@
         self.dependency = nil;
 }
 
-- (BOOL)checkDependencyForObject:(BNOperationDependency *)object
+- (BOOL)checkBNOperationDependency:(BNOperationDependency *)object
 {
     if ([self.dependency containsObject:object])
         return true;
@@ -99,6 +115,13 @@
 {
     NSLog(@"%s operation %@ finished with error %d.",
           __PRETTY_FUNCTION__, self, error);
+    
+    if (error) {
+        // If there is an error, start myself again
+        [BNOperationQueue shared].ongoingOperation = nil;
+        [self start];
+        return;
+    }
     
     [self willChangeValueForKey:@"isExecuting"];
     [self willChangeValueForKey:@"isFinished"];
@@ -132,6 +155,11 @@
     // Always check for cancellation before launching the task.
     if ([self isCancelled] || self.numTried >= MAX_NUM_TRIALS_FOR_OPERATION)
     {
+        if (self.numTried >= MAX_NUM_TRIALS_FOR_OPERATION) {
+            // We see this currently for uploading images on Edge. File operations are not being completed.
+            // In that case, remove the dependency for this object from all pending operations
+            [[BNOperationQueue shared] removeOperationDependencyFromBNOpObject:self.object];
+        }
         // Must move the operation to the finished state if it is canceled.
         [self willChangeValueForKey:@"isFinished"];
         _finished = YES;
@@ -139,6 +167,7 @@
         return;
     }
     
+    self.numTried++;
     // If the operation is not canceled, begin executing the task.
     [self willChangeValueForKey:@"isExecuting"];
     [BNOperationQueue shared].ongoingOperation = self;
@@ -292,7 +321,7 @@
 
     }
     @catch (NSException *exception) {
-        NSLog(@"%s ******ERROR****** %@", exception);
+        NSLog(@"%s ******ERROR****** %@", __PRETTY_FUNCTION__, exception);
     }
 
 }

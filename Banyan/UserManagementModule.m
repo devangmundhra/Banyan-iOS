@@ -120,12 +120,16 @@
 # pragma mark UserLoginViewControllerDelegate
 - (void)logInViewController:(UserLoginViewController *)logInController didLogInUser:(PFUser *)user
 {
-    [self.owningViewController.presentedViewController dismissViewControllerAnimated:YES completion:nil];
-    
     NSLog(@"Getting user info");
     [self getUserInfo:self];
     [PFPush subscribeToChannelInBackground:[[PFUser currentUser] objectId]];
     [User updateCurrentUser];
+    
+    [self.owningViewController.presentedViewController dismissViewControllerAnimated:YES completion:^{
+        if ([self.owningViewController respondsToSelector:@selector(refreshView)]) {
+            [self.owningViewController performSelector:@selector(refreshView)];
+        }
+    }];
     // View refreshed after login notification sent    
 }
 

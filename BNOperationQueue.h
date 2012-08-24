@@ -34,7 +34,10 @@ NETWORK_OPERATION_INCOMPLETE();                                                 
 +(BNOperationQueue *)shared;
 - (void) updateQueuewithOldDependency:(BNOperationObject *)oldObject
                     withNewDependency:(BNOperationObject *)newDep;
+- (void) removeOperationDependencyFromBNOpObject:(BNOperationObject *)object;
 - (void) addOperation:(BNOperation *)operation;
 - (void) doneWithOperationWithError:(BOOL)error;
 - (void) archiveOperations;
+- (NSMutableSet *) storyIdsOfActiveOperations;
+
 @end

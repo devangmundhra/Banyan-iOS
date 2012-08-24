@@ -69,14 +69,28 @@
 @synthesize locationManager = _locationManager;
 @synthesize locationLabel = _locationLabel;
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
+    [super viewDidAppear:animated];
     self.sceneTextView.delegate = self;
     [self.sceneTextView.layer setCornerRadius:8];
     [self.sceneTextView setClipsToBounds:YES];
     self.sceneTextView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
     self.navigationBar.delegate = self;
+    
+    if (self.editMode == add && self.scene.story.isLocationEnabled) {
+        self.locationManager = [[BNLocationManager alloc] init];
+        self.locationManager.delegate = self;
+        [self.locationManager beginUpdatingLocation];
+    }
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    if (self.editMode == add && self.scene.story.isLocationEnabled) {
+        [self.locationManager stopUpdatingLocation:self.locationLabel.text];
+    }
 }
 
 - (void)viewDidLoad
@@ -100,15 +114,10 @@
     {
         self.navigationBar.topItem.title = @"Add Scene";
         self.deleteSceneButton.hidden = YES;
-        self.locationManager = [[BNLocationManager alloc] init];
-        self.locationManager.delegate = self;
-        if (self.scene.story.isLocationEnabled) {
-            [self.locationManager beginUpdatingLocation];
-        }
     }
     else if (self.editMode == edit)
     {
-        self.imageView.frame = [[UIScreen mainScreen] bounds];
+//        self.imageView.frame = [[UIScreen mainScreen] bounds];
 //        self.imageView.contentMode = UIViewContentModeScaleAspectFill;
 //        self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         self.localImageURL = self.scene.imageURL;
@@ -167,9 +176,6 @@
 
 - (void)viewDidUnload
 {
-    if (self.scene.story.isLocationEnabled) {
-        [self.locationManager stopUpdatingLocation:self.locationLabel.text];
-    }
     [self setImageView:nil];
     [self setNavigationBar:nil];
     [self setSceneTextView:nil];
@@ -546,7 +552,7 @@ shouldChangeTextInRange:(NSRange)range
 {
     // This usually happens when taking a picture from the camera
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:REPLACE_NIL_WITH_NULL(self.sceneTextView.text) forKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
+    [defaults setObject:REPLACE_NIL_WITH_EMPTY_STRING(self.sceneTextView.text) forKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
     
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];

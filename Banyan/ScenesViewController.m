@@ -111,7 +111,7 @@
                                                  name:USER_MANAGEMENT_MODULE_USER_LOGOUT_NOTIFICATION 
                                                object:nil];
     
-    [TestFlight passCheckpoint:@"Story started to be read"];
+    [TestFlight passCheckpoint:[NSString stringWithFormat:@"Story with id %@ started to be read", self.story.storyId]];
 }
 
 - (void) refreshView

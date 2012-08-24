@@ -22,7 +22,7 @@
         dependencies:(NSMutableSet *)dependency;
 - (void)addDependencyObject:(BNOperationDependency *)object;
 - (void)removeDependencyObject:(BNOperationDependency *)object;
-- (BOOL)checkDependencyForObject:(BNOperationDependency *)object;
+- (BOOL)checkBNOperationDependency:(BNOperationDependency *)object;
 - (void)completeOperationWithError:(BOOL)error;
-
+- (void)removeBNOpDependencyOnBNOpObject:(BNOperationObject *)object;
 @end

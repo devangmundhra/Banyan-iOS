@@ -44,6 +44,8 @@ static User *_currentUser = nil;
             if (!_currentUser) {
                 [User updateCurrentUser];
             }
+            // Need to set the session level parameters correctly
+            _currentUser.sessionToken = [PFUser currentUser].sessionToken;
         });
     }
     return _currentUser;
@@ -56,7 +58,9 @@ static User *_currentUser = nil;
         [currentUser fetch];
     }
     _currentUser = [User getUserForPfUser:currentUser];
-    if (_currentUser) {
+    _currentUser.sessionToken = currentUser.sessionToken;
+    if (!_currentUser) {
+        // Happens when say for example the user signs out
         [User deleteCurrentUserFromDisk];
     } else {
         [User archiveCurrentUser];
@@ -84,7 +88,6 @@ static User *_currentUser = nil;
     user.storiesLiked = REPLACE_NULL_WITH_EMPTY_ARRAY([pfUser objectForKey:USER_STORIES_LIKED]);
     user.storiesFavourited = REPLACE_NULL_WITH_EMPTY_ARRAY([pfUser objectForKey:USER_STORIES_FAVOURITED]);
     user.facebookId = REPLACE_NULL_WITH_NIL([pfUser objectForKey:USER_FACEBOOK_ID]);
-    user.sessionToken = pfUser.sessionToken;
     return user;
 }
 

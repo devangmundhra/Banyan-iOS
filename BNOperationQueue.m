@@ -48,26 +48,38 @@ static BNOperationQueue *_sharedBanyanNetworkOperationQueue;
     [self archiveOperations];
 }
 
-- (void) updateQueuewithOldDependency:(BNOperationDependency *)oldObject 
+- (void) updateQueuewithOldDependency:(BNOperationDependency *)oldDep
                     withNewDependency:(BNOperationDependency *)newDep
 {
+    NSLog(@"%s OldDep: %@, NewDep: %@", __PRETTY_FUNCTION__, oldDep, newDep);
     for (BNOperation *op in self.operations)
     {
-        if ([op checkDependencyForObject:oldObject]) {
-            [op removeDependencyObject:oldObject];
-            [op addDependencyObject:newDep];
+        if ([op checkBNOperationDependency:oldDep]) {
+            [op removeDependencyObject:oldDep];
+            if (newDep) {
+                [op addDependencyObject:newDep];
+            }
         }
+    }
+}
+
+- (void) removeOperationDependencyFromBNOpObject:(BNOperationObject *)object
+{
+    NSLog(@"%s %@", __PRETTY_FUNCTION__, object);
+    for (BNOperation *op in self.operations) {
+        [op removeBNOpDependencyOnBNOpObject:object];
     }
 }
 
 - (void) addOperation:(BNOperation *)newOperation
 {
+    NSArray *tempOperationsArray = [NSArray arrayWithArray:self.operations];
     // The dependency check is needed in the case the edit operation is not a simple one. For example, uploading a file. In that case we cannot
     // ignore the operation as we would have the first upload the file and then edit. So we would like to queue that operation.
     if ((newOperation.action.actionType == BNOperationActionEdit || newOperation.action.actionType == BNOperationActionIncrementAttribute)
          && ![newOperation dependency])
     {
-        for (BNOperation *operation in self.operations)
+        for (BNOperation *operation in tempOperationsArray)
         {
             // The isFinished check is a bit sketchy here. Ideally it should have been a check for isExecuting which was required so that if we had already
             // but an operation on network then we do queue the edit changes. But at this point it takes a long time for an operation to be in the isExecuting
@@ -84,14 +96,14 @@ static BNOperationQueue *_sharedBanyanNetworkOperationQueue;
     // If it is a delete operation, cancel any other operations that might be here involving this object
     if (newOperation.action.actionType == BNOperationActionDelete)
     {
-        for (BNOperation *operation in self.operations) {
+        for (BNOperation *operation in tempOperationsArray) {
             if (operation.object == newOperation.object || UPDATED(operation.object.storyId) == UPDATED(newOperation.object.tempId)) {
                 [operation cancel];
             }
         }
         
         // If this object has not been initialized yet, there is no need to delete this object either.
-        for (BNOperation *operation in self.operations) {
+        for (BNOperation *operation in tempOperationsArray) {
             if (operation.object == newOperation.object && operation.action.actionType == BNOperationActionCreate) {
                 return;
             }
@@ -105,6 +117,18 @@ static BNOperationQueue *_sharedBanyanNetworkOperationQueue;
 {
     [[BNOperationQueue shared].ongoingOperation completeOperationWithError:error];
     [self archiveOperations];
+}
+
+- (NSMutableSet *) storyIdsOfActiveOperations
+{
+    NSMutableSet *storyIdSet = [NSMutableSet set];
+    // Make a copy of the operations array and enumerate from there
+    NSArray *tempOperationsArray = [NSArray arrayWithArray:self.operations];
+    for (BNOperation *operation in tempOperationsArray) {
+        assert(operation.object.storyId);
+        [storyIdSet addObject:UPDATED(operation.object.storyId)];
+    }
+    return storyIdSet;
 }
 
 #pragma mark Archiving and Unarchiving operations
@@ -123,9 +147,6 @@ static BNOperationQueue *_sharedBanyanNetworkOperationQueue;
         return;
     }
     
-//    BOOL isSuspended = [self isSuspended];
-//    [self setSuspended:YES];
-    
     NSString *path = [BNOperationQueue pathToArchivedBNOperations];
     
     BOOL success = [NSKeyedArchiver archiveRootObject:self.operations toFile:path];
@@ -133,9 +154,7 @@ static BNOperationQueue *_sharedBanyanNetworkOperationQueue;
         NSLog(@"%s Error archiving operations at path: %@", __PRETTY_FUNCTION__, path);
     }
     
-    [BanyanDataSource archiveHashTable];
-    // Get the suspension as it was before
-//    [self setSuspended:isSuspended];    
+    [BanyanDataSource archiveHashTable]; 
 }
 
 - (void) unarchiveOperations

@@ -34,7 +34,7 @@
             // Upload the image (ie, create a network request for that)
             BNOperationObject *imgObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeFile
                                                                                tempId:story.imageURL
-                                                                              storyId:nil];
+                                                                              storyId:story.storyId];
             BNOperation *operation = [[BNOperation alloc] initWithObject:imgObj action:BNOperationActionCreate dependencies:nil];
             ADD_OPERATION_TO_QUEUE(operation);
             

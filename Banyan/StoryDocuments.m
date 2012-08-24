@@ -77,9 +77,7 @@
 
 + (void)saveStoryToDisk:(Story *)story 
 {
-//    if (!story.scenes) {
-//        return;
-//    }
+    NSLog(@"%s Saving story %p with id %@", __PRETTY_FUNCTION__, story, story.storyId);
     
     NSString *path = [StoryDocuments getPathToStoryDocumentWithStory:story];
     assert(story.scenes);
@@ -92,12 +90,12 @@
 
 + (void)deleteStoryFromDisk:(Story *)story {
     
+    NSLog(@"%s Deleting story %p with id %@", __PRETTY_FUNCTION__, story, story.storyId);
+    
     NSError *error = nil;
     NSString *path = [StoryDocuments getPathToStoryDocumentWithStory:story];
     
-    if ([[NSFileManager defaultManager] isDeletableFileAtPath:path]) {
-        NSLog(@"%s Deleting story at path %@", __PRETTY_FUNCTION__, path);
-        
+    if ([[NSFileManager defaultManager] isDeletableFileAtPath:path]) {        
         BOOL success = [[NSFileManager defaultManager] removeItemAtPath:path error:&error];  
         if (!success) {
             NSLog(@"Error removing story at path: %@", error.localizedDescription);

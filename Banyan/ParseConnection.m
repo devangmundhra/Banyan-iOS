@@ -19,11 +19,30 @@
 
 + (void)loadStoriesFromParseWithBlock:(void (^)(NSMutableArray *stories))successBlock
 {
+    NSMutableArray *dStories = [StoryDocuments loadStoriesFromDisk];
+    
+    // We need this array because if we go into the network available case, then we filter all the stories
+    // which are initialized. But if there are ongoing operations for the story, then they will be skipped
+    // when adding from the stories from network too. So we just append this array later.
+    NSMutableArray *initializedActiveDStories = [NSMutableArray array];
+    
+    // There might be some stories in the current BanayanDataSource which are more current than
+    // the ones saves on the disk (for example if the network is really slow and this operation is taking a
+    // lot of time while an update has arrived in one of the BNOperations), then we should simple get the current stories
+    for (int index = 0; index < [dStories count]; index++) {
+        for (Story *story in [BanyanDataSource shared]) {
+            if ([story.storyId isEqualToString:UPDATED([(Story *)[dStories objectAtIndex:index] storyId])]
+                && [[[BNOperationQueue shared] storyIdsOfActiveOperations] containsObject:story.storyId]) {
+                [dStories replaceObjectAtIndex:index withObject:story];
+                NSLog(@"%s Keeping story with id %@", __PRETTY_FUNCTION__, story.storyId);
+                break;
+            }
+        }
+    }
 #define QUERY_LIMIT 10
     // If there is no internet connection, load stories from the disk
     if (![[AFParseAPIClient sharedClient] isReachable]) {
         NSLog(@"ParseConnection: Loading stories from disk");
-        NSMutableArray *dStories = [StoryDocuments loadStoriesFromDisk];
         successBlock(dStories);
     }
     else {
@@ -42,6 +61,21 @@
                     NSMutableArray *pStories = [[NSMutableArray alloc] initWithCapacity:QUERY_LIMIT];                    
                     for (PFObject *pfStory in storyArray)
                     {
+                        // Don't do anything if this pfStory has some outstanding operations currently
+                        if ([[[BNOperationQueue shared] storyIdsOfActiveOperations] containsObject:[pfStory objectId]]) {
+                            NSLog(@"Skipping getting the story for %@", [pfStory objectId]);
+                            
+                            // If this storyId is there in dStories, it will get filtered next (because getting a story from
+                            // network means the story is intializied) . So save it in a seperte array and then add it to the
+                            // results later
+                            for (Story *story in dStories) {
+                                if ([UPDATED(story.storyId) isEqualToString:[pfStory objectId]]) {
+                                    [initializedActiveDStories addObject:story];
+                                }
+                            }
+                            continue;
+                        }
+                        
                         story = [[Story alloc] init];
                         [ParseConnection fillStory:story withPfStory:pfStory];
                         if (story.canView || story.canContribute) {
@@ -52,6 +86,11 @@
                     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
                     [defaults setObject:[NSDate date] forKey:USER_DEFAULTS_LAST_SUCCESSFUL_UPDATE_TIME];
                     
+                    // Also add the stories that have not been initialized yet
+                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(initialized == NO)"];
+                    [dStories filterUsingPredicate:predicate];
+                    [pStories addObjectsFromArray:dStories];
+                    [pStories addObjectsFromArray:initializedActiveDStories];
                     successBlock(pStories);
                 } else {
                     NSLog(@"Error %@ in loading stories in Parse", error);

@@ -233,7 +233,7 @@
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     Story *story = [self.dataSource objectAtIndex:indexPath.row];
-    story.storyBeingRead = TRUE;
+    story.storyBeingRead = YES;
     UIAlertView *networkUnavailableAlert = [[UIAlertView alloc] initWithTitle:@"Network unavailable"
                                                                       message:@"We are unable to access the network and so can't load the story"
                                                                      delegate:nil
@@ -242,10 +242,11 @@
     if (!story.scenes)
     {        
         Story *alreadyExistingStory = [StoryDocuments loadStoryFromDisk:story.storyId];
+        alreadyExistingStory.storyBeingRead = YES;
         if (alreadyExistingStory) {
-            // If a story is already existing, load that story while a background thread fetches the updated stories.
-            story.scenes = [NSArray arrayWithArray:alreadyExistingStory.scenes];
-            [NSThread detachNewThreadSelector:@selector(loadScenesForStory:) toTarget:[ParseConnection class] withObject:story];
+            // If a story is already existing, load that story.
+            [[BanyanDataSource shared] replaceObjectAtIndex:[[BanyanDataSource shared] indexOfObject:story] withObject:alreadyExistingStory];
+            [self.dataSource replaceObjectAtIndex:indexPath.row withObject:alreadyExistingStory];
         } else {
             MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
             hud.labelText = @"Loading";
@@ -429,7 +430,7 @@
 {
     // Release all the scene information from the stories. This can be added later
     for (Story *story in [BanyanDataSource shared]) {
-        if (!story.storyBeingRead && story.initialized) {
+        if (!story.storyBeingRead && story.initialized && [[BNOperationQueue shared] operationCount] == 0) {
             story.scenes = nil;
             NSLog(@"Scenes for story %@ are nulled", story.storyId);
         }

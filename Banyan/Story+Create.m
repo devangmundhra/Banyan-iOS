@@ -154,6 +154,7 @@
         story.isLocationEnabled = NO;
     }
     
+    story.storyBeingRead = YES;
     story.numberOfContributors = [NSNumber numberWithInt:0];
     story.numberOfLikes = [NSNumber numberWithInt:0];
     story.numberOfViews = [NSNumber numberWithInt:0];
@@ -253,7 +254,6 @@
                                           
                                           story.initialized = YES;
                                           [StoryDocuments saveStoryToDisk:story];
-                                          /* addImageForStory(story.storyId); */
                                           if (story.invitedToContribute) {
                                               sendRequestToContributors(story.invitedToContribute, story);
                                           }

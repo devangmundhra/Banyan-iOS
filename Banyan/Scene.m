@@ -9,6 +9,7 @@
 #import "Scene_Defines.h"
 #import "Story.h"
 #import "User.h"
+#import "BanyanDataSource.h"
 
 @implementation Scene
 
@@ -118,7 +119,7 @@
     CLLocationCoordinate2D coord = [self.location coordinate];
     
     [attributes setObject:self.text forKey:SCENE_TEXT];
-    [attributes setObject:REPLACE_NIL_WITH_NULL(self.imageURL) forKey:SCENE_IMAGE_URL];
+    [attributes setObject:REPLACE_NIL_WITH_NULL(UPDATED(self.imageURL)) forKey:SCENE_IMAGE_URL];
 //    [attributes setObject:self.author forKey:SCENE_AUTHOR];
     [attributes setObject:REPLACE_NIL_WITH_NULL(self.nextScene.sceneId) forKey:SCENE_NEXTSCENE];
     [attributes setObject:REPLACE_NIL_WITH_NULL(self.previousScene.sceneId) forKey:SCENE_PREVIOUSSCENE];

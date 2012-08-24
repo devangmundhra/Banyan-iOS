@@ -10,6 +10,7 @@
 #import "StoryDocuments.h"
 #import "Scene.h"
 #import "User.h"
+#import "BanyanDataSource.h"
 
 @implementation Story
 
@@ -152,7 +153,7 @@
     [attributes setObject:[NSNumber numberWithBool:self.publicContributors] forKey:STORY_PUBLIC_CONTRIBUTORS];
     [attributes setObject:[NSNumber numberWithBool:self.publicViewers] forKey:STORY_PUBLIC_VIEWERS];
     [attributes setObject:self.title forKey:STORY_TITLE];
-    [attributes setObject:REPLACE_NIL_WITH_NULL(self.imageURL) forKey:STORY_IMAGE_URL];
+    [attributes setObject:REPLACE_NIL_WITH_NULL(UPDATED(self.imageURL)) forKey:STORY_IMAGE_URL];
     [attributes setObject:REPLACE_NIL_WITH_NULL(self.contributors) forKey:STORY_CONTRIBUTORS];
     [attributes setObject:self.startingScene.sceneId forKey:STORY_STARTING_SCENE];
     [attributes setObject:self.numberOfLikes forKey:STORY_NUM_LIKES];
