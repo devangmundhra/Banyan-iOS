@@ -12,6 +12,10 @@
 		5123CF3615CDFEA100970A3E /* File.m in Sources */ = {isa = PBXBuildFile; fileRef = 5123CF3515CDFEA100970A3E /* File.m */; };
 		5123CF3A15CDFEB100970A3E /* File+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 5123CF3915CDFEB100970A3E /* File+Create.m */; };
 		5138D7E615B7E138007B4D7D /* BanyanDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 5138D7E515B7E138007B4D7D /* BanyanDataSource.m */; };
+		5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B615E75B420072749C /* buttonFacebook.png */; };
+		5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B715E75B420072749C /* buttonFacebook@2x.png */; };
+		5166B1BC15E75B420072749C /* buttonFacebookSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B815E75B420072749C /* buttonFacebookSelected.png */; };
+		5166B1BD15E75B420072749C /* buttonFacebookSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B915E75B420072749C /* buttonFacebookSelected@2x.png */; };
 		517D164A15D23529005F38C8 /* BNLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 517D164915D23529005F38C8 /* BNLocationManager.m */; };
 		5189B2B815B387E200562DD0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2B715B387E200562DD0 /* UIKit.framework */; };
 		5189B2BA15B387E200562DD0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2B915B387E200562DD0 /* Foundation.framework */; };
@@ -108,6 +112,10 @@
 		5123CF3915CDFEB100970A3E /* File+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "File+Create.m"; sourceTree = "<group>"; };
 		5138D7E415B7E138007B4D7D /* BanyanDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BanyanDataSource.h; sourceTree = "<group>"; };
 		5138D7E515B7E138007B4D7D /* BanyanDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BanyanDataSource.m; sourceTree = "<group>"; };
+		5166B1B615E75B420072749C /* buttonFacebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebook.png; sourceTree = "<group>"; };
+		5166B1B715E75B420072749C /* buttonFacebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFacebook@2x.png"; sourceTree = "<group>"; };
+		5166B1B815E75B420072749C /* buttonFacebookSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebookSelected.png; sourceTree = "<group>"; };
+		5166B1B915E75B420072749C /* buttonFacebookSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFacebookSelected@2x.png"; sourceTree = "<group>"; };
 		517D164815D23529005F38C8 /* BNLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNLocationManager.h; sourceTree = "<group>"; };
 		517D164915D23529005F38C8 /* BNLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNLocationManager.m; sourceTree = "<group>"; };
 		5189B2B315B387E200562DD0 /* Banyan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Banyan.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -295,6 +303,17 @@
 			name = File;
 			sourceTree = "<group>";
 		};
+		5166B1B515E75B420072749C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5166B1B615E75B420072749C /* buttonFacebook.png */,
+				5166B1B715E75B420072749C /* buttonFacebook@2x.png */,
+				5166B1B815E75B420072749C /* buttonFacebookSelected.png */,
+				5166B1B915E75B420072749C /* buttonFacebookSelected@2x.png */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		5189B2A815B387E100562DD0 = {
 			isa = PBXGroup;
 			children = (
@@ -350,6 +369,7 @@
 				5189B2C615B387E200562DD0 /* BanyanAppDelegate.h */,
 				5189B2C715B387E200562DD0 /* BanyanAppDelegate.m */,
 				5189B2BE15B387E200562DD0 /* Supporting Files */,
+				5166B1B515E75B420072749C /* Resources */,
 			);
 			path = Banyan;
 			sourceTree = "<group>";
@@ -732,6 +752,10 @@
 				5189B3B315B39B1F00562DD0 /* README.txt in Resources */,
 				5189B3B415B39B1F00562DD0 /* release_notes.txt in Resources */,
 				5189B3CB15B39E7400562DD0 /* MainStoryboard.storyboard in Resources */,
+				5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */,
+				5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */,
+				5166B1BC15E75B420072749C /* buttonFacebookSelected.png in Resources */,
+				5166B1BD15E75B420072749C /* buttonFacebookSelected@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

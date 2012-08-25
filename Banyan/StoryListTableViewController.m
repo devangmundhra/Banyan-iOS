@@ -38,6 +38,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO
+                                            withAnimation:UIStatusBarAnimationNone];
     self.navigationController.navigationBar.translucent = NO;
     self.navigationController.navigationBarHidden = NO;
     self.navigationController.toolbarHidden = YES;

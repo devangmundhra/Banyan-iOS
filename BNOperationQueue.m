@@ -192,11 +192,6 @@ static BNOperationQueue *_sharedBanyanNetworkOperationQueue;
     }
 }
 
-- (void)setSuspended:(BOOL)b
-{
-    [super setSuspended:b];
-}
-
 - (void) dealloc {
     NSLog(@"%s Deallocating BNOperationQueue", __PRETTY_FUNCTION__);
     [self archiveOperations];

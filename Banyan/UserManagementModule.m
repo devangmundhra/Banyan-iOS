@@ -93,7 +93,7 @@
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationBeginsFromCurrentState:YES];
     [UIView setAnimationDuration:0.4];
-    [UIView setAnimationDelay:0.09];
+    [UIView setAnimationDelay:0.11];
     CGRect statusRect = [[UIApplication sharedApplication] statusBarFrame];
     CGRect viewRect = loginTabbarViewController.view.frame;
     loginTabbarViewController.view.frame = CGRectMake(0, 0 - viewRect.size.height + statusRect.size.height, 

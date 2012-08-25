@@ -69,14 +69,18 @@
 @synthesize locationManager = _locationManager;
 @synthesize locationLabel = _locationLabel;
 
-- (void)viewDidAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     self.sceneTextView.delegate = self;
     [self.sceneTextView.layer setCornerRadius:8];
     [self.sceneTextView setClipsToBounds:YES];
     self.sceneTextView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
     self.navigationBar.delegate = self;
+}
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
     
     if (self.editMode == add && self.scene.story.isLocationEnabled) {
         self.locationManager = [[BNLocationManager alloc] init];
