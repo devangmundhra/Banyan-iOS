@@ -73,13 +73,12 @@ static BNOperationQueue *_sharedBanyanNetworkOperationQueue;
 
 - (void) addOperation:(BNOperation *)newOperation
 {
-    NSArray *tempOperationsArray = [NSArray arrayWithArray:self.operations];
     // The dependency check is needed in the case the edit operation is not a simple one. For example, uploading a file. In that case we cannot
     // ignore the operation as we would have the first upload the file and then edit. So we would like to queue that operation.
     if ((newOperation.action.actionType == BNOperationActionEdit || newOperation.action.actionType == BNOperationActionIncrementAttribute)
          && ![newOperation dependency])
     {
-        for (BNOperation *operation in tempOperationsArray)
+        for (BNOperation *operation in self.operations)
         {
             // The isFinished check is a bit sketchy here. Ideally it should have been a check for isExecuting which was required so that if we had already
             // but an operation on network then we do queue the edit changes. But at this point it takes a long time for an operation to be in the isExecuting
@@ -96,15 +95,24 @@ static BNOperationQueue *_sharedBanyanNetworkOperationQueue;
     // If it is a delete operation, cancel any other operations that might be here involving this object
     if (newOperation.action.actionType == BNOperationActionDelete)
     {
-        for (BNOperation *operation in tempOperationsArray) {
-            if (operation.object == newOperation.object || UPDATED(operation.object.storyId) == UPDATED(newOperation.object.tempId)) {
+        NSString *newId;
+        NSString *oldStoryId;
+        
+        for (BNOperation *operation in self.operations) {
+            newId = UPDATED(newOperation.object.tempId);
+            oldStoryId = UPDATED(operation.object.storyId);
+            
+            // If there is any dependency on this object, remove that dependency
+            [operation removeBNOpDependencyOnBNOpObject:newOperation.object];
+            
+            if ([operation.object isEqual:newOperation.object] || [oldStoryId isEqualToString:newId]) {
                 [operation cancel];
             }
         }
         
         // If this object has not been initialized yet, there is no need to delete this object either.
-        for (BNOperation *operation in tempOperationsArray) {
-            if (operation.object == newOperation.object && operation.action.actionType == BNOperationActionCreate) {
+        for (BNOperation *operation in self.operations) {
+            if ([operation.object isEqual:newOperation.object] && operation.action.actionType == BNOperationActionCreate) {
                 return;
             }
         }
@@ -122,9 +130,7 @@ static BNOperationQueue *_sharedBanyanNetworkOperationQueue;
 - (NSMutableSet *) storyIdsOfActiveOperations
 {
     NSMutableSet *storyIdSet = [NSMutableSet set];
-    // Make a copy of the operations array and enumerate from there
-    NSArray *tempOperationsArray = [NSArray arrayWithArray:self.operations];
-    for (BNOperation *operation in tempOperationsArray) {
+    for (BNOperation *operation in self.operations) {
         assert(operation.object.storyId);
         [storyIdSet addObject:UPDATED(operation.object.storyId)];
     }
