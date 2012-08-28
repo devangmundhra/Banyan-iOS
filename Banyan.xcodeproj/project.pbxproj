@@ -97,6 +97,8 @@
 		519AFA6B15C11F3600F68F3C /* BNOperationAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 519AFA6A15C11F3600F68F3C /* BNOperationAction.m */; };
 		519AFA7215C26F5D00F68F3C /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */; };
 		519AFA7615C4B9DE00F68F3C /* User+Edit.m in Sources */ = {isa = PBXBuildFile; fileRef = 519AFA7515C4B9DE00F68F3C /* User+Edit.m */; };
+		51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B5989D15EB31B300DF4D9D /* BanyanConstants.m */; };
+		51B598A215EB451400DF4D9D /* Activity.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B598A115EB451300DF4D9D /* Activity.m */; };
 		51CF3E2D15BFEBA700FFC0D1 /* BNOperationDependency.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CF3E2C15BFEBA700FFC0D1 /* BNOperationDependency.m */; };
 		51CF3E3015BFEDB200FFC0D1 /* BNOperationObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CF3E2F15BFEDB200FFC0D1 /* BNOperationObject.m */; };
 /* End PBXBuildFile section */
@@ -259,6 +261,10 @@
 		519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		519AFA7415C4B9DE00F68F3C /* User+Edit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "User+Edit.h"; sourceTree = "<group>"; };
 		519AFA7515C4B9DE00F68F3C /* User+Edit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "User+Edit.m"; sourceTree = "<group>"; };
+		51B5989C15EB31B300DF4D9D /* BanyanConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BanyanConstants.h; sourceTree = "<group>"; };
+		51B5989D15EB31B300DF4D9D /* BanyanConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BanyanConstants.m; sourceTree = "<group>"; };
+		51B598A015EB451300DF4D9D /* Activity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Activity.h; sourceTree = "<group>"; };
+		51B598A115EB451300DF4D9D /* Activity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Activity.m; sourceTree = "<group>"; };
 		51CF3E2B15BFEBA700FFC0D1 /* BNOperationDependency.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNOperationDependency.h; sourceTree = "<group>"; };
 		51CF3E2C15BFEBA700FFC0D1 /* BNOperationDependency.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNOperationDependency.m; sourceTree = "<group>"; };
 		51CF3E2E15BFEDB200FFC0D1 /* BNOperationObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNOperationObject.h; sourceTree = "<group>"; };
@@ -366,6 +372,8 @@
 				5189B35815B396FA00562DD0 /* Data handling */,
 				5189B35B15B3976700562DD0 /* Story List */,
 				5189B35C15B397BD00562DD0 /* Helpful Categories */,
+				51B5989C15EB31B300DF4D9D /* BanyanConstants.h */,
+				51B5989D15EB31B300DF4D9D /* BanyanConstants.m */,
 				5189B2C615B387E200562DD0 /* BanyanAppDelegate.h */,
 				5189B2C715B387E200562DD0 /* BanyanAppDelegate.m */,
 				5189B2BE15B387E200562DD0 /* Supporting Files */,
@@ -409,6 +417,7 @@
 				5189B2DC15B395F300562DD0 /* ImageToDataTransformer.m */,
 				517D164815D23529005F38C8 /* BNLocationManager.h */,
 				517D164915D23529005F38C8 /* BNLocationManager.m */,
+				51B598A315EB451600DF4D9D /* Activity */,
 				5123CF3B15CDFEB700970A3E /* File */,
 				5189B35D15B397D900562DD0 /* User */,
 				5189B35715B396E700562DD0 /* Scene */,
@@ -691,6 +700,15 @@
 			name = BNOperation;
 			sourceTree = "<group>";
 		};
+		51B598A315EB451600DF4D9D /* Activity */ = {
+			isa = PBXGroup;
+			children = (
+				51B598A015EB451300DF4D9D /* Activity.h */,
+				51B598A115EB451300DF4D9D /* Activity.m */,
+			);
+			name = Activity;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -828,6 +846,8 @@
 				5123CF3615CDFEA100970A3E /* File.m in Sources */,
 				5123CF3A15CDFEB100970A3E /* File+Create.m in Sources */,
 				517D164A15D23529005F38C8 /* BNLocationManager.m in Sources */,
+				51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */,
+				51B598A215EB451400DF4D9D /* Activity.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -18,6 +18,7 @@
 #import "Scene_Defines.h"
 #import "File+Create.h"
 #import "User+Edit.h"
+#import "Activity.h"
 
 @interface BNOperation()
 @property (assign, atomic) BOOL executing;
@@ -310,6 +311,22 @@
                         
                     default:
                         NSLog(@"%s Unsupported action for file %@", __PRETTY_FUNCTION__, self.action);
+                        break;
+                }
+                break;
+                
+            case BNOperationObjectTypeActivity:
+                switch (self.action.actionType) {
+                    case BNOperationActionCreate:
+                        [Activity createActivity:self.action.context];
+                        break;
+                        
+                    case BNOperationActionDelete:
+                        [Activity deleteActivity:self.action.context];
+                        break;
+                        
+                    default:
+                        NSLog(@"%s Unsupported action for activity %@", __PRETTY_FUNCTION__, self.action);
                         break;
                 }
                 break;

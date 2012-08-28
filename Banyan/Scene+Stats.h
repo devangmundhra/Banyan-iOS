@@ -25,4 +25,6 @@
 
 + (BOOL) isSceneViewed:(PFObject *)pfScene;
 
+- (void) updateSceneStats;
+
 @end

@@ -131,8 +131,9 @@ static BNOperationQueue *_sharedBanyanNetworkOperationQueue;
 {
     NSMutableSet *storyIdSet = [NSMutableSet set];
     for (BNOperation *operation in self.operations) {
-        assert(operation.object.storyId);
-        [storyIdSet addObject:UPDATED(operation.object.storyId)];
+        if (operation.object.type != BNOperationObjectTypeActivity) {
+            [storyIdSet addObject:UPDATED(operation.object.storyId)];
+        }
     }
     return storyIdSet;
 }
@@ -177,7 +178,6 @@ static BNOperationQueue *_sharedBanyanNetworkOperationQueue;
     {
         [self addOperation:operation];
     }
-    [self deleteArchives];
 }
 
 - (void) deleteArchives

@@ -16,8 +16,7 @@
 #define PARSE_API_USER_URL(__userId__) [NSString stringWithFormat:@"users/%@", __userId__]
 
 #define AF_PARSE_ERROR_BLOCK() ^(AFHTTPRequestOperation *operation, NSError *error) {  \
-NSLog(@"%@\t%@\t%@\t%@", [error localizedDescription], [error localizedFailureReason], \
-[error localizedRecoveryOptions], [error localizedRecoverySuggestion]);                \
+NSLog(@"operation: %@, error: %@", operation, error);                                  \
 }
 
 @interface AFParseAPIClient : AFHTTPClient

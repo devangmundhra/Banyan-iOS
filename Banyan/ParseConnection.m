@@ -108,7 +108,6 @@
     story.publicViewers = [REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_PUBLIC_VIEWERS]) boolValue];
     story.publicContributors = [REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_PUBLIC_CONTRIBUTORS]) boolValue];
     story.storyId = [pfStory objectId];
-    story.lengthOfStory = REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_LENGTH]);
     
     story.numberOfLikes = REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_NUM_LIKES]);
     story.numberOfContributors = REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_NUM_CONTRIBUTORS]);
@@ -153,6 +152,7 @@
         NSMutableArray *sceneArray = [[NSMutableArray alloc] initWithCapacity:[story.lengthOfStory unsignedIntValue]];
         [ParseConnection fillScene:story.startingScene withPfScene:pfScene forStory:story inArray:sceneArray];
         story.scenes = [sceneArray mutableCopy];
+        story.lengthOfStory = [NSNumber numberWithInteger:[sceneArray count]];
         [StoryDocuments saveStoryToDisk:story];
     } else {
         NSLog(@"%s Could not find a starting scene for story %@!!\n", __PRETTY_FUNCTION__, story);
@@ -257,13 +257,7 @@
     // I am :
     story.isInvited = NO;
     User *currentUser = [User currentUser];
-//    NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:@"User Info"];
     if (currentUser) {
-        //            NSDictionary *myAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
-        //                                          [userInfo objectForKey:@"name"],
-        //                                          @"name",
-        //                                          [userInfo objectForKey:@"id"],
-        //                                          @"id", nil];
         NSDictionary *myAttributes = [NSDictionary dictionaryWithObjectsAndKeys:currentUser.name, @"name", currentUser.facebookId, @"id", nil];
         
         if ([[pfStory objectForKey:STORY_PUBLIC_CONTRIBUTORS] isEqualToNumber:[NSNumber numberWithBool:YES]]) {

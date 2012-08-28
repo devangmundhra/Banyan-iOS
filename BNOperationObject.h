@@ -14,7 +14,7 @@ typedef enum {
     BNOperationObjectTypeStory = 2,
     BNOperationObjectTypeUser = 3,
     BNOperationObjectTypeFile = 4,
-    
+    BNOperationObjectTypeActivity = 5,
 } BNOperationObjectType;
 
 @interface BNOperationObject : NSObject <NSCoding>

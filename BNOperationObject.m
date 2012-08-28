@@ -67,6 +67,7 @@
             break;
             
         default:
+            NSLog(@"Invalid object type %d", self.type);
             break;
     }
 
@@ -127,6 +128,10 @@
             
         case BNOperationObjectTypeFile:
             return @"File";
+            break;
+            
+        case BNOperationObjectTypeActivity:
+            return kBNActivityClassKey;
             break;
             
         default:
