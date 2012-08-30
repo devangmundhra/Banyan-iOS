@@ -38,6 +38,7 @@
 #define STORY_NUM_VIEWS @"numberOfViews"
 #define STORY_NUM_LIKES @"numberOfLikes"
 #define STORY_NUM_CONTRIBUTORS @"numberOfContributors"
+#define STORY_LIKERS @"likers"
 
 #define STORY_LIKED @"liked"
 #define STORY_VIEWED @"viewed"

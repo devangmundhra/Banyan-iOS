@@ -33,10 +33,11 @@
 @synthesize initialized = _initialized;
 @synthesize location = _location;
 @synthesize geocodedLocation = _geocodedLocation;
+@synthesize likers = _likers;
 // Session properties
 @synthesize imageChanged = _imageChanged;
 
-- (id)initWithText:(NSString *)text sceneId:(NSString *)sceneId sceneNumberInStory:(NSNumber *)sceneNumberInStory imageURL:(NSString *)imageURL author:(User *)author nextScene:(Scene *)nextScene previousScene:(Scene *)previousScene createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors story:(Story *)story liked:(BOOL)liked viewed:(BOOL)viewed favourite:(BOOL)favourite initialized:(BOOL) initialized location:(CLLocation *)location geocodedLocation:(NSString *)geocodedLocation
+- (id)initWithText:(NSString *)text sceneId:(NSString *)sceneId sceneNumberInStory:(NSNumber *)sceneNumberInStory imageURL:(NSString *)imageURL author:(User *)author nextScene:(Scene *)nextScene previousScene:(Scene *)previousScene createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors story:(Story *)story liked:(BOOL)liked viewed:(BOOL)viewed favourite:(BOOL)favourite initialized:(BOOL) initialized location:(CLLocation *)location geocodedLocation:(NSString *)geocodedLocation likers:(NSArray *)likers
 {
     if ((self = [super init])) {
         _text = text;
@@ -58,6 +59,7 @@
         _initialized = initialized;
         _location = location;
         _geocodedLocation = geocodedLocation;
+        _likers = likers;
     }
     return self;
 }
@@ -84,6 +86,7 @@
     [aCoder encodeBool:_initialized forKey:SCENE_IS_INITIALIZED];
     [aCoder encodeObject:_location forKey:SCENE_LOCATION];
     [aCoder encodeObject:_geocodedLocation forKey:SCENE_GEOCODEDLOCATION];
+    [aCoder encodeObject:_likers forKey:SCENE_LIKERS];
 
 }
 
@@ -108,9 +111,10 @@
     BOOL initialized = [aDecoder decodeBoolForKey:SCENE_IS_INITIALIZED];
     CLLocation *location = [aDecoder decodeObjectForKey:SCENE_LOCATION];
     NSString *geocodedLocation = [aDecoder decodeObjectForKey:SCENE_GEOCODEDLOCATION];
+    NSArray *likers = [aDecoder decodeObjectForKey:SCENE_LIKERS];
 
     
-    return [self initWithText:text sceneId:sceneId sceneNumberInStory:sceneNumberInStory imageURL:imageURL author:author nextScene:nextScene previousScene:previousScence createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors story:story liked:liked viewed:viewed favourite:favourite initialized:initialized location:location geocodedLocation:geocodedLocation];
+    return [self initWithText:text sceneId:sceneId sceneNumberInStory:sceneNumberInStory imageURL:imageURL author:author nextScene:nextScene previousScene:previousScence createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors story:story liked:liked viewed:viewed favourite:favourite initialized:initialized location:location geocodedLocation:geocodedLocation likers:likers];
 }
 
 - (NSMutableDictionary *)getAttributesInDictionary

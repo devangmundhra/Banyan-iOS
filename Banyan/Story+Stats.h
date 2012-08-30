@@ -16,12 +16,7 @@
 
 + (void) toggleLikedStory:(Story *)story;
 
-+ (BOOL) isStoryLiked:(PFObject *)pfStory;
-
 + (void) toggleFavouritedStory:(Story *)story;
 
-+ (BOOL) isStoryFavourited:(PFObject *)pfStory;
-
-+ (BOOL) isStoryViewed:(PFObject *)pfStory;
-
+- (void) updateStoryStats;
 @end

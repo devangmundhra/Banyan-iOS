@@ -10,7 +10,8 @@
 #import "User+Edit.h"
 #import "StoryDocuments.h"
 #import "Story+Edit.h"
-#import "ParseAPIEngine.h"
+#import "AFParseAPIClient.h"
+#import "Activity.h"
 
 @implementation Story (Stats)
 
@@ -28,45 +29,19 @@
     User *currentUser = [User currentUser];
     if (!currentUser)
         return;
-        
-    NSArray *alreadyViewedStoryId = currentUser.storiesViewed;
-    NSMutableArray *mutArray = [NSMutableArray arrayWithCapacity:1];
     
-    if (alreadyViewedStoryId)
-    {
-        if ([alreadyViewedStoryId containsObject:story.storyId])
-            return;
-        INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_NUM_VIEWS, 1);
-        [mutArray addObjectsFromArray:alreadyViewedStoryId];
-        [mutArray addObject:story.storyId];
-    } else {
-        INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_NUM_VIEWS, 1);
-        [mutArray addObject:story.storyId];
-    }
-    currentUser.storiesViewed = [mutArray copy];
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[mutArray copy] forKey:USER_STORIES_VIEWED];
-    [User editUserNoOp:currentUser withAttributes:params];
-    [User archiveCurrentUser];
+    INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_NUM_VIEWS, 1);
+    BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:story.storyId storyId:story.storyId];
+    BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionCreate dependencies:nil];
+    activityOp.action.context = [Activity activityWithType:kBNActivityTypeView
+                                                  fromUser:currentUser.userId
+                                                    toUser:currentUser.userId
+                                                   sceneId:nil
+                                                   storyId:story.storyId];
+    ADD_OPERATION_TO_QUEUE(activityOp);
     
     story.viewed = YES;
     story.numberOfViews = [NSNumber numberWithInt:([story.numberOfViews intValue] + 1)];
-}
-
-+ (BOOL) isStoryViewed:(PFObject *)pfStory
-{
-    User *currentUser = [User currentUser];
-    if (!currentUser)
-        return NO;
-
-    NSArray *alreadyViewedStoriesId = currentUser.storiesViewed;
-    
-    if ([alreadyViewedStoriesId isEqual:[NSNull null]])
-        return NO;
-    
-    if ([alreadyViewedStoriesId containsObject:pfStory.objectId])
-        return YES;
-    
-    return NO;
 }
 
 + (void) toggleLikedStory:(Story *)story
@@ -75,51 +50,39 @@
     if (!currentUser)
         return;
     
-    NSArray *alreadyLikedStoryId = currentUser.storiesLiked;
-    NSMutableArray *mutArray = nil;
-    
-    if ([alreadyLikedStoryId isEqual:[NSNull null]])
-        mutArray = [NSMutableArray arrayWithCapacity:1];
-    else 
-        mutArray = [NSMutableArray arrayWithArray:alreadyLikedStoryId];
+    NSMutableArray *likers = [story.likers mutableCopy];
     
     if (story.liked) {
         // unlike story
-        INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_NUM_LIKES, -1);
-        [mutArray removeObject:story.storyId];
-        
+        INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_NUM_LIKES, -1);        
         story.liked = NO;
         story.numberOfLikes = [NSNumber numberWithInt:([story.numberOfLikes intValue] - 1)];
+        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:story.storyId storyId:story.storyId];
+        BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionDelete dependencies:nil];
+        activityOp.action.context = [Activity activityWithType:kBNActivityTypeLike
+                                                      fromUser:currentUser.userId
+                                                        toUser:currentUser.userId
+                                                       sceneId:nil
+                                                       storyId:story.storyId];
+        ADD_OPERATION_TO_QUEUE(activityOp);
+        [likers removeObject:currentUser.userId];
     }
     else {
         // like story
         INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_NUM_LIKES, 1);
-        [mutArray addObject:story.storyId];
-        
         story.liked = YES;
         story.numberOfLikes = [NSNumber numberWithInt:([story.numberOfLikes intValue] + 1)];
+        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:story.storyId storyId:story.storyId];
+        BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionCreate dependencies:nil];
+        activityOp.action.context = [Activity activityWithType:kBNActivityTypeLike
+                                                      fromUser:currentUser.userId
+                                                        toUser:currentUser.userId
+                                                       sceneId:nil
+                                                       storyId:story.storyId];
+        ADD_OPERATION_TO_QUEUE(activityOp);
+        [likers addObject:currentUser.userId];
     }
-    currentUser.storiesLiked = [mutArray copy];
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[mutArray copy] forKey:USER_STORIES_LIKED];
-    [User editUserNoOp:currentUser withAttributes:params];
-    [User archiveCurrentUser];
-}
-
-+ (BOOL) isStoryLiked:(PFObject *)pfStory
-{
-    User *currentUser = [User currentUser];
-    if (!currentUser)
-        return NO;
-
-    NSArray *alreadyLikedStoriesId = currentUser.storiesLiked;
-    
-    if ([alreadyLikedStoriesId isEqual:[NSNull null]])
-        return NO;
-    
-    if ([alreadyLikedStoriesId containsObject:pfStory.objectId])
-        return YES;
-    
-    return NO;
+    story.likers = likers;
 }
 
 + (void) toggleFavouritedStory:(Story *)story
@@ -128,44 +91,160 @@
     if (!currentUser)
         return;
     
-    NSArray *alreadyFavouritedStoryId = currentUser.storiesFavourited;
-    NSMutableArray *mutArray = nil;
-    
-    if ([alreadyFavouritedStoryId isEqual:[NSNull null]])
-        mutArray = [NSMutableArray arrayWithCapacity:1];
-    else 
-        mutArray = [NSMutableArray arrayWithArray:alreadyFavouritedStoryId];
-    
     if (story.favourite) {
         // unfavourite story
-        [mutArray removeObject:story.storyId];
+        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:story.storyId storyId:story.storyId];
+        BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionDelete dependencies:nil];
+        activityOp.action.context = [Activity activityWithType:kBNActivityTypeFavourite
+                                                      fromUser:currentUser.userId
+                                                        toUser:currentUser.userId
+                                                       sceneId:nil
+                                                       storyId:story.storyId];
+        ADD_OPERATION_TO_QUEUE(activityOp);
     }
     else {
         // favourite story
-        [mutArray addObject:story.storyId];
+        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:story.storyId storyId:story.storyId];
+        BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionCreate dependencies:nil];
+        activityOp.action.context = [Activity activityWithType:kBNActivityTypeFavourite
+                                                      fromUser:currentUser.userId
+                                                        toUser:currentUser.userId
+                                                       sceneId:nil
+                                                       storyId:story.storyId];
+        ADD_OPERATION_TO_QUEUE(activityOp);
     }
-    currentUser.storiesFavourited = [mutArray copy];
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[mutArray copy] forKey:USER_STORIES_FAVOURITED];
-    [User editUserNoOp:currentUser withAttributes:params];
-    [User archiveCurrentUser];
     
     story.favourite = !story.favourite;
 }
 
-+ (BOOL) isStoryFavourited:(PFObject *)pfStory
+- (void) updateStoryStats
+{
+    [self updateViews];
+    [self updateLikes];
+    [self updateFavourites];
+}
+
+# pragma mark views
+- (void) updateViews
+{
+    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.storyId, kBNActivityStoryKey, kBNActivityTypeView, kBNActivityTypeKey, nil];
+    
+    NSError *error = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
+    
+    if (!jsonData) {
+        NSLog(@"NSJSONSerialization failed %@", error);
+    }
+    
+    NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
+    NSMutableDictionary *getViewNum = [NSMutableDictionary dictionaryWithObjectsAndKeys:json, @"where",
+                                       [NSNumber numberWithInt:1], @"count",
+                                       [NSNumber numberWithInt:0], @"limit", nil];
+    
+    [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(kBNActivityClassKey)
+                                  parameters:getViewNum
+                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                         NSDictionary *numViewFields = responseObject;
+                                         self.numberOfViews = [numViewFields objectForKey:@"count"];
+                                     }
+                                     failure:AF_PARSE_ERROR_BLOCK()];
+    
+    User *currentUser = [User currentUser];
+    if (currentUser) {
+        [jsonDictionary setObject:currentUser.userId forKey:kBNActivityFromUserKey];
+        jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
+        if (!jsonData) {
+            NSLog(@"NSJSONSerialization failed %@", error);
+        }
+        json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        getViewNum = [NSMutableDictionary dictionaryWithObjectsAndKeys:json, @"where",
+                      [NSNumber numberWithInt:1], @"count",
+                      [NSNumber numberWithInt:0], @"limit", nil];
+        
+        [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(kBNActivityClassKey)
+                                      parameters:getViewNum
+                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                             NSDictionary *numViewFields = responseObject;
+                                             NSNumber *views = [numViewFields objectForKey:@"count"];
+                                             if ([views integerValue] > 0) {
+                                                 self.viewed = YES;
+                                             }
+                                         }
+                                         failure:AF_PARSE_ERROR_BLOCK()];
+    }
+}
+
+# pragma mark likes
+- (void) updateLikes
+{
+    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.storyId, kBNActivityStoryKey, kBNActivityTypeLike, kBNActivityTypeKey, nil];
+    
+    NSError *error = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
+    
+    if (!jsonData) {
+        NSLog(@"NSJSONSerialization failed %@", error);
+    }
+    
+    NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
+    NSMutableDictionary *getLikes = [NSMutableDictionary dictionaryWithObjectsAndKeys:json, @"where",
+                                     [NSNumber numberWithInt:1], @"count", nil];
+    
+    [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(kBNActivityClassKey)
+                                  parameters:getLikes
+                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                         NSDictionary *likerFields = responseObject;
+                                         self.numberOfLikes = [likerFields objectForKey:@"count"];
+                                         NSMutableArray *likers = [NSMutableArray arrayWithCapacity:[self.numberOfLikes integerValue]];
+                                         for (NSDictionary *liker in [likerFields objectForKey:@"results"]) {
+                                             [likers addObject:[liker objectForKey:kBNActivityFromUserKey]];
+                                         }
+                                         self.likers = [likers copy];
+                                         User *currentUser = [User currentUser];
+                                         if (currentUser) {
+                                             if ([self.likers containsObject:currentUser.userId]) {
+                                                 self.liked = YES;
+                                             }
+                                         }
+                                     }
+                                     failure:AF_PARSE_ERROR_BLOCK()];
+}
+
+# pragma mark favourites
+- (void) updateFavourites
 {
     User *currentUser = [User currentUser];
-    if (!currentUser)
-        return NO;
-
-    NSArray *alreadyFavouritedStoriesId = currentUser.storiesFavourited;
-    if ([alreadyFavouritedStoriesId isEqual:[NSNull null]])
-        return NO;
+    if (!currentUser) {
+        return;
+    }
+    NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:self.storyId, kBNActivityStoryKey, kBNActivityTypeFavourite, kBNActivityTypeKey, currentUser.userId, kBNActivityFromUserKey, nil];
     
-    if ([alreadyFavouritedStoriesId containsObject:pfStory.objectId])
-        return YES;
+    NSError *error = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
     
-    return NO;
+    if (!jsonData) {
+        NSLog(@"NSJSONSerialization failed %@", error);
+    }
+    
+    NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
+    NSMutableDictionary *getFavs = [NSMutableDictionary dictionaryWithObjectsAndKeys:json, @"where",
+                                    [NSNumber numberWithInt:1], @"count",
+                                    [NSNumber numberWithInt:0], @"limit", nil];
+    
+    [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(kBNActivityClassKey)
+                                  parameters:getFavs
+                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                         NSDictionary *numFavFields = responseObject;
+                                         NSNumber *favs = [numFavFields objectForKey:@"count"];
+                                         if ([favs integerValue] > 0) {
+                                             self.favourite = YES;
+                                         }
+                                     }
+                                     failure:AF_PARSE_ERROR_BLOCK()];
 }
+
 @end
 

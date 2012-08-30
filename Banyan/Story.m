@@ -41,13 +41,14 @@
 @synthesize location = _location;
 @synthesize isLocationEnabled = _isLocationEnabled;
 @synthesize geocodedLocation = _geocodedLocation;
+@synthesize likers = _likers;
 // Session properties
 @synthesize imageChanged = _imageChanged;
 @synthesize storyBeingRead = _storyBeingRead;
 
 #pragma mark NSCoding
 
-- (id) initWithTitle:(NSString *)title canContribute:(BOOL)canContribute canView:(BOOL)canView isInvited:(BOOL)isInvited invitedToContribute:(NSArray *)invitedToContribute invitedToView:(NSArray *)invitedToView lengthOfStory:(NSNumber *)lengthOfStory publicContributors:(BOOL)publicContributors publicViewers:(BOOL)publicViewers storyId:(NSString *)storyId  imageURL:(NSString *)imageURL contributors:(NSArray *)contributors startingScene:(Scene *)startingScene createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors liked:(BOOL)liked viewed:(BOOL)viewed favourite:(BOOL)favourite scenes:(NSArray *)scenes initialized:(BOOL) initialized location:(CLLocation *)location isLocationEnabled:(BOOL) isLocationEnabled geocodedLocation:(NSString *)geocodedLocation
+- (id) initWithTitle:(NSString *)title canContribute:(BOOL)canContribute canView:(BOOL)canView isInvited:(BOOL)isInvited invitedToContribute:(NSArray *)invitedToContribute invitedToView:(NSArray *)invitedToView lengthOfStory:(NSNumber *)lengthOfStory publicContributors:(BOOL)publicContributors publicViewers:(BOOL)publicViewers storyId:(NSString *)storyId  imageURL:(NSString *)imageURL contributors:(NSArray *)contributors startingScene:(Scene *)startingScene createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors liked:(BOOL)liked viewed:(BOOL)viewed favourite:(BOOL)favourite scenes:(NSArray *)scenes initialized:(BOOL) initialized location:(CLLocation *)location isLocationEnabled:(BOOL) isLocationEnabled geocodedLocation:(NSString *)geocodedLocation likers:(NSArray *)likers
 {
     if ((self = [super init])) {
         _title = title;
@@ -76,6 +77,7 @@
         _location = location;
         _isLocationEnabled = isLocationEnabled;
         _geocodedLocation = geocodedLocation;
+        _likers = likers;
     }
     return self;
 }
@@ -108,6 +110,7 @@
     [aCoder encodeBool:_isLocationEnabled forKey:STORY_LOCATION_ENABLED];
     [aCoder encodeBool:_initialized forKey:STORY_IS_INITIALIZED];
     [aCoder encodeObject:_geocodedLocation forKey:STORY_GEOCODEDLOCATION];
+    [aCoder encodeObject:_likers forKey:STORY_LIKERS];
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder
@@ -138,8 +141,9 @@
     BOOL isLocationEnabled = [aDecoder decodeBoolForKey:STORY_LOCATION_ENABLED];
     BOOL initialized = [aDecoder decodeBoolForKey:STORY_IS_INITIALIZED];
     NSString *geocodedLocation = [aDecoder decodeObjectForKey:STORY_GEOCODEDLOCATION];
+    NSArray *likers = [aDecoder decodeObjectForKey:STORY_LIKERS];
     
-    return [self initWithTitle:title canContribute:canContribute canView:canView isInvited:isInvited invitedToContribute:invitedContributers invitedToView:invitedToView lengthOfStory:lengthOfStory publicContributors:publicContributors publicViewers:publicViewers storyId:storyId imageURL:imageURL contributors:contributors startingScene:startingScene createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors liked:liked viewed:viewed favourite:favourite scenes:scenes initialized:initialized location:location isLocationEnabled:isLocationEnabled geocodedLocation:geocodedLocation];
+    return [self initWithTitle:title canContribute:canContribute canView:canView isInvited:isInvited invitedToContribute:invitedContributers invitedToView:invitedToView lengthOfStory:lengthOfStory publicContributors:publicContributors publicViewers:publicViewers storyId:storyId imageURL:imageURL contributors:contributors startingScene:startingScene createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors liked:liked viewed:viewed favourite:favourite scenes:scenes initialized:initialized location:location isLocationEnabled:isLocationEnabled geocodedLocation:geocodedLocation likers:likers];
 }
 
 - (NSMutableDictionary *)getAttributesInDictionary

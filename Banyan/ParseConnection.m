@@ -108,16 +108,9 @@
     story.publicViewers = [REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_PUBLIC_VIEWERS]) boolValue];
     story.publicContributors = [REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_PUBLIC_CONTRIBUTORS]) boolValue];
     story.storyId = [pfStory objectId];
-    
-    story.numberOfLikes = REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_NUM_LIKES]);
-    story.numberOfContributors = REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_NUM_CONTRIBUTORS]);
-    story.numberOfViews = REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_NUM_VIEWS]);
     story.dateCreated = pfStory.createdAt;
     story.dateModified = pfStory.updatedAt;
-    
-    story.liked = [Story isStoryLiked:pfStory];
-    story.favourite = [Story isStoryFavourited:pfStory];
-    story.viewed = [Story isStoryViewed:pfStory];
+    [story updateStoryStats];
     Scene *scene = [[Scene alloc] init];
     story.startingScene = scene;
     story.startingScene.sceneId = REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_STARTING_SCENE]);
@@ -169,14 +162,9 @@
     scene.sceneNumberInStory = REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_NUMBER]);
     scene.story = story;
     scene.author = [User getUserForPfUser:[PFQuery getUserObjectWithId:REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_AUTHOR])]];
-    scene.numberOfLikes = REPLACE_NULL_WITH_ZERO([pfScene objectForKey:SCENE_NUM_LIKES]);
-    scene.numberOfContributors = REPLACE_NULL_WITH_ZERO([pfScene objectForKey:SCENE_NUM_CONTRIBUTORS]);
-    scene.numberOfViews = REPLACE_NULL_WITH_ZERO([pfScene objectForKey:SCENE_NUM_VIEWS]);
     scene.dateCreated = pfScene.createdAt;
     scene.dateModified = pfScene.updatedAt;
-    scene.liked = [Scene isSceneLiked:pfScene];
-    scene.favourite = [Scene isSceneFavourited:pfScene];
-    scene.viewed = [Scene isSceneViewed:pfScene];
+    [scene updateSceneStats];
     scene.initialized = YES;
     if (story.isLocationEnabled) {
         double latitude = [REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_LATITUDE]) doubleValue];

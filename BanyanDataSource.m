@@ -117,8 +117,9 @@ static NSMutableDictionary *_hashTable = nil;
 + (NSString *)getUpdatedValueForId:(NSString *)oldId
 {
     NSMutableDictionary *ht = [BanyanDataSource hashTable];
-    if ([ht objectForKey:oldId]) {
-        return [ht objectForKey:oldId];
+    NSString *newId = [ht objectForKey:oldId];
+    if (newId) {
+        return newId;
     }
     return oldId;
 }

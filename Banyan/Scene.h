@@ -26,6 +26,7 @@
 @property (strong) NSNumber * numberOfContributors;
 @property (strong) NSNumber * numberOfLikes;
 @property (strong) NSNumber * numberOfViews;
+@property (nonatomic, strong) NSArray *likers;
 @property (weak) Story *story;
 @property BOOL liked;
 @property BOOL favourite;

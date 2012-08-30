@@ -22,14 +22,6 @@
 @synthesize name = _name;
 @synthesize profilePic = _profilePic;
 @synthesize username = _username;
-@synthesize scenes = _scenes;
-@synthesize stories = _stories;
-@synthesize scenesLiked = _scenesLiked;
-@synthesize storiesLiked = _storiesLiked;
-@synthesize scenesFavourited = _scenesFavourited;
-@synthesize storiesFavourited = _storiesFavourited;
-@synthesize scenesViewed = _scenesViewed;
-@synthesize storiesViewed = _storiesViewed;
 @synthesize userId = _userId;
 @synthesize sessionToken = _sessionToken;
 
@@ -81,12 +73,6 @@ static User *_currentUser = nil;
     user.firstName = REPLACE_NULL_WITH_NIL([pfUser objectForKey:USER_FIRSTNAME]);
     user.lastName = REPLACE_NULL_WITH_NIL([pfUser objectForKey:USER_LASTNAME]);
     user.name = REPLACE_NULL_WITH_NIL([pfUser objectForKey:USER_NAME]);
-    user.scenesViewed = REPLACE_NULL_WITH_EMPTY_ARRAY([pfUser objectForKey:USER_SCENES_VIEWED]);
-    user.scenesLiked = REPLACE_NULL_WITH_EMPTY_ARRAY([pfUser objectForKey:USER_SCENES_LIKED]);
-    user.scenesFavourited = REPLACE_NULL_WITH_EMPTY_ARRAY([pfUser objectForKey:USER_SCENES_FAVOURITED]);
-    user.storiesViewed = REPLACE_NULL_WITH_EMPTY_ARRAY([pfUser objectForKey:USER_STORIES_VIEWED]);
-    user.storiesLiked = REPLACE_NULL_WITH_EMPTY_ARRAY([pfUser objectForKey:USER_STORIES_LIKED]);
-    user.storiesFavourited = REPLACE_NULL_WITH_EMPTY_ARRAY([pfUser objectForKey:USER_STORIES_FAVOURITED]);
     user.facebookId = REPLACE_NULL_WITH_NIL([pfUser objectForKey:USER_FACEBOOK_ID]);
     return user;
 }
@@ -105,71 +91,34 @@ static User *_currentUser = nil;
     }
 }
 #pragma mark NSCoding
-- (id) initWithUsername:(NSString *)username firstName:(NSString *)firstName lastName:(NSString *)lastName name:(NSString *)name dateCreated:(NSDate *)dateCreated emailAddress:(NSString *)emailAddress profilePic:(id)profilePic stories:(NSArray *)stories scenes:(NSArray *)scenes scenesLiked:(NSArray *)scenesLiked storiesLiked:(NSArray *)storiesLiked scenesViewed:(NSArray *)scenesViewed storiesViewed:(NSArray *)storiesViewed scenesFavourited:(NSArray *)scenesFavourited storiesFavourited:(NSArray *)storiesFavourited userId:(NSString *)userId facebookId:(NSString *)facebookId
-{
-    if ((self = [super init])) {
-        _username = username;
-        _firstName = firstName;
-        _lastName = lastName;
-        _name = name;
-        _dateCreated = dateCreated;
-        _emailAddress = _emailAddress;
-        _stories = _stories;
-        _scenes = _scenes;
-        _scenesLiked = scenesLiked;
-        _storiesLiked = storiesLiked;
-        _scenesViewed = scenesViewed;
-        _storiesViewed = storiesViewed;
-        _scenesFavourited = scenesFavourited;
-        _storiesFavourited = storiesFavourited;
-        _userId = userId;
-        _facebookId = facebookId;
-    }
-    return self;
-}
-
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {    
-    [aCoder encodeObject:_dateCreated forKey:USER_DATE_CREATED];
-    [aCoder encodeObject:_emailAddress forKey:USER_EMAIL];
-    [aCoder encodeObject:_facebookId forKey:USER_FACEBOOK_ID];
-    [aCoder encodeObject:_firstName forKey:USER_FIRSTNAME];
-    [aCoder encodeObject:_lastName forKey:USER_LASTNAME];
-    [aCoder encodeObject:_name forKey:USER_NAME];
-    [aCoder encodeObject:_profilePic forKey:USER_PROFILEPIC];
-    [aCoder encodeObject:_username forKey:USER_USERNAME];
-    [aCoder encodeObject:_scenes forKey:USER_SCENES];
-    [aCoder encodeObject:_stories forKey:USER_STORIES];
-    [aCoder encodeObject:_scenesLiked forKey:USER_SCENES_LIKED];
-    [aCoder encodeObject:_storiesLiked forKey:USER_STORIES_LIKED];
-    [aCoder encodeObject:_scenesFavourited forKey:USER_SCENES_FAVOURITED];
-    [aCoder encodeObject:_storiesFavourited forKey:USER_STORIES_FAVOURITED];
-    [aCoder encodeObject:_scenesViewed forKey:USER_SCENES_VIEWED];
-    [aCoder encodeObject:_storiesViewed forKey:USER_STORIES_VIEWED];
-    [aCoder encodeObject:_userId forKey:USER_ID];
+    [aCoder encodeObject:self.dateCreated forKey:USER_DATE_CREATED];
+    [aCoder encodeObject:self.emailAddress forKey:USER_EMAIL];
+    [aCoder encodeObject:self.facebookId forKey:USER_FACEBOOK_ID];
+    [aCoder encodeObject:self.firstName forKey:USER_FIRSTNAME];
+    [aCoder encodeObject:self.lastName forKey:USER_LASTNAME];
+    [aCoder encodeObject:self.name forKey:USER_NAME];
+    [aCoder encodeObject:self.profilePic forKey:USER_PROFILEPIC];
+    [aCoder encodeObject:self.username forKey:USER_USERNAME];
+    [aCoder encodeObject:self.userId forKey:USER_ID];
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
-    NSDate * dateCreated = [aDecoder decodeObjectForKey:USER_DATE_CREATED];
-    NSString * emailAddress  = [aDecoder decodeObjectForKey:USER_EMAIL];
-    NSString * facebookId = [aDecoder decodeObjectForKey:USER_FACEBOOK_ID];
-    NSString * firstName = [aDecoder decodeObjectForKey:USER_FIRSTNAME];
-    NSString * lastName = [aDecoder decodeObjectForKey:USER_LASTNAME];
-    NSString * name = [aDecoder decodeObjectForKey:USER_NAME];
-    id profilePic = [aDecoder decodeObjectForKey:USER_PROFILEPIC];
-    NSString * username = [aDecoder decodeObjectForKey:USER_USERNAME];
-    NSArray *scenes = [aDecoder decodeObjectForKey:USER_SCENES];
-    NSArray *stories = [aDecoder decodeObjectForKey:USER_STORIES];
-    NSArray *scenesLiked = [aDecoder decodeObjectForKey:USER_SCENES_LIKED];
-    NSArray *storiesLiked = [aDecoder decodeObjectForKey:USER_STORIES_LIKED];
-    NSArray *scenesViewed = [aDecoder decodeObjectForKey:USER_SCENES_VIEWED];
-    NSArray *storiesViewed = [aDecoder decodeObjectForKey:USER_STORIES_VIEWED];
-    NSArray *scenesFavourited = [aDecoder decodeObjectForKey:USER_SCENES_FAVOURITED];
-    NSArray *storiesFavourited = [aDecoder decodeObjectForKey:USER_STORIES_FAVOURITED];
-    NSString *userId = [aDecoder decodeObjectForKey:USER_ID];
-    
-    return [self initWithUsername:username firstName:firstName lastName:lastName name:name dateCreated:dateCreated emailAddress:emailAddress profilePic:profilePic stories:stories scenes:scenes scenesLiked:scenesLiked storiesLiked:storiesLiked scenesViewed:scenesViewed storiesViewed:storiesViewed scenesFavourited:scenesFavourited storiesFavourited:storiesFavourited userId:userId facebookId:facebookId];
+    self = [super init];
+    if (self) {
+        self.dateCreated = [aDecoder decodeObjectForKey:USER_DATE_CREATED];
+        self.emailAddress  = [aDecoder decodeObjectForKey:USER_EMAIL];
+        self.facebookId = [aDecoder decodeObjectForKey:USER_FACEBOOK_ID];
+        self.firstName = [aDecoder decodeObjectForKey:USER_FIRSTNAME];
+        self.lastName = [aDecoder decodeObjectForKey:USER_LASTNAME];
+        self.name = [aDecoder decodeObjectForKey:USER_NAME];
+        self.profilePic = [aDecoder decodeObjectForKey:USER_PROFILEPIC];
+        self.username = [aDecoder decodeObjectForKey:USER_USERNAME];
+        self.userId = [aDecoder decodeObjectForKey:USER_ID];
+    }
+    return self;
 }
 
 #pragma mark Archiving and Unarchiving operations

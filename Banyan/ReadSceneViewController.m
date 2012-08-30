@@ -310,7 +310,7 @@
     editSceneViewController.editMode = edit;
     editSceneViewController.scene = self.scene;
     editSceneViewController.delegate = self;
-    [self presentViewController:editSceneViewController animated:NO completion:nil];
+    [self presentViewController:editSceneViewController animated:YES completion:nil];
 }
 
 - (IBAction)toggleSceneTextDisplay:(UIBarButtonItem *)sender 
@@ -446,7 +446,7 @@
 - (void) modifySceneViewController:(ModifySceneViewController *)controller
              didFinishEditingScene:(Scene *)scene
 {
-    [self dismissViewControllerAnimated:NO completion:^{
+    [self dismissViewControllerAnimated:YES completion:^{
         [[UIApplication sharedApplication] setStatusBarHidden:![self.delegate readSceneControllerEditMode] 
                                                 withAnimation:UIStatusBarAnimationNone];
         [self.navigationController setNavigationBarHidden:![self.delegate readSceneControllerEditMode] animated:NO];
@@ -467,7 +467,7 @@
 
 - (void) modifySceneViewControllerDidCancel:(ModifySceneViewController *)controller
 {
-    [self dismissViewControllerAnimated:NO completion:^{
+    [self dismissViewControllerAnimated:YES completion:^{
         [[UIApplication sharedApplication] setStatusBarHidden:![self.delegate readSceneControllerEditMode] 
                                                 withAnimation:UIStatusBarAnimationNone];
         [self.navigationController setNavigationBarHidden:![self.delegate readSceneControllerEditMode] animated:NO];

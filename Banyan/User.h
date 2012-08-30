@@ -20,14 +20,7 @@
 @property (nonatomic, strong) NSString * name;
 @property (nonatomic, strong) id profilePic;
 @property (nonatomic, strong) NSString * username;
-@property (nonatomic, strong) NSArray *scenes;
-@property (nonatomic, strong) NSArray *stories;
-@property (nonatomic, strong) NSArray *scenesLiked;
-@property (nonatomic, strong) NSArray *storiesLiked;
-@property (nonatomic, strong) NSArray *scenesViewed;
-@property (nonatomic, strong) NSArray *storiesViewed;
-@property (nonatomic, strong) NSArray *scenesFavourited;
-@property (nonatomic, strong) NSArray *storiesFavourited;
+
 // Session variables. No need to archive
 @property (nonatomic, strong) NSString *sessionToken;
 

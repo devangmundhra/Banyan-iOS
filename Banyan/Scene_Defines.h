@@ -30,6 +30,7 @@
 #define SCENE_LIKED @"liked"
 #define SCENE_VIEWED @"viewed"
 #define SCENE_FAVOURITE @"favourite"
+#define SCENE_LIKERS @"likers"
 
 #define SCENE_LATITUDE @"latitude"
 #define SCENE_LONGITUDE @"longitude"

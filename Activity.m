@@ -69,13 +69,41 @@
 
 + (void)createActivity:(Activity *)activityContext
 {
-    [[AFParseAPIClient sharedClient] postPath:PARSE_API_CLASS_URL(kBNActivityClassKey)
-                                   parameters:[activityContext getAttributesInDictionary]
-                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                          NSLog(@"Got response for adding activity %@", activityContext);
-                                          NETWORK_OPERATION_COMPLETE();
-                                      }
-                                      failure:BN_ERROR_BLOCK_OPERATION_INCOMPLETE()];
+    NSDictionary *jsonDictionary = [activityContext getAttributesInDictionary];
+    
+    NSError *error = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
+    
+    if (!jsonData) {
+        NSLog(@"NSJSONSerialization failed %@", error);
+    }
+    
+    NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        
+    NSMutableDictionary *getActivities = [NSMutableDictionary dictionaryWithObjectsAndKeys:json, @"where",
+                                          [NSNumber numberWithInt:1], @"count",
+                                          [NSNumber numberWithInt:0], @"limit", nil];
+    
+    [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(kBNActivityClassKey)
+                                  parameters:getActivities
+                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                         NSDictionary *response = responseObject;
+                                         NSNumber *numActivities = [response objectForKey:@"count"];
+                                         // Only if this activity has not already been added
+                                         if ([numActivities integerValue] == 0) {
+                                             [[AFParseAPIClient sharedClient]
+                                              postPath:PARSE_API_CLASS_URL(kBNActivityClassKey)
+                                              parameters:[activityContext getAttributesInDictionary]
+                                              success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                                  NSLog(@"Got response for adding activity %@", activityContext);
+                                              }
+                                              failure:AF_PARSE_ERROR_BLOCK()];
+                                         }
+                                         NETWORK_OPERATION_COMPLETE();
+                                     }
+                                     failure:BN_ERROR_BLOCK_OPERATION_INCOMPLETE()];
+    
+
 }
 
 + (void)deleteActivity:(Activity *)activityContext

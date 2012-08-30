@@ -40,6 +40,7 @@
 @property BOOL favourite;
 @property BOOL viewed;
 @property BOOL initialized;
+@property (strong, nonatomic) NSArray *likers;
 
 // Session variables. No need to archive
 @property BOOL imageChanged;

@@ -17,13 +17,7 @@
 
 + (void) toggleLikedScene:(Scene *)scene;
 
-+ (BOOL) isSceneLiked:(PFObject *)pfScene;
-
 + (void) toggleFavouritedScene:(Scene *)scene;
-
-+ (BOOL) isSceneFavourited:(PFObject *)pfScene;
-
-+ (BOOL) isSceneViewed:(PFObject *)pfScene;
 
 - (void) updateSceneStats;
 

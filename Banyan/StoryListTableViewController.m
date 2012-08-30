@@ -431,12 +431,14 @@
 - (void)didReceiveMemoryWarning
 {
     // Release all the scene information from the stories. This can be added later
+    /*
     for (Story *story in [BanyanDataSource shared]) {
         if (!story.storyBeingRead && story.initialized && [[BNOperationQueue shared] operationCount] == 0) {
             story.scenes = nil;
             NSLog(@"Scenes for story %@ are nulled", story.storyId);
         }
     }
+     */
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     
