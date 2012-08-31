@@ -343,6 +343,11 @@
         <class className="NewStoryViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NewStoryViewController.h"/>
             <relationships>
+                <relationship kind="action" name="dismissKeyboard:"/>
+                <relationship kind="action" name="doneNewStory:" candidateClass="UIBarButtonItem"/>
+                <relationship kind="action" name="showLocationSwitchToggled:" candidateClass="UISwitch"/>
+                <relationship kind="action" name="storyContributors:" candidateClass="UISegmentedControl"/>
+                <relationship kind="action" name="storyViewers:" candidateClass="UISegmentedControl"/>
                 <relationship kind="outlet" name="addStorySubView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="contributorInvitationLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="contributorSegmenedControl" candidateClass="UISegmentedControl"/>
@@ -376,7 +381,7 @@
             <source key="sourceIdentifier" type="project" relativePath="./Classes/StoryListTableViewController.h"/>
             <relationships>
                 <relationship kind="action" name="addStorySegue:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="action" name="filterStories:" candidateClass="UISegmentedControl"/>
+                <relationship kind="action" name="filterStories:"/>
                 <relationship kind="outlet" name="addStory" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="filterStoriesSegmentedControl" candidateClass="UISegmentedControl"/>
                 <relationship kind="outlet" name="leftButton" candidateClass="UIBarButtonItem"/>

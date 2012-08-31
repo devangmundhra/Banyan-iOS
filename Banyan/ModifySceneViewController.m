@@ -15,9 +15,9 @@
 #import "Scene_Defines.h"
 #import "Story_Defines.h"
 #import "UIImageView+AFNetworking.h"
-#import "UIImage+SizeAndOrientation.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "MBProgressHUD.h"
+#import "UIImage+ResizeAdditions.h"
 
 @interface ModifySceneViewController ()
 
@@ -121,9 +121,7 @@
     }
     else if (self.editMode == edit)
     {
-//        self.imageView.frame = [[UIScreen mainScreen] bounds];
-//        self.imageView.contentMode = UIViewContentModeScaleAspectFill;
-//        self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        self.imageView.frame = [[UIScreen mainScreen] bounds];
         self.localImageURL = self.scene.imageURL;
         if (self.scene.imageURL && [self.scene.imageURL rangeOfString:@"asset"].location == NSNotFound) {
             [self.imageView setImageWithURL:[NSURL URLWithString:self.scene.imageURL] placeholderImage:self.scene.image];
@@ -274,24 +272,6 @@
     }
 }
 
-#define CAMERA @"Camera"
-#define PHOTO_LIB @"Photo Library"
-- (IBAction)modifyImage:(id)sender 
-{
-    [self dismissKeyboard:sender];
-
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Modify Photo"
-                                                             delegate:self
-                                                    cancelButtonTitle:@"Cancel"
-                                               destructiveButtonTitle:self.localImageURL ? @"Delete Photo" : nil
-                                                    otherButtonTitles:nil];
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
-        [actionSheet addButtonWithTitle:CAMERA];
-    [actionSheet addButtonWithTitle:PHOTO_LIB];
-    actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
-    [actionSheet showInView:self.view];
-}
-
 - (IBAction)deleteScene:(UIButton *)sender 
 {
     if (self.scene.previousScene == nil)
@@ -308,6 +288,24 @@
         [self.delegate modifySceneViewController:self];
         [TestFlight passCheckpoint:@"Scene deleted"];
     }
+}
+
+#define CAMERA @"Camera"
+#define PHOTO_LIB @"Photo Library"
+- (IBAction)modifyImage:(id)sender
+{
+    [self dismissKeyboard:sender];
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Modify Photo"
+                                                             delegate:self
+                                                    cancelButtonTitle:@"Cancel"
+                                               destructiveButtonTitle:self.localImageURL ? @"Delete Photo" : nil
+                                                    otherButtonTitles:nil];
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
+        [actionSheet addButtonWithTitle:CAMERA];
+    [actionSheet addButtonWithTitle:PHOTO_LIB];
+    actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
+    [actionSheet showInView:self.view];
 }
 
 #pragma mark UIActionSheetDelegate
@@ -327,20 +325,79 @@
         self.doneButton.enabled = [self checkForChanges];
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:CAMERA]) {
-        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
-        imagePicker.delegate = self;
-        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        [self presentViewController:imagePicker animated:NO completion:nil];
+        [self shouldStartCameraController];
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:PHOTO_LIB]) {
-        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
-        imagePicker.delegate = self;
-        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        [self presentViewController:imagePicker animated:YES completion:nil];
+        [self shouldStartPhotoLibraryPickerController];
     }
     else {
         NSLog(@"ModifySceneViewController_actionSheetclickedButtonAtIndex %@", [actionSheet buttonTitleAtIndex:buttonIndex]);
     }
+}
+
+- (BOOL)shouldStartCameraController {
+    
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera] == NO) {
+        return NO;
+    }
+    
+    UIImagePickerController *cameraUI = [[UIImagePickerController alloc] init];
+    
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]
+        && [[UIImagePickerController availableMediaTypesForSourceType:
+             UIImagePickerControllerSourceTypeCamera] containsObject:(NSString *)kUTTypeImage]) {
+        
+        cameraUI.mediaTypes = [NSArray arrayWithObject:(NSString *) kUTTypeImage];
+        cameraUI.sourceType = UIImagePickerControllerSourceTypeCamera;
+        
+        if ([UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear]) {
+            cameraUI.cameraDevice = UIImagePickerControllerCameraDeviceRear;
+        } else if ([UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceFront]) {
+            cameraUI.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+        }
+        
+    } else {
+        return NO;
+    }
+    
+//    cameraUI.allowsEditing = YES;
+    cameraUI.showsCameraControls = YES;
+    cameraUI.delegate = self;
+    
+    [self presentViewController:cameraUI animated:YES completion:nil];
+    
+    return YES;
+}
+
+- (BOOL)shouldStartPhotoLibraryPickerController {
+    if (([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary] == NO
+         && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum] == NO)) {
+        return NO;
+    }
+    
+    UIImagePickerController *cameraUI = [[UIImagePickerController alloc] init];
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]
+        && [[UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypePhotoLibrary] containsObject:(NSString *)kUTTypeImage]) {
+        
+        cameraUI.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        cameraUI.mediaTypes = [NSArray arrayWithObject:(NSString *) kUTTypeImage];
+        
+    } else if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum]
+               && [[UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeSavedPhotosAlbum] containsObject:(NSString *)kUTTypeImage]) {
+        
+        cameraUI.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+        cameraUI.mediaTypes = [NSArray arrayWithObject:(NSString *) kUTTypeImage];
+        
+    } else {
+        return NO;
+    }
+    
+//    cameraUI.allowsEditing = YES;
+    cameraUI.delegate = self;
+    
+    [self presentViewController:cameraUI animated:YES completion:nil];
+    
+    return YES;
 }
 
 # pragma mark - Image Picker
@@ -389,7 +446,9 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     // Create a graphics image context
     CGRect screenSize = [[UIScreen mainScreen] bounds];
 
-    UIImage* newImage = [UIImage imageWithImage:image scaledToSize:screenSize.size];
+    UIImage* newImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill
+                                                    bounds:screenSize.size
+                                      interpolationQuality:kCGInterpolationHigh];
     
     [self.imageView setImage:newImage];
 }

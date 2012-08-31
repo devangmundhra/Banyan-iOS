@@ -385,6 +385,7 @@
         ScenesViewController *scenesViewController = segue.destinationViewController;
         scenesViewController.story = selectedStory;
         scenesViewController.delegate = self;
+        [scenesViewController setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
     }
     else if ([segue.identifier isEqualToString:@"Sign In"])
     {

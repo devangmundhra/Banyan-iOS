@@ -102,6 +102,8 @@
         [self.imageView setImageWithURL:nil];
     }
     
+    self.shareButton.hidden = YES;
+    
     self.sceneTextView.backgroundColor = [UIColor clearColor];
     self.storyTitleLabel.backgroundColor = [UIColor clearColor];
     self.contentView.backgroundColor = [UIColor clearColor];
@@ -302,6 +304,8 @@
     addSceneViewController.editMode = add;
     addSceneViewController.scene = self.scene;
     addSceneViewController.delegate = self;
+    [addSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+    [addSceneViewController setModalPresentationStyle:UIModalPresentationFullScreen];
     [self presentViewController:addSceneViewController animated:YES completion:nil];
 }
 - (IBAction)editScene:(UIBarButtonItem *)sender 
@@ -310,6 +314,8 @@
     editSceneViewController.editMode = edit;
     editSceneViewController.scene = self.scene;
     editSceneViewController.delegate = self;
+    [editSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+    [editSceneViewController setModalPresentationStyle:UIModalPresentationFullScreen];
     [self presentViewController:editSceneViewController animated:YES completion:nil];
 }
 
@@ -364,7 +370,7 @@
 }
 
 - (IBAction)share:(id)sender 
-{
+{    
     if (!self.scene.story.initialized) {
         NSLog(@"%s Can't share yet as story with title %@ is not initialized", __PRETTY_FUNCTION__, self.scene.story.title);
         return;

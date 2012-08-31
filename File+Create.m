@@ -7,7 +7,6 @@
 //
 
 #import "File+Create.h"
-#import "UIImage+SizeAndOrientation.h"
 @implementation File (Create)
 
 + (void) uploadFileForLocalURL:(NSString *)url
