@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="2549" systemVersion="12A269" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="cX6-a0-qfY">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="2549" systemVersion="12B19" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="cX6-a0-qfY">
     <dependencies>
         <deployment defaultVersion="1296" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1498"/>
@@ -55,18 +55,6 @@
                     </tableView>
                     <navigationItem key="navigationItem" id="JUa-cz-O2f">
                         <nil key="title"/>
-                        <barButtonItem key="leftBarButtonItem" title="Sign Out" id="04U-um-zSa"/>
-                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="y7u-zR-p7n">
-                            <rect key="frame" x="83" y="7" width="164" height="30"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <segments>
-                                <segment title="Popular"/>
-                                <segment title="Invited"/>
-                            </segments>
-                            <connections>
-                                <action selector="filterStories:" destination="5Ih-3Q-Est" eventType="valueChanged" id="pXO-ax-Q8f"/>
-                            </connections>
-                        </segmentedControl>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="1ek-dP-Vvn">
                             <connections>
                                 <action selector="addStorySegue:" destination="5Ih-3Q-Est" id="mzv-eb-3oC"/>
@@ -77,8 +65,6 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
                     <connections>
                         <outlet property="addStory" destination="1ek-dP-Vvn" id="Z02-1q-4QG"/>
-                        <outlet property="filterStoriesSegmentedControl" destination="y7u-zR-p7n" id="kKa-ro-WiN"/>
-                        <outlet property="leftButton" destination="04U-um-zSa" id="wFZ-kc-WpY"/>
                     </connections>
                 </tableViewController>
             </objects>
@@ -331,63 +317,6 @@
             <point key="canvasLocation" x="142" y="38"/>
         </scene>
     </scenes>
-    <classes>
-        <class className="InvitedTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/InvitedTableViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="doneInviting:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="searchBar" candidateClass="UISearchBar"/>
-                <relationship kind="outlet" name="searchDisplayController" candidateClass="UISearchDisplayController"/>
-            </relationships>
-        </class>
-        <class className="NewStoryViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NewStoryViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="dismissKeyboard:"/>
-                <relationship kind="action" name="doneNewStory:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="action" name="showLocationSwitchToggled:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="storyContributors:" candidateClass="UISegmentedControl"/>
-                <relationship kind="action" name="storyViewers:" candidateClass="UISegmentedControl"/>
-                <relationship kind="outlet" name="addStorySubView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="contributorInvitationLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="contributorSegmenedControl" candidateClass="UISegmentedControl"/>
-                <relationship kind="outlet" name="delegate"/>
-                <relationship kind="outlet" name="inviteContributorsButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="inviteViewersButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="locationLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="readStoryLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="scrollView" candidateClass="UIScrollView"/>
-                <relationship kind="outlet" name="showLocationSwitch" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="storyTitleTextField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="viewerInvitationLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="viewerSegmentedControl" candidateClass="UISegmentedControl"/>
-            </relationships>
-        </class>
-        <class className="ScenesViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ScenesViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="delegate"/>
-            </relationships>
-        </class>
-        <class className="StoryListStoryCell" superclassName="UITableViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/StoryListStoryCell.h"/>
-            <relationships>
-                <relationship kind="outlet" name="storyImageView" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="storyLocationLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="storyTitleLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="StoryListTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/StoryListTableViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="addStorySegue:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="action" name="filterStories:"/>
-                <relationship kind="outlet" name="addStory" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="filterStoriesSegmentedControl" candidateClass="UISegmentedControl"/>
-                <relationship kind="outlet" name="leftButton" candidateClass="UIBarButtonItem"/>
-            </relationships>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

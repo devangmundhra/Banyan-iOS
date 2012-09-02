@@ -16,10 +16,10 @@
 #import "ScenesViewController.h"
 #import "BanyanAppDelegate.h"
 #import "UserLoginViewController.h"
-#import "UserManagementModule.h"
 #import "PullToRefreshView.h"
 #import "MBProgressHUD.h"
 #import "BanyanDataSource.h"
+#import "SettingsTableViewController.h"
 
 @interface StoryListTableViewController : UITableViewController <NewStoryViewControllerDelegate, ScenesViewControllerDelegate, PullToRefreshViewDelegate> {
     PullToRefreshView *_pull;

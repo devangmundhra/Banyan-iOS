@@ -182,7 +182,7 @@
     assert(scene);
     NSMutableDictionary *attributes = [scene getAttributesInDictionary];
     Story *story = scene.story;
-    [attributes setObject:[PFUser currentUser].objectId forKey:SCENE_AUTHOR];
+    [attributes setObject:[User currentUser].userId forKey:SCENE_AUTHOR];
     
     [[AFParseAPIClient sharedClient] postPath:PARSE_API_CLASS_URL(@"Scene")
                                    parameters:attributes

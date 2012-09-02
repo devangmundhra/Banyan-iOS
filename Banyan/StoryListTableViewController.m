@@ -44,6 +44,7 @@
     self.navigationController.navigationBarHidden = NO;
     self.navigationController.toolbarHidden = YES;
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
+    [self refreshView];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -67,10 +68,10 @@
     [self.tableView addSubview:_pull];
     
     if (!self.leftButton)
-        self.leftButton = [[UIBarButtonItem alloc] initWithTitle:@"Sign Out" 
+        self.leftButton = [[UIBarButtonItem alloc] initWithTitle:@"Settings" 
                                                            style:UIBarButtonItemStyleBordered 
                                                           target:self 
-                                                          action:@selector(signout)];
+                                                          action:@selector(settings)];
     if (!self.addStory)
         self.addStory = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd 
                                                                       target:(self) 
@@ -84,8 +85,8 @@
                                      forControlEvents:UIControlEventValueChanged];
         self.filterStoriesSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         self.filterStoriesSegmentedControl.selectedSegmentIndex = FILTER_STORIES_SEGMENT_INDEX_POPULAR;
+        self.filterStoriesSegmentedControl.apportionsSegmentWidthsByContent = YES;
     }
-    
     
     // Notifications to refresh data
     
@@ -121,25 +122,23 @@
 
     self.dataSource = [NSMutableArray array];
     [self filterStoriesForTableDataSource];
-    [self refreshView];
     
     [TestFlight passCheckpoint:@"RootViewController view loaded"];
 }
 
 - (void)refreshView
 {
-    self.leftButton.title = @"Sign out";
+    self.leftButton.title = @"Settings";
     self.leftButton.target = self;
-    self.leftButton.action = @selector(signout);
-    
+    self.leftButton.action = @selector(settings);
+    [self.navigationItem setLeftBarButtonItem:self.leftButton animated:YES];
+
     if ([self.userManagementModule isUserSignedIntoApp])
     {
-        [self.navigationItem setLeftBarButtonItem:self.leftButton animated:YES];
         [self.navigationItem setRightBarButtonItem:self.addStory animated:YES];
         [self.navigationItem setTitleView:self.filterStoriesSegmentedControl];
     }
     else {
-        [self.navigationItem setLeftBarButtonItem:nil animated:YES];
         [self.navigationItem setRightBarButtonItem:nil animated:YES];
         [self.navigationItem setTitle:@"Banyan"];
         [self.navigationItem setTitleView:nil];
@@ -268,19 +267,24 @@
     return indexPath;
 }
 
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
     // Give the option to delete the story only if you are a contributor to the story too
     Story *story = [self.dataSource objectAtIndex:indexPath.row];
     return story.canContribute;
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView
+commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         Story *story = [self.dataSource objectAtIndex:indexPath.row];
         DELETE_STORY(story);
         [TestFlight passCheckpoint:@"Story deleted by swipe"];
     }    
 }
+
 #pragma mark Data Source Loading / Reloading Methods
 // Called by both data source updated notification and by clicking on the filter segmented control
 - (IBAction)filterStories:(id)sender
@@ -323,7 +327,7 @@
     NSDictionary *userInfo = notification.userInfo;
     Story *story = [userInfo objectForKey:@"Story"];
     
-    if ([notification.name isEqualToString:STORY_NEW_STORY_NOTIFICATION]){
+    if ([notification.name isEqualToString:STORY_NEW_STORY_NOTIFICATION]) {
         NSLog(@"%s %@ added", __PRETTY_FUNCTION__, story);
         [self.dataSource insertObject:story atIndex:0];
         [[BanyanDataSource shared] insertObject:story atIndex:0];
@@ -361,6 +365,11 @@
 }
 
 # pragma mark - segues
+- (void) settings
+{
+    SettingsTableViewController *vc = [[SettingsTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    [self.navigationController pushViewController:vc animated:YES];
+}
 
 - (IBAction)addStorySegue:(UIBarButtonItem *)sender
 {
@@ -410,20 +419,15 @@
     [self refreshView];
 }
 
-#pragma mark User Account controls
-- (void) signout
-{
-    [self.userManagementModule logout];
-}
-
 #pragma PullToRefreshView delegate methods
 // called when the user pulls-to-refresh
 - (void)pullToRefreshViewShouldRefresh:(PullToRefreshView *)view
 {
     [[BanyanDataSource class] performSelectorInBackground:@selector(loadDataSource) withObject:nil];
 }
+
 // called when the date shown needs to be updated, optional
--(NSDate *)pullToRefreshViewLastUpdated:(PullToRefreshView *)view
+- (NSDate *)pullToRefreshViewLastUpdated:(PullToRefreshView *)view
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:USER_DEFAULTS_LAST_SUCCESSFUL_UPDATE_TIME];
 }

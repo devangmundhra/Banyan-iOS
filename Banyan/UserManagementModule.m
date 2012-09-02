@@ -121,9 +121,9 @@
 - (void)logInViewController:(UserLoginViewController *)logInController didLogInUser:(PFUser *)user
 {
     NSLog(@"Getting user info");
+    [User updateCurrentUser];
     [self getUserInfo:self];
     [PFPush subscribeToChannelInBackground:[[PFUser currentUser] objectId]];
-    [User updateCurrentUser];
     
     [self.owningViewController.presentedViewController dismissViewControllerAnimated:YES completion:^{
         if ([self.owningViewController respondsToSelector:@selector(refreshView)]) {
