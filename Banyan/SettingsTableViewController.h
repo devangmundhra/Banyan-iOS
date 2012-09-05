@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "BanyanAppDelegate.h"
+#import "FollowingFriendsViewController.h"
 
 @interface SettingsTableViewController : UITableViewController
 

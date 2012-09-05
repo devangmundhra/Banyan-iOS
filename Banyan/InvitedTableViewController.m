@@ -32,8 +32,6 @@
 @synthesize searchDisplayController;
 @synthesize searchBar;
 
-#define USER_DEFAULTS_FACEBOOK_FRIENDS @"Facebook Friends"
-
 - (id) initWithSearchBarAndNavigationControllerForInvitationType:(NSString *)invitationType
                                                         delegate:(id<InvitedTableViewControllerDelegate>)delegate
                                                 selectedContacts:(NSArray *)selectedContacts
@@ -128,22 +126,13 @@
 {
     [super viewDidLoad];
 
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    PF_Facebook *facebook = [PFFacebookUtils facebook];
-    
-    // get the logged-in user's friends
-    [facebook requestWithGraphPath:@"me/friends" andDelegate:self];
     [[self tableView] setTableHeaderView:searchBar];
     self.searchDisplayController.searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
     self.tableView.scrollEnabled = YES;
     self.navigationItem.title = self.invitationType;
 
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSArray *array = [defaults objectForKey:USER_DEFAULTS_FACEBOOK_FRIENDS];
+    NSArray *array = [defaults objectForKey:BNUserDefaultsFacebookFriends];
     self.listContacts = array;
     [self setContactIndex];
     
@@ -328,20 +317,6 @@
 
 - (void)searchDisplayController:(UISearchDisplayController *)controller didHideSearchResultsTableView:(UITableView *)tableView
 {
-    [self.tableView reloadData];
-}
-
-# pragma mark PF_FBRequestDelegate
-- (void)request:(PF_FBRequest *)request didLoad:(id)result
-{
-    NSDictionary *resultsDict = result;
-    NSArray *array = [resultsDict objectForKey:@"data"];
-    // Save this list of Facebook Friends for offline use the next time
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:array forKey:USER_DEFAULTS_FACEBOOK_FRIENDS];
-    
-    self.listContacts = array;
-    [self setContactIndex];
     [self.tableView reloadData];
 }
 

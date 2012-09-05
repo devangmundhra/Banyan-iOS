@@ -92,7 +92,7 @@ typedef enum {
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"Settings Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
@@ -141,13 +141,13 @@ typedef enum {
         return @"Sign In";
     }
     switch (row) {
-        case 0:
+        case SettingsTableViewControllerAccountInfoMyStories:
             return @"My Stories";
             break;
-        case 1:
+        case SettingsTableViewControllerAccountInfoSectionMyFriends:
             return @"Find Friends";
             break;
-        case 2:
+        case SettingsTableViewControllerAccountInfoSectionSignOut:
             return @"Sign Out";
             break;
             
@@ -159,6 +159,8 @@ typedef enum {
 
 - (void) actionForAccountInfoSectionAtRow:(NSInteger) row
 {
+    FollowingFriendsViewController *findFriendsVc = nil;
+    
     BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
     
     if (![User currentUser]) {
@@ -167,15 +169,15 @@ typedef enum {
         return;
     }
     switch (row) {
-        case 0:
+        case SettingsTableViewControllerAccountInfoMyStories:
             NSLog(@"My Stories");
             [self.navigationController popViewControllerAnimated:YES];
             break;
-        case 1:
-            NSLog(@"Find Friends");
-            [self.navigationController popViewControllerAnimated:YES];
+        case SettingsTableViewControllerAccountInfoSectionMyFriends:
+            findFriendsVc = [[FollowingFriendsViewController alloc] initWithStyle:UITableViewStylePlain];
+            [self.navigationController pushViewController:findFriendsVc animated:YES];
             break;
-        case 2:
+        case SettingsTableViewControllerAccountInfoSectionSignOut:
             [delegate.userManagementModule logout];
             [self.navigationController popViewControllerAnimated:YES];
             break;
@@ -183,6 +185,15 @@ typedef enum {
         default:
             break;
     }
+}
+
+#pragma Memory Management
+- (void)didReceiveMemoryWarning
+{
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+    
+    // Release any cached data, images, etc that aren't in use.
 }
 
 @end

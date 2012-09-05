@@ -278,7 +278,7 @@
             
             story.canView = NO;
             for (NSDictionary *viewer in viewersList) {
-                if ([viewer isEqualToDictionary:myAttributes]) {
+                if ([viewer isMemberOfClass:[NSDictionary class]] && [viewer isEqualToDictionary:myAttributes]) {
                     story.canView = YES;
                     story.isInvited = YES;
                     break;

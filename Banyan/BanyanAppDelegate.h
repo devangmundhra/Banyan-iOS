@@ -24,7 +24,7 @@
 #define PARSE_MASTER_KEY @"WJij4dz437hs7h9RHQyaIrOMR1CTUYXsIxhYN0nu"
 #endif
 
-@interface BanyanAppDelegate : UIResponder <UIApplicationDelegate> {
+@interface BanyanAppDelegate : UIResponder <UIApplicationDelegate, PF_FBSessionDelegate, PF_FBDialogDelegate, PF_FBRequestDelegate> {
     UserManagementModule *userManagementModule;
 }
 

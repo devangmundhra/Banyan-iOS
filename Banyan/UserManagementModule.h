@@ -9,14 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "LoginTabbarViewController.h"
 #import "UserLoginViewController.h"
-#import <Parse/Parse.h>
-#import "User_Defines.h"
+#import "User.h"
 
-#define USER_MANAGEMENT_MODULE_USER_LOGIN_NOTIFICATION @"UserManagementModule_UserLoggedIn"
-#define USER_MANAGEMENT_MODULE_USER_LOGOUT_NOTIFICATION @"UserManagementModule_UserLoggedOut"
-
-@interface UserManagementModule : NSObject <PF_FBSessionDelegate, PF_FBDialogDelegate, PF_FBRequestDelegate, 
-                                            UserLoginViewControllerDelegate> {
+@interface UserManagementModule : NSObject <UserLoginViewControllerDelegate> {
     UIViewController *owningViewController;
 }
 

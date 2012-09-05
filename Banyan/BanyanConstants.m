@@ -8,13 +8,20 @@
 
 #import "BanyanConstants.h"
 
-#pragma mark - PFObject Story Class
+#pragma mark - NSNotifications
+NSString *const BNUserFollowingChangedNotification = @"io.banyan.Banyan.userFollowingChanged";
+NSString *const BNUserLogInNotification = @"io.banyan.Banyan.userLogIn";
+NSString *const BNUserLogOutNotification = @"io.banyan.Banyan.userLogOut";
 
+#pragma mark - NSUserDefaults
+NSString *const BNUserDefaultsFacebookFriends = @"io.banyan.Banyan.userDefaults.facebookFriends";
+NSString *const BNUserDefaultsUserInfo = @"io.banyan.Banyan.userDefaults.userInfo";
+
+#pragma mark - PFObject Story Class
 // Class key
 NSString *const kBNStoryClassKey   = @"Story";
 
 #pragma mark - PFObject Scene Class
-
 // Class key
 NSString *const kBNSceneClassKey = @"Scene";
 
@@ -34,7 +41,7 @@ NSString *const kBNActivityStoryKey       = @"storyId";
 
 // Type values
 NSString *const kBNActivityTypeLike       = @"like";
-NSString *const kBNActivityTypeFollow     = @"follow";
+NSString *const kBNActivityTypeFollowUser = @"followUser";
 NSString *const kBNActivityTypeFavourite  = @"favourite";
 NSString *const kBNActivityTypeView       = @"view";
 NSString *const kBNActivityTypeComment    = @"comment";

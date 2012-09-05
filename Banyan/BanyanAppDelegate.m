@@ -7,6 +7,7 @@
 //
 
 #import "BanyanAppDelegate.h"
+#import "User_Defines.h"
 
 @implementation BanyanAppDelegate
 
@@ -16,6 +17,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    [PFFacebookUtils initializeWithApplicationId:@"244613942300893"];
     
 #define TESTING 1
 #ifdef TESTING
@@ -141,5 +143,114 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [PFPush handlePush:userInfo];
 }
 
+#pragma mark - PF_FBRequestDelegate
+- (void)request:(PF_FBRequest *)request didLoad:(id)result {
+    // This method is called twice - once for the user's /me profile, and a second time when obtaining their friends. We will try and handle both scenarios in a single method.
+    
+    NSArray *data = [result objectForKey:@"data"];
+    
+    if (data) {
+        // we have friends data
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:data forKey:BNUserDefaultsFacebookFriends];
+    } else {
+        // We have users data
+        // User info
+        if ([result isKindOfClass:[NSDictionary class]] && [PFUser currentUser])
+        {
+            NSDictionary *resultsDict = result;
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            [defaults setObject:resultsDict forKey:BNUserDefaultsUserInfo];
+            [defaults synchronize];
+            
+            PFUser *currentUser = [PFUser currentUser];
+            NSString *facebookId = [result objectForKey:@"id"];
+            NSString *facebookName = [result objectForKey:@"name"];
+            NSString *facebookEmail = [resultsDict objectForKey:@"email"];
+            
+            [currentUser setEmail:facebookEmail];
+            [User currentUser].emailAddress = facebookEmail;
+            
+            if (facebookName && facebookName != 0) {
+                [currentUser setObject:facebookName forKey:USER_NAME];
+                [User currentUser].name = facebookName;
+            }
+            if (facebookId && facebookId != 0) {
+                [currentUser setObject:facebookId forKey:USER_FACEBOOK_ID];
+                [User currentUser].facebookId = facebookId;
+            }
+            if (currentUser.isNew) {
+                [currentUser setUsername:facebookEmail];
+            }
+            [currentUser saveEventually];
+            [[NSNotificationCenter defaultCenter] postNotificationName:BNUserLogInNotification
+                                                                object:self];
+        }
+        
+        [[PFFacebookUtils facebook] requestWithGraphPath:@"me/friends" andDelegate:self];
+    }
+}
+
+- (void)request:(PF_FBRequest *)request didFailWithError:(NSError *)error {
+    NSLog(@"Facebook error: %@", error);
+    
+    if ([PFUser currentUser]) {
+        if ([[[[error userInfo] objectForKey:@"error"] objectForKey:@"type"]
+             isEqualToString: @"OAuthException"]) {
+            NSLog(@"The facebook token was invalidated");
+            [self.userManagementModule logout];
+        }
+    }
+}
+
+# pragma mark - FBSessionDelegate, PF_FBSessionDelegate
+
+- (void)fbDidLogin {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:[[PFFacebookUtils facebook] accessToken] forKey:@"FBAccessTokenKey"];
+    [defaults setObject:[[PFFacebookUtils facebook] expirationDate] forKey:@"FBExpirationDateKey"];
+    [defaults synchronize];
+}
+
+- (void) fbDidLogout {
+    // Remove saved authorization information if it exists
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if ([defaults objectForKey:@"FBAccessTokenKey"]) {
+        [defaults removeObjectForKey:@"FBAccessTokenKey"];
+        [defaults removeObjectForKey:@"FBExpirationDateKey"];
+        [defaults synchronize];
+    }
+}
+
+- (void)fbDidExtendToken:(NSString *)accessToken expiresAt:(NSDate *)expiresAt {
+    NSLog(@"token extended");
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:accessToken forKey:@"FBAccessTokenKey"];
+    [defaults setObject:expiresAt forKey:@"FBExpirationDateKey"];
+    [defaults synchronize];
+}
+
+/**
+ * Called when the user dismissed the dialog without logging in.
+ */
+- (void)fbDidNotLogin:(BOOL)cancelled
+{
+    
+}
+
+/**
+ * Called when the current session has expired. This might happen when:
+ *  - the access token expired
+ *  - the app has been disabled
+ *  - the user revoked the app's permissions
+ *  - the user changed his or her password
+ */
+- (void)fbSessionInvalidated
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:[[PFFacebookUtils facebook] accessToken] forKey:@"FBAccessTokenKey"];
+    [defaults setObject:[[PFFacebookUtils facebook] expirationDate] forKey:@"FBExpirationDateKey"];
+    [defaults synchronize];
+}
 @end
 

@@ -104,6 +104,17 @@
 		51CF3E2D15BFEBA700FFC0D1 /* BNOperationDependency.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CF3E2C15BFEBA700FFC0D1 /* BNOperationDependency.m */; };
 		51CF3E3015BFEDB200FFC0D1 /* BNOperationObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CF3E2F15BFEDB200FFC0D1 /* BNOperationObject.m */; };
 		51CFD92915F1F260002926F9 /* SettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD92715F1F260002926F9 /* SettingsTableViewController.m */; };
+		51CFD93615F3E80B002926F9 /* FollowingFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD93515F3E80B002926F9 /* FollowingFriendsViewController.m */; };
+		51CFD93A15F57F70002926F9 /* FollowingUsersCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD93915F57F70002926F9 /* FollowingUsersCell.m */; };
+		51CFD94415F58337002926F9 /* buttonFollow.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD93C15F58337002926F9 /* buttonFollow.png */; };
+		51CFD94515F58337002926F9 /* buttonFollow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD93D15F58337002926F9 /* buttonFollow@2x.png */; };
+		51CFD94615F58337002926F9 /* buttonFollowing.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD93E15F58337002926F9 /* buttonFollowing.png */; };
+		51CFD94715F58337002926F9 /* buttonFollowing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD93F15F58337002926F9 /* buttonFollowing@2x.png */; };
+		51CFD94815F58337002926F9 /* buttonFollowingSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94015F58337002926F9 /* buttonFollowingSelected.png */; };
+		51CFD94915F58337002926F9 /* buttonFollowingSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94115F58337002926F9 /* buttonFollowingSelected@2x.png */; };
+		51CFD94A15F58337002926F9 /* buttonFollowSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94215F58337002926F9 /* buttonFollowSelected.png */; };
+		51CFD94B15F58337002926F9 /* buttonFollowSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */; };
+		51CFD94E15F59A13002926F9 /* FindFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD94D15F59A13002926F9 /* FindFriendsViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -278,6 +289,20 @@
 		51CF3E2F15BFEDB200FFC0D1 /* BNOperationObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNOperationObject.m; sourceTree = "<group>"; };
 		51CFD92615F1F260002926F9 /* SettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsTableViewController.h; sourceTree = "<group>"; };
 		51CFD92715F1F260002926F9 /* SettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsTableViewController.m; sourceTree = "<group>"; };
+		51CFD93415F3E80B002926F9 /* FollowingFriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowingFriendsViewController.h; sourceTree = "<group>"; };
+		51CFD93515F3E80B002926F9 /* FollowingFriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FollowingFriendsViewController.m; sourceTree = "<group>"; };
+		51CFD93815F57F70002926F9 /* FollowingUsersCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowingUsersCell.h; sourceTree = "<group>"; };
+		51CFD93915F57F70002926F9 /* FollowingUsersCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FollowingUsersCell.m; sourceTree = "<group>"; };
+		51CFD93C15F58337002926F9 /* buttonFollow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFollow.png; sourceTree = "<group>"; };
+		51CFD93D15F58337002926F9 /* buttonFollow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFollow@2x.png"; sourceTree = "<group>"; };
+		51CFD93E15F58337002926F9 /* buttonFollowing.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFollowing.png; sourceTree = "<group>"; };
+		51CFD93F15F58337002926F9 /* buttonFollowing@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFollowing@2x.png"; sourceTree = "<group>"; };
+		51CFD94015F58337002926F9 /* buttonFollowingSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFollowingSelected.png; sourceTree = "<group>"; };
+		51CFD94115F58337002926F9 /* buttonFollowingSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFollowingSelected@2x.png"; sourceTree = "<group>"; };
+		51CFD94215F58337002926F9 /* buttonFollowSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFollowSelected.png; sourceTree = "<group>"; };
+		51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFollowSelected@2x.png"; sourceTree = "<group>"; };
+		51CFD94C15F59A13002926F9 /* FindFriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindFriendsViewController.h; sourceTree = "<group>"; };
+		51CFD94D15F59A13002926F9 /* FindFriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindFriendsViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -325,6 +350,14 @@
 				5166B1B715E75B420072749C /* buttonFacebook@2x.png */,
 				5166B1B815E75B420072749C /* buttonFacebookSelected.png */,
 				5166B1B915E75B420072749C /* buttonFacebookSelected@2x.png */,
+				51CFD93C15F58337002926F9 /* buttonFollow.png */,
+				51CFD93D15F58337002926F9 /* buttonFollow@2x.png */,
+				51CFD93E15F58337002926F9 /* buttonFollowing.png */,
+				51CFD93F15F58337002926F9 /* buttonFollowing@2x.png */,
+				51CFD94015F58337002926F9 /* buttonFollowingSelected.png */,
+				51CFD94115F58337002926F9 /* buttonFollowingSelected@2x.png */,
+				51CFD94215F58337002926F9 /* buttonFollowSelected.png */,
+				51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -380,8 +413,7 @@
 				5189B35115B3964000562DD0 /* Networking Extensions */,
 				5189B35815B396FA00562DD0 /* Data handling */,
 				5189B35B15B3976700562DD0 /* Story List */,
-				51CFD92615F1F260002926F9 /* SettingsTableViewController.h */,
-				51CFD92715F1F260002926F9 /* SettingsTableViewController.m */,
+				51CFD93015F3121C002926F9 /* Settings */,
 				5189B35C15B397BD00562DD0 /* Helpful Categories */,
 				51B5989C15EB31B300DF4D9D /* BanyanConstants.h */,
 				51B5989D15EB31B300DF4D9D /* BanyanConstants.m */,
@@ -549,8 +581,7 @@
 		5189B35B15B3976700562DD0 /* Story List */ = {
 			isa = PBXGroup;
 			children = (
-				5189B31515B395F300562DD0 /* StoryListStoryCell.h */,
-				5189B31615B395F300562DD0 /* StoryListStoryCell.m */,
+				51CFD93715F57F35002926F9 /* UITableViewCell */,
 				5189B31715B395F300562DD0 /* StoryListTableViewController.h */,
 				5189B31815B395F300562DD0 /* StoryListTableViewController.m */,
 				5138D7E415B7E138007B4D7D /* BanyanDataSource.h */,
@@ -732,6 +763,38 @@
 			name = Activity;
 			sourceTree = "<group>";
 		};
+		51CFD93015F3121C002926F9 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				51CFD92615F1F260002926F9 /* SettingsTableViewController.h */,
+				51CFD92715F1F260002926F9 /* SettingsTableViewController.m */,
+				51CFD93415F3E80B002926F9 /* FollowingFriendsViewController.h */,
+				51CFD93515F3E80B002926F9 /* FollowingFriendsViewController.m */,
+				51CFD94C15F59A13002926F9 /* FindFriendsViewController.h */,
+				51CFD94D15F59A13002926F9 /* FindFriendsViewController.m */,
+				51CFD93B15F57F75002926F9 /* UITableViewCell */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
+		51CFD93715F57F35002926F9 /* UITableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				5189B31515B395F300562DD0 /* StoryListStoryCell.h */,
+				5189B31615B395F300562DD0 /* StoryListStoryCell.m */,
+			);
+			name = UITableViewCell;
+			sourceTree = "<group>";
+		};
+		51CFD93B15F57F75002926F9 /* UITableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				51CFD93815F57F70002926F9 /* FollowingUsersCell.h */,
+				51CFD93915F57F70002926F9 /* FollowingUsersCell.m */,
+			);
+			name = UITableViewCell;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -797,6 +860,14 @@
 				5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */,
 				5166B1BC15E75B420072749C /* buttonFacebookSelected.png in Resources */,
 				5166B1BD15E75B420072749C /* buttonFacebookSelected@2x.png in Resources */,
+				51CFD94415F58337002926F9 /* buttonFollow.png in Resources */,
+				51CFD94515F58337002926F9 /* buttonFollow@2x.png in Resources */,
+				51CFD94615F58337002926F9 /* buttonFollowing.png in Resources */,
+				51CFD94715F58337002926F9 /* buttonFollowing@2x.png in Resources */,
+				51CFD94815F58337002926F9 /* buttonFollowingSelected.png in Resources */,
+				51CFD94915F58337002926F9 /* buttonFollowingSelected@2x.png in Resources */,
+				51CFD94A15F58337002926F9 /* buttonFollowSelected.png in Resources */,
+				51CFD94B15F58337002926F9 /* buttonFollowSelected@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -874,6 +945,9 @@
 				51979A7915F08E69008194AF /* UIImage+RoundedCornerAdditions.m in Sources */,
 				51979A7D15F08F3A008194AF /* UIImage+ResizeAdditions.m in Sources */,
 				51CFD92915F1F260002926F9 /* SettingsTableViewController.m in Sources */,
+				51CFD93615F3E80B002926F9 /* FollowingFriendsViewController.m in Sources */,
+				51CFD93A15F57F70002926F9 /* FollowingUsersCell.m in Sources */,
+				51CFD94E15F59A13002926F9 /* FindFriendsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

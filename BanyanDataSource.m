@@ -22,11 +22,11 @@ static NSMutableDictionary *_hashTable = nil;
     // Notifications to handle permission controls
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(userLoginStatusChanged:)
-                                                 name:USER_MANAGEMENT_MODULE_USER_LOGIN_NOTIFICATION
+                                                 name:BNUserLogInNotification
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(userLoginStatusChanged:)
-                                                 name:USER_MANAGEMENT_MODULE_USER_LOGOUT_NOTIFICATION
+                                                 name:BNUserLogOutNotification
                                                object:nil];
 }
 
@@ -128,9 +128,9 @@ static NSMutableDictionary *_hashTable = nil;
 # pragma Storing the stories for this app
 + (void) userLoginStatusChanged:(NSNotification *)notification
 {
-    if ([[notification name] isEqualToString:USER_MANAGEMENT_MODULE_USER_LOGOUT_NOTIFICATION]) {
+    if ([[notification name] isEqualToString:BNUserLogOutNotification]) {
         [ParseConnection resetPermissionsForStories:_sharedDatasource];
-    } else if ([[notification name] isEqualToString:USER_MANAGEMENT_MODULE_USER_LOGIN_NOTIFICATION]) {
+    } else if ([[notification name] isEqualToString:BNUserLogInNotification]) {
         [self loadDataSource];
     } else {
         NSLog(@"%s Unknown notification %@", __PRETTY_FUNCTION__, [notification name]);

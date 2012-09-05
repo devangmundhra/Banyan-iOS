@@ -23,7 +23,7 @@
 
 @end
 
-@interface InvitedTableViewController : UITableViewController <PF_FBRequestDelegate, UISearchBarDelegate, UISearchDisplayDelegate>
+@interface InvitedTableViewController : UITableViewController <UISearchBarDelegate, UISearchDisplayDelegate>
 
 @property (nonatomic, weak) NSManagedObjectContext *objectContext;
 @property (nonatomic, weak) id<InvitedTableViewControllerDelegate> delegate;

@@ -8,13 +8,20 @@
 
 #import <Foundation/Foundation.h>
 
-#pragma mark - PFObject Story Class
+#pragma mark - NSNotifications
+extern NSString *const BNUserFollowingChangedNotification;
+extern NSString *const BNUserLogInNotification;
+extern NSString *const BNUserLogOutNotification;
 
+#pragma mark - NSUserDefaults
+extern NSString *const BNUserDefaultsFacebookFriends;
+extern NSString *const BNUserDefaultsUserInfo;
+
+#pragma mark - PFObject Story Class
 // Class key
 extern NSString *const kBNStoryClassKey;
 
 #pragma mark - PFObject Scene Class
-
 // Class key
 extern NSString *const kBNSceneClassKey;
 
@@ -35,7 +42,7 @@ extern NSString *const kBNActivityStoryKey;
 
 // Type values
 extern NSString *const kBNActivityTypeLike;
-extern NSString *const kBNActivityTypeFollow;
+extern NSString *const kBNActivityTypeFollowUser;
 extern NSString *const kBNActivityTypeFavourite;
 extern NSString *const kBNActivityTypeView;
 extern NSString *const kBNActivityTypeComment;

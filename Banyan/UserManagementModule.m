@@ -7,6 +7,7 @@
 //
 
 #import "UserManagementModule.h"
+#import "BanyanAppDelegate.h"
 
 @interface UserManagementModule() {
     LoginTabbarViewController *loginTabbarViewController;
@@ -25,7 +26,6 @@
 {
     self = [super init];
     if (self) {
-        [PFFacebookUtils initializeWithApplicationId:@"244613942300893"];
         loginTabbarViewController = [[LoginTabbarViewController alloc] init];
         loginTabbarViewController.module = self;
         owningViewController = nil;
@@ -107,12 +107,13 @@
 - (void)logout
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults removeObjectForKey:@"User Info"];
+    [defaults removeObjectForKey:BNUserDefaultsUserInfo];
+    [defaults removeObjectForKey:BNUserDefaultsFacebookFriends];
     [defaults synchronize];
     [PFPush unsubscribeFromChannelInBackground:[[PFUser currentUser] objectId]];
     [PFUser logOut];
     [User updateCurrentUser];
-    [[NSNotificationCenter defaultCenter] postNotificationName:USER_MANAGEMENT_MODULE_USER_LOGOUT_NOTIFICATION
+    [[NSNotificationCenter defaultCenter] postNotificationName:BNUserLogOutNotification
                                                         object:self];
     return;
 }
@@ -122,7 +123,7 @@
 {
     NSLog(@"Getting user info");
     [User updateCurrentUser];
-    [self getUserInfo:self];
+    [[PFFacebookUtils facebook] requestWithGraphPath:@"me/?fields=name,picture" andDelegate:(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate]];
     [PFPush subscribeToChannelInBackground:[[PFUser currentUser] objectId]];
     
     [self.owningViewController.presentedViewController dismissViewControllerAnimated:YES completion:^{
@@ -147,86 +148,6 @@
     [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
 
     [self.owningViewController.presentedViewController dismissViewControllerAnimated:YES completion:nil];
-}
-
-# pragma mark - FBSessionDelegate, PF_FBSessionDelegate
-
-- (void)fbDidLogin {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[[PFFacebookUtils facebook] accessToken] forKey:@"FBAccessTokenKey"];
-    [defaults setObject:[[PFFacebookUtils facebook] expirationDate] forKey:@"FBExpirationDateKey"];
-    [defaults synchronize];
-}
-
-- (void) fbDidLogout {
-    // Remove saved authorization information if it exists
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if ([defaults objectForKey:@"FBAccessTokenKey"]) {
-        [defaults removeObjectForKey:@"FBAccessTokenKey"];
-        [defaults removeObjectForKey:@"FBExpirationDateKey"];
-        [defaults synchronize];
-    }
-}
-
-- (void)fbDidExtendToken:(NSString *)accessToken expiresAt:(NSDate *)expiresAt {
-    NSLog(@"token extended");
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:accessToken forKey:@"FBAccessTokenKey"];
-    [defaults setObject:expiresAt forKey:@"FBExpirationDateKey"];
-    [defaults synchronize];
-}
-
-/**
- * Called when the user dismissed the dialog without logging in.
- */
-- (void)fbDidNotLogin:(BOOL)cancelled
-{
-
-}
-
-/**
- * Called when the current session has expired. This might happen when:
- *  - the access token expired
- *  - the app has been disabled
- *  - the user revoked the app's permissions
- *  - the user changed his or her password
- */
-- (void)fbSessionInvalidated
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[[PFFacebookUtils facebook] accessToken] forKey:@"FBAccessTokenKey"];
-    [defaults setObject:[[PFFacebookUtils facebook] expirationDate] forKey:@"FBExpirationDateKey"];
-    [defaults synchronize];
-}
-
-# pragma mark PF_FBRequestDelegate
-
-- (void)request:(PF_FBRequest *)request didLoad:(id)result
-{
-    // User info
-    if ([result isKindOfClass:[NSDictionary class]] && [PFUser currentUser])
-    {
-        NSDictionary *resultsDict = result;
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:resultsDict forKey:@"User Info"];
-        [defaults synchronize];
-        
-        PFUser *currentUser = [PFUser currentUser];
-        [currentUser setEmail:[resultsDict objectForKey:@"email"]];
-        [currentUser setObject:[resultsDict objectForKey:@"name"] forKey:USER_NAME];
-        if (currentUser.isNew) {
-            [currentUser setUsername:[resultsDict objectForKey:@"email"]];
-            [currentUser setObject:[resultsDict objectForKey:@"id"] forKey:USER_FACEBOOK_ID];
-        }
-        [currentUser saveEventually];
-        [[NSNotificationCenter defaultCenter] postNotificationName:USER_MANAGEMENT_MODULE_USER_LOGIN_NOTIFICATION 
-                                                            object:self];
-    }
-}
-
-- (void)getUserInfo:(id)sender
-{
-    [[PFFacebookUtils facebook] requestWithGraphPath:@"me" andDelegate:self];
 }
 
 @end
