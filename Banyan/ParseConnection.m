@@ -110,6 +110,7 @@
     story.storyId = [pfStory objectId];
     story.dateCreated = pfStory.createdAt;
     story.dateModified = pfStory.updatedAt;
+    story.author = [User getUserForPfUser:[PFQuery getUserObjectWithId:REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_AUTHOR])]];
     [story updateStoryStats];
     Scene *scene = [[Scene alloc] init];
     story.startingScene = scene;
@@ -258,7 +259,7 @@
             
             story.canContribute = NO;
             for (NSDictionary *contributor in contributorsList) {
-                if ([contributor isEqualToDictionary:myAttributes]) {
+                if ([contributor isKindOfClass:[NSDictionary class]] && [contributor isEqualToDictionary:myAttributes]) {
                     story.canContribute = YES;
                     story.isInvited =YES;
                     break;
@@ -278,7 +279,7 @@
             
             story.canView = NO;
             for (NSDictionary *viewer in viewersList) {
-                if ([viewer isMemberOfClass:[NSDictionary class]] && [viewer isEqualToDictionary:myAttributes]) {
+                if ([viewer isKindOfClass:[NSDictionary class]] && [viewer isEqualToDictionary:myAttributes]) {
                     story.canView = YES;
                     story.isInvited = YES;
                     break;

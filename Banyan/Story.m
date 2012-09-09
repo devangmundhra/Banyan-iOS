@@ -42,108 +42,78 @@
 @synthesize isLocationEnabled = _isLocationEnabled;
 @synthesize geocodedLocation = _geocodedLocation;
 @synthesize likers = _likers;
+@synthesize author = _author;
 // Session properties
 @synthesize imageChanged = _imageChanged;
 @synthesize storyBeingRead = _storyBeingRead;
 
 #pragma mark NSCoding
 
-- (id) initWithTitle:(NSString *)title canContribute:(BOOL)canContribute canView:(BOOL)canView isInvited:(BOOL)isInvited invitedToContribute:(NSArray *)invitedToContribute invitedToView:(NSArray *)invitedToView lengthOfStory:(NSNumber *)lengthOfStory publicContributors:(BOOL)publicContributors publicViewers:(BOOL)publicViewers storyId:(NSString *)storyId  imageURL:(NSString *)imageURL contributors:(NSArray *)contributors startingScene:(Scene *)startingScene createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors liked:(BOOL)liked viewed:(BOOL)viewed favourite:(BOOL)favourite scenes:(NSArray *)scenes initialized:(BOOL) initialized location:(CLLocation *)location isLocationEnabled:(BOOL) isLocationEnabled geocodedLocation:(NSString *)geocodedLocation likers:(NSArray *)likers
-{
-    if ((self = [super init])) {
-        _title = title;
-        _canContribute = canContribute;
-        _canView = canView;
-        _isInvited = isInvited;
-        _invitedToContribute = invitedToContribute;
-        _invitedToView = invitedToView;
-        _lengthOfStory = lengthOfStory;
-        _publicContributors = publicContributors;
-        _publicViewers = publicViewers;
-        _storyId = storyId;
-        _imageURL = imageURL;
-        _contributors = contributors;
-        _startingScene = startingScene;
-        _dateCreated = dateCreated;
-        _dateModified = dateModified;
-        _numberOfLikes = numberOfLikes;
-        _numberOfViews = numberOfViews;
-        _numberOfContributors = numberOfContributors;
-        _liked = liked;
-        _viewed = viewed;
-        _favourite = favourite;
-        _scenes = scenes;
-        _initialized = initialized;
-        _location = location;
-        _isLocationEnabled = isLocationEnabled;
-        _geocodedLocation = geocodedLocation;
-        _likers = likers;
-    }
-    return self;
-}
-
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {    
-    [aCoder encodeBool:_canContribute forKey:STORY_CAN_CONTRIBUTE];
-    [aCoder encodeBool:_canView forKey:STORY_CAN_VIEW];
-    [aCoder encodeBool:_isInvited forKey:STORY_IS_INVITED];
-    [aCoder encodeObject:_invitedToContribute forKey:STORY_INVITED_TO_CONTRIBUTE];
-    [aCoder encodeObject:_invitedToView forKey:STORY_INVITED_TO_VIEW];
-    [aCoder encodeObject:_lengthOfStory forKey:STORY_LENGTH];
-    [aCoder encodeBool:_publicContributors forKey:STORY_PUBLIC_CONTRIBUTORS];
-    [aCoder encodeBool:_publicViewers forKey:STORY_PUBLIC_VIEWERS];
-    [aCoder encodeObject:_storyId forKey:STORY_ID];
-    [aCoder encodeObject:_title forKey:STORY_TITLE];
-    [aCoder encodeObject:_imageURL forKey:STORY_IMAGE_URL];
-    [aCoder encodeObject:_contributors forKey:STORY_CONTRIBUTORS];
-    [aCoder encodeObject:_startingScene forKey:STORY_STARTING_SCENE];
-    [aCoder encodeObject:_dateCreated forKey:STORY_DATE_CREATED];
-    [aCoder encodeObject:_dateModified forKey:STORY_DATE_MODIFIED];
-    [aCoder encodeObject:_numberOfLikes forKey:STORY_NUM_LIKES];
-    [aCoder encodeObject:_numberOfViews forKey:STORY_NUM_VIEWS];
-    [aCoder encodeObject:_numberOfContributors forKey:STORY_NUM_CONTRIBUTORS];
-    [aCoder encodeBool:_liked forKey:STORY_LIKED];
-    [aCoder encodeBool:_viewed forKey:STORY_VIEWED];
-    [aCoder encodeBool:_favourite forKey:STORY_FAVOURITE];
-    [aCoder encodeObject:_scenes forKey:STORY_SCENES];
-    [aCoder encodeObject:_location forKey:STORY_LOCATION];
-    [aCoder encodeBool:_isLocationEnabled forKey:STORY_LOCATION_ENABLED];
-    [aCoder encodeBool:_initialized forKey:STORY_IS_INITIALIZED];
-    [aCoder encodeObject:_geocodedLocation forKey:STORY_GEOCODEDLOCATION];
-    [aCoder encodeObject:_likers forKey:STORY_LIKERS];
+    [aCoder encodeBool:self.canContribute forKey:STORY_CAN_CONTRIBUTE];
+    [aCoder encodeBool:self.canView forKey:STORY_CAN_VIEW];
+    [aCoder encodeBool:self.isInvited forKey:STORY_IS_INVITED];
+    [aCoder encodeObject:self.invitedToContribute forKey:STORY_INVITED_TO_CONTRIBUTE];
+    [aCoder encodeObject:self.invitedToView forKey:STORY_INVITED_TO_VIEW];
+    [aCoder encodeObject:self.lengthOfStory forKey:STORY_LENGTH];
+    [aCoder encodeBool:self.publicContributors forKey:STORY_PUBLIC_CONTRIBUTORS];
+    [aCoder encodeBool:self.publicViewers forKey:STORY_PUBLIC_VIEWERS];
+    [aCoder encodeObject:self.storyId forKey:STORY_ID];
+    [aCoder encodeObject:self.title forKey:STORY_TITLE];
+    [aCoder encodeObject:self.imageURL forKey:STORY_IMAGE_URL];
+    [aCoder encodeObject:self.contributors forKey:STORY_CONTRIBUTORS];
+    [aCoder encodeObject:self.startingScene forKey:STORY_STARTING_SCENE];
+    [aCoder encodeObject:self.dateCreated forKey:STORY_DATE_CREATED];
+    [aCoder encodeObject:self.dateModified forKey:STORY_DATE_MODIFIED];
+    [aCoder encodeObject:self.numberOfLikes forKey:STORY_NUM_LIKES];
+    [aCoder encodeObject:self.numberOfViews forKey:STORY_NUM_VIEWS];
+    [aCoder encodeObject:self.numberOfContributors forKey:STORY_NUM_CONTRIBUTORS];
+    [aCoder encodeBool:self.liked forKey:STORY_LIKED];
+    [aCoder encodeBool:self.viewed forKey:STORY_VIEWED];
+    [aCoder encodeBool:self.favourite forKey:STORY_FAVOURITE];
+    [aCoder encodeObject:self.scenes forKey:STORY_SCENES];
+    [aCoder encodeObject:self.location forKey:STORY_LOCATION];
+    [aCoder encodeBool:self.isLocationEnabled forKey:STORY_LOCATION_ENABLED];
+    [aCoder encodeBool:self.initialized forKey:STORY_IS_INITIALIZED];
+    [aCoder encodeObject:self.geocodedLocation forKey:STORY_GEOCODEDLOCATION];
+    [aCoder encodeObject:self.likers forKey:STORY_LIKERS];
+    [aCoder encodeObject:self.author forKey:STORY_AUTHOR];
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
-    BOOL canContribute = [aDecoder decodeBoolForKey:STORY_CAN_CONTRIBUTE];
-    BOOL canView = [aDecoder decodeBoolForKey:STORY_CAN_VIEW];
-    BOOL isInvited = [aDecoder decodeBoolForKey:STORY_IS_INVITED];
-    NSArray *invitedContributers = [aDecoder decodeObjectForKey:STORY_INVITED_TO_CONTRIBUTE];
-    NSArray *invitedToView = [aDecoder decodeObjectForKey:STORY_INVITED_TO_VIEW];
-    NSNumber *lengthOfStory = [aDecoder decodeObjectForKey:STORY_LENGTH];
-    BOOL publicContributors = [aDecoder decodeBoolForKey:STORY_PUBLIC_CONTRIBUTORS];
-    BOOL publicViewers = [aDecoder decodeBoolForKey:STORY_PUBLIC_VIEWERS];
-    NSString *storyId = [aDecoder decodeObjectForKey:STORY_ID];
-    NSString *title = [aDecoder decodeObjectForKey:STORY_TITLE];
-    NSString *imageURL = [aDecoder decodeObjectForKey:STORY_IMAGE_URL];
-    NSArray *contributors = [aDecoder decodeObjectForKey:STORY_CONTRIBUTORS];
-    Scene *startingScene = [aDecoder decodeObjectForKey:STORY_STARTING_SCENE];
-    NSDate *dateCreated = [aDecoder decodeObjectForKey:STORY_DATE_CREATED];
-    NSDate *dateModified = [aDecoder decodeObjectForKey:STORY_DATE_MODIFIED];
-    NSNumber *numberOfLikes = [aDecoder decodeObjectForKey:STORY_NUM_LIKES];
-    NSNumber *numberOfViews = [aDecoder decodeObjectForKey:STORY_NUM_VIEWS];
-    NSNumber *numberOfContributors = [aDecoder decodeObjectForKey:STORY_NUM_CONTRIBUTORS];
-    BOOL liked = [aDecoder decodeBoolForKey:STORY_LIKED];
-    BOOL favourite = [aDecoder decodeBoolForKey:STORY_VIEWED];
-    BOOL viewed = [aDecoder decodeBoolForKey:STORY_FAVOURITE];
-    NSArray *scenes = [aDecoder decodeObjectForKey:STORY_SCENES];
-    CLLocation *location = [aDecoder decodeObjectForKey:STORY_LOCATION];
-    BOOL isLocationEnabled = [aDecoder decodeBoolForKey:STORY_LOCATION_ENABLED];
-    BOOL initialized = [aDecoder decodeBoolForKey:STORY_IS_INITIALIZED];
-    NSString *geocodedLocation = [aDecoder decodeObjectForKey:STORY_GEOCODEDLOCATION];
-    NSArray *likers = [aDecoder decodeObjectForKey:STORY_LIKERS];
-    
-    return [self initWithTitle:title canContribute:canContribute canView:canView isInvited:isInvited invitedToContribute:invitedContributers invitedToView:invitedToView lengthOfStory:lengthOfStory publicContributors:publicContributors publicViewers:publicViewers storyId:storyId imageURL:imageURL contributors:contributors startingScene:startingScene createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors liked:liked viewed:viewed favourite:favourite scenes:scenes initialized:initialized location:location isLocationEnabled:isLocationEnabled geocodedLocation:geocodedLocation likers:likers];
+    if ((self = [super init])) {
+        self.canContribute = [aDecoder decodeBoolForKey:STORY_CAN_CONTRIBUTE];
+        self.canView = [aDecoder decodeBoolForKey:STORY_CAN_VIEW];
+        self.isInvited = [aDecoder decodeBoolForKey:STORY_IS_INVITED];
+        self.invitedToContribute = [aDecoder decodeObjectForKey:STORY_INVITED_TO_CONTRIBUTE];
+        self.invitedToView = [aDecoder decodeObjectForKey:STORY_INVITED_TO_VIEW];
+        self.lengthOfStory = [aDecoder decodeObjectForKey:STORY_LENGTH];
+        self.publicContributors = [aDecoder decodeBoolForKey:STORY_PUBLIC_CONTRIBUTORS];
+        self.publicViewers = [aDecoder decodeBoolForKey:STORY_PUBLIC_VIEWERS];
+        self.storyId = [aDecoder decodeObjectForKey:STORY_ID];
+        self.title = [aDecoder decodeObjectForKey:STORY_TITLE];
+        self.imageURL = [aDecoder decodeObjectForKey:STORY_IMAGE_URL];
+        self.contributors = [aDecoder decodeObjectForKey:STORY_CONTRIBUTORS];
+        self.startingScene = [aDecoder decodeObjectForKey:STORY_STARTING_SCENE];
+        self.dateCreated = [aDecoder decodeObjectForKey:STORY_DATE_CREATED];
+        self.dateModified = [aDecoder decodeObjectForKey:STORY_DATE_MODIFIED];
+        self.numberOfLikes = [aDecoder decodeObjectForKey:STORY_NUM_LIKES];
+        self.numberOfViews = [aDecoder decodeObjectForKey:STORY_NUM_VIEWS];
+        self.numberOfContributors = [aDecoder decodeObjectForKey:STORY_NUM_CONTRIBUTORS];
+        self.liked = [aDecoder decodeBoolForKey:STORY_LIKED];
+        self.favourite = [aDecoder decodeBoolForKey:STORY_VIEWED];
+        self.viewed = [aDecoder decodeBoolForKey:STORY_FAVOURITE];
+        self.scenes = [aDecoder decodeObjectForKey:STORY_SCENES];
+        self.location = [aDecoder decodeObjectForKey:STORY_LOCATION];
+        self.isLocationEnabled = [aDecoder decodeBoolForKey:STORY_LOCATION_ENABLED];
+        self.initialized = [aDecoder decodeBoolForKey:STORY_IS_INITIALIZED];
+        self.geocodedLocation = [aDecoder decodeObjectForKey:STORY_GEOCODEDLOCATION];
+        self.likers = [aDecoder decodeObjectForKey:STORY_LIKERS];
+        self.author = [aDecoder decodeObjectForKey:STORY_AUTHOR];
+    }
+    return self;
 }
 
 - (NSMutableDictionary *)getAttributesInDictionary
@@ -169,6 +139,7 @@
                              forKey:STORY_LATITUDE];
     [attributes setObject:[NSNumber numberWithDouble:coord.longitude]
                              forKey:STORY_LONGITUDE];
+    [attributes setObject:self.author.userId forKey:STORY_AUTHOR];
     
     return attributes;
 }

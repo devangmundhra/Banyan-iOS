@@ -90,7 +90,7 @@
 
 #pragma mark - FollowingUsersCell
 
-- (void)setUser:(NSDictionary *)aUser {
+- (void)setUser:(NSMutableDictionary *)aUser {
     _user = aUser;
     
     // Configure the cell
@@ -102,11 +102,11 @@
     [_nameButton setTitle:[_user objectForKey:USER_NAME] forState:UIControlStateNormal];
     [_nameButton setTitle:[_user objectForKey:USER_NAME] forState:UIControlStateHighlighted];
     
-    [_nameButton setFrame:CGRectMake( 60.0f, 17.0f, nameSize.width, nameSize.height)];
+    [_nameButton setFrame:CGRectMake( /*60.0f*/6.0f, 17.0f, nameSize.width, nameSize.height)];
     
     // Set photo number label
     CGSize photoLabelSize = [@"photos" sizeWithFont:[UIFont systemFontOfSize:11.0f] forWidth:144.0f lineBreakMode:UILineBreakModeTailTruncation];
-    [_photoLabel setFrame:CGRectMake( 60.0f, 17.0f + nameSize.height, 140.0f, photoLabelSize.height)];
+    [_photoLabel setFrame:CGRectMake( /*60.0f*/6.0f, 17.0f + nameSize.height, 140.0f, photoLabelSize.height)];
     
     // Set follow button
     [_followButton setFrame:CGRectMake( 208.0f, 20.0f, 103.0f, 32.0f)];

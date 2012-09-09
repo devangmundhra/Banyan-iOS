@@ -16,6 +16,7 @@ extern NSString *const BNUserLogOutNotification;
 #pragma mark - NSUserDefaults
 extern NSString *const BNUserDefaultsFacebookFriends;
 extern NSString *const BNUserDefaultsUserInfo;
+extern NSString *const BNUserDefaultsBanyanUsersFacebookFriends;
 
 #pragma mark - PFObject Story Class
 // Class key

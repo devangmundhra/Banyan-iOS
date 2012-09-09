@@ -153,7 +153,7 @@
     {
         story.isLocationEnabled = NO;
     }
-    
+    story.author = [User currentUser];
     story.storyBeingRead = YES;
     story.numberOfContributors = [NSNumber numberWithInt:0];
     story.numberOfLikes = [NSNumber numberWithInt:0];

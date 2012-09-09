@@ -47,7 +47,7 @@ static User *_currentUser = nil;
 {
     PFUser *currentUser = [PFUser currentUser];
     if (currentUser) {
-        [currentUser fetch];
+        [currentUser fetchIfNeeded];
     }
     _currentUser = [User getUserForPfUser:currentUser];
     _currentUser.sessionToken = currentUser.sessionToken;

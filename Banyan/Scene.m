@@ -37,84 +37,58 @@
 // Session properties
 @synthesize imageChanged = _imageChanged;
 
-- (id)initWithText:(NSString *)text sceneId:(NSString *)sceneId sceneNumberInStory:(NSNumber *)sceneNumberInStory imageURL:(NSString *)imageURL author:(User *)author nextScene:(Scene *)nextScene previousScene:(Scene *)previousScene createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors story:(Story *)story liked:(BOOL)liked viewed:(BOOL)viewed favourite:(BOOL)favourite initialized:(BOOL) initialized location:(CLLocation *)location geocodedLocation:(NSString *)geocodedLocation likers:(NSArray *)likers
-{
-    if ((self = [super init])) {
-        _text = text;
-        _sceneId = sceneId;
-        _sceneNumberInStory = sceneNumberInStory;
-        _imageURL = imageURL;
-        _author = author;
-        _nextScene = nextScene;
-        _previousScene = previousScene;
-        _dateCreated = dateCreated;
-        _dateModified = dateModified;
-        _numberOfLikes = numberOfLikes;
-        _numberOfViews = numberOfViews;
-        _numberOfContributors = numberOfContributors;
-        _story = story;
-        _liked = liked;
-        _viewed = viewed;
-        _favourite = favourite;
-        _initialized = initialized;
-        _location = location;
-        _geocodedLocation = geocodedLocation;
-        _likers = likers;
-    }
-    return self;
-}
-
 #pragma mark NSCoding
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
-    [aCoder encodeObject:_sceneId forKey:SCENE_ID];
-    [aCoder encodeObject:_sceneNumberInStory forKey:SCENE_NUMBER];
-    [aCoder encodeObject:_text forKey:SCENE_TEXT];
-    [aCoder encodeObject:_imageURL forKey:SCENE_IMAGE_URL];
-    [aCoder encodeObject:_author forKey:SCENE_AUTHOR];
-    [aCoder encodeConditionalObject:_nextScene forKey:SCENE_NEXTSCENE];
-    [aCoder encodeConditionalObject:_previousScene forKey:SCENE_PREVIOUSSCENE];
-    [aCoder encodeConditionalObject:_story forKey:SCENE_STORY];
-    [aCoder encodeObject:_dateCreated forKey:SCENE_DATE_CREATED];
-    [aCoder encodeObject:_dateModified forKey:SCENE_DATE_MODIFIED];
-    [aCoder encodeObject:_numberOfLikes forKey:SCENE_NUM_LIKES];
-    [aCoder encodeObject:_numberOfViews forKey:SCENE_NUM_VIEWS];
-    [aCoder encodeObject:_numberOfContributors forKey:SCENE_NUM_CONTRIBUTORS];
-    [aCoder encodeBool:_liked forKey:SCENE_LIKED];
-    [aCoder encodeBool:_viewed forKey:SCENE_VIEWED];
-    [aCoder encodeBool:_favourite forKey:SCENE_FAVOURITE];
-    [aCoder encodeBool:_initialized forKey:SCENE_IS_INITIALIZED];
-    [aCoder encodeObject:_location forKey:SCENE_LOCATION];
-    [aCoder encodeObject:_geocodedLocation forKey:SCENE_GEOCODEDLOCATION];
-    [aCoder encodeObject:_likers forKey:SCENE_LIKERS];
+    [aCoder encodeObject:self.sceneId forKey:SCENE_ID];
+    [aCoder encodeObject:self.sceneNumberInStory forKey:SCENE_NUMBER];
+    [aCoder encodeObject:self.text forKey:SCENE_TEXT];
+    [aCoder encodeObject:self.imageURL forKey:SCENE_IMAGE_URL];
+    [aCoder encodeObject:self.author forKey:SCENE_AUTHOR];
+    [aCoder encodeConditionalObject:self.nextScene forKey:SCENE_NEXTSCENE];
+    [aCoder encodeConditionalObject:self.previousScene forKey:SCENE_PREVIOUSSCENE];
+    [aCoder encodeConditionalObject:self.story forKey:SCENE_STORY];
+    [aCoder encodeObject:self.dateCreated forKey:SCENE_DATE_CREATED];
+    [aCoder encodeObject:self.dateModified forKey:SCENE_DATE_MODIFIED];
+    [aCoder encodeObject:self.numberOfLikes forKey:SCENE_NUM_LIKES];
+    [aCoder encodeObject:self.numberOfViews forKey:SCENE_NUM_VIEWS];
+    [aCoder encodeObject:self.numberOfContributors forKey:SCENE_NUM_CONTRIBUTORS];
+    [aCoder encodeBool:self.liked forKey:SCENE_LIKED];
+    [aCoder encodeBool:self.viewed forKey:SCENE_VIEWED];
+    [aCoder encodeBool:self.favourite forKey:SCENE_FAVOURITE];
+    [aCoder encodeBool:self.initialized forKey:SCENE_IS_INITIALIZED];
+    [aCoder encodeObject:self.location forKey:SCENE_LOCATION];
+    [aCoder encodeObject:self.geocodedLocation forKey:SCENE_GEOCODEDLOCATION];
+    [aCoder encodeObject:self.likers forKey:SCENE_LIKERS];
 
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
-    NSString *sceneId = [aDecoder decodeObjectForKey:SCENE_ID];
-    NSNumber *sceneNumberInStory = [aDecoder decodeObjectForKey:SCENE_NUMBER];
-    NSString *text = [aDecoder decodeObjectForKey:SCENE_TEXT];
-    NSString *imageURL = [aDecoder decodeObjectForKey:SCENE_IMAGE_URL];
-    User *author = [aDecoder decodeObjectForKey:SCENE_AUTHOR];
-    Scene *nextScene = [aDecoder decodeObjectForKey:SCENE_NEXTSCENE];
-    Scene *previousScence = [aDecoder decodeObjectForKey:SCENE_PREVIOUSSCENE];
-    Story *story = [aDecoder decodeObjectForKey:SCENE_STORY];
-    NSDate *dateCreated = [aDecoder decodeObjectForKey:SCENE_DATE_CREATED];
-    NSDate *dateModified = [aDecoder decodeObjectForKey:SCENE_DATE_MODIFIED];
-    NSNumber *numberOfLikes = [aDecoder decodeObjectForKey:SCENE_NUM_LIKES];
-    NSNumber *numberOfViews = [aDecoder decodeObjectForKey:SCENE_NUM_VIEWS];
-    NSNumber *numberOfContributors = [aDecoder decodeObjectForKey:SCENE_NUM_CONTRIBUTORS];
-    BOOL liked = [aDecoder decodeBoolForKey:SCENE_LIKED];
-    BOOL favourite = [aDecoder decodeBoolForKey:SCENE_VIEWED];
-    BOOL viewed = [aDecoder decodeBoolForKey:SCENE_FAVOURITE];
-    BOOL initialized = [aDecoder decodeBoolForKey:SCENE_IS_INITIALIZED];
-    CLLocation *location = [aDecoder decodeObjectForKey:SCENE_LOCATION];
-    NSString *geocodedLocation = [aDecoder decodeObjectForKey:SCENE_GEOCODEDLOCATION];
-    NSArray *likers = [aDecoder decodeObjectForKey:SCENE_LIKERS];
-
+    if ((self = [super init])) {
+        self.sceneId = [aDecoder decodeObjectForKey:SCENE_ID];
+        self.sceneNumberInStory = [aDecoder decodeObjectForKey:SCENE_NUMBER];
+        self.text = [aDecoder decodeObjectForKey:SCENE_TEXT];
+        self.imageURL = [aDecoder decodeObjectForKey:SCENE_IMAGE_URL];
+        self.author = [aDecoder decodeObjectForKey:SCENE_AUTHOR];
+        self.nextScene = [aDecoder decodeObjectForKey:SCENE_NEXTSCENE];
+        self.previousScene = [aDecoder decodeObjectForKey:SCENE_PREVIOUSSCENE];
+        self.story = [aDecoder decodeObjectForKey:SCENE_STORY];
+        self.dateCreated = [aDecoder decodeObjectForKey:SCENE_DATE_CREATED];
+        self.dateModified = [aDecoder decodeObjectForKey:SCENE_DATE_MODIFIED];
+        self.numberOfLikes = [aDecoder decodeObjectForKey:SCENE_NUM_LIKES];
+        self.numberOfViews = [aDecoder decodeObjectForKey:SCENE_NUM_VIEWS];
+        self.numberOfContributors = [aDecoder decodeObjectForKey:SCENE_NUM_CONTRIBUTORS];
+        self.liked = [aDecoder decodeBoolForKey:SCENE_LIKED];
+        self.favourite = [aDecoder decodeBoolForKey:SCENE_VIEWED];
+        self.viewed = [aDecoder decodeBoolForKey:SCENE_FAVOURITE];
+        self.initialized = [aDecoder decodeBoolForKey:SCENE_IS_INITIALIZED];
+        self.location = [aDecoder decodeObjectForKey:SCENE_LOCATION];
+        self.geocodedLocation = [aDecoder decodeObjectForKey:SCENE_GEOCODEDLOCATION];
+        self.likers = [aDecoder decodeObjectForKey:SCENE_LIKERS];
+    }
     
-    return [self initWithText:text sceneId:sceneId sceneNumberInStory:sceneNumberInStory imageURL:imageURL author:author nextScene:nextScene previousScene:previousScence createdDate:dateCreated modifiedDate:dateModified numberOfLikes:numberOfLikes numberOfViews:numberOfViews numberOfContributors:numberOfContributors story:story liked:liked viewed:viewed favourite:favourite initialized:initialized location:location geocodedLocation:geocodedLocation likers:likers];
+    return self;
 }
 
 - (NSMutableDictionary *)getAttributesInDictionary
@@ -124,7 +98,7 @@
     
     [attributes setObject:self.text forKey:SCENE_TEXT];
     [attributes setObject:REPLACE_NIL_WITH_NULL(UPDATED(self.imageURL)) forKey:SCENE_IMAGE_URL];
-//    [attributes setObject:self.author forKey:SCENE_AUTHOR];
+    [attributes setObject:self.author.userId forKey:SCENE_AUTHOR];
     [attributes setObject:REPLACE_NIL_WITH_NULL(self.nextScene.sceneId) forKey:SCENE_NEXTSCENE];
     [attributes setObject:REPLACE_NIL_WITH_NULL(self.previousScene.sceneId) forKey:SCENE_PREVIOUSSCENE];
     [attributes setObject:REPLACE_NIL_WITH_NULL(self.story.storyId) forKey:SCENE_STORY];

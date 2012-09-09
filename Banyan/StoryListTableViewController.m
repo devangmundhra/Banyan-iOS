@@ -10,8 +10,11 @@
 #import "ParseConnection.h"
 #import "StoryDocuments.h"
 
-#define FILTER_STORIES_SEGMENT_INDEX_POPULAR 0
-#define FILTER_STORIES_SEGMENT_INDEX_INVITED 1
+typedef enum {
+    FilterStoriesSegmentIndexPopular = 0,
+    FilterStoriesSegmentIndexFollowing,
+    FilterStoriesSegmentIndexInvited
+} FilterStoriesSegmentIndex;
 
 @interface StoryListTableViewController ()
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *addStory;
@@ -79,12 +82,12 @@
     
     if (!self.filterStoriesSegmentedControl) {
         self.filterStoriesSegmentedControl = [[UISegmentedControl alloc]
-                                              initWithItems:[NSArray arrayWithObjects:@"Popular", @"Invited", nil]];
+                                              initWithItems:[NSArray arrayWithObjects:@"Popular", @"Following", @"Invited", nil]];
         [self.filterStoriesSegmentedControl addTarget:self
                                                action:@selector(filterStories:)
                                      forControlEvents:UIControlEventValueChanged];
         self.filterStoriesSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-        self.filterStoriesSegmentedControl.selectedSegmentIndex = FILTER_STORIES_SEGMENT_INDEX_POPULAR;
+        self.filterStoriesSegmentedControl.selectedSegmentIndex = FilterStoriesSegmentIndexFollowing;
         self.filterStoriesSegmentedControl.apportionsSegmentWidthsByContent = YES;
     }
     
@@ -100,12 +103,12 @@
                                                  name:AFNetworkingReachabilityDidChangeNotification
                                                object:nil];
     
-    
+    /*
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(foregroundRefresh:) 
                                                  name:UIApplicationDidFinishLaunchingNotification 
                                                object:nil];
-    
+    */
     // Notifications when story list modified
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(changeInStoryList:) 
@@ -121,7 +124,6 @@
                                                object:nil];
 
     self.dataSource = [NSMutableArray array];
-    [self filterStoriesForTableDataSource];
     
     [TestFlight passCheckpoint:@"RootViewController view loaded"];
 }
@@ -297,11 +299,30 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [_pull finishedLoading];
     
     NSPredicate *predicate = nil;
-    if (self.filterStoriesSegmentedControl.selectedSegmentIndex == FILTER_STORIES_SEGMENT_INDEX_POPULAR) {
-        predicate = [NSPredicate predicateWithFormat:@"(canView == YES) OR (canContribute == YES)"];
-    } else {
-        predicate = [NSPredicate predicateWithFormat:@"(isInvited == YES)"];
+    NSMutableArray *arrayOfUserIdsBeingFollowed = nil;
+    
+    switch (self.filterStoriesSegmentedControl.selectedSegmentIndex) {
+        case FilterStoriesSegmentIndexPopular:
+            predicate = [NSPredicate predicateWithFormat:@"(canView == YES) OR (canContribute == YES)"];
+            break;
+        case FilterStoriesSegmentIndexFollowing:
+            arrayOfUserIdsBeingFollowed = [NSMutableArray array];
+            for (NSMutableDictionary *user in [[NSUserDefaults standardUserDefaults]
+                 objectForKey:BNUserDefaultsBanyanUsersFacebookFriends]) {
+                if ([[user objectForKey:USER_BEING_FOLLOWED] boolValue]) {
+                    [arrayOfUserIdsBeingFollowed addObject:[user objectForKey:@"objectId"]];
+                }
+            }
+            // Create a predicate where author.userId in arrayOfUserIdsBeingFollowed
+            predicate = [NSPredicate predicateWithFormat:@"((canView == YES) OR (canContribute == YES)) AND ((author.userId IN %@))", arrayOfUserIdsBeingFollowed];
+            break;
+        case FilterStoriesSegmentIndexInvited:
+            predicate = [NSPredicate predicateWithFormat:@"(isInvited == YES)"];
+            break;
+        default:
+            break;
     }
+
     [self.dataSource setArray:[BanyanDataSource shared]];
     [self.dataSource filterUsingPredicate:predicate];
     [self.tableView reloadData];

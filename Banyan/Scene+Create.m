@@ -162,11 +162,11 @@
         scene.previousScene = previousScene;
         scene.nextScene.previousScene = scene;
         previousScene.nextScene = scene;
-        scene.author = [User currentUser];
         
         scene.story.lengthOfStory = [NSNumber numberWithUnsignedInt:([scene.story.lengthOfStory unsignedIntegerValue] + 1)];
     }
     
+    scene.author = [User currentUser];
     scene.numberOfContributors = [NSNumber numberWithInt:0];
     scene.numberOfLikes = [NSNumber numberWithInt:0];
     scene.numberOfViews = [NSNumber numberWithInt:0];
@@ -182,7 +182,6 @@
     assert(scene);
     NSMutableDictionary *attributes = [scene getAttributesInDictionary];
     Story *story = scene.story;
-    [attributes setObject:[User currentUser].userId forKey:SCENE_AUTHOR];
     
     [[AFParseAPIClient sharedClient] postPath:PARSE_API_CLASS_URL(@"Scene")
                                    parameters:attributes

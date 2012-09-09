@@ -20,4 +20,5 @@
 #define USER_PROFILEPIC @"profilePic"
 #define USER_FACEBOOK_ID @"facebookId"
 
+#define USER_BEING_FOLLOWED @"userBeingFollowed"
 @end

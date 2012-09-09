@@ -17,8 +17,8 @@
  Sent to the delegate when a user button is tapped
  @param aUser the attributes of the user that was tapped
  */
-- (void)cell:(FollowingUsersCell *)cellView didTapUserButton:(NSDictionary *)aUser;
-- (void)cell:(FollowingUsersCell *)cellView didTapFollowButton:(NSDictionary *)aUser;
+- (void)cell:(FollowingUsersCell *)cellView didTapUserButton:(NSMutableDictionary *)aUser;
+- (void)cell:(FollowingUsersCell *)cellView didTapFollowButton:(NSMutableDictionary *)aUser;
 
 @end
 
@@ -27,12 +27,12 @@
 @property (nonatomic, strong) id<FollowingUsersCellDelegate> delegate;
 
 /*! The user represented in the cell */
-@property (nonatomic, strong) NSDictionary *user;
+@property (nonatomic, strong) NSMutableDictionary *user;
 @property (nonatomic, strong) UILabel *photoLabel;
 @property (nonatomic, strong) UIButton *followButton;
 
 /*! Setters for the cell's content */
-- (void)setUser:(NSDictionary *)user;
+- (void)setUser:(NSMutableDictionary *)user;
 
 - (void)didTapUserButtonAction:(id)sender;
 - (void)didTapFollowButtonAction:(id)sender;

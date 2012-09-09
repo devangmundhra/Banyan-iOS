@@ -31,53 +31,12 @@
                                                                                    action:@selector(findFriends)]];
         
         // Get friends being followed
-        NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:kBNActivityTypeFollowUser, kBNActivityTypeKey, [User currentUser].userId, kBNActivityFromUserKey, nil];
-        
-        NSError *error = nil;
-        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
-        
-        if (!jsonData) {
-            NSLog(@"NSJSONSerialization failed %@", error);
-        }
-        
-        NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-        
-        NSMutableDictionary *getFollowActivities = [NSMutableDictionary dictionaryWithObject:json forKey:@"where"];
-        
-        [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(kBNActivityClassKey)
-                                      parameters:getFollowActivities
-                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                             NSDictionary *results = (NSDictionary *)responseObject;
-                                             NSMutableArray *userIdArray = [NSMutableArray array];
-                                             for (NSDictionary *activity in [results objectForKey:@"results"]) {
-                                                 // Get the user being followed
-                                                 [userIdArray addObject:[activity objectForKey:kBNActivityToUserKey]];
-                                             }
-                                             // Get the user object of the users I am following
-                                             NSDictionary *constraint = [NSDictionary dictionaryWithObject:userIdArray forKey:@"$in"];
-                                             NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObject:constraint forKey:@"objectId"];
-                                             
-                                             NSError *error = nil;
-                                             NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
-                                             
-                                             if (!jsonData) {
-                                                 NSLog(@"NSJSONSerialization failed %@", error);
-                                             }
-                                             
-                                             NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-                                             
-                                             NSMutableDictionary *getFollowingUsers = [NSMutableDictionary dictionaryWithObject:json forKey:@"where"];
-                                             
-                                             [[AFParseAPIClient sharedClient] getPath:PARSE_API_USER_URL(@"")
-                                                                           parameters:getFollowingUsers
-                                                                              success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                                                                  self.dataSource = [(NSDictionary *)responseObject objectForKey:@"results"];
-                                                                                  [self.tableView reloadData];
-                                                                              }
-                                                                              failure:AF_PARSE_ERROR_BLOCK()];
-                                         }
-                                         failure:AF_PARSE_ERROR_BLOCK()];
-        
+        NSMutableArray *facebookFriendsOnBanyan = [[NSUserDefaults standardUserDefaults] objectForKey:BNUserDefaultsBanyanUsersFacebookFriends];
+        NSSortDescriptor *followingSortDescriptor =[NSSortDescriptor sortDescriptorWithKey:USER_BEING_FOLLOWED ascending:NO];
+        NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:USER_NAME ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
+        NSArray *sortArray = [NSArray arrayWithObjects:followingSortDescriptor, nameSortDescriptor, nil];
+        NSArray *sortedFriendsOnBanyan = [facebookFriendsOnBanyan sortedArrayUsingDescriptors:sortArray];
+        self.dataSource = sortedFriendsOnBanyan;
     }
     
     return self;
@@ -125,7 +84,8 @@
     }
     // Configure the cell...
     [cell setUser:[self.dataSource objectAtIndex:indexPath.row]];
-    cell.followButton.selected = YES;
+    cell.followButton.selected = [[cell.user objectForKey:USER_BEING_FOLLOWED] boolValue];
+    
     return cell;
 }
 
@@ -157,7 +117,7 @@
 
 - (void)shouldToggleFollowFriendForCell:(FollowingUsersCell *)cell {
     User *currentUser = [User currentUser];
-    NSDictionary *cellUser = cell.user;
+    NSMutableDictionary *cellUser = cell.user;
     if ([cell.followButton isSelected]) {
         // Unfollow
         cell.followButton.selected = NO;
@@ -169,6 +129,7 @@
                                                        sceneId:nil
                                                        storyId:nil];
         ADD_OPERATION_TO_QUEUE(activityOp);
+        [self changeFollowingStatusForUser:cellUser toStatus:NO];
         [[NSNotificationCenter defaultCenter] postNotificationName:BNUserFollowingChangedNotification object:nil];
     } else {
         // Follow
@@ -181,8 +142,21 @@
                                                        sceneId:nil
                                                        storyId:nil];
         ADD_OPERATION_TO_QUEUE(activityOp);
+        [self changeFollowingStatusForUser:cellUser toStatus:YES];
         [[NSNotificationCenter defaultCenter] postNotificationName:BNUserFollowingChangedNotification object:nil];
     }
+}
+
+- (void) changeFollowingStatusForUser:(NSMutableDictionary *)user toStatus:(BOOL) status
+{
+    NSMutableArray *facebookFriendsOnBanyan = [[[NSUserDefaults standardUserDefaults]
+                                                objectForKey:BNUserDefaultsBanyanUsersFacebookFriends] mutableCopy];
+    NSUInteger index = [facebookFriendsOnBanyan indexOfObject:user];
+    NSMutableDictionary *newCellUser = [user mutableCopy];
+    [newCellUser setObject:[NSNumber numberWithBool:status] forKey:USER_BEING_FOLLOWED];
+    [facebookFriendsOnBanyan replaceObjectAtIndex:index withObject:newCellUser];
+    [[NSUserDefaults standardUserDefaults] setObject:facebookFriendsOnBanyan forKey:BNUserDefaultsBanyanUsersFacebookFriends];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void) findFriends

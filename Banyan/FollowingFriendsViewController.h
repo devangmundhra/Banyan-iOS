@@ -13,6 +13,6 @@
 
 @interface FollowingFriendsViewController : UITableViewController <FollowingUsersCellDelegate>
 
-@property (nonatomic, strong) NSMutableArray *dataSource;
+@property (nonatomic, strong) NSArray *dataSource;
 
 @end

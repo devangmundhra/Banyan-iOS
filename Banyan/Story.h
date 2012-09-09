@@ -35,6 +35,7 @@
 @property (strong, nonatomic) NSNumber * numberOfViews;
 @property (strong, nonatomic) CLLocation *location;
 @property (strong, nonatomic) NSString *geocodedLocation;
+@property (strong, nonatomic) User *author;
 @property BOOL isLocationEnabled;
 @property BOOL liked;
 @property BOOL favourite;

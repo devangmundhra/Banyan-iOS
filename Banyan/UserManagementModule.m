@@ -123,7 +123,7 @@
 {
     NSLog(@"Getting user info");
     [User updateCurrentUser];
-    [[PFFacebookUtils facebook] requestWithGraphPath:@"me/?fields=name,picture" andDelegate:(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate]];
+    [[PFFacebookUtils facebook] requestWithGraphPath:@"me/?fields=name,picture,email" andDelegate:(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate]];
     [PFPush subscribeToChannelInBackground:[[PFUser currentUser] objectId]];
     
     [self.owningViewController.presentedViewController dismissViewControllerAnimated:YES completion:^{

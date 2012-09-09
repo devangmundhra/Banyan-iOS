@@ -8,6 +8,7 @@
 
 #import "BanyanAppDelegate.h"
 #import "User_Defines.h"
+#import "AFParseAPIClient.h"
 
 @implementation BanyanAppDelegate
 
@@ -52,6 +53,16 @@
                   clientKey:PARSE_CLIENT_KEY];
     
     userManagementModule = [[UserManagementModule alloc] init];
+    if ([User currentUser].facebookId && [User currentUser].facebookId.length > 0) {
+        // User has Facebook ID.
+        
+        // refresh Facebook friends on each launch
+        [[PFFacebookUtils facebook] requestWithGraphPath:@"me/friends" andDelegate:self];
+    } else {
+        NSLog(@"User missing Facebook ID");
+        [[PFFacebookUtils facebook] requestWithGraphPath:@"me/?fields=name,picture,email" andDelegate:self];
+    }
+    
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
      UIRemoteNotificationTypeAlert];
     
@@ -153,6 +164,71 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         // we have friends data
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setObject:data forKey:BNUserDefaultsFacebookFriends];
+        [defaults synchronize];
+        
+        // Get friends being followed
+        NSMutableArray *facebookFriendsId = [NSMutableArray array];
+        for (NSDictionary *facebookFriend in [defaults objectForKey:BNUserDefaultsFacebookFriends]) {
+            [facebookFriendsId addObject:[facebookFriend objectForKey:@"id"]];
+        }
+        
+        // We need to break the get request into smaller chunks as Parse API does not take a big request when # friends exceeds 500
+        NSError *error = nil;
+        NSDictionary *constraint = [NSDictionary dictionaryWithObject:facebookFriendsId forKey:@"$in"];
+        NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObject:constraint forKey:USER_FACEBOOK_ID];
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
+        if (!jsonData) {
+            NSLog(@"NSJSONSerialization failed %@", error);
+        }
+        NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        NSMutableDictionary *getFacebookFriendsOnBanyan = [NSMutableDictionary dictionaryWithObject:json forKey:@"where"];
+        [[AFParseAPIClient sharedClient] getPath:PARSE_API_USER_URL(@"")
+                                      parameters:getFacebookFriendsOnBanyan
+                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                             NSDictionary *results = (NSDictionary *)responseObject;
+                                             NSArray *friendsOnBanyan = [results objectForKey:@"results"];
+                                             NSMutableArray *idOfFriendsOnBanyan = [NSMutableArray arrayWithCapacity:[friendsOnBanyan count]];
+                                             NSMutableArray *friendsOnBanyanMutable = [NSMutableArray arrayWithCapacity:[friendsOnBanyan count]];
+                                             for (NSDictionary *friend in friendsOnBanyan) {
+                                                 [idOfFriendsOnBanyan addObject:[friend objectForKey:@"objectId"]];
+                                                 [friendsOnBanyanMutable addObject:[NSMutableDictionary dictionaryWithDictionary:friend]];
+                                             }
+                                             
+                                             NSDictionary *constraint = [NSDictionary dictionaryWithObject:idOfFriendsOnBanyan forKey:@"$in"];    
+                                             NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:kBNActivityTypeFollowUser, kBNActivityTypeKey,
+                                                                             [User currentUser].userId, kBNActivityFromUserKey,
+                                                                             constraint, kBNActivityToUserKey, nil];
+                                             NSError *error = nil;
+                                             NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
+                                             if (!jsonData) {
+                                                 NSLog(@"NSJSONSerialization failed %@", error);
+                                             }
+                                             NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+                                             NSDictionary *getFriendsBeingFollowed = [NSMutableDictionary dictionaryWithObject:json forKey:@"where"];
+                                             
+                                             [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(kBNActivityClassKey)
+                                                                           parameters:getFriendsBeingFollowed
+                                                                              success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                                                                  NSDictionary *results = (NSDictionary *)responseObject;
+                                                                                  NSMutableSet *userIdsBeingFollowed = [NSMutableSet set];
+                                                                                  for (NSDictionary *user in [results objectForKey:@"results"]) {
+                                                                                      [userIdsBeingFollowed addObject:[user objectForKey:kBNActivityToUserKey]];
+                                                                                  }
+                                                                                  for (NSMutableDictionary *userFriend in friendsOnBanyanMutable) {
+                                                                                      if ([userIdsBeingFollowed containsObject:[userFriend objectForKey:@"objectId"]]) {
+                                                                                          [userFriend setObject:[NSNumber numberWithBool:YES] forKey:USER_BEING_FOLLOWED];
+                                                                                      } else {
+                                                                                          [userFriend setObject:[NSNumber numberWithBool:NO] forKey:USER_BEING_FOLLOWED];
+                                                                                      }
+                                                                                  }
+                                                                                  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                                                                                  [defaults setObject:friendsOnBanyanMutable forKey:BNUserDefaultsBanyanUsersFacebookFriends];
+                                                                                  [defaults synchronize];
+                                                                              }
+                                                                              failure:AF_PARSE_ERROR_BLOCK()];
+                                         }
+                                         failure:AF_PARSE_ERROR_BLOCK()];
+        
     } else {
         // We have users data
         // User info
@@ -160,6 +236,11 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         {
             NSDictionary *resultsDict = result;
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            if (![defaults objectForKey:BNUserDefaultsUserInfo]) {
+                // User was not logged in previously
+                [[NSNotificationCenter defaultCenter] postNotificationName:BNUserLogInNotification
+                                                                    object:self];
+            }
             [defaults setObject:resultsDict forKey:BNUserDefaultsUserInfo];
             [defaults synchronize];
             
@@ -182,9 +263,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             if (currentUser.isNew) {
                 [currentUser setUsername:facebookEmail];
             }
+            [User updateCurrentUser];
             [currentUser saveEventually];
-            [[NSNotificationCenter defaultCenter] postNotificationName:BNUserLogInNotification
-                                                                object:self];
         }
         
         [[PFFacebookUtils facebook] requestWithGraphPath:@"me/friends" andDelegate:self];

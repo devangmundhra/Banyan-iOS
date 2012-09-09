@@ -16,6 +16,7 @@ NSString *const BNUserLogOutNotification = @"io.banyan.Banyan.userLogOut";
 #pragma mark - NSUserDefaults
 NSString *const BNUserDefaultsFacebookFriends = @"io.banyan.Banyan.userDefaults.facebookFriends";
 NSString *const BNUserDefaultsUserInfo = @"io.banyan.Banyan.userDefaults.userInfo";
+NSString *const BNUserDefaultsBanyanUsersFacebookFriends = @"io.banyan.Banyan.userDefaults.banyanUsersFacebookFriends";
 
 #pragma mark - PFObject Story Class
 // Class key
