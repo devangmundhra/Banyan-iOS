@@ -13,6 +13,5 @@
 @interface User (Edit)
 
 + (void) editUser:(User *)user withAttributes:(NSMutableDictionary *)userParams;
-+ (void) editUserNoOp:(User *)user withAttributes:(NSMutableDictionary *)userParams;
 
 @end
