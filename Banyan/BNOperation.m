@@ -25,6 +25,7 @@
 @property (assign, atomic) BOOL finished;
 #define MAX_NUM_TRIALS_FOR_OPERATION 10
 @property (atomic) NSUInteger numTried;
+@property UIBackgroundTaskIdentifier backgroundTask;
 
 @end
 
@@ -36,6 +37,7 @@
 @synthesize executing = _executing;
 @synthesize finished = _finished;
 @synthesize numTried = _numTried;
+@synthesize backgroundTask = _backgroundTask;
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
@@ -133,6 +135,15 @@
     
     [self didChangeValueForKey:@"isExecuting"];
     [self didChangeValueForKey:@"isFinished"];
+    
+	if ([BNOperation isMultitaskingSupported]) {
+		dispatch_async(dispatch_get_main_queue(), ^{
+			if (self.backgroundTask != UIBackgroundTaskInvalid) {
+				[[UIApplication sharedApplication] endBackgroundTask:self.backgroundTask];
+				self.backgroundTask = UIBackgroundTaskInvalid;
+			}
+		});
+	}
 }
 
 #pragma mark NSOperation overriding methods
@@ -189,6 +200,22 @@
         assert( ! [NSThread isMainThread] );
         
         NSLog(@"Executing req %@", self);
+        
+		if ([BNOperation isMultitaskingSupported]) {
+            if (!self.backgroundTask || self.backgroundTask == UIBackgroundTaskInvalid) {
+                self.backgroundTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+                    // Synchronize the cleanup call on the main thread in case
+                    // the task actually finishes at around the same time.
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (self.backgroundTask != UIBackgroundTaskInvalid)
+                        {
+                            [[UIApplication sharedApplication] endBackgroundTask:self.backgroundTask];
+                            self.backgroundTask = UIBackgroundTaskInvalid;
+                        }
+                    });
+                }];
+            }
+		}
         
         // First check if any dependencies are resolved. If yes, remove that dependency.
         // Add edit operation for the other dependencies
@@ -341,6 +368,15 @@
         NSLog(@"%s ******ERROR****** %@", __PRETTY_FUNCTION__, exception);
     }
 
+}
+
++ (BOOL)isMultitaskingSupported
+{
+	BOOL multiTaskingSupported = NO;
+	if ([[UIDevice currentDevice] respondsToSelector:@selector(isMultitaskingSupported)]) {
+		multiTaskingSupported = [(id)[UIDevice currentDevice] isMultitaskingSupported];
+	}
+	return multiTaskingSupported;
 }
 
 - (NSString *)description

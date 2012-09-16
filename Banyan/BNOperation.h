@@ -25,4 +25,5 @@
 - (BOOL)checkBNOperationDependency:(BNOperationDependency *)object;
 - (void)completeOperationWithError:(BOOL)error;
 - (void)removeBNOpDependencyOnBNOpObject:(BNOperationObject *)object;
++ (BOOL)isMultitaskingSupported;
 @end
