@@ -40,9 +40,32 @@
 
 -(NSString *)description
 {
-    return [NSString stringWithFormat:@"{Action: %@\n Context: %@}",
-            self.actionType == 1 ? @"Create" : (self.actionType == 2 ? @"Edit" : (self.actionType == 3 ? @"IncAttr" : @"Delete")),
-            self.context];
+    return [NSString stringWithFormat:@"{Action: %@\n Context: %@}", [self typeString], self.context];
+}
+
+- (NSString *)typeString
+{
+    switch (self.actionType) {
+        case BNOperationActionCreate:
+            return @"Creating";
+            break;
+            
+        case BNOperationActionDelete:
+            return @"Deleting";
+            break;
+            
+        case BNOperationActionEdit:
+            return @"Editing";
+            break;
+            
+        case BNOperationActionIncrementAttribute:
+            return @"Increment Attribute";
+            break;
+            
+        default:
+            return @"Unknown action";
+            break;
+    }
 }
 
 @end

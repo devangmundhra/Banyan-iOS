@@ -21,4 +21,5 @@ typedef enum {
 @property (strong, atomic) id context;
 
 - (id)initWithActionType:(BNOperationActionType)action;
+- (NSString *)typeString;
 @end

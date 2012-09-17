@@ -186,6 +186,15 @@
     [NSThread detachNewThreadSelector:@selector(main) toTarget:self withObject:nil];
     _executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        MTStatusBarOverlay *overlay = [MTStatusBarOverlay sharedInstance];
+        overlay.animation = MTStatusBarOverlayAnimationNone;
+        overlay.delegate = nil;
+        NSString *message = [NSString stringWithFormat:@"%@ %@", [self.action typeString], [self.object typeString]];
+        [overlay postMessage:message];
+        NSLog(@"%s Message printed: %@", __PRETTY_FUNCTION__, message);
+    });
 }
 
 - (void)main

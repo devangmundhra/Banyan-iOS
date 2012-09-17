@@ -73,7 +73,7 @@
                        forKey:SCENE_LATITUDE];
         [sceneParams setObject:[NSNumber numberWithDouble:coord.longitude]
                        forKey:SCENE_LONGITUDE];
-        [sceneParams setObject:story.geocodedLocation
+        [sceneParams setObject:REPLACE_NIL_WITH_NULL(story.geocodedLocation)
                         forKey:SCENE_GEOCODEDLOCATION];
     }
     

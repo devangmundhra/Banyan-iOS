@@ -28,4 +28,5 @@ typedef enum {
                  storyId:(NSString *)storyId;
 
 - (BOOL)isObjectInitialized;
+- (NSString *)typeString;
 @end

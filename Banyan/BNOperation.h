@@ -10,6 +10,7 @@
 #import "BNOperationObject.h"
 #import "BNOperationAction.h"
 #import "BNOperationDependency.h"
+#import "MTStatusBarOverlay.h"
 
 @interface BNOperation : NSOperation <NSCoding>
 

@@ -115,6 +115,7 @@
 		51CFD94A15F58337002926F9 /* buttonFollowSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94215F58337002926F9 /* buttonFollowSelected.png */; };
 		51CFD94B15F58337002926F9 /* buttonFollowSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */; };
 		51CFD94E15F59A13002926F9 /* FindFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD94D15F59A13002926F9 /* FindFriendsViewController.m */; };
+		51ED7B8716069C25008D3E56 /* MTStatusBarOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 51ED7B8616069C25008D3E56 /* MTStatusBarOverlay.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -303,6 +304,8 @@
 		51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFollowSelected@2x.png"; sourceTree = "<group>"; };
 		51CFD94C15F59A13002926F9 /* FindFriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindFriendsViewController.h; sourceTree = "<group>"; };
 		51CFD94D15F59A13002926F9 /* FindFriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindFriendsViewController.m; sourceTree = "<group>"; };
+		51ED7B8516069C25008D3E56 /* MTStatusBarOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTStatusBarOverlay.h; sourceTree = "<group>"; };
+		51ED7B8616069C25008D3E56 /* MTStatusBarOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTStatusBarOverlay.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -720,6 +723,7 @@
 				5189B38415B39AE300562DD0 /* MKNetworkKit */,
 				5189B3AD15B39B1F00562DD0 /* TestFlightSDK1.0 */,
 				5189B3A315B39B1500562DD0 /* PullToRefreshView */,
+				51ED7B8416069C25008D3E56 /* MTStatusBarOverlay */,
 			);
 			name = "Licensed Softwares";
 			sourceTree = "<group>";
@@ -793,6 +797,15 @@
 				51CFD93915F57F70002926F9 /* FollowingUsersCell.m */,
 			);
 			name = UITableViewCell;
+			sourceTree = "<group>";
+		};
+		51ED7B8416069C25008D3E56 /* MTStatusBarOverlay */ = {
+			isa = PBXGroup;
+			children = (
+				51ED7B8516069C25008D3E56 /* MTStatusBarOverlay.h */,
+				51ED7B8616069C25008D3E56 /* MTStatusBarOverlay.m */,
+			);
+			path = MTStatusBarOverlay;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -948,6 +961,7 @@
 				51CFD93615F3E80B002926F9 /* FollowingFriendsViewController.m in Sources */,
 				51CFD93A15F57F70002926F9 /* FollowingUsersCell.m in Sources */,
 				51CFD94E15F59A13002926F9 /* FindFriendsViewController.m in Sources */,
+				51ED7B8716069C25008D3E56 /* MTStatusBarOverlay.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

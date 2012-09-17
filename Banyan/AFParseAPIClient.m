@@ -34,9 +34,11 @@ return _sharedClient;
     [self setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus isNetworkReachable) {
         if (isNetworkReachable == AFNetworkReachabilityStatusReachableViaWiFi || isNetworkReachable == AFNetworkReachabilityStatusReachableViaWWAN) {
             [[BNOperationQueue shared] setSuspended:NO];
+            [[MTStatusBarOverlay sharedInstance] show];
         } else {
             [[BNOperationQueue shared] setSuspended:YES];
             [[BNOperationQueue shared] archiveOperations];
+            [[MTStatusBarOverlay sharedInstance] hide];
             NSLog(@"Network to parse.com not reachable!!");
         }
     }];

@@ -212,6 +212,10 @@ static BNOperationQueue *_sharedBanyanNetworkOperationQueue;
     if (object == _sharedBanyanNetworkOperationQueue && [keyPath isEqualToString:@"operationCount"] && _sharedBanyanNetworkOperationQueue.operationCount == 0) {
         [_sharedBanyanNetworkOperationQueue deleteArchives];
         [BanyanDataSource deleteArchives];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"%s Hiding Status bar overlay", __PRETTY_FUNCTION__);
+            [[MTStatusBarOverlay sharedInstance] postFinishMessage:@"Done" duration:1];
+        });
     }
 }
 @end
