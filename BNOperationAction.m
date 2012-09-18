@@ -47,7 +47,7 @@
 {
     switch (self.actionType) {
         case BNOperationActionCreate:
-            return @"Creating";
+            return @"Saving";
             break;
             
         case BNOperationActionDelete:
@@ -55,7 +55,7 @@
             break;
             
         case BNOperationActionEdit:
-            return @"Editing";
+            return @"Updating";
             break;
             
         case BNOperationActionIncrementAttribute:

@@ -395,6 +395,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (IBAction)addStorySegue:(UIBarButtonItem *)sender
 {
     [self performSegueWithIdentifier:@"New Story" sender:nil];
+//    NewStoryViewController *newStoryViewController = [[NewStoryViewController alloc] init];
+//    newStoryViewController.delegate = self;
+//    [self.navigationController pushViewController:newStoryViewController animated:YES];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender

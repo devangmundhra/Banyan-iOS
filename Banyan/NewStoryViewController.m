@@ -19,13 +19,11 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) NSString *storyTitle;
 @property (weak, nonatomic) IBOutlet UITextField *storyTitleTextField;
-@property (weak, nonatomic) IBOutlet UISegmentedControl *contributorSegmenedControl;
-@property (weak, nonatomic) IBOutlet UISegmentedControl *viewerSegmentedControl;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *contributorSegmentedControl;
+@property (weak, nonatomic) IBOutlet UISlider *viewerSlider;
 @property (weak, nonatomic) IBOutlet UIView *addStorySubView;
-@property (weak, nonatomic) IBOutlet UILabel *readStoryLabel;
 @property (weak, nonatomic) IBOutlet UIButton *inviteContributorsButton;
 @property (weak, nonatomic) IBOutlet UIButton *inviteViewersButton;
-@property (weak, nonatomic) IBOutlet UILabel *viewerInvitationLabel;
 @property (weak, nonatomic) IBOutlet UILabel *contributorInvitationLabel;
 @property (weak, nonatomic) IBOutlet UISwitch *showLocationSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *locationLabel;
@@ -44,9 +42,12 @@
 
 @implementation NewStoryViewController
 
-// These correspond to the index for UISegmentedControl
-#define PUBLIC 0
-#define INVITED 1
+// These correspond to the index for UISegmentedControl and UISlider
+typedef enum {
+    StoryPrivacySegmentIndexInvited = 0,
+    StoryPrivacySegmentIndexLimited = 1,
+    StoryPrivacySegmentIndexPublic = 2,
+} StoryPrivacySegmentIndex;
 
 // Timeout for finding location
 #define kFindLocationTimeOut 0.5*60 // half a minute
@@ -54,10 +55,9 @@
 @synthesize scrollView = _scrollView;
 @synthesize storyTitle = _storyTitle;
 @synthesize storyTitleTextField = _storyTitleTextField;
-@synthesize contributorSegmenedControl = _contributorSegmenedControl;
-@synthesize viewerSegmentedControl = _viewerSegmentedControl;
+@synthesize contributorSegmentedControl = _contributorSegmentedControl;
+@synthesize viewerSlider = _viewerSlider;
 @synthesize addStorySubView = _addStorySubView;
-@synthesize readStoryLabel = _readStoryLabel;
 @synthesize delegate = _delegate;
 @synthesize keyboardIsShown = _keyboardIsShown;
 @synthesize tapRecognizer = _tapRecognizer;
@@ -65,12 +65,65 @@
 @synthesize invitedToContributeList = _invitedToContributeList;
 @synthesize inviteContributorsButton = _inviteContributorsButton;
 @synthesize inviteViewersButton = _inviteViewersButton;
-@synthesize viewerInvitationLabel = _viewerInvitationLabel;
 @synthesize contributorInvitationLabel = _contributorInvitationLabel;
 @synthesize showLocationSwitch = _showLocationSwitch;
 @synthesize locationLabel = _locationLabel;
 @synthesize storyAttributes = _storyAttributes;
 @synthesize locationManager = _locationManager;
+/*
+- (id)init
+{
+    if (self = [super init]) {
+        CGRect screenSize = [[UIScreen mainScreen] bounds];
+        
+        self.title = @"New Story";
+
+        // Navigation Bar
+        UIBarButtonItem *createButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonItemStyleDone target:self action:@selector(doneNewStory:)];
+        self.navigationItem.rightBarButtonItem.title = @"Create";
+        self.navigationItem.rightBarButtonItem = createButton;
+        
+        // Scroll View
+        self.scrollView = [[UIScrollView alloc] initWithFrame:screenSize];
+        self.scrollView.contentSize = screenSize.size;
+        [self.view addSubview:self.scrollView];
+                
+        self.addStorySubView = [[UIView alloc] initWithFrame:screenSize];
+        [self.scrollView addSubview:self.addStorySubView];
+        
+        // Story Title
+        self.storyTitleTextField = [[UITextField alloc] initWithFrame:CGRectMake(20.0f, 10.0f, screenSize.size.width - 20.0f, 62.0f)];
+        self.storyTitleTextField.placeholder = @"New Story Title";
+        self.storyTitleTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
+        self.storyTitleTextField.textAlignment = UITextAlignmentCenter;
+        [self.addStorySubView addSubview:self.storyTitleTextField];
+        
+        // Location settings
+        UILabel *locationPlaceHolder = [[UILabel alloc] initWithFrame:CGRectMake(90.0f, 10.0f, 190.0f, 20.0f)];
+        locationPlaceHolder.text = @"Show Location with Story";
+        locationPlaceHolder.font = [UIFont fontWithName:@"HelveticaNeue" size:17];
+        [self.addStorySubView addSubview:locationPlaceHolder];
+        
+        self.locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(100.0f, 10.0f, 180.0f, 12.0f)];
+        self.locationLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:13];
+        self.locationLabel.textColor = [UIColor darkGrayColor];
+        self.locationLabel.numberOfLines = 1;
+        self.locationLabel.minimumFontSize = 10;
+        self.locationLabel.adjustsFontSizeToFitWidth = YES;
+        [self.addStorySubView addSubview:self.locationLabel];
+        
+        self.showLocationSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(90.0f, 200.0f, 40.0f, 20.0f)];
+        self.showLocationSwitch.on = YES;
+        [self.addStorySubView addSubview:self.showLocationSwitch];
+    }
+    return self;
+}
+*/
+- (void)loadView
+{
+    [super loadView];
+    NSLog(@"Loading view");
+}
 
 - (NSString *) storyTitle
 {
@@ -102,10 +155,7 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
-    self.viewerSegmentedControl.alpha = 0;
-    self.inviteViewersButton.alpha = 0;
     self.inviteContributorsButton.alpha = 0;
-    self.viewerInvitationLabel.alpha = 0;
     
     self.storyTitleTextField.delegate = self;
     [self.storyTitleTextField becomeFirstResponder];
@@ -115,23 +165,22 @@
     self.invitedToContributeList = [NSMutableArray array];
     self.invitedToViewList = [NSMutableArray array];
     self.storyAttributes = [NSMutableDictionary dictionary];
-    self.scrollView.contentSize = CGSizeMake(self.addStorySubView.frame.size.width, self.addStorySubView.frame.size.height);
+    
+    self.viewerSlider.value = StoryPrivacySegmentIndexLimited;
+    self.inviteViewersButton.alpha = 0;
 }
 
 - (void)viewDidUnload
 {
     [self setStoryTitle:nil];
     [self setStoryTitleTextField:nil];
-    [self setContributorSegmenedControl:nil];
-    [self setViewerSegmentedControl:nil];
+    [self setContributorSegmentedControl:nil];
     [self setTapRecognizer:nil];
     [self setAddStorySubView:nil];
-    [self setReadStoryLabel:nil];
     [self setInvitedToViewList:nil];
     [self setInvitedToContributeList:nil];
     [self setInviteContributorsButton:nil];
     [self setInviteViewersButton:nil];
-    [self setViewerInvitationLabel:nil];
     [self setContributorInvitationLabel:nil];
     [self setShowLocationSwitch:nil];
     [self setLocationLabel:nil];
@@ -139,6 +188,7 @@
     [self setScrollView:nil];
     self.locationManager.delegate = nil;
     [self setLocationManager:nil];
+    [self setViewerSlider:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -149,26 +199,6 @@
 }
 
 # pragma mark- Target Actions for new story
-
-// Show and hide the viewer segmented control
-- (void) showViewerSegmentedControl
-{
-    self.readStoryLabel.text = @"Who can read the story?";
-    self.viewerSegmentedControl.alpha = 1;
-    self.inviteViewersButton.alpha = self.viewerSegmentedControl.selectedSegmentIndex == INVITED ? 1 : 0;
-    self.inviteContributorsButton.alpha = 1;
-    self.viewerInvitationLabel.alpha = 1;
-}
-
-- (void) hideViewerSegmentedControl
-{
-    self.readStoryLabel.text = @"Anyone can read the story.";
-    self.viewerSegmentedControl.alpha = 0;
-    self.inviteViewersButton.alpha = 0;
-    self.inviteContributorsButton.alpha = 0;
-    self.viewerInvitationLabel.alpha = 0;
-}
-
 - (NSString *)defaultStoryTitle
 {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -197,19 +227,22 @@
     
     [self.storyAttributes setObject:![self.storyTitle isEqualToString:@""] ? self.storyTitle : [self defaultStoryTitle]
                           forKey:STORY_TITLE];
-    if (self.contributorSegmenedControl.selectedSegmentIndex == PUBLIC) {
+    
+    if (self.contributorSegmentedControl.selectedSegmentIndex == StoryPrivacySegmentIndexPublic) {
+        // This is a publically contributable story
         [self.storyAttributes setObject:[NSNumber numberWithBool:YES]
                           forKey:STORY_PUBLIC_CONTRIBUTORS];
         
         [self.storyAttributes setObject:[NSNumber numberWithBool:YES]                          
                               forKey:STORY_PUBLIC_VIEWERS];
     } else {
+        // This is not a publically contributable story
         [self.storyAttributes setObject:[NSNumber numberWithBool:NO]
                               forKey:STORY_PUBLIC_CONTRIBUTORS];
         
         [self.storyAttributes setObject:self.invitedToContributeList forKey:STORY_INVITED_TO_CONTRIBUTE];
         
-        if (self.viewerSegmentedControl.selectedSegmentIndex == PUBLIC) {
+        if (self.viewerSlider.value == StoryPrivacySegmentIndexPublic) {
             [self.storyAttributes setObject:[NSNumber numberWithBool:YES] forKey:STORY_PUBLIC_VIEWERS];
 
         } else {
@@ -249,23 +282,26 @@
 
 - (IBAction)storyContributors:(UISegmentedControl *)sender 
 {
-    if (sender.selectedSegmentIndex == INVITED)
+    if (sender.selectedSegmentIndex == StoryPrivacySegmentIndexInvited)
     {
-        [self showViewerSegmentedControl];
+        [self.viewerSlider setValue:StoryPrivacySegmentIndexLimited animated:YES];
     } else {
-        [self hideViewerSegmentedControl];
+        [self.viewerSlider setValue:StoryPrivacySegmentIndexPublic animated:YES];
     }
 }
 
-- (IBAction)storyViewers:(UISegmentedControl *)sender 
+- (IBAction)sliderChanged:(UISlider *)sender
 {
-    if (sender.selectedSegmentIndex == INVITED)
-    {
+    int sliderValue;
+    sliderValue = lroundf(sender.value);
+    [self.viewerSlider setValue:sliderValue animated:YES];
+    if (self.viewerSlider.value == StoryPrivacySegmentIndexInvited) {
         self.inviteViewersButton.alpha = 1;
     } else {
         self.inviteViewersButton.alpha = 0;
     }
 }
+
 
 # pragma mark location settings
 - (IBAction)showLocationSwitchToggled:(UISwitch *)sender

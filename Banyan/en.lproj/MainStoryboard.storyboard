@@ -137,8 +137,8 @@
                                         <rect key="frame" x="20" y="171" width="280" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <segments>
-                                            <segment title="Anyone"/>
                                             <segment title="Invited"/>
+                                            <segment title="Public"/>
                                         </segments>
                                         <connections>
                                             <action selector="storyContributors:" destination="QIq-lu-Rds" eventType="valueChanged" id="Jgr-cV-hzW"/>
@@ -159,26 +159,36 @@
                                             <segue destination="vMp-rM-1qw" kind="push" identifier="Add Contributors" id="5Zk-1q-WEg"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Anyone can read the story." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="9Kx-5N-mDh">
-                                        <rect key="frame" x="20" y="247" width="205" height="21"/>
+                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" id="Huv-pQ-6WY">
+                                        <rect key="frame" x="18" y="270" width="284" height="23"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <connections>
+                                            <action selector="sliderChanged:" destination="QIq-lu-Rds" eventType="touchUpInside" id="DG5-eH-xEl"/>
+                                        </connections>
+                                    </slider>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Limited" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="dOV-ne-RuO">
+                                        <rect key="frame" x="132" y="291" width="57" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="iuH-oQ-wpW">
-                                        <rect key="frame" x="20" y="276" width="280" height="44"/>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Public" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="QBX-QF-8Kh">
+                                        <rect key="frame" x="263" y="291" width="57" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <segments>
-                                            <segment title="Anyone"/>
-                                            <segment title="Invited"/>
-                                        </segments>
-                                        <connections>
-                                            <action selector="storyViewers:" destination="QIq-lu-Rds" eventType="valueChanged" id="7Jj-Pa-TMS"/>
-                                        </connections>
-                                    </segmentedControl>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Invited" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="cdo-ij-nCN">
+                                        <rect key="frame" x="13" y="291" width="57" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="contactAdd" lineBreakMode="middleTruncation" id="ww2-A5-YnU">
-                                        <rect key="frame" x="274" y="243" width="29" height="29"/>
+                                        <rect key="frame" x="22" y="307" width="29" height="29"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                         <state key="normal">
@@ -208,16 +218,14 @@
                     <connections>
                         <outlet property="addStorySubView" destination="XQ4-aC-CSc" id="O4y-xp-rTS"/>
                         <outlet property="contributorInvitationLabel" destination="8mk-ng-FfB" id="iHl-ET-ToV"/>
-                        <outlet property="contributorSegmenedControl" destination="E1S-dN-GvR" id="BHa-VT-qEl"/>
+                        <outlet property="contributorSegmentedControl" destination="E1S-dN-GvR" id="gGq-8x-YpZ"/>
                         <outlet property="inviteContributorsButton" destination="AIe-IO-rIl" id="mhl-ji-4Y1"/>
                         <outlet property="inviteViewersButton" destination="ww2-A5-YnU" id="b2K-lP-5zT"/>
                         <outlet property="locationLabel" destination="hi0-r8-1k6" id="GF2-nA-8oe"/>
-                        <outlet property="readStoryLabel" destination="9Kx-5N-mDh" id="8H7-Xv-t8V"/>
                         <outlet property="scrollView" destination="KWd-UK-B9u" id="lAW-PU-AZU"/>
                         <outlet property="showLocationSwitch" destination="11a-tX-cH1" id="Hl9-mg-YYz"/>
                         <outlet property="storyTitleTextField" destination="DOT-11-U7I" id="7m0-Q5-aci"/>
-                        <outlet property="viewerInvitationLabel" destination="9Kx-5N-mDh" id="s0w-ny-BwF"/>
-                        <outlet property="viewerSegmentedControl" destination="iuH-oQ-wpW" id="kuL-Xa-kwL"/>
+                        <outlet property="viewerSlider" destination="Huv-pQ-6WY" id="Ywe-wC-7gr"/>
                     </connections>
                 </viewController>
             </objects>
@@ -317,6 +325,60 @@
             <point key="canvasLocation" x="142" y="38"/>
         </scene>
     </scenes>
+    <classes>
+        <class className="InvitedTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/InvitedTableViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="searchBar" candidateClass="UISearchBar"/>
+                <relationship kind="outlet" name="searchDisplayController" candidateClass="UISearchDisplayController"/>
+            </relationships>
+        </class>
+        <class className="NewStoryViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NewStoryViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="dismissKeyboard:"/>
+                <relationship kind="action" name="doneNewStory:" candidateClass="UIBarButtonItem"/>
+                <relationship kind="action" name="showLocationSwitchToggled:" candidateClass="UISwitch"/>
+                <relationship kind="action" name="sliderChanged:" candidateClass="UISlider"/>
+                <relationship kind="action" name="storyContributors:" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="addStorySubView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="contributorInvitationLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="contributorSegmentedControl" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="delegate"/>
+                <relationship kind="outlet" name="inviteContributorsButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="inviteViewersButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="locationLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="scrollView" candidateClass="UIScrollView"/>
+                <relationship kind="outlet" name="showLocationSwitch" candidateClass="UISwitch"/>
+                <relationship kind="outlet" name="storyTitleTextField" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="viewerSlider" candidateClass="UISlider"/>
+            </relationships>
+        </class>
+        <class className="ScenesViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ScenesViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="delegate"/>
+            </relationships>
+        </class>
+        <class className="StoryListStoryCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/StoryListStoryCell.h"/>
+            <relationships>
+                <relationship kind="outlet" name="storyImageView" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="storyLocationLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="storyTitleLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="StoryListTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/StoryListTableViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="addStorySegue:" candidateClass="UIBarButtonItem"/>
+                <relationship kind="action" name="filterStories:"/>
+                <relationship kind="outlet" name="addStory" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="filterStoriesSegmentedControl" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="leftButton" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

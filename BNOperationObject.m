@@ -127,7 +127,7 @@
             break;
             
         case BNOperationObjectTypeFile:
-            return @"File";
+            return @"Media";
             break;
             
         case BNOperationObjectTypeActivity:
