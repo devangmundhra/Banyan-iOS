@@ -22,6 +22,14 @@ NSString *const BNUserDefaultsBanyanUsersFacebookFriends = @"io.banyan.Banyan.us
 // Class key
 NSString *const kBNStoryClassKey   = @"Story";
 
+// Dictionary keys for invitees
+NSString *const kBNStoryPrivacyScope = @"Scope";
+NSString *const kBNStoryPrivacyScopeInvited = @"Invited";
+NSString *const kBNStoryPrivacyScopeLimited = @"Limited";
+NSString *const kBNStoryPrivacyScopePublic = @"Public";
+NSString *const kBNStoryPrivacyInviteeList = @"InviteeList";
+NSString *const kBNStoryPrivacyInvitedFacebookFriends = @"InvitedFacebookFriends";
+
 #pragma mark - PFObject Scene Class
 // Class key
 NSString *const kBNSceneClassKey = @"Scene";

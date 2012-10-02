@@ -155,7 +155,7 @@ typedef enum {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
-    self.inviteContributorsButton.alpha = 0;
+    self.inviteContributorsButton.alpha = 1;
     
     self.storyTitleTextField.delegate = self;
     [self.storyTitleTextField becomeFirstResponder];
@@ -209,49 +209,25 @@ typedef enum {
 
 // Save the new story added
 - (IBAction)doneNewStory:(UIBarButtonItem *)sender 
-{    
-    NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:@"User Info"];
-    if (userInfo)
-    {
-        NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
-                                        [userInfo objectForKey:@"name"], 
-                                        @"name", 
-                                        [userInfo objectForKey:@"id"], 
-                                        @"id", nil];
-        [self.invitedToViewList addObject:selfInvitation];
-        [self.invitedToContributeList addObject:selfInvitation];
-    } else {
-        NSLog(@"NewStoryViewController:doneNewStory:sender "
-              "Cound not invite self");
-    }
-    
+{
+    // Title
     [self.storyAttributes setObject:![self.storyTitle isEqualToString:@""] ? self.storyTitle : [self defaultStoryTitle]
                           forKey:STORY_TITLE];
     
-    if (self.contributorSegmentedControl.selectedSegmentIndex == StoryPrivacySegmentIndexPublic) {
-        // This is a publically contributable story
-        [self.storyAttributes setObject:[NSNumber numberWithBool:YES]
-                          forKey:STORY_PUBLIC_CONTRIBUTORS];
-        
-        [self.storyAttributes setObject:[NSNumber numberWithBool:YES]                          
-                              forKey:STORY_PUBLIC_VIEWERS];
-    } else {
-        // This is not a publically contributable story
-        [self.storyAttributes setObject:[NSNumber numberWithBool:NO]
-                              forKey:STORY_PUBLIC_CONTRIBUTORS];
-        
-        [self.storyAttributes setObject:self.invitedToContributeList forKey:STORY_INVITED_TO_CONTRIBUTE];
-        
-        if (self.viewerSlider.value == StoryPrivacySegmentIndexPublic) {
-            [self.storyAttributes setObject:[NSNumber numberWithBool:YES] forKey:STORY_PUBLIC_VIEWERS];
+    // Story Privacy
+    NSMutableDictionary *contributorsDictionary = [NSMutableDictionary dictionary];
+    NSMutableDictionary *viewersDictionary = [NSMutableDictionary dictionary];
 
-        } else {
-            [self.storyAttributes setObject:[NSNumber numberWithBool:NO] forKey:STORY_PUBLIC_VIEWERS];
-            [self.storyAttributes setObject:self.invitedToViewList forKey:STORY_INVITED_TO_VIEW];
-        }
-        
-    }
-
+    [contributorsDictionary setObject:[self contributorScope] forKey:kBNStoryPrivacyScope];
+    [contributorsDictionary setObject:[self contributorsInvited] forKey:kBNStoryPrivacyInviteeList];
+    
+    [viewersDictionary setObject:[self viewerScope] forKey:kBNStoryPrivacyScope];
+    [viewersDictionary setObject:[self viewersInvited] forKey:kBNStoryPrivacyInviteeList];
+    
+    [self.storyAttributes setObject:contributorsDictionary forKey:STORY_WRITE_ACCESS];
+    [self.storyAttributes setObject:viewersDictionary forKey:STORY_READ_ACCESS];
+    
+    // Story Location
     if (self.showLocationSwitch.on == YES) {
         [self.storyAttributes setObject:[NSNumber numberWithBool:YES] forKey:STORY_LOCATION_ENABLED];
         if (self.locationManager.location) {
@@ -268,6 +244,7 @@ typedef enum {
         [self.storyAttributes setObject:[NSNumber numberWithBool:NO] forKey:STORY_LOCATION_ENABLED];
     }
     
+    // Create Story
     Story *story = [Story createStoryWithAttributes:self.storyAttributes];
     if (story)
     {
@@ -285,8 +262,10 @@ typedef enum {
     if (sender.selectedSegmentIndex == StoryPrivacySegmentIndexInvited)
     {
         [self.viewerSlider setValue:StoryPrivacySegmentIndexLimited animated:YES];
+        self.inviteContributorsButton.alpha = 1;
     } else {
         [self.viewerSlider setValue:StoryPrivacySegmentIndexPublic animated:YES];
+        self.inviteContributorsButton.alpha = 0;
     }
 }
 
@@ -302,6 +281,78 @@ typedef enum {
     }
 }
 
+# pragma mark story privacy
+- (NSString *)contributorScope
+{
+    switch (self.contributorSegmentedControl.selectedSegmentIndex) {
+        case StoryPrivacySegmentIndexInvited:
+            return kBNStoryPrivacyScopeInvited;
+            break;
+            
+        case StoryPrivacySegmentIndexPublic:
+            return kBNStoryPrivacyScopePublic;
+            break;
+            
+        default:
+            return kBNStoryPrivacyScopeInvited;
+            break;
+    }
+}
+
+- (NSDictionary *)contributorsInvited
+{
+    User *currentUser = [User currentUser];
+    if (currentUser) {
+        NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
+                                        currentUser.name, @"name",
+                                        currentUser.facebookId, @"id", nil];
+        [self.invitedToContributeList addObject:selfInvitation];
+    } else {
+        assert(false);
+    }
+    return [NSDictionary dictionaryWithObject:self.invitedToContributeList forKey:kBNStoryPrivacyInvitedFacebookFriends];
+}
+
+- (NSString *)viewerScope
+{
+    switch (lroundf(self.viewerSlider.value)) {
+        case StoryPrivacySegmentIndexInvited:
+            return kBNStoryPrivacyScopeInvited;
+            break;
+            
+        case StoryPrivacySegmentIndexLimited:
+            return kBNStoryPrivacyScopeLimited;
+            break;
+            
+        case StoryPrivacySegmentIndexPublic:
+            return kBNStoryPrivacyScopePublic;
+            break;
+            
+        default:
+            return kBNStoryPrivacyScopeInvited;
+            break;
+    }
+}
+
+- (NSDictionary *)viewersInvited
+{
+    if (lroundf(self.viewerSlider.value) == StoryPrivacySegmentIndexLimited) {
+        // TO-DO: Change this. This will not update as the user updates.
+        // Needs to be done in the server
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [self.invitedToViewList setArray:[defaults objectForKey:BNUserDefaultsFacebookFriends]];
+    }
+    User *currentUser = [User currentUser];
+    if (currentUser) {
+        NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
+                                        currentUser.name, @"name",
+                                        currentUser.facebookId, @"id", nil];
+        [self.invitedToViewList addObject:selfInvitation];
+    } else {
+        assert(false);
+    }
+    return [NSDictionary dictionaryWithObject:self.invitedToViewList forKey:kBNStoryPrivacyInvitedFacebookFriends];
+}
 
 # pragma mark location settings
 - (IBAction)showLocationSwitchToggled:(UISwitch *)sender

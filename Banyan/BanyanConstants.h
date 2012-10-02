@@ -22,6 +22,14 @@ extern NSString *const BNUserDefaultsBanyanUsersFacebookFriends;
 // Class key
 extern NSString *const kBNStoryClassKey;
 
+// Dictionary keys for invitees
+extern NSString *const kBNStoryPrivacyScope;
+extern NSString *const kBNStoryPrivacyScopeInvited;
+extern NSString *const kBNStoryPrivacyScopeLimited;
+extern NSString *const kBNStoryPrivacyScopePublic;
+extern NSString *const kBNStoryPrivacyInviteeList;
+extern NSString *const kBNStoryPrivacyInvitedFacebookFriends;
+
 #pragma mark - PFObject Scene Class
 // Class key
 extern NSString *const kBNSceneClassKey;

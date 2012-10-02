@@ -17,15 +17,13 @@
 @property (assign) BOOL canView;
 @property (assign) BOOL isInvited;
 @property (strong, nonatomic) id image;
-@property (strong, nonatomic) NSArray *invitedToContribute;
-@property (strong, nonatomic) NSArray *invitedToView;
 @property (strong, nonatomic) NSNumber * lengthOfStory;
-@property (assign) BOOL publicContributors;
-@property (assign) BOOL publicViewers;
 @property (strong, nonatomic) NSString * storyId;
 @property (strong, nonatomic) NSString * title;
 @property (strong, nonatomic) NSString * imageURL;
 @property (strong, nonatomic) NSArray *contributors;
+@property (strong, nonatomic) NSDictionary *writeAccess;
+@property (strong, nonatomic) NSDictionary *readAccess;
 @property (strong, nonatomic) Scene *startingScene;
 @property (strong, nonatomic) NSArray *scenes;
 @property (strong, nonatomic) NSDate * dateCreated;
@@ -49,5 +47,6 @@
 
 - (NSString *)description;
 - (NSMutableDictionary *)getAttributesInDictionary;
+- (void) resetPermission;
 
 @end

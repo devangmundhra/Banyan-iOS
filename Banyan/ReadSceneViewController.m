@@ -207,15 +207,9 @@
 // Story specific refresh
 - (void)refreshStoryView
 {
-    if (self.scene.story.publicContributors) {
-        [self.contributorsButton setTitle:@"Public"
-                                 forState:UIControlStateNormal];
-    }
-    else {
-        [self.contributorsButton setTitle:[NSString stringWithFormat:@"%u contributors invited",
-                                           [self.scene.story.invitedToContribute count]] 
-                                 forState:UIControlStateNormal];
-    }
+    [self.contributorsButton setTitle:[self.scene.story.writeAccess objectForKey:kBNStoryPrivacyScope]
+                             forState:UIControlStateNormal];
+
     [self.contributorsButton addTarget:self action:@selector(storyContributors) forControlEvents:UIControlEventTouchUpInside];
     self.sceneTextView.font = [UIFont fontWithName:STORY_FONT size:24];
 }
@@ -285,10 +279,13 @@
 #pragma mark target actions for read scene buttons
 - (IBAction)storyContributors
 {
+    NSArray *invitedToContribute = nil;
+    invitedToContribute = [[self.scene.story.writeAccess objectForKey:kBNStoryPrivacyInviteeList]
+                           objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
     InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] 
                                                               initWithSearchBarAndNavigationControllerForInvitationType:INVITED_CONTRIBUTORS_STRING 
                                                               delegate:self 
-                                                              selectedContacts:self.scene.story.invitedToContribute];
+                                                              selectedContacts:invitedToContribute];
     
     [self.navigationController pushViewController:invitedTableViewController animated:YES];
 }
@@ -390,27 +387,20 @@
     
     [op 
      onCompletion:^(MKNetworkOperation *completedOperation) {
-         NSDictionary *response = [completedOperation responseJSON];
-         PF_Facebook *pfFacebook = [PFFacebookUtils facebook];
-         
-         NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                        @"Banyan", @"name",
-                                        @"Story shared", @"caption",
-                                        [response objectForKey:@"link"], @"link",
-                                        nil];
-         
-         if (UIImagePNGRepresentation(self.imageView.image) != NULL)
-             [params setObject:self.imageView.image forKey:@"picture"];
-         
-         if (![self.scene.story.title isEqualToString:@""])
-             [params setObject:self.scene.story.title forKey:@"description"];
-         else
-             [params setObject:@"Untitled Story" forKey:@"description"];
-         
-         
-         [pfFacebook dialog:@"feed" 
-                  andParams:params 
-                andDelegate:(BanyanAppDelegate*)[[UIApplication sharedApplication] delegate]];
+         NSDictionary *response = [completedOperation responseJSON];         
+         [PFFacebookUtils reauthorizeUser:[PFUser currentUser]
+                   withPublishPermissions:[NSArray arrayWithObject:@"publish_stream"]
+                                 audience:PF_FBSessionDefaultAudienceFriends
+                                    block:^(BOOL succeeded, NSError *error) {
+                                        if (!succeeded) {
+                                            NSLog(@"Error in getting permissions to publish");
+                                        }
+                                    }];
+         [PF_FBNativeDialogs presentShareDialogModallyFrom:self
+                                               initialText:self.scene.story.title
+                                                     image:self.imageView.image
+                                                       url:[NSURL URLWithString:[response objectForKey:@"link"]]
+                                                   handler:nil];
          
          [TestFlight passCheckpoint:@"Story shared"];
 
@@ -501,13 +491,27 @@
                    finishedInviting:(NSString *)invitingType 
                        withContacts:(NSArray *)contactsList
 {
+    NSMutableDictionary *readWriteAccess = nil;
+    NSMutableArray *invitedList = [NSMutableArray arrayWithArray:contactsList];
+    User *currentUser = [User currentUser];
+    if (currentUser) {
+        NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
+                                        currentUser.name, @"name",
+                                        currentUser.facebookId, @"id", nil];
+        [invitedList addObject:selfInvitation];
+    }
+    
+    [readWriteAccess setObject:kBNStoryPrivacyScopeInvited forKey:kBNStoryPrivacyScope];
+    [readWriteAccess setObject:[NSDictionary dictionaryWithObject:invitedList forKey:kBNStoryPrivacyInvitedFacebookFriends]
+                        forKey:kBNStoryPrivacyInviteeList];
+    
     if ([invitingType isEqualToString:INVITED_CONTRIBUTORS_STRING])
     {
-        self.scene.story.invitedToContribute = contactsList;
+        self.scene.story.writeAccess = readWriteAccess;
     }
     else if ([invitingType isEqualToString:INVITED_VIEWERS_STRING]) 
     {
-        self.scene.story.invitedToView = contactsList;
+        self.scene.story.readAccess = readWriteAccess;
     }
     [Story editStory:self.scene.story];
     [self.navigationController popViewControllerAnimated:YES];

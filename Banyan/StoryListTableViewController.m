@@ -383,6 +383,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         [self.tableView reloadRowsAtIndexPaths:editIndexPaths withRowAnimation:UITableViewRowAnimationNone];
         [self.tableView endUpdates];
     }
+    [self filterStoriesForTableDataSource];
 }
 
 # pragma mark - segues

@@ -105,8 +105,8 @@
 {
     // Fill in the story detials
     story.title = REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_TITLE]);
-    story.publicViewers = [REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_PUBLIC_VIEWERS]) boolValue];
-    story.publicContributors = [REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_PUBLIC_CONTRIBUTORS]) boolValue];
+    story.readAccess = [pfStory objectForKey:STORY_READ_ACCESS];
+    story.writeAccess = [pfStory objectForKey:STORY_WRITE_ACCESS];
     story.storyId = [pfStory objectId];
     story.dateCreated = pfStory.createdAt;
     story.dateModified = pfStory.updatedAt;
@@ -131,7 +131,7 @@
 
     story.imageURL = REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_IMAGE_URL]);
     
-    [ParseConnection resetPermission:story forPfStory:pfStory];
+    [story resetPermission];
 }
 
 + (void)loadScenesForStory:(Story *)story
@@ -222,7 +222,9 @@
             return;
         }
         
-        [ParseConnection resetPermission:story forPfStory:pfStory];
+        story.readAccess = [pfStory objectForKey:STORY_READ_ACCESS];
+        story.writeAccess = [pfStory objectForKey:STORY_WRITE_ACCESS];
+        [story resetPermission];
     }
 }
 
@@ -237,62 +239,9 @@
         return;
     }
     
-    [ParseConnection resetPermission:story forPfStory:pfStory];
-}
-
-+ (void) resetPermission:(Story *)story forPfStory:(PFObject *)pfStory
-{
-    // Permission management
-    // I am :
-    story.isInvited = NO;
-    User *currentUser = [User currentUser];
-    if (currentUser) {
-        NSDictionary *myAttributes = [NSDictionary dictionaryWithObjectsAndKeys:currentUser.name, @"name", currentUser.facebookId, @"id", nil];
-        
-        if ([[pfStory objectForKey:STORY_PUBLIC_CONTRIBUTORS] isEqualToNumber:[NSNumber numberWithBool:YES]]) {
-            // Public contributors
-            story.canContribute = YES;
-        } else {
-            // Invited contributors
-            NSArray *contributorsList = REPLACE_NULL_WITH_EMPTY_ARRAY([pfStory objectForKey:STORY_INVITED_TO_CONTRIBUTE]);
-            story.invitedToContribute = contributorsList;
-            
-            story.canContribute = NO;
-            for (NSDictionary *contributor in contributorsList) {
-                if ([contributor isKindOfClass:[NSDictionary class]] && [contributor isEqualToDictionary:myAttributes]) {
-                    story.canContribute = YES;
-                    story.isInvited =YES;
-                    break;
-                }
-            }
-        }
-        
-        if ([[pfStory objectForKey:STORY_PUBLIC_VIEWERS] isEqualToNumber:[NSNumber numberWithBool:YES]]) {
-            // Public viewers
-            story.canView = YES;
-        } else {
-            // Invited viewers
-            NSMutableArray *allAudience = [NSMutableArray arrayWithArray:REPLACE_NULL_WITH_EMPTY_ARRAY([pfStory objectForKey:STORY_INVITED_TO_VIEW])];
-            [allAudience addObjectsFromArray:REPLACE_NULL_WITH_EMPTY_ARRAY([pfStory objectForKey:STORY_INVITED_TO_CONTRIBUTE])];
-            NSArray *viewersList = [allAudience copy];
-            story.invitedToView = viewersList;
-            
-            story.canView = NO;
-            for (NSDictionary *viewer in viewersList) {
-                if ([viewer isKindOfClass:[NSDictionary class]] && [viewer isEqualToDictionary:myAttributes]) {
-                    story.canView = YES;
-                    story.isInvited = YES;
-                    break;
-                }
-            }
-        }
-    }
-    else {
-        // Can't find user info!
-        NSLog(@"%s Can't find user info", __PRETTY_FUNCTION__);
-        story.canView = story.publicViewers;
-        story.canContribute = NO;
-    }
+    story.readAccess = [pfStory objectForKey:STORY_READ_ACCESS];
+    story.writeAccess = [pfStory objectForKey:STORY_WRITE_ACCESS];
+    [story resetPermission];
 }
 
 @end

@@ -88,7 +88,7 @@
     // animate the tabbar up to the screen
     UserLoginViewController *userLoginViewController = [[UserLoginViewController alloc] init];
     userLoginViewController.delegate = self;
-    userLoginViewController.facebookPermissions = [NSArray arrayWithObjects: @"email", @"user_about_me", @"publish_stream", nil];
+    userLoginViewController.facebookPermissions = [NSArray arrayWithObjects: @"email", @"user_about_me", nil];
 
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationBeginsFromCurrentState:YES];
@@ -123,7 +123,13 @@
 {
     NSLog(@"Getting user info");
     [User updateCurrentUser];
-    [[PFFacebookUtils facebook] requestWithGraphPath:@"me/?fields=name,picture,email" andDelegate:(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate]];
+    [PF_FBRequestConnection startForMeWithCompletionHandler:^(PF_FBRequestConnection *connection, id result, NSError *error) {
+        if (!error) {
+            [(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate] facebookRequest:connection didLoad:result];
+        } else {
+            [(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate] facebookRequest:connection didFailWithError:error];
+        }
+    }];
     [PFPush subscribeToChannelInBackground:[[PFUser currentUser] objectId]];
     
     [self.owningViewController.presentedViewController dismissViewControllerAnimated:YES completion:^{

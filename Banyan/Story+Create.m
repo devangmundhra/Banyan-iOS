@@ -15,42 +15,18 @@
 
 @implementation Story (Create)
 
-//Create a story here with the given attributes.
-//Get a unique id and create the story with using the attributes
-//in 'attribute' and the unique id created
-
-+ (void) cleanUpStoryAttributes:(NSMutableDictionary *)attributes
-{    
-    if ([[attributes objectForKey:STORY_PUBLIC_CONTRIBUTORS] isEqualToNumber:[NSNumber numberWithBool:NO]]) {
-        [attributes setObject:[attributes objectForKey:STORY_INVITED_TO_CONTRIBUTE] forKey:STORY_INVITED_TO_CONTRIBUTE];
-        [attributes setObject:[NSNumber numberWithBool:NO] forKey:STORY_PUBLIC_CONTRIBUTORS];
-    }
-    else {
-        [attributes setObject:[NSNull null] forKey:STORY_INVITED_TO_CONTRIBUTE];
-        [attributes setObject:[NSNumber numberWithBool:YES] forKey:STORY_PUBLIC_CONTRIBUTORS];
-    }
-    
-    if ([[attributes objectForKey:STORY_PUBLIC_VIEWERS] isEqualToNumber:[NSNumber numberWithBool:NO]]) {
-        [attributes setObject:[attributes objectForKey:STORY_INVITED_TO_VIEW] forKey:STORY_INVITED_TO_VIEW];
-        [attributes setObject:[NSNumber numberWithBool:NO] forKey:STORY_PUBLIC_VIEWERS];
-    }
-    else {
-        [attributes setObject:[NSNull null] forKey:STORY_INVITED_TO_VIEW];
-        [attributes setObject:[NSNumber numberWithBool:YES] forKey:STORY_PUBLIC_VIEWERS];
-    }
+// Create a story here with the given attributes.
+// Get a unique id and create the story with using the attributes
+// in 'attribute' and the unique id created
++ (Story *)createStoryWithAttributes:(NSMutableDictionary *)attributes
+{
+    NSLog(@"Adding story with attributes %@", attributes);
     
     [attributes setObject:[NSNumber numberWithInt:0] forKey:STORY_NUM_LIKES];
     [attributes setObject:[NSNumber numberWithInt:0] forKey:STORY_NUM_VIEWS];
     [attributes setObject:[NSNumber numberWithInt:0] forKey:STORY_NUM_CONTRIBUTORS];
     
     [attributes setObject:[NSNumber numberWithInt:0] forKey:STORY_LENGTH];
-}
-
-+ (Story *)createStoryWithAttributes:(NSMutableDictionary *)attributes
-{
-    NSLog(@"Adding story with attributes %@", attributes);
-    
-    [Story cleanUpStoryAttributes:attributes];
     
     Story *story = [Story createStoryOnDiskWithAttributes:attributes];    
     
@@ -122,25 +98,8 @@
     story.canView = YES;
     story.canContribute = YES;
     
-    if ([[attributes objectForKey:STORY_PUBLIC_CONTRIBUTORS] isEqualToNumber:[NSNumber numberWithBool:YES]]) 
-        story.publicContributors = YES;
-    else
-    {
-        story.isInvited = YES;
-        story.publicContributors = NO;
-        NSArray *invited = [attributes objectForKey:STORY_INVITED_TO_CONTRIBUTE];
-        story.invitedToContribute = invited;
-    }
-    
-    if ([[attributes objectForKey:STORY_PUBLIC_VIEWERS] isEqualToNumber:[NSNumber numberWithBool:YES]]) 
-        story.publicViewers = YES;
-    else
-    {
-        story.isInvited = YES;
-        story.publicViewers = NO;
-        NSArray *invited = [attributes objectForKey:STORY_INVITED_TO_VIEW];
-        story.invitedToView = invited;
-    }
+    story.writeAccess = [attributes objectForKey:STORY_WRITE_ACCESS];
+    story.readAccess = [attributes objectForKey:STORY_READ_ACCESS];
     
     if ([[attributes objectForKey:STORY_LOCATION_ENABLED] isEqualToNumber:[NSNumber numberWithBool:YES]]) {
         story.isLocationEnabled = YES;
@@ -254,8 +213,10 @@
                                           
                                           story.initialized = YES;
                                           [StoryDocuments saveStoryToDisk:story];
-                                          if (story.invitedToContribute) {
-                                              sendRequestToContributors(story.invitedToContribute, story);
+                                          NSArray *invitedFBFriends = [[story.writeAccess objectForKey:kBNStoryPrivacyInviteeList]
+                                                                       objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
+                                          if (invitedFBFriends) {
+                                              sendRequestToContributors(invitedFBFriends, story);
                                           }
                                           NETWORK_OPERATION_COMPLETE();
                                       }

@@ -57,10 +57,22 @@
         // User has Facebook ID.
         
         // refresh Facebook friends on each launch
-        [[PFFacebookUtils facebook] requestWithGraphPath:@"me/friends" andDelegate:self];
+        [PF_FBRequestConnection startForMyFriendsWithCompletionHandler:^(PF_FBRequestConnection *connection, id result, NSError *error) {
+            if (!error) {
+                [self facebookRequest:connection didLoad:result];
+            } else {
+                [self facebookRequest:connection didFailWithError:error];
+            }
+        }];
     } else {
         NSLog(@"User missing Facebook ID");
-        [[PFFacebookUtils facebook] requestWithGraphPath:@"me/?fields=name,picture,email" andDelegate:self];
+        [PF_FBRequestConnection startForMeWithCompletionHandler:^(PF_FBRequestConnection *connection, id result, NSError *error) {
+            if (!error) {
+                [self facebookRequest:connection didLoad:result];
+            } else {
+                [self facebookRequest:connection didFailWithError:error];
+            }
+        }];
     }
     
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
@@ -157,8 +169,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [PFPush handlePush:userInfo];
 }
 
-#pragma mark - PF_FBRequestDelegate
-- (void)request:(PF_FBRequest *)request didLoad:(id)result {
+- (void)facebookRequest:(PF_FBRequestConnection *)connection didLoad:(id)result
+{
     // This method is called twice - once for the user's /me profile, and a second time when obtaining their friends. We will try and handle both scenarios in a single method.
     
     NSArray *data = [result objectForKey:@"data"];
@@ -175,21 +187,11 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             [facebookFriendsId addObject:[facebookFriend objectForKey:@"id"]];
         }
         
-        // We need to break the get request into smaller chunks as Parse API does not take a big request when # friends exceeds 500
-        NSError *error = nil;
-        NSDictionary *constraint = [NSDictionary dictionaryWithObject:facebookFriendsId forKey:@"$in"];
-        NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObject:constraint forKey:USER_FACEBOOK_ID];
-        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
-        if (!jsonData) {
-            NSLog(@"NSJSONSerialization failed %@", error);
-        }
-        NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-        NSMutableDictionary *getFacebookFriendsOnBanyan = [NSMutableDictionary dictionaryWithObject:json forKey:@"where"];
-        [[AFParseAPIClient sharedClient] getPath:PARSE_API_USER_URL(@"")
-                                      parameters:getFacebookFriendsOnBanyan
+        [[AFParseAPIClient sharedClient] postPath:PARSE_API_FUNCTION_URL(@"facebookFriendsOnBanyan")
+                                       parameters:[NSDictionary dictionaryWithObject:facebookFriendsId forKey:@"facebookFriendsId"]
                                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                              NSDictionary *results = (NSDictionary *)responseObject;
-                                             NSArray *friendsOnBanyan = [results objectForKey:@"results"];
+                                             NSArray *friendsOnBanyan = [results objectForKey:@"result"];
                                              NSMutableArray *idOfFriendsOnBanyan = [NSMutableArray arrayWithCapacity:[friendsOnBanyan count]];
                                              NSMutableArray *friendsOnBanyanMutable = [NSMutableArray arrayWithCapacity:[friendsOnBanyan count]];
                                              for (NSDictionary *friend in friendsOnBanyan) {
@@ -270,11 +272,18 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             [currentUser saveEventually];
         }
         
-        [[PFFacebookUtils facebook] requestWithGraphPath:@"me/friends" andDelegate:self];
+        [PF_FBRequestConnection startForMyFriendsWithCompletionHandler:^(PF_FBRequestConnection *connection, id result, NSError *error) {
+            if (!error) {
+                [self facebookRequest:connection didLoad:result];
+            } else {
+                [self facebookRequest:connection didFailWithError:error];
+            }
+        }];
     }
 }
 
-- (void)request:(PF_FBRequest *)request didFailWithError:(NSError *)error {
+- (void)facebookRequest:(PF_FBRequestConnection *)connection didFailWithError:(NSError *)error
+{
     NSLog(@"Facebook error: %@", error);
     
     if ([PFUser currentUser]) {

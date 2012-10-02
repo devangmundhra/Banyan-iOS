@@ -49,17 +49,8 @@
     
     // Update the story
     [storyParams setObject:story.title forKey:STORY_TITLE];
-    [storyParams setObject:[NSNumber numberWithBool:story.publicContributors] forKey:STORY_PUBLIC_CONTRIBUTORS];
-    if (!story.publicContributors)
-        [storyParams setObject:story.invitedToContribute forKey:STORY_INVITED_TO_CONTRIBUTE];
-    else
-        [storyParams setObject:[NSNull null] forKey:STORY_INVITED_TO_CONTRIBUTE];
-    
-    [storyParams setObject:[NSNumber numberWithBool:story.publicViewers] forKey:STORY_PUBLIC_VIEWERS];
-    if (!story.publicViewers)
-        [storyParams setObject:story.invitedToView forKey:STORY_INVITED_TO_VIEW];
-    else
-        [storyParams setObject:[NSNull null] forKey:STORY_INVITED_TO_VIEW];
+    [storyParams setObject:story.writeAccess forKey:STORY_WRITE_ACCESS];
+    [storyParams setObject:story.readAccess forKey:STORY_READ_ACCESS];
     
     BNOperationObject *obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeStory tempId:story.storyId storyId:story.storyId];
     BNOperation *operation = [[BNOperation alloc] initWithObject:obj action:BNOperationActionEdit dependencies:nil];

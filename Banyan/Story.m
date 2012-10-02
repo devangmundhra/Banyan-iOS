@@ -18,11 +18,7 @@
 @synthesize canView = _canView;
 @synthesize isInvited = _isInvited;
 @synthesize image = _image;
-@synthesize invitedToContribute = _invitedToContribute;
-@synthesize invitedToView = _invitedToView;
 @synthesize lengthOfStory = _lengthOfStory;
-@synthesize publicContributors = _publicContributors;
-@synthesize publicViewers = _publicViewers;
 @synthesize storyId = _storyId;
 @synthesize title = _title;
 @synthesize imageURL = _imageURL;
@@ -43,6 +39,8 @@
 @synthesize geocodedLocation = _geocodedLocation;
 @synthesize likers = _likers;
 @synthesize author = _author;
+@synthesize writeAccess = _writeAccess;
+@synthesize readAccess = _readAccess;
 // Session properties
 @synthesize imageChanged = _imageChanged;
 @synthesize storyBeingRead = _storyBeingRead;
@@ -54,15 +52,13 @@
     [aCoder encodeBool:self.canContribute forKey:STORY_CAN_CONTRIBUTE];
     [aCoder encodeBool:self.canView forKey:STORY_CAN_VIEW];
     [aCoder encodeBool:self.isInvited forKey:STORY_IS_INVITED];
-    [aCoder encodeObject:self.invitedToContribute forKey:STORY_INVITED_TO_CONTRIBUTE];
-    [aCoder encodeObject:self.invitedToView forKey:STORY_INVITED_TO_VIEW];
     [aCoder encodeObject:self.lengthOfStory forKey:STORY_LENGTH];
-    [aCoder encodeBool:self.publicContributors forKey:STORY_PUBLIC_CONTRIBUTORS];
-    [aCoder encodeBool:self.publicViewers forKey:STORY_PUBLIC_VIEWERS];
     [aCoder encodeObject:self.storyId forKey:STORY_ID];
     [aCoder encodeObject:self.title forKey:STORY_TITLE];
     [aCoder encodeObject:self.imageURL forKey:STORY_IMAGE_URL];
     [aCoder encodeObject:self.contributors forKey:STORY_CONTRIBUTORS];
+    [aCoder encodeObject:self.readAccess forKey:STORY_READ_ACCESS];
+    [aCoder encodeObject:self.writeAccess forKey:STORY_WRITE_ACCESS];
     [aCoder encodeObject:self.startingScene forKey:STORY_STARTING_SCENE];
     [aCoder encodeObject:self.dateCreated forKey:STORY_DATE_CREATED];
     [aCoder encodeObject:self.dateModified forKey:STORY_DATE_MODIFIED];
@@ -87,15 +83,13 @@
         self.canContribute = [aDecoder decodeBoolForKey:STORY_CAN_CONTRIBUTE];
         self.canView = [aDecoder decodeBoolForKey:STORY_CAN_VIEW];
         self.isInvited = [aDecoder decodeBoolForKey:STORY_IS_INVITED];
-        self.invitedToContribute = [aDecoder decodeObjectForKey:STORY_INVITED_TO_CONTRIBUTE];
-        self.invitedToView = [aDecoder decodeObjectForKey:STORY_INVITED_TO_VIEW];
         self.lengthOfStory = [aDecoder decodeObjectForKey:STORY_LENGTH];
-        self.publicContributors = [aDecoder decodeBoolForKey:STORY_PUBLIC_CONTRIBUTORS];
-        self.publicViewers = [aDecoder decodeBoolForKey:STORY_PUBLIC_VIEWERS];
         self.storyId = [aDecoder decodeObjectForKey:STORY_ID];
         self.title = [aDecoder decodeObjectForKey:STORY_TITLE];
         self.imageURL = [aDecoder decodeObjectForKey:STORY_IMAGE_URL];
         self.contributors = [aDecoder decodeObjectForKey:STORY_CONTRIBUTORS];
+        self.readAccess = [aDecoder decodeObjectForKey:STORY_READ_ACCESS];
+        self.writeAccess = [aDecoder decodeObjectForKey:STORY_WRITE_ACCESS];
         self.startingScene = [aDecoder decodeObjectForKey:STORY_STARTING_SCENE];
         self.dateCreated = [aDecoder decodeObjectForKey:STORY_DATE_CREATED];
         self.dateModified = [aDecoder decodeObjectForKey:STORY_DATE_MODIFIED];
@@ -121,11 +115,9 @@
     NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
     CLLocationCoordinate2D coord = [self.location coordinate];
     
-    [attributes setObject:REPLACE_NIL_WITH_NULL(self.invitedToContribute) forKey:STORY_INVITED_TO_CONTRIBUTE];
-    [attributes setObject:REPLACE_NIL_WITH_NULL(self.invitedToView) forKey:STORY_INVITED_TO_VIEW];
+    [attributes setObject:self.writeAccess forKey:STORY_WRITE_ACCESS];
+    [attributes setObject:self.readAccess forKey:STORY_READ_ACCESS];
     [attributes setObject:self.lengthOfStory forKey:STORY_LENGTH];
-    [attributes setObject:[NSNumber numberWithBool:self.publicContributors] forKey:STORY_PUBLIC_CONTRIBUTORS];
-    [attributes setObject:[NSNumber numberWithBool:self.publicViewers] forKey:STORY_PUBLIC_VIEWERS];
     [attributes setObject:self.title forKey:STORY_TITLE];
     [attributes setObject:REPLACE_NIL_WITH_NULL(UPDATED(self.imageURL)) forKey:STORY_IMAGE_URL];
     [attributes setObject:REPLACE_NIL_WITH_NULL(self.contributors) forKey:STORY_CONTRIBUTORS];
@@ -144,12 +136,76 @@
     return attributes;
 }
 
+# pragma mark Permissions management
+- (void) resetPermission
+{
+    NSString *writeScope = [self.writeAccess objectForKey:kBNStoryPrivacyScope];
+    NSString *readScope = [self.readAccess objectForKey:kBNStoryPrivacyScope];
+    
+    NSDictionary *writeInvitee = [self.writeAccess objectForKey:kBNStoryPrivacyInviteeList];
+    NSDictionary *readInvitee = [self.readAccess objectForKey:kBNStoryPrivacyInviteeList];
+    
+    NSArray *writeInvitedFacebookFriends = [writeInvitee objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
+    NSArray *readInvitedFacebookFriends = [readInvitee objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
+    
+    self.isInvited = NO;
+    User *currentUser = [User currentUser];
+    if (currentUser) {
+        NSDictionary *myAttributes = [NSDictionary dictionaryWithObjectsAndKeys:currentUser.name, @"name", currentUser.facebookId, @"id", nil];
+        
+        if ([writeScope isEqualToString:kBNStoryPrivacyScopePublic]) {
+            // Public contributors
+            self.canContribute = YES;
+        } else {
+            self.canContribute = NO;
+            for (NSDictionary *contributor in writeInvitedFacebookFriends) {
+                if ([contributor isKindOfClass:[NSDictionary class]] && [contributor isEqualToDictionary:myAttributes]) {
+                    self.canContribute = YES;
+                    self.canView = YES;
+                    self.isInvited =YES;
+                    break;
+                }
+            }
+        }
+        
+        if ([readScope isEqualToString:kBNStoryPrivacyScopePublic]) {
+            // Public viewers
+            self.canView = YES;
+        } else if ([readScope isEqualToString:kBNStoryPrivacyScopeLimited]) {
+            // Limited Scope. Only Facebook friends for now
+            self.canView = NO;
+            for (NSDictionary *viewer in readInvitedFacebookFriends) {
+                if ([viewer isKindOfClass:[NSDictionary class]] && [viewer isEqualToDictionary:myAttributes]) {
+                    self.canView = YES;
+                    break;
+                }
+            }
+        } else {
+            // Invited viewers            
+            self.canView = NO;
+            for (NSDictionary *viewer in readInvitedFacebookFriends) {
+                if ([viewer isKindOfClass:[NSDictionary class]] && [viewer isEqualToDictionary:myAttributes]) {
+                    self.canView = YES;
+                    self.isInvited = YES;
+                    break;
+                }
+            }
+        }
+    }
+    else {
+        // Can't find user info!
+        NSLog(@"%s Can't find user info", __PRETTY_FUNCTION__);
+        self.canView = [readScope isEqualToString:kBNStoryPrivacyScopePublic];
+        self.canContribute = NO;
+    }
+}
+
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"{Story\n Title: %@\n Length: %@\n Starting Scene: %@\n}", self.title, self.lengthOfStory, self.startingScene];
 }
 
-//Change so that Story can be compared
+// Change so that Story can be compared
 - (NSUInteger)hash
 {
     return [self.storyId hash];
