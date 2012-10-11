@@ -22,5 +22,6 @@
 
 @property (weak, nonatomic) IBOutlet id<UserLoginViewControllerDelegate> delegate;
 @property (strong, nonatomic) NSArray *facebookPermissions;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 
 @end

@@ -98,7 +98,7 @@
     [self.pageViewController didMoveToParentViewController:self];
     
     // Add the page view controller's gesture recognizers to the book view controller's view so that the gestures are started more easily.
-    self.view.gestureRecognizers = self.pageViewController.gestureRecognizers;
+//    self.view.gestureRecognizers = self.pageViewController.gestureRecognizers;
     
     [self refreshView];
     
@@ -173,8 +173,8 @@
         hud.mode = MBProgressHUDModeText;
         hud.labelText = @"End of story";
         hud.detailsLabelText = self.story.title;
-        self.view.gestureRecognizers = nil;
-        [self performSelector:@selector(hideHUDAndDone) withObject:self afterDelay:HUD_STAY_DELAY];   
+//        self.view.gestureRecognizers = nil;
+        [self performSelector:@selector(hideHUDAndDone) withObject:self afterDelay:HUD_STAY_DELAY];
         return nil;
     }
     else
@@ -220,9 +220,9 @@
     readSceneViewController.delegate = self;
     [self setNavBarButtonsWithTargetActionsFromReadSceneViewController:readSceneViewController];
 
-    // Prevent the buttons in the readSceneViewController to trigger page changes
-    for (UIGestureRecognizer *gesture in self.pageViewController.gestureRecognizers)
-        gesture.delegate = self;
+//    // Prevent the buttons in the readSceneViewController to trigger page changes
+//    for (UIGestureRecognizer *gesture in self.pageViewController.gestureRecognizers)
+//        gesture.delegate = self;
     
     return readSceneViewController;
 }

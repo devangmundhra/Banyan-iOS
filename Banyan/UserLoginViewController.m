@@ -14,8 +14,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *facebookLoginButton;
 @property (weak, nonatomic) IBOutlet UINavigationBar *navigationBar;
 @property (weak, nonatomic) IBOutlet UINavigationItem *backNavigationItem;
-@property (weak, nonatomic) IBOutlet UITextField *emailAddressTextField;
-@property (weak, nonatomic) IBOutlet UITextField *passwordTextField;
 
 @end
 
@@ -24,10 +22,9 @@
 @synthesize facebookLoginButton = _facebookLoginButton;
 @synthesize navigationBar = _navigationBar;
 @synthesize backNavigationItem = _backNavigationItem;
-@synthesize emailAddressTextField = _emailAddressTextField;
-@synthesize passwordTextField = _passwordTextField;
 @synthesize delegate = _delegate;
 @synthesize facebookPermissions = _facebookPermissions;
+@synthesize activityIndicator = _activityIndicator;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -47,7 +44,6 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    self.emailAddressTextField.hidden = self.passwordTextField.hidden = YES;
 }
 
 - (void)viewDidUnload
@@ -56,8 +52,6 @@
     [self setNavigationBar:nil];
     [self setBackNavigationItem:nil];
     [self setCancelButton:nil];
-    [self setEmailAddressTextField:nil];
-    [self setPasswordTextField:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -72,32 +66,35 @@
 - (IBAction)facebookLogin:(UIButton *)sender 
 {    
     [PFFacebookUtils logInWithPermissions:self.facebookPermissions block:^(PFUser *user, NSError *error) {
+        [self.activityIndicator stopAnimating]; // Hide loading indicator
+        
         if (!user) {
-            NSLog(@"Uh oh. The user cancelled the Facebook login.");
+            if (!error) {
+                NSLog(@"Uh oh. The user cancelled the Facebook login.");
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Error" message:@"Uh oh. The user cancelled the Facebook login." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Dismiss", nil];
+                [alert show];
+            } else {
+                NSLog(@"Uh oh. An error occurred: %@", error);
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Error" message:[error description] delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Dismiss", nil];
+                [alert show];
+            }
         } else if (user.isNew) {
-            NSLog(@"User signed up and logged in through Facebook!");
+            NSLog(@"User with facebook signed up and logged in!");
             [self.delegate logInViewController:self didLogInUser:user];
         } else {
-            NSLog(@"User logged in through Facebook!");
+            NSLog(@"User with facebook logged in!");
             [self.delegate logInViewController:self didLogInUser:user];
         }
     }];
     
+    [self.activityIndicator startAnimating]; // Show loading indicator until login is finished
+    
     return;
-}
-
-- (IBAction)manualLogin:(UIButton *)sender 
-{
 }
 
 - (IBAction)cancel:(id)sender 
 {
     [self.delegate logInViewControllerDidCancelLogIn:self];
-}
-
-- (void)loginFailed
-{
-    //TODO: Implement this method. Add notification center.  
 }
 
 #pragma Memory Management

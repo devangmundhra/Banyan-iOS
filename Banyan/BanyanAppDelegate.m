@@ -9,6 +9,7 @@
 #import "BanyanAppDelegate.h"
 #import "User_Defines.h"
 #import "AFParseAPIClient.h"
+#import "StoryListTableViewController.h"
 
 @implementation BanyanAppDelegate
 
@@ -17,8 +18,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [Parse setApplicationId:PARSE_APP_ID
+                  clientKey:PARSE_CLIENT_KEY];
+    
     // Override point for customization after application launch.
-    [PFFacebookUtils initializeWithApplicationId:@"244613942300893"];
+    [PFFacebookUtils initializeWithApplicationId:FACEBOOK_APP_ID];
     
 #define TESTING 1
 #ifdef TESTING
@@ -37,7 +41,7 @@
     }
 #endif
     
-    [TestFlight takeOff:@"072cbecbb96cfd6e4593af01f8bbfb72_MTAyMjk0MjAxMi0wNi0yOCAwMToyNTo0OC43NDAyMzU"];
+    [TestFlight takeOff:TESTFLIGHT_BANYAN_TEAM_TOKEN];
     
     // Create a location manager instance to determine if location services are enabled. This manager instance will be
     // immediately released afterwards.
@@ -49,15 +53,12 @@
     
     [self appearances];
     
-    [Parse setApplicationId:PARSE_APP_ID 
-                  clientKey:PARSE_CLIENT_KEY];
-    
     userManagementModule = [[UserManagementModule alloc] init];
-    if ([User currentUser].facebookId && [User currentUser].facebookId.length > 0) {
+    
+    if ([User loggedIn]) {
         // User has Facebook ID.
-        
-        // refresh Facebook friends on each launch
-        [PF_FBRequestConnection startForMyFriendsWithCompletionHandler:^(PF_FBRequestConnection *connection, id result, NSError *error) {
+        // Update user details and get updates on FB friends
+        [PF_FBRequestConnection startForMeWithCompletionHandler:^(PF_FBRequestConnection *connection, id result, NSError *error) {
             if (!error) {
                 [self facebookRequest:connection didLoad:result];
             } else {
@@ -66,13 +67,6 @@
         }];
     } else {
         NSLog(@"User missing Facebook ID");
-        [PF_FBRequestConnection startForMeWithCompletionHandler:^(PF_FBRequestConnection *connection, id result, NSError *error) {
-            if (!error) {
-                [self facebookRequest:connection didLoad:result];
-            } else {
-                [self facebookRequest:connection didFailWithError:error];
-            }
-        }];
     }
     
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
@@ -105,22 +99,14 @@
 /**
  Returns the path to the application's documents directory.
  */
-- (NSString *)applicationDocumentsDirectory {
+- (NSString *)applicationDocumentsDirectory
+{
 	return [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-}
-
-#pragma mark FacebookSessionDelegate
-
-// Pre iOS 4.2 support
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-    //    return [userManagementModule.facebook handleOpenURL:url]; 
-    return [PFFacebookUtils handleOpenURL:url];
 }
 
 // For iOS 4.2+ support
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    //    return [userManagementModule.facebook handleOpenURL:url]; 
     return [PFFacebookUtils handleOpenURL:url];
 }
 
@@ -146,11 +132,15 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    // We need to properly handle activation of the application with regards to SSO
+    // (e.g., returning from iOS 6.0 authorization dialog or from fast app switching).
+    [PF_FBSession.activeSession handleDidBecomeActive];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    [PF_FBSession.activeSession close];
     [self setUserManagementModule:nil];
 }
 
@@ -255,20 +245,16 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             NSString *facebookEmail = [resultsDict objectForKey:@"email"];
             
             [currentUser setEmail:facebookEmail];
-            [User currentUser].emailAddress = facebookEmail;
             
             if (facebookName && facebookName != 0) {
                 [currentUser setObject:facebookName forKey:USER_NAME];
-                [User currentUser].name = facebookName;
             }
             if (facebookId && facebookId != 0) {
                 [currentUser setObject:facebookId forKey:USER_FACEBOOK_ID];
-                [User currentUser].facebookId = facebookId;
             }
             if (currentUser.isNew) {
                 [currentUser setUsername:facebookEmail];
             }
-            [User updateCurrentUser];
             [currentUser saveEventually];
         }
         
@@ -295,54 +281,61 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     }
 }
 
-# pragma mark - FBSessionDelegate, PF_FBSessionDelegate
-
-- (void)fbDidLogin {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[[PFFacebookUtils facebook] accessToken] forKey:@"FBAccessTokenKey"];
-    [defaults setObject:[[PFFacebookUtils facebook] expirationDate] forKey:@"FBExpirationDateKey"];
-    [defaults synchronize];
-}
-
-- (void) fbDidLogout {
-    // Remove saved authorization information if it exists
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if ([defaults objectForKey:@"FBAccessTokenKey"]) {
-        [defaults removeObjectForKey:@"FBAccessTokenKey"];
-        [defaults removeObjectForKey:@"FBExpirationDateKey"];
-        [defaults synchronize];
+/*
+ * Callback for session changes.
+ */
+- (void)sessionStateChanged:(PF_FBSession *)session
+                      state:(PF_FBSessionState) state
+                      error:(NSError *)error
+{
+    switch (state) {
+        case PF_FBSessionStateOpen:
+            if (!error) {
+                // We have a valid session
+                NSLog(@"User session found");
+            }
+            break;
+        case PF_FBSessionStateClosed:
+        case PF_FBSessionStateClosedLoginFailed:
+            [PF_FBSession.activeSession closeAndClearTokenInformation];
+            break;
+        default:
+            break;
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:BNFBSessionStateChangedNotification
+                                                        object:session];
+    
+    if (error) {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"Error"
+                                  message:error.localizedDescription
+                                  delegate:nil
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil];
+        [alertView show];
     }
 }
 
-- (void)fbDidExtendToken:(NSString *)accessToken expiresAt:(NSDate *)expiresAt {
-    NSLog(@"token extended");
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:accessToken forKey:@"FBAccessTokenKey"];
-    [defaults setObject:expiresAt forKey:@"FBExpirationDateKey"];
-    [defaults synchronize];
-}
-
-/**
- * Called when the user dismissed the dialog without logging in.
+/*
+ * Opens a Facebook session and optionally shows the login UX.
  */
-- (void)fbDidNotLogin:(BOOL)cancelled
-{
+- (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI {
+    NSArray *permissions = [[NSArray alloc] initWithObjects:
+                            @"email",
+                            @"user_about_me",
+                            nil];
     
+    return [PF_FBSession openActiveSessionWithReadPermissions:permissions
+                                              allowLoginUI:allowLoginUI
+                                         completionHandler:^(PF_FBSession *session,
+                                                             PF_FBSessionState state,
+                                                             NSError *error) {
+                                             [self sessionStateChanged:session
+                                                                 state:state
+                                                                 error:error];
+                                         }];
 }
 
-/**
- * Called when the current session has expired. This might happen when:
- *  - the access token expired
- *  - the app has been disabled
- *  - the user revoked the app's permissions
- *  - the user changed his or her password
- */
-- (void)fbSessionInvalidated
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[[PFFacebookUtils facebook] accessToken] forKey:@"FBAccessTokenKey"];
-    [defaults setObject:[[PFFacebookUtils facebook] expirationDate] forKey:@"FBExpirationDateKey"];
-    [defaults synchronize];
-}
 @end
 

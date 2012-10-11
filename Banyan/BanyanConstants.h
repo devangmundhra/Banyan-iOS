@@ -12,6 +12,7 @@
 extern NSString *const BNUserFollowingChangedNotification;
 extern NSString *const BNUserLogInNotification;
 extern NSString *const BNUserLogOutNotification;
+extern NSString *const BNFBSessionStateChangedNotification;
 
 #pragma mark - NSUserDefaults
 extern NSString *const BNUserDefaultsFacebookFriends;

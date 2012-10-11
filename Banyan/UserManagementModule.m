@@ -35,9 +35,7 @@
 
 - (BOOL) isUserSignedIntoApp
 {
-    User *currentUser = [User currentUser];
-    if (currentUser)
-    {
+    if ([User loggedIn]) {
         [self removeLoginTabbar];
         return  YES;
     } else {
@@ -55,7 +53,8 @@
     }
     
     // Allocate a view controller and show it here
-    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGRect viewRect = loginTabbarViewController.view.frame;
     loginTabbarViewController.view.frame = CGRectMake(0, screenRect.size.height - viewRect.size.height, 
@@ -74,7 +73,6 @@
     UIWindow *window = [UIApplication sharedApplication].keyWindow;
     
     if ([window.subviews indexOfObject:loginTabbarViewController.view] != NSNotFound) {
-//        [loginTabbarViewController removeFromParentViewController];
         [loginTabbarViewController.view removeFromSuperview];
     }
     
@@ -112,7 +110,6 @@
     [defaults synchronize];
     [PFPush unsubscribeFromChannelInBackground:[[PFUser currentUser] objectId]];
     [PFUser logOut];
-    [User updateCurrentUser];
     [[NSNotificationCenter defaultCenter] postNotificationName:BNUserLogOutNotification
                                                         object:self];
     return;
@@ -122,7 +119,6 @@
 - (void)logInViewController:(UserLoginViewController *)logInController didLogInUser:(PFUser *)user
 {
     NSLog(@"Getting user info");
-    [User updateCurrentUser];
     [PF_FBRequestConnection startForMeWithCompletionHandler:^(PF_FBRequestConnection *connection, id result, NSError *error) {
         if (!error) {
             [(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate] facebookRequest:connection didLoad:result];

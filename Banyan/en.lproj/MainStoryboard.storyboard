@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="2549" systemVersion="12B19" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="cX6-a0-qfY">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="2843" systemVersion="12C54" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="cX6-a0-qfY">
     <dependencies>
-        <deployment defaultVersion="1296" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1498"/>
+        <deployment defaultVersion="1536" identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1929"/>
     </dependencies>
     <scenes>
         <!--Story List Table View Controller-->
         <scene sceneID="Jwn-F9-Gq6">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="DWC-2f-f96" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController id="5Ih-3Q-Est" customClass="StoryListTableViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="78" sectionHeaderHeight="22" sectionFooterHeight="22" id="qiU-hW-38p">
                         <rect key="frame" x="0.0" y="64" width="320" height="416"/>
@@ -67,13 +66,13 @@
                         <outlet property="addStory" destination="1ek-dP-Vvn" id="Z02-1q-4QG"/>
                     </connections>
                 </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DWC-2f-f96" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="599" y="38"/>
         </scene>
         <!--Scenes View Controller-->
         <scene sceneID="pku-KU-IEv">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Fdr-kw-WAI" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="MvS-7y-Ks5" customClass="ScenesViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="RHF-UE-ks3">
                         <rect key="frame" x="0.0" y="64" width="320" height="416"/>
@@ -82,13 +81,13 @@
                     </view>
                     <navigationItem key="navigationItem" id="O4w-XP-NQZ"/>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Fdr-kw-WAI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1150" y="319"/>
         </scene>
         <!--New Story View Controller - New Story-->
         <scene sceneID="TQk-I3-iQ3">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="3PX-i9-8Z2" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="QIq-lu-Rds" customClass="NewStoryViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="KWd-UK-B9u" customClass="UIScrollView">
                         <rect key="frame" x="0.0" y="64" width="320" height="416"/>
@@ -228,13 +227,13 @@
                         <outlet property="viewerSlider" destination="Huv-pQ-6WY" id="Ywe-wC-7gr"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3PX-i9-8Z2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1150" y="-244"/>
         </scene>
         <!--Invited Table View Controller - Invite-->
         <scene sceneID="GjA-ct-c1h">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="26i-Qa-sIg" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController id="vMp-rM-1qw" customClass="InvitedTableViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="JQd-40-2oz">
                         <rect key="frame" x="0.0" y="64" width="320" height="416"/>
@@ -276,6 +275,7 @@
                         <outlet property="searchDisplayController" destination="BAz-8m-Gqy" id="cqw-7n-wZa"/>
                     </connections>
                 </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="26i-Qa-sIg" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <searchDisplayController id="UNr-om-pJz">
                     <connections>
                         <outlet property="delegate" destination="vMp-rM-1qw" id="bC4-Bq-6ra"/>
@@ -306,7 +306,6 @@
         <!--Navigation Controller-->
         <scene sceneID="xLi-HR-ngS">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="l7c-F5-Nwb" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController definesPresentationContext="YES" id="cX6-a0-qfY" sceneMemberID="viewController">
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" barStyle="blackTranslucent" id="x6a-3u-lNk">
@@ -321,6 +320,7 @@
                         <segue destination="5Ih-3Q-Est" kind="relationship" relationship="rootViewController" id="nZr-Kr-6an"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="l7c-F5-Nwb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="142" y="38"/>
         </scene>
@@ -371,8 +371,6 @@
         <class className="StoryListTableViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/StoryListTableViewController.h"/>
             <relationships>
-                <relationship kind="action" name="addStorySegue:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="action" name="filterStories:"/>
                 <relationship kind="outlet" name="addStory" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="filterStoriesSegmentedControl" candidateClass="UISegmentedControl"/>
                 <relationship kind="outlet" name="leftButton" candidateClass="UIBarButtonItem"/>

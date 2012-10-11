@@ -26,7 +26,7 @@
 
 + (User *)currentUser;
 + (User *)getUserForPfUser:(PFUser *)pfUser;
-+ (void)updateCurrentUser;
++ (BOOL)loggedIn;
 + (User *)userWithId:(NSString *)id;
 - (BOOL) initialized;
 

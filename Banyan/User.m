@@ -29,34 +29,9 @@ static User *_currentUser = nil;
 
 + (User *)currentUser
 {
-    if (!_currentUser) {
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            [User unarchiveCurrentUser];
-            if (!_currentUser) {
-                [User updateCurrentUser];
-            }
-            // Need to set the session level parameters correctly
-            _currentUser.sessionToken = [PFUser currentUser].sessionToken;
-        });
-    }
-    return _currentUser;
-}
-
-+ (void)updateCurrentUser
-{
     PFUser *currentUser = [PFUser currentUser];
-    if (currentUser) {
-        [currentUser fetchIfNeeded];
-    }
     _currentUser = [User getUserForPfUser:currentUser];
-    _currentUser.sessionToken = currentUser.sessionToken;
-    if (!_currentUser) {
-        // Happens when say for example the user signs out
-        [User deleteCurrentUserFromDisk];
-    } else {
-        [User archiveCurrentUser];
-    }
+    return _currentUser;
 }
 
 + (User *)getUserForPfUser:(PFUser *)pfUser
@@ -75,6 +50,16 @@ static User *_currentUser = nil;
     user.name = REPLACE_NULL_WITH_NIL([pfUser objectForKey:USER_NAME]);
     user.facebookId = REPLACE_NULL_WITH_NIL([pfUser objectForKey:USER_FACEBOOK_ID]);
     return user;
+}
+
++ (BOOL)loggedIn
+{
+    if ([PFUser currentUser] && // Check if a user is cached
+       [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) // Check if user is linked to Facebook
+    {
+        return YES;
+    }
+    return NO;
 }
 
 + (User *)userWithId:(NSString *)id

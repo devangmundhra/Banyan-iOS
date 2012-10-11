@@ -14,7 +14,6 @@
 #import "File+Create.h"
 #import "NewStoryViewController.h"
 #import "ScenesViewController.h"
-#import "BanyanAppDelegate.h"
 #import "UserLoginViewController.h"
 #import "PullToRefreshView.h"
 #import "MBProgressHUD.h"

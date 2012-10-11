@@ -9,10 +9,10 @@
 #import "BanyanConstants.h"
 
 #pragma mark - NSNotifications
-NSString *const BNUserFollowingChangedNotification = @"io.banyan.Banyan.userFollowingChanged";
-NSString *const BNUserLogInNotification = @"io.banyan.Banyan.userLogIn";
-NSString *const BNUserLogOutNotification = @"io.banyan.Banyan.userLogOut";
-
+NSString *const BNUserFollowingChangedNotification = @"io.banyan.Banyan:UserFollowingChangedNotification";
+NSString *const BNUserLogInNotification = @"io.banyan.Banyan:UserLoginNotification";
+NSString *const BNUserLogOutNotification = @"io.banyan.Banyan:UserLogoutNotification";
+NSString *const BNFBSessionStateChangedNotification = @"io.banyan.Banyan:FBSessionStateChangedNotification";
 #pragma mark - NSUserDefaults
 NSString *const BNUserDefaultsFacebookFriends = @"io.banyan.Banyan.userDefaults.facebookFriends";
 NSString *const BNUserDefaultsUserInfo = @"io.banyan.Banyan.userDefaults.userInfo";

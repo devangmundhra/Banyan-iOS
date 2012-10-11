@@ -9,6 +9,7 @@
 #import "StoryListTableViewController.h"
 #import "ParseConnection.h"
 #import "StoryDocuments.h"
+#import "BanyanAppDelegate.h"
 
 typedef enum {
     FilterStoriesSegmentIndexPopular = 0,
@@ -38,9 +39,9 @@ typedef enum {
     return delegate.userManagementModule;
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
+    [super viewDidAppear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:NO
                                             withAnimation:UIStatusBarAnimationNone];
     self.navigationController.navigationBar.translucent = NO;
@@ -50,9 +51,9 @@ typedef enum {
     [self refreshView];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+- (void)viewDidDisappear:(BOOL)animated
 {
-    [super viewWillDisappear:animated];
+    [super viewDidDisappear:animated];
 //    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent];
     [self setEditing:NO animated:YES];
     [self.tableView setEditing:NO animated:YES];
@@ -87,7 +88,7 @@ typedef enum {
                                                action:@selector(filterStories:)
                                      forControlEvents:UIControlEventValueChanged];
         self.filterStoriesSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-        self.filterStoriesSegmentedControl.selectedSegmentIndex = FilterStoriesSegmentIndexFollowing;
+        self.filterStoriesSegmentedControl.selectedSegmentIndex = FilterStoriesSegmentIndexPopular;
         self.filterStoriesSegmentedControl.apportionsSegmentWidthsByContent = YES;
     }
     
