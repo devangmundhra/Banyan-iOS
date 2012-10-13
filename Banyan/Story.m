@@ -159,7 +159,8 @@
         } else {
             self.canContribute = NO;
             for (NSDictionary *contributor in writeInvitedFacebookFriends) {
-                if ([contributor isKindOfClass:[NSDictionary class]] && [contributor isEqualToDictionary:myAttributes]) {
+                if ([contributor isKindOfClass:[NSDictionary class]]
+                    && [[contributor objectForKey:@"id"] isEqualToString:[myAttributes objectForKey:@"id"]]) {
                     self.canContribute = YES;
                     self.canView = YES;
                     self.isInvited =YES;
@@ -175,7 +176,8 @@
             // Limited Scope. Only Facebook friends for now
             self.canView = NO;
             for (NSDictionary *viewer in readInvitedFacebookFriends) {
-                if ([viewer isKindOfClass:[NSDictionary class]] && [viewer isEqualToDictionary:myAttributes]) {
+                if ([viewer isKindOfClass:[NSDictionary class]]
+                    && [[viewer objectForKey:@"id"] isEqualToString:[myAttributes objectForKey:@"id"]]) {
                     self.canView = YES;
                     break;
                 }
@@ -184,7 +186,8 @@
             // Invited viewers            
             self.canView = NO;
             for (NSDictionary *viewer in readInvitedFacebookFriends) {
-                if ([viewer isKindOfClass:[NSDictionary class]] && [viewer isEqualToDictionary:myAttributes]) {
+                if ([viewer isKindOfClass:[NSDictionary class]]
+                    && [[viewer objectForKey:@"id"] isEqualToString:[myAttributes objectForKey:@"id"]]) {
                     self.canView = YES;
                     self.isInvited = YES;
                     break;

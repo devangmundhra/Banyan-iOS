@@ -151,8 +151,10 @@
 {
     NSMutableArray *facebookFriendsOnBanyan = [[[NSUserDefaults standardUserDefaults]
                                                 objectForKey:BNUserDefaultsBanyanUsersFacebookFriends] mutableCopy];
-    NSUInteger index = [facebookFriendsOnBanyan indexOfObject:user];
     NSMutableDictionary *newCellUser = [user mutableCopy];
+    // This is needed since for matching, the USER_BEING_FOLLOWED in both the array and "user" should be same
+    [newCellUser setObject:[NSNumber numberWithBool:!status] forKey:USER_BEING_FOLLOWED];
+    NSUInteger index = [facebookFriendsOnBanyan indexOfObject:newCellUser];
     [newCellUser setObject:[NSNumber numberWithBool:status] forKey:USER_BEING_FOLLOWED];
     [facebookFriendsOnBanyan replaceObjectAtIndex:index withObject:newCellUser];
     [[NSUserDefaults standardUserDefaults] setObject:facebookFriendsOnBanyan forKey:BNUserDefaultsBanyanUsersFacebookFriends];
