@@ -11,6 +11,9 @@
 #import "Scene.h"
 #import "User.h"
 #import "BanyanDataSource.h"
+#import "AFBanyanAPIClient.h"
+#import "AFJSONRequestOperation.h"
+#import "AFJSONUtilities.h"
 
 @implementation Story
 
@@ -149,7 +152,62 @@
     NSArray *readInvitedFacebookFriends = [readInvitee objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
     
     self.isInvited = NO;
+    self.canContribute = NO;
+    self.canView = NO;
     User *currentUser = [User currentUser];
+    
+    NSError *error = nil;
+    NSURLResponse *response = nil;
+    
+    assert(currentUser);
+    NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:@"json", @"format", self.storyId, @"object_id", currentUser.userId, @"user_id", nil];
+    NSMutableURLRequest *request = [[AFBanyanAPIClient sharedClient] requestWithMethod:@"GET" path:BANYAN_API_GET_PERMISSIONS(@"Story") parameters:parameters];
+    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    
+    if(error) {
+        NSLog(@"operation: %@, response: %@, error: %@", BANYAN_API_GET_PERMISSIONS(@"Story"), response, error);
+    } else {
+        id responseObject = AFJSONDecode(data, &error);
+        NSDictionary *results = [(NSArray *)responseObject lastObject];
+        if ([[results objectForKey:@"write"] boolValue]) {
+            self.canContribute = YES;
+            // User is invited if the story was not actually open for everybody
+            if (![writeScope isEqualToString:kBNStoryPrivacyScopePublic]) {
+                self.isInvited = YES;
+            }
+        }
+        if ([[results objectForKey:@"read"] boolValue]) {
+            self.canView = YES;
+            // User is invited if the story was not actually open for everybody
+            if (![readScope isEqualToString:kBNStoryPrivacyScopePublic]) {
+                self.isInvited = YES;
+            }
+        }
+    }
+    
+    return;
+    
+    [[AFBanyanAPIClient sharedClient] getPath:BANYAN_API_GET_PERMISSIONS(@"Story")
+                                   parameters:parameters
+                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                          NSDictionary *results = [(NSArray *)responseObject lastObject];
+                                          if ([[results objectForKey:@"write"] boolValue]) {
+                                              self.canContribute = YES;
+                                              // User is invited if the story was not actually open for everybody
+                                              if (![writeScope isEqualToString:kBNStoryPrivacyScopePublic]) {
+                                                  self.isInvited = YES;
+                                              }
+                                          }
+                                          if ([[results objectForKey:@"read"] boolValue]) {
+                                              self.canView = YES;
+                                              // User is invited if the story was not actually open for everybody
+                                              if (![readScope isEqualToString:kBNStoryPrivacyScopePublic]) {
+                                                  self.isInvited = YES;
+                                              }
+                                          }
+                                      }
+                                      failure:AF_BANYAN_ERROR_BLOCK()];
+    
     if (currentUser) {
         NSDictionary *myAttributes = [NSDictionary dictionaryWithObjectsAndKeys:currentUser.name, @"name", currentUser.facebookId, @"id", nil];
         

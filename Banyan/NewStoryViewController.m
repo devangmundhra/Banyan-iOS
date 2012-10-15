@@ -118,13 +118,13 @@ typedef enum {
     }
     return self;
 }
-*/
+
 - (void)loadView
 {
     [super loadView];
     NSLog(@"Loading view");
 }
-
+*/
 - (NSString *) storyTitle
 {
     return self.storyTitleTextField.text;
@@ -336,12 +336,6 @@ typedef enum {
 
 - (NSDictionary *)viewersInvited
 {
-    if (lroundf(self.viewerSlider.value) == StoryPrivacySegmentIndexLimited) {
-        // TO-DO: Change this. This will not update as the user updates.
-        // Needs to be done in the server
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [self.invitedToViewList setArray:[defaults objectForKey:BNUserDefaultsFacebookFriends]];
-    }
     User *currentUser = [User currentUser];
     if (currentUser) {
         NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
