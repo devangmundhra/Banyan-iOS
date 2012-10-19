@@ -25,11 +25,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *likesLabel;
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 
-@property (weak, nonatomic) IBOutlet UIView *actionView;
-@property (weak, nonatomic) IBOutlet UIButton *likeButton;
-@property (weak, nonatomic) IBOutlet UIButton *followButton;
-@property (weak, nonatomic) IBOutlet UIButton *shareButton;
-
 @property (weak, nonatomic) IBOutlet UILabel *locationLabel;
 
 @property (weak, nonatomic) UserManagementModule *userManagementModule;
@@ -48,10 +43,6 @@
 @synthesize viewsLabel = _viewsLabel;
 @synthesize likesLabel = _likesLabel;
 @synthesize timeLabel = _timeLabel;
-@synthesize actionView = _actionView;
-@synthesize likeButton = _likeButton;
-@synthesize followButton = _followButton;
-@synthesize shareButton = _shareButton;
 @synthesize locationLabel = _locationLabel;
 @synthesize userManagementModule = _userManagementModule;
 @synthesize scene = _scene;
@@ -101,14 +92,11 @@
         [self.imageView cancelImageRequestOperation];
         [self.imageView setImageWithURL:nil];
     }
-    
-    self.shareButton.hidden = YES;
-    
+
     self.sceneTextView.backgroundColor = [UIColor clearColor];
     self.storyTitleLabel.backgroundColor = [UIColor clearColor];
     self.contentView.backgroundColor = [UIColor clearColor];
     self.infoView.backgroundColor = [UIColor clearColor];
-    self.actionView.backgroundColor = [UIColor clearColor];
     
     self.sceneTextView.text = self.scene.text;
     self.storyTitleLabel.text = self.scene.story.title;
@@ -142,12 +130,10 @@
     
     if ([self.delegate readSceneControllerEditMode]) {
         self.storyTitleLabel.alpha = 0;
-        self.actionView.alpha = 1;
         self.infoView.alpha = 1;
     }
     else {
         self.storyTitleLabel.alpha = 1;
-        self.actionView.alpha = 0;
         self.infoView.alpha = 0;
     }
     
@@ -241,13 +227,13 @@
     else
         [self refreshSceneView];
     
-    if ([self.userManagementModule isUserSignedIntoApp]) {
-        // User signed in
-        self.actionView.hidden = NO;
-    } else {
-        // User not signed in
-        self.actionView.hidden = YES;
-    }
+//    if ([self.userManagementModule isUserSignedIntoApp]) {
+//        // User signed in
+//        self.actionView.hidden = NO;
+//    } else {
+//        // User not signed in
+//        self.actionView.hidden = YES;
+//    }
 }
 
 - (void)viewDidUnload
@@ -260,16 +246,12 @@
     [self setContentView:nil];
     [self setInfoView:nil];
     [self setUserManagementModule:nil];
-    [self setActionView:nil];
     [self setImageView:nil];
     [self setSceneTextView:nil];
     [self setStoryTitleLabel:nil];
     [self setViewsLabel:nil];
     [self setLikesLabel:nil];
     [self setTimeLabel:nil];
-    [self setLikeButton:nil];
-    [self setFollowButton:nil];
-    [self setShareButton:nil];
     [self setContributorsButton:nil];
     self.locationManager.delegate = nil;
     [self setLocationManager:nil];
@@ -324,24 +306,25 @@
 
 - (void)toggleSceneLikeButtonLabel
 {
-    if (self.scene.liked)
-        [self.likeButton setTitle:@"Liked" forState:UIControlStateNormal];
+    if (self.scene.liked) {
+        [(UIBarButtonItem *)[self.navigationController.toolbar.items objectAtIndex:0] setTitle:@"Unlike"];
+    }
     else {
-        [self.likeButton setTitle:@"Like" forState:UIControlStateNormal];
+        [(UIBarButtonItem *)[self.navigationController.toolbar.items objectAtIndex:0] setTitle:@"Like"];
     }
     self.likesLabel.text = [NSString stringWithFormat:@"%u likes", [self.scene.numberOfLikes unsignedIntValue]];
 }
 
 - (void)toggleSceneFollowButtonLabel
 {
-    if (self.scene.favourite)
-        [self.followButton setTitle:@"Following" forState:UIControlStateNormal];
-    else {
-        [self.followButton setTitle:@"Follow" forState:UIControlStateNormal];
-    }
+//    if (self.scene.favourite)
+//        [self.followButton setTitle:@"Following" forState:UIControlStateNormal];
+//    else {
+//        [self.followButton setTitle:@"Follow" forState:UIControlStateNormal];
+//    }
 }
 
-- (IBAction)like:(UIButton *)sender 
+- (IBAction)like:(UIBarButtonItem *)sender
 {
     NSLog(@"Liked!");
     if (self.scene.previousScene == nil) {
@@ -353,7 +336,8 @@
     [TestFlight passCheckpoint:@"Like scene"];
 }
 
-- (IBAction)follow:(UIButton *)sender
+
+- (IBAction)follow:(UIBarButtonItem *)sender
 {
     NSLog(@"Following!");
     if (self.scene.previousScene == nil) {
@@ -366,7 +350,7 @@
     [TestFlight passCheckpoint:@"Follow scene"];
 }
 
-- (IBAction)share:(id)sender 
+- (IBAction)share:(UIBarButtonItem *)sender 
 {    
     if (!self.scene.story.initialized) {
         NSLog(@"%s Can't share yet as story with title %@ is not initialized", __PRETTY_FUNCTION__, self.scene.story.title);
@@ -419,24 +403,24 @@
     [UIView setAnimationDuration:0.3];
     self.storyTitleLabel.alpha = [self.delegate readSceneControllerEditMode] ? 0 : 1;
     self.infoView.alpha = [self.delegate readSceneControllerEditMode] ? 1 : 0;
-    self.actionView.alpha = [self.delegate readSceneControllerEditMode] ? 1 : 0;
     [UIView commitAnimations];
     
     [[UIApplication sharedApplication] setStatusBarHidden:![self.delegate readSceneControllerEditMode] 
                                             withAnimation:UIStatusBarAnimationNone];
     [self.navigationController setNavigationBarHidden:![self.delegate readSceneControllerEditMode] animated:YES];
+    [self.navigationController setToolbarHidden:![self.delegate readSceneControllerEditMode] animated:YES];
 }
 
-#pragma mark UIGestureRecognizerDelegate
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
-{
-    if ([touch.view isKindOfClass:[UIButton class]]) {
-        return NO;
-    }
-    else {
-        return YES;
-    }
-}
+//#pragma mark UIGestureRecognizerDelegate
+//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+//{
+//    if ([touch.view isKindOfClass:[UIButton class]]) {
+//        return NO;
+//    }
+//    else {
+//        return YES;
+//    }
+//}
 
 #pragma mark ModifySceneViewControllerDelegate
 - (void) modifySceneViewController:(ModifySceneViewController *)controller

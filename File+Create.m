@@ -7,6 +7,8 @@
 //
 
 #import "File+Create.h"
+#import "UIImage+ResizeAdditions.h"
+
 @implementation File (Create)
 
 + (void) uploadFileForLocalURL:(NSString *)url
@@ -24,9 +26,9 @@
         // For now, compress the image before sending.
         // When PUT API is done, compress on the server
         // PUT_API_TODO
-//        image = [UIImage imageWithImage:image scaledToSizeWithSameAspectRatio:[[UIScreen mainScreen] bounds].size];
-        //
-        imageData = UIImagePNGRepresentation(image);
+        UIImage *resizedImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:[[UIScreen mainScreen] bounds].size interpolationQuality:kCGInterpolationHigh];
+
+        imageData = UIImagePNGRepresentation(resizedImage);
         imageFile = [PFFile fileWithData:imageData];
         
         [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {

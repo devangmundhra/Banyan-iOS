@@ -14,9 +14,12 @@
 
 @interface ScenesViewController ()
 
-@property (strong, nonatomic) UIBarButtonItem *addSceneButton;
-@property (strong, nonatomic) UIBarButtonItem *editSceneButton;
-@property (strong, nonatomic) UIBarButtonItem *hideTextButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *addSceneButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *editSceneButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *hideTextButton;
+
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *likeButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *shareButton;
 
 @property (weak, nonatomic) UserManagementModule *userManagementModule;
 
@@ -31,6 +34,8 @@
 @synthesize addSceneButton = _addSceneButton;
 @synthesize editSceneButton = _editSceneButton;
 @synthesize hideTextButton = _hideTextButton;
+@synthesize likeButton = _likeButton;
+@synthesize shareButton = _shareButton;
 
 - (UserManagementModule *)userManagementModule
 {
@@ -76,8 +81,19 @@
     // Create an 'Add Scene' Button
     self.addSceneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:nil action:nil];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
-    [[self.navigationController navigationBar] setTranslucent:YES];
+    [[self.navigationController navigationBar] setTranslucent:YES];    
     // END: NAVIGATION BAR SETTINGS
+    
+    // START: TOOLBAR SETTINGS
+//    UILabel *likeLabel = [[UILabel alloc] init];
+//    likeLabel.text = @"Like";
+//    self.likeButton = [[UIBarButtonItem alloc] initWithCustomView:likeLabel];
+    self.likeButton = [[UIBarButtonItem alloc] initWithTitle:@"Like" style:UIBarButtonItemStyleBordered target:nil action:nil];
+    self.shareButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:nil action:nil];
+    [self.navigationController setToolbarHidden:YES animated:YES];
+    [[self.navigationController toolbar] setTranslucent:YES];
+    
+    // END: TOOLBAR SETTINGS
     
     self.readSceneControllerEditMode = NO;
     self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStylePageCurl navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
@@ -131,6 +147,11 @@
         // "Add Scene' Button
         [rightSideButtons addObject:self.addSceneButton];
         self.navigationItem.rightBarButtonItems = rightSideButtons;
+        
+        UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+        
+        NSArray *toolbarButtons = [NSArray arrayWithObjects:self.likeButton, flexibleSpace, self.shareButton, nil];
+        self.toolbarItems = toolbarButtons;
     } else {
         // User not signed in OR User can not contribute
 
@@ -149,6 +170,8 @@
     self.editSceneButton = nil;
     self.hideTextButton = nil;
     self.pageViewController = nil;
+    [self setLikeButton:nil];
+    [self setShareButton:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -249,9 +272,14 @@
 -(void) setNavBarButtonsWithTargetActionsFromReadSceneViewController:(ReadSceneViewController *)readSceneViewController
 {
     self.addSceneButton.target = self.editSceneButton.target = self.hideTextButton.target = readSceneViewController;
+    self.likeButton.target = self.shareButton.target = readSceneViewController;
+    
     self.addSceneButton.action = @selector(addScene:);
     self.editSceneButton.action = @selector(editScene:);
     self.hideTextButton.action = @selector(toggleSceneTextDisplay:);
+    
+    self.likeButton.action = @selector(like:);
+    self.shareButton.action = @selector(share:);
 }
 #pragma mark ReadSceneViewControllerDelegate
 - (void)doneWithReadSceneViewController:(ReadSceneViewController *)readSceneViewController
@@ -283,16 +311,16 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark UIGestureRecognizerDelegate
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
-{
-    if ([touch.view isKindOfClass:[UIButton class]]) {
-        return NO;
-    }
-    else {
-        return YES;
-    }
-}
+//#pragma mark UIGestureRecognizerDelegate
+//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+//{
+//    if ([touch.view isKindOfClass:[UIButton class]]) {
+//        return NO;
+//    }
+//    else {
+//        return YES;
+//    }
+//}
 
 #pragma Memory Management
 - (void)didReceiveMemoryWarning

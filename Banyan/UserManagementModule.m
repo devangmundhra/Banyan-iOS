@@ -133,7 +133,6 @@
             [self.owningViewController performSelector:@selector(refreshView)];
         }
     }];
-    // View refreshed after login notification sent    
 }
 
 - (void)logInViewControllerDidCancelLogIn:(UserLoginViewController *)logInController

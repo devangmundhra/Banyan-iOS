@@ -27,9 +27,8 @@
 @property (weak, nonatomic) IBOutlet UINavigationBar *navigationBar;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
-@property (weak, nonatomic) IBOutlet UIButton *modifyImageButton;
-@property (weak, nonatomic) IBOutlet UIButton *deleteSceneButton;
-@property (weak, nonatomic) IBOutlet UIToolbar *keyboardToolbar;
+@property (weak, nonatomic) IBOutlet UIToolbar *actionToolbar;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *dismissKeyboardButton;
 @property (weak, nonatomic) IBOutlet UILabel *locationLabel;
 
 @property (strong, nonatomic) NSString *localImageURL;
@@ -47,7 +46,7 @@
 @implementation ModifySceneViewController
 
 #define MAX_CHAR_IN_SCENE 160
-#define MEM_WARNING_USER_DEFAULTS_TEXT_FIELD @"ModufySceneViewControllerText"
+#define MEM_WARNING_USER_DEFAULTS_TEXT_FIELD @"ModifySceneViewControllerText"
 
 @synthesize contentView = _contentView;
 @synthesize imageView = _imageView;
@@ -55,9 +54,7 @@
 @synthesize navigationBar = _navigationBar;
 @synthesize cancelButton = _cancelButton;
 @synthesize doneButton = _doneButton;
-@synthesize modifyImageButton = _modifyImageButton;
-@synthesize deleteSceneButton = _deleteSceneButton;
-@synthesize keyboardToolbar = _keyboardToolbar;
+@synthesize actionToolbar = _actionToolbar;
 @synthesize scene = _scene;
 @synthesize delegate = _delegate;
 @synthesize keyboardIsShown = _keyboardIsShown;
@@ -117,7 +114,6 @@
     if (self.editMode == add)
     {
         self.navigationBar.topItem.title = @"Add Scene";
-        self.deleteSceneButton.hidden = YES;
     }
     else if (self.editMode == edit)
     {
@@ -142,7 +138,6 @@
             [self.imageView setImageWithURL:nil];
         }
         self.sceneTextView.text = self.scene.text;
-        self.deleteSceneButton.hidden = NO;
         self.navigationBar.topItem.title = @"Edit";
     }
     
@@ -162,18 +157,12 @@
     
     [self registerForKeyboardNotifications];
     
-    if (self.scene.previousScene == nil)
-    {
-        [self.deleteSceneButton setTitle:@"Delete Story" forState:UIControlStateNormal];
-    } else {
-        [self.deleteSceneButton setTitle:@"Delete Scene" forState:UIControlStateNormal];
-    }
-    
-    CGRect keyboardToolbarFrame = self.keyboardToolbar.frame;
-    CGRect screenRect = [[UIScreen mainScreen] bounds];
-    keyboardToolbarFrame.origin.y = screenRect.size.height;
-	self.keyboardToolbar.frame = keyboardToolbarFrame;
+    self.dismissKeyboardButton = [[UIBarButtonItem alloc] initWithTitle:@"Dismiss Keyboard"
+                                                                  style:UIBarButtonItemStyleBordered
+                                                                 target:self
+                                                                 action:@selector(dismissKeyboard:)];
     self.navigationBar.translucent = YES;
+    self.actionToolbar.translucent = YES;
 }
 
 - (void)viewDidUnload
@@ -183,14 +172,13 @@
     [self setSceneTextView:nil];
     [self setCancelButton:nil];
     [self setDoneButton:nil];
-    [self setModifyImageButton:nil];
-    [self setDeleteSceneButton:nil];
-    [self setKeyboardToolbar:nil];
+    [self setActionToolbar:nil];
     [self setContentView:nil];
     [self setLocalImageURL:nil];
     [self setLocationLabel:nil];
     self.locationManager.delegate = nil;
     [self setLocationManager:nil];
+    [self setDismissKeyboardButton:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -271,8 +259,7 @@
         NSLog(@"ModifySceneViewController_No valid edit mode");
     }
 }
-
-- (IBAction)deleteScene:(UIButton *)sender 
+- (IBAction)deleteScene:(UIBarButtonItem *)sender
 {
     if (self.scene.previousScene == nil)
     {
@@ -363,7 +350,7 @@
 //    cameraUI.allowsEditing = YES;
     cameraUI.showsCameraControls = YES;
     cameraUI.delegate = self;
-    
+
     [self presentViewController:cameraUI animated:YES completion:nil];
     
     return YES;
@@ -404,7 +391,11 @@
 - (void)imagePickerController:(UIImagePickerController *)picker 
 didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:^{
+        // If the image view controller is completed successfully, we don't really need to keep this saved
+        // as a presented screen will not be affected by mem warning.
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
+    }];
     
     UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
     self.localImageURL = [(NSURL *)[info objectForKey:@"UIImagePickerControllerReferenceURL"] absoluteString];
@@ -463,7 +454,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 - (void)registerForKeyboardNotifications
 {
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShown:)
+                                             selector:@selector(keyboardWillShow:)
                                                  name:UIKeyboardWillShowNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -477,7 +468,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     
     [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardWillShowNotification 
+                                                    name:UIKeyboardWillShowNotification
                                                   object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self
@@ -488,7 +479,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 }
 
 // Called when the UIKeyboardDidShowNotification is sent.
-- (void)keyboardWillShown:(NSNotification*)aNotification
+- (void)keyboardWillShow:(NSNotification*)aNotification
 {
     if (self.keyboardIsShown)
         return;
@@ -508,22 +499,23 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     self.contentView.frame = viewFrame;
     
     CGRect screenRect = [[UIScreen mainScreen] bounds];
-    CGRect keyboardToolbarFrame = self.keyboardToolbar.frame;
-	keyboardToolbarFrame.origin.y = screenRect.size.height - keyboardSize.height 
-                                    - keyboardToolbarFrame.size.height
+    CGRect actionToolbarFrame = self.actionToolbar.frame;
+	actionToolbarFrame.origin.y = screenRect.size.height - keyboardSize.height
+                                    - actionToolbarFrame.size.height
                                     + self.contentViewDispositionOnKeyboard;
-    self.keyboardToolbar.frame = keyboardToolbarFrame;
-    
+    self.actionToolbar.frame = actionToolbarFrame;
     [UIView commitAnimations];
-    self.keyboardIsShown = YES; 
+    NSMutableArray *items = [self.actionToolbar.items mutableCopy];
+    if ([items indexOfObject:self.dismissKeyboardButton] == NSNotFound) {
+        [items insertObject:self.dismissKeyboardButton atIndex:items.count-1];
+    }
+    [self.actionToolbar setItems:items animated:YES];
+    self.keyboardIsShown = YES;
 }
 
 // Called when the UIKeyboardWillHideNotification is sent
 - (void)keyboardWillHide:(NSNotification*)aNotification
-{    
-    
-    //    NSDictionary* info = [aNotification userInfo];
-    //    CGSize keyboardSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+{
     if(!self.keyboardIsShown)
         return;
     
@@ -536,12 +528,18 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     viewFrame.origin.y += self.contentViewDispositionOnKeyboard;
     self.contentView.frame = viewFrame;
     
-    CGRect keyboardToolbarFrame = self.keyboardToolbar.frame;
+    CGRect actionToolbarFrame = self.actionToolbar.frame;
     CGRect screenRect = [[UIScreen mainScreen] bounds];
-    keyboardToolbarFrame.origin.y = screenRect.size.height + self.contentViewDispositionOnKeyboard;
-	self.keyboardToolbar.frame = keyboardToolbarFrame;
-    
+    actionToolbarFrame.origin.y = screenRect.size.height - actionToolbarFrame.size.height;
+                                //    + self.contentViewDispositionOnKeyboard;
+	self.actionToolbar.frame = actionToolbarFrame;
+
     [UIView commitAnimations];
+    NSMutableArray *items = [self.actionToolbar.items mutableCopy];
+    if ([items indexOfObject:self.dismissKeyboardButton] != NSNotFound) {
+        [items removeObject:self.dismissKeyboardButton];
+    }
+    [self.actionToolbar setItems:items animated:YES];
     self.keyboardIsShown = NO;
     self.contentViewDispositionOnKeyboard = 0;
 }
@@ -562,19 +560,8 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 shouldChangeTextInRange:(NSRange)range 
  replacementText:(NSString *)text
 {
-//    // Any new character added is passed in as the "text" parameter
-//    if ([text isEqualToString:@"\n"]) {
-//        // Be sure to test for equality using the "isEqualToString" message
-//        [self dismissKeyboard:nil];
-//        
-//        // Return FALSE so that the final '\n' character doesn't get added
-//        return FALSE;
-//    }
-    
     NSUInteger newLength = [textView.text length] + [text length] - range.length;
     return (newLength > MAX_CHAR_IN_SCENE) ? NO : YES;
-//    // For any other character return TRUE so that the text gets added to the view
-//    return TRUE;
 }
 
 - (BOOL)checkForChanges
@@ -600,15 +587,15 @@ shouldChangeTextInRange:(NSRange)range
     }
 }
 
-#pragma mark UIGestureRecognizerDelegate
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
-{
-    if ([touch.view isDescendantOfView:self.keyboardToolbar])
-        return NO;
-    else {
-        return YES;
-    }
-}
+//#pragma mark UIGestureRecognizerDelegate
+//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+//{
+//    if ([touch.view isDescendantOfView:self.actionToolbar])
+//        return NO;
+//    else {
+//        return YES;
+//    }
+//}
 
 #pragma Memory Management
 - (void)didReceiveMemoryWarning

@@ -103,7 +103,7 @@
 
 - (void)cell:(FollowingUsersCell *)cellView didTapUserButton:(NSDictionary *)aUser {
     // Push account view controller
-//    PAPAccountViewController *accountViewController = [[PAPAccountViewController alloc] initWithStyle:UITableViewStylePlain];
+//    AccountViewController *accountViewController = [[AccountViewController alloc] initWithStyle:UITableViewStylePlain];
 //    [accountViewController setUser:aUser];
 //    [self.navigationController pushViewController:accountViewController animated:YES];
 }

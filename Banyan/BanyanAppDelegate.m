@@ -241,10 +241,20 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             
             PFUser *currentUser = [PFUser currentUser];
             NSString *facebookId = [result objectForKey:@"id"];
+            NSString *facebookFirstName = [result objectForKey:@"first_name"];
+            NSString *facebookLastName = [result objectForKey:@"last_name"];
             NSString *facebookName = [result objectForKey:@"name"];
             NSString *facebookEmail = [resultsDict objectForKey:@"email"];
             
             [currentUser setEmail:facebookEmail];
+            
+            if (facebookFirstName && facebookFirstName != 0) {
+                [currentUser setObject:facebookFirstName forKey:USER_FIRSTNAME];
+            }
+            
+            if (facebookLastName && facebookLastName != 0) {
+                [currentUser setObject:facebookLastName forKey:USER_LASTNAME];
+            }
             
             if (facebookName && facebookName != 0) {
                 [currentUser setObject:facebookName forKey:USER_NAME];

@@ -21,7 +21,7 @@
 
 @end
 
-@interface ScenesViewController : UIViewController <UIGestureRecognizerDelegate, UIPageViewControllerDataSource, UIPageViewControllerDelegate, ReadSceneViewControllerDelegate>
+@interface ScenesViewController : UIViewController </*UIGestureRecognizerDelegate, */UIPageViewControllerDataSource, UIPageViewControllerDelegate, ReadSceneViewControllerDelegate>
 
 @property (nonatomic, strong) Story *story;
 @property (nonatomic, strong) UIPageViewController *pageViewController;
