@@ -587,15 +587,15 @@ shouldChangeTextInRange:(NSRange)range
     }
 }
 
-//#pragma mark UIGestureRecognizerDelegate
-//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
-//{
-//    if ([touch.view isDescendantOfView:self.actionToolbar])
-//        return NO;
-//    else {
-//        return YES;
-//    }
-//}
+#pragma mark UIGestureRecognizerDelegate
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    if ([touch.view isDescendantOfView:self.actionToolbar])
+        return NO;
+    else {
+        return YES;
+    }
+}
 
 #pragma Memory Management
 - (void)didReceiveMemoryWarning
