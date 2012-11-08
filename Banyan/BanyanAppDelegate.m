@@ -43,6 +43,8 @@
     
     [TestFlight takeOff:TESTFLIGHT_BANYAN_TEAM_TOKEN];
     
+    [[AFParseAPIClient sharedClient] isReachable];
+    
     // Create a location manager instance to determine if location services are enabled. This manager instance will be
     // immediately released afterwards.
     if ([CLLocationManager locationServicesEnabled] == NO) {
@@ -265,7 +267,12 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             if (currentUser.isNew) {
                 [currentUser setUsername:facebookEmail];
             }
-            [currentUser saveEventually];
+            [currentUser saveEventually:^(BOOL succeeded, NSError *error) {
+                if (!succeeded) {
+                    NSLog(@"%s User could not be updated because of error %@. Logging out", __PRETTY_FUNCTION__, error);
+                    [self logout];
+                }
+            }];
         }
         
         [PF_FBRequestConnection startForMyFriendsWithCompletionHandler:^(PF_FBRequestConnection *connection, id result, NSError *error) {
@@ -345,6 +352,11 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
                                                                  state:state
                                                                  error:error];
                                          }];
+}
+
+- (void) logout
+{
+    [self.userManagementModule logout];
 }
 
 @end

@@ -159,7 +159,9 @@
     NSError *error = nil;
     NSURLResponse *response = nil;
     
-    assert(currentUser);
+    if (!currentUser) {
+        NSLog(@"%s No current user", __PRETTY_FUNCTION__);
+    }
     NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:@"json", @"format", self.storyId, @"object_id", currentUser.userId, @"user_id", nil];
     NSMutableURLRequest *request = [[AFBanyanAPIClient sharedClient] requestWithMethod:@"GET" path:BANYAN_API_GET_PERMISSIONS(@"Story") parameters:parameters];
     NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];

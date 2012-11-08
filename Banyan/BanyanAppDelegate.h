@@ -37,5 +37,6 @@
 - (void)facebookRequest:(PF_FBRequestConnection *)connection didFailWithError:(NSError *)error;
 - (void)facebookRequest:(PF_FBRequestConnection *)connection didLoad:(id)result;
 - (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI;;
+- (void) logout;
 
 @end

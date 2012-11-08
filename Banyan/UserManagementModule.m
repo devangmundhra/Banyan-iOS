@@ -112,6 +112,7 @@
     [PFUser logOut];
     [[NSNotificationCenter defaultCenter] postNotificationName:BNUserLogOutNotification
                                                         object:self];
+    [self addLoginTabbar];
     return;
 }
 
@@ -129,6 +130,7 @@
     [PFPush subscribeToChannelInBackground:[[PFUser currentUser] objectId]];
     
     [self.owningViewController.presentedViewController dismissViewControllerAnimated:YES completion:^{
+        [self removeLoginTabbar];
         if ([self.owningViewController respondsToSelector:@selector(refreshView)]) {
             [self.owningViewController performSelector:@selector(refreshView)];
         }
