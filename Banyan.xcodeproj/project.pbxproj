@@ -24,6 +24,7 @@
 		5110A7BF15B3EB0A00D4FBD1 /* BNOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5110A7BE15B3EB0A00D4FBD1 /* BNOperation.m */; };
 		511E708B161A9756009AAD25 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708A161A9756009AAD25 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		511E708E161A977F009AAD25 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
+		5157CD031650902900C22CCE /* BanyanConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD021650902900C22CCE /* BanyanConnection.m */; };
 		5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B615E75B420072749C /* buttonFacebook.png */; };
 		5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B715E75B420072749C /* buttonFacebook@2x.png */; };
 		5166B1BC15E75B420072749C /* buttonFacebookSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B815E75B420072749C /* buttonFacebookSelected.png */; };
@@ -158,6 +159,8 @@
 		5110A7BE15B3EB0A00D4FBD1 /* BNOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNOperation.m; path = Banyan/BNOperation.m; sourceTree = "<group>"; };
 		511E708A161A9756009AAD25 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		5157CD011650902900C22CCE /* BanyanConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BanyanConnection.h; path = Banyan/BanyanConnection.h; sourceTree = "<group>"; };
+		5157CD021650902900C22CCE /* BanyanConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BanyanConnection.m; path = Banyan/BanyanConnection.m; sourceTree = "<group>"; };
 		5166B1B615E75B420072749C /* buttonFacebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebook.png; sourceTree = "<group>"; };
 		5166B1B715E75B420072749C /* buttonFacebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFacebook@2x.png"; sourceTree = "<group>"; };
 		5166B1B815E75B420072749C /* buttonFacebookSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebookSelected.png; sourceTree = "<group>"; };
@@ -572,6 +575,8 @@
 			children = (
 				5189B2EA15B395F300562DD0 /* ParseConnection.h */,
 				5189B2EB15B395F300562DD0 /* ParseConnection.m */,
+				5157CD011650902900C22CCE /* BanyanConnection.h */,
+				5157CD021650902900C22CCE /* BanyanConnection.m */,
 				5189B31315B395F300562DD0 /* StoryDocuments.h */,
 				5189B31415B395F300562DD0 /* StoryDocuments.m */,
 			);
@@ -992,6 +997,7 @@
 				510787E8163A377F0042B436 /* BNOperationDependency.m in Sources */,
 				510787E9163A377F0042B436 /* BNOperationObject.m in Sources */,
 				510787EA163A377F0042B436 /* BNOperationQueue.m in Sources */,
+				5157CD031650902900C22CCE /* BanyanConnection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

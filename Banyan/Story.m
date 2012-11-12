@@ -14,6 +14,7 @@
 #import "AFBanyanAPIClient.h"
 #import "AFJSONRequestOperation.h"
 #import "AFJSONUtilities.h"
+#import "Story+Stats.h"
 
 @implementation Story
 
@@ -139,18 +140,45 @@
     return attributes;
 }
 
+- (void) fillAttributesFromDictionary:(NSDictionary *)dict
+{
+    NSDictionary *storyDict = [NSDictionary dictionaryWithDictionary:[dict objectForKey:@"object"]];
+    // Fill in the story detials
+    self.title = REPLACE_NULL_WITH_NIL([storyDict objectForKey:STORY_TITLE]);
+    self.readAccess = [storyDict objectForKey:STORY_READ_ACCESS];
+    self.writeAccess = [storyDict objectForKey:STORY_WRITE_ACCESS];
+    self.storyId = [dict objectForKey:@"objectId"];
+    self.dateCreated = [dict objectForKey:@"createdAt"];
+    self.dateModified = [dict objectForKey:@"updatedAt"];
+    self.author = [User getUserForPfUser:[PFQuery getUserObjectWithId:REPLACE_NULL_WITH_NIL([storyDict objectForKey:STORY_AUTHOR])]];
+    [self updateStoryStats];
+    Scene *scene = [[Scene alloc] init];
+    self.startingScene = scene;
+    self.startingScene.sceneId = REPLACE_NULL_WITH_NIL([storyDict objectForKey:STORY_STARTING_SCENE]);
+    
+    if ([[storyDict objectForKey:STORY_LOCATION_ENABLED] isEqualToNumber:[NSNumber numberWithBool:YES]])
+    {
+        self.isLocationEnabled = YES;
+        double latitude = [REPLACE_NULL_WITH_NIL([storyDict objectForKey:STORY_LATITUDE]) doubleValue];
+        double longitude = [REPLACE_NULL_WITH_NIL([storyDict objectForKey:STORY_LONGITUDE]) doubleValue];
+        self.location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+        self.geocodedLocation = REPLACE_NULL_WITH_NIL([storyDict objectForKey:STORY_GEOCODEDLOCATION]);
+    } else
+    {
+        self.isLocationEnabled = NO;
+    }
+    self.initialized = YES;
+    
+    self.imageURL = REPLACE_NULL_WITH_NIL([storyDict objectForKey:STORY_IMAGE_URL]);
+    
+    self.canContribute = [[dict objectForKey:@"write"] boolValue];
+    self.canView = [[dict objectForKey:@"read"] boolValue];
+    self.isInvited = [[dict objectForKey:@"invited"] boolValue];
+}
+
 # pragma mark Permissions management
 - (void) resetPermission
-{
-    NSString *writeScope = [self.writeAccess objectForKey:kBNStoryPrivacyScope];
-    NSString *readScope = [self.readAccess objectForKey:kBNStoryPrivacyScope];
-    
-    NSDictionary *writeInvitee = [self.writeAccess objectForKey:kBNStoryPrivacyInviteeList];
-    NSDictionary *readInvitee = [self.readAccess objectForKey:kBNStoryPrivacyInviteeList];
-    
-    NSArray *writeInvitedFacebookFriends = [writeInvitee objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
-    NSArray *readInvitedFacebookFriends = [readInvitee objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
-    
+{    
     self.isInvited = NO;
     self.canContribute = NO;
     self.canView = NO;
@@ -170,21 +198,10 @@
         NSLog(@"operation: %@, response: %@, error: %@", BANYAN_API_GET_PERMISSIONS(@"Story"), response, error);
     } else {
         id responseObject = AFJSONDecode(data, &error);
-        NSDictionary *results = [(NSArray *)responseObject lastObject];
-        if ([[results objectForKey:@"write"] boolValue]) {
-            self.canContribute = YES;
-            // User is invited if the story was not actually open for everybody
-            if (![writeScope isEqualToString:kBNStoryPrivacyScopePublic]) {
-                self.isInvited = YES;
-            }
-        }
-        if ([[results objectForKey:@"read"] boolValue]) {
-            self.canView = YES;
-            // User is invited if the story was not actually open for everybody
-            if (![readScope isEqualToString:kBNStoryPrivacyScopePublic]) {
-                self.isInvited = YES;
-            }
-        }
+        NSDictionary *results = (NSDictionary *)responseObject;
+        self.canContribute = [[results objectForKey:@"write"] boolValue];
+        self.canView = [[results objectForKey:@"read"] boolValue];
+        self.isInvited = [[results objectForKey:@"invited"] boolValue];
     }
     
     return;
@@ -192,75 +209,14 @@
     [[AFBanyanAPIClient sharedClient] getPath:BANYAN_API_GET_PERMISSIONS(@"Story")
                                    parameters:parameters
                                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                          NSDictionary *results = [(NSArray *)responseObject lastObject];
-                                          if ([[results objectForKey:@"write"] boolValue]) {
-                                              self.canContribute = YES;
-                                              // User is invited if the story was not actually open for everybody
-                                              if (![writeScope isEqualToString:kBNStoryPrivacyScopePublic]) {
-                                                  self.isInvited = YES;
-                                              }
-                                          }
-                                          if ([[results objectForKey:@"read"] boolValue]) {
-                                              self.canView = YES;
-                                              // User is invited if the story was not actually open for everybody
-                                              if (![readScope isEqualToString:kBNStoryPrivacyScopePublic]) {
-                                                  self.isInvited = YES;
-                                              }
-                                          }
+                                          NSDictionary *results = (NSDictionary *)responseObject;
+                                          self.canContribute = [[results objectForKey:@"write"] boolValue];
+                                          self.canView = [[results objectForKey:@"read"] boolValue];
+                                          self.isInvited = [[results objectForKey:@"invited"] boolValue];
                                       }
                                       failure:AF_BANYAN_ERROR_BLOCK()];
     
-    if (currentUser) {
-        NSDictionary *myAttributes = [NSDictionary dictionaryWithObjectsAndKeys:currentUser.name, @"name", currentUser.facebookId, @"id", nil];
-        
-        if ([writeScope isEqualToString:kBNStoryPrivacyScopePublic]) {
-            // Public contributors
-            self.canContribute = YES;
-        } else {
-            self.canContribute = NO;
-            for (NSDictionary *contributor in writeInvitedFacebookFriends) {
-                if ([contributor isKindOfClass:[NSDictionary class]]
-                    && [[contributor objectForKey:@"id"] isEqualToString:[myAttributes objectForKey:@"id"]]) {
-                    self.canContribute = YES;
-                    self.canView = YES;
-                    self.isInvited =YES;
-                    break;
-                }
-            }
-        }
-        
-        if ([readScope isEqualToString:kBNStoryPrivacyScopePublic]) {
-            // Public viewers
-            self.canView = YES;
-        } else if ([readScope isEqualToString:kBNStoryPrivacyScopeLimited]) {
-            // Limited Scope. Only Facebook friends for now
-            self.canView = NO;
-            for (NSDictionary *viewer in readInvitedFacebookFriends) {
-                if ([viewer isKindOfClass:[NSDictionary class]]
-                    && [[viewer objectForKey:@"id"] isEqualToString:[myAttributes objectForKey:@"id"]]) {
-                    self.canView = YES;
-                    break;
-                }
-            }
-        } else {
-            // Invited viewers            
-            self.canView = NO;
-            for (NSDictionary *viewer in readInvitedFacebookFriends) {
-                if ([viewer isKindOfClass:[NSDictionary class]]
-                    && [[viewer objectForKey:@"id"] isEqualToString:[myAttributes objectForKey:@"id"]]) {
-                    self.canView = YES;
-                    self.isInvited = YES;
-                    break;
-                }
-            }
-        }
-    }
-    else {
-        // Can't find user info!
-        NSLog(@"%s Can't find user info", __PRETTY_FUNCTION__);
-        self.canView = [readScope isEqualToString:kBNStoryPrivacyScopePublic];
-        self.canContribute = NO;
-    }
+    return;
 }
 
 - (NSString *)description

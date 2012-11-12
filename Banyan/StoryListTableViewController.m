@@ -96,7 +96,7 @@ typedef enum {
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(filterStories:)
-                                                 name:BanyanDataSourceUpdatedNotification
+                                                 name:BNDataSourceUpdatedNotification
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -455,7 +455,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 // called when the date shown needs to be updated, optional
 - (NSDate *)pullToRefreshViewLastUpdated:(PullToRefreshView *)view
 {
-    return [[NSUserDefaults standardUserDefaults] objectForKey:USER_DEFAULTS_LAST_SUCCESSFUL_UPDATE_TIME];
+    return [[NSUserDefaults standardUserDefaults] objectForKey:BNUserDefaultsLastSuccessfulStoryUpdateTime];
 }
 
 #pragma Memory Management

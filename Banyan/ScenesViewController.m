@@ -59,7 +59,7 @@
 
 - (void) userLoginStatusChanged
 {
-    [ParseConnection resetPermissionsForStory:self.story];
+    [self.story resetPermission];
     [self refreshView];
 }
 

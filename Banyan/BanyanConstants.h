@@ -13,11 +13,14 @@ extern NSString *const BNUserFollowingChangedNotification;
 extern NSString *const BNUserLogInNotification;
 extern NSString *const BNUserLogOutNotification;
 extern NSString *const BNFBSessionStateChangedNotification;
+extern NSString *const BNDataSourceUpdatedNotification;
+
 
 #pragma mark - NSUserDefaults
 extern NSString *const BNUserDefaultsFacebookFriends;
 extern NSString *const BNUserDefaultsUserInfo;
 extern NSString *const BNUserDefaultsBanyanUsersFacebookFriends;
+extern NSString *const BNUserDefaultsLastSuccessfulStoryUpdateTime;
 
 #pragma mark - PFObject Story Class
 // Class key

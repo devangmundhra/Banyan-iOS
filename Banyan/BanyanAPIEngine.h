@@ -13,8 +13,6 @@
 @interface BanyanAPIEngine : MKNetworkEngine
 
 #define BANYAN_API_GET_OBJECT_LINK_URL() @"link/"
-#define BANYAN_API_GET_PERMISSIONS(__class__) [NSString stringWithFormat:@"permissions/%@", __class__]
-
 
 #define BANYAN_ERROR_BLOCK() ^(NSError *error) {\
 NSLog(@"%@\t%@\t%@\t%@", [error localizedDescription], [error localizedFailureReason], \

@@ -9,6 +9,7 @@
 #import "BanyanAppDelegate.h"
 #import "User_Defines.h"
 #import "AFParseAPIClient.h"
+#import "AFBanyanAPIClient.h"
 #import "StoryListTableViewController.h"
 
 @implementation BanyanAppDelegate
@@ -44,6 +45,7 @@
     [TestFlight takeOff:TESTFLIGHT_BANYAN_TEAM_TOKEN];
     
     [[AFParseAPIClient sharedClient] isReachable];
+    [[AFBanyanAPIClient sharedClient] isReachable];
     
     // Create a location manager instance to determine if location services are enabled. This manager instance will be
     // immediately released afterwards.

@@ -223,31 +223,4 @@
                                       failure:BN_ERROR_BLOCK_OPERATION_INCOMPLETE()];
 }
 
-# pragma mark PF_FBDialogDelegate
-
-- (void)dialog:(PF_FBDialog *)dialog didFailWithError:(NSError *)error
-{
-    NSLog(@"%s FB dialog", __PRETTY_FUNCTION__);
-}
-
-- (void) dialogCompleteWithUrl:(NSURL *)url
-{
-    NSLog(@"%s FB dialog", __PRETTY_FUNCTION__);    
-}
-
-- (void)dialogDidComplete:(PF_FBDialog *)dialog
-{
-    NSLog(@"%s FB dialog", __PRETTY_FUNCTION__);
-}
-
-- (void)dialogDidNotComplete:(PF_FBDialog *)dialog
-{
-    NSLog(@"%s FB dialog", __PRETTY_FUNCTION__);
-}
-
-- (void)dialogDidNotCompleteWithUrl:(NSURL *)url
-{
-    NSLog(@"%s FB dialog", __PRETTY_FUNCTION__);
-}
-
 @end

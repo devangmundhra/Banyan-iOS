@@ -84,7 +84,7 @@
                     }
                     // Save the time of last successful update
                     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                    [defaults setObject:[NSDate date] forKey:USER_DEFAULTS_LAST_SUCCESSFUL_UPDATE_TIME];
+                    [defaults setObject:[NSDate date] forKey:BNUserDefaultsLastSuccessfulStoryUpdateTime];
                     
                     // Also add the stories that have not been initialized yet
                     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(initialized == NO)"];
@@ -211,20 +211,9 @@
 
 + (void) resetPermissionsForStories:(NSMutableArray *)stories
 {
-    NSError *error = nil;
     for (Story *story in stories)
     {
-        PFQuery *query = [PFQuery queryWithClassName:@"Story"];
-        PFObject *pfStory = [query getObjectWithId:story.storyId error:&error];
-        if (!pfStory)
-        {
-            NSLog(@"%s Error %@: Story does not exist", __PRETTY_FUNCTION__, error);
-            return;
-        }
-        
-        story.readAccess = [pfStory objectForKey:STORY_READ_ACCESS];
-        story.writeAccess = [pfStory objectForKey:STORY_WRITE_ACCESS];
-        [story resetPermission];
+        [ParseConnection resetPermissionsForStory:story];
     }
 }
 

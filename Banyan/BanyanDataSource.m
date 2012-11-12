@@ -7,10 +7,9 @@
 //
 
 #import "BanyanDataSource.h"
+#import "BanyanConnection.h"
 #import "ParseConnection.h"
 #import "UserManagementModule.h"
-
-NSString * const BanyanDataSourceUpdatedNotification = @"com.banyan.datasource.updated";
 
 @implementation BanyanDataSource
 
@@ -129,7 +128,11 @@ static NSMutableDictionary *_hashTable = nil;
 + (void) userLoginStatusChanged:(NSNotification *)notification
 {
     if ([[notification name] isEqualToString:BNUserLogOutNotification]) {
-        [ParseConnection resetPermissionsForStories:_sharedDatasource];
+        [BanyanConnection resetPermissionsForStories:_sharedDatasource];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:BNDataSourceUpdatedNotification
+                                                                object:self];
+        });
     } else if ([[notification name] isEqualToString:BNUserLogInNotification]) {
         [self loadDataSource];
     } else {
@@ -141,14 +144,14 @@ static NSMutableDictionary *_hashTable = nil;
 {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(canView == YES) OR (canContribute == YES)"];
     
-    [ParseConnection
-     loadStoriesFromParseWithBlock:^(NSMutableArray *retValue) {
+    [BanyanConnection
+     loadStoriesFromBanyanWithBlock:^(NSMutableArray *retValue) {
          [retValue filterUsingPredicate:predicate];
          NSLog(@"%s loadDataSource completed", __PRETTY_FUNCTION__);
          _sharedDatasource = retValue;
          dispatch_async(dispatch_get_main_queue(), ^{
              [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-             [[NSNotificationCenter defaultCenter] postNotificationName:BanyanDataSourceUpdatedNotification
+             [[NSNotificationCenter defaultCenter] postNotificationName:BNDataSourceUpdatedNotification
                                                                  object:self];
          });
      }];

@@ -47,6 +47,7 @@
 
 - (NSString *)description;
 - (NSMutableDictionary *)getAttributesInDictionary;
+- (void) fillAttributesFromDictionary:(NSDictionary *)dict;
 - (void) resetPermission;
 
 @end

@@ -13,10 +13,13 @@ NSString *const BNUserFollowingChangedNotification = @"io.banyan.Banyan:UserFoll
 NSString *const BNUserLogInNotification = @"io.banyan.Banyan:UserLoginNotification";
 NSString *const BNUserLogOutNotification = @"io.banyan.Banyan:UserLogoutNotification";
 NSString *const BNFBSessionStateChangedNotification = @"io.banyan.Banyan:FBSessionStateChangedNotification";
+NSString *const BNDataSourceUpdatedNotification = @"io.banyan.Banyan:DataSourceUpdated";
+
 #pragma mark - NSUserDefaults
 NSString *const BNUserDefaultsFacebookFriends = @"io.banyan.Banyan.userDefaults.facebookFriends";
 NSString *const BNUserDefaultsUserInfo = @"io.banyan.Banyan.userDefaults.userInfo";
 NSString *const BNUserDefaultsBanyanUsersFacebookFriends = @"io.banyan.Banyan.userDefaults.banyanUsersFacebookFriends";
+NSString *const BNUserDefaultsLastSuccessfulStoryUpdateTime = @"io.banyan.Banyan.userDefaults.banyanLastSuccessfulUpdatedTime";
 
 #pragma mark - PFObject Story Class
 // Class key

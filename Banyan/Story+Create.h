@@ -10,7 +10,7 @@
 #import "Scene+Create.h"
 #import "AFParseAPIClient.h"
 
-@interface Story (Create) <PF_FBDialogDelegate>
+@interface Story (Create)
 
 + (Story *)createStoryWithAttributes:(NSMutableDictionary *)attributes;
 + (void) createStoryOnServer:(Story *)story;
