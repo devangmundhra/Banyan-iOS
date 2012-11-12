@@ -177,8 +177,26 @@
 
 -(void)viewWillDisappear:(BOOL)animated
 {
-    [self.navigationController setNavigationBarHidden:![self readSceneControllerEditMode] animated:NO];
+    [[UIApplication sharedApplication] setStatusBarHidden:![self readSceneControllerEditMode]
+                                            withAnimation:UIStatusBarAnimationNone];
+    [self.navigationController setNavigationBarHidden:![self readSceneControllerEditMode] animated:YES];
+    [self.navigationController setToolbarHidden:![self readSceneControllerEditMode] animated:YES];
+    
     [super viewWillDisappear:animated];
+}
+
+# pragma mark - HUD when transitioning back
+- (void)prepareToGoToStoryList
+{
+    self.view.gestureRecognizers = nil;
+    self.readSceneControllerEditMode = YES; // So that ViewWillDisapper transitions properly
+    [self performSelector:@selector(hideHUDAndDone) withObject:self afterDelay:HUD_STAY_DELAY];
+}
+
+- (void)hideHUDAndDone
+{
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    [self doneWithReadSceneViewController:nil];
 }
 
 # pragma mark - UIPageViewControllerDataSource
@@ -196,18 +214,11 @@
         hud.mode = MBProgressHUDModeText;
         hud.labelText = @"End of story";
         hud.detailsLabelText = self.story.title;
-//        self.view.gestureRecognizers = nil;
-        [self performSelector:@selector(hideHUDAndDone) withObject:self afterDelay:HUD_STAY_DELAY];
+        [self prepareToGoToStoryList];
         return nil;
     }
     else
         return [self viewControllerAtIndex:index];
-}
-
-- (void)hideHUDAndDone
-{
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
-    [self doneWithReadSceneViewController:nil];  
 }
 
 // View controller to display after the current view controller has been turned back
@@ -221,8 +232,7 @@
         hud.mode = MBProgressHUDModeText;
         hud.labelText = @"Beginning of story";
         hud.detailsLabelText = @"Going back to story list";
-        self.view.gestureRecognizers = nil;
-        [self performSelector:@selector(hideHUDAndDone) withObject:self afterDelay:HUD_STAY_DELAY];
+        [self prepareToGoToStoryList];
         return nil;
     }
     else {
