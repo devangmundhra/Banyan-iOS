@@ -325,58 +325,6 @@
             <point key="canvasLocation" x="142" y="38"/>
         </scene>
     </scenes>
-    <classes>
-        <class className="InvitedTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/InvitedTableViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="searchBar" candidateClass="UISearchBar"/>
-                <relationship kind="outlet" name="searchDisplayController" candidateClass="UISearchDisplayController"/>
-            </relationships>
-        </class>
-        <class className="NewStoryViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NewStoryViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="dismissKeyboard:"/>
-                <relationship kind="action" name="doneNewStory:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="action" name="showLocationSwitchToggled:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="sliderChanged:" candidateClass="UISlider"/>
-                <relationship kind="action" name="storyContributors:" candidateClass="UISegmentedControl"/>
-                <relationship kind="outlet" name="addStorySubView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="contributorInvitationLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="contributorSegmentedControl" candidateClass="UISegmentedControl"/>
-                <relationship kind="outlet" name="delegate"/>
-                <relationship kind="outlet" name="inviteContributorsButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="inviteViewersButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="locationLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="scrollView" candidateClass="UIScrollView"/>
-                <relationship kind="outlet" name="showLocationSwitch" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="storyTitleTextField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="viewerSlider" candidateClass="UISlider"/>
-            </relationships>
-        </class>
-        <class className="ScenesViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ScenesViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="delegate"/>
-            </relationships>
-        </class>
-        <class className="StoryListStoryCell" superclassName="UITableViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/StoryListStoryCell.h"/>
-            <relationships>
-                <relationship kind="outlet" name="storyImageView" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="storyLocationLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="storyTitleLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="StoryListTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/StoryListTableViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="addStory" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="filterStoriesSegmentedControl" candidateClass="UISegmentedControl"/>
-                <relationship kind="outlet" name="leftButton" candidateClass="UIBarButtonItem"/>
-            </relationships>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

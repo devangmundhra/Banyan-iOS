@@ -25,6 +25,10 @@
 		511E708B161A9756009AAD25 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708A161A9756009AAD25 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		511E708E161A977F009AAD25 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
 		5157CD031650902900C22CCE /* BanyanConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD021650902900C22CCE /* BanyanConnection.m */; };
+		5157CD1716549BBC00C22CCE /* Names.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD1316549BBC00C22CCE /* Names.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		5157CD1816549BBC00C22CCE /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 5157CD1416549BBC00C22CCE /* README.markdown */; };
+		5157CD1916549BBC00C22CCE /* TITokenField.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD1616549BBC00C22CCE /* TITokenField.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		5157CD1A16549C2900C22CCE /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51AB7A051626917E00EF849A /* libTestFlight.a */; };
 		5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B615E75B420072749C /* buttonFacebook.png */; };
 		5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B715E75B420072749C /* buttonFacebook@2x.png */; };
 		5166B1BC15E75B420072749C /* buttonFacebookSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B815E75B420072749C /* buttonFacebookSelected.png */; };
@@ -103,7 +107,6 @@
 		5189B45715B3A38E00562DD0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3C415B39BD100562DD0 /* QuartzCore.framework */; };
 		518AF02E162539D300480D5A /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 518AF02D162539D300480D5A /* Parse.framework */; };
 		519AFA7215C26F5D00F68F3C /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */; };
-		51AB7A091626917E00EF849A /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51AB7A051626917E00EF849A /* libTestFlight.a */; };
 		51AB7A0A1626917E00EF849A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 51AB7A061626917E00EF849A /* README.md */; };
 		51AB7A0B1626917E00EF849A /* release_notes.md in Resources */ = {isa = PBXBuildFile; fileRef = 51AB7A071626917E00EF849A /* release_notes.md */; };
 		51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B5989D15EB31B300DF4D9D /* BanyanConstants.m */; };
@@ -161,6 +164,11 @@
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		5157CD011650902900C22CCE /* BanyanConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BanyanConnection.h; path = Banyan/BanyanConnection.h; sourceTree = "<group>"; };
 		5157CD021650902900C22CCE /* BanyanConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BanyanConnection.m; path = Banyan/BanyanConnection.m; sourceTree = "<group>"; };
+		5157CD1216549BBC00C22CCE /* Names.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Names.h; path = TITokenField/Names.h; sourceTree = "<group>"; };
+		5157CD1316549BBC00C22CCE /* Names.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Names.m; path = TITokenField/Names.m; sourceTree = "<group>"; };
+		5157CD1416549BBC00C22CCE /* README.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.markdown; path = TITokenField/README.markdown; sourceTree = "<group>"; };
+		5157CD1516549BBC00C22CCE /* TITokenField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TITokenField.h; path = TITokenField/TITokenField.h; sourceTree = "<group>"; };
+		5157CD1616549BBC00C22CCE /* TITokenField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TITokenField.m; path = TITokenField/TITokenField.m; sourceTree = "<group>"; };
 		5166B1B615E75B420072749C /* buttonFacebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebook.png; sourceTree = "<group>"; };
 		5166B1B715E75B420072749C /* buttonFacebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFacebook@2x.png"; sourceTree = "<group>"; };
 		5166B1B815E75B420072749C /* buttonFacebookSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebookSelected.png; sourceTree = "<group>"; };
@@ -331,6 +339,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5157CD1A16549C2900C22CCE /* libTestFlight.a in Frameworks */,
 				51F2288A161A9DF2006B3AA7 /* StoreKit.framework in Frameworks */,
 				51F22888161A9DE4006B3AA7 /* Social.framework in Frameworks */,
 				51F22885161A9DC1006B3AA7 /* AdSupport.framework in Frameworks */,
@@ -351,7 +360,6 @@
 				5189B2B815B387E200562DD0 /* UIKit.framework in Frameworks */,
 				5189B2BA15B387E200562DD0 /* Foundation.framework in Frameworks */,
 				518AF02E162539D300480D5A /* Parse.framework in Frameworks */,
-				51AB7A091626917E00EF849A /* libTestFlight.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,6 +375,18 @@
 				510787D9163A37250042B436 /* File+Create.m */,
 			);
 			name = File;
+			sourceTree = "<group>";
+		};
+		5157CD1116549B7700C22CCE /* TITokenField */ = {
+			isa = PBXGroup;
+			children = (
+				5157CD1216549BBC00C22CCE /* Names.h */,
+				5157CD1316549BBC00C22CCE /* Names.m */,
+				5157CD1416549BBC00C22CCE /* README.markdown */,
+				5157CD1516549BBC00C22CCE /* TITokenField.h */,
+				5157CD1616549BBC00C22CCE /* TITokenField.m */,
+			);
+			name = TITokenField;
 			sourceTree = "<group>";
 		};
 		5166B1B515E75B420072749C /* Resources */ = {
@@ -746,6 +766,7 @@
 				5189B3A315B39B1500562DD0 /* PullToRefreshView */,
 				51ED7B8416069C25008D3E56 /* MTStatusBarOverlay */,
 				51AB7A041626917E00EF849A /* TestFlightSDK1.2beta2 */,
+				5157CD1116549B7700C22CCE /* TITokenField */,
 			);
 			name = "Licensed Softwares";
 			sourceTree = "<group>";
@@ -915,6 +936,7 @@
 				51F2288C161A9E22006B3AA7 /* Default-568h@2x.png in Resources */,
 				51AB7A0A1626917E00EF849A /* README.md in Resources */,
 				51AB7A0B1626917E00EF849A /* release_notes.md in Resources */,
+				5157CD1816549BBC00C22CCE /* README.markdown in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -998,6 +1020,8 @@
 				510787E9163A377F0042B436 /* BNOperationObject.m in Sources */,
 				510787EA163A377F0042B436 /* BNOperationQueue.m in Sources */,
 				5157CD031650902900C22CCE /* BanyanConnection.m in Sources */,
+				5157CD1716549BBC00C22CCE /* Names.m in Sources */,
+				5157CD1916549BBC00C22CCE /* TITokenField.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
