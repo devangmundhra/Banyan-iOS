@@ -27,6 +27,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *contributorInvitationLabel;
 @property (weak, nonatomic) IBOutlet UISwitch *showLocationSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *locationLabel;
+@property (weak, nonatomic) IBOutlet TITokenFieldView *tagsFieldView;
+
+@property (weak, nonatomic) UITextField *activeField;
 
 @property (strong, nonatomic) NSMutableArray *invitedToViewList;
 @property (strong, nonatomic) NSMutableArray *invitedToContributeList;
@@ -70,6 +73,8 @@ typedef enum {
 @synthesize locationLabel = _locationLabel;
 @synthesize storyAttributes = _storyAttributes;
 @synthesize locationManager = _locationManager;
+@synthesize activeField = _activeField;
+
 /*
 - (id)init
 {
@@ -158,7 +163,7 @@ typedef enum {
     self.inviteContributorsButton.alpha = 1;
     
     self.storyTitleTextField.delegate = self;
-    [self.storyTitleTextField becomeFirstResponder];
+//    [self.storyTitleTextField becomeFirstResponder];
     self.storyTitleTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
     
     self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapAnywhere:)];
@@ -168,6 +173,18 @@ typedef enum {
     
     self.viewerSlider.value = StoryPrivacySegmentIndexLimited;
     self.inviteViewersButton.alpha = 0;
+    
+    [self updateContentSize];
+    
+    // Tags
+    self.tagsFieldView.scrollEnabled = NO;
+    [self.tagsFieldView.tokenField setDelegate:self];
+	[self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldFrameDidChange:) forControlEvents:TITokenFieldControlEventFrameDidChange];
+	[self.tagsFieldView.tokenField setTokenizingCharacters:[NSCharacterSet characterSetWithCharactersInString:@",;."]]; // Default is a comma
+    [self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldChangedEditing:) forControlEvents:UIControlEventEditingDidBegin];
+	[self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldChangedEditing:) forControlEvents:UIControlEventEditingDidEnd];
+    self.tagsFieldView.tokenField.returnKeyType = UIReturnKeyDone;
+    [self.tagsFieldView.tokenField setPromptText:@"Tags:"];
 }
 
 - (void)viewDidUnload
@@ -189,6 +206,7 @@ typedef enum {
     self.locationManager.delegate = nil;
     [self setLocationManager:nil];
     [self setViewerSlider:nil];
+    [self setTagsFieldView:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -243,6 +261,11 @@ typedef enum {
     } else  {
         [self.storyAttributes setObject:[NSNumber numberWithBool:NO] forKey:STORY_LOCATION_ENABLED];
     }
+    
+    NSArray *tagsArray = [self.tagsFieldView tokenTitles];
+    NSString *tags = [tagsArray componentsJoinedByString:@","];
+    [self.storyAttributes setObject:tags forKey:STORY_TAGS];
+    NSLog(@"tags are %@", tags);
     
     // Create Story
     Story *story = [Story createStoryWithAttributes:self.storyAttributes];
@@ -405,8 +428,22 @@ typedef enum {
     self.scrollView.contentInset = contentInsets;
     self.scrollView.scrollIndicatorInsets = contentInsets;
     
-    [self.addStorySubView addGestureRecognizer:self.tapRecognizer];
-    self.keyboardIsShown = YES; 
+    // If active text field is hidden by keyboard, scroll it so it's visible
+    CGRect aRect = self.view.frame;
+    aRect.size.height -= kbSize.height;
+    CGPoint activeFieldOrigin = self.activeField.frame.origin;
+    if (self.activeField == self.tagsFieldView.tokenField) {
+        activeFieldOrigin = self.tagsFieldView.frame.origin;
+        activeFieldOrigin.y += self.tagsFieldView.frame.size.height;
+    }
+    
+    if (!CGRectContainsPoint(aRect, activeFieldOrigin)) {
+        CGPoint scrollPoint = CGPointMake(0.0, activeFieldOrigin.y-kbSize.height);
+        [self.scrollView setContentOffset:scrollPoint animated:YES];
+    }
+    
+//    [self.addStorySubView addGestureRecognizer:self.tapRecognizer];
+    self.keyboardIsShown = YES;
 }
 
 // Called when the UIKeyboardWillBeHidden is sent
@@ -419,7 +456,7 @@ typedef enum {
     self.scrollView.contentInset = contentInsets;
     self.scrollView.scrollIndicatorInsets = contentInsets;
     
-    [self.addStorySubView removeGestureRecognizer:self.tapRecognizer];
+//    [self.addStorySubView removeGestureRecognizer:self.tapRecognizer];
     self.keyboardIsShown = NO;
 }
 
@@ -477,6 +514,41 @@ typedef enum {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+#pragma mark UITextFieldDelegate
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    self.activeField = textField;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    self.activeField = nil;
+}
+
+#pragma mark TITokenField Delegate
+- (BOOL)tokenField:(TITokenField *)tokenField willRemoveToken:(TIToken *)token {
+	return YES;
+}
+
+- (void)tokenFieldChangedEditing:(TITokenField *)tokenField {
+	// There's some kind of annoying bug where UITextFieldViewModeWhile/UnlessEditing doesn't do anything.
+	[tokenField setRightViewMode:(tokenField.editing ? UITextFieldViewModeAlways : UITextFieldViewModeNever)];
+}
+
+- (void)tokenFieldFrameDidChange:(TITokenField *)tokenField
+{
+    [self updateContentSize];
+}
+
+- (void) updateContentSize
+{
+    CGSize screenSize = [UIScreen mainScreen].applicationFrame.size;
+    self.scrollView.contentSize = CGSizeMake(screenSize.width,
+                                             screenSize.height
+                                                - self.navigationController.navigationBar.frame.size.height
+                                                + self.tagsFieldView.contentView.frame.origin.y
+                                                - self.tagsFieldView.contentView.frame.size.height);
+}
 
 #pragma Memory Management
 - (void)didReceiveMemoryWarning

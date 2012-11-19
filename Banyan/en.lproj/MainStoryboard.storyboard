@@ -94,7 +94,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="redraw" id="XQ4-aC-CSc">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="344"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="416"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <textField clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" placeholder="New Story Title" textAlignment="center" minimumFontSize="20" id="DOT-11-U7I">
@@ -201,6 +201,18 @@
                                             <segue destination="vMp-rM-1qw" kind="push" identifier="Add Viewers" id="zXo-Ga-9b9"/>
                                         </connections>
                                     </button>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Who can view the story?" lineBreakMode="clip" baselineAdjustment="alignBaselines" minimumFontSize="10" id="GaF-f1-P4t">
+                                        <rect key="frame" x="20" y="247" width="250" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <view contentMode="scaleToFill" id="HxC-hm-JLh" customClass="TITokenFieldView">
+                                        <rect key="frame" x="0.0" y="340" width="320" height="76"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             </view>
@@ -224,6 +236,7 @@
                         <outlet property="scrollView" destination="KWd-UK-B9u" id="lAW-PU-AZU"/>
                         <outlet property="showLocationSwitch" destination="11a-tX-cH1" id="Hl9-mg-YYz"/>
                         <outlet property="storyTitleTextField" destination="DOT-11-U7I" id="7m0-Q5-aci"/>
+                        <outlet property="tagsFieldView" destination="HxC-hm-JLh" id="boz-QV-y69"/>
                         <outlet property="viewerSlider" destination="Huv-pQ-6WY" id="Ywe-wC-7gr"/>
                     </connections>
                 </viewController>

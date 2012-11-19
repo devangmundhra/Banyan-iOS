@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "UIImageView+AFNetworking.h"
+#import "UIImage+ResizeAdditions.h"
+#import "UIImage+RoundedCornerAdditions.h"
+#import "UIImage+AlphaAdditions.h"
 
 @interface StoryListStoryCell : UITableViewCell
 

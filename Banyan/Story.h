@@ -34,6 +34,8 @@
 @property (strong, nonatomic) CLLocation *location;
 @property (strong, nonatomic) NSString *geocodedLocation;
 @property (strong, nonatomic) User *author;
+@property (strong, nonatomic) NSString *tags;
+
 @property BOOL isLocationEnabled;
 @property BOOL liked;
 @property BOOL favourite;

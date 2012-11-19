@@ -198,10 +198,6 @@ typedef enum {
     
     cell.storyTitleLabel.text = story.title;
     cell.storyTitleLabel.font = [UIFont fontWithName:STORY_FONT size:20];
-
-    // So that the cell does not show any image from before
-    [cell.storyImageView cancelImageRequestOperation];
-    cell.storyImageView.image = nil;
     
     if (story.imageURL) {
         cell.storyTitleLabel.textColor = [UIColor whiteColor];
@@ -210,15 +206,31 @@ typedef enum {
         cell.storyTitleLabel.textColor = [UIColor blackColor];
         cell.storyLocationLabel.textColor = [UIColor grayColor];
     }
-    
+
+    CGSize cellImageSize = cell.storyImageView.frame.size;
     if (story.imageURL && [story.imageURL rangeOfString:@"asset"].location == NSNotFound) {
         [cell.storyImageView setImageWithURL:[NSURL URLWithString:story.imageURL] placeholderImage:story.image];
+        NSURLRequest *imageReq = [NSURLRequest requestWithURL:[NSURL URLWithString:story.imageURL]];
+        
+        [cell.storyImageView setImageWithURLRequest:imageReq
+                                   placeholderImage:story.image
+                                            success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                                image = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill
+                                                                                    bounds:cellImageSize
+                                                                      interpolationQuality:kCGInterpolationHigh];
+                                            }
+                                            failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                                                NSLog(@"***** ERROR IN GETTING IMAGE ***\nCan't find the image");
+                                            }];
     } else if (story.imageURL) {
         ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
         [library assetForURL:[NSURL URLWithString:story.imageURL] resultBlock:^(ALAsset *asset) {
             ALAssetRepresentation *rep = [asset defaultRepresentation];
             CGImageRef imageRef = [rep fullScreenImage];
             UIImage *image = [UIImage imageWithCGImage:imageRef];
+            image = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill
+                                                bounds:cellImageSize
+                                  interpolationQuality:kCGInterpolationHigh];
             [cell.storyImageView setImage:image];
         }
                 failureBlock:^(NSError *error) {

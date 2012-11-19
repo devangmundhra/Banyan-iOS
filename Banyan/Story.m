@@ -45,6 +45,7 @@
 @synthesize author = _author;
 @synthesize writeAccess = _writeAccess;
 @synthesize readAccess = _readAccess;
+@synthesize tags = _tags;
 // Session properties
 @synthesize imageChanged = _imageChanged;
 @synthesize storyBeingRead = _storyBeingRead;
@@ -79,6 +80,7 @@
     [aCoder encodeObject:self.geocodedLocation forKey:STORY_GEOCODEDLOCATION];
     [aCoder encodeObject:self.likers forKey:STORY_LIKERS];
     [aCoder encodeObject:self.author forKey:STORY_AUTHOR];
+    [aCoder encodeObject:self.tags forKey:STORY_TAGS];
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder
@@ -110,6 +112,7 @@
         self.geocodedLocation = [aDecoder decodeObjectForKey:STORY_GEOCODEDLOCATION];
         self.likers = [aDecoder decodeObjectForKey:STORY_LIKERS];
         self.author = [aDecoder decodeObjectForKey:STORY_AUTHOR];
+        self.tags = [aDecoder decodeObjectForKey:STORY_TAGS];
     }
     return self;
 }
@@ -136,7 +139,7 @@
     [attributes setObject:[NSNumber numberWithDouble:coord.longitude]
                              forKey:STORY_LONGITUDE];
     [attributes setObject:self.author.userId forKey:STORY_AUTHOR];
-    
+    [attributes setObject:REPLACE_NIL_WITH_EMPTY_STRING(self.tags) forKey:STORY_TAGS];
     return attributes;
 }
 
@@ -170,6 +173,7 @@
     self.initialized = YES;
     
     self.imageURL = REPLACE_NULL_WITH_NIL([storyDict objectForKey:STORY_IMAGE_URL]);
+    self.tags = REPLACE_NULL_WITH_NIL([storyDict objectForKey:STORY_TAGS]);
     
     self.canContribute = [[dict objectForKey:@"write"] boolValue];
     self.canView = [[dict objectForKey:@"read"] boolValue];

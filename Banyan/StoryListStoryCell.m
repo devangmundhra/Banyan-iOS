@@ -38,4 +38,11 @@
     // Configure the view for the selected state
 }
 
+- (void)prepareForReuse
+{
+    // So that the cell does not show any image from before
+    self.storyImageView.image = nil;
+    [self.storyImageView cancelImageRequestOperation];
+}
+
 @end

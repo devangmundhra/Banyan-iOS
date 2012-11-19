@@ -428,7 +428,7 @@ NSString * const kTextHidden = @"\u200D"; // Zero-Width Joiner
 	[self.layer setShadowOpacity:0.6];
 	[self.layer setShadowRadius:12];
 	
-	[self setPromptText:@"To:"];
+	[self setPromptText:@"Tags:"];
 	[self setText:kTextEmpty];
 	
 	internalDelegate = [[TITokenFieldInternalDelegate alloc] init];
@@ -520,7 +520,7 @@ NSString * const kTextHidden = @"\u200D"; // Zero-Width Joiner
 			CGFloat availableWidth = self.bounds.size.width - self.leftView.bounds.size.width - self.rightView.bounds.size.width;
 			
 			if (tokens.count > 1 && untokSize.width > availableWidth){
-				untokenized = [NSString stringWithFormat:@"%d recipients", titles.count];
+				untokenized = [NSString stringWithFormat:@"%d tags", titles.count];
 			}
 			
 			[titles release];

@@ -117,6 +117,7 @@
     story.numberOfContributors = [NSNumber numberWithInt:0];
     story.numberOfLikes = [NSNumber numberWithInt:0];
     story.numberOfViews = [NSNumber numberWithInt:0];
+    story.tags = [attributes objectForKey:STORY_TAGS];
 
     return story;
 }

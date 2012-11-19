@@ -10,6 +10,7 @@
 #import "Story+Create.h"
 #import "InvitedTableViewController.h"
 #import "BNLocationManager.h"
+#import "TITokenField.h"
 
 @class NewStoryViewController;
 @class Story;
@@ -20,7 +21,7 @@
 
 @end
 
-@interface NewStoryViewController : UIViewController <UITextFieldDelegate, InvitedTableViewControllerDelegate, UIScrollViewDelegate, BNLocationManagerDelegate>
+@interface NewStoryViewController : UIViewController <UITextFieldDelegate, InvitedTableViewControllerDelegate, UIScrollViewDelegate, BNLocationManagerDelegate, TITokenFieldDelegate>
 
 // Delegate to save the story and close the window on done and edit
 @property (weak, nonatomic) IBOutlet id <NewStoryViewControllerDelegate> delegate;
