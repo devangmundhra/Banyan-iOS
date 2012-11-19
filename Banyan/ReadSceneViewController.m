@@ -97,6 +97,7 @@
     self.storyTitleLabel.backgroundColor = [UIColor clearColor];
     self.contentView.backgroundColor = [UIColor clearColor];
     self.infoView.backgroundColor = [UIColor clearColor];
+//    self.sceneTextView.contentInset = UIEdgeInsetsMake(0, 20, 0, 20);
     
     self.sceneTextView.text = self.scene.text;
     self.storyTitleLabel.text = self.scene.story.title;
@@ -197,7 +198,14 @@
                              forState:UIControlStateNormal];
 
     [self.contributorsButton addTarget:self action:@selector(storyContributors) forControlEvents:UIControlEventTouchUpInside];
-    self.sceneTextView.font = [UIFont fontWithName:STORY_FONT size:24];
+    if ([self.scene.text length] > MAX_CHAR_IN_SCENE) {
+        self.sceneTextView.scrollEnabled = YES;
+        self.sceneTextView.font = [UIFont systemFontOfSize:18];
+    }
+    else {
+        self.sceneTextView.scrollEnabled = NO;
+        self.sceneTextView.font = [UIFont fontWithName:STORY_FONT size:24];
+    }
 }
 
 // Scene specific refresh
@@ -205,7 +213,14 @@
 {
     [self.contributorsButton setTitle:self.scene.author.name forState:UIControlStateNormal];
     [self.contributorsButton setEnabled:NO];
-    self.sceneTextView.font = [UIFont fontWithName:SCENE_FONT size:24];
+    if ([self.scene.text length] > MAX_CHAR_IN_SCENE) {
+        self.sceneTextView.scrollEnabled = YES;
+        self.sceneTextView.font = [UIFont systemFontOfSize:18];
+    }
+    else {
+        self.sceneTextView.scrollEnabled = NO;
+        self.sceneTextView.font = [UIFont fontWithName:SCENE_FONT size:24];
+    }
 }
 
 // Part of viewDidLoad that can be called again and again whenever this view needs to be

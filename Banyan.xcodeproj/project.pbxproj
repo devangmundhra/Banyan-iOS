@@ -28,6 +28,7 @@
 		5157CD1816549BBC00C22CCE /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 5157CD1416549BBC00C22CCE /* README.markdown */; };
 		5157CD1916549BBC00C22CCE /* TITokenField.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD1616549BBC00C22CCE /* TITokenField.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		5157CD1A16549C2900C22CCE /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51AB7A051626917E00EF849A /* libTestFlight.a */; };
+		5157CD251659E5A300C22CCE /* ComposeTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD241659E5A300C22CCE /* ComposeTextViewController.m */; };
 		5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B615E75B420072749C /* buttonFacebook.png */; };
 		5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B715E75B420072749C /* buttonFacebook@2x.png */; };
 		5166B1BC15E75B420072749C /* buttonFacebookSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B815E75B420072749C /* buttonFacebookSelected.png */; };
@@ -166,6 +167,8 @@
 		5157CD1416549BBC00C22CCE /* README.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.markdown; path = TITokenField/README.markdown; sourceTree = "<group>"; };
 		5157CD1516549BBC00C22CCE /* TITokenField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TITokenField.h; path = TITokenField/TITokenField.h; sourceTree = "<group>"; };
 		5157CD1616549BBC00C22CCE /* TITokenField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TITokenField.m; path = TITokenField/TITokenField.m; sourceTree = "<group>"; };
+		5157CD231659E5A300C22CCE /* ComposeTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ComposeTextViewController.h; path = Banyan/ComposeTextViewController.h; sourceTree = "<group>"; };
+		5157CD241659E5A300C22CCE /* ComposeTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ComposeTextViewController.m; path = Banyan/ComposeTextViewController.m; sourceTree = "<group>"; };
 		5166B1B615E75B420072749C /* buttonFacebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebook.png; sourceTree = "<group>"; };
 		5166B1B715E75B420072749C /* buttonFacebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFacebook@2x.png"; sourceTree = "<group>"; };
 		5166B1B815E75B420072749C /* buttonFacebookSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebookSelected.png; sourceTree = "<group>"; };
@@ -553,6 +556,8 @@
 				5189B2E315B395F300562DD0 /* ModifySceneViewController.h */,
 				5189B2E415B395F300562DD0 /* ModifySceneViewController.m */,
 				5189B2E515B395F300562DD0 /* ModifySceneViewController.xib */,
+				5157CD231659E5A300C22CCE /* ComposeTextViewController.h */,
+				5157CD241659E5A300C22CCE /* ComposeTextViewController.m */,
 			);
 			name = "Add or Edit Scene";
 			sourceTree = "<group>";
@@ -1016,6 +1021,7 @@
 				510787EA163A377F0042B436 /* BNOperationQueue.m in Sources */,
 				5157CD031650902900C22CCE /* BanyanConnection.m in Sources */,
 				5157CD1916549BBC00C22CCE /* TITokenField.m in Sources */,
+				5157CD251659E5A300C22CCE /* ComposeTextViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

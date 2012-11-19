@@ -11,6 +11,7 @@
 #import "Scene.h"
 #import "Story.h"
 #import "BNLocationManager.h"
+#import "ComposeTextViewController.h"
 
 @class  ModifySceneViewController;
 
@@ -32,7 +33,7 @@ typedef enum {add, edit} EditModes;
 
 @end
 
-@interface ModifySceneViewController : UIViewController <UITextViewDelegate, UINavigationControllerDelegate, 
+@interface ModifySceneViewController : UIViewController <UITextViewDelegate, UINavigationControllerDelegate, ComposeTextViewControllerDelegate,
     UIImagePickerControllerDelegate, UINavigationBarDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate, BNLocationManagerDelegate>
 
 @property (strong, nonatomic) Scene *scene;

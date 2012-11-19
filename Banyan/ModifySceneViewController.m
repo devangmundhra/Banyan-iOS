@@ -45,7 +45,6 @@
 
 @implementation ModifySceneViewController
 
-#define MAX_CHAR_IN_SCENE 160
 #define MEM_WARNING_USER_DEFAULTS_TEXT_FIELD @"ModifySceneViewControllerText"
 
 @synthesize contentView = _contentView;
@@ -70,9 +69,31 @@
 {
     [super viewWillAppear:animated];
     self.sceneTextView.delegate = self;
-    [self.sceneTextView.layer setCornerRadius:8];
-    [self.sceneTextView setClipsToBounds:YES];
-    self.sceneTextView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+
+//    self.sceneTextView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+    self.sceneTextView.backgroundColor = [UIColor clearColor];
+    
+    if (self.imageView.image || self.scene.imageURL) {
+        self.sceneTextView.textColor = [UIColor whiteColor];
+    }
+    else {
+        self.sceneTextView.textColor = [UIColor blackColor];
+    }
+    
+    if ([self.sceneTextView.text length] > MAX_CHAR_IN_SCENE) {
+        self.sceneTextView.scrollEnabled = YES;
+        self.sceneTextView.font = [UIFont systemFontOfSize:18];
+    }
+    else {
+        self.sceneTextView.scrollEnabled = NO;
+        self.sceneTextView.font = [UIFont fontWithName:SCENE_FONT size:24];
+    }
+    
+    self.sceneTextView.layer.shadowColor = [[UIColor blackColor] CGColor];
+    self.sceneTextView.layer.shadowOffset = CGSizeMake(1.0, 1.0);
+    self.sceneTextView.layer.shadowOpacity = 1.0;
+    self.sceneTextView.layer.shadowRadius = 0.3;
+    
     self.navigationBar.delegate = self;
 }
 - (void)viewDidAppear:(BOOL)animated
@@ -104,8 +125,8 @@
     else
         self.sceneTextView.font = [UIFont fontWithName:SCENE_FONT size:24];
     
-    self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapAnywhere:)];
-    self.tapRecognizer.delegate = self;
+//    self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapAnywhere:)];
+//    self.tapRecognizer.delegate = self;
     
     if (self.scene.geocodedLocation && ![self.scene.geocodedLocation isEqual:[NSNull null]]) {
         self.locationLabel.text = self.scene.geocodedLocation;
@@ -150,17 +171,17 @@
     [defaults removeObjectForKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
     
     
-    self.sceneTextView.editable = YES;
+    self.sceneTextView.editable = NO;
     self.doneButton.enabled = NO;
     
     self.imageChanged = NO;
     
-    [self registerForKeyboardNotifications];
+//    [self registerForKeyboardNotifications];
     
-    self.dismissKeyboardButton = [[UIBarButtonItem alloc] initWithTitle:@"Dismiss Keyboard"
-                                                                  style:UIBarButtonItemStyleBordered
-                                                                 target:self
-                                                                 action:@selector(dismissKeyboard:)];
+//    self.dismissKeyboardButton = [[UIBarButtonItem alloc] initWithTitle:@"Dismiss Keyboard"
+//                                                                  style:UIBarButtonItemStyleBordered
+//                                                                 target:self
+//                                                                 action:@selector(dismissKeyboard:)];
     self.navigationBar.translucent = YES;
     self.actionToolbar.translucent = YES;
 }
@@ -182,10 +203,10 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-    if (self.sceneTextView.isFirstResponder)
-        [self.sceneTextView resignFirstResponder];
-    
-    [self unregisterForKeyboardNotifications];
+//    if (self.sceneTextView.isFirstResponder)
+//        [self.sceneTextView resignFirstResponder];
+//    
+//    [self unregisterForKeyboardNotifications];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -275,6 +296,17 @@
         [self.delegate modifySceneViewController:self];
         [TestFlight passCheckpoint:@"Scene deleted"];
     }
+}
+
+- (IBAction)modifyText:(id)sender
+{
+    // Create a text view scene controller
+    ComposeTextViewController *textController = [[ComposeTextViewController alloc] init];
+    textController.delegate = self;
+    
+    [self presentViewController:textController animated:YES completion:^{
+        textController.textView.text = self.sceneTextView.text;
+    }];
 }
 
 #define CAMERA @"Camera"
@@ -421,6 +453,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     }
 
     [self.imageView cancelImageRequestOperation];
+    self.sceneTextView.textColor = [UIColor whiteColor];
     self.imageChanged = YES;
     [NSThread detachNewThreadSelector:@selector(useImage:) toTarget:self withObject:image];
     self.doneButton.enabled = [self checkForChanges];
@@ -430,7 +463,11 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     self.localImageURL = nil;
     self.imageChanged = NO;
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:^{
+        // If the image view controller is completed successfully, we don't really need to keep this saved
+        // as a presented screen will not be affected by mem warning.
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
+    }];
 }
 
 - (void)useImage:(UIImage *)image {    
@@ -442,6 +479,19 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
                                       interpolationQuality:kCGInterpolationHigh];
     
     [self.imageView setImage:newImage];
+}
+
+#pragma mark ComposeTextViewControllerDelegate
+- (void)cancelComposeTextViewController:(ComposeTextViewController *)controller
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+- (void)doneWithComposeTextViewController:(ComposeTextViewController *)controller
+{
+    self.sceneTextView.text = controller.textView.text;
+    [self dismissViewControllerAnimated:YES completion:^{
+        self.doneButton.enabled = [self checkForChanges];
+    }];
 }
 
 # pragma mark BNLocationManagerDelegate

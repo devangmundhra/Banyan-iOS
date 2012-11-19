@@ -39,4 +39,6 @@
 
 #define SCENE_IS_INITIALIZED @"sceneInitialized"
 
+#define MAX_CHAR_IN_SCENE 140
+
 @end
