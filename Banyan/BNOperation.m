@@ -259,7 +259,11 @@
         
         if (self.action.actionType == BNOperationActionEdit || self.action.actionType == BNOperationActionIncrementAttribute) {
             NSLog(@"%s Parameters that will be edited: %@", __PRETTY_FUNCTION__, editParams);
-            assert([self.object isObjectInitialized]);
+            if (![self.object isObjectInitialized]) {
+                NSLog(@"%s ERROR: Object %@ expected to be already initialized for action %@. Ignore this job!", __PRETTY_FUNCTION__, self.object, self.action);
+                [self completeOperationWithError:YES];
+            }
+//            assert([self.object isObjectInitialized]);
         }
         
         // Execute the network operation

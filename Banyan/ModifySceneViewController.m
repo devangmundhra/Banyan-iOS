@@ -73,7 +73,7 @@
 //    self.sceneTextView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
     self.sceneTextView.backgroundColor = [UIColor clearColor];
     
-    if (self.imageView.image || self.scene.imageURL) {
+    if (self.imageView.image || (self.scene.imageURL && self.editMode == edit)) {
         self.sceneTextView.textColor = [UIColor whiteColor];
     }
     else {
