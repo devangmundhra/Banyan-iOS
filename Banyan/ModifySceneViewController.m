@@ -293,7 +293,7 @@
     {
         NSLog(@"ModifySceneViewController_Deleting scene");
         DELETE_SCENE(self.scene);
-        [self.delegate modifySceneViewController:self];
+        [self.delegate modifySceneViewControllerDeletedScene:self];
         [TestFlight passCheckpoint:@"Scene deleted"];
     }
 }

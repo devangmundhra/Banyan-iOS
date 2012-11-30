@@ -20,10 +20,11 @@
 #import "BanyanDataSource.h"
 #import "SettingsTableViewController.h"
 
-@interface StoryListTableViewController : UITableViewController <NewStoryViewControllerDelegate, ScenesViewControllerDelegate, PullToRefreshViewDelegate> {
+@interface StoryListTableViewController : TISwipeableTableViewController <NewStoryViewControllerDelegate, ScenesViewControllerDelegate, PullToRefreshViewDelegate, ModifySceneViewControllerDelegate> {
     PullToRefreshView *_pull;
 }
 
 @property (nonatomic, strong) NSMutableArray *dataSource;
+- (void)addSceneForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 @end

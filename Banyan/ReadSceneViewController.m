@@ -454,7 +454,6 @@
               didFinishAddingScene:(Scene *)scene
 {
     NSLog(@"ReadSceneViewController_Adding scene");
-    [self.delegate readSceneViewControllerAddedNewScene:self];    
     [self dismissViewControllerAnimated:NO completion:^{
         [self.delegate readSceneViewControllerAddedNewScene:self];
     }];
@@ -469,7 +468,7 @@
     }];
 }
 
-- (void) modifySceneViewController:(ModifySceneViewController *)controller
+- (void) modifySceneViewControllerDeletedScene:(ModifySceneViewController *)controller
 {
     NSLog(@"ReadSceneViewController_Deleting scene");
     [self dismissViewControllerAnimated:NO completion:^{

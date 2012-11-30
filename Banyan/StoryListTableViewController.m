@@ -71,6 +71,8 @@ typedef enum {
     [_pull setDelegate:self];
     [self.tableView addSubview:_pull];
     
+    [self.tableView setRowHeight:TABLE_ROW_HEIGHT];
+    
     if (!self.leftButton)
         self.leftButton = [[UIBarButtonItem alloc] initWithTitle:@"Settings" 
                                                            style:UIBarButtonItemStyleBordered 
@@ -237,6 +239,10 @@ typedef enum {
                     NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
                 }
          ];
+    } else {
+        // if there is no image, just get a white image
+        UIImage *image = [UIImage imageWithColor:[UIColor whiteColor] forRect:cell.storyImageView.frame];
+        [cell.storyImageView setImage:image];
     }
 
     if (story.isLocationEnabled && ![story.geocodedLocation isEqual:[NSNull null]]) {
@@ -246,44 +252,33 @@ typedef enum {
     return cell;
 }
 
+#pragma mark Table View Delegates
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    Story *story = [self.dataSource objectAtIndex:indexPath.row];
-    story.storyBeingRead = YES;
-    UIAlertView *networkUnavailableAlert = [[UIAlertView alloc] initWithTitle:@"Network unavailable"
-                                                                      message:@"We are unable to access the network and so can't load the story"
-                                                                     delegate:nil
-                                                            cancelButtonTitle:@"OK"
-                                                            otherButtonTitles:nil];
-    if (!story.scenes)
-    {        
-        Story *alreadyExistingStory = [StoryDocuments loadStoryFromDisk:story.storyId];
-        alreadyExistingStory.storyBeingRead = YES;
-        if (alreadyExistingStory) {
-            // If a story is already existing, load that story.
-            [[BanyanDataSource shared] replaceObjectAtIndex:[[BanyanDataSource shared] indexOfObject:story] withObject:alreadyExistingStory];
-            [self.dataSource replaceObjectAtIndex:indexPath.row withObject:alreadyExistingStory];
-        } else {
-            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            hud.labelText = @"Loading";
-            hud.detailsLabelText = story.title;
-            NSLog(@"Loading story scenes");
-            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
-            [ParseConnection loadScenesForStory:story];
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-        }
-        
-    }
-    if (!story.scenes || [story.scenes count] == 0) {
-        NSLog(@"%s story.scenes %@ story count: %d", __PRETTY_FUNCTION__, story.scenes, [story.scenes count]);
-        [networkUnavailableAlert show];
+    if (![super tableView:tableView willSelectRowAtIndexPath:indexPath])
         return nil;
-    }
-    return indexPath;
+    
+    return [self updateStoryAtIndex:indexPath];
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    Story *selectedStory = [self.dataSource objectAtIndex:indexPath.row];
+    [self readStory:selectedStory];
+    
+    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewCellEditingStyleNone;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    return NO;
     // Give the option to delete the story only if you are a contributor to the story too
     Story *story = [self.dataSource objectAtIndex:indexPath.row];
     return story.canContribute;
@@ -298,6 +293,20 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         DELETE_STORY(story);
         [TestFlight passCheckpoint:@"Story deleted by swipe"];
     }    
+}
+
+- (void)addSceneForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([self updateStoryAtIndex:indexPath]) {
+        Story *story = [self.dataSource objectAtIndex:indexPath.row];
+        [self addSceneToStory:story];
+    }
+}
+
+#pragma mark TISwipeableTableView delegates
+- (void)tableView:(UITableView *)tableView didSwipeCellAtIndexPath:(NSIndexPath *)indexPath {
+	
+	[super tableView:tableView didSwipeCellAtIndexPath:indexPath];
 }
 
 #pragma mark Data Source Loading / Reloading Methods
@@ -416,28 +425,90 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     if ([segue.identifier isEqualToString:@"New Story"])
     {
         NewStoryViewController *newStoryViewController = segue.destinationViewController;
         newStoryViewController.delegate = self;
 
-    } else if ([segue.identifier isEqualToString:@"Read Story"])
-    {
-        Story *selectedStory = nil;
-        if ([sender isKindOfClass:[Story class]])
-            selectedStory = sender;
-        else
-            selectedStory = [self.dataSource objectAtIndex:indexPath.row];
-        ScenesViewController *scenesViewController = segue.destinationViewController;
-        scenesViewController.story = selectedStory;
-        scenesViewController.delegate = self;
-        [scenesViewController setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
     }
     else if ([segue.identifier isEqualToString:@"Sign In"])
     {
         [[segue destinationViewController] setDelegate:self];
     }
+}
+
+#pragma mark Story Manipulations
+- (NSIndexPath *) updateStoryAtIndex:(NSIndexPath *)indexPath
+{
+    Story *story = [self.dataSource objectAtIndex:indexPath.row];
+    story.storyBeingRead = YES;
+    UIAlertView *networkUnavailableAlert = [[UIAlertView alloc] initWithTitle:@"Network unavailable"
+                                                                      message:@"We are unable to access the network and so can't load the story"
+                                                                     delegate:nil
+                                                            cancelButtonTitle:@"OK"
+                                                            otherButtonTitles:nil];
+    if (!story.scenes)
+    {
+        Story *alreadyExistingStory = [StoryDocuments loadStoryFromDisk:story.storyId];
+        alreadyExistingStory.storyBeingRead = YES;
+        if (alreadyExistingStory) {
+            // If a story is already existing, load that story.
+            [[BanyanDataSource shared] replaceObjectAtIndex:[[BanyanDataSource shared] indexOfObject:story] withObject:alreadyExistingStory];
+            [self.dataSource replaceObjectAtIndex:indexPath.row withObject:alreadyExistingStory];
+        } else {
+            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            hud.labelText = @"Loading";
+            hud.detailsLabelText = story.title;
+            NSLog(@"Loading story scenes");
+            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+            [ParseConnection loadScenesForStory:story];
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+        }
+        
+    }
+    if (!story.scenes || [story.scenes count] == 0) {
+        NSLog(@"%s story.scenes %@ story count: %d", __PRETTY_FUNCTION__, story.scenes, [story.scenes count]);
+        [networkUnavailableAlert show];
+        return nil;
+    }
+    return indexPath;
+}
+
+-(void) readStory:(Story *)story
+{
+    ScenesViewController *scenesViewController = [[ScenesViewController alloc] init];
+    scenesViewController.story = story;
+    scenesViewController.delegate = self;
+    [scenesViewController setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
+    [self.navigationController pushViewController:scenesViewController animated:YES];
+}
+
+-(void) addSceneToStory:(Story *)story
+{
+    ModifySceneViewController *addSceneViewController = [[ModifySceneViewController alloc] init];
+    addSceneViewController.editMode = add;
+    addSceneViewController.scene = [story.scenes lastObject];
+    addSceneViewController.delegate = self;
+    [addSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+    [addSceneViewController setModalPresentationStyle:UIModalPresentationFullScreen];
+    [self presentViewController:addSceneViewController animated:YES completion:nil];
+}
+
+
+#pragma mark ModifySceneViewControllerDelegate
+
+- (void) modifySceneViewController:(ModifySceneViewController *)controller
+              didFinishAddingScene:(Scene *)scene
+{
+    NSLog(@"StoryListTableViewController_Adding scene");
+    [self dismissViewControllerAnimated:NO completion:^{
+        [self hideVisibleBackView:YES];
+    }];
+}
+
+- (void) modifySceneViewControllerDidCancel:(ModifySceneViewController *)controller
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - NewStoryViewControllerDelegate
@@ -446,7 +517,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                     didAddStory:(Story *)story
 {
     [self.navigationController popViewControllerAnimated:NO];
-    [self performSegueWithIdentifier:@"Read Story" sender:story];
+    [self readStory:story];
 }
 
 #pragma mark ScenesViewControllerDelegate

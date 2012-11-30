@@ -19,17 +19,18 @@ typedef enum {add, edit} EditModes;
 
 @protocol ModifySceneViewControllerDelegate <NSObject>
 
+- (void) modifySceneViewControllerDidCancel:(ModifySceneViewController *)controller;
+
+@optional
+- (void) modifySceneViewControllerDeletedScene:(ModifySceneViewController *)controller;
+
 - (void) modifySceneViewController:(ModifySceneViewController *)controller
              didFinishEditingScene:(Scene *)scene;
 
 - (void) modifySceneViewController:(ModifySceneViewController *)controller
               didFinishAddingScene:(Scene *)scene;
 
-- (void) modifySceneViewController:(ModifySceneViewController *)controller;
-
 - (void) modifySceneViewControllerDeletedStory:(ModifySceneViewController *)controller;
-
-- (void) modifySceneViewControllerDidCancel:(ModifySceneViewController *)controller;
 
 @end
 

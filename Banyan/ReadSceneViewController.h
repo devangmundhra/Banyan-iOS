@@ -35,4 +35,7 @@
 
 @property (strong, nonatomic) Scene *scene;
 @property (weak, nonatomic) IBOutlet id <ReadSceneViewControllerDelegate> delegate;
+
+- (IBAction)addScene:(UIBarButtonItem *)sender;
+
 @end
