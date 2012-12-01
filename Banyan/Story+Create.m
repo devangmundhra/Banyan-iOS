@@ -125,6 +125,10 @@
 + (void) createStoryOnServer:(Story *)story
 {
     assert(story);
+    if (!story) {
+        [TestFlight passCheckpoint:@"Error 1 in createStoryOnServer"];
+        NETWORK_OPERATION_INCOMPLETE();
+    }
     NSLog(@"%s story: %@", __PRETTY_FUNCTION__, story);
     NSMutableDictionary *attributes = [story getAttributesInDictionary];
     

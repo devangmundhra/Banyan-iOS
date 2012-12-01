@@ -80,7 +80,9 @@
     NSLog(@"%s Saving story %p with id %@", __PRETTY_FUNCTION__, story, story.storyId);
     
     NSString *path = [StoryDocuments getPathToStoryDocumentWithStory:story];
-    assert(story.scenes);
+//    assert(story.scenes);
+    if (!story.scenes)
+        return;
     
     BOOL success = [NSKeyedArchiver archiveRootObject:story toFile:path];
     if (!success) {

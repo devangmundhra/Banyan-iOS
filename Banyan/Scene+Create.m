@@ -179,7 +179,12 @@
 + (void) createSceneOnServer:(Scene *)scene
 {
     NSLog(@"%s scene: %@", __PRETTY_FUNCTION__, scene);
-    assert(scene);
+//    assert(scene);
+    if (!scene) {
+        [TestFlight passCheckpoint:@"Error 1 in createSceneOnServer"];
+        NETWORK_OPERATION_INCOMPLETE();
+    }
+    
     NSMutableDictionary *attributes = [scene getAttributesInDictionary];
     Story *story = scene.story;
     
