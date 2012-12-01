@@ -34,7 +34,7 @@ typedef enum {add, edit} EditModes;
 
 @end
 
-@interface ModifySceneViewController : UIViewController <UITextViewDelegate, UINavigationControllerDelegate, ComposeTextViewControllerDelegate,
+@interface ModifySceneViewController : UIViewController <UITextViewDelegate, UINavigationControllerDelegate, ComposeTextViewControllerDelegate, UIAlertViewDelegate,
     UIImagePickerControllerDelegate, UINavigationBarDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate, BNLocationManagerDelegate>
 
 @property (strong, nonatomic) Scene *scene;

@@ -303,6 +303,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     }
 }
 
+
+
 #pragma mark TISwipeableTableView delegates
 - (void)tableView:(UITableView *)tableView didSwipeCellAtIndexPath:(NSIndexPath *)indexPath {
 	

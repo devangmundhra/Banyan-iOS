@@ -57,8 +57,8 @@
 #define BUTTON_LEFT_MARGIN 10.0
 #define BUTTON_SPACING 80.0
     NSArray *buttonData = [NSArray arrayWithObjects:
-                           [NSDictionary dictionaryWithObjectsAndKeys:@"Add-Scene", @"title", @"addScene:", @"selector", [UIColor colorWithWhite:0.9 alpha:1.0], @"color", nil],
-                           [NSDictionary dictionaryWithObjectsAndKeys:@"Delete-Story", @"title", @"deleteStory:", @"selector", [UIColor redColor], @"color", nil],
+                           [NSDictionary dictionaryWithObjectsAndKeys:@"Add-Scene", @"title", @"addScene:", @"selector", [UIColor colorWithRed:44/255.0 green:127/255.0 blue:84/255.0 alpha:1], @"color", nil],
+                           [NSDictionary dictionaryWithObjectsAndKeys:@"Delete-Story", @"title", @"deleteStoryAlert:", @"selector", [UIColor redColor], @"color", nil],
                            nil];
     
     // Iterate through the button data and create a button for each entry
@@ -122,7 +122,16 @@
     }
 }
 
-- (void)deleteStory:(UIButton *)button
+- (void)deleteStoryAlert:(UIButton *)button
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Delete Story"
+                                                        message:@"Do you want to delete this story?"
+                                                       delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+    
+    [alertView show];
+}
+
+- (void)deleteStory
 {
     UITableView * tableView = (UITableView *)self.superview;
     NSIndexPath * myIndexPath = [tableView indexPathForCell:self];
@@ -130,6 +139,14 @@
     
     if ([delegate respondsToSelector:@selector(tableView:commitEditingStyle:forRowAtIndexPath:)]) {
         [delegate tableView:tableView commitEditingStyle:UITableViewCellEditingStyleDelete forRowAtIndexPath:myIndexPath];
+    }
+}
+
+#pragma mark UIAlertViewDelegate
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if ([alertView.title isEqualToString:@"Delete Story"] && buttonIndex==1) {
+        [self deleteStory];
     }
 }
 

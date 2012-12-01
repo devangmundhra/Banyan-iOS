@@ -17,7 +17,7 @@
 #define TABLE_CELL_MARGIN 10.0
 #define TABLE_ROW_HEIGHT 60.0
 
-@interface StoryListStoryCell : TISwipeableTableViewCell
+@interface StoryListStoryCell : TISwipeableTableViewCell <UIAlertViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UILabel *storyTitleLabel;
 @property (nonatomic, strong) IBOutlet UIImageView *storyImageView;

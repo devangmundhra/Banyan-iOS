@@ -280,7 +280,27 @@
         NSLog(@"ModifySceneViewController_No valid edit mode");
     }
 }
-- (IBAction)deleteScene:(UIBarButtonItem *)sender
+
+- (IBAction)deleteSceneAlert:(UIBarButtonItem *)sender
+{
+    UIAlertView *alertView = nil;
+    if (self.scene.previousScene == nil)
+    {
+        alertView = [[UIAlertView alloc] initWithTitle:@"Delete Story"
+                                               message:@"Do you want to delete this story?"
+                                              delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+    }
+    else
+    {
+        alertView = [[UIAlertView alloc] initWithTitle:@"Delete Scene"
+                                               message:@"Do you want to delete this scene?"
+                                              delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+    }
+    
+    [alertView show];
+}
+
+- (void)deleteScene:(UIBarButtonItem *)sender
 {
     if (self.scene.previousScene == nil)
     {
@@ -327,6 +347,14 @@
     [actionSheet showInView:self.view];
 }
 
+#pragma mark UIAlertViewDelegate
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (([alertView.title isEqualToString:@"Delete Story"] || [alertView.title isEqualToString:@"Delete Scene"])
+        && buttonIndex==1) {
+        [self deleteScene:nil];
+    }
+}
 #pragma mark UIActionSheetDelegate
 // Action sheet delegate method.
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex

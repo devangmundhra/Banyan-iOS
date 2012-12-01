@@ -49,6 +49,7 @@
 	
 	if ([cell respondsToSelector:@selector(revealBackViewAnimated:inDirection:)]){
 		[(TISwipeableTableViewCell *)cell revealBackViewAnimated:animated inDirection:UISwipeGestureRecognizerDirectionRight];
+        [self setIndexOfVisibleBackView:indexPath];
 	}
 }
 
@@ -57,6 +58,7 @@
 	UITableViewCell * cell = [self.tableView cellForRowAtIndexPath:indexOfVisibleBackView];
 	if ([cell respondsToSelector:@selector(hideBackViewAnimated:inDirection:)]) {
 		[(TISwipeableTableViewCell *)cell hideBackViewAnimated:animated inDirection:swipeDirection];
+        [self setIndexOfVisibleBackView:nil];
 	}
 }
 
