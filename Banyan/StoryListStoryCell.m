@@ -7,12 +7,77 @@
 //
 
 #import "StoryListStoryCell.h"
+#import <AssetsLibrary/AssetsLibrary.h>
+#import <QuartzCore/QuartzCore.h>
+
+@interface StoryListStoryCell ()
+@property (nonatomic, strong) IBOutlet UILabel *storyTitleLabel;
+@property (nonatomic, strong) IBOutlet UIImageView *storyImageView;
+@property (nonatomic, strong) IBOutlet UILabel *storyLocationLabel;
+@end
 
 @implementation StoryListStoryCell
 
 @synthesize storyTitleLabel = _storyTitleLabel;
 @synthesize storyImageView = _storyImageView;
 @synthesize storyLocationLabel = _storyLocationLabel;
+@synthesize story = _story;
+
+- (void)setStory:(Story *)story
+{
+    _story = story;
+    self.storyTitleLabel.text = story.title;
+    self.storyTitleLabel.font = [UIFont fontWithName:STORY_FONT size:20];
+    
+    if (story.imageURL) {
+        self.storyTitleLabel.textColor = [UIColor whiteColor];
+        self.storyLocationLabel.textColor = [UIColor whiteColor];
+    } else {
+        self.storyTitleLabel.textColor = [UIColor blackColor];
+        self.storyLocationLabel.textColor = [UIColor grayColor];
+    }
+    
+    CGSize cellImageSize = self.storyImageView.frame.size;
+    if (story.imageURL && [story.imageURL rangeOfString:@"asset"].location == NSNotFound) {
+        [self.storyImageView setImageWithURL:[NSURL URLWithString:story.imageURL] placeholderImage:story.image];
+        NSURLRequest *imageReq = [NSURLRequest requestWithURL:[NSURL URLWithString:story.imageURL]];
+        
+        [self.storyImageView setImageWithURLRequest:imageReq
+                                   placeholderImage:story.image
+                                            success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                                image = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill
+                                                                                    bounds:cellImageSize
+                                                                      interpolationQuality:kCGInterpolationHigh];
+                                            }
+                                            failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                                                NSLog(@"***** ERROR IN GETTING IMAGE ***\nCan't find the image");
+                                            }];
+    } else if (story.imageURL) {
+        ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
+        [library assetForURL:[NSURL URLWithString:story.imageURL] resultBlock:^(ALAsset *asset) {
+            ALAssetRepresentation *rep = [asset defaultRepresentation];
+            CGImageRef imageRef = [rep fullScreenImage];
+            UIImage *image = [UIImage imageWithCGImage:imageRef];
+            image = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill
+                                                bounds:cellImageSize
+                                  interpolationQuality:kCGInterpolationHigh];
+            [self.storyImageView setImage:image];
+        }
+                failureBlock:^(NSError *error) {
+                    NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
+                }
+         ];
+    } else {
+        // if there is no image, just get a white image
+        UIImage *image = [UIImage imageWithColor:[UIColor whiteColor] forRect:self.storyImageView.frame];
+        [self.storyImageView setImage:image];
+    }
+    
+    if (story.isLocationEnabled && ![story.geocodedLocation isEqual:[NSNull null]]) {
+        // add the location information about the cells
+        self.storyLocationLabel.text = story.geocodedLocation;
+    }
+}
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -56,43 +121,55 @@
 {
 #define BUTTON_LEFT_MARGIN 10.0
 #define BUTTON_SPACING 80.0
-    NSArray *buttonData = [NSArray arrayWithObjects:
-                           [NSDictionary dictionaryWithObjectsAndKeys:@"Add-Scene", @"title", @"addScene:", @"selector", [UIColor colorWithRed:44/255.0 green:127/255.0 blue:84/255.0 alpha:1], @"color", nil],
-                           [NSDictionary dictionaryWithObjectsAndKeys:@"Delete-Story", @"title", @"deleteStoryAlert:", @"selector", [UIColor redColor], @"color", nil],
-                           nil];
-    
-    // Iterate through the button data and create a button for each entry
-    CGFloat leftEdge = BUTTON_LEFT_MARGIN;
-    for (NSDictionary* buttonInfo in buttonData)
+    if (self.story.canContribute)
     {
-        // Create the button
-        UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
+        NSArray *buttonData = [NSArray arrayWithObjects:
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"Add-Scene", @"title", @"addScene:", @"selector", [UIColor colorWithRed:44/255.0 green:127/255.0 blue:84/255.0 alpha:1], @"color", nil],
+                               [NSDictionary dictionaryWithObjectsAndKeys:@"Delete-Story", @"title", @"deleteStoryAlert:", @"selector", [UIColor redColor], @"color", nil],
+                               nil];
         
-        // Make sure the button ends up in the right place when the cell is resized
-        button.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
-        
-        // Get the button image
-        UIImage* buttonImage = [UIImage imageFromText:[buttonInfo objectForKey:@"title"] withSize:16];
-        
-        // Set the button's frame
-        button.frame = CGRectMake(leftEdge, self.backView.center.y - buttonImage.size.height/2.0, buttonImage.size.width, buttonImage.size.height);
-        
-        // Add the image as the button's background image
-        UIImage* colorImage = [UIImage imageFilledWith:[UIColor whiteColor] using:buttonImage];
-        [button setImage:colorImage forState:UIControlStateNormal];
-        UIImage* backgroundImage = [UIImage imageWithColor:[buttonInfo objectForKey:@"color"] forRect:CGRectMake(0, 0, buttonImage.size.width, buttonImage.size.height)];
-        [button setBackgroundImage:backgroundImage forState:UIControlStateNormal];
-        UIImage* bkgHighlightedImage = [UIImage imageWithColor:[UIColor brownColor] forRect:CGRectMake(0, 0, buttonImage.size.width, buttonImage.size.height)];
-        [button setBackgroundImage:bkgHighlightedImage forState:UIControlStateSelected];
-        
-        // Add a touch up inside action
-        [button addTarget:self action:NSSelectorFromString([buttonInfo objectForKey:@"selector"]) forControlEvents:UIControlEventTouchUpInside];
-        
-        // Add the button to the side swipe view
-        [self.backView addSubview:button];
-        
-        // Move the left edge in prepartion for the next button
-        leftEdge = leftEdge + buttonImage.size.width + BUTTON_SPACING;
+        // Iterate through the button data and create a button for each entry
+        CGFloat leftEdge = BUTTON_LEFT_MARGIN;
+        for (NSDictionary* buttonInfo in buttonData)
+        {
+            // Create the button
+            UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
+            
+            // Make sure the button ends up in the right place when the cell is resized
+            button.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
+            
+            // Get the button image
+            UIImage* buttonImage = [UIImage imageFromText:[buttonInfo objectForKey:@"title"] withSize:16];
+            
+            // Set the button's frame
+            button.frame = CGRectMake(leftEdge, self.backView.center.y - buttonImage.size.height/2.0, buttonImage.size.width, buttonImage.size.height);
+            
+            // Add the image as the button's background image
+            UIImage* colorImage = [UIImage imageFilledWith:[UIColor whiteColor] using:buttonImage];
+            [button setImage:colorImage forState:UIControlStateNormal];
+            UIImage* backgroundImage = [UIImage imageWithColor:[buttonInfo objectForKey:@"color"] forRect:CGRectMake(0, 0, buttonImage.size.width, buttonImage.size.height)];
+            [button setBackgroundImage:backgroundImage forState:UIControlStateNormal];
+            UIImage* bkgHighlightedImage = [UIImage imageWithColor:[UIColor brownColor] forRect:CGRectMake(0, 0, buttonImage.size.width, buttonImage.size.height)];
+            [button setBackgroundImage:bkgHighlightedImage forState:UIControlStateSelected];
+            
+            // Add a touch up inside action
+            [button addTarget:self action:NSSelectorFromString([buttonInfo objectForKey:@"selector"]) forControlEvents:UIControlEventTouchUpInside];
+            
+            // Add the button to the side swipe view
+            [self.backView addSubview:button];
+            
+            // Move the left edge in prepartion for the next button
+            leftEdge = leftEdge + buttonImage.size.width + BUTTON_SPACING;
+        }
+    } else {
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, self.frame.size.width, TABLE_ROW_HEIGHT-30)];
+        label.font = [UIFont systemFontOfSize:15];
+        label.text = @"You do not have permission to modify this story";
+        label.textAlignment = NSTextAlignmentCenter;
+        label.backgroundColor = [UIColor colorWithRed:136/255.0 green:103/255.0 blue:68/255.0 alpha:1];
+        [label.layer setCornerRadius:4];
+
+        [self.backView addSubview:label];
     }
 }
 

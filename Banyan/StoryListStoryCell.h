@@ -13,13 +13,14 @@
 #import "UIImage+AlphaAdditions.h"
 #import "TISwipeableTableView.h"
 #import "UIImage+Create.h"
+#import "Story.h"
+#import "Story_Defines.h"
 
 #define TABLE_CELL_MARGIN 10.0
 #define TABLE_ROW_HEIGHT 60.0
 
 @interface StoryListStoryCell : TISwipeableTableViewCell <UIAlertViewDelegate>
 
-@property (nonatomic, strong) IBOutlet UILabel *storyTitleLabel;
-@property (nonatomic, strong) IBOutlet UIImageView *storyImageView;
-@property (nonatomic, strong) IBOutlet UILabel *storyLocationLabel;
+@property (nonatomic, strong) IBOutlet Story* story;
+
 @end

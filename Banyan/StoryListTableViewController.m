@@ -197,58 +197,8 @@ typedef enum {
     
     // Configure the cell...
     Story *story = [self.dataSource objectAtIndex:indexPath.row];
+    [cell setStory:story];
     
-    cell.storyTitleLabel.text = story.title;
-    cell.storyTitleLabel.font = [UIFont fontWithName:STORY_FONT size:20];
-    
-    if (story.imageURL) {
-        cell.storyTitleLabel.textColor = [UIColor whiteColor];
-        cell.storyLocationLabel.textColor = [UIColor whiteColor];
-    } else {
-        cell.storyTitleLabel.textColor = [UIColor blackColor];
-        cell.storyLocationLabel.textColor = [UIColor grayColor];
-    }
-
-    CGSize cellImageSize = cell.storyImageView.frame.size;
-    if (story.imageURL && [story.imageURL rangeOfString:@"asset"].location == NSNotFound) {
-        [cell.storyImageView setImageWithURL:[NSURL URLWithString:story.imageURL] placeholderImage:story.image];
-        NSURLRequest *imageReq = [NSURLRequest requestWithURL:[NSURL URLWithString:story.imageURL]];
-        
-        [cell.storyImageView setImageWithURLRequest:imageReq
-                                   placeholderImage:story.image
-                                            success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                                image = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill
-                                                                                    bounds:cellImageSize
-                                                                      interpolationQuality:kCGInterpolationHigh];
-                                            }
-                                            failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                                NSLog(@"***** ERROR IN GETTING IMAGE ***\nCan't find the image");
-                                            }];
-    } else if (story.imageURL) {
-        ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
-        [library assetForURL:[NSURL URLWithString:story.imageURL] resultBlock:^(ALAsset *asset) {
-            ALAssetRepresentation *rep = [asset defaultRepresentation];
-            CGImageRef imageRef = [rep fullScreenImage];
-            UIImage *image = [UIImage imageWithCGImage:imageRef];
-            image = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill
-                                                bounds:cellImageSize
-                                  interpolationQuality:kCGInterpolationHigh];
-            [cell.storyImageView setImage:image];
-        }
-                failureBlock:^(NSError *error) {
-                    NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
-                }
-         ];
-    } else {
-        // if there is no image, just get a white image
-        UIImage *image = [UIImage imageWithColor:[UIColor whiteColor] forRect:cell.storyImageView.frame];
-        [cell.storyImageView setImage:image];
-    }
-
-    if (story.isLocationEnabled && ![story.geocodedLocation isEqual:[NSNull null]]) {
-        // add the location information about the cells
-        cell.storyLocationLabel.text = story.geocodedLocation;
-    }
     return cell;
 }
 
