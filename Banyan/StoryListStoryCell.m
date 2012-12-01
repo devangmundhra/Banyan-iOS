@@ -72,7 +72,7 @@
         button.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
         
         // Get the button image
-        UIImage* buttonImage = [UIImage imageFromText:[buttonInfo objectForKey:@"title"]];
+        UIImage* buttonImage = [UIImage imageFromText:[buttonInfo objectForKey:@"title"] withSize:16];
         
         // Set the button's frame
         button.frame = CGRectMake(leftEdge, self.backView.center.y - buttonImage.size.height/2.0, buttonImage.size.width, buttonImage.size.height);

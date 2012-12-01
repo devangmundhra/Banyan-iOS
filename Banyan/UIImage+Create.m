@@ -38,10 +38,10 @@
 }
 
 // Get an image from text
-+ (UIImage *) imageFromText:(NSString *)text
++ (UIImage *) imageFromText:(NSString *)text withSize:(CGFloat)size
 {
     // set the font type and size
-    UIFont *font = [UIFont systemFontOfSize:12.0];
+    UIFont *font = [UIFont systemFontOfSize:size];
     CGSize size  = [text sizeWithFont:font];
     
     // check if UIGraphicsBeginImageContextWithOptions is available (iOS is 4.0+)
