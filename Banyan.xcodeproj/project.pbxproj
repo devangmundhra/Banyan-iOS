@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5103FB9F166898960095B11F /* UIImage+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 5103FB9E166898960095B11F /* UIImage+Create.m */; };
+		5103FBAB1669ED2C0095B11F /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51AB7A051626917E00EF849A /* libTestFlight.a */; };
 		510787C6163A36A90042B436 /* UIImage+AlphaAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787C1163A36A90042B436 /* UIImage+AlphaAdditions.m */; };
 		510787C7163A36A90042B436 /* UIImage+ResizeAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787C3163A36A90042B436 /* UIImage+ResizeAdditions.m */; };
 		510787C8163A36A90042B436 /* UIImage+RoundedCornerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787C5163A36A90042B436 /* UIImage+RoundedCornerAdditions.m */; };
@@ -26,9 +27,7 @@
 		511E708B161A9756009AAD25 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708A161A9756009AAD25 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		511E708E161A977F009AAD25 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
 		5157CD031650902900C22CCE /* BanyanConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD021650902900C22CCE /* BanyanConnection.m */; };
-		5157CD1816549BBC00C22CCE /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 5157CD1416549BBC00C22CCE /* README.markdown */; };
 		5157CD1916549BBC00C22CCE /* TITokenField.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD1616549BBC00C22CCE /* TITokenField.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		5157CD1A16549C2900C22CCE /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51AB7A051626917E00EF849A /* libTestFlight.a */; };
 		5157CD251659E5A300C22CCE /* ComposeTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD241659E5A300C22CCE /* ComposeTextViewController.m */; };
 		5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B615E75B420072749C /* buttonFacebook.png */; };
 		5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B715E75B420072749C /* buttonFacebook@2x.png */; };
@@ -108,8 +107,6 @@
 		5189B45715B3A38E00562DD0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3C415B39BD100562DD0 /* QuartzCore.framework */; };
 		518AF02E162539D300480D5A /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 518AF02D162539D300480D5A /* Parse.framework */; };
 		519AFA7215C26F5D00F68F3C /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */; };
-		51AB7A0A1626917E00EF849A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 51AB7A061626917E00EF849A /* README.md */; };
-		51AB7A0B1626917E00EF849A /* release_notes.md in Resources */ = {isa = PBXBuildFile; fileRef = 51AB7A071626917E00EF849A /* release_notes.md */; };
 		51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B5989D15EB31B300DF4D9D /* BanyanConstants.m */; };
 		51CFD92915F1F260002926F9 /* SettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD92715F1F260002926F9 /* SettingsTableViewController.m */; };
 		51CFD93615F3E80B002926F9 /* FollowingFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD93515F3E80B002926F9 /* FollowingFriendsViewController.m */; };
@@ -128,7 +125,6 @@
 		51F22888161A9DE4006B3AA7 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F22887161A9DE4006B3AA7 /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		51F2288A161A9DF2006B3AA7 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F22889161A9DF2006B3AA7 /* StoreKit.framework */; };
 		51F2288C161A9E22006B3AA7 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F2288B161A9E22006B3AA7 /* Default-568h@2x.png */; };
-		51FD96E81665D651001A1709 /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 51FD96E51665D651001A1709 /* README.markdown */; };
 		51FD96E91665D651001A1709 /* TISwipeableTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 51FD96E71665D651001A1709 /* TISwipeableTableView.m */; };
 		51FD96ED1665E6C7001A1709 /* dotted-pattern.png in Resources */ = {isa = PBXBuildFile; fileRef = 51FD96EB1665E6C7001A1709 /* dotted-pattern.png */; };
 		51FD96EE1665E6C7001A1709 /* dotted-pattern@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51FD96EC1665E6C7001A1709 /* dotted-pattern@2x.png */; };
@@ -351,7 +347,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5157CD1A16549C2900C22CCE /* libTestFlight.a in Frameworks */,
+				5103FBAB1669ED2C0095B11F /* libTestFlight.a in Frameworks */,
 				51F2288A161A9DF2006B3AA7 /* StoreKit.framework in Frameworks */,
 				51F22888161A9DE4006B3AA7 /* Social.framework in Frameworks */,
 				51F22885161A9DC1006B3AA7 /* AdSupport.framework in Frameworks */,
@@ -961,10 +957,6 @@
 				51CFD94A15F58337002926F9 /* buttonFollowSelected.png in Resources */,
 				51CFD94B15F58337002926F9 /* buttonFollowSelected@2x.png in Resources */,
 				51F2288C161A9E22006B3AA7 /* Default-568h@2x.png in Resources */,
-				51AB7A0A1626917E00EF849A /* README.md in Resources */,
-				51AB7A0B1626917E00EF849A /* release_notes.md in Resources */,
-				5157CD1816549BBC00C22CCE /* README.markdown in Resources */,
-				51FD96E81665D651001A1709 /* README.markdown in Resources */,
 				51FD96ED1665E6C7001A1709 /* dotted-pattern.png in Resources */,
 				51FD96EE1665E6C7001A1709 /* dotted-pattern@2x.png in Resources */,
 			);
@@ -1134,7 +1126,6 @@
 				INFOPLIST_FILE = "Banyan/Banyan-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/TestFlightSDK1.0\"",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/TestFlightSDK1.2beta2\"",
 				);
@@ -1155,7 +1146,6 @@
 				INFOPLIST_FILE = "Banyan/Banyan-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/TestFlightSDK1.0\"",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/TestFlightSDK1.2beta2\"",
 				);

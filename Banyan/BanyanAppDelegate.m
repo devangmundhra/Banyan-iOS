@@ -31,11 +31,10 @@
     if ([defaults objectForKey:@"UUID"]) {
         [TestFlight setDeviceIdentifier:[defaults objectForKey:@"UUID"]];
     } else {
-        //        CFUUIDRef theUUID = CFUUIDCreate(NULL);
-        //        CFStringRef string = CFUUIDCreateString(NULL, theUUID);
-        //        CFRelease(theUUID);
-        //        NSString *uuidString = (__bridge_transfer NSString *)string;
-        NSString *uuidString = [[UIDevice currentDevice] uniqueIdentifier];
+        CFUUIDRef theUUID = CFUUIDCreate(NULL);
+        CFStringRef string = CFUUIDCreateString(NULL, theUUID);
+        CFRelease(theUUID);
+        NSString *uuidString = (__bridge_transfer NSString *)string;
         [defaults setObject:uuidString forKey:@"UUID"];
         [defaults synchronize];
         [TestFlight setDeviceIdentifier:uuidString];
