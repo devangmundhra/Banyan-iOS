@@ -7,21 +7,58 @@
 //
 
 #import "BNLocationManager.h"
+#import "AFGoogleAPIClient.h"
+#import "BanyanAppDelegate.h"
+
+@interface BNLocationManager ()
+@property (strong, nonatomic) CLLocation *bestEffortAtLocation;
+@property (strong, nonatomic) NSArray *locationsNearThisLocation;
+@end
 
 @implementation BNLocationManager
 
 static CLLocationManager *_sharedLocationManager;
 
 @synthesize location = _location;
-@synthesize locationString = _locationString;
 @synthesize delegate = _delegate;
 @synthesize locationStatus = _locationStatus;
+@synthesize bestEffortAtLocation = _bestEffortAtLocation;
+@synthesize locationPickerViewController = _locationPickerViewController;
+@synthesize locationsNearThisLocation = _locationsNearThisLocation;
 
 - (void)setLocationStatus:(NSString *)locationStatus
 {
     _locationStatus = locationStatus;
     // Also let the delegate know that we have a new string so that it can use it
     [self.delegate locationUpdated];
+}
+
+- (void)setLocationsNearThisLocation:(NSArray *)locationsNearThisLocation
+{
+    _locationsNearThisLocation = locationsNearThisLocation;
+    self.location = [locationsNearThisLocation objectAtIndex:0];
+    self.locationStatus = self.location.name;
+    [self showLocationPickerTableViewController];
+}
+
+- (LocationPickerTableViewController *)locationPickerViewController
+{
+    if (!_locationPickerViewController) {
+        _locationPickerViewController = [[LocationPickerTableViewController alloc] initWithStyle:UITableViewStylePlain];
+        _locationPickerViewController.delegate = self;
+    }
+    return _locationPickerViewController;
+}
+
+- (id)initWithDelegate:(id<BNLocationManagerDelegate>)delegate
+{
+    self = [super init];
+    if (self) {
+        _location = nil;
+        _delegate = delegate;
+        _locationStatus = @"Finding location...";
+    }
+    return self;
 }
 
 # pragma mark class methods
@@ -31,7 +68,7 @@ static CLLocationManager *_sharedLocationManager;
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
             _sharedLocationManager = [[CLLocationManager alloc] init];
-            _sharedLocationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
+            _sharedLocationManager.desiredAccuracy = kCLLocationAccuracyBest; // kCLLocationAccuracyNearestTenMeters;
             NSLog(@"%s Initialized shared location manager", __PRETTY_FUNCTION__);
         });
     }
@@ -61,14 +98,19 @@ static CLLocationManager *_sharedLocationManager;
     // test that the horizontal accuracy does not indicate an invalid measurement
     if (newLocation.horizontalAccuracy < 0) return;
     // test the measurement to see if it is more accurate than the previous measurement
-    if (self.location == nil || self.location.horizontalAccuracy > newLocation.horizontalAccuracy) {
+    if (self.bestEffortAtLocation == nil || self.bestEffortAtLocation.horizontalAccuracy > newLocation.horizontalAccuracy) {
         // store the location as the "best effort"
-        self.location = newLocation;
-        
-        [self reverseGeoCodedLocation:self.location];
+        self.bestEffortAtLocation = newLocation;
+        [self getNearbyLocations:newLocation];
         
         // test the measurement to see if it meets the desired accuracy
-        if (newLocation.horizontalAccuracy <= _sharedLocationManager.desiredAccuracy) {
+        // IMPORTANT!!! kCLLocationAccuracyBest should not be used for comparison with location coordinate or altitidue
+        // accuracy because it is a negative value. Instead, compare against some predetermined "real" measure of
+        // acceptable accuracy, or depend on the timeout to stop updating. This sample depends on a 5m acceptable accuracy
+        //
+        if (newLocation.horizontalAccuracy <= 5) {
+            // IMPORTANT!!! Minimize power usage by stopping the location manager as soon as possible.
+
             [self stopUpdatingLocation:self.locationStatus];
         }
     }
@@ -95,37 +137,13 @@ static CLLocationManager *_sharedLocationManager;
 
 
 # pragma mark BNLocationManager
-- (void) reverseGeoCodedLocation:(CLLocation *)location
-{
-    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
-    [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
-        if (error) {
-            NSLog(@"%s Error in geocoding location data. Error %@", __PRETTY_FUNCTION__, error);
-        } else {
-            if (placemarks && placemarks.count > 0) {
-                //do something
-                CLPlacemark *topResult = [placemarks objectAtIndex:0];
-                NSString *addressTxt = [NSString stringWithFormat:@"%@, %@ %@",
-                                        [topResult thoroughfare],
-                                        [topResult locality], [topResult administrativeArea]];
-                NSLog(@"%@",addressTxt);
-                self.locationString = addressTxt;
-                self.locationStatus = self.locationString;
-                [TestFlight passCheckpoint:@"Got Location"];
-            }
-        }
-    }];
-}
-
 - (void)beginUpdatingLocation
 {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(stopUpdatingLocation:) object:nil];
+    [self.delegate locationUpdated];
     _sharedLocationManager.delegate = self;
-    self.location = nil;
-    self.locationString = nil;
-    self.locationStatus = @"Finding location...";
     [_sharedLocationManager startUpdatingLocation];
-
+    
 }
 
 - (void)stopUpdatingLocation:(NSString *)state
@@ -133,6 +151,146 @@ static CLLocationManager *_sharedLocationManager;
     self.locationStatus = state;
     [_sharedLocationManager stopUpdatingLocation];
     _sharedLocationManager.delegate = nil;
+}
+
+- (void) getNearbyLocations:(CLLocation *)location
+{
+    NSString *coords = [NSString stringWithFormat:@"%f,%f", location.coordinate.latitude, location.coordinate.longitude];
+    NSString *types =[NSString stringWithFormat:@"%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@",
+                      kBar,
+                      kRestaurant,
+                      kCafe,
+                      kBakery,
+                      kFood,
+                      kLodging,
+                      kMealDelivery,
+                      kMealTakeaway,
+                      kNightClub,
+                      kEstablishment,
+                      kGeocode,
+                      kLodging,
+                      kUniversity];
+                       
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    [parameters setObject:GOOGLE_API_KEY forKey:@"key"];
+    [parameters setObject:coords forKey:@"location"];
+    [parameters setObject:types forKey:@"types"];
+    [parameters setObject:@"distance" forKey:@"rankby"];
+    [parameters setObject:@"true" forKey:@"sensor"];
+    
+    [[AFGoogleAPIClient sharedClient] getPath:GOOGLE_API_NEARBY_PLACES_URL()
+                                   parameters:parameters
+                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                          NSDictionary *results = (NSDictionary *)responseObject;
+                                          if (![[results objectForKey:@"status"] isEqualToString:GOOGLE_API_ERROR_STATUS]) {
+                                              if (![[results objectForKey:@"status"] isEqualToString:GOOGLE_API_NO_RESULTS_STATUS]) {
+                                                  NSDictionary *gResponseData  = [results objectForKey: @"results"];
+                                                  NSMutableArray *googlePlacesObjects = [NSMutableArray arrayWithCapacity:[[results objectForKey:@"results"] count]];
+                                                  
+                                                  for (NSDictionary *result in gResponseData)
+                                                  {
+                                                      [googlePlacesObjects addObject:result];
+                                                  }
+                                                  
+                                                  for (int x=0; x<[googlePlacesObjects count]; x++)
+                                                  {
+                                                      GooglePlacesObject *object = [[GooglePlacesObject alloc] initWithJsonResultDict:[googlePlacesObjects objectAtIndex:x] andUserCoordinates:location.coordinate];
+                                                      [googlePlacesObjects replaceObjectAtIndex:x withObject:object];
+                                                  }
+                                                  
+                                                  self.locationsNearThisLocation = [googlePlacesObjects copy];
+                                              }
+                                          } else {
+                                              [TestFlight passCheckpoint:[NSString stringWithFormat:@"Invalid Google Maps API request %@", operation]];
+                                          }
+                                      }
+                                      failure:AF_GOOGLE_ERROR_BLOCK()];
+    
+    return;
+}
+
+-(void)getGoogleObjectsWithQuery:(NSString *)query
+                  andCoordinates:(CLLocationCoordinate2D)coords
+{
+    NSString *coordsString = [NSString stringWithFormat:@"%f,%f", coords.latitude, coords.longitude];
+    NSString *types =[NSString stringWithFormat:@"%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@",
+                      kBar,
+                      kRestaurant,
+                      kCafe,
+                      kBakery,
+                      kFood,
+                      kLodging,
+                      kMealDelivery,
+                      kMealTakeaway,
+                      kNightClub,
+                      kEstablishment,
+                      kGeocode,
+                      kLodging,
+                      kUniversity];
+    
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    [parameters setObject:GOOGLE_API_KEY forKey:@"key"];
+    [parameters setObject:coordsString forKey:@"location"];
+    [parameters setObject:types forKey:@"types"];
+    [parameters setObject:@"1000" forKey:@"radius"];
+    [parameters setObject:@"true" forKey:@"sensor"];
+    [parameters setObject:query forKey:@"name"];
+    
+    [[AFGoogleAPIClient sharedClient] getPath:GOOGLE_API_SEARCH_PLACES_URL()
+                                   parameters:parameters
+                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                          NSDictionary *results = (NSDictionary *)responseObject;
+                                          if (![[results objectForKey:@"status"] isEqualToString:GOOGLE_API_ERROR_STATUS]) {
+                                              if (![[results objectForKey:@"status"] isEqualToString:GOOGLE_API_NO_RESULTS_STATUS]) {
+                                                  NSDictionary *gResponseData  = [results objectForKey: @"results"];
+                                                  NSMutableArray *googlePlacesObjects = [NSMutableArray arrayWithCapacity:[[results objectForKey:@"results"] count]];
+                                                  
+                                                  for (NSDictionary *result in gResponseData)
+                                                  {
+                                                      [googlePlacesObjects addObject:result];
+                                                  }
+                                                  
+                                                  for (int x=0; x<[googlePlacesObjects count]; x++)
+                                                  {
+                                                      GooglePlacesObject *object = [[GooglePlacesObject alloc] initWithJsonResultDict:[googlePlacesObjects objectAtIndex:x] andUserCoordinates:coords];
+                                                      [googlePlacesObjects replaceObjectAtIndex:x withObject:object];
+                                                  }
+                                                  [self.locationPickerViewController locationManagerDidFinishLoadingWithGooglePlacesObjects:googlePlacesObjects];
+                                              }
+                                          } else {
+                                              [TestFlight passCheckpoint:[NSString stringWithFormat:@"Invalid Google Maps API request %@", operation]];
+                                          }
+                                      }
+                                      failure:AF_GOOGLE_ERROR_BLOCK()];
+}
+
+- (void) showLocationPickerTableViewController
+{
+    [self beginUpdatingLocation];
+    self.locationPickerViewController.currentLocation = self.bestEffortAtLocation;
+    self.locationPickerViewController.locations = [self.locationsNearThisLocation mutableCopy];
+    self.locationPickerViewController.locationsFilterResults = self.locationPickerViewController.locations;
+    if ([self.delegate isKindOfClass:[UIViewController class]]) {
+        [[(UIViewController *)self.delegate navigationController] pushViewController:self.locationPickerViewController animated:YES];
+    }
+}
+
+#pragma mark LocationPickerTableViewControllerDelegate
+- (void)locationPickerTableViewControllerDidCancel
+{
+    if ([self.delegate isKindOfClass:[UIViewController class]]) {
+        [[(UIViewController *)self.delegate navigationController] popViewControllerAnimated:YES];
+    }
+}
+
+- (void)locationPickerTableViewControllerPickedLocation:(GooglePlacesObject *)place
+{
+    self.location = place;
+    self.locationStatus = self.location.name;
+    [self stopUpdatingLocation:self.locationStatus];
+    if ([self.delegate isKindOfClass:[UIViewController class]]) {
+        [[(UIViewController *)self.delegate navigationController] popViewControllerAnimated:YES];
+    }
 }
 
 @end

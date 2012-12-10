@@ -240,7 +240,7 @@
                                          forKey:SCENE_LATITUDE];
                 [attributes setObject:[NSNumber numberWithDouble:coord.longitude]
                                          forKey:SCENE_LONGITUDE];
-                [attributes setObject:REPLACE_NIL_WITH_NULL(self.locationManager.locationString) forKey:SCENE_GEOCODEDLOCATION];
+                [attributes setObject:REPLACE_NIL_WITH_NULL(self.locationManager.location.name) forKey:SCENE_GEOCODEDLOCATION];
             }
         }
         
@@ -525,7 +525,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 # pragma mark BNLocationManagerDelegate
 - (void) locationUpdated
 {
-    self.locationLabel.text = self.locationManager.locationString;
+    self.locationLabel.text = self.locationManager.locationStatus;
 }
 
 # pragma mark - Keyboard notifications

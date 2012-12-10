@@ -27,6 +27,8 @@
 #define FACEBOOK_APP_ID @"244613942300893"
 #define TESTFLIGHT_BANYAN_TEAM_TOKEN @"072cbecbb96cfd6e4593af01f8bbfb72_MTAyMjk0MjAxMi0wNi0yOCAwMToyNTo0OC43NDAyMzU"
 
+#define GOOGLE_API_KEY @"AIzaSyBwOBP068EO-Ubi0Qzu8uwFnZZHaIVwNyg"
+
 @interface BanyanAppDelegate : UIResponder <UIApplicationDelegate> {
     UserManagementModule *userManagementModule;
 }

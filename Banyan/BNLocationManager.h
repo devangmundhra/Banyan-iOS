@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreLocation/CoreLocation.h>
+#import "GooglePlacesObject.h"
+#import "LocationPickerTableViewController.h"
 
 #define FINDING_LOCATION_STRING @"Finding location..."
 
@@ -17,15 +18,16 @@
 
 @end
 
-@interface BNLocationManager : NSObject <CLLocationManagerDelegate>
+@interface BNLocationManager : NSObject <CLLocationManagerDelegate, LocationPickerTableViewControllerDelegate>
 
-@property (nonatomic, strong) CLLocation *location;
-@property (nonatomic, strong) NSString *locationString;
+@property (nonatomic, strong) GooglePlacesObject *location;
 @property (nonatomic, strong) NSString *locationStatus;
 @property (nonatomic, weak) id <BNLocationManagerDelegate> delegate;
+@property (nonatomic, strong) LocationPickerTableViewController *locationPickerViewController;
 
+- (id)initWithDelegate:(id<BNLocationManagerDelegate>)delegate;
 - (void) beginUpdatingLocation;
 - (void) stopUpdatingLocation:(NSString *)state;
-- (void) reverseGeoCodedLocation:(CLLocation *)location;
+- (void) getNearbyLocations:(CLLocation *)location;
 
 @end

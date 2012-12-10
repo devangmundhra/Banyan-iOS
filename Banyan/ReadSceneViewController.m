@@ -104,11 +104,11 @@
     
     if (![self.scene.geocodedLocation isEqual:[NSNull null]] && self.scene.geocodedLocation)
         self.locationLabel.text = self.scene.geocodedLocation;
-    else if (self.scene.story.isLocationEnabled && ![self.scene.location isEqual:[NSNull null]]) {
-        self.locationManager = [[BNLocationManager alloc] init];
-        self.locationManager.delegate = self;
-        [self.locationManager reverseGeoCodedLocation:self.scene.location];
-    }
+    // Update the scene location from the coordinates (if we were not able to get the reverse geocoded location before)
+//    else if (self.scene.story.isLocationEnabled && ![self.scene.location isEqual:[NSNull null]]) {
+//        self.locationManager = [[BNLocationManager alloc] initWithDelegate:self];
+//        [self.locationManager getNearbyLocations:self.scene.location];
+//    }
 
     if (self.scene.image || self.scene.imageURL) {
         self.sceneTextView.textColor = self.storyTitleLabel.textColor = [UIColor whiteColor];

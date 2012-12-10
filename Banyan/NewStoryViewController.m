@@ -139,8 +139,9 @@ typedef enum {
 {
     [super viewDidAppear:animated];
     [self registerForKeyboardNotifications];
-    self.locationManager = [[BNLocationManager alloc] init];
-    self.locationManager.delegate = self;
+    if (!self.locationManager) {
+        self.locationManager = [[BNLocationManager alloc] initWithDelegate:self];
+    }
     if (self.showLocationSwitch.on) {
         [self.locationManager beginUpdatingLocation];
     }
@@ -250,13 +251,13 @@ typedef enum {
         [self.storyAttributes setObject:[NSNumber numberWithBool:YES] forKey:STORY_LOCATION_ENABLED];
         if (self.locationManager.location) {
             
-            CLLocationCoordinate2D coord = [self.locationManager.location coordinate];
+            CLLocationCoordinate2D coord = self.locationManager.location.coordinate;
             
             [self.storyAttributes setObject:[NSNumber numberWithDouble:coord.latitude]
                                      forKey:STORY_LATITUDE];
             [self.storyAttributes setObject:[NSNumber numberWithDouble:coord.longitude]
                                      forKey:STORY_LONGITUDE];
-            [self.storyAttributes setObject:REPLACE_NIL_WITH_NULL(self.locationManager.locationString) forKey:STORY_GEOCODEDLOCATION];
+            [self.storyAttributes setObject:REPLACE_NIL_WITH_NULL(self.locationManager.location.name) forKey:STORY_GEOCODEDLOCATION];
         }
     } else  {
         [self.storyAttributes setObject:[NSNumber numberWithBool:NO] forKey:STORY_LOCATION_ENABLED];
@@ -379,7 +380,7 @@ typedef enum {
     if (self.showLocationSwitch.on) {
         [self.locationManager beginUpdatingLocation];
     } else {
-        [self.locationManager stopUpdatingLocation:nil];
+        [self.locationManager stopUpdatingLocation:@""];
     }
 }
 

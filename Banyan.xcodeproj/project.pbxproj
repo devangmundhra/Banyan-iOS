@@ -106,6 +106,9 @@
 		5189B3CB15B39E7400562DD0 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5189B3CA15B39E7400562DD0 /* MainStoryboard.storyboard */; };
 		5189B45715B3A38E00562DD0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3C415B39BD100562DD0 /* QuartzCore.framework */; };
 		518AF02E162539D300480D5A /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 518AF02D162539D300480D5A /* Parse.framework */; };
+		519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 519232A01671CC57009686E4 /* AFGoogleAPIClient.m */; };
+		5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 5192332616743F02009686E4 /* GooglePlacesObject.m */; };
+		519233331675305F009686E4 /* LocationPickerTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 519233311675305F009686E4 /* LocationPickerTableViewController.m */; };
 		519AFA7215C26F5D00F68F3C /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */; };
 		51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B5989D15EB31B300DF4D9D /* BanyanConstants.m */; };
 		51CFD92915F1F260002926F9 /* SettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD92715F1F260002926F9 /* SettingsTableViewController.m */; };
@@ -306,6 +309,12 @@
 		5189B3C815B39BE700562DD0 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		5189B3CA15B39E7400562DD0 /* MainStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MainStoryboard.storyboard; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		518AF02D162539D300480D5A /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
+		5192329F1671CC57009686E4 /* AFGoogleAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFGoogleAPIClient.h; path = Banyan/AFGoogleAPIClient.h; sourceTree = "<group>"; };
+		519232A01671CC57009686E4 /* AFGoogleAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFGoogleAPIClient.m; path = Banyan/AFGoogleAPIClient.m; sourceTree = "<group>"; };
+		5192332516743F02009686E4 /* GooglePlacesObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GooglePlacesObject.h; path = Banyan/GooglePlacesObject.h; sourceTree = "<group>"; };
+		5192332616743F02009686E4 /* GooglePlacesObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GooglePlacesObject.m; path = Banyan/GooglePlacesObject.m; sourceTree = "<group>"; };
+		519233301675305F009686E4 /* LocationPickerTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationPickerTableViewController.h; path = Banyan/LocationPickerTableViewController.h; sourceTree = "<group>"; };
+		519233311675305F009686E4 /* LocationPickerTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationPickerTableViewController.m; path = Banyan/LocationPickerTableViewController.m; sourceTree = "<group>"; };
 		519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		51AB7A051626917E00EF849A /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
 		51AB7A061626917E00EF849A /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
@@ -470,6 +479,7 @@
 				5189B35315B3967A00562DD0 /* New Story */,
 				5189B35915B3971400562DD0 /* Read and Edit Scenes */,
 				5189B35215B3965A00562DD0 /* Model */,
+				5192332416743EB7009686E4 /* Location */,
 				5189B35115B3964000562DD0 /* Networking Extensions */,
 				5189B35815B396FA00562DD0 /* Data handling */,
 				5189B35B15B3976700562DD0 /* Story List */,
@@ -503,6 +513,8 @@
 				5189B2D615B395F300562DD0 /* AFParseAPIClient.m */,
 				510787CD163A36D80042B436 /* AFBanyanAPIClient.h */,
 				510787CE163A36D80042B436 /* AFBanyanAPIClient.m */,
+				5192329F1671CC57009686E4 /* AFGoogleAPIClient.h */,
+				519232A01671CC57009686E4 /* AFGoogleAPIClient.m */,
 				5189B2D915B395F300562DD0 /* BanyanAPIEngine.h */,
 				5189B2DA15B395F300562DD0 /* BanyanAPIEngine.m */,
 				5189B2E815B395F300562DD0 /* ParseAPIEngine.h */,
@@ -520,8 +532,6 @@
 				5189B2D815B395F300562DD0 /* ArrayToDataTransformer.m */,
 				5189B2DB15B395F300562DD0 /* ImageToDataTransformer.h */,
 				5189B2DC15B395F300562DD0 /* ImageToDataTransformer.m */,
-				510787D0163A36F20042B436 /* BNLocationManager.h */,
-				510787D1163A36F20042B436 /* BNLocationManager.m */,
 				51B598A315EB451600DF4D9D /* Activity */,
 				5123CF3B15CDFEB700970A3E /* File */,
 				5189B35D15B397D900562DD0 /* User */,
@@ -780,6 +790,20 @@
 				51FD96E41665D651001A1709 /* TISwipeableTableView */,
 			);
 			name = "Licensed Softwares";
+			sourceTree = "<group>";
+		};
+		5192332416743EB7009686E4 /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				510787D0163A36F20042B436 /* BNLocationManager.h */,
+				510787D1163A36F20042B436 /* BNLocationManager.m */,
+				5192332516743F02009686E4 /* GooglePlacesObject.h */,
+				5192332616743F02009686E4 /* GooglePlacesObject.m */,
+				519233301675305F009686E4 /* LocationPickerTableViewController.h */,
+				519233311675305F009686E4 /* LocationPickerTableViewController.m */,
+			);
+			name = Location;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		51979A7B15F08E6F008194AF /* UIImage Categories */ = {
@@ -1046,6 +1070,9 @@
 				5157CD251659E5A300C22CCE /* ComposeTextViewController.m in Sources */,
 				51FD96E91665D651001A1709 /* TISwipeableTableView.m in Sources */,
 				5103FB9F166898960095B11F /* UIImage+Create.m in Sources */,
+				519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */,
+				5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */,
+				519233331675305F009686E4 /* LocationPickerTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
