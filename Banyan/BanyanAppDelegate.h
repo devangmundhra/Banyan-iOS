@@ -12,6 +12,8 @@
 
 #define DEV TRUE
 
+#define HAVE_ASSERTS TRUE
+
 #ifdef DEV
 #define PARSE_APP_ID @"5mvyH3aLGv22GeEmYugRZokcrprPevbA4ko1kF6v"
 #define PARSE_CLIENT_KEY @"BDbUtm8k0pknUyp3gCeDphUvEWUMLjUY1ksNj02R"

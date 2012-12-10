@@ -332,7 +332,8 @@ typedef enum {
                                         currentUser.facebookId, @"id", nil];
         [self.invitedToContributeList addObject:selfInvitation];
     } else {
-//        assert(false);
+        if (HAVE_ASSERTS)
+            assert(false);
         return nil;
     }
     return [NSDictionary dictionaryWithObject:self.invitedToContributeList forKey:kBNStoryPrivacyInvitedFacebookFriends];
@@ -368,7 +369,8 @@ typedef enum {
                                         currentUser.facebookId, @"id", nil];
         [self.invitedToViewList addObject:selfInvitation];
     } else {
-//        assert(false);
+        if (HAVE_ASSERTS)
+            assert(false);
         return nil;
     }
     return [NSDictionary dictionaryWithObject:self.invitedToViewList forKey:kBNStoryPrivacyInvitedFacebookFriends];

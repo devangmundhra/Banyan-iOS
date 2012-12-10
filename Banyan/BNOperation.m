@@ -263,7 +263,8 @@
                 NSLog(@"%s ERROR: Object %@ expected to be already initialized for action %@. Ignore this job!", __PRETTY_FUNCTION__, self.object, self.action);
                 [self completeOperationWithError:YES];
             }
-//            assert([self.object isObjectInitialized]);
+            if (HAVE_ASSERTS)
+                assert([self.object isObjectInitialized]);
         }
         
         // Execute the network operation

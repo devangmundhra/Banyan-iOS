@@ -7,6 +7,7 @@
 //
 
 #import "StoryDocuments.h"
+#import "BanyanAppDelegate.h"
 
 @implementation StoryDocuments
 
@@ -80,7 +81,8 @@
     NSLog(@"%s Saving story %p with id %@", __PRETTY_FUNCTION__, story, story.storyId);
     
     NSString *path = [StoryDocuments getPathToStoryDocumentWithStory:story];
-//    assert(story.scenes);
+    if (HAVE_ASSERTS)
+        assert(story.scenes);
     if (!story.scenes)
         return;
     
