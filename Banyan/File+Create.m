@@ -8,6 +8,7 @@
 
 #import "File+Create.h"
 #import "UIImage+ResizeAdditions.h"
+#import "BNOperationQueue.h"
 
 @implementation File (Create)
 

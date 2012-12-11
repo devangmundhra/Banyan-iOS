@@ -11,7 +11,7 @@
 #import "Scene+Stats.h"
 #import "Story+Stats.h"
 #import <QuartzCore/QuartzCore.h>
-#import "ParseAPIEngine.h"
+#import "AFBanyanAPIClient.h"
 
 @interface ReadSceneViewController ()
 @property (weak, nonatomic) IBOutlet UIView *contentView;
@@ -372,41 +372,39 @@
         return;
     }
     
-    if (![[BanyanAPIEngine sharedEngine] isReachable]) {
+    if (![[AFBanyanAPIClient sharedClient] isReachable]) {
         NSLog(@"%s Can't connect to internet", __PRETTY_FUNCTION__);
-        [ParseAPIEngine showNetworkUnavailableAlert];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Network unavailable"
+                                                            message:@"Cannot share the story since network is unavailable."
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+        [alertView show];
         return;
     }
     
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:self.scene.story.storyId forKey:@"object_id"];
-    MKNetworkOperation *op = [[BanyanAPIEngine sharedEngine] operationWithPath:BANYAN_API_GET_OBJECT_LINK_URL()
-                                                                        params:params
-                                                                   httpMethod:@"GET" 
-                                                                          ssl:NO];
-    
-    [op 
-     onCompletion:^(MKNetworkOperation *completedOperation) {
-         NSDictionary *response = [completedOperation responseJSON];         
-         [PFFacebookUtils reauthorizeUser:[PFUser currentUser]
-                   withPublishPermissions:[NSArray arrayWithObject:@"publish_stream"]
-                                 audience:PF_FBSessionDefaultAudienceFriends
-                                    block:^(BOOL succeeded, NSError *error) {
-                                        if (!succeeded) {
-                                            NSLog(@"Error in getting permissions to publish");
-                                        }
-                                    }];
-         [PF_FBNativeDialogs presentShareDialogModallyFrom:self
-                                               initialText:self.scene.story.title
-                                                     image:self.imageView.image
-                                                       url:[NSURL URLWithString:[response objectForKey:@"link"]]
-                                                   handler:nil];
-         
-         [TestFlight passCheckpoint:@"Story shared"];
-
-     }
-     onError:BANYAN_ERROR_BLOCK()];
-    
-    [[ParseAPIEngine sharedEngine] enqueueOperation:op];
+    [[AFBanyanAPIClient sharedClient] getPath:BANYAN_API_GET_OBJECT_LINK_URL()
+                                   parameters:params
+                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                          NSDictionary *response = (NSDictionary *)responseObject;
+                                          [PFFacebookUtils reauthorizeUser:[PFUser currentUser]
+                                                    withPublishPermissions:[NSArray arrayWithObject:@"publish_stream"]
+                                                                  audience:PF_FBSessionDefaultAudienceFriends
+                                                                     block:^(BOOL succeeded, NSError *error) {
+                                                                         if (!succeeded) {
+                                                                             NSLog(@"Error in getting permissions to publish");
+                                                                         }
+                                                                     }];
+                                          [PF_FBNativeDialogs presentShareDialogModallyFrom:self
+                                                                                initialText:self.scene.story.title
+                                                                                      image:self.imageView.image
+                                                                                        url:[NSURL URLWithString:[response objectForKey:@"link"]]
+                                                                                    handler:nil];
+                                          
+                                          [TestFlight passCheckpoint:@"Story shared"];
+                                      }
+                                      failure:AF_BANYAN_ERROR_BLOCK()];
 }
 
 - (IBAction)tap:(UITapGestureRecognizer *)sender 

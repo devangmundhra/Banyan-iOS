@@ -77,7 +77,7 @@ static NSMutableDictionary *_hashTable = nil;
     for (Story *story in [BanyanDataSource shared])
     {
         // First search in data source
-        if ([story.storyId isEqualToString:storyId]) {
+        if ([UPDATED(story.storyId) isEqualToString:storyId]) {
             NSLog(@"%s Found story %p for id: %@", __PRETTY_FUNCTION__, story, storyId);
             return story;
         }
@@ -105,7 +105,7 @@ static NSMutableDictionary *_hashTable = nil;
         NSLog(@"%s There were no scenes. So getting them again.", __PRETTY_FUNCTION__);
     }
     for (Scene *scene in story.scenes) {
-        if ([scene.sceneId isEqualToString:sceneId]) {
+        if ([UPDATED(scene.sceneId) isEqualToString:sceneId]) {
             NSLog(@"%s Found scene %p for id: %@", __PRETTY_FUNCTION__, scene, sceneId);
             return scene;
         }

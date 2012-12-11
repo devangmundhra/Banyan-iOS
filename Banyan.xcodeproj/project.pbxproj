@@ -41,7 +41,6 @@
 		5189B2C815B387E200562DD0 /* BanyanAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2C715B387E200562DD0 /* BanyanAppDelegate.m */; };
 		5189B32715B395F300562DD0 /* AFParseAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2D615B395F300562DD0 /* AFParseAPIClient.m */; };
 		5189B32815B395F300562DD0 /* ArrayToDataTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2D815B395F300562DD0 /* ArrayToDataTransformer.m */; };
-		5189B32915B395F300562DD0 /* BanyanAPIEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2DA15B395F300562DD0 /* BanyanAPIEngine.m */; };
 		5189B32A15B395F300562DD0 /* ImageToDataTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2DC15B395F300562DD0 /* ImageToDataTransformer.m */; };
 		5189B32B15B395F300562DD0 /* InvitedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2DE15B395F300562DD0 /* InvitedTableViewController.m */; };
 		5189B32C15B395F300562DD0 /* LoginTabbarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2E015B395F300562DD0 /* LoginTabbarViewController.m */; };
@@ -49,7 +48,6 @@
 		5189B32F15B395F300562DD0 /* ModifySceneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2E415B395F300562DD0 /* ModifySceneViewController.m */; };
 		5189B33015B395F300562DD0 /* ModifySceneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5189B2E515B395F300562DD0 /* ModifySceneViewController.xib */; };
 		5189B33115B395F300562DD0 /* NewStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2E715B395F300562DD0 /* NewStoryViewController.m */; };
-		5189B33215B395F300562DD0 /* ParseAPIEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2E915B395F300562DD0 /* ParseAPIEngine.m */; };
 		5189B33315B395F300562DD0 /* ParseConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2EB15B395F300562DD0 /* ParseConnection.m */; };
 		5189B33515B395F300562DD0 /* ReadSceneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2EF15B395F300562DD0 /* ReadSceneViewController.m */; };
 		5189B33615B395F300562DD0 /* ReadSceneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5189B2F015B395F300562DD0 /* ReadSceneViewController.xib */; };
@@ -82,15 +80,6 @@
 		5189B37C15B399CA00562DD0 /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B37115B399CA00562DD0 /* AFXMLRequestOperation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		5189B37D15B399CA00562DD0 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B37315B399CA00562DD0 /* UIImageView+AFNetworking.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		5189B38115B399E400562DD0 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B38015B399E400562DD0 /* MBProgressHUD.m */; };
-		5189B39A15B39AE300562DD0 /* NSAlert+MKNetworkKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B38715B39AE300562DD0 /* NSAlert+MKNetworkKitAdditions.m */; };
-		5189B39B15B39AE300562DD0 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B38915B39AE300562DD0 /* NSData+Base64.m */; };
-		5189B39C15B39AE300562DD0 /* NSDate+RFC1123.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B38B15B39AE300562DD0 /* NSDate+RFC1123.m */; };
-		5189B39D15B39AE300562DD0 /* NSDictionary+RequestEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B38D15B39AE300562DD0 /* NSDictionary+RequestEncoding.m */; };
-		5189B39E15B39AE300562DD0 /* NSString+MKNetworkKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B38F15B39AE300562DD0 /* NSString+MKNetworkKitAdditions.m */; };
-		5189B39F15B39AE300562DD0 /* UIAlertView+MKNetworkKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B39115B39AE300562DD0 /* UIAlertView+MKNetworkKitAdditions.m */; };
-		5189B3A015B39AE300562DD0 /* MKNetworkEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B39315B39AE300562DD0 /* MKNetworkEngine.m */; };
-		5189B3A115B39AE300562DD0 /* MKNetworkOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B39615B39AE300562DD0 /* MKNetworkOperation.m */; };
-		5189B3A215B39AE300562DD0 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B39915B39AE300562DD0 /* Reachability.m */; };
 		5189B3A915B39B1500562DD0 /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 5189B3A415B39B1500562DD0 /* arrow.png */; };
 		5189B3AA15B39B1500562DD0 /* arrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5189B3A515B39B1500562DD0 /* arrow@2x.png */; };
 		5189B3AB15B39B1500562DD0 /* PullToRefreshView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B3A715B39B1500562DD0 /* PullToRefreshView.m */; };
@@ -193,8 +182,6 @@
 		5189B2D615B395F300562DD0 /* AFParseAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFParseAPIClient.m; path = Banyan/AFParseAPIClient.m; sourceTree = "<group>"; };
 		5189B2D715B395F300562DD0 /* ArrayToDataTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ArrayToDataTransformer.h; path = Banyan/ArrayToDataTransformer.h; sourceTree = "<group>"; };
 		5189B2D815B395F300562DD0 /* ArrayToDataTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ArrayToDataTransformer.m; path = Banyan/ArrayToDataTransformer.m; sourceTree = "<group>"; };
-		5189B2D915B395F300562DD0 /* BanyanAPIEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BanyanAPIEngine.h; path = Banyan/BanyanAPIEngine.h; sourceTree = "<group>"; };
-		5189B2DA15B395F300562DD0 /* BanyanAPIEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BanyanAPIEngine.m; path = Banyan/BanyanAPIEngine.m; sourceTree = "<group>"; };
 		5189B2DB15B395F300562DD0 /* ImageToDataTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImageToDataTransformer.h; path = Banyan/ImageToDataTransformer.h; sourceTree = "<group>"; };
 		5189B2DC15B395F300562DD0 /* ImageToDataTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImageToDataTransformer.m; path = Banyan/ImageToDataTransformer.m; sourceTree = "<group>"; };
 		5189B2DD15B395F300562DD0 /* InvitedTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InvitedTableViewController.h; path = Banyan/InvitedTableViewController.h; sourceTree = "<group>"; };
@@ -207,8 +194,6 @@
 		5189B2E515B395F300562DD0 /* ModifySceneViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ModifySceneViewController.xib; path = Banyan/ModifySceneViewController.xib; sourceTree = "<group>"; };
 		5189B2E615B395F300562DD0 /* NewStoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NewStoryViewController.h; path = Banyan/NewStoryViewController.h; sourceTree = "<group>"; };
 		5189B2E715B395F300562DD0 /* NewStoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NewStoryViewController.m; path = Banyan/NewStoryViewController.m; sourceTree = "<group>"; };
-		5189B2E815B395F300562DD0 /* ParseAPIEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParseAPIEngine.h; path = Banyan/ParseAPIEngine.h; sourceTree = "<group>"; };
-		5189B2E915B395F300562DD0 /* ParseAPIEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ParseAPIEngine.m; path = Banyan/ParseAPIEngine.m; sourceTree = "<group>"; };
 		5189B2EA15B395F300562DD0 /* ParseConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParseConnection.h; path = Banyan/ParseConnection.h; sourceTree = "<group>"; };
 		5189B2EB15B395F300562DD0 /* ParseConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ParseConnection.m; path = Banyan/ParseConnection.m; sourceTree = "<group>"; };
 		5189B2EE15B395F300562DD0 /* ReadSceneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReadSceneViewController.h; path = Banyan/ReadSceneViewController.h; sourceTree = "<group>"; };
@@ -275,24 +260,6 @@
 		5189B37315B399CA00562DD0 /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
 		5189B37F15B399E400562DD0 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		5189B38015B399E400562DD0 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
-		5189B38715B39AE300562DD0 /* NSAlert+MKNetworkKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAlert+MKNetworkKitAdditions.m"; sourceTree = "<group>"; };
-		5189B38815B39AE300562DD0 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
-		5189B38915B39AE300562DD0 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
-		5189B38A15B39AE300562DD0 /* NSDate+RFC1123.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+RFC1123.h"; sourceTree = "<group>"; };
-		5189B38B15B39AE300562DD0 /* NSDate+RFC1123.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+RFC1123.m"; sourceTree = "<group>"; };
-		5189B38C15B39AE300562DD0 /* NSDictionary+RequestEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+RequestEncoding.h"; sourceTree = "<group>"; };
-		5189B38D15B39AE300562DD0 /* NSDictionary+RequestEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+RequestEncoding.m"; sourceTree = "<group>"; };
-		5189B38E15B39AE300562DD0 /* NSString+MKNetworkKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MKNetworkKitAdditions.h"; sourceTree = "<group>"; };
-		5189B38F15B39AE300562DD0 /* NSString+MKNetworkKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MKNetworkKitAdditions.m"; sourceTree = "<group>"; };
-		5189B39015B39AE300562DD0 /* UIAlertView+MKNetworkKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+MKNetworkKitAdditions.h"; sourceTree = "<group>"; };
-		5189B39115B39AE300562DD0 /* UIAlertView+MKNetworkKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+MKNetworkKitAdditions.m"; sourceTree = "<group>"; };
-		5189B39215B39AE300562DD0 /* MKNetworkEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKNetworkEngine.h; sourceTree = "<group>"; };
-		5189B39315B39AE300562DD0 /* MKNetworkEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKNetworkEngine.m; sourceTree = "<group>"; };
-		5189B39415B39AE300562DD0 /* MKNetworkKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKNetworkKit.h; sourceTree = "<group>"; };
-		5189B39515B39AE300562DD0 /* MKNetworkOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKNetworkOperation.h; sourceTree = "<group>"; };
-		5189B39615B39AE300562DD0 /* MKNetworkOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKNetworkOperation.m; sourceTree = "<group>"; };
-		5189B39815B39AE300562DD0 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
-		5189B39915B39AE300562DD0 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		5189B3A415B39B1500562DD0 /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
 		5189B3A515B39B1500562DD0 /* arrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrow@2x.png"; sourceTree = "<group>"; };
 		5189B3A615B39B1500562DD0 /* PullToRefreshView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PullToRefreshView.h; sourceTree = "<group>"; };
@@ -515,10 +482,6 @@
 				510787CE163A36D80042B436 /* AFBanyanAPIClient.m */,
 				5192329F1671CC57009686E4 /* AFGoogleAPIClient.h */,
 				519232A01671CC57009686E4 /* AFGoogleAPIClient.m */,
-				5189B2D915B395F300562DD0 /* BanyanAPIEngine.h */,
-				5189B2DA15B395F300562DD0 /* BanyanAPIEngine.m */,
-				5189B2E815B395F300562DD0 /* ParseAPIEngine.h */,
-				5189B2E915B395F300562DD0 /* ParseAPIEngine.m */,
 				519AFA7715C4C38B00F68F3C /* BNOperation */,
 			);
 			name = "Networking Extensions";
@@ -725,47 +688,6 @@
 			path = MBProgressHUD;
 			sourceTree = "<group>";
 		};
-		5189B38415B39AE300562DD0 /* MKNetworkKit */ = {
-			isa = PBXGroup;
-			children = (
-				5189B38515B39AE300562DD0 /* Categories */,
-				5189B39215B39AE300562DD0 /* MKNetworkEngine.h */,
-				5189B39315B39AE300562DD0 /* MKNetworkEngine.m */,
-				5189B39415B39AE300562DD0 /* MKNetworkKit.h */,
-				5189B39515B39AE300562DD0 /* MKNetworkOperation.h */,
-				5189B39615B39AE300562DD0 /* MKNetworkOperation.m */,
-				5189B39715B39AE300562DD0 /* Reachability */,
-			);
-			path = MKNetworkKit;
-			sourceTree = "<group>";
-		};
-		5189B38515B39AE300562DD0 /* Categories */ = {
-			isa = PBXGroup;
-			children = (
-				5189B38715B39AE300562DD0 /* NSAlert+MKNetworkKitAdditions.m */,
-				5189B38815B39AE300562DD0 /* NSData+Base64.h */,
-				5189B38915B39AE300562DD0 /* NSData+Base64.m */,
-				5189B38A15B39AE300562DD0 /* NSDate+RFC1123.h */,
-				5189B38B15B39AE300562DD0 /* NSDate+RFC1123.m */,
-				5189B38C15B39AE300562DD0 /* NSDictionary+RequestEncoding.h */,
-				5189B38D15B39AE300562DD0 /* NSDictionary+RequestEncoding.m */,
-				5189B38E15B39AE300562DD0 /* NSString+MKNetworkKitAdditions.h */,
-				5189B38F15B39AE300562DD0 /* NSString+MKNetworkKitAdditions.m */,
-				5189B39015B39AE300562DD0 /* UIAlertView+MKNetworkKitAdditions.h */,
-				5189B39115B39AE300562DD0 /* UIAlertView+MKNetworkKitAdditions.m */,
-			);
-			path = Categories;
-			sourceTree = "<group>";
-		};
-		5189B39715B39AE300562DD0 /* Reachability */ = {
-			isa = PBXGroup;
-			children = (
-				5189B39815B39AE300562DD0 /* Reachability.h */,
-				5189B39915B39AE300562DD0 /* Reachability.m */,
-			);
-			path = Reachability;
-			sourceTree = "<group>";
-		};
 		5189B3A315B39B1500562DD0 /* PullToRefreshView */ = {
 			isa = PBXGroup;
 			children = (
@@ -782,7 +704,6 @@
 			children = (
 				5189B35E15B399CA00562DD0 /* AFNetworking */,
 				5189B37E15B399E400562DD0 /* MBProgressHUD */,
-				5189B38415B39AE300562DD0 /* MKNetworkKit */,
 				5189B3A315B39B1500562DD0 /* PullToRefreshView */,
 				51ED7B8416069C25008D3E56 /* MTStatusBarOverlay */,
 				51AB7A041626917E00EF849A /* TestFlightSDK1.2beta2 */,
@@ -997,13 +918,11 @@
 				5189B2C815B387E200562DD0 /* BanyanAppDelegate.m in Sources */,
 				5189B32715B395F300562DD0 /* AFParseAPIClient.m in Sources */,
 				5189B32815B395F300562DD0 /* ArrayToDataTransformer.m in Sources */,
-				5189B32915B395F300562DD0 /* BanyanAPIEngine.m in Sources */,
 				5189B32A15B395F300562DD0 /* ImageToDataTransformer.m in Sources */,
 				5189B32B15B395F300562DD0 /* InvitedTableViewController.m in Sources */,
 				5189B32C15B395F300562DD0 /* LoginTabbarViewController.m in Sources */,
 				5189B32F15B395F300562DD0 /* ModifySceneViewController.m in Sources */,
 				5189B33115B395F300562DD0 /* NewStoryViewController.m in Sources */,
-				5189B33215B395F300562DD0 /* ParseAPIEngine.m in Sources */,
 				5189B33315B395F300562DD0 /* ParseConnection.m in Sources */,
 				5189B33515B395F300562DD0 /* ReadSceneViewController.m in Sources */,
 				5189B33715B395F300562DD0 /* Scene.m in Sources */,
@@ -1034,15 +953,6 @@
 				5189B37C15B399CA00562DD0 /* AFXMLRequestOperation.m in Sources */,
 				5189B37D15B399CA00562DD0 /* UIImageView+AFNetworking.m in Sources */,
 				5189B38115B399E400562DD0 /* MBProgressHUD.m in Sources */,
-				5189B39A15B39AE300562DD0 /* NSAlert+MKNetworkKitAdditions.m in Sources */,
-				5189B39B15B39AE300562DD0 /* NSData+Base64.m in Sources */,
-				5189B39C15B39AE300562DD0 /* NSDate+RFC1123.m in Sources */,
-				5189B39D15B39AE300562DD0 /* NSDictionary+RequestEncoding.m in Sources */,
-				5189B39E15B39AE300562DD0 /* NSString+MKNetworkKitAdditions.m in Sources */,
-				5189B39F15B39AE300562DD0 /* UIAlertView+MKNetworkKitAdditions.m in Sources */,
-				5189B3A015B39AE300562DD0 /* MKNetworkEngine.m in Sources */,
-				5189B3A115B39AE300562DD0 /* MKNetworkOperation.m in Sources */,
-				5189B3A215B39AE300562DD0 /* Reachability.m in Sources */,
 				5189B3AB15B39B1500562DD0 /* PullToRefreshView.m in Sources */,
 				5110A7BF15B3EB0A00D4FBD1 /* BNOperation.m in Sources */,
 				51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */,
