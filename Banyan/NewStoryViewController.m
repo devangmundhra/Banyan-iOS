@@ -139,9 +139,6 @@ typedef enum {
 {
     [super viewDidAppear:animated];
     [self registerForKeyboardNotifications];
-    if (!self.locationManager) {
-        self.locationManager = [[BNLocationManager alloc] initWithDelegate:self];
-    }
     if (self.showLocationSwitch.on) {
         [self.locationManager beginUpdatingLocation];
     }
@@ -186,6 +183,9 @@ typedef enum {
 	[self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldChangedEditing:) forControlEvents:UIControlEventEditingDidEnd];
     self.tagsFieldView.tokenField.returnKeyType = UIReturnKeyDone;
     [self.tagsFieldView.tokenField setPromptText:@"Tags:"];
+    if (!self.locationManager) {
+        self.locationManager = [[BNLocationManager alloc] initWithDelegate:self];
+    }
 }
 
 - (void)viewDidUnload
@@ -381,8 +381,10 @@ typedef enum {
 {
     if (self.showLocationSwitch.on) {
         [self.locationManager beginUpdatingLocation];
+        [self.locationLabel setHidden:NO];
     } else {
-        [self.locationManager stopUpdatingLocation:@""];
+        [self.locationManager stopUpdatingLocation:self.locationManager.locationStatus];
+        [self.locationLabel setHidden:YES];
     }
 }
 

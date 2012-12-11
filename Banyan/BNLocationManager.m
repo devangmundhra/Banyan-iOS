@@ -38,7 +38,6 @@ static CLLocationManager *_sharedLocationManager;
     _locationsNearThisLocation = locationsNearThisLocation;
     self.location = [locationsNearThisLocation objectAtIndex:0];
     self.locationStatus = self.location.name;
-    [self showLocationPickerTableViewController];
 }
 
 - (LocationPickerTableViewController *)locationPickerViewController
@@ -101,16 +100,15 @@ static CLLocationManager *_sharedLocationManager;
     if (self.bestEffortAtLocation == nil || self.bestEffortAtLocation.horizontalAccuracy > newLocation.horizontalAccuracy) {
         // store the location as the "best effort"
         self.bestEffortAtLocation = newLocation;
-        [self getNearbyLocations:newLocation];
         
         // test the measurement to see if it meets the desired accuracy
         // IMPORTANT!!! kCLLocationAccuracyBest should not be used for comparison with location coordinate or altitidue
         // accuracy because it is a negative value. Instead, compare against some predetermined "real" measure of
         // acceptable accuracy, or depend on the timeout to stop updating. This sample depends on a 5m acceptable accuracy
         //
-        if (newLocation.horizontalAccuracy <= 5) {
+        if (newLocation.horizontalAccuracy <= 10) {
             // IMPORTANT!!! Minimize power usage by stopping the location manager as soon as possible.
-
+            [self getNearbyLocations:newLocation];
             [self stopUpdatingLocation:self.locationStatus];
         }
     }

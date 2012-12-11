@@ -143,7 +143,7 @@ static NSMutableDictionary *_hashTable = nil;
 + (void) loadDataSource
 {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(canView == YES) OR (canContribute == YES)"];
-    
+    NSLog(@"%s loadDataSource begin", __PRETTY_FUNCTION__);
     [BanyanConnection
      loadStoriesFromBanyanWithBlock:^(NSMutableArray *retValue) {
          [retValue filterUsingPredicate:predicate];

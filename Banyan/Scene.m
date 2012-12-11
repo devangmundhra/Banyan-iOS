@@ -37,6 +37,17 @@
 // Session properties
 @synthesize imageChanged = _imageChanged;
 
+- (void)setInitialized:(BOOL)initialized
+{
+    _initialized = initialized;
+    NSLog(@"Scene: %@ is set to be initialized: %d", _sceneId, _initialized);
+}
+
+- (BOOL)initialized
+{
+    return _initialized;
+}
+
 #pragma mark NSCoding
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {

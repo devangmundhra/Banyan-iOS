@@ -29,7 +29,7 @@
         // PUT_API_TODO
         UIImage *resizedImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:[[UIScreen mainScreen] bounds].size interpolationQuality:kCGInterpolationHigh];
 
-        imageData = UIImagePNGRepresentation(resizedImage);
+        imageData = UIImageJPEGRepresentation(resizedImage, 1);
         imageFile = [PFFile fileWithData:imageData];
         
         [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
@@ -44,7 +44,11 @@
                       [error localizedRecoveryOptions], [error localizedRecoverySuggestion]);
                 NETWORK_OPERATION_INCOMPLETE();
             }
-        }];
+        }
+                               progressBlock:^(int percentDone) {
+                                   [[MTStatusBarOverlay sharedInstance] setProgress:percentDone/100];
+                               }
+         ];
     }
             failureBlock:^(NSError *error) {
                 NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");

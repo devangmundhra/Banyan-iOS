@@ -50,7 +50,7 @@
                                                                       interpolationQuality:kCGInterpolationHigh];
                                             }
                                             failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                                NSLog(@"***** ERROR IN GETTING IMAGE ***\nCan't find the image");
+                                                NSLog(@"***** ERROR IN GETTING IMAGE ***\nCan't find the image %@ for story %@", story.imageURL, story.storyId);
                                             }];
     } else if (story.imageURL) {
         ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];

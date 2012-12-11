@@ -121,7 +121,7 @@
     
     if (error) {
         // If there is an error, start myself again
-        [BNOperationQueue shared].ongoingOperation = nil;
+        [BNOperationQueue shared].ongoingOperation = self;
         [self start];
         return;
     }
