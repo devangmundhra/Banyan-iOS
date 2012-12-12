@@ -1,35 +1,38 @@
 
-SPEC CHECKSUMS: 
-  TITokenField: 4a94409f637d5d8ffd7303ba903e069462cf7c02
-  PullToRefreshView: f3b19d9d98f23d5c0b5d7ff8567d2db1ddb78180
-  AFNetworking: 4c11f857c9a18d65f4257c90a1e74ac49f0ac422
-  TestFlightSDK: 29e194fb148e4861f92e4c1195b9697e1f3ad19a
-  TISwipeableTableView: 27f09ec497a97dbc33d56df24f294ef42923b5e0
-  MTStatusBarOverlay: 272c9dcaca88db27373e5f0e3a28d71df7b17e73
-  MBProgressHUD: b23ee11c42253d6d804e8e0bfabdc334e8b2571f
+COCOAPODS: 0.16.0
 
 DEPENDENCIES: 
-- AFNetworking
+- AFNetworking (<= 0.10)
 - MBProgressHUD (>= 0.5)
-- MTStatusBarOverlay (>= 0.9)
-- PullToRefreshView (>= 0.0.1)
+- MTStatusBarOverlay (from `https://github.com/myell0w/MTStatusBarOverlay.git', commit `ec42b364ff6a908978715f52e9382b7064865564')
+- SSPullToRefresh
 - TISwipeableTableView (from `https://github.com/devangmundhra/TISwipeableTableView.git')
 - TITokenField (from `https://github.com/devangmundhra/TITokenField.git')
 - TestFlightSDK (>= 1.2)
 
-PODS: 
-- AFNetworking (1.0.1)
-- MBProgressHUD (0.5)
-- MTStatusBarOverlay (0.9)
-- PullToRefreshView (0.0.1)
-- TISwipeableTableView (0.0.1)
-- TITokenField (0.9.0)
-- TestFlightSDK (1.2)
-
-COCOAPODS: 0.16.0
+SPEC CHECKSUMS: 
+  TITokenField: 4a94409f637d5d8ffd7303ba903e069462cf7c02
+  TISwipeableTableView: 27f09ec497a97dbc33d56df24f294ef42923b5e0
+  AFNetworking: 1a49460856f478b7c78b211db6b969dfa4007e00
+  MBProgressHUD: b23ee11c42253d6d804e8e0bfabdc334e8b2571f
+  TestFlightSDK: 29e194fb148e4861f92e4c1195b9697e1f3ad19a
+  SSPullToRefresh: 79a7981b5a08316749d8fae0b5c813fbc2fac7dd
+  MTStatusBarOverlay: e00cd3b000171748b9439d014e00ec7bbb9b82ee
 
 EXTERNAL SOURCES: 
   TITokenField: 
     :git: https://github.com/devangmundhra/TITokenField.git
   TISwipeableTableView: 
     :git: https://github.com/devangmundhra/TISwipeableTableView.git
+  MTStatusBarOverlay: 
+    :git: https://github.com/myell0w/MTStatusBarOverlay.git
+    :commit: ec42b364ff6a908978715f52e9382b7064865564
+
+PODS: 
+- AFNetworking (0.10.0)
+- MBProgressHUD (0.5)
+- MTStatusBarOverlay (0.9.1)
+- SSPullToRefresh (1.0.1)
+- TISwipeableTableView (0.0.1)
+- TITokenField (0.9.0)
+- TestFlightSDK (1.2)

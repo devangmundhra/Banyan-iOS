@@ -1,11 +1,11 @@
 platform :ios, '5.0'
-pod 'AFNetworking'
+pod 'AFNetworking', '<=0.10'
 pod 'TITokenField', :git => 'https://github.com/devangmundhra/TITokenField.git'
 pod 'TISwipeableTableView', :git => 'https://github.com/devangmundhra/TISwipeableTableView.git'
 pod 'MBProgressHUD', '>= 0.5'
-pod 'MTStatusBarOverlay', '>= 0.9'
+pod 'MTStatusBarOverlay', :git => 'https://github.com/myell0w/MTStatusBarOverlay.git', :commit => 'ec42b364ff6a908978715f52e9382b7064865564' 
 pod 'TestFlightSDK', '>= 1.2'
-pod 'PullToRefreshView', '>= 0.0.1'
+pod 'SSPullToRefresh'
 
 # pod 'RestKit', :git => 'https://github.com/RestKit/RestKit.git'
 

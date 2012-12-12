@@ -10,6 +10,7 @@
 #import "ParseConnection.h"
 #import "StoryDocuments.h"
 #import "BanyanAppDelegate.h"
+#import "BanyanPullToRefreshContentView.h"
 
 typedef enum {
     FilterStoriesSegmentIndexPopular = 0,
@@ -22,6 +23,7 @@ typedef enum {
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *leftButton;
 @property (weak, nonatomic) UserManagementModule *userManagementModule;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *filterStoriesSegmentedControl;
+@property (strong, nonatomic) SSPullToRefreshView *pullToRefreshView;
 @end
 
 @implementation StoryListTableViewController
@@ -30,6 +32,7 @@ typedef enum {
 @synthesize userManagementModule = _userManagementModule;
 @synthesize filterStoriesSegmentedControl = _filterStoriesSegmentedControl;
 @synthesize dataSource = _dataSource;
+@synthesize pullToRefreshView = _pullToRefreshView;
 
 - (UserManagementModule *)userManagementModule
 {
@@ -65,11 +68,13 @@ typedef enum {
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
-
-    if (!_pull)
-        _pull = [[PullToRefreshView alloc] initWithScrollView:(UIScrollView *)self.tableView];
-    [_pull setDelegate:self];
-    [self.tableView addSubview:_pull];
+    
+    // Frame size for content view. We need a big frame so that as we keep pulling the scrollview, we
+    // see the same background colour.
+    CGRect pullContentViewFrame =  self.tableView.frame;
+    pullContentViewFrame.origin.y = 0.0f - pullContentViewFrame.size.height;
+    self.pullToRefreshView = [[SSPullToRefreshView alloc] initWithScrollView:self.tableView delegate:self];
+    self.pullToRefreshView.contentView = [[BanyanPullToRefreshContentView alloc] initWithFrame:pullContentViewFrame];
     
     [self.tableView setRowHeight:TABLE_ROW_HEIGHT];
     
@@ -160,7 +165,7 @@ typedef enum {
     [self setAddStory:nil];
     [self setLeftButton:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    _pull = nil;
+    self.pullToRefreshView = nil;
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
     [self setFilterStoriesSegmentedControl:nil];
@@ -270,7 +275,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void) filterStoriesForTableDataSource
 {
-    [_pull finishedLoading];
+    [self.pullToRefreshView finishLoading];
     
     NSPredicate *predicate = nil;
     NSMutableArray *arrayOfUserIdsBeingFollowed = nil;
@@ -313,7 +318,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         }
     }
     self.tableView.contentOffset = CGPointMake(0, -65);
-    [_pull beginLoading];
+    [self.pullToRefreshView startLoading];
     [[BanyanDataSource class] performSelectorInBackground:@selector(loadDataSource) withObject:nil];
 }
 
@@ -480,15 +485,15 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self refreshView];
 }
 
-#pragma PullToRefreshView delegate methods
+#pragma SSPullToRefreshView delegate methods
 // called when the user pulls-to-refresh
-- (void)pullToRefreshViewShouldRefresh:(PullToRefreshView *)view
+- (void)pullToRefreshViewDidStartLoading:(SSPullToRefreshView *)view
 {
     [[BanyanDataSource class] performSelectorInBackground:@selector(loadDataSource) withObject:nil];
 }
 
 // called when the date shown needs to be updated, optional
-- (NSDate *)pullToRefreshViewLastUpdated:(PullToRefreshView *)view
+- (NSDate *)pullToRefreshViewLastUpdatedAt:(SSPullToRefreshView *)view
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:BNUserDefaultsLastSuccessfulStoryUpdateTime];
 }

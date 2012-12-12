@@ -26,6 +26,7 @@
 		5110A7BF15B3EB0A00D4FBD1 /* BNOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5110A7BE15B3EB0A00D4FBD1 /* BNOperation.m */; };
 		511E708B161A9756009AAD25 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708A161A9756009AAD25 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		511E708E161A977F009AAD25 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
+		5142BC7B1678837E007B1B62 /* BanyanPullToRefreshContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5142BC7A1678837E007B1B62 /* BanyanPullToRefreshContentView.m */; };
 		5157CD031650902900C22CCE /* BanyanConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD021650902900C22CCE /* BanyanConnection.m */; };
 		5157CD251659E5A300C22CCE /* ComposeTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD241659E5A300C22CCE /* ComposeTextViewController.m */; };
 		5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B615E75B420072749C /* buttonFacebook.png */; };
@@ -140,6 +141,8 @@
 		5110A7BE15B3EB0A00D4FBD1 /* BNOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNOperation.m; path = Banyan/BNOperation.m; sourceTree = "<group>"; };
 		511E708A161A9756009AAD25 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		5142BC791678837E007B1B62 /* BanyanPullToRefreshContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BanyanPullToRefreshContentView.h; sourceTree = "<group>"; };
+		5142BC7A1678837E007B1B62 /* BanyanPullToRefreshContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BanyanPullToRefreshContentView.m; sourceTree = "<group>"; };
 		5157CD011650902900C22CCE /* BanyanConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BanyanConnection.h; path = Banyan/BanyanConnection.h; sourceTree = "<group>"; };
 		5157CD021650902900C22CCE /* BanyanConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BanyanConnection.m; path = Banyan/BanyanConnection.m; sourceTree = "<group>"; };
 		5157CD231659E5A300C22CCE /* ComposeTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ComposeTextViewController.h; path = Banyan/ComposeTextViewController.h; sourceTree = "<group>"; };
@@ -307,6 +310,15 @@
 			name = File;
 			sourceTree = "<group>";
 		};
+		5142BC7D16788386007B1B62 /* PullToRefreshContentView */ = {
+			isa = PBXGroup;
+			children = (
+				5142BC791678837E007B1B62 /* BanyanPullToRefreshContentView.h */,
+				5142BC7A1678837E007B1B62 /* BanyanPullToRefreshContentView.m */,
+			);
+			name = PullToRefreshContentView;
+			sourceTree = "<group>";
+		};
 		5166B1B515E75B420072749C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -389,6 +401,7 @@
 				5189B35B15B3976700562DD0 /* Story List */,
 				51CFD93015F3121C002926F9 /* Settings */,
 				5189B35C15B397BD00562DD0 /* Helpful Categories */,
+				5142BC7D16788386007B1B62 /* PullToRefreshContentView */,
 				51B5989C15EB31B300DF4D9D /* BanyanConstants.h */,
 				51B5989D15EB31B300DF4D9D /* BanyanConstants.m */,
 				5189B2C615B387E200562DD0 /* BanyanAppDelegate.h */,
@@ -829,6 +842,7 @@
 				519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */,
 				5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */,
 				519233331675305F009686E4 /* LocationPickerTableViewController.m in Sources */,
+				5142BC7B1678837E007B1B62 /* BanyanPullToRefreshContentView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -908,11 +922,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Banyan/Banyan-Prefix.pch";
 				INFOPLIST_FILE = "Banyan/Banyan-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/TestFlightSDK1.2beta2\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -929,11 +939,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Banyan/Banyan-Prefix.pch";
 				INFOPLIST_FILE = "Banyan/Banyan-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/TestFlightSDK1.2beta2\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
