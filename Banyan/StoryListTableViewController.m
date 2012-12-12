@@ -313,7 +313,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         }
     }
     self.tableView.contentOffset = CGPointMake(0, -65);
-    [_pull setState:PullToRefreshViewStateLoading];
+    [_pull beginLoading];
     [[BanyanDataSource class] performSelectorInBackground:@selector(loadDataSource) withObject:nil];
 }
 

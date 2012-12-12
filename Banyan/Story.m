@@ -13,7 +13,6 @@
 #import "BanyanDataSource.h"
 #import "AFBanyanAPIClient.h"
 #import "AFJSONRequestOperation.h"
-#import "AFJSONUtilities.h"
 #import "Story+Stats.h"
 
 @implementation Story
@@ -188,9 +187,6 @@
     self.canView = NO;
     User *currentUser = [User currentUser];
     
-    NSError *error = nil;
-    NSURLResponse *response = nil;
-    
     if (!currentUser) {
         NSLog(@"%s No current user", __PRETTY_FUNCTION__);
     }
@@ -205,24 +201,6 @@
                                           self.isInvited = [[results objectForKey:@"invited"] boolValue];
                                       }
                                       failure:AF_BANYAN_ERROR_BLOCK()];
-    
-    return;
-    
-    NSMutableURLRequest *request = [[AFBanyanAPIClient sharedClient] requestWithMethod:@"GET"
-                                                                                  path:BANYAN_API_GET_PERMISSIONS(@"Story")
-                                                                            parameters:parameters];
-
-    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-
-    if(error) {
-        NSLog(@"operation: %@, response: %@, error: %@", BANYAN_API_GET_PERMISSIONS(@"Story"), response, error);
-    } else {
-        id responseObject = AFJSONDecode(data, &error);
-        NSDictionary *results = (NSDictionary *)responseObject;
-        self.canContribute = [[results objectForKey:@"write"] boolValue];
-        self.canView = [[results objectForKey:@"read"] boolValue];
-        self.isInvited = [[results objectForKey:@"invited"] boolValue];
-    }
     
     return;
 }

@@ -5,6 +5,4 @@ Parse.framework/Versions/Current
 .DS_Store
 Banyan.xcodeproj/project.xcworkspace/xcuserdata/devangmundhra.xcuserdatad/
 Banyan.xcodeproj/xcuserdata/devangmundhra.xcuserdatad/xcdebugger/
-TITokenField/.gitignore
-TISwipeableTableView/.gitignore
-TISwipeableTableView/SwipeableExample/
+Pods
