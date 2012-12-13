@@ -1,5 +1,5 @@
 platform :ios, '5.0'
-pod 'AFNetworking', '<=0.10'
+pod 'AFNetworking', '>=1.0RC4'
 pod 'TITokenField', :git => 'https://github.com/devangmundhra/TITokenField.git'
 pod 'TISwipeableTableView', :git => 'https://github.com/devangmundhra/TISwipeableTableView.git'
 pod 'MBProgressHUD', '>= 0.5'

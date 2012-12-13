@@ -41,11 +41,12 @@ static NSString * const kAFBanyanAPIBaseURLString = @"http://www.banyan.io/api/v
             [[BNOperationQueue shared] setSuspended:YES];
             [[BNOperationQueue shared] archiveOperations];
             [[MTStatusBarOverlay sharedInstance] hide];
-            NSLog(@"Network to parse.com not reachable!!");
+            NSLog(@"Network to banyan.io not reachable!!");
         }
     }];
     
     // Accept HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
+    [self setDefaultHeader:@"Accept" value:@"application/json"];
     return self;
 }
 
