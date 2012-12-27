@@ -12,7 +12,6 @@
 
 @interface Story (Create)
 
-+ (Story *)createStoryWithAttributes:(NSMutableDictionary *)attributes;
-+ (void) createStoryOnServer:(Story *)story;
++ (void) createNewStory:(Story *)story;
 
 @end

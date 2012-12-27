@@ -43,6 +43,13 @@
     
     [TestFlight takeOff:TESTFLIGHT_BANYAN_TEAM_TOKEN];
     
+    //let AFNetworking manage the activity indicator
+    [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
+    
+    // RestKit initialization
+    RKLogConfigureByName("RestKit/Network*", RKLogLevelTrace);
+    RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelTrace);
+    
     if (![[AFParseAPIClient sharedClient] isReachable])
         NSLog(@"Parse not reachable");
     

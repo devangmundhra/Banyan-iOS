@@ -200,7 +200,7 @@
 - (void)main
 {    
     @try {
-        Scene *scene = nil;
+        Piece *scene = nil;
         Story *story = nil;
         User *user = nil;
         NSMutableDictionary *editParams = nil;
@@ -274,14 +274,10 @@
                 if (scene == nil)
                     scene = [BanyanDataSource lookForSceneId:self.object.tempId inStoryId:self.object.storyId];
                 switch (self.action.actionType) {
-                    case BNOperationActionCreate:
-                        // call network operation for creating scene
-                        [Scene createSceneOnServer:scene];
-                        break;
                         
                     case BNOperationActionEdit:
                         // call network operation for editing scene
-                        [Scene editScene:scene withAttributes:editParams];
+                        [Piece editScene:scene withAttributes:editParams];
                         NSLog(@"Edit network operation for scene %@", scene);
                         break;
                         
@@ -291,7 +287,7 @@
                         break;
                         
                     case BNOperationActionDelete:
-                        [Scene deleteSceneFromServerWithId:self.object.tempId];
+                        [Piece deletePiece:self.object.tempId];
                         break;
                         
                     default:
@@ -305,10 +301,6 @@
                 if (story == nil)
                     story = [BanyanDataSource lookForStoryId:self.object.tempId];
                 switch (self.action.actionType) {
-                    case BNOperationActionCreate:
-                        // call network operation for creating story
-                        [Story createStoryOnServer:story];
-                        break;
                         
                     case BNOperationActionEdit:
                         // call network operation for editing story

@@ -71,7 +71,7 @@
     NSLog(@"%s storyId %@", __PRETTY_FUNCTION__, storyId);
     Story *story = [NSKeyedUnarchiver unarchiveObjectWithFile:[StoryDocuments getPathToStoryDocumentWithStoryId:storyId]];
     if (story) {
-        NSLog(@"Story found with scenes: %@", story.scenes);
+        NSLog(@"Story found with scenes: %@", story.pieces);
     }
     return story;
 }
@@ -82,8 +82,8 @@
     
     NSString *path = [StoryDocuments getPathToStoryDocumentWithStory:story];
     if (HAVE_ASSERTS)
-        assert(story.scenes);
-    if (!story.scenes)
+        assert(story.pieces);
+    if (!story.pieces)
         return;
     
     BOOL success = [NSKeyedArchiver archiveRootObject:story toFile:path];

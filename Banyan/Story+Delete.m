@@ -9,7 +9,6 @@
 #import "Story+Delete.h"
 #import "Story_Defines.h"
 #import "Scene_Defines.h"
-#import "ParseConnection.h"
 #import "StoryDocuments.h"
 #import "Scene+Delete.h"
 
@@ -38,7 +37,7 @@
     NSLog(@"%s Story id: %@", __PRETTY_FUNCTION__, storyId);
 
     NSDictionary *jsonDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                    storyId, SCENE_STORY, nil];
+                                    storyId, PIECE_STORY, nil];
     
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
@@ -51,14 +50,14 @@
     
     NSMutableDictionary *getScenesForStory = [NSMutableDictionary dictionaryWithObject:json forKey:@"where"];
     
-    [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(@"Scene")
+    [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(@"Piece")
                                   parameters:getScenesForStory
                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                          NSDictionary *response = responseObject;
                                          NSArray *scenes = [response objectForKey:@"results"];
                                          for (NSDictionary *scene in scenes)
                                          {
-                                             [Scene removeSceneWithId:[scene objectForKey:@"objectId"]];
+                                             [Piece deletePiece:[scene objectForKey:@"objectId"]];
                                          }
                                          
                                      }

@@ -7,7 +7,7 @@
 //
 
 #import "Story.h"
-#import "Scene.h"
+#import "Piece.h"
 #import "Story_Defines.h"
 #import "AFParseAPIClient.h"
 

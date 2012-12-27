@@ -36,10 +36,10 @@ extern NSString *const kBNStoryPrivacyInvitedFacebookFriends;
 
 #pragma mark - PFObject Scene Class
 // Class key
-extern NSString *const kBNSceneClassKey;
+extern NSString *const kBNPieceClassKey;
 
 // Field keys
-extern NSString *const kBNSceneIdKey;
+extern NSString *const kBNPieceIdKey;
 
 #pragma mark - PFObject Activity Class
 

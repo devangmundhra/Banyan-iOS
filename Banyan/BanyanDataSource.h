@@ -8,10 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import "Story.h"
-#import "Scene.h"
+#import "Piece.h"
 #import "File.h"
 #import "User.h"
 #import "StoryDocuments.h"
+#import "BanyanConnection.h"
 
 #define UPDATED(__id__) [BanyanDataSource getUpdatedValueForId:__id__]
 
@@ -22,7 +23,7 @@
 
 + (NSMutableDictionary *)hashTable;
 + (Story *)lookForStoryId:(NSString *)storyId;
-+ (Scene *)lookForSceneId:(NSString *)sceneId inStoryId:(NSString *)storyId;
++ (Piece *)lookForSceneId:(NSString *)sceneId inStoryId:(NSString *)storyId;
 + (NSString *)getUpdatedValueForId:(NSString *)oldId;
 + (void) deleteArchives;
 + (void) archiveHashTable;

@@ -12,11 +12,11 @@
 #import "Scene_Defines.h"
 #import "StoryDocuments.h"
 
-@implementation Scene (Delete)
+@implementation Piece (Delete)
 
-+ (void) deleteSceneFromDisk:(Scene *)scene
++ (void) deleteSceneFromDisk:(Piece *)scene
 {
-    NSLog(@"%s SceneId: %@", __PRETTY_FUNCTION__, scene.sceneId);
+    NSLog(@"%s SceneId: %@", __PRETTY_FUNCTION__, scene.pieceId);
     
     Story *story = scene.story;
     
@@ -29,78 +29,29 @@
     INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_LENGTH, -1);
     
     // ARCHIVE
-    NSMutableArray *currentScenes = [story.scenes mutableCopy];
+    NSMutableArray *currentScenes = [story.pieces mutableCopy];
     [currentScenes removeObject:scene];
-    story.scenes = [currentScenes copy];
+    story.pieces = [currentScenes copy];
     story.lengthOfStory = [NSNumber numberWithInt:([story.lengthOfStory intValue] - 1)];
     
-    if (scene.nextScene != nil)
+    if (scene.nextPiece != nil)
     {
-        scene.previousScene.nextScene = scene.nextScene;
-        scene.nextScene.previousScene = scene.previousScene;
+        scene.previousPiece.nextPiece = scene.nextPiece;
+        scene.nextPiece.previousPiece = scene.previousPiece;
     } else {
-        scene.previousScene.nextScene = nil;
+        scene.previousPiece.nextPiece = nil;
     }
     
     [StoryDocuments saveStoryToDisk:story];
     scene = nil;
 }
 
-+ (void) deleteSceneFromServerWithId:(NSString *)sceneId
++ (void) deletePiece:(NSString *)pieceId
 {
-    // PARSE
-    void (^linkNextSceneAndPreviousSceneForScene)(NSDictionary *) = ^(NSDictionary *sceneParams) {
-        NSString *previousSceneId = [sceneParams objectForKey:SCENE_PREVIOUSSCENE];
-        NSString *nextSceneId = [sceneParams objectForKey:SCENE_NEXTSCENE];
-        
-        if (nextSceneId) {   
-            NSMutableDictionary *nextSceneParam = [NSMutableDictionary dictionaryWithObject:nextSceneId forKey:SCENE_NEXTSCENE];
-            
-            [[AFParseAPIClient sharedClient] putPath:PARSE_API_OBJECT_URL(@"Scene", previousSceneId)
-                                          parameters:nextSceneParam
-                                             success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                                 NSLog(@"%s Next Scene for Previous Scene set", __PRETTY_FUNCTION__);
-                                             }
-                                             failure:AF_PARSE_ERROR_BLOCK()];
-            
-            NSMutableDictionary *prevSceneParam = [NSMutableDictionary dictionaryWithObject:previousSceneId forKey:SCENE_PREVIOUSSCENE];
-            
-            [[AFParseAPIClient sharedClient] putPath:PARSE_API_OBJECT_URL(@"Scene", nextSceneId)
-                                          parameters:prevSceneParam
-                                             success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                                 NSLog(@"%s Previous Scene for Next Scene set", __PRETTY_FUNCTION__);
-                                             }
-                                             failure:AF_PARSE_ERROR_BLOCK()];
-        } else {
-            NSMutableDictionary *nextSceneParam = [NSMutableDictionary dictionaryWithObject:nextSceneId forKey:SCENE_NEXTSCENE];
-            
-            [[AFParseAPIClient sharedClient] putPath:PARSE_API_OBJECT_URL(@"Scene", previousSceneId)
-                                          parameters:nextSceneParam
-                                             success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                                 NSLog(@"%s Next Scene for Previous Scene set as null", __PRETTY_FUNCTION__);
-                                             }
-                                             failure:AF_PARSE_ERROR_BLOCK()];
-        }
-    };
-    
-    [[AFParseAPIClient sharedClient] getPath:PARSE_API_OBJECT_URL(@"Scene", sceneId)
-                                  parameters:nil
-                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                         NSDictionary *sceneFields = responseObject;
-                                         linkNextSceneAndPreviousSceneForScene(sceneFields);
-                                         [Scene removeSceneWithId:[sceneFields objectForKey:@"objectId"]];
-                                     }
-                                     failure:AF_PARSE_ERROR_BLOCK()];
-    
- 
-}
-
-+ (void) removeSceneWithId:(NSString *)sceneId
-{
-    [[AFParseAPIClient sharedClient] deletePath:PARSE_API_OBJECT_URL(@"Scene", sceneId)
+    [[AFParseAPIClient sharedClient] deletePath:PARSE_API_OBJECT_URL(@"Piece", pieceId)
                                      parameters:nil
                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                            NSLog(@"Scene with id %@ deleted", sceneId);
+                                            NSLog(@"Scene with id %@ deleted", pieceId);
                                             NETWORK_OPERATION_COMPLETE();
                                         }
                                         failure:BN_ERROR_BLOCK_OPERATION_INCOMPLETE()];

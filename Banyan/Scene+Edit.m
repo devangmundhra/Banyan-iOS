@@ -11,9 +11,9 @@
 #import "Scene_Defines.h"
 #import "StoryDocuments.h"
 
-@implementation Scene (Edit)
+@implementation Piece (Edit)
 
-+ (void) editScene:(Scene *)scene
++ (void) editScene:(Piece *)scene
 {
     NSMutableDictionary *sceneParams = [NSMutableDictionary dictionaryWithCapacity:1];
     BNOperationDependency *imageDependency = nil;
@@ -35,17 +35,17 @@
             
             // Create a dependency object
             imageDependency = [[BNOperationDependency alloc] initWithBNObject:imgObj
-                                                                        field:SCENE_IMAGE_URL];
+                                                                        field:PIECE_IMAGE_URL];
         } else {
             // Scene image was deleted
-            [sceneParams setObject:[NSNull null] forKey:SCENE_IMAGE_URL];
+            [sceneParams setObject:[NSNull null] forKey:PIECE_IMAGE_URL];
         }
     }
     
     // Update scene
-    [sceneParams setObject:scene.text forKey:SCENE_TEXT];
+    [sceneParams setObject:scene.text forKey:PIECE_TEXT];
     
-    BNOperationObject *obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeScene tempId:scene.sceneId storyId:scene.story.storyId];
+    BNOperationObject *obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeScene tempId:scene.pieceId storyId:scene.story.storyId];
     BNOperation *operation = [[BNOperation alloc] initWithObject:obj action:BNOperationActionEdit dependencies:nil];
     operation.action.context = sceneParams;
     if (imageDependency) {
@@ -58,9 +58,9 @@
     return;
 }
 
-+ (void) editScene:(Scene *)scene withAttributes:(NSMutableDictionary *)sceneParams
++ (void) editScene:(Piece *)scene withAttributes:(NSMutableDictionary *)sceneParams
 {
-    [[AFParseAPIClient sharedClient] putPath:PARSE_API_OBJECT_URL(@"Scene", scene.sceneId)
+    [[AFParseAPIClient sharedClient] putPath:PARSE_API_OBJECT_URL(@"Piece", scene.pieceId)
                                   parameters:sceneParams
                                      success:^(AFHTTPRequestOperation *operations, id responseObject) {
                                          NSDictionary *response = responseObject;
@@ -82,7 +82,7 @@
                                     inc, @"amount", nil];
     [sceneEditParams setObject:sceneAttrInc forKey:attribute];
     
-    [[AFParseAPIClient sharedClient] putPath:PARSE_API_OBJECT_URL(@"Scene", self.sceneId)
+    [[AFParseAPIClient sharedClient] putPath:PARSE_API_OBJECT_URL(@"Piece", self.pieceId)
                                   parameters:sceneEditParams
                                      success:^(AFHTTPRequestOperation *operations, id responseObject) {
                                          NSDictionary *response = responseObject;

@@ -115,7 +115,7 @@
 {
     switch (self.type) {
         case BNOperationObjectTypeScene:
-            return @"Scene";
+            return @"Piece";
             break;
             
         case BNOperationObjectTypeStory:

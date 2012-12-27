@@ -13,16 +13,15 @@
 #define STORY_IMAGE @"image"
 #define STORY_IMAGE_URL @"imageURL"
 #define STORY_LENGTH @"lengthOfStory"
-#define STORY_ID @"storyId"
 #define STORY_TITLE @"title"
 #define STORY_CONTRIBUTORS @"contributors"
 #define STORY_WRITE_ACCESS @"writeAccess"
 #define STORY_READ_ACCESS @"readAccess"
-#define STORY_STATS @"stats"
-#define STORY_STARTING_SCENE @"startingScene"
-#define STORY_CAN_VIEW @"canView"
-#define STORY_CAN_CONTRIBUTE @"canContribute"
-#define STORY_IS_INVITED @"isInvited"
+
+#define STORY_CAN_VIEW @"read"
+#define STORY_CAN_CONTRIBUTE @"write"
+#define STORY_IS_INVITED @"invited"
+
 #define STORY_FONT @"Georgia-BoldItalic"
 
 #define STORY_LOCATION_ENABLED @"locationEnabled"
@@ -50,5 +49,9 @@
 #define STORY_NEW_STORY_NOTIFICATION @"New Story Added"
 #define STORY_EDIT_STORY_NOTIFICATION @"Story Edited"
 #define STORY_DELETE_STORY_NOTIFICATION @"Story Deleted"
+
+#define PARSE_OBJECT_CREATED_AT @"createdAt"
+#define PARSE_OBJECT_UPDATED_AT @"updatedAt"
+#define PARSE_OBJECT_ID @"objectId"
 
 @end

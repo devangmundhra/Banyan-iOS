@@ -1,5 +1,5 @@
 //
-//  ScenesViewController.h
+//  StoryReaderController.h
 //  Storied
 //
 //  Created by Devang Mundhra on 3/14/12.
@@ -9,23 +9,23 @@
 #import <UIKit/UIKit.h>
 #import "ReadSceneViewController.h"
 #import "Story.h"
-#import "Scene.h"
+#import "Piece.h"
 
-@class ScenesViewController;
+@class StoryReaderController;
 
 #define HUD_STAY_DELAY 1.2 // amount of time HUD progress bar stays (in seconds)
 
-@protocol ScenesViewControllerDelegate <NSObject>
+@protocol StoryReaderControllerDelegate <NSObject>
 
-- (void)scenesViewContollerDone:(ScenesViewController *)scenesViewController;
+- (void)storyReaderContollerDone:(StoryReaderController *)scenesViewController;
 
 @end
 
-@interface ScenesViewController : UIViewController </*UIGestureRecognizerDelegate, */UIPageViewControllerDataSource, UIPageViewControllerDelegate, ReadSceneViewControllerDelegate>
+@interface StoryReaderController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ReadSceneViewControllerDelegate>
 
 @property (nonatomic, strong) Story *story;
 @property (nonatomic, strong) UIPageViewController *pageViewController;
-@property (nonatomic, weak) IBOutlet id <ScenesViewControllerDelegate> delegate;
+@property (nonatomic, weak) IBOutlet id <StoryReaderControllerDelegate> delegate;
 @property (nonatomic) BOOL readSceneControllerEditMode;
 
 - (NSUInteger)indexOfViewController:(ReadSceneViewController *)viewController;

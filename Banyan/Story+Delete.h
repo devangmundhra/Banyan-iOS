@@ -7,7 +7,7 @@
 //
 
 #import "Story.h"
-#import "Scene.h"
+#import "Piece.h"
 #import "AFParseAPIClient.h"
 
 #define DELETE_STORY(__story__)                                                                             \

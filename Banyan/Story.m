@@ -8,7 +8,7 @@
 
 #import "Story_Defines.h"
 #import "StoryDocuments.h"
-#import "Scene.h"
+#import "Piece.h"
 #import "User.h"
 #import "BanyanDataSource.h"
 #import "AFBanyanAPIClient.h"
@@ -26,16 +26,15 @@
 @synthesize title = _title;
 @synthesize imageURL = _imageURL;
 @synthesize contributors = _contributors;
-@synthesize startingScene = _startingScene;
-@synthesize dateCreated = _dateCreated;
-@synthesize dateModified = _dateModified;
+@synthesize createdAt = _dateCreated;
+@synthesize updatedAt = _dateModified;
 @synthesize numberOfContributors = _numberOfContributors;
 @synthesize numberOfLikes = _numberOfLikes;
 @synthesize numberOfViews = _numberOfViews;
 @synthesize liked = _liked;
 @synthesize viewed = _viewed;
 @synthesize favourite = _favourite;
-@synthesize scenes = _scenes;
+@synthesize pieces = _scenes;
 @synthesize initialized = _initialized;
 @synthesize location = _location;
 @synthesize isLocationEnabled = _isLocationEnabled;
@@ -45,9 +44,62 @@
 @synthesize writeAccess = _writeAccess;
 @synthesize readAccess = _readAccess;
 @synthesize tags = _tags;
+@synthesize latitude = _latitude;
+@synthesize longitude = _longitude;
+
 // Session properties
 @synthesize imageChanged = _imageChanged;
 @synthesize storyBeingRead = _storyBeingRead;
+
++ (RKObjectManager *)objectManager
+{
+    static RKObjectManager *_objectManager = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
+        
+        RKObjectMapping *storyMapping = [RKObjectMapping mappingForClass:[self class]];
+        [storyMapping addAttributeMappingsFromDictionary:@{
+         @"read" : STORY_CAN_VIEW,
+         @"write" : STORY_CAN_CONTRIBUTE,
+         @"invited" : STORY_IS_INVITED,
+         @"object.title" : STORY_TITLE,
+         @"object.writeAccess" : STORY_WRITE_ACCESS,
+         @"object.readAccess" : STORY_READ_ACCESS,
+         @"object.tags" : STORY_TAGS,
+         @"object.imageURL" : STORY_IMAGE_URL,
+         @"object.geocodedLocation" : STORY_GEOCODEDLOCATION,
+         @"object.createdAt" : @"dateCreated",
+         @"object.updatedAt" : @"dateModified",
+         @"object.objectId" : @"storyId",
+         @"object.locationEnabled" : @"isLocationEnabled",
+         }];
+
+        //         @"object.startingScene" : @"startingScene.sceneId",
+        RKObjectMapping *sceneMapping = [RKObjectMapping mappingForClass:[Piece class]];
+        [sceneMapping addAttributeMappingsFromDictionary:@{
+         @"startingScene" : @"sceneId"}];
+        
+        RKRelationshipMapping *sceneRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"object" toKeyPath:@"startingScene" withMapping:sceneMapping];
+        [storyMapping addPropertyMapping:sceneRelationshipMapping];
+        
+        //         @"object.author" : @"author.userId"
+        RKObjectMapping *userMapping = [RKObjectMapping mappingForClass:[User class]];
+        [userMapping addAttributeMappingsFromDictionary:@{
+         @"author" : @"userId"}];
+        
+        RKRelationshipMapping *userRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"object" toKeyPath:@"author" withMapping:userMapping];
+        [storyMapping addPropertyMapping:userRelationshipMapping];
+        
+        RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:storyMapping
+                                                                                           pathPattern:nil
+                                                                                               keyPath:nil
+                                                                                           statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+        [_objectManager addResponseDescriptor:responseDescriptor];
+    });
+    
+    return _objectManager;
+}
 
 #pragma mark NSCoding
 
@@ -57,22 +109,21 @@
     [aCoder encodeBool:self.canView forKey:STORY_CAN_VIEW];
     [aCoder encodeBool:self.isInvited forKey:STORY_IS_INVITED];
     [aCoder encodeObject:self.lengthOfStory forKey:STORY_LENGTH];
-    [aCoder encodeObject:self.storyId forKey:STORY_ID];
+    [aCoder encodeObject:self.storyId forKey:@"storyId"];
     [aCoder encodeObject:self.title forKey:STORY_TITLE];
     [aCoder encodeObject:self.imageURL forKey:STORY_IMAGE_URL];
     [aCoder encodeObject:self.contributors forKey:STORY_CONTRIBUTORS];
     [aCoder encodeObject:self.readAccess forKey:STORY_READ_ACCESS];
     [aCoder encodeObject:self.writeAccess forKey:STORY_WRITE_ACCESS];
-    [aCoder encodeObject:self.startingScene forKey:STORY_STARTING_SCENE];
-    [aCoder encodeObject:self.dateCreated forKey:STORY_DATE_CREATED];
-    [aCoder encodeObject:self.dateModified forKey:STORY_DATE_MODIFIED];
+    [aCoder encodeObject:self.createdAt forKey:STORY_DATE_CREATED];
+    [aCoder encodeObject:self.updatedAt forKey:STORY_DATE_MODIFIED];
     [aCoder encodeObject:self.numberOfLikes forKey:STORY_NUM_LIKES];
     [aCoder encodeObject:self.numberOfViews forKey:STORY_NUM_VIEWS];
     [aCoder encodeObject:self.numberOfContributors forKey:STORY_NUM_CONTRIBUTORS];
     [aCoder encodeBool:self.liked forKey:STORY_LIKED];
     [aCoder encodeBool:self.viewed forKey:STORY_VIEWED];
     [aCoder encodeBool:self.favourite forKey:STORY_FAVOURITE];
-    [aCoder encodeObject:self.scenes forKey:STORY_SCENES];
+    [aCoder encodeObject:self.pieces forKey:STORY_SCENES];
     [aCoder encodeObject:self.location forKey:STORY_LOCATION];
     [aCoder encodeBool:self.isLocationEnabled forKey:STORY_LOCATION_ENABLED];
     [aCoder encodeBool:self.initialized forKey:STORY_IS_INITIALIZED];
@@ -89,22 +140,21 @@
         self.canView = [aDecoder decodeBoolForKey:STORY_CAN_VIEW];
         self.isInvited = [aDecoder decodeBoolForKey:STORY_IS_INVITED];
         self.lengthOfStory = [aDecoder decodeObjectForKey:STORY_LENGTH];
-        self.storyId = [aDecoder decodeObjectForKey:STORY_ID];
+        self.storyId = [aDecoder decodeObjectForKey:@"storyId"];
         self.title = [aDecoder decodeObjectForKey:STORY_TITLE];
         self.imageURL = [aDecoder decodeObjectForKey:STORY_IMAGE_URL];
         self.contributors = [aDecoder decodeObjectForKey:STORY_CONTRIBUTORS];
         self.readAccess = [aDecoder decodeObjectForKey:STORY_READ_ACCESS];
         self.writeAccess = [aDecoder decodeObjectForKey:STORY_WRITE_ACCESS];
-        self.startingScene = [aDecoder decodeObjectForKey:STORY_STARTING_SCENE];
-        self.dateCreated = [aDecoder decodeObjectForKey:STORY_DATE_CREATED];
-        self.dateModified = [aDecoder decodeObjectForKey:STORY_DATE_MODIFIED];
+        self.createdAt = [aDecoder decodeObjectForKey:STORY_DATE_CREATED];
+        self.updatedAt = [aDecoder decodeObjectForKey:STORY_DATE_MODIFIED];
         self.numberOfLikes = [aDecoder decodeObjectForKey:STORY_NUM_LIKES];
         self.numberOfViews = [aDecoder decodeObjectForKey:STORY_NUM_VIEWS];
         self.numberOfContributors = [aDecoder decodeObjectForKey:STORY_NUM_CONTRIBUTORS];
         self.liked = [aDecoder decodeBoolForKey:STORY_LIKED];
         self.favourite = [aDecoder decodeBoolForKey:STORY_VIEWED];
         self.viewed = [aDecoder decodeBoolForKey:STORY_FAVOURITE];
-        self.scenes = [aDecoder decodeObjectForKey:STORY_SCENES];
+        self.pieces = [aDecoder decodeObjectForKey:STORY_SCENES];
         self.location = [aDecoder decodeObjectForKey:STORY_LOCATION];
         self.isLocationEnabled = [aDecoder decodeBoolForKey:STORY_LOCATION_ENABLED];
         self.initialized = [aDecoder decodeBoolForKey:STORY_IS_INITIALIZED];
@@ -127,7 +177,6 @@
     [attributes setObject:self.title forKey:STORY_TITLE];
     [attributes setObject:REPLACE_NIL_WITH_NULL(UPDATED(self.imageURL)) forKey:STORY_IMAGE_URL];
     [attributes setObject:REPLACE_NIL_WITH_NULL(self.contributors) forKey:STORY_CONTRIBUTORS];
-    [attributes setObject:self.startingScene.sceneId forKey:STORY_STARTING_SCENE];
     [attributes setObject:self.numberOfLikes forKey:STORY_NUM_LIKES];
     [attributes setObject:self.numberOfViews forKey:STORY_NUM_VIEWS];
     [attributes setObject:self.numberOfContributors forKey:STORY_NUM_CONTRIBUTORS];
@@ -150,13 +199,10 @@
     self.readAccess = [storyDict objectForKey:STORY_READ_ACCESS];
     self.writeAccess = [storyDict objectForKey:STORY_WRITE_ACCESS];
     self.storyId = [dict objectForKey:@"objectId"];
-    self.dateCreated = [dict objectForKey:@"createdAt"];
-    self.dateModified = [dict objectForKey:@"updatedAt"];
+    self.createdAt = [dict objectForKey:@"createdAt"];
+    self.updatedAt = [dict objectForKey:@"updatedAt"];
     self.author = [User getUserForPfUser:[PFQuery getUserObjectWithId:REPLACE_NULL_WITH_NIL([storyDict objectForKey:STORY_AUTHOR])]];
     [self updateStoryStats];
-    Scene *scene = [[Scene alloc] init];
-    self.startingScene = scene;
-    self.startingScene.sceneId = REPLACE_NULL_WITH_NIL([storyDict objectForKey:STORY_STARTING_SCENE]);
     
     if ([[storyDict objectForKey:STORY_LOCATION_ENABLED] isEqualToNumber:[NSNumber numberWithBool:YES]])
     {
@@ -207,7 +253,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"{Story\n Title: %@\n Length: %@\n Starting Scene: %@\n}", self.title, self.lengthOfStory, self.startingScene];
+    return [NSString stringWithFormat:@"{Story\n Id: %@\nTitle: %@\n Length: %@\n\n}", self.storyId, self.title, self.lengthOfStory];
 }
 
 // Change so that Story can be compared
@@ -232,4 +278,5 @@
         return NO;
     return YES;
 }
+
 @end

@@ -54,7 +54,7 @@
 @synthesize cancelButton = _cancelButton;
 @synthesize doneButton = _doneButton;
 @synthesize actionToolbar = _actionToolbar;
-@synthesize scene = _scene;
+@synthesize piece = _scene;
 @synthesize delegate = _delegate;
 @synthesize keyboardIsShown = _keyboardIsShown;
 @synthesize editMode = _editMode;
@@ -73,20 +73,20 @@
 //    self.sceneTextView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
     self.sceneTextView.backgroundColor = [UIColor clearColor];
     
-    if (self.imageView.image || (self.scene.imageURL && self.editMode == edit)) {
+    if (self.imageView.image || (self.piece.imageURL && self.editMode == edit)) {
         self.sceneTextView.textColor = [UIColor whiteColor];
     }
     else {
         self.sceneTextView.textColor = [UIColor blackColor];
     }
     
-    if ([self.sceneTextView.text length] > MAX_CHAR_IN_SCENE) {
+    if ([self.sceneTextView.text length] > MAX_CHAR_IN_PIECE) {
         self.sceneTextView.scrollEnabled = YES;
         self.sceneTextView.font = [UIFont systemFontOfSize:18];
     }
     else {
         self.sceneTextView.scrollEnabled = NO;
-        self.sceneTextView.font = [UIFont fontWithName:SCENE_FONT size:24];
+        self.sceneTextView.font = [UIFont fontWithName:PIECE_FONT size:24];
     }
     
     self.sceneTextView.layer.shadowColor = [[UIColor blackColor] CGColor];
@@ -100,7 +100,7 @@
 {
     [super viewDidAppear:animated];
     
-    if (self.editMode == add && self.scene.story.isLocationEnabled) {
+    if (self.editMode == add && self.piece.story.isLocationEnabled) {
         self.locationManager = [[BNLocationManager alloc] init];
         self.locationManager.delegate = self;
         [self.locationManager beginUpdatingLocation];
@@ -110,7 +110,7 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    if (self.editMode == add && self.scene.story.isLocationEnabled) {
+    if (self.editMode == add && self.piece.story.isLocationEnabled) {
         [self.locationManager stopUpdatingLocation:self.locationLabel.text];
     }
 }
@@ -120,16 +120,16 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    if (self.scene.previousScene == nil && self.editMode != add)
+    if (self.piece.previousPiece == nil && self.editMode != add)
         self.sceneTextView.font = [UIFont fontWithName:STORY_FONT size:24];
     else
-        self.sceneTextView.font = [UIFont fontWithName:SCENE_FONT size:24];
+        self.sceneTextView.font = [UIFont fontWithName:PIECE_FONT size:24];
     
 //    self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapAnywhere:)];
 //    self.tapRecognizer.delegate = self;
     
-    if (self.scene.geocodedLocation && ![self.scene.geocodedLocation isEqual:[NSNull null]]) {
-        self.locationLabel.text = self.scene.geocodedLocation;
+    if (self.piece.geocodedLocation && ![self.piece.geocodedLocation isEqual:[NSNull null]]) {
+        self.locationLabel.text = self.piece.geocodedLocation;
     }
     
     if (self.editMode == add)
@@ -139,12 +139,12 @@
     else if (self.editMode == edit)
     {
         self.imageView.frame = [[UIScreen mainScreen] bounds];
-        self.localImageURL = self.scene.imageURL;
-        if (self.scene.imageURL && [self.scene.imageURL rangeOfString:@"asset"].location == NSNotFound) {
-            [self.imageView setImageWithURL:[NSURL URLWithString:self.scene.imageURL] placeholderImage:self.scene.image];
-        } else if (self.scene.imageURL) {
+        self.localImageURL = self.piece.imageURL;
+        if (self.piece.imageURL && [self.piece.imageURL rangeOfString:@"asset"].location == NSNotFound) {
+            [self.imageView setImageWithURL:[NSURL URLWithString:self.piece.imageURL] placeholderImage:self.piece.image];
+        } else if (self.piece.imageURL) {
             ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
-            [library assetForURL:[NSURL URLWithString:self.scene.imageURL] resultBlock:^(ALAsset *asset) {
+            [library assetForURL:[NSURL URLWithString:self.piece.imageURL] resultBlock:^(ALAsset *asset) {
                 ALAssetRepresentation *rep = [asset defaultRepresentation];
                 CGImageRef imageRef = [rep fullScreenImage];
                 UIImage *image = [UIImage imageWithCGImage:imageRef];
@@ -158,7 +158,7 @@
             [self.imageView cancelImageRequestOperation];
             [self.imageView setImageWithURL:nil];
         }
-        self.sceneTextView.text = self.scene.text;
+        self.sceneTextView.text = self.piece.text;
         self.navigationBar.topItem.title = @"Edit";
     }
     
@@ -224,57 +224,47 @@
 // Done modifying scene. Now save all the changes.
 - (IBAction)done:(UIBarButtonItem *)sender 
 {
-    NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
-    [attributes setObject:self.sceneTextView.text ? self.sceneTextView.text : [NSNull null]
-                   forKey:SCENE_TEXT];
-    [attributes setObject:REPLACE_NIL_WITH_NULL(self.localImageURL) forKey:SCENE_IMAGE_URL];
+    self.piece.text = self.sceneTextView.text;
+    self.piece.imageURL = self.localImageURL;
     
     if (self.editMode == add)
     {
-        if (self.scene.story.isLocationEnabled == YES) {
+        if (self.piece.story.isLocationEnabled == YES) {
             if (self.locationManager.location) {
                 
                 CLLocationCoordinate2D coord = [self.locationManager.location coordinate];
                 
-                [attributes setObject:[NSNumber numberWithDouble:coord.latitude]
-                                         forKey:SCENE_LATITUDE];
-                [attributes setObject:[NSNumber numberWithDouble:coord.longitude]
-                                         forKey:SCENE_LONGITUDE];
-                [attributes setObject:REPLACE_NIL_WITH_NULL(self.locationManager.location.name) forKey:SCENE_GEOCODEDLOCATION];
+                self.piece.latitude = [NSNumber numberWithDouble:coord.latitude];
+                self.piece.longitude = [NSNumber numberWithDouble:coord.longitude];
+                self.piece.geocodedLocation = self.locationManager.location.name;
             }
         }
         
-        Scene *scene = [Scene createSceneForStory:self.scene.story attributes:attributes afterScene:self.scene];
-        if (scene)
-        {
-            NSLog(@"New scene %@ saved", scene);
-            [self.delegate modifySceneViewController:self didFinishAddingScene:scene];
-            [TestFlight passCheckpoint:@"New scene created successfully"];
-        } else {
-            NSLog(@"Error saving new scene %@", self.sceneTextView.text);
-            [TestFlight passCheckpoint:@"New scene could not be created successfully"];
-        }
+        [Piece createNewPiece:self.piece afterPiece:nil];
+        NSLog(@"New scene %@ saved", self.piece);
+        [self.delegate modifySceneViewController:self didFinishAddingScene:self.piece];
+        [TestFlight passCheckpoint:@"New scene created successfully"];
     }
     else if (self.editMode == edit)
     {
-        if (self.scene.previousScene == nil)
+        if (self.piece.previousPiece == nil)
         {
             NSLog(@"ModifySceneViewController_Editing story");
-            self.scene.story.title = self.sceneTextView.text;
+            self.piece.story.title = self.sceneTextView.text;
             if (self.imageChanged) {
-                self.scene.story.imageURL = self.localImageURL;
-                self.scene.story.imageChanged = YES;
+                self.piece.story.imageURL = self.localImageURL;
+                self.piece.story.imageChanged = YES;
             }
-            [Story editStory:self.scene.story];
+            [Story editStory:self.piece.story];
         }
-        self.scene.text = self.sceneTextView.text;
+        self.piece.text = self.sceneTextView.text;
         if (self.imageChanged) {
-            self.scene.imageURL = self.localImageURL;
-            self.scene.imageChanged = YES;
+            self.piece.imageURL = self.localImageURL;
+            self.piece.imageChanged = YES;
 //            self.scene.image = self.imageView.image;
         }
-        [Scene editScene:self.scene];
-        [self.delegate modifySceneViewController:self didFinishEditingScene:self.scene];
+        [Piece editScene:self.piece];
+        [self.delegate modifySceneViewController:self didFinishEditingScene:self.piece];
     }
     else {
         NSLog(@"ModifySceneViewController_No valid edit mode");
@@ -284,7 +274,7 @@
 - (IBAction)deleteSceneAlert:(UIBarButtonItem *)sender
 {
     UIAlertView *alertView = nil;
-    if (self.scene.previousScene == nil)
+    if (self.piece.previousPiece == nil)
     {
         alertView = [[UIAlertView alloc] initWithTitle:@"Delete Story"
                                                message:@"Do you want to delete this story?"
@@ -302,17 +292,17 @@
 
 - (void)deleteScene:(UIBarButtonItem *)sender
 {
-    if (self.scene.previousScene == nil)
+    if (self.piece.previousPiece == nil)
     {
         NSLog(@"ModifySceneViewController_Deleting story");
-        DELETE_STORY(self.scene.story);
+        DELETE_STORY(self.piece.story);
         [self.delegate modifySceneViewControllerDeletedStory:self];
         [TestFlight passCheckpoint:@"Story deleted"];
     }
     else
     {
         NSLog(@"ModifySceneViewController_Deleting scene");
-        DELETE_SCENE(self.scene);
+        DELETE_PIECE(self.piece);
         [self.delegate modifySceneViewControllerDeletedScene:self];
         [TestFlight passCheckpoint:@"Scene deleted"];
     }
@@ -639,7 +629,7 @@ shouldChangeTextInRange:(NSRange)range
  replacementText:(NSString *)text
 {
     NSUInteger newLength = [textView.text length] + [text length] - range.length;
-    return (newLength > MAX_CHAR_IN_SCENE) ? NO : YES;
+    return (newLength > MAX_CHAR_IN_PIECE) ? NO : YES;
 }
 
 - (BOOL)checkForChanges
@@ -654,7 +644,7 @@ shouldChangeTextInRange:(NSRange)range
     } else if (self.editMode == edit)
     {
         if ((self.imageChanged)
-            || (![self.sceneTextView.text isEqualToString:self.scene.text]))
+            || (![self.sceneTextView.text isEqualToString:self.piece.text]))
             return YES;
         else
             return NO;

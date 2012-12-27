@@ -6,13 +6,12 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "ScenesViewController.h"
-#import "ParseConnection.h"
+#import "StoryReaderController.h"
 #import "Story+Stats.h"
 #import "StoryDocuments.h"
 #import "MBProgressHUD.h"
 
-@interface ScenesViewController ()
+@interface StoryReaderController ()
 
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *addSceneButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *editSceneButton;
@@ -25,7 +24,7 @@
 
 @end
 
-@implementation ScenesViewController
+@implementation StoryReaderController
 @synthesize pageViewController = _pageViewController;
 @synthesize story = _story;
 @synthesize delegate = _delegate;
@@ -243,13 +242,13 @@
 
 - (NSUInteger)indexOfViewController:(ReadSceneViewController *)viewController
 {
-    return [self.story.scenes indexOfObject:viewController.scene];
+    return [self.story.pieces indexOfObject:viewController.piece];
 }
 
 - (ReadSceneViewController *)viewControllerAtIndex:(NSUInteger)index
 {
     ReadSceneViewController *readSceneViewController = [[ReadSceneViewController alloc] init];
-    readSceneViewController.scene = [self.story.scenes objectAtIndex:index];
+    readSceneViewController.piece = [self.story.pieces objectAtIndex:index];
     readSceneViewController.delegate = self;
     [self setNavBarButtonsWithTargetActionsFromReadSceneViewController:readSceneViewController];
 
@@ -260,20 +259,20 @@
     return readSceneViewController;
 }
 
-- (Scene *)sceneAtSceneNumberInStory:(NSNumber *)sceneNumber
+- (Piece *)sceneAtSceneNumberInStory:(NSNumber *)sceneNumber
 {
     // Assuming scenes is already sorted on sceneNumberInStory
-    for (Scene *scene in self.story.scenes)
-        if (scene.sceneNumberInStory == sceneNumber)
+    for (Piece *scene in self.story.pieces)
+        if (scene.pieceNumber == sceneNumber)
             return scene;
     
-    return [self.story.scenes objectAtIndex:0];
+    return [self.story.pieces objectAtIndex:0];
 }
 
 - (ReadSceneViewController *)viewControllerForSceneNumberInStory:(NSNumber *)sceneNumber
 {
     ReadSceneViewController *readSceneViewController = [[ReadSceneViewController alloc] init];
-    readSceneViewController.scene = [self sceneAtSceneNumberInStory:sceneNumber];
+    readSceneViewController.piece = [self sceneAtSceneNumberInStory:sceneNumber];
     readSceneViewController.delegate = self;
     [self setNavBarButtonsWithTargetActionsFromReadSceneViewController:readSceneViewController];
     return readSceneViewController;
@@ -284,9 +283,9 @@
     self.addSceneButton.target = self.editSceneButton.target = self.hideTextButton.target = readSceneViewController;
     self.likeButton.target = self.shareButton.target = readSceneViewController;
     
-    self.addSceneButton.action = @selector(addScene:);
-    self.editSceneButton.action = @selector(editScene:);
-    self.hideTextButton.action = @selector(toggleSceneTextDisplay:);
+    self.addSceneButton.action = @selector(addPiece:);
+    self.editSceneButton.action = @selector(editPiece:);
+    self.hideTextButton.action = @selector(togglePieceTextDisplay:);
     
     self.likeButton.action = @selector(like:);
     self.shareButton.action = @selector(share:);
@@ -295,7 +294,7 @@
 - (void)doneWithReadSceneViewController:(ReadSceneViewController *)readSceneViewController
 {
     [StoryDocuments saveStoryToDisk:self.story];
-    [self.delegate scenesViewContollerDone:self];
+    [self.delegate storyReaderContollerDone:self];
     // Dismiss the read scenes page view controller
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -316,7 +315,7 @@
 
 - (void)readSceneViewControllerDeletedStory:(ReadSceneViewController *)readSceneViewController
 {
-    [self.delegate scenesViewContollerDone:self];
+    [self.delegate storyReaderContollerDone:self];
     // Dismiss the read scenes page view controller
     [self dismissViewControllerAnimated:YES completion:nil];
 }

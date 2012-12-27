@@ -69,6 +69,7 @@
 
 + (void)createActivity:(Activity *)activityContext
 {
+    return;
     NSDictionary *jsonDictionary = [activityContext getAttributesInDictionary];
     
     NSError *error = nil;
@@ -108,6 +109,7 @@
 
 + (void)deleteActivity:(Activity *)activityContext
 {
+    return;
     NSDictionary *jsonDictionary = [activityContext getAttributesInDictionary];
     
     NSError *error = nil;
@@ -135,6 +137,7 @@
 
 + (void) deleteActivityWithId:(NSString *)activityId isLast:(BOOL)last
 {
+    return;
     [[AFParseAPIClient sharedClient] deletePath:PARSE_API_OBJECT_URL(kBNActivityClassKey, activityId)
                                      parameters:nil
                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {

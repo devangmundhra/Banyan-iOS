@@ -1,44 +1,38 @@
 //
-//  Scene_Defines.h
+//  Piece_Defines.h
 //  Storied
 //
 //  Created by Devang Mundhra on 4/2/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "Scene.h"
+#import "Piece.h"
 
-@interface Scene ()
+@interface Piece ()
 
-#define SCENE_IMAGE @"image"
-#define SCENE_IMAGE_URL @"imageURL"
-#define SCENE_ID @"sceneId"
-#define SCENE_NUMBER @"sceneNumberInStory"
-#define SCENE_TEXT @"text"
-#define SCENE_AUTHOR @"author"
-#define SCENE_STATS @"stats"
-#define SCENE_STORY @"story"
-#define SCENE_PREVIOUSSCENE @"previousScene"
-#define SCENE_NEXTSCENE @"nextScene"
-#define SCENE_FONT @"HelveticaNeue-CondensedBold"
+#define PIECE_IMAGE @"image"
+#define PIECE_IMAGE_URL @"imageURL"
+#define PIECE_NUMBER @"pieceNumber"
+#define PIECE_TEXT @"text"
+#define PIECE_AUTHOR @"author"
+#define PIECE_STORY @"story"
+#define PIECE_FONT @"HelveticaNeue-CondensedBold"
 
-#define SCENE_DATE_CREATED @"createdAt"
-#define SCENE_DATE_MODIFIED @"updatedAt"
-#define SCENE_NUM_VIEWS @"numberOfViews"
-#define SCENE_NUM_LIKES @"numberOfLikes"
-#define SCENE_NUM_CONTRIBUTORS @"numberOfContributors"
-#define SCENE_LIKED @"liked"
-#define SCENE_VIEWED @"viewed"
-#define SCENE_FAVOURITE @"favourite"
-#define SCENE_LIKERS @"likers"
+#define PIECE_NUM_VIEWS @"numberOfViews"
+#define PIECE_NUM_LIKES @"numberOfLikes"
+#define PIECE_NUM_CONTRIBUTORS @"numberOfContributors"
+#define PIECE_LIKED @"liked"
+#define PIECE_VIEWED @"viewed"
+#define PIECE_FAVOURITE @"favourite"
+#define PIECE_LIKERS @"likers"
 
-#define SCENE_LATITUDE @"latitude"
-#define SCENE_LONGITUDE @"longitude"
-#define SCENE_LOCATION @"location"
-#define SCENE_GEOCODEDLOCATION @"geocodedLocation"
+#define PIECE_LATITUDE @"latitude"
+#define PIECE_LONGITUDE @"longitude"
+#define PIECE_LOCATION @"location"
+#define PIECE_GEOCODEDLOCATION @"geocodedLocation"
 
-#define SCENE_IS_INITIALIZED @"sceneInitialized"
+#define PIECE_IS_INITIALIZED @"PieceInitialized"
 
-#define MAX_CHAR_IN_SCENE 140
+#define MAX_CHAR_IN_PIECE 140
 
 @end

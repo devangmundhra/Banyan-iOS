@@ -108,13 +108,10 @@
     story.readAccess = [pfStory objectForKey:STORY_READ_ACCESS];
     story.writeAccess = [pfStory objectForKey:STORY_WRITE_ACCESS];
     story.storyId = [pfStory objectId];
-    story.dateCreated = pfStory.createdAt;
-    story.dateModified = pfStory.updatedAt;
+    story.createdAt = pfStory.createdAt;
+    story.updatedAt = pfStory.updatedAt;
     story.author = [User getUserForPfUser:[PFQuery getUserObjectWithId:REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_AUTHOR])]];
     [story updateStoryStats];
-    Scene *scene = [[Scene alloc] init];
-    story.startingScene = scene;
-    story.startingScene.sceneId = REPLACE_NULL_WITH_NIL([pfStory objectForKey:STORY_STARTING_SCENE]);
     
     if ([[pfStory objectForKey:STORY_LOCATION_ENABLED] isEqualToNumber:[NSNumber numberWithBool:YES]])
     {
@@ -136,76 +133,46 @@
 
 + (void)loadScenesForStory:(Story *)story
 {
-    if (![[AFParseAPIClient sharedClient] isReachable]) {
-        NSLog(@"%s No internet connection to load scenes for story: %@", __PRETTY_FUNCTION__, story.storyId);
-        return;
-    }
-    PFQuery *query = [PFQuery queryWithClassName:@"Scene"];
-    PFObject *pfScene = [query getObjectWithId:story.startingScene.sceneId];
-    if (pfScene) {
-        NSMutableArray *sceneArray = [[NSMutableArray alloc] initWithCapacity:[story.lengthOfStory unsignedIntValue]];
-        [ParseConnection fillScene:story.startingScene withPfScene:pfScene forStory:story inArray:sceneArray];
-        story.scenes = [sceneArray mutableCopy];
-        story.lengthOfStory = [NSNumber numberWithInteger:[sceneArray count]];
-        [StoryDocuments saveStoryToDisk:story];
-    } else {
-        NSLog(@"%s Could not find a starting scene for story %@!!\n", __PRETTY_FUNCTION__, story);
-    }
+//    if (![[AFParseAPIClient sharedClient] isReachable]) {
+//        NSLog(@"%s No internet connection to load scenes for story: %@", __PRETTY_FUNCTION__, story.storyId);
+//        return;
+//    }
+//    PFQuery *query = [PFQuery queryWithClassName:@"Scene"];
+//    PFObject *pfScene = [query getObjectWithId:story.startingScene.pieceId];
+//    if (pfScene) {
+//        NSMutableArray *sceneArray = [[NSMutableArray alloc] initWithCapacity:[story.lengthOfStory unsignedIntValue]];
+//        [ParseConnection fillScene:story.startingScene withPfScene:pfScene forStory:story inArray:sceneArray];
+//        story.pieces = [sceneArray mutableCopy];
+//        story.lengthOfStory = [NSNumber numberWithInteger:[sceneArray count]];
+//        [StoryDocuments saveStoryToDisk:story];
+//    } else {
+//        NSLog(@"%s Could not find a starting scene for story %@!!\n", __PRETTY_FUNCTION__, story);
+//    }
 }
 
-+ (void)fillScene:(Scene *)scene 
++ (void)fillScene:(Piece *)scene 
       withPfScene:(PFObject *)pfScene 
          forStory:(Story *)story 
           inArray:(NSMutableArray *)sceneArray;
 {
-    scene.text = REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_TEXT]);
-    scene.sceneId = [pfScene objectId];
-    scene.sceneNumberInStory = REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_NUMBER]);
+    scene.text = REPLACE_NULL_WITH_NIL([pfScene objectForKey:PIECE_TEXT]);
+    scene.pieceId = [pfScene objectId];
+    scene.pieceNumber = REPLACE_NULL_WITH_NIL([pfScene objectForKey:PIECE_NUMBER]);
     scene.story = story;
-    scene.author = [User getUserForPfUser:[PFQuery getUserObjectWithId:REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_AUTHOR])]];
+    scene.author = [User getUserForPfUser:[PFQuery getUserObjectWithId:REPLACE_NULL_WITH_NIL([pfScene objectForKey:PIECE_AUTHOR])]];
     scene.dateCreated = pfScene.createdAt;
     scene.dateModified = pfScene.updatedAt;
     [scene updateSceneStats];
     scene.initialized = YES;
     if (story.isLocationEnabled) {
-        double latitude = [REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_LATITUDE]) doubleValue];
-        double longitude = [REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_LONGITUDE]) doubleValue];
+        double latitude = [REPLACE_NULL_WITH_NIL([pfScene objectForKey:PIECE_LATITUDE]) doubleValue];
+        double longitude = [REPLACE_NULL_WITH_NIL([pfScene objectForKey:PIECE_LONGITUDE]) doubleValue];
         scene.location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
-        scene.geocodedLocation = REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_GEOCODEDLOCATION]);
+        scene.geocodedLocation = REPLACE_NULL_WITH_NIL([pfScene objectForKey:PIECE_GEOCODEDLOCATION]);
     }
     
-    scene.imageURL = REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_IMAGE_URL]);
+    scene.imageURL = REPLACE_NULL_WITH_NIL([pfScene objectForKey:PIECE_IMAGE_URL]);
     
-    PFQuery *query = [PFQuery queryWithClassName:@"Scene"];
-    NSString *pfPreviousSceneId = REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_PREVIOUSSCENE]);
-    Scene *previousScene = nil;
-    if (!scene.previousScene && pfPreviousSceneId)
-    {
-        PFObject *pfPreviousScene = [[query getObjectWithId:pfPreviousSceneId] fetchIfNeeded];
-        previousScene = [[Scene alloc] init];
-        scene.previousScene = previousScene;
-        previousScene.nextScene = scene;
-        
-        [ParseConnection fillScene:previousScene 
-                       withPfScene:pfPreviousScene
-                          forStory:story 
-                           inArray:sceneArray];
-    }
-    
-    Scene *nextScene = nil;
-    NSString *pfNextSceneId = REPLACE_NULL_WITH_NIL([pfScene objectForKey:SCENE_NEXTSCENE]);
-    if (!scene.nextScene && pfNextSceneId)
-    {
-        PFObject *pfNextScene = [[query getObjectWithId:pfNextSceneId] fetchIfNeeded];
-        nextScene = [[Scene alloc] init];
-        scene.nextScene = nextScene;
-        nextScene.previousScene = scene;
-        
-        [ParseConnection fillScene:nextScene
-                       withPfScene:pfNextScene
-                          forStory:story 
-                           inArray:sceneArray];
-    }
     [sceneArray insertObject:scene atIndex:0];
 }
 

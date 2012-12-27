@@ -8,7 +8,6 @@
 
 #import "BanyanDataSource.h"
 #import "BanyanConnection.h"
-#import "ParseConnection.h"
 #import "UserManagementModule.h"
 
 @implementation BanyanDataSource
@@ -88,24 +87,21 @@ static NSMutableDictionary *_hashTable = nil;
     return [StoryDocuments loadStoryFromDisk:storyId];
 }
 
-+ (Scene *)lookForSceneId:(NSString *)sceneId inStoryId:(NSString *)storyId
++ (Piece *)lookForSceneId:(NSString *)sceneId inStoryId:(NSString *)storyId
 {
     storyId = UPDATED(storyId);
     sceneId = UPDATED(sceneId);
 
     Story *story = [BanyanDataSource lookForStoryId:storyId];
-    if (!story.scenes) {
-        [ParseConnection loadScenesForStory:story];
-    }
-    if (!story.scenes) {
+    if (!story.pieces) {
         [[BanyanDataSource shared] removeObject:story];
         
         story = [StoryDocuments loadStoryFromDisk:storyId];
         [[BanyanDataSource shared] addObject:story];
         NSLog(@"%s There were no scenes. So getting them again.", __PRETTY_FUNCTION__);
     }
-    for (Scene *scene in story.scenes) {
-        if ([UPDATED(scene.sceneId) isEqualToString:sceneId]) {
+    for (Piece *scene in story.pieces) {
+        if ([UPDATED(scene.pieceId) isEqualToString:sceneId]) {
             NSLog(@"%s Found scene %p for id: %@", __PRETTY_FUNCTION__, scene, sceneId);
             return scene;
         }

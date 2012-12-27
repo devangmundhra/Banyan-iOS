@@ -12,10 +12,10 @@
 #import "AFParseAPIClient.h"
 #import "Activity.h"
 
-@implementation Scene (Stats)
+@implementation Piece (Stats)
 
 
-+ (void) viewedScene:(Scene *)scene
++ (void) viewedScene:(Piece *)scene
 {
     if (!scene) {
         NSLog(@"%s --ERROR-- No scene available!!", __PRETTY_FUNCTION__);
@@ -29,12 +29,12 @@
     if (!currentUser)
         return;
     
-    BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:scene.sceneId storyId:scene.story.storyId];
+    BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:scene.pieceId storyId:scene.story.storyId];
     BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionCreate dependencies:nil];
     activityOp.action.context = [Activity activityWithType:kBNActivityTypeView
                                                   fromUser:currentUser.userId
                                                     toUser:currentUser.userId
-                                                   sceneId:scene.sceneId storyId:nil];
+                                                   sceneId:scene.pieceId storyId:nil];
     ADD_OPERATION_TO_QUEUE(activityOp);
     
     scene.viewed = YES;
@@ -42,7 +42,7 @@
     return;
 }
 
-+ (void) toggleLikedScene:(Scene *)scene
++ (void) toggleLikedScene:(Piece *)scene
 {
     User *currentUser = [User currentUser];
     if (!currentUser)
@@ -51,12 +51,12 @@
     NSMutableArray *likers = [scene.likers mutableCopy];
     if (scene.liked) {
         // unlike scene
-        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:scene.sceneId storyId:scene.story.storyId];
+        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:scene.pieceId storyId:scene.story.storyId];
         BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionDelete dependencies:nil];
         activityOp.action.context = [Activity activityWithType:kBNActivityTypeLike
                                                       fromUser:currentUser.userId
                                                         toUser:currentUser.userId
-                                                       sceneId:scene.sceneId
+                                                       sceneId:scene.pieceId
                                                        storyId:nil];
         ADD_OPERATION_TO_QUEUE(activityOp);
         [likers removeObject:currentUser.userId];
@@ -66,12 +66,12 @@
     }
     else {
         // like scene
-        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:scene.sceneId storyId:scene.story.storyId];
+        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:scene.pieceId storyId:scene.story.storyId];
         BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionCreate dependencies:nil];
         activityOp.action.context = [Activity activityWithType:kBNActivityTypeLike
                                                       fromUser:currentUser.userId
                                                         toUser:currentUser.userId
-                                                       sceneId:scene.sceneId
+                                                       sceneId:scene.pieceId
                                                        storyId:nil];
         ADD_OPERATION_TO_QUEUE(activityOp);
         [likers addObject:currentUser.userId];
@@ -83,7 +83,7 @@
     scene.likers = likers;
 }
 
-+ (void) toggleFavouritedScene:(Scene *)scene
++ (void) toggleFavouritedScene:(Piece *)scene
 {
     User *currentUser = [User currentUser];
     if (!currentUser)
@@ -91,23 +91,23 @@
     
     if (scene.favourite) {
         // unfavourite scene
-        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:scene.sceneId storyId:scene.story.storyId];
+        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:scene.pieceId storyId:scene.story.storyId];
         BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionDelete dependencies:nil];
         activityOp.action.context = [Activity activityWithType:kBNActivityTypeFavourite
                                                       fromUser:currentUser.userId
                                                         toUser:currentUser.userId
-                                                       sceneId:scene.sceneId
+                                                       sceneId:scene.pieceId
                                                        storyId:nil];
         ADD_OPERATION_TO_QUEUE(activityOp);
     }
     else {
         // favourite scene
-        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:scene.sceneId storyId:scene.story.storyId];
+        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:scene.pieceId storyId:scene.story.storyId];
         BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionCreate dependencies:nil];
         activityOp.action.context = [Activity activityWithType:kBNActivityTypeFavourite
                                                       fromUser:currentUser.userId
                                                         toUser:currentUser.userId
-                                                       sceneId:scene.sceneId
+                                                       sceneId:scene.pieceId
                                                        storyId:nil];
         ADD_OPERATION_TO_QUEUE(activityOp);
     }
@@ -125,7 +125,7 @@
 # pragma mark views
 - (void) updateViews
 {
-    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.sceneId, kBNActivitySceneKey, kBNActivityTypeView, kBNActivityTypeKey, nil];
+    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.pieceId, kBNActivitySceneKey, kBNActivityTypeView, kBNActivityTypeKey, nil];
     
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
@@ -176,7 +176,7 @@
 # pragma mark likes
 - (void) updateLikes
 {
-    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.sceneId, kBNActivitySceneKey, kBNActivityTypeLike, kBNActivityTypeKey, nil];
+    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.pieceId, kBNActivitySceneKey, kBNActivityTypeLike, kBNActivityTypeKey, nil];
     
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
@@ -217,7 +217,7 @@
     if (!currentUser) {
         return;
     }
-    NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:self.sceneId, kBNActivitySceneKey, kBNActivityTypeFavourite, kBNActivityTypeKey, currentUser.userId, kBNActivityFromUserKey, nil];
+    NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:self.pieceId, kBNActivitySceneKey, kBNActivityTypeFavourite, kBNActivityTypeKey, currentUser.userId, kBNActivityFromUserKey, nil];
     
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];

@@ -7,7 +7,6 @@
 //
 
 #import "StoryListTableViewController.h"
-#import "ParseConnection.h"
 #import "StoryDocuments.h"
 #import "BanyanAppDelegate.h"
 #import "BanyanPullToRefreshContentView.h"
@@ -202,6 +201,7 @@ typedef enum {
     
     // Configure the cell...
     Story *story = [self.dataSource objectAtIndex:indexPath.row];
+    NSLog(@"Title being printed: %@", story.title);
     [cell setStory:story];
     
     return cell;
@@ -375,9 +375,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (IBAction)addStorySegue:(UIBarButtonItem *)sender
 {
     [self performSegueWithIdentifier:@"New Story" sender:nil];
-//    NewStoryViewController *newStoryViewController = [[NewStoryViewController alloc] init];
-//    newStoryViewController.delegate = self;
-//    [self.navigationController pushViewController:newStoryViewController animated:YES];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -404,7 +401,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                                                                      delegate:nil
                                                             cancelButtonTitle:@"OK"
                                                             otherButtonTitles:nil];
-    if (!story.scenes)
+    if (!story.pieces)
     {
         Story *alreadyExistingStory = [StoryDocuments loadStoryFromDisk:story.storyId];
         alreadyExistingStory.storyBeingRead = YES;
@@ -418,13 +415,13 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             hud.detailsLabelText = story.title;
             NSLog(@"Loading story scenes");
             [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
-            [ParseConnection loadScenesForStory:story];
+            [BanyanConnection loadPiecesForStory:story];
             [MBProgressHUD hideHUDForView:self.view animated:YES];
         }
         
     }
-    if (!story.scenes || [story.scenes count] == 0) {
-        NSLog(@"%s story.scenes %@ story count: %d", __PRETTY_FUNCTION__, story.scenes, [story.scenes count]);
+    if (!story.pieces || [story.pieces count] == 0) {
+        NSLog(@"%s story.scenes %@ story count: %d", __PRETTY_FUNCTION__, story.pieces, [story.pieces count]);
         [networkUnavailableAlert show];
         return nil;
     }
@@ -433,7 +430,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(void) readStory:(Story *)story
 {
-    ScenesViewController *scenesViewController = [[ScenesViewController alloc] init];
+    StoryReaderController *scenesViewController = [[StoryReaderController alloc] init];
     scenesViewController.story = story;
     scenesViewController.delegate = self;
     [scenesViewController setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
@@ -444,7 +441,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     ModifySceneViewController *addSceneViewController = [[ModifySceneViewController alloc] init];
     addSceneViewController.editMode = add;
-    addSceneViewController.scene = [story.scenes lastObject];
+    Piece *piece = [[Piece alloc] init];
+    piece.story = story;
+    addSceneViewController.piece = piece;
+    addSceneViewController.editMode = add;
     addSceneViewController.delegate = self;
     [addSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
     [addSceneViewController setModalPresentationStyle:UIModalPresentationFullScreen];
@@ -455,7 +455,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 #pragma mark ModifySceneViewControllerDelegate
 
 - (void) modifySceneViewController:(ModifySceneViewController *)controller
-              didFinishAddingScene:(Scene *)scene
+              didFinishAddingScene:(Piece *)scene
 {
     NSLog(@"StoryListTableViewController_Adding scene");
     [self dismissViewControllerAnimated:NO completion:^{
@@ -474,11 +474,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                     didAddStory:(Story *)story
 {
     [self.navigationController popViewControllerAnimated:NO];
-    [self readStory:story];
+    [self addSceneToStory:story];
 }
 
 #pragma mark ScenesViewControllerDelegate
-- (void)scenesViewContollerDone:(ScenesViewController *)scenesViewController
+- (void)storyReaderContollerDone:(StoryReaderController *)scenesViewController
 {
     [self.navigationController popViewControllerAnimated:YES];
     scenesViewController.story.storyBeingRead = NO;

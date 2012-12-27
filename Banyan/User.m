@@ -7,7 +7,7 @@
 //
 
 #import "User.h"
-#import "Scene.h"
+#import "Piece.h"
 #import "Story.h"
 #import "User_Defines.h"
 

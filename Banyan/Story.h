@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 
-@class Scene, User;
+@class Piece, User;
 
 @interface Story : NSObject <NSCoding>
 
@@ -24,14 +24,15 @@
 @property (strong, nonatomic) NSArray *contributors;
 @property (strong, nonatomic) NSDictionary *writeAccess;
 @property (strong, nonatomic) NSDictionary *readAccess;
-@property (strong, nonatomic) Scene *startingScene;
-@property (strong, nonatomic) NSArray *scenes;
-@property (strong, nonatomic) NSDate * dateCreated;
-@property (strong, nonatomic) NSDate * dateModified;
+@property (strong, nonatomic) NSMutableArray *pieces;
+@property (strong, nonatomic) NSDate * createdAt;
+@property (strong, nonatomic) NSDate * updatedAt;
 @property (strong, nonatomic) NSNumber * numberOfContributors;
 @property (strong, nonatomic) NSNumber * numberOfLikes;
 @property (strong, nonatomic) NSNumber * numberOfViews;
 @property (strong, nonatomic) CLLocation *location;
+@property (strong, nonatomic) NSNumber *latitude;
+@property (strong, nonatomic) NSNumber *longitude;
 @property (strong, nonatomic) NSString *geocodedLocation;
 @property (strong, nonatomic) User *author;
 @property (strong, nonatomic) NSString *tags;
@@ -49,7 +50,7 @@
 
 - (NSString *)description;
 - (NSMutableDictionary *)getAttributesInDictionary;
-- (void) fillAttributesFromDictionary:(NSDictionary *)dict;
+//- (void) fillAttributesFromDictionary:(NSDictionary *)dict;
 - (void) resetPermission;
 
 @end

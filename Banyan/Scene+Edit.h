@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "Scene.h"
+#import "Piece.h"
 #import <Parse/Parse.h>
 #import "Scene_Defines.h"
 #import "AFParseAPIClient.h"
@@ -21,9 +21,9 @@ op.action.context = [NSDictionary dictionaryWithObjectsAndKeys:__attribute__, @"
 ADD_OPERATION_TO_QUEUE(op); \
 } while(0)
 
-@interface Scene (Edit)
+@interface Piece (Edit)
 
-+ (void) editScene:(Scene *)scene;
-+ (void) editScene:(Scene *)scene withAttributes:(NSMutableDictionary *)sceneParams;
++ (void) editScene:(Piece *)scene;
++ (void) editScene:(Piece *)scene withAttributes:(NSMutableDictionary *)sceneParams;
 - (void)incrementSceneAttribute:(NSString *)attribute byAmount:(NSNumber *)inc;
 @end

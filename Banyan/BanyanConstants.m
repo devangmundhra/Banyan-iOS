@@ -33,12 +33,12 @@ NSString *const kBNStoryPrivacyScopePublic = @"Public";
 NSString *const kBNStoryPrivacyInviteeList = @"InviteeList";
 NSString *const kBNStoryPrivacyInvitedFacebookFriends = @"InvitedFacebookFriends";
 
-#pragma mark - PFObject Scene Class
+#pragma mark - PFObject Piece Class
 // Class key
-NSString *const kBNSceneClassKey = @"Scene";
+NSString *const kBNPieceClassKey = @"Piece";
 
 // Field keys
-NSString *const kBNSceneIdKey    = @"sceneId";
+NSString *const kBNPieceIdKey    = @"pieceId";
 
 #pragma mark - Activity Class
 // Class key

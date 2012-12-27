@@ -6,18 +6,18 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "Scene.h"
+#import "Piece.h"
 #import <Parse/Parse.h>
 
 // PUT_API_TODO
 
-@interface Scene (Stats)
+@interface Piece (Stats)
 
-+ (void) viewedScene:(Scene *)scene;
++ (void) viewedScene:(Piece *)scene;
 
-+ (void) toggleLikedScene:(Scene *)scene;
++ (void) toggleLikedScene:(Piece *)scene;
 
-+ (void) toggleFavouritedScene:(Scene *)scene;
++ (void) toggleFavouritedScene:(Piece *)scene;
 
 - (void) updateSceneStats;
 
