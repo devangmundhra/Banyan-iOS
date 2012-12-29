@@ -140,8 +140,9 @@ static NSMutableDictionary *_hashTable = nil;
 {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(canView == YES) OR (canContribute == YES)"];
     NSLog(@"%s loadDataSource begin", __PRETTY_FUNCTION__);
+
     [BanyanConnection
-     loadStoriesFromBanyanWithBlock:^(NSMutableArray *retValue) {
+     loadStoriesFromBanyanWithSuccessBlock:^(NSMutableArray *retValue) {
          [retValue filterUsingPredicate:predicate];
          NSLog(@"%s loadDataSource completed", __PRETTY_FUNCTION__);
          _sharedDatasource = retValue;
@@ -150,6 +151,14 @@ static NSMutableDictionary *_hashTable = nil;
              [[NSNotificationCenter defaultCenter] postNotificationName:BNDataSourceUpdatedNotification
                                                                  object:self];
          });
+     } errorBlock:^(NSError *error) {
+         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in fetching stories."
+                                                         message:[error localizedDescription]
+                                                        delegate:nil
+                                               cancelButtonTitle:@"OK"
+                                               otherButtonTitles:nil];
+         [alert show];
+         NSLog(@"Hit error: %@", error);
      }];
 }
 

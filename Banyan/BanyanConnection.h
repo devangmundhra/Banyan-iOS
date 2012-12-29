@@ -13,7 +13,7 @@
 
 @interface BanyanConnection : NSObject
 
-+ (void) loadStoriesFromBanyanWithBlock:(void (^)(NSMutableArray *stories))successBlock;
++ (void)loadStoriesFromBanyanWithSuccessBlock:(void (^)(NSMutableArray *stories))successBlock errorBlock:(void (^)(NSError *error))errorBlock;
 + (void) resetPermissionsForStories:(NSMutableArray *)stories;
 + (void) loadPiecesForStory:(Story *)story completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *error))errorBlock;
 @end

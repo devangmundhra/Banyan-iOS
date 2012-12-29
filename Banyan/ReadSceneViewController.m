@@ -27,7 +27,6 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *locationLabel;
 
-@property (weak, nonatomic) UserManagementModule *userManagementModule;
 
 @property (strong, nonatomic) BNLocationManager *locationManager;
 
@@ -44,7 +43,6 @@
 @synthesize likesLabel = _likesLabel;
 @synthesize timeLabel = _timeLabel;
 @synthesize locationLabel = _locationLabel;
-@synthesize userManagementModule = _userManagementModule;
 @synthesize piece = _scene;
 @synthesize delegate = _delegate;
 @synthesize locationManager = _locationManager;
@@ -233,14 +231,6 @@
         [self refreshStoryView];
     else
         [self refreshSceneView];
-    
-//    if ([self.userManagementModule isUserSignedIntoApp]) {
-//        // User signed in
-//        self.actionView.hidden = NO;
-//    } else {
-//        // User not signed in
-//        self.actionView.hidden = YES;
-//    }
 }
 
 - (void)viewDidUnload
@@ -252,7 +242,6 @@
     
     [self setContentView:nil];
     [self setInfoView:nil];
-    [self setUserManagementModule:nil];
     [self setImageView:nil];
     [self setSceneTextView:nil];
     [self setStoryTitleLabel:nil];

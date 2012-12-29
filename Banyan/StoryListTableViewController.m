@@ -20,7 +20,6 @@ typedef enum {
 @interface StoryListTableViewController ()
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *addStory;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *leftButton;
-@property (weak, nonatomic) UserManagementModule *userManagementModule;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *filterStoriesSegmentedControl;
 @property (strong, nonatomic) SSPullToRefreshView *pullToRefreshView;
 @end
@@ -28,7 +27,6 @@ typedef enum {
 @implementation StoryListTableViewController
 @synthesize addStory = _addStory;
 @synthesize leftButton = _leftButton;
-@synthesize userManagementModule = _userManagementModule;
 @synthesize filterStoriesSegmentedControl = _filterStoriesSegmentedControl;
 @synthesize dataSource = _dataSource;
 @synthesize pullToRefreshView = _pullToRefreshView;
@@ -134,7 +132,9 @@ typedef enum {
     self.leftButton.action = @selector(settings);
     [self.navigationItem setLeftBarButtonItem:self.leftButton animated:YES];
 
-    if ([self.userManagementModule isUserSignedIntoApp])
+    UserManagementModule *userManagementModule = [(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate] userManagementModule];
+
+    if ([userManagementModule isUserSignedIntoApp])
     {
         [self.navigationItem setRightBarButtonItem:self.addStory animated:YES];
         [self.navigationItem setTitleView:self.filterStoriesSegmentedControl];
@@ -151,7 +151,6 @@ typedef enum {
 - (void)viewDidUnload
 {
     [self setAddStory:nil];
-    [self setUserManagementModule:nil];
     [self setLeftButton:nil];
     [self setAddStory:nil];
     [self setLeftButton:nil];

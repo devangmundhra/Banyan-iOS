@@ -13,7 +13,7 @@
 
 @implementation BanyanConnection
 
-+ (void)loadStoriesFromBanyanWithBlock:(void (^)(NSMutableArray *stories))successBlock
++ (void)loadStoriesFromBanyanWithSuccessBlock:(void (^)(NSMutableArray *stories))successBlock errorBlock:(void (^)(NSError *error))errorBlock
 {
     NSString *getPath = BANYAN_API_GET_PUBLIC_STORIES();
     if ([User currentUser]) {
@@ -32,7 +32,7 @@
      STORY_LOCATION_ENABLED: @"isLocationEnabled",
      }];
     
-    [storyMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_READ_ACCESS, STORY_WRITE_ACCESS, STORY_TAGS,
+    [storyMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_READ_ACCESS, STORY_WRITE_ACCESS, STORY_TAGS, STORY_LENGTH,
                                                     STORY_IMAGE_URL, STORY_GEOCODEDLOCATION, STORY_LATITUDE, STORY_LONGITUDE,
                                                     PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT]];
     
@@ -58,13 +58,7 @@
                                 }];
                                 successBlock([stories mutableCopy]);                            }
                             failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                                                message:[error localizedDescription]
-                                                                               delegate:nil
-                                                                      cancelButtonTitle:@"OK"
-                                                                      otherButtonTitles:nil];
-                                [alert show];
-                                NSLog(@"Hit error: %@", error);
+                                errorBlock(error);
                             }];
 }
 

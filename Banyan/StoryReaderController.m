@@ -20,8 +20,6 @@
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *likeButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *shareButton;
 
-@property (weak, nonatomic) UserManagementModule *userManagementModule;
-
 @end
 
 @implementation StoryReaderController
@@ -29,7 +27,6 @@
 @synthesize story = _story;
 @synthesize delegate = _delegate;
 @synthesize readSceneControllerEditMode = _readSceneControllerEditMode;
-@synthesize userManagementModule = _userManagementModule;
 @synthesize addSceneButton = _addSceneButton;
 @synthesize editSceneButton = _editSceneButton;
 @synthesize hideTextButton = _hideTextButton;
@@ -122,8 +119,9 @@
 }
 
 - (void) refreshView
-{    
-    if ([self.userManagementModule isUserSignedIntoApp] && self.story.canContribute) {
+{
+    UserManagementModule *userManagementModule = [(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate] userManagementModule];
+    if ([userManagementModule isUserSignedIntoApp] && self.story.canContribute) {
         // User signed in AND User can Contribute
         
         NSMutableArray *rightSideButtons = [[NSMutableArray alloc] initWithCapacity:5];

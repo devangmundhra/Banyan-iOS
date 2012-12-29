@@ -46,12 +46,18 @@
 
 @implementation NewStoryViewController
 
-// These correspond to the index for UISegmentedControl and UISlider
+// These correspond to the index for UISegmentedControl
 typedef enum {
     StoryPrivacySegmentIndexInvited = 0,
-    StoryPrivacySegmentIndexLimited = 1,
-    StoryPrivacySegmentIndexPublic = 2,
+    StoryPrivacySegmentIndexPublic = 1,
 } StoryPrivacySegmentIndex;
+
+// These correspond to the index for UISlider
+typedef enum {
+    StoryPrivacySliderValueInvited = 0,
+    StoryPrivacySliderValueLimited = 1,
+    StoryPrivacySliderValuePublic = 2,
+} StoryPrivacySliderValue;
 
 // Timeout for finding location
 #define kFindLocationTimeOut 0.5*60 // half a minute
@@ -109,7 +115,7 @@ typedef enum {
     self.invitedToViewList = [NSMutableArray array];
     self.story = [[Story alloc] init];
     
-    self.viewerSlider.value = StoryPrivacySegmentIndexLimited;
+    self.viewerSlider.value = StoryPrivacySliderValueLimited;
     self.inviteViewersButton.alpha = 0;
     
     [self updateContentSize];
@@ -215,10 +221,10 @@ typedef enum {
 {
     if (sender.selectedSegmentIndex == StoryPrivacySegmentIndexInvited)
     {
-        [self.viewerSlider setValue:StoryPrivacySegmentIndexLimited animated:YES];
+        [self.viewerSlider setValue:StoryPrivacySliderValueLimited animated:YES];
         self.inviteContributorsButton.alpha = 1;
     } else {
-        [self.viewerSlider setValue:StoryPrivacySegmentIndexPublic animated:YES];
+        [self.viewerSlider setValue:StoryPrivacySliderValuePublic animated:YES];
         self.inviteContributorsButton.alpha = 0;
     }
 }
@@ -228,7 +234,7 @@ typedef enum {
     int sliderValue;
     sliderValue = lroundf(sender.value);
     [self.viewerSlider setValue:sliderValue animated:YES];
-    if (self.viewerSlider.value == StoryPrivacySegmentIndexInvited) {
+    if (self.viewerSlider.value == StoryPrivacySliderValueInvited) {
         self.inviteViewersButton.alpha = 1;
     } else {
         self.inviteViewersButton.alpha = 0;
@@ -272,15 +278,15 @@ typedef enum {
 - (NSString *)viewerScope
 {
     switch (lroundf(self.viewerSlider.value)) {
-        case StoryPrivacySegmentIndexInvited:
+        case StoryPrivacySliderValueInvited:
             return kBNStoryPrivacyScopeInvited;
             break;
             
-        case StoryPrivacySegmentIndexLimited:
+        case StoryPrivacySliderValueLimited:
             return kBNStoryPrivacyScopeLimited;
             break;
             
-        case StoryPrivacySegmentIndexPublic:
+        case StoryPrivacySliderValuePublic:
             return kBNStoryPrivacyScopePublic;
             break;
             
