@@ -8,7 +8,7 @@
 
 #import "Story.h"
 #import "Scene+Edit.h"
-#import "Scene_Defines.h"
+#import "Piece_Defines.h"
 #import "StoryDocuments.h"
 
 @implementation Piece (Edit)

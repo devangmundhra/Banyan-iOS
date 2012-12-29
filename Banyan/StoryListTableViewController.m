@@ -396,33 +396,27 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     Story *story = [self.dataSource objectAtIndex:indexPath.row];
     story.storyBeingRead = YES;
-    UIAlertView *networkUnavailableAlert = [[UIAlertView alloc] initWithTitle:@"Network unavailable"
-                                                                      message:@"We are unable to access the network and so can't load the story"
-                                                                     delegate:nil
-                                                            cancelButtonTitle:@"OK"
-                                                            otherButtonTitles:nil];
+
     if (!story.pieces)
     {
-        Story *alreadyExistingStory = [StoryDocuments loadStoryFromDisk:story.storyId];
-        alreadyExistingStory.storyBeingRead = YES;
-        if (alreadyExistingStory) {
-            // If a story is already existing, load that story.
-            [[BanyanDataSource shared] replaceObjectAtIndex:[[BanyanDataSource shared] indexOfObject:story] withObject:alreadyExistingStory];
-            [self.dataSource replaceObjectAtIndex:indexPath.row withObject:alreadyExistingStory];
-        } else {
-            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            hud.labelText = @"Loading";
-            hud.detailsLabelText = story.title;
-            NSLog(@"Loading story scenes");
-            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
-            [BanyanConnection loadPiecesForStory:story];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.labelText = @"Fetching pieces for the story";
+        hud.detailsLabelText = story.title;
+        NSLog(@"Loading story pieces");
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+        [BanyanConnection loadPiecesForStory:story completionBlock:^{
             [MBProgressHUD hideHUDForView:self.view animated:YES];
-        }
-        
-    }
-    if (!story.pieces || [story.pieces count] == 0) {
-        NSLog(@"%s story.scenes %@ story count: %d", __PRETTY_FUNCTION__, story.pieces, [story.pieces count]);
-        [networkUnavailableAlert show];
+            [self readStory:story];
+        } errorBlock:^(NSError *error){
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unable to load the pieces for this story."
+                                                            message:[error localizedDescription]
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+            NSLog(@"Hit error: %@", error);
+        }];
         return nil;
     }
     return indexPath;
@@ -430,11 +424,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(void) readStory:(Story *)story
 {
-    StoryReaderController *scenesViewController = [[StoryReaderController alloc] init];
-    scenesViewController.story = story;
-    scenesViewController.delegate = self;
-    [scenesViewController setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
-    [self.navigationController pushViewController:scenesViewController animated:YES];
+    StoryReaderController *storyReaderController = [[StoryReaderController alloc] init];
+    storyReaderController.story = story;
+    storyReaderController.delegate = self;
+    [storyReaderController setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
+    [self.navigationController pushViewController:storyReaderController animated:YES];
 }
 
 -(void) addSceneToStory:(Story *)story

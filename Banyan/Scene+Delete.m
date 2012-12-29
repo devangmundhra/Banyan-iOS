@@ -9,7 +9,7 @@
 #import "Scene+Delete.h"
 #import "Story.h"
 #import "Story_Defines.h"
-#import "Scene_Defines.h"
+#import "Piece_Defines.h"
 #import "StoryDocuments.h"
 
 @implementation Piece (Delete)
@@ -32,7 +32,7 @@
     NSMutableArray *currentScenes = [story.pieces mutableCopy];
     [currentScenes removeObject:scene];
     story.pieces = [currentScenes copy];
-    story.lengthOfStory = [NSNumber numberWithInt:([story.lengthOfStory intValue] - 1)];
+    story.length = [NSNumber numberWithInt:([story.length intValue] - 1)];
     
     if (scene.nextPiece != nil)
     {

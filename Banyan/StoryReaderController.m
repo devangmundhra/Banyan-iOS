@@ -207,7 +207,7 @@
     NSUInteger index = [self indexOfViewController:(ReadSceneViewController *)viewController];
     index++;
     
-    if (index >= [self.story.lengthOfStory unsignedIntegerValue]) {
+    if (index >= [self.story.length unsignedIntegerValue]) {
         NSLog(@"End of story reached for story %@", self.story.title);
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.mode = MBProgressHUDModeText;

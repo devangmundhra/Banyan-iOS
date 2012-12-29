@@ -7,12 +7,12 @@
 //
 
 #import "ModifySceneViewController.h"
-#import "Scene+Create.h"
+#import "Piece+Create.h"
 #import "Scene+Edit.h"
 #import "Scene+Delete.h"
 #import "Story+Delete.h"
 #import "Story+Edit.h"
-#import "Scene_Defines.h"
+#import "Piece_Defines.h"
 #import "Story_Defines.h"
 #import "UIImageView+AFNetworking.h"
 #import <AssetsLibrary/AssetsLibrary.h>

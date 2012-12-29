@@ -137,6 +137,7 @@ static CLLocationManager *_sharedLocationManager;
 # pragma mark BNLocationManager
 - (void)beginUpdatingLocation
 {
+    return;
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(stopUpdatingLocation:) object:nil];
     [self.delegate locationUpdated];
     _sharedLocationManager.delegate = self;

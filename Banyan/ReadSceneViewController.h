@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Scene_Defines.h"
+#import "Piece_Defines.h"
 #import "Story_Defines.h"
 #import "Story+Edit.h"
 #import "ModifySceneViewController.h"

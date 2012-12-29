@@ -17,7 +17,7 @@
 @property (assign) BOOL canView;
 @property (assign) BOOL isInvited;
 @property (strong, nonatomic) id image;
-@property (strong, nonatomic) NSNumber * lengthOfStory;
+@property (strong, nonatomic) NSNumber * length;
 @property (strong, nonatomic) NSString * storyId;
 @property (strong, nonatomic) NSString * title;
 @property (strong, nonatomic) NSString * imageURL;

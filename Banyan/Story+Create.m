@@ -9,10 +9,10 @@
 #import "Story+Create.h"
 #import "Story_Defines.h"
 #import "StoryDocuments.h"
-#import "Scene_Defines.h"
 #import "User_Defines.h"
 #import "BanyanDataSource.h"
 #import "AFBanyanAPIClient.h"
+#import "UIImage+ResizeAdditions.h"
 
 @implementation Story (Create)
 
@@ -103,46 +103,97 @@
         }
     };
     
-    RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
-    // For serializing
-    RKObjectMapping *storyRequestMapping = [RKObjectMapping requestMapping];
-    [storyRequestMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_IMAGE_URL, STORY_WRITE_ACCESS, STORY_READ_ACCESS,
-                                                        STORY_LATITUDE, STORY_LONGITUDE, STORY_GEOCODEDLOCATION, STORY_TAGS]];
-    [storyRequestMapping addAttributeMappingsFromDictionary:@{@"author.userId" : STORY_AUTHOR}];
-    
-    RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
-                                              requestDescriptorWithMapping:storyRequestMapping
-                                              objectClass:[Story class]
-                                              rootKeyPath:nil];
-    RKObjectMapping *storyResponseMapping = [RKObjectMapping mappingForClass:[Story class]];
-    [storyResponseMapping addAttributeMappingsFromDictionary:@{
-     PARSE_OBJECT_ID : @"storyId",
-     }];
-    [storyResponseMapping addAttributeMappingsFromArray:@[PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT]];
-
-    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:storyResponseMapping
-                                                                                       pathPattern:nil
-                                                                                           keyPath:nil
-                                                                                       statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
-    [objectManager addRequestDescriptor:requestDescriptor];
-    [objectManager addResponseDescriptor:responseDescriptor];
-    
-    [objectManager postObject:story
-                         path:@"Story"
-                   parameters:nil
-                      success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                          NSLog(@"Create story successful %@", story);
-                          story.initialized = YES;
-                          NSArray *invitedFBFriends = [[story.writeAccess objectForKey:kBNStoryPrivacyInviteeList]
-                                                       objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
-                          if (invitedFBFriends) {
-                              sendRequestToContributors(invitedFBFriends, story);
+    // Block to upload the story
+    void (^uploadStory)(Story *) = ^(Story *story) {
+        RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
+        // For serializing
+        RKObjectMapping *storyRequestMapping = [RKObjectMapping requestMapping];
+        [storyRequestMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_IMAGE_URL, STORY_WRITE_ACCESS, STORY_READ_ACCESS,
+         STORY_LATITUDE, STORY_LONGITUDE, STORY_GEOCODEDLOCATION, STORY_TAGS]];
+        [storyRequestMapping addAttributeMappingsFromDictionary:@{@"author.userId" : STORY_AUTHOR}];
+        
+        RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
+                                                  requestDescriptorWithMapping:storyRequestMapping
+                                                  objectClass:[Story class]
+                                                  rootKeyPath:nil];
+        RKObjectMapping *storyResponseMapping = [RKObjectMapping mappingForClass:[Story class]];
+        [storyResponseMapping addAttributeMappingsFromDictionary:@{
+                                                PARSE_OBJECT_ID : @"storyId",
+         }];
+        [storyResponseMapping addAttributeMappingsFromArray:@[PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT]];
+        
+        RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:storyResponseMapping
+                                                                                           pathPattern:nil
+                                                                                               keyPath:nil
+                                                                                           statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+        [objectManager addRequestDescriptor:requestDescriptor];
+        [objectManager addResponseDescriptor:responseDescriptor];
+        
+        [objectManager postObject:story
+                             path:@"Story"
+                       parameters:nil
+                          success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                              NSLog(@"Create story successful %@", story);
+                              story.initialized = YES;
+                              NSArray *invitedFBFriends = [[story.writeAccess objectForKey:kBNStoryPrivacyInviteeList]
+                                                           objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
+                              if (invitedFBFriends) {
+                                  sendRequestToContributors(invitedFBFriends, story);
+                              }
+                              [[BanyanDataSource shared] addObject:story];
                           }
-                          [[BanyanDataSource shared] addObject:story];
-                      }
-                      failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                          NSLog(@"Error in create story");
-                      }];
+                          failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                              NSLog(@"Error in create story");
+                          }];
+    };
+    
+    // Upload the file and then upload the story
+    if (story.imageURL) {
+        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+        
+        [library assetForURL:[NSURL URLWithString:story.imageURL] resultBlock:^(ALAsset *asset) {
+            NSData *imageData;
+            PFFile *imageFile = nil;
+            
+            ALAssetRepresentation *rep = [asset defaultRepresentation];
+            CGImageRef imageRef = [rep fullScreenImage]; // not fullResolutionImage
+            UIImage *image = [UIImage imageWithCGImage:imageRef];
+            
+            // For now, compress the image before sending.
+            // When PUT API is done, compress on the server
+            // TODO
+            UIImage *resizedImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:[[UIScreen mainScreen] bounds].size interpolationQuality:kCGInterpolationLow];
+            
+            imageData = UIImageJPEGRepresentation(resizedImage, 1);
+            imageFile = [PFFile fileWithData:imageData];
+            
+            [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (succeeded) {
+                    story.imageURL = imageFile.url;
+                    uploadStory(story);
+                    NSLog(@"Image saved on server");
+                } else {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in uploading image"
+                                                                    message:[NSString stringWithFormat:@"Can't upload the image due to error %@", error.localizedDescription]
+                                                                   delegate:nil
+                                                          cancelButtonTitle:@"OK"
+                                                          otherButtonTitles:nil];
+                    [alert show];
+                }
+            }];
+        }
+                failureBlock:^(NSError *error) {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
+                                                                    message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
+                                                                   delegate:nil
+                                                          cancelButtonTitle:@"OK"
+                                                          otherButtonTitles:nil];
+                    [alert show];
+                }
+         ];
+    } else {
+        uploadStory(story);
+    }
 }
 
 @end

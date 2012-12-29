@@ -7,12 +7,13 @@
 //
 
 #import "Story.h"
+#import "Piece_Defines.h"
 
 @interface Story ()
 
 #define STORY_IMAGE @"image"
 #define STORY_IMAGE_URL @"imageURL"
-#define STORY_LENGTH @"lengthOfStory"
+#define STORY_LENGTH @"length"
 #define STORY_TITLE @"title"
 #define STORY_CONTRIBUTORS @"contributors"
 #define STORY_WRITE_ACCESS @"writeAccess"

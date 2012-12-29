@@ -21,7 +21,7 @@
 @synthesize canView = _canView;
 @synthesize isInvited = _isInvited;
 @synthesize image = _image;
-@synthesize lengthOfStory = _lengthOfStory;
+@synthesize length = _lengthOfStory;
 @synthesize storyId = _storyId;
 @synthesize title = _title;
 @synthesize imageURL = _imageURL;
@@ -108,7 +108,7 @@
     [aCoder encodeBool:self.canContribute forKey:STORY_CAN_CONTRIBUTE];
     [aCoder encodeBool:self.canView forKey:STORY_CAN_VIEW];
     [aCoder encodeBool:self.isInvited forKey:STORY_IS_INVITED];
-    [aCoder encodeObject:self.lengthOfStory forKey:STORY_LENGTH];
+    [aCoder encodeObject:self.length forKey:STORY_LENGTH];
     [aCoder encodeObject:self.storyId forKey:@"storyId"];
     [aCoder encodeObject:self.title forKey:STORY_TITLE];
     [aCoder encodeObject:self.imageURL forKey:STORY_IMAGE_URL];
@@ -139,7 +139,7 @@
         self.canContribute = [aDecoder decodeBoolForKey:STORY_CAN_CONTRIBUTE];
         self.canView = [aDecoder decodeBoolForKey:STORY_CAN_VIEW];
         self.isInvited = [aDecoder decodeBoolForKey:STORY_IS_INVITED];
-        self.lengthOfStory = [aDecoder decodeObjectForKey:STORY_LENGTH];
+        self.length = [aDecoder decodeObjectForKey:STORY_LENGTH];
         self.storyId = [aDecoder decodeObjectForKey:@"storyId"];
         self.title = [aDecoder decodeObjectForKey:STORY_TITLE];
         self.imageURL = [aDecoder decodeObjectForKey:STORY_IMAGE_URL];
@@ -173,7 +173,7 @@
     
     [attributes setObject:self.writeAccess forKey:STORY_WRITE_ACCESS];
     [attributes setObject:self.readAccess forKey:STORY_READ_ACCESS];
-    [attributes setObject:self.lengthOfStory forKey:STORY_LENGTH];
+    [attributes setObject:self.length forKey:STORY_LENGTH];
     [attributes setObject:self.title forKey:STORY_TITLE];
     [attributes setObject:REPLACE_NIL_WITH_NULL(UPDATED(self.imageURL)) forKey:STORY_IMAGE_URL];
     [attributes setObject:REPLACE_NIL_WITH_NULL(self.contributors) forKey:STORY_CONTRIBUTORS];
@@ -253,7 +253,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"{Story\n Id: %@\nTitle: %@\n Length: %@\n\n}", self.storyId, self.title, self.lengthOfStory];
+    return [NSString stringWithFormat:@"{Story\n Id: %@\nTitle: %@\n Length: %@\n\n}", self.storyId, self.title, self.length];
 }
 
 // Change so that Story can be compared

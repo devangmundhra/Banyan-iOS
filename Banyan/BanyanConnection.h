@@ -15,5 +15,5 @@
 
 + (void) loadStoriesFromBanyanWithBlock:(void (^)(NSMutableArray *stories))successBlock;
 + (void) resetPermissionsForStories:(NSMutableArray *)stories;
-+ (void) loadPiecesForStory:(Story *)story;
++ (void) loadPiecesForStory:(Story *)story completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *error))errorBlock;
 @end

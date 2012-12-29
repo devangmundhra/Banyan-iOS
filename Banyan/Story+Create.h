@@ -7,7 +7,7 @@
 //
 
 #import "Story.h"
-#import "Scene+Create.h"
+#import "Piece+Create.h"
 #import "AFParseAPIClient.h"
 
 @interface Story (Create)

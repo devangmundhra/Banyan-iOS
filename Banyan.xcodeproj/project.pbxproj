@@ -51,7 +51,7 @@
 		5189B33515B395F300562DD0 /* ReadSceneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2EF15B395F300562DD0 /* ReadSceneViewController.m */; };
 		5189B33615B395F300562DD0 /* ReadSceneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5189B2F015B395F300562DD0 /* ReadSceneViewController.xib */; };
 		5189B33715B395F300562DD0 /* Piece.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F315B395F300562DD0 /* Piece.m */; };
-		5189B33815B395F300562DD0 /* Scene+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F515B395F300562DD0 /* Scene+Create.m */; };
+		5189B33815B395F300562DD0 /* Piece+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F515B395F300562DD0 /* Piece+Create.m */; };
 		5189B33915B395F300562DD0 /* Scene+Delete.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F715B395F300562DD0 /* Scene+Delete.m */; };
 		5189B33A15B395F300562DD0 /* Scene+Edit.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F915B395F300562DD0 /* Scene+Edit.m */; };
 		5189B33B15B395F300562DD0 /* Scene+Stats.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2FB15B395F300562DD0 /* Scene+Stats.m */; };
@@ -179,11 +179,11 @@
 		5189B2EE15B395F300562DD0 /* ReadSceneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReadSceneViewController.h; path = Banyan/ReadSceneViewController.h; sourceTree = "<group>"; };
 		5189B2EF15B395F300562DD0 /* ReadSceneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReadSceneViewController.m; path = Banyan/ReadSceneViewController.m; sourceTree = "<group>"; };
 		5189B2F015B395F300562DD0 /* ReadSceneViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ReadSceneViewController.xib; path = Banyan/ReadSceneViewController.xib; sourceTree = "<group>"; };
-		5189B2F115B395F300562DD0 /* Scene_Defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Scene_Defines.h; path = Banyan/Scene_Defines.h; sourceTree = "<group>"; };
+		5189B2F115B395F300562DD0 /* Piece_Defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Piece_Defines.h; path = Banyan/Piece_Defines.h; sourceTree = "<group>"; };
 		5189B2F215B395F300562DD0 /* Piece.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Piece.h; path = Banyan/Piece.h; sourceTree = "<group>"; };
 		5189B2F315B395F300562DD0 /* Piece.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Piece.m; path = Banyan/Piece.m; sourceTree = "<group>"; };
-		5189B2F415B395F300562DD0 /* Scene+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Scene+Create.h"; path = "Banyan/Scene+Create.h"; sourceTree = "<group>"; };
-		5189B2F515B395F300562DD0 /* Scene+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Scene+Create.m"; path = "Banyan/Scene+Create.m"; sourceTree = "<group>"; };
+		5189B2F415B395F300562DD0 /* Piece+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Piece+Create.h"; path = "Banyan/Piece+Create.h"; sourceTree = "<group>"; };
+		5189B2F515B395F300562DD0 /* Piece+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Piece+Create.m"; path = "Banyan/Piece+Create.m"; sourceTree = "<group>"; };
 		5189B2F615B395F300562DD0 /* Scene+Delete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Scene+Delete.h"; path = "Banyan/Scene+Delete.h"; sourceTree = "<group>"; };
 		5189B2F715B395F300562DD0 /* Scene+Delete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Scene+Delete.m"; path = "Banyan/Scene+Delete.m"; sourceTree = "<group>"; };
 		5189B2F815B395F300562DD0 /* Scene+Edit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Scene+Edit.h"; path = "Banyan/Scene+Edit.h"; sourceTree = "<group>"; };
@@ -505,11 +505,11 @@
 		5189B35715B396E700562DD0 /* Piece */ = {
 			isa = PBXGroup;
 			children = (
-				5189B2F115B395F300562DD0 /* Scene_Defines.h */,
+				5189B2F115B395F300562DD0 /* Piece_Defines.h */,
 				5189B2F215B395F300562DD0 /* Piece.h */,
 				5189B2F315B395F300562DD0 /* Piece.m */,
-				5189B2F415B395F300562DD0 /* Scene+Create.h */,
-				5189B2F515B395F300562DD0 /* Scene+Create.m */,
+				5189B2F415B395F300562DD0 /* Piece+Create.h */,
+				5189B2F515B395F300562DD0 /* Piece+Create.m */,
 				5189B2F615B395F300562DD0 /* Scene+Delete.h */,
 				5189B2F715B395F300562DD0 /* Scene+Delete.m */,
 				5189B2F815B395F300562DD0 /* Scene+Edit.h */,
@@ -794,7 +794,7 @@
 				5189B33115B395F300562DD0 /* NewStoryViewController.m in Sources */,
 				5189B33515B395F300562DD0 /* ReadSceneViewController.m in Sources */,
 				5189B33715B395F300562DD0 /* Piece.m in Sources */,
-				5189B33815B395F300562DD0 /* Scene+Create.m in Sources */,
+				5189B33815B395F300562DD0 /* Piece+Create.m in Sources */,
 				5189B33915B395F300562DD0 /* Scene+Delete.m in Sources */,
 				5189B33A15B395F300562DD0 /* Scene+Edit.m in Sources */,
 				5189B33B15B395F300562DD0 /* Scene+Stats.m in Sources */,

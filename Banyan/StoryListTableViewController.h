@@ -10,7 +10,7 @@
 #import "StoryListStoryCell.h"
 #import "Story+Create.h"
 #import "Story+Delete.h"
-#import "Scene+Create.h"
+#import "Piece+Create.h"
 #import "File+Create.h"
 #import "NewStoryViewController.h"
 #import "StoryReaderController.h"

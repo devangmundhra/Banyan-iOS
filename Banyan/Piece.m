@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "Scene_Defines.h"
+#import "Piece_Defines.h"
 #import "Story.h"
 #import "User.h"
 #import "BanyanDataSource.h"

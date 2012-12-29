@@ -8,7 +8,7 @@
 
 #import "Piece.h"
 #import <Parse/Parse.h>
-#import "Scene_Defines.h"
+#import "Piece_Defines.h"
 #import "AFParseAPIClient.h"
 
 #define INCREMENT_SCENE_ATTRIBUTE_OPERATION(__scene__, __attribute__, __amount__) \
