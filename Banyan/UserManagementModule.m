@@ -14,6 +14,7 @@
 }
 
 @property (nonatomic, strong) LoginTabbarViewController *loginTabbarViewController;
+@property (nonatomic, strong) UIViewController *owningViewController;
 
 @end
 
@@ -99,6 +100,7 @@
     loginTabbarViewController.view.alpha = 0;
     [UIView commitAnimations];
     [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+    self.owningViewController = [BanyanAppDelegate topMostController];
     [self.owningViewController presentViewController:userLoginViewController animated:YES completion:nil];
 }
 
@@ -134,6 +136,7 @@
         if ([self.owningViewController respondsToSelector:@selector(refreshView)]) {
             [self.owningViewController performSelector:@selector(refreshView)];
         }
+        self.owningViewController = nil;
     }];
 }
 
@@ -150,7 +153,9 @@
     [UIView commitAnimations];
     [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
 
-    [self.owningViewController.presentedViewController dismissViewControllerAnimated:YES completion:nil];
+    [self.owningViewController.presentedViewController dismissViewControllerAnimated:YES completion:^{
+        self.owningViewController = nil;
+    }];
 }
 
 @end

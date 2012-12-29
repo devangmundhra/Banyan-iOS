@@ -114,14 +114,6 @@
     }
 }
 
-- (UserManagementModule *)userManagementModule
-{
-    BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
-    delegate.userManagementModule.owningViewController = self;
-    
-    return delegate.userManagementModule;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];

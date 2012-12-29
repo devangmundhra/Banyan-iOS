@@ -370,5 +370,16 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [self.userManagementModule logout];
 }
 
+// MISCELLANEOUS METHODS
++ (UIViewController*) topMostController
+{
+    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    
+    while (topController.presentedViewController) {
+        topController = topController.presentedViewController;
+    }
+    
+    return topController;
+}
 @end
 

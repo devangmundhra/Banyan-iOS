@@ -33,14 +33,6 @@ typedef enum {
 @synthesize dataSource = _dataSource;
 @synthesize pullToRefreshView = _pullToRefreshView;
 
-- (UserManagementModule *)userManagementModule
-{
-    BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
-    delegate.userManagementModule.owningViewController = self;
-
-    return delegate.userManagementModule;
-}
-
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];

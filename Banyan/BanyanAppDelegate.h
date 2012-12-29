@@ -42,5 +42,6 @@
 - (void)facebookRequest:(PF_FBRequestConnection *)connection didLoad:(id)result;
 - (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI;;
 - (void) logout;
++ (UIViewController*) topMostController;
 
 @end

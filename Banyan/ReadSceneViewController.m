@@ -49,14 +49,6 @@
 @synthesize delegate = _delegate;
 @synthesize locationManager = _locationManager;
 
-- (UserManagementModule *)userManagementModule
-{
-    BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
-    delegate.userManagementModule.owningViewController = self;
-    
-    return delegate.userManagementModule;
-}
-
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];

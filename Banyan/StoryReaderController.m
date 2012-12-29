@@ -36,14 +36,6 @@
 @synthesize likeButton = _likeButton;
 @synthesize shareButton = _shareButton;
 
-- (UserManagementModule *)userManagementModule
-{
-    BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
-    delegate.userManagementModule.owningViewController = self;
-    
-    return delegate.userManagementModule;
-}
-
 // First page of the view controller
 - (UIViewController *)startStoryTelling
 {
