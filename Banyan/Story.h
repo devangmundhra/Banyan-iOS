@@ -16,11 +16,11 @@
 @property (assign) BOOL canContribute;
 @property (assign) BOOL canView;
 @property (assign) BOOL isInvited;
-@property (strong, nonatomic) id image;
 @property (strong, nonatomic) NSNumber * length;
 @property (strong, nonatomic) NSString * storyId;
 @property (strong, nonatomic) NSString * title;
 @property (strong, nonatomic) NSString * imageURL;
+@property (strong, nonatomic) NSString * imageName;
 @property (strong, nonatomic) NSArray *contributors;
 @property (strong, nonatomic) NSDictionary *writeAccess;
 @property (strong, nonatomic) NSDictionary *readAccess;

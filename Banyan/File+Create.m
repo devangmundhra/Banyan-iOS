@@ -12,7 +12,7 @@
 
 @implementation File (Create)
 
-+ (void) uploadFileForLocalURL:(NSString *)url
++ (void) uploadFileForLocalURL:(NSString *)url block:(void (^)(BOOL succeeded, NSString *newURL, NSError *error))successBlock errorBlock:(void (^)(NSError *error))errorBlock
 {
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     
@@ -26,33 +26,17 @@
         
         // For now, compress the image before sending.
         // When PUT API is done, compress on the server
-        // PUT_API_TODO
-        UIImage *resizedImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:[[UIScreen mainScreen] bounds].size interpolationQuality:kCGInterpolationHigh];
-
+        // TODO
+        UIImage *resizedImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:[[UIScreen mainScreen] bounds].size interpolationQuality:kCGInterpolationLow];
+        
         imageData = UIImageJPEGRepresentation(resizedImage, 1);
         imageFile = [PFFile fileWithData:imageData];
         
         [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if (succeeded) {
-                // So that we know the file has been uploaded (aka initialized)
-                [[BanyanDataSource hashTable] setObject:imageFile.url forKey:url];
-                [BanyanDataSource archiveHashTable];
-                NSLog(@"Image saved on server");
-                NETWORK_OPERATION_COMPLETE();
-            } else {
-                NSLog(@"%@\t%@\t%@\t%@", [error localizedDescription], [error localizedFailureReason],
-                      [error localizedRecoveryOptions], [error localizedRecoverySuggestion]);
-                NETWORK_OPERATION_INCOMPLETE();
-            }
-        }
-                               progressBlock:^(int percentDone) {
-                                   [[MTStatusBarOverlay sharedInstance] setProgress:percentDone/100];
-                               }
-         ];
+            successBlock(succeeded, imageFile.url, error);
+        }];
     }
-            failureBlock:^(NSError *error) {
-                NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
-            }
+            failureBlock:errorBlock
      ];
 }
 

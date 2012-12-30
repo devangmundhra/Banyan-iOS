@@ -7,7 +7,7 @@
 //
 
 #import "Scene+Stats.h"
-#import "Scene+Edit.h"
+#import "Piece+Edit.h"
 #import "User+Edit.h"
 #import "AFParseAPIClient.h"
 #import "Activity.h"

@@ -130,7 +130,7 @@
         [objectManager addResponseDescriptor:responseDescriptor];
         
         [objectManager postObject:story
-                             path:@"Story"
+                             path:BANYAN_API_CLASS_URL(@"Story")
                        parameters:nil
                           success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                               NSLog(@"Create story successful %@", story);
@@ -149,48 +149,30 @@
     
     // Upload the file and then upload the story
     if (story.imageURL) {
-        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-        
-        [library assetForURL:[NSURL URLWithString:story.imageURL] resultBlock:^(ALAsset *asset) {
-            NSData *imageData;
-            PFFile *imageFile = nil;
-            
-            ALAssetRepresentation *rep = [asset defaultRepresentation];
-            CGImageRef imageRef = [rep fullScreenImage]; // not fullResolutionImage
-            UIImage *image = [UIImage imageWithCGImage:imageRef];
-            
-            // For now, compress the image before sending.
-            // When PUT API is done, compress on the server
-            // TODO
-            UIImage *resizedImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:[[UIScreen mainScreen] bounds].size interpolationQuality:kCGInterpolationLow];
-            
-            imageData = UIImageJPEGRepresentation(resizedImage, 1);
-            imageFile = [PFFile fileWithData:imageData];
-            
-            [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                if (succeeded) {
-                    story.imageURL = imageFile.url;
-                    uploadStory(story);
-                    NSLog(@"Image saved on server");
-                } else {
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in uploading image"
-                                                                    message:[NSString stringWithFormat:@"Can't upload the image due to error %@", error.localizedDescription]
-                                                                   delegate:nil
-                                                          cancelButtonTitle:@"OK"
-                                                          otherButtonTitles:nil];
-                    [alert show];
-                }
-            }];
-        }
-                failureBlock:^(NSError *error) {
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
-                                                                    message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
-                                                                   delegate:nil
-                                                          cancelButtonTitle:@"OK"
-                                                          otherButtonTitles:nil];
-                    [alert show];
-                }
-         ];
+        [File uploadFileForLocalURL:story.imageURL
+                              block:^(BOOL succeeded, NSString *newURL, NSString *newName, NSError *error) {
+                                  if (succeeded) {
+                                      story.imageURL = newURL;
+                                      story.imageName = newName;
+                                      uploadStory(story);
+                                      NSLog(@"Image saved on server");
+                                  } else {
+                                      UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in uploading image"
+                                                                                      message:[NSString stringWithFormat:@"Can't upload the image due to error %@", error.localizedDescription]
+                                                                                     delegate:nil
+                                                                            cancelButtonTitle:@"OK"
+                                                                            otherButtonTitles:nil];
+                                      [alert show];
+                                  }
+                              }
+                         errorBlock:^(NSError *error) {
+                             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
+                                                                             message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
+                                                                            delegate:nil
+                                                                   cancelButtonTitle:@"OK"
+                                                                   otherButtonTitles:nil];
+                             [alert show];
+                         }];
     } else {
         uploadStory(story);
     }

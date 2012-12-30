@@ -22,7 +22,7 @@
                                                                                            forKey:@"Story"]];
     
     // Delete Object
-    if (story.image || story.imageURL)
+    if (story.imageURL)
     {
         NSLog(@"Story Image still needs to be deleted");
     }

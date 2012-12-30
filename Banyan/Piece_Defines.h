@@ -12,6 +12,7 @@
 
 #define PIECE_IMAGE @"image"
 #define PIECE_IMAGE_URL @"imageURL"
+#define PIECE_IMAGE_NAME @"imageName"
 #define PIECE_NUMBER @"pieceNumber"
 #define PIECE_TEXT @"text"
 #define PIECE_AUTHOR @"author"

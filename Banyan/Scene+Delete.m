@@ -26,7 +26,7 @@
         NSLog(@"Scene Image still needs to be deleted");
     }
     
-    INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_LENGTH, -1);
+//    INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_LENGTH, -1);
     
     // ARCHIVE
     NSMutableArray *currentScenes = [story.pieces mutableCopy];

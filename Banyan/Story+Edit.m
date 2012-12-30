@@ -7,91 +7,104 @@
 //
 
 #import "Story+Edit.h"
-#import "StoryDocuments.h"
+#import "AFParseAPIClient.h"
 
 @implementation Story (Edit)
 
 + (void) editStory:(Story *)story
 {
+    if (!story.initialized)
+        return;
+    
      NSLog(@"Edit Story %@", story);
     [[NSNotificationCenter defaultCenter] postNotificationName:STORY_EDIT_STORY_NOTIFICATION
                                                         object:self 
                                                       userInfo:[NSDictionary dictionaryWithObject:story 
                                                                                            forKey:@"Story"]];
+    
+    // Block to upload the story
+    void (^updateStory)(Story *) = ^(Story *story) {
+        RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFParseAPIClient sharedClient]];
+        // For serializing
+        RKObjectMapping *storyRequestMapping = [RKObjectMapping requestMapping];
+        [storyRequestMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_IMAGE_URL, STORY_IMAGE_NAME, STORY_WRITE_ACCESS, STORY_READ_ACCESS,
+         STORY_LATITUDE, STORY_LONGITUDE, STORY_GEOCODEDLOCATION, STORY_TAGS]];
+        
+        RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
+                                                  requestDescriptorWithMapping:storyRequestMapping
+                                                  objectClass:[Story class]
+                                                  rootKeyPath:nil];
+        RKObjectMapping *storyResponseMapping = [RKObjectMapping mappingForClass:[Story class]];
 
-    NSMutableDictionary *storyParams = [NSMutableDictionary dictionaryWithCapacity:1];
-    BNOperationDependency *imageDependency = nil;
+        [storyResponseMapping addAttributeMappingsFromArray:@[PARSE_OBJECT_UPDATED_AT]];
+        
+        RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:storyResponseMapping
+                                                                                           pathPattern:nil
+                                                                                               keyPath:nil
+                                                                                           statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+        [objectManager addRequestDescriptor:requestDescriptor];
+        [objectManager addResponseDescriptor:responseDescriptor];
+        
+        [objectManager postObject:story
+                             path:PARSE_API_OBJECT_URL(@"Story", story.storyId)
+                       parameters:nil
+                          success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                              NSLog(@"Update story successful %@", story);
+                              [[BanyanDataSource shared] addObject:story];
+                          }
+                          failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                              NSLog(@"Error in create story");
+                          }];
+    };
     
     if (story.imageChanged)
     {
         story.imageChanged = NO;
-        // Maybe delete the image that was stored previously if another image has
-        // come in
-        
+        // Upload the image then update the story
         if (story.imageURL)
         {
-            // Upload the image (ie, create a network request for that)
-            BNOperationObject *imgObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeFile
-                                                                               tempId:story.imageURL
-                                                                              storyId:story.storyId];
-            BNOperation *operation = [[BNOperation alloc] initWithObject:imgObj action:BNOperationActionCreate dependencies:nil];
-            ADD_OPERATION_TO_QUEUE(operation);
-            
-            // Create a dependency object
-            imageDependency = [[BNOperationDependency alloc] initWithBNObject:imgObj
-                                                                        field:STORY_IMAGE_URL];
+            [File uploadFileForLocalURL:story.imageURL
+                                  block:^(BOOL succeeded, NSString *newURL, NSString *newName, NSError *error) {
+                                      if (succeeded) {
+                                          story.imageURL = newURL;
+                                          story.imageName = newName;
+                                          updateStory(story);
+                                          NSLog(@"Image updated on server");
+                                      } else {
+                                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in uploading image"
+                                                                                          message:[NSString stringWithFormat:@"Can't upload the image due to error %@", error.localizedDescription]
+                                                                                         delegate:nil
+                                                                                cancelButtonTitle:@"OK"
+                                                                                otherButtonTitles:nil];
+                                          [alert show];
+                                      }
+                                  }
+                             errorBlock:^(NSError *error) {
+                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
+                                                                                 message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
+                                                                                delegate:nil
+                                                                       cancelButtonTitle:@"OK"
+                                                                       otherButtonTitles:nil];
+                                 [alert show];
+                             }];
         } else {
-            // Scene image was deleted
-            [storyParams setObject:[NSNull null] forKey:STORY_IMAGE_URL];
+            // Delete the file from db and update the story
+            [File deleteFileWithName:story.imageName
+                               block:nil
+                          errorBlock:^(NSError *error) {
+                              UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
+                                                                              message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
+                                                                             delegate:nil
+                                                                    cancelButtonTitle:@"OK"
+                                                                    otherButtonTitles:nil];
+                              [alert show];
+                          }];
+            story.imageName = nil;
+            updateStory(story);
         }
+    } else {
+        updateStory(story);
     }
-    
-    // Update the story
-    [storyParams setObject:story.title forKey:STORY_TITLE];
-    [storyParams setObject:story.writeAccess forKey:STORY_WRITE_ACCESS];
-    [storyParams setObject:story.readAccess forKey:STORY_READ_ACCESS];
-    
-    BNOperationObject *obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeStory tempId:story.storyId storyId:story.storyId];
-    BNOperation *operation = [[BNOperation alloc] initWithObject:obj action:BNOperationActionEdit dependencies:nil];
-    operation.action.context = storyParams;
-    if (imageDependency) {
-        [operation addDependencyObject:imageDependency];
-    }
-    ADD_OPERATION_TO_QUEUE(operation);
-
-    [StoryDocuments saveStoryToDisk:story];
-}
-
-+ (void) editStory:(Story *)story withAttributes:(NSMutableDictionary *)storyParams
-{
-    [[AFParseAPIClient sharedClient] putPath:PARSE_API_OBJECT_URL(@"Story", story.storyId)
-                                  parameters:storyParams
-                                     success:^(AFHTTPRequestOperation *operations, id responseObject) {
-                                         NSDictionary *response = responseObject;
-                                         NSLog(@"Got response for updating story parameters %@ at %@", storyParams, [response objectForKey:@"updatedAt"]);
-                                         NETWORK_OPERATION_COMPLETE();
-                                     }
-                                     failure:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
-    
-    [StoryDocuments saveStoryToDisk:story];
-}
-
-- (void)incrementStoryAttribute:(NSString *)attribute byAmount:(NSNumber *)inc
-{
-    NSMutableDictionary *storyEditParams = [NSMutableDictionary dictionaryWithCapacity:1];
-    
-    NSDictionary *storyAttrInc = [NSDictionary dictionaryWithObjectsAndKeys:@"Increment", @"__op", 
-                                    inc, @"amount", nil];
-    [storyEditParams setObject:storyAttrInc forKey:attribute];
-    
-    [[AFParseAPIClient sharedClient] putPath:PARSE_API_OBJECT_URL(@"Story", self.storyId)
-                                  parameters:storyEditParams
-                                     success:^(AFHTTPRequestOperation *operations, id responseObject) {
-                                         NSDictionary *response = responseObject;
-                                         NSLog(@"Got response for updating story attr %@ at %@", attribute, [response objectForKey:@"updatedAt"]);
-                                         NETWORK_OPERATION_COMPLETE();
-                                     }
-                                     failure:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
 }
 
 @end

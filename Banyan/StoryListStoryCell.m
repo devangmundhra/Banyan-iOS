@@ -39,11 +39,11 @@
     
     CGSize cellImageSize = self.storyImageView.frame.size;
     if (story.imageURL && [story.imageURL rangeOfString:@"asset"].location == NSNotFound) {
-        [self.storyImageView setImageWithURL:[NSURL URLWithString:story.imageURL] placeholderImage:story.image];
+        [self.storyImageView setImageWithURL:[NSURL URLWithString:story.imageURL] placeholderImage:nil];
         NSURLRequest *imageReq = [NSURLRequest requestWithURL:[NSURL URLWithString:story.imageURL]];
         
         [self.storyImageView setImageWithURLRequest:imageReq
-                                   placeholderImage:story.image
+                                   placeholderImage:nil
                                             success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                                 image = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill
                                                                                     bounds:cellImageSize

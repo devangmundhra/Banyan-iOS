@@ -30,7 +30,7 @@
     if (!currentUser)
         return;
     
-    INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_NUM_VIEWS, 1);
+//    INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_NUM_VIEWS, 1);
     BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:story.storyId storyId:story.storyId];
     BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionCreate dependencies:nil];
     activityOp.action.context = [Activity activityWithType:kBNActivityTypeView
@@ -54,7 +54,7 @@
     
     if (story.liked) {
         // unlike story
-        INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_NUM_LIKES, -1);        
+//        INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_NUM_LIKES, -1);        
         story.liked = NO;
         story.numberOfLikes = [NSNumber numberWithInt:([story.numberOfLikes intValue] - 1)];
         BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:story.storyId storyId:story.storyId];
@@ -69,7 +69,7 @@
     }
     else {
         // like story
-        INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_NUM_LIKES, 1);
+//        INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_NUM_LIKES, 1);
         story.liked = YES;
         story.numberOfLikes = [NSNumber numberWithInt:([story.numberOfLikes intValue] + 1)];
         BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:story.storyId storyId:story.storyId];

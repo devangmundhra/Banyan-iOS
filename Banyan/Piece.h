@@ -18,6 +18,7 @@
 @property (strong) NSNumber * pieceNumber;
 @property (strong) NSString * text;
 @property (strong) NSString * imageURL;
+@property (strong) NSString * imageName;
 @property (strong) User *author;
 @property (strong) NSDate * createdAt;
 @property (strong) NSDate * updatedAt;

@@ -17,7 +17,6 @@
 		510787D2163A36F20042B436 /* BNLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787D1163A36F20042B436 /* BNLocationManager.m */; };
 		510787D5163A37190042B436 /* Activity.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787D4163A37190042B436 /* Activity.m */; };
 		510787DA163A37250042B436 /* File.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787D7163A37250042B436 /* File.m */; };
-		510787DB163A37250042B436 /* File+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787D9163A37250042B436 /* File+Create.m */; };
 		510787DE163A37340042B436 /* User+Edit.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787DD163A37340042B436 /* User+Edit.m */; };
 		510787E7163A377F0042B436 /* BNOperationAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787E0163A377F0042B436 /* BNOperationAction.m */; };
 		510787E8163A377F0042B436 /* BNOperationDependency.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787E2163A377F0042B436 /* BNOperationDependency.m */; };
@@ -53,7 +52,7 @@
 		5189B33715B395F300562DD0 /* Piece.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F315B395F300562DD0 /* Piece.m */; };
 		5189B33815B395F300562DD0 /* Piece+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F515B395F300562DD0 /* Piece+Create.m */; };
 		5189B33915B395F300562DD0 /* Scene+Delete.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F715B395F300562DD0 /* Scene+Delete.m */; };
-		5189B33A15B395F300562DD0 /* Scene+Edit.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F915B395F300562DD0 /* Scene+Edit.m */; };
+		5189B33A15B395F300562DD0 /* Piece+Edit.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F915B395F300562DD0 /* Piece+Edit.m */; };
 		5189B33B15B395F300562DD0 /* Scene+Stats.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2FB15B395F300562DD0 /* Scene+Stats.m */; };
 		5189B33E15B395F300562DD0 /* StoryReaderController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B30115B395F300562DD0 /* StoryReaderController.m */; };
 		5189B34215B395F300562DD0 /* Story.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B30A15B395F300562DD0 /* Story.m */; };
@@ -124,8 +123,6 @@
 		510787D4163A37190042B436 /* Activity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Activity.m; path = Banyan/Activity.m; sourceTree = "<group>"; };
 		510787D6163A37250042B436 /* File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = File.h; path = Banyan/File.h; sourceTree = "<group>"; };
 		510787D7163A37250042B436 /* File.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = File.m; path = Banyan/File.m; sourceTree = "<group>"; };
-		510787D8163A37250042B436 /* File+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "File+Create.h"; path = "Banyan/File+Create.h"; sourceTree = "<group>"; };
-		510787D9163A37250042B436 /* File+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "File+Create.m"; path = "Banyan/File+Create.m"; sourceTree = "<group>"; };
 		510787DC163A37340042B436 /* User+Edit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "User+Edit.h"; path = "Banyan/User+Edit.h"; sourceTree = "<group>"; };
 		510787DD163A37340042B436 /* User+Edit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "User+Edit.m"; path = "Banyan/User+Edit.m"; sourceTree = "<group>"; };
 		510787DF163A377F0042B436 /* BNOperationAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNOperationAction.h; path = Banyan/BNOperationAction.h; sourceTree = "<group>"; };
@@ -186,8 +183,8 @@
 		5189B2F515B395F300562DD0 /* Piece+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Piece+Create.m"; path = "Banyan/Piece+Create.m"; sourceTree = "<group>"; };
 		5189B2F615B395F300562DD0 /* Scene+Delete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Scene+Delete.h"; path = "Banyan/Scene+Delete.h"; sourceTree = "<group>"; };
 		5189B2F715B395F300562DD0 /* Scene+Delete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Scene+Delete.m"; path = "Banyan/Scene+Delete.m"; sourceTree = "<group>"; };
-		5189B2F815B395F300562DD0 /* Scene+Edit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Scene+Edit.h"; path = "Banyan/Scene+Edit.h"; sourceTree = "<group>"; };
-		5189B2F915B395F300562DD0 /* Scene+Edit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Scene+Edit.m"; path = "Banyan/Scene+Edit.m"; sourceTree = "<group>"; };
+		5189B2F815B395F300562DD0 /* Piece+Edit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Piece+Edit.h"; path = "Banyan/Piece+Edit.h"; sourceTree = "<group>"; };
+		5189B2F915B395F300562DD0 /* Piece+Edit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Piece+Edit.m"; path = "Banyan/Piece+Edit.m"; sourceTree = "<group>"; };
 		5189B2FA15B395F300562DD0 /* Scene+Stats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Scene+Stats.h"; path = "Banyan/Scene+Stats.h"; sourceTree = "<group>"; };
 		5189B2FB15B395F300562DD0 /* Scene+Stats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Scene+Stats.m"; path = "Banyan/Scene+Stats.m"; sourceTree = "<group>"; };
 		5189B30015B395F300562DD0 /* StoryReaderController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryReaderController.h; path = Banyan/StoryReaderController.h; sourceTree = "<group>"; };
@@ -301,8 +298,6 @@
 			children = (
 				510787D6163A37250042B436 /* File.h */,
 				510787D7163A37250042B436 /* File.m */,
-				510787D8163A37250042B436 /* File+Create.h */,
-				510787D9163A37250042B436 /* File+Create.m */,
 			);
 			name = File;
 			sourceTree = "<group>";
@@ -512,8 +507,8 @@
 				5189B2F515B395F300562DD0 /* Piece+Create.m */,
 				5189B2F615B395F300562DD0 /* Scene+Delete.h */,
 				5189B2F715B395F300562DD0 /* Scene+Delete.m */,
-				5189B2F815B395F300562DD0 /* Scene+Edit.h */,
-				5189B2F915B395F300562DD0 /* Scene+Edit.m */,
+				5189B2F815B395F300562DD0 /* Piece+Edit.h */,
+				5189B2F915B395F300562DD0 /* Piece+Edit.m */,
 				5189B2FA15B395F300562DD0 /* Scene+Stats.h */,
 				5189B2FB15B395F300562DD0 /* Scene+Stats.m */,
 			);
@@ -796,7 +791,7 @@
 				5189B33715B395F300562DD0 /* Piece.m in Sources */,
 				5189B33815B395F300562DD0 /* Piece+Create.m in Sources */,
 				5189B33915B395F300562DD0 /* Scene+Delete.m in Sources */,
-				5189B33A15B395F300562DD0 /* Scene+Edit.m in Sources */,
+				5189B33A15B395F300562DD0 /* Piece+Edit.m in Sources */,
 				5189B33B15B395F300562DD0 /* Scene+Stats.m in Sources */,
 				5189B33E15B395F300562DD0 /* StoryReaderController.m in Sources */,
 				5189B34215B395F300562DD0 /* Story.m in Sources */,
@@ -824,7 +819,6 @@
 				510787D2163A36F20042B436 /* BNLocationManager.m in Sources */,
 				510787D5163A37190042B436 /* Activity.m in Sources */,
 				510787DA163A37250042B436 /* File.m in Sources */,
-				510787DB163A37250042B436 /* File+Create.m in Sources */,
 				510787DE163A37340042B436 /* User+Edit.m in Sources */,
 				510787E7163A377F0042B436 /* BNOperationAction.m in Sources */,
 				510787E8163A377F0042B436 /* BNOperationDependency.m in Sources */,

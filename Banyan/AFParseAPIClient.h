@@ -15,6 +15,7 @@
 #define PARSE_API_CLASS_URL(__class__) [NSString stringWithFormat:@"classes/%@", __class__]
 #define PARSE_API_OBJECT_URL(__class__, __objectId__) [NSString stringWithFormat:@"classes/%@/%@", __class__, __objectId__]
 #define PARSE_API_USER_URL(__userId__) [NSString stringWithFormat:@"users/%@", __userId__]
+#define PARSE_API_FILES_URL(__fileName__) [NSString stringWithFormat:@"files/%@", __fileName__]
 #define PARSE_API_FUNCTION_URL(__function__) [NSString stringWithFormat:@"functions/%@", __function__]
 
 #define AF_PARSE_ERROR_BLOCK() ^(AFHTTPRequestOperation *operation, NSError *error) {             \

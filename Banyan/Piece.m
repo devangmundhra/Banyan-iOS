@@ -19,6 +19,7 @@
 @synthesize pieceNumber = _sceneNumber;
 @synthesize text = _text;
 @synthesize imageURL = _imageURL;
+@synthesize imageName = _imageName;
 @synthesize author = _author;
 @synthesize nextPiece = _nextScene;
 @synthesize previousPiece = _previousScene;

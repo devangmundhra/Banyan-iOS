@@ -11,8 +11,8 @@
 
 @interface Story ()
 
-#define STORY_IMAGE @"image"
 #define STORY_IMAGE_URL @"imageURL"
+#define STORY_IMAGE_NAME @"imageName"
 #define STORY_LENGTH @"length"
 #define STORY_TITLE @"title"
 #define STORY_CONTRIBUTORS @"contributors"

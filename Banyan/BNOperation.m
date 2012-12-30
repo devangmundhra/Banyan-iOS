@@ -12,7 +12,7 @@
 #import "Story+Edit.h"
 #import "Story+Delete.h"
 #import "Piece+Create.h"
-#import "Scene+Edit.h"
+#import "Piece+Edit.h"
 #import "Scene+Delete.h"
 #import "Story_Defines.h"
 #import "File+Create.h"
@@ -274,22 +274,12 @@
                     scene = [BanyanDataSource lookForSceneId:self.object.tempId inStoryId:self.object.storyId];
                 switch (self.action.actionType) {
                         
-                    case BNOperationActionEdit:
-                        // call network operation for editing scene
-                        [Piece editScene:scene withAttributes:editParams];
-                        NSLog(@"Edit network operation for scene %@", scene);
-                        break;
-                        
-                    case BNOperationActionIncrementAttribute:
-                        [scene incrementSceneAttribute:[self.action.context objectForKey:@"attribute"]
-                                              byAmount:[self.action.context objectForKey:@"amount"]];
-                        break;
-                        
                     case BNOperationActionDelete:
                         [Piece deletePiece:self.object.tempId];
                         break;
                         
                     default:
+                        assert(false);
                         NSLog(@"%s Unknown action for scene %d", __PRETTY_FUNCTION__, self.action);
                         break;
                 }
@@ -300,17 +290,6 @@
                 if (story == nil)
                     story = [BanyanDataSource lookForStoryId:self.object.tempId];
                 switch (self.action.actionType) {
-                        
-                    case BNOperationActionEdit:
-                        // call network operation for editing story
-                        [Story editStory:story withAttributes:editParams];
-                        NSLog(@"Edit network operation for story %@", story);
-                        break;
-                        
-                    case BNOperationActionIncrementAttribute:
-                        [story incrementStoryAttribute:[self.action.context objectForKey:@"attribute"]
-                                              byAmount:[self.action.context objectForKey:@"amount"]];
-                        break;
                         
                     case BNOperationActionDelete:
                         [Story deleteStoryFromServerWithId:self.object.tempId];
@@ -335,18 +314,6 @@
                         break;
                 }
                 
-            case BNOperationObjectTypeFile:
-                switch (self.action.actionType) {
-                    case BNOperationActionCreate:
-                        [File uploadFileForLocalURL:self.object.tempId];
-                        break;
-                        
-                    default:
-                        NSLog(@"%s Unsupported action for file %@", __PRETTY_FUNCTION__, self.action);
-                        break;
-                }
-                break;
-                
             case BNOperationObjectTypeActivity:
                 switch (self.action.actionType) {
                     case BNOperationActionCreate:
@@ -364,6 +331,7 @@
                 break;
                 // DEFAULT
             default:
+                assert(false);
                 NSLog(@"%s Unknown object type %d", __PRETTY_FUNCTION__, self.object.type);
                 break;
         }

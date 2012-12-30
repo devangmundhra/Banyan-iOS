@@ -12,6 +12,8 @@
 #import "Story+Stats.h"
 #import <QuartzCore/QuartzCore.h>
 #import "AFBanyanAPIClient.h"
+#import <AssetsLibrary/AssetsLibrary.h>
+#import "Piece+Edit.h"
 
 @interface ReadSceneViewController ()
 @property (weak, nonatomic) IBOutlet UIView *contentView;
@@ -139,23 +141,7 @@
     self.locationLabel.text = self.locationManager.locationStatus;
     self.piece.geocodedLocation = self.locationManager.locationStatus;
     // TODO: This should be done at the server
-    // Edit this scene with the geolocated data
-    BNOperationObject *obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeScene
-                                                                    tempId:self.piece.pieceId
-                                                                   storyId:self.piece.story.storyId];
-    BNOperation *op = [[BNOperation alloc] initWithObject:obj action:BNOperationActionEdit dependencies:nil];
-    op.action.context = [NSDictionary dictionaryWithObject:self.piece.geocodedLocation forKey:PIECE_GEOCODEDLOCATION];
-    ADD_OPERATION_TO_QUEUE(op);
-    
-    if (self.piece.previousPiece == nil) {
-        self.piece.story.geocodedLocation = self.piece.geocodedLocation;
-        obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeStory
-                                                     tempId:self.piece.story.storyId
-                                                    storyId:self.piece.story.storyId];
-        op = [[BNOperation alloc] initWithObject:obj action:BNOperationActionEdit dependencies:nil];
-        op.action.context = [NSDictionary dictionaryWithObject:self.piece.story.geocodedLocation forKey:STORY_GEOCODEDLOCATION];
-        ADD_OPERATION_TO_QUEUE(op);
-    }
+    [Piece editPiece:self.piece];
 }
 
 - (void) userLoginStatusChanged

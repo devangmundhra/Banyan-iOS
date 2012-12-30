@@ -8,7 +8,7 @@
 
 #import "ModifySceneViewController.h"
 #import "Piece+Create.h"
-#import "Scene+Edit.h"
+#import "Piece+Edit.h"
 #import "Scene+Delete.h"
 #import "Story+Delete.h"
 #import "Story+Edit.h"
@@ -247,26 +247,17 @@
     }
     else if (self.editMode == edit)
     {
-        if (self.piece.previousPiece == nil)
-        {
-            NSLog(@"ModifySceneViewController_Editing story");
-            self.piece.story.title = self.sceneTextView.text;
-            if (self.imageChanged) {
-                self.piece.story.imageURL = self.localImageURL;
-                self.piece.story.imageChanged = YES;
-            }
-            [Story editStory:self.piece.story];
-        }
         self.piece.text = self.sceneTextView.text;
         if (self.imageChanged) {
             self.piece.imageURL = self.localImageURL;
             self.piece.imageChanged = YES;
-//            self.scene.image = self.imageView.image;
+            //            self.scene.image = self.imageView.image;
         }
-        [Piece editScene:self.piece];
+        [Piece editPiece:self.piece];
         [self.delegate modifySceneViewController:self didFinishEditingScene:self.piece];
     }
     else {
+        assert(false);
         NSLog(@"ModifySceneViewController_No valid edit mode");
     }
 }
