@@ -260,8 +260,6 @@
                 NSLog(@"%s ERROR: Object %@ expected to be already initialized for action %@. Ignore this job!", __PRETTY_FUNCTION__, self.object, self.action);
                 [self completeOperationWithError:YES];
             }
-            if (HAVE_ASSERTS)
-                assert([self.object isObjectInitialized]);
         }
         
         // Execute the network operation
@@ -279,25 +277,8 @@
                     default:
                         break;
                 }
-                
-            case BNOperationObjectTypeActivity:
-                switch (self.action.actionType) {
-                    case BNOperationActionCreate:
-                        [Activity createActivity:self.action.context];
-                        break;
-                        
-                    case BNOperationActionDelete:
-                        [Activity deleteActivity:self.action.context];
-                        break;
-                        
-                    default:
-                        NSLog(@"%s Unsupported action for activity %@", __PRETTY_FUNCTION__, self.action);
-                        break;
-                }
-                break;
-                // DEFAULT
+
             default:
-                assert(false);
                 NSLog(@"%s Unknown object type %d", __PRETTY_FUNCTION__, self.object.type);
                 break;
         }

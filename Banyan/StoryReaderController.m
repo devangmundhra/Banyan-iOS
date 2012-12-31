@@ -77,6 +77,7 @@
 //    likeLabel.text = @"Like";
 //    self.likeButton = [[UIBarButtonItem alloc] initWithCustomView:likeLabel];
     self.likeButton = [[UIBarButtonItem alloc] initWithTitle:@"Like" style:UIBarButtonItemStyleBordered target:nil action:nil];
+    self.likeButton.possibleTitles = [NSSet setWithObjects:@"Like", @"Unlike", nil];
     self.shareButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:nil action:nil];
     [self.navigationController setToolbarHidden:YES animated:YES];
     [[self.navigationController toolbar] setTranslucent:YES];

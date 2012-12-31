@@ -8,7 +8,7 @@
 
 #import "ReadSceneViewController.h"
 #import "UIImageView+AFNetworking.h"
-#import "Scene+Stats.h"
+#import "Piece+Stats.h"
 #import "Story+Stats.h"
 #import <QuartzCore/QuartzCore.h>
 #import "AFBanyanAPIClient.h"
@@ -136,6 +136,12 @@
                                              animated:NO];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:YES];
+    [self refreshView];
+}
+
 - (void)locationUpdated
 {
     self.locationLabel.text = self.locationManager.locationStatus;
@@ -154,8 +160,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     // Update Stats
-    [Piece viewedScene:self.piece];
-    [self refreshView];
+    [Piece viewedPiece:self.piece];
     
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(userLoginStatusChanged) 
@@ -184,8 +189,8 @@
     }
 }
 
-// Scene specific refresh
-- (void)refreshSceneView
+// Piece specific refresh
+- (void)refreshPieceView
 {
     [self.contributorsButton setTitle:self.piece.author.name forState:UIControlStateNormal];
     [self.contributorsButton setEnabled:NO];
@@ -213,10 +218,7 @@
     [self toggleSceneLikeButtonLabel];
     [self toggleSceneFollowButtonLabel];
     
-    if (self.piece.previousPiece == nil)
-        [self refreshStoryView];
-    else
-        [self refreshSceneView];
+    [self refreshPieceView];
 }
 
 - (void)viewDidUnload
@@ -289,11 +291,12 @@
 
 - (void)toggleSceneLikeButtonLabel
 {
+    UIBarButtonItem *likeButton = (UIBarButtonItem *)[self.navigationController.toolbar.items objectAtIndex:0];
     if (self.piece.liked) {
-        [(UIBarButtonItem *)[self.navigationController.toolbar.items objectAtIndex:0] setTitle:@"Unlike"];
+        [likeButton setTitle:@"Unlike"];
     }
     else {
-        [(UIBarButtonItem *)[self.navigationController.toolbar.items objectAtIndex:0] setTitle:@"Like"];
+        [likeButton setTitle:@"Like"];
     }
     self.likesLabel.text = [NSString stringWithFormat:@"%u likes", [self.piece.numberOfLikes unsignedIntValue]];
 }
@@ -310,11 +313,7 @@
 - (IBAction)like:(UIBarButtonItem *)sender
 {
     NSLog(@"Liked!");
-    if (self.piece.previousPiece == nil) {
-        [Story toggleLikedStory:self.piece.story];
-        [TestFlight passCheckpoint:@"Like story"];
-    }
-    [Piece toggleLikedScene:self.piece];
+    [Piece toggleLikedPiece:self.piece];
     [self toggleSceneLikeButtonLabel];
     [TestFlight passCheckpoint:@"Like scene"];
 }
@@ -323,11 +322,7 @@
 - (IBAction)follow:(UIBarButtonItem *)sender
 {
     NSLog(@"Following!");
-    if (self.piece.previousPiece == nil) {
-        [Story toggleFavouritedStory:self.piece.story];
-        [TestFlight passCheckpoint:@"Follow story"];
-    }
-    [Piece toggleFavouritedScene:self.piece];
+    [Piece toggleFavouritedPiece:self.piece];
     [self toggleSceneFollowButtonLabel];
     
     [TestFlight passCheckpoint:@"Follow scene"];

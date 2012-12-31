@@ -13,12 +13,12 @@
 
 @interface Piece (Stats)
 
-+ (void) viewedScene:(Piece *)scene;
++ (void) viewedPiece:(Piece *)scene;
 
-+ (void) toggleLikedScene:(Piece *)scene;
++ (void) toggleLikedPiece:(Piece *)scene;
 
-+ (void) toggleFavouritedScene:(Piece *)scene;
++ (void) toggleFavouritedPiece:(Piece *)scene;
 
-- (void) updateSceneStats;
+- (void) updatePieceStats;
 
 @end

@@ -55,8 +55,11 @@ extern NSString *const kBNActivityStoryKey;
 
 // Type values
 extern NSString *const kBNActivityTypeLike;
+extern NSString *const kBNActivityTypeUnlike;
 extern NSString *const kBNActivityTypeFollowUser;
+extern NSString *const kBNActivityTypeUnfollowUser;
 extern NSString *const kBNActivityTypeFavourite;
+extern NSString *const kBNActivityTypeUnfavourite;
 extern NSString *const kBNActivityTypeView;
 extern NSString *const kBNActivityTypeComment;
 extern NSString *const kBNActivityTypeJoined;

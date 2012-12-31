@@ -7,6 +7,8 @@
 //
 
 #import "Activity.h"
+#import "AFBanyanAPIClient.h"
+#import "Story_Defines.h"
 
 @implementation Activity
 
@@ -15,6 +17,7 @@
 @synthesize toUser = _toUser;
 @synthesize sceneId = _sceneId;
 @synthesize storyId = _storyId;
+@synthesize initialized = _initialized;
 
 + (Activity *) activityWithType:(NSString *)type
                        fromUser:(NSString *)fromUser
@@ -54,99 +57,75 @@
     return self;
 }
 
-- (NSMutableDictionary *)getAttributesInDictionary
++ (void)createActivity:(Activity *)activity
 {
-    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:5];
+
+    RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
+    // For serializing
+    RKObjectMapping *activityMapping = [RKObjectMapping requestMapping];
+    [activityMapping addAttributeMappingsFromArray:@[kBNActivityTypeKey, kBNActivityFromUserKey, kBNActivityToUserKey, kBNActivitySceneKey, kBNActivityStoryKey]];
     
-    [dictionary setObject:self.type forKey:kBNActivityTypeKey];
-    [dictionary setObject:self.fromUser forKey:kBNActivityFromUserKey];
-    [dictionary setObject:self.toUser forKey:kBNActivityToUserKey];
-    [dictionary setObject:REPLACE_NIL_WITH_NULL(UPDATED(self.sceneId)) forKey:kBNActivitySceneKey];
-    [dictionary setObject:REPLACE_NIL_WITH_NULL(UPDATED(self.storyId)) forKey:kBNActivityStoryKey];
+    RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
+                                              requestDescriptorWithMapping:activityMapping
+                                              objectClass:[Activity class]
+                                              rootKeyPath:nil];
     
-    return dictionary;
+    RKObjectMapping *activityResponseMapping = [RKObjectMapping mappingForClass:[Activity class]];
+    [activityResponseMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"activityId"}];
+    
+    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:activityResponseMapping
+                                                                                       pathPattern:nil
+                                                                                           keyPath:nil
+                                                                                       statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    
+    [objectManager addRequestDescriptor:requestDescriptor];
+    [objectManager addResponseDescriptor:responseDescriptor];
+    
+    [objectManager postObject:activity
+                         path:BANYAN_API_CLASS_URL(@"Activity")
+                   parameters:nil
+                      success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                          NSLog(@"Create activity successful %@", activity);
+                          activity.initialized = YES;
+                      }
+                      failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                          NSLog(@"Error in create activity");
+                      }];
 }
 
-+ (void)createActivity:(Activity *)activityContext
-{
-    return;
-    NSDictionary *jsonDictionary = [activityContext getAttributesInDictionary];
++ (void)deleteActivity:(Activity *)activity
+{    
+    RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
+    // For serializing
+    RKObjectMapping *activityMapping = [RKObjectMapping requestMapping];
+    [activityMapping addAttributeMappingsFromArray:@[kBNActivityTypeKey, kBNActivityFromUserKey, kBNActivityToUserKey, kBNActivitySceneKey, kBNActivityStoryKey]];
     
-    NSError *error = nil;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
+    RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
+                                              requestDescriptorWithMapping:activityMapping
+                                              objectClass:[Activity class]
+                                              rootKeyPath:nil];
     
-    if (!jsonData) {
-        NSLog(@"NSJSONSerialization failed %@", error);
-    }
+    RKObjectMapping *activityResponseMapping = [RKObjectMapping mappingForClass:[Activity class]];
+    [activityResponseMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"activityId"}];
     
-    NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-        
-    NSMutableDictionary *getActivities = [NSMutableDictionary dictionaryWithObjectsAndKeys:json, @"where",
-                                          [NSNumber numberWithInt:1], @"count",
-                                          [NSNumber numberWithInt:0], @"limit", nil];
+    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:activityResponseMapping
+                                                                                       pathPattern:nil
+                                                                                           keyPath:nil
+                                                                                       statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
-    [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(kBNActivityClassKey)
-                                  parameters:getActivities
-                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                         NSDictionary *response = responseObject;
-                                         NSNumber *numActivities = [response objectForKey:@"count"];
-                                         // Only if this activity has not already been added
-                                         if ([numActivities integerValue] == 0) {
-                                             [[AFParseAPIClient sharedClient]
-                                              postPath:PARSE_API_CLASS_URL(kBNActivityClassKey)
-                                              parameters:[activityContext getAttributesInDictionary]
-                                              success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                                  NSLog(@"Got response for adding activity %@", activityContext);
-                                              }
-                                              failure:AF_PARSE_ERROR_BLOCK()];
-                                         }
-                                         NETWORK_OPERATION_COMPLETE();
-                                     }
-                                     failure:BN_ERROR_BLOCK_OPERATION_INCOMPLETE()];
-    
+    [objectManager addRequestDescriptor:requestDescriptor];
+    [objectManager addResponseDescriptor:responseDescriptor];
 
-}
-
-+ (void)deleteActivity:(Activity *)activityContext
-{
-    return;
-    NSDictionary *jsonDictionary = [activityContext getAttributesInDictionary];
-    
-    NSError *error = nil;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
-    
-    if (!jsonData) {
-        NSLog(@"NSJSONSerialization failed %@", error);
-    }
-    
-    NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    
-    NSMutableDictionary *getActivities = [NSMutableDictionary dictionaryWithObject:json forKey:@"where"];
-    
-    [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(kBNActivityClassKey)
-                                  parameters:getActivities
-                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                         NSDictionary *response = responseObject;
-                                         NSArray *activities = [response objectForKey:@"results"];
-                                         for (NSUInteger i = 0; i < [activities count]; i++) {
-                                             [Activity deleteActivityWithId:[[activities objectAtIndex:i] objectForKey:@"objectId"] isLast:i == [activities count]-1];
-                                         }
-                                     }
-                                     failure:AF_PARSE_ERROR_BLOCK()];
-}
-
-+ (void) deleteActivityWithId:(NSString *)activityId isLast:(BOOL)last
-{
-    return;
-    [[AFParseAPIClient sharedClient] deletePath:PARSE_API_OBJECT_URL(kBNActivityClassKey, activityId)
-                                     parameters:nil
-                                        success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                            NSLog(@"Activity with id %@ deleted", activityId);
-                                            if (last) {
-                                                NETWORK_OPERATION_COMPLETE();
-                                            }
-                                        }
-                                        failure:BN_ERROR_BLOCK_OPERATION_INCOMPLETE()];
+    [objectManager deleteObject:activity
+                           path:BANYAN_API_CLASS_URL(@"Activity")
+                     parameters:nil
+                        success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                            NSLog(@"Delete activity successful %@", activity);
+                            activity.initialized = YES;
+                        }
+                        failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                            NSLog(@"Error in delete activity activity");
+                        }];
 }
 
 - (NSString *)description

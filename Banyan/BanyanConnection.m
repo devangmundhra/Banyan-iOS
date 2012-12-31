@@ -10,6 +10,8 @@
 #import "AFBanyanAPIClient.h"
 #import "BNOperationQueue.h"
 #import "Story_Defines.h"
+#import "Story+Stats.h"
+#import "Piece+Stats.h"
 
 @implementation BanyanConnection
 
@@ -55,6 +57,7 @@
                                 NSArray *stories = [mappingResult array];
                                 [stories enumerateObjectsUsingBlock:^(Story *story, NSUInteger idx, BOOL *stop) {
                                     story.initialized = YES;
+                                    [story updateStoryStats];
                                 }];
                                 successBlock([stories mutableCopy]);                            }
                             failure:^(RKObjectRequestOperation *operation, NSError *error) {
@@ -92,6 +95,7 @@
                                 [pieces enumerateObjectsUsingBlock:^(Piece *piece, NSUInteger idx, BOOL *stop){
                                     piece.story = story;
                                     piece.initialized = YES;
+                                    [piece updatePieceStats];
                                 }];
                                 if (pieces.count) {
                                     story.pieces = [NSMutableArray arrayWithArray:pieces];

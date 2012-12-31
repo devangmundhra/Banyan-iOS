@@ -51,56 +51,6 @@
 @synthesize imageChanged = _imageChanged;
 @synthesize storyBeingRead = _storyBeingRead;
 
-+ (RKObjectManager *)objectManager
-{
-    static RKObjectManager *_objectManager = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
-        
-        RKObjectMapping *storyMapping = [RKObjectMapping mappingForClass:[self class]];
-        [storyMapping addAttributeMappingsFromDictionary:@{
-         @"read" : STORY_CAN_VIEW,
-         @"write" : STORY_CAN_CONTRIBUTE,
-         @"invited" : STORY_IS_INVITED,
-         @"object.title" : STORY_TITLE,
-         @"object.writeAccess" : STORY_WRITE_ACCESS,
-         @"object.readAccess" : STORY_READ_ACCESS,
-         @"object.tags" : STORY_TAGS,
-         @"object.imageURL" : STORY_IMAGE_URL,
-         @"object.geocodedLocation" : STORY_GEOCODEDLOCATION,
-         @"object.createdAt" : @"dateCreated",
-         @"object.updatedAt" : @"dateModified",
-         @"object.objectId" : @"storyId",
-         @"object.locationEnabled" : @"isLocationEnabled",
-         }];
-
-        //         @"object.startingScene" : @"startingScene.sceneId",
-        RKObjectMapping *sceneMapping = [RKObjectMapping mappingForClass:[Piece class]];
-        [sceneMapping addAttributeMappingsFromDictionary:@{
-         @"startingScene" : @"sceneId"}];
-        
-        RKRelationshipMapping *sceneRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"object" toKeyPath:@"startingScene" withMapping:sceneMapping];
-        [storyMapping addPropertyMapping:sceneRelationshipMapping];
-        
-        //         @"object.author" : @"author.userId"
-        RKObjectMapping *userMapping = [RKObjectMapping mappingForClass:[User class]];
-        [userMapping addAttributeMappingsFromDictionary:@{
-         @"author" : @"userId"}];
-        
-        RKRelationshipMapping *userRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:@"object" toKeyPath:@"author" withMapping:userMapping];
-        [storyMapping addPropertyMapping:userRelationshipMapping];
-        
-        RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:storyMapping
-                                                                                           pathPattern:nil
-                                                                                               keyPath:nil
-                                                                                           statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
-        [_objectManager addResponseDescriptor:responseDescriptor];
-    });
-    
-    return _objectManager;
-}
-
 #pragma mark NSCoding
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
@@ -164,65 +114,6 @@
         self.tags = [aDecoder decodeObjectForKey:STORY_TAGS];
     }
     return self;
-}
-
-- (NSMutableDictionary *)getAttributesInDictionary
-{
-    NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
-    CLLocationCoordinate2D coord = [self.location coordinate];
-    
-    [attributes setObject:self.writeAccess forKey:STORY_WRITE_ACCESS];
-    [attributes setObject:self.readAccess forKey:STORY_READ_ACCESS];
-    [attributes setObject:self.length forKey:STORY_LENGTH];
-    [attributes setObject:self.title forKey:STORY_TITLE];
-    [attributes setObject:REPLACE_NIL_WITH_NULL(UPDATED(self.imageURL)) forKey:STORY_IMAGE_URL];
-    [attributes setObject:REPLACE_NIL_WITH_NULL(self.contributors) forKey:STORY_CONTRIBUTORS];
-    [attributes setObject:self.numberOfLikes forKey:STORY_NUM_LIKES];
-    [attributes setObject:self.numberOfViews forKey:STORY_NUM_VIEWS];
-    [attributes setObject:self.numberOfContributors forKey:STORY_NUM_CONTRIBUTORS];
-    [attributes setObject:[NSNumber numberWithBool:self.isLocationEnabled] forKey:STORY_LOCATION_ENABLED];
-    [attributes setObject:REPLACE_NIL_WITH_NULL(self.geocodedLocation) forKey:STORY_GEOCODEDLOCATION];
-    [attributes setObject:[NSNumber numberWithDouble:coord.latitude]
-                             forKey:STORY_LATITUDE];
-    [attributes setObject:[NSNumber numberWithDouble:coord.longitude]
-                             forKey:STORY_LONGITUDE];
-    [attributes setObject:self.author.userId forKey:STORY_AUTHOR];
-    [attributes setObject:REPLACE_NIL_WITH_EMPTY_STRING(self.tags) forKey:STORY_TAGS];
-    return attributes;
-}
-
-- (void) fillAttributesFromDictionary:(NSDictionary *)dict
-{
-    NSDictionary *storyDict = [NSDictionary dictionaryWithDictionary:[dict objectForKey:@"object"]];
-    // Fill in the story detials
-    self.title = REPLACE_NULL_WITH_NIL([storyDict objectForKey:STORY_TITLE]);
-    self.readAccess = [storyDict objectForKey:STORY_READ_ACCESS];
-    self.writeAccess = [storyDict objectForKey:STORY_WRITE_ACCESS];
-    self.storyId = [dict objectForKey:@"objectId"];
-    self.createdAt = [dict objectForKey:@"createdAt"];
-    self.updatedAt = [dict objectForKey:@"updatedAt"];
-    self.author = [User getUserForPfUser:[PFQuery getUserObjectWithId:REPLACE_NULL_WITH_NIL([storyDict objectForKey:STORY_AUTHOR])]];
-    [self updateStoryStats];
-    
-    if ([[storyDict objectForKey:STORY_LOCATION_ENABLED] isEqualToNumber:[NSNumber numberWithBool:YES]])
-    {
-        self.isLocationEnabled = YES;
-        double latitude = [REPLACE_NULL_WITH_NIL([storyDict objectForKey:STORY_LATITUDE]) doubleValue];
-        double longitude = [REPLACE_NULL_WITH_NIL([storyDict objectForKey:STORY_LONGITUDE]) doubleValue];
-        self.location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
-        self.geocodedLocation = REPLACE_NULL_WITH_NIL([storyDict objectForKey:STORY_GEOCODEDLOCATION]);
-    } else
-    {
-        self.isLocationEnabled = NO;
-    }
-    self.initialized = YES;
-    
-    self.imageURL = REPLACE_NULL_WITH_NIL([storyDict objectForKey:STORY_IMAGE_URL]);
-    self.tags = REPLACE_NULL_WITH_NIL([storyDict objectForKey:STORY_TAGS]);
-    
-    self.canContribute = [[dict objectForKey:@"write"] boolValue];
-    self.canView = [[dict objectForKey:@"read"] boolValue];
-    self.isInvited = [[dict objectForKey:@"invited"] boolValue];
 }
 
 # pragma mark Permissions management

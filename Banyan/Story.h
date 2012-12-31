@@ -48,9 +48,6 @@
 @property BOOL imageChanged;
 @property BOOL storyBeingRead;
 
-- (NSString *)description;
-- (NSMutableDictionary *)getAttributesInDictionary;
-//- (void) fillAttributesFromDictionary:(NSDictionary *)dict;
 - (void) resetPermission;
 
 @end
