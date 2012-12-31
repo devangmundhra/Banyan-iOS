@@ -8,6 +8,8 @@
 
 #import "Story+Edit.h"
 #import "AFParseAPIClient.h"
+#import "File.h"
+#import "BanyanDataSource.h"
 
 @implementation Story (Edit)
 

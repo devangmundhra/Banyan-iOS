@@ -23,15 +23,6 @@
     return self;
 }
 
-- (BOOL)initialized
-{
-    NSMutableDictionary *ht = [BanyanDataSource hashTable];
-    if ([ht objectForKey:self.url]) {
-        return YES;
-    }
-    return NO;
-}
-
 + (void) uploadFileForLocalURL:(NSString *)url block:(void (^)(BOOL succeeded, NSString *newURL, NSString *newName, NSError *error))successBlock errorBlock:(void (^)(NSError *error))errorBlock
 {
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];

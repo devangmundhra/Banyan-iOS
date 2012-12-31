@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "AFHTTPClient.h"
 #import "BanyanAppDelegate.h"
-#import "BNOperationQueue.h"
 #import "AFHTTPRequestOperation.h"
 
 #define PARSE_API_CLASS_URL(__class__) [NSString stringWithFormat:@"classes/%@", __class__]

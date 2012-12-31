@@ -18,11 +18,6 @@
 		510787D5163A37190042B436 /* Activity.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787D4163A37190042B436 /* Activity.m */; };
 		510787DA163A37250042B436 /* File.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787D7163A37250042B436 /* File.m */; };
 		510787DE163A37340042B436 /* User+Edit.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787DD163A37340042B436 /* User+Edit.m */; };
-		510787E7163A377F0042B436 /* BNOperationAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787E0163A377F0042B436 /* BNOperationAction.m */; };
-		510787E8163A377F0042B436 /* BNOperationDependency.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787E2163A377F0042B436 /* BNOperationDependency.m */; };
-		510787E9163A377F0042B436 /* BNOperationObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787E4163A377F0042B436 /* BNOperationObject.m */; };
-		510787EA163A377F0042B436 /* BNOperationQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787E6163A377F0042B436 /* BNOperationQueue.m */; };
-		5110A7BF15B3EB0A00D4FBD1 /* BNOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5110A7BE15B3EB0A00D4FBD1 /* BNOperation.m */; };
 		511E708B161A9756009AAD25 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708A161A9756009AAD25 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		511E708E161A977F009AAD25 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
 		5142BC7B1678837E007B1B62 /* BanyanPullToRefreshContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5142BC7A1678837E007B1B62 /* BanyanPullToRefreshContentView.m */; };
@@ -60,7 +55,6 @@
 		5189B34415B395F300562DD0 /* Story+Delete.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B30E15B395F300562DD0 /* Story+Delete.m */; };
 		5189B34515B395F300562DD0 /* Story+Edit.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B31015B395F300562DD0 /* Story+Edit.m */; };
 		5189B34615B395F300562DD0 /* Story+Stats.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B31215B395F300562DD0 /* Story+Stats.m */; };
-		5189B34715B395F300562DD0 /* StoryDocuments.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B31415B395F300562DD0 /* StoryDocuments.m */; };
 		5189B34815B395F300562DD0 /* StoryListStoryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B31615B395F300562DD0 /* StoryListStoryCell.m */; };
 		5189B34915B395F300562DD0 /* StoryListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B31815B395F300562DD0 /* StoryListTableViewController.m */; };
 		5189B34C15B395F300562DD0 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B32115B395F300562DD0 /* User.m */; };
@@ -125,16 +119,6 @@
 		510787D7163A37250042B436 /* File.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = File.m; path = Banyan/File.m; sourceTree = "<group>"; };
 		510787DC163A37340042B436 /* User+Edit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "User+Edit.h"; path = "Banyan/User+Edit.h"; sourceTree = "<group>"; };
 		510787DD163A37340042B436 /* User+Edit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "User+Edit.m"; path = "Banyan/User+Edit.m"; sourceTree = "<group>"; };
-		510787DF163A377F0042B436 /* BNOperationAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNOperationAction.h; path = Banyan/BNOperationAction.h; sourceTree = "<group>"; };
-		510787E0163A377F0042B436 /* BNOperationAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNOperationAction.m; path = Banyan/BNOperationAction.m; sourceTree = "<group>"; };
-		510787E1163A377F0042B436 /* BNOperationDependency.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNOperationDependency.h; path = Banyan/BNOperationDependency.h; sourceTree = "<group>"; };
-		510787E2163A377F0042B436 /* BNOperationDependency.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNOperationDependency.m; path = Banyan/BNOperationDependency.m; sourceTree = "<group>"; };
-		510787E3163A377F0042B436 /* BNOperationObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNOperationObject.h; path = Banyan/BNOperationObject.h; sourceTree = "<group>"; };
-		510787E4163A377F0042B436 /* BNOperationObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNOperationObject.m; path = Banyan/BNOperationObject.m; sourceTree = "<group>"; };
-		510787E5163A377F0042B436 /* BNOperationQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNOperationQueue.h; path = Banyan/BNOperationQueue.h; sourceTree = "<group>"; };
-		510787E6163A377F0042B436 /* BNOperationQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNOperationQueue.m; path = Banyan/BNOperationQueue.m; sourceTree = "<group>"; };
-		5110A7BD15B3EB0A00D4FBD1 /* BNOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNOperation.h; path = Banyan/BNOperation.h; sourceTree = "<group>"; };
-		5110A7BE15B3EB0A00D4FBD1 /* BNOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNOperation.m; path = Banyan/BNOperation.m; sourceTree = "<group>"; };
 		511E708A161A9756009AAD25 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		5142BC791678837E007B1B62 /* BanyanPullToRefreshContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BanyanPullToRefreshContentView.h; sourceTree = "<group>"; };
@@ -199,8 +183,6 @@
 		5189B31015B395F300562DD0 /* Story+Edit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Story+Edit.m"; path = "Banyan/Story+Edit.m"; sourceTree = "<group>"; };
 		5189B31115B395F300562DD0 /* Story+Stats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Story+Stats.h"; path = "Banyan/Story+Stats.h"; sourceTree = "<group>"; };
 		5189B31215B395F300562DD0 /* Story+Stats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Story+Stats.m"; path = "Banyan/Story+Stats.m"; sourceTree = "<group>"; };
-		5189B31315B395F300562DD0 /* StoryDocuments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryDocuments.h; path = Banyan/StoryDocuments.h; sourceTree = "<group>"; };
-		5189B31415B395F300562DD0 /* StoryDocuments.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryDocuments.m; path = Banyan/StoryDocuments.m; sourceTree = "<group>"; };
 		5189B31515B395F300562DD0 /* StoryListStoryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryListStoryCell.h; path = Banyan/StoryListStoryCell.h; sourceTree = "<group>"; };
 		5189B31615B395F300562DD0 /* StoryListStoryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryListStoryCell.m; path = Banyan/StoryListStoryCell.m; sourceTree = "<group>"; };
 		5189B31715B395F300562DD0 /* StoryListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryListTableViewController.h; path = Banyan/StoryListTableViewController.h; sourceTree = "<group>"; };
@@ -424,7 +406,6 @@
 				510787CE163A36D80042B436 /* AFBanyanAPIClient.m */,
 				5192329F1671CC57009686E4 /* AFGoogleAPIClient.h */,
 				519232A01671CC57009686E4 /* AFGoogleAPIClient.m */,
-				519AFA7715C4C38B00F68F3C /* BNOperation */,
 			);
 			name = "Networking Extensions";
 			path = ..;
@@ -520,8 +501,6 @@
 			children = (
 				5157CD011650902900C22CCE /* BanyanConnection.h */,
 				5157CD021650902900C22CCE /* BanyanConnection.m */,
-				5189B31315B395F300562DD0 /* StoryDocuments.h */,
-				5189B31415B395F300562DD0 /* StoryDocuments.m */,
 			);
 			name = "Data handling";
 			path = ..;
@@ -618,23 +597,6 @@
 				5103FB9E166898960095B11F /* UIImage+Create.m */,
 			);
 			name = "UIImage Categories";
-			sourceTree = "<group>";
-		};
-		519AFA7715C4C38B00F68F3C /* BNOperation */ = {
-			isa = PBXGroup;
-			children = (
-				510787DF163A377F0042B436 /* BNOperationAction.h */,
-				510787E0163A377F0042B436 /* BNOperationAction.m */,
-				510787E1163A377F0042B436 /* BNOperationDependency.h */,
-				510787E2163A377F0042B436 /* BNOperationDependency.m */,
-				510787E3163A377F0042B436 /* BNOperationObject.h */,
-				510787E4163A377F0042B436 /* BNOperationObject.m */,
-				510787E5163A377F0042B436 /* BNOperationQueue.h */,
-				510787E6163A377F0042B436 /* BNOperationQueue.m */,
-				5110A7BD15B3EB0A00D4FBD1 /* BNOperation.h */,
-				5110A7BE15B3EB0A00D4FBD1 /* BNOperation.m */,
-			);
-			name = BNOperation;
 			sourceTree = "<group>";
 		};
 		51B598A315EB451600DF4D9D /* Activity */ = {
@@ -799,13 +761,11 @@
 				5189B34415B395F300562DD0 /* Story+Delete.m in Sources */,
 				5189B34515B395F300562DD0 /* Story+Edit.m in Sources */,
 				5189B34615B395F300562DD0 /* Story+Stats.m in Sources */,
-				5189B34715B395F300562DD0 /* StoryDocuments.m in Sources */,
 				5189B34815B395F300562DD0 /* StoryListStoryCell.m in Sources */,
 				5189B34915B395F300562DD0 /* StoryListTableViewController.m in Sources */,
 				5189B34C15B395F300562DD0 /* User.m in Sources */,
 				5189B34D15B395F300562DD0 /* UserLoginViewController.m in Sources */,
 				5189B34F15B395F300562DD0 /* UserManagementModule.m in Sources */,
-				5110A7BF15B3EB0A00D4FBD1 /* BNOperation.m in Sources */,
 				51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */,
 				51CFD92915F1F260002926F9 /* SettingsTableViewController.m in Sources */,
 				51CFD93615F3E80B002926F9 /* FollowingFriendsViewController.m in Sources */,
@@ -820,10 +780,6 @@
 				510787D5163A37190042B436 /* Activity.m in Sources */,
 				510787DA163A37250042B436 /* File.m in Sources */,
 				510787DE163A37340042B436 /* User+Edit.m in Sources */,
-				510787E7163A377F0042B436 /* BNOperationAction.m in Sources */,
-				510787E8163A377F0042B436 /* BNOperationDependency.m in Sources */,
-				510787E9163A377F0042B436 /* BNOperationObject.m in Sources */,
-				510787EA163A377F0042B436 /* BNOperationQueue.m in Sources */,
 				5157CD031650902900C22CCE /* BanyanConnection.m in Sources */,
 				5157CD251659E5A300C22CCE /* ComposeTextViewController.m in Sources */,
 				5103FB9F166898960095B11F /* UIImage+Create.m in Sources */,

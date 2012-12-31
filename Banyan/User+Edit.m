@@ -14,7 +14,6 @@
 {
     if (!user.sessionToken) {
         NSLog(@"%s Can't find session data for user: %@", __PRETTY_FUNCTION__, user);
-        NETWORK_OPERATION_COMPLETE();
         return;
     }
     
@@ -24,9 +23,8 @@
                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                          NSDictionary *response = responseObject;
                                          NSLog(@"Got response for updating user at %@", [response objectForKey:@"updatedAt"]);
-                                         NETWORK_OPERATION_COMPLETE();
                                      }
-                                     failure:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
+                                     failure:AF_PARSE_ERROR_BLOCK()];
 }
 
 @end

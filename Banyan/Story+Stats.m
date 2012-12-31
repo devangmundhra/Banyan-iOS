@@ -8,7 +8,6 @@
 
 #import "Story+Stats.h"
 #import "User+Edit.h"
-#import "StoryDocuments.h"
 #import "Story+Edit.h"
 #import "AFParseAPIClient.h"
 #import "Activity.h"

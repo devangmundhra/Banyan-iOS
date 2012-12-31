@@ -130,7 +130,9 @@
         self.infoView.alpha = 0;
     }
     
-    [[UIApplication sharedApplication] setStatusBarHidden:![self.delegate readSceneControllerEditMode] 
+    [self refreshView];
+
+    [[UIApplication sharedApplication] setStatusBarHidden:![self.delegate readSceneControllerEditMode]
                                             withAnimation:UIStatusBarAnimationNone];
     [self.navigationController setNavigationBarHidden:![self.delegate readSceneControllerEditMode] 
                                              animated:NO];
@@ -139,7 +141,6 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:YES];
-    [self refreshView];
 }
 
 - (void)locationUpdated

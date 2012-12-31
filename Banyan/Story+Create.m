@@ -8,7 +8,6 @@
 
 #import "Story+Create.h"
 #import "Story_Defines.h"
-#import "StoryDocuments.h"
 #import "User_Defines.h"
 #import "BanyanDataSource.h"
 #import "AFBanyanAPIClient.h"
@@ -97,9 +96,8 @@
                                                  [push setData:data];
                                                  [push sendPushInBackground];
                                                  [TestFlight passCheckpoint:@"Push notifications sent to contribute to a new story"];
-                                                 NETWORK_OPERATION_COMPLETE();
                                              }
-                                             failure:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
+                                             failure:AF_PARSE_ERROR_BLOCK()];
         }
     };
     

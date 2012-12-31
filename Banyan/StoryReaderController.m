@@ -8,7 +8,6 @@
 
 #import "StoryReaderController.h"
 #import "Story+Stats.h"
-#import "StoryDocuments.h"
 #import "MBProgressHUD.h"
 
 @interface StoryReaderController ()
@@ -282,7 +281,6 @@
 #pragma mark ReadSceneViewControllerDelegate
 - (void)doneWithReadSceneViewController:(ReadSceneViewController *)readSceneViewController
 {
-    [StoryDocuments saveStoryToDisk:self.story];
     [self.delegate storyReaderContollerDone:self];
     // Dismiss the read scenes page view controller
     [self dismissViewControllerAnimated:YES completion:nil];
