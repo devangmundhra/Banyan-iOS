@@ -1,0 +1,18 @@
+{
+    "applications": {
+        "Banyan": {
+            "applicationId": "Q82knolRSmsGKKNK13WCvISIReVVoR3yFP3qTF1J", 
+            "masterKey": "WJij4dz437hs7h9RHQyaIrOMR1CTUYXsIxhYN0nu"
+        }, 
+        "Banyan Dev": {
+            "applicationId": "5mvyH3aLGv22GeEmYugRZokcrprPevbA4ko1kF6v", 
+            "masterKey": "Naq8BwKBUO5W4bBje0h54204QCC4kcFUlEVrsDGA"
+        }, 
+        "_default": {
+            "link": "Banyan Dev"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.1.15"
+    }
+}
