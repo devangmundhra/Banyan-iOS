@@ -50,10 +50,6 @@
                           success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                               NSLog(@"Create piece successful %@", piece);
                               piece.initialized = YES;
-                              if (!piece.story.pieces) {
-                                  piece.story.pieces = [NSMutableArray array];
-                              }
-                              [piece.story.pieces addObject:piece];
                           }
                           failure:^(RKObjectRequestOperation *operation, NSError *error) {
                               NSLog(@"Error in create piece");
@@ -89,6 +85,12 @@
     } else {
         uploadPiece(piece);
     }
+    
+    if (!piece.story.pieces) {
+        piece.story.pieces = [NSMutableArray array];
+    }
+    [piece.story.pieces addObject:piece];
+    piece.story.length = [NSNumber numberWithInteger:piece.story.pieces.count];
 }
 
 @end

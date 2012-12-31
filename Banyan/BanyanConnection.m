@@ -81,18 +81,21 @@
     
     RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceMapping
                                                                                        pathPattern:nil
-                                                                                           keyPath:@"pieces"
+                                                                                           keyPath:@"result.pieces"
                                                                                        statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [objectManager addResponseDescriptor:responseDescriptor];
     
-    [objectManager getObjectsAtPath:BANYAN_API_GET_PIECES_FOR_STORY()
-                         parameters:[NSDictionary dictionaryWithObject:story.storyId forKey:@"storyId"]
+    [objectManager getObjectsAtPath:BANYAN_API_OBJECT_URL(@"Story", story.storyId)
+                         parameters:@{@"attributes" : @[@"pieces"]}
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                 NSArray *pieces = [mappingResult array];
                                 [pieces enumerateObjectsUsingBlock:^(Piece *piece, NSUInteger idx, BOOL *stop){
                                     piece.story = story;
+                                    piece.initialized = YES;
                                 }];
-                                story.pieces = [NSMutableArray arrayWithArray:pieces];
+                                if (pieces.count) {
+                                    story.pieces = [NSMutableArray arrayWithArray:pieces];
+                                }
                                 story.length = [NSNumber numberWithInteger:pieces.count];
                                 completionBlock();
                             }

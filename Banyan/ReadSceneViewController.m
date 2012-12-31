@@ -264,6 +264,7 @@
     ModifySceneViewController *addSceneViewController = [[ModifySceneViewController alloc] init];
     addSceneViewController.editMode = add;
     addSceneViewController.piece = [[Piece alloc] init];
+    addSceneViewController.piece.story = self.piece.story;
     addSceneViewController.delegate = self;
     [addSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
     [addSceneViewController setModalPresentationStyle:UIModalPresentationFullScreen];
@@ -404,7 +405,7 @@
 
 #pragma mark ModifySceneViewControllerDelegate
 - (void) modifySceneViewController:(ModifySceneViewController *)controller
-             didFinishEditingScene:(Piece *)scene
+             didFinishEditingScene:(Piece *)piece
 {
     [self dismissViewControllerAnimated:YES completion:^{
         [[UIApplication sharedApplication] setStatusBarHidden:![self.delegate readSceneControllerEditMode] 
@@ -416,7 +417,7 @@
 }
 
 - (void) modifySceneViewController:(ModifySceneViewController *)controller
-              didFinishAddingScene:(Piece *)scene
+              didFinishAddingScene:(Piece *)piece
 {
     NSLog(@"ReadSceneViewController_Adding scene");
     [self dismissViewControllerAnimated:NO completion:^{

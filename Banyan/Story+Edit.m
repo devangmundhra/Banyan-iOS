@@ -92,8 +92,8 @@
             [File deleteFileWithName:story.imageName
                                block:nil
                           errorBlock:^(NSError *error) {
-                              UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
-                                                                              message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
+                              UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in deleting image"
+                                                                              message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]
                                                                              delegate:nil
                                                                     cancelButtonTitle:@"OK"
                                                                     otherButtonTitles:nil];

@@ -197,7 +197,7 @@
     NSUInteger index = [self indexOfViewController:(ReadSceneViewController *)viewController];
     index++;
     
-    if (index >= [self.story.length unsignedIntegerValue]) {
+    if (index >= [self.story.length unsignedIntegerValue]  || index == NSNotFound) {
         NSLog(@"End of story reached for story %@", self.story.title);
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.mode = MBProgressHUDModeText;
@@ -215,7 +215,9 @@
       viewControllerBeforeViewController:(UIViewController *)viewController
 {
     NSUInteger index = [self indexOfViewController:(ReadSceneViewController *)viewController];
-    if (index <= 0) {
+    NSLog(@"index: %d notfound: %d", index, NSNotFound);
+    
+    if (index == 0 || index == NSNotFound) {
         NSLog(@"Beginning of story reached for story %@", self.story.title);
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.mode = MBProgressHUDModeText;
@@ -249,20 +251,16 @@
     return readSceneViewController;
 }
 
-- (Piece *)sceneAtSceneNumberInStory:(NSNumber *)sceneNumber
+- (Piece *)pieceAtPieceNumber:(NSUInteger)pieceNumber
 {
-    // Assuming scenes is already sorted on sceneNumberInStory
-    for (Piece *scene in self.story.pieces)
-        if (scene.pieceNumber == sceneNumber)
-            return scene;
-    
-    return [self.story.pieces objectAtIndex:0];
+    // Pieces are already sorted on pieceNumber    
+    return [self.story.pieces objectAtIndex:pieceNumber-1];
 }
 
-- (ReadSceneViewController *)viewControllerForSceneNumberInStory:(NSNumber *)sceneNumber
+- (ReadSceneViewController *)viewControllerForPieceNumberInStory:(NSUInteger)pieceNumber
 {
     ReadSceneViewController *readSceneViewController = [[ReadSceneViewController alloc] init];
-    readSceneViewController.piece = [self sceneAtSceneNumberInStory:sceneNumber];
+    readSceneViewController.piece = [self pieceAtPieceNumber:pieceNumber];
     readSceneViewController.delegate = self;
     [self setNavBarButtonsWithTargetActionsFromReadSceneViewController:readSceneViewController];
     return readSceneViewController;
@@ -291,16 +289,30 @@
 
 - (void)readSceneViewControllerAddedNewScene:(ReadSceneViewController *)readSceneViewController
 {
-    NSArray *vc = [NSArray arrayWithObject:[self pageViewController:self.pageViewController viewControllerAfterViewController:readSceneViewController]];
+//    NSArray *vc = [NSArray arrayWithObject:[self pageViewController:self.pageViewController viewControllerAfterViewController:readSceneViewController]];
+    NSArray *vc = [NSArray arrayWithObject:[self viewControllerForPieceNumberInStory:[self.story.length unsignedIntegerValue]]];
     [self.pageViewController setViewControllers:vc direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
 }
 
 - (void)readSceneViewControllerDeletedScene:(ReadSceneViewController *)readSceneViewController
 {
+    NSUInteger deletedPieceNumber = [readSceneViewController.piece.pieceNumber unsignedIntegerValue];
+    deletedPieceNumber = MAX(deletedPieceNumber, [self.story.length unsignedIntegerValue]);
+    
     // Change this to come to the scene before or after the deleted scene
-    NSArray *vc = [NSArray arrayWithObject:[self viewControllerForSceneNumberInStory:[NSNumber numberWithInt:0]]];
-//    NSArray *vc = [NSArray arrayWithObject:[self pageViewController:self.pageViewController viewControllerBeforeViewController:readSceneViewController]];
-    [self.pageViewController setViewControllers:vc direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:nil];
+    UIViewController *viewController = [self viewControllerForPieceNumberInStory:deletedPieceNumber];
+    if (viewController) {
+        // Get the previous piece
+        NSArray *vc = [NSArray arrayWithObject:viewController];
+        [self.pageViewController setViewControllers:vc direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
+    } else {
+        // No more pieces left
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = @"No more pieces left";
+        hud.detailsLabelText = @"Going back to story list";
+        [self prepareToGoToStoryList];
+    }
 }
 
 - (void)readSceneViewControllerDeletedStory:(ReadSceneViewController *)readSceneViewController

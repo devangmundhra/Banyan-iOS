@@ -13,7 +13,7 @@
 #import "Story+Delete.h"
 #import "Piece+Create.h"
 #import "Piece+Edit.h"
-#import "Scene+Delete.h"
+#import "Piece+Delete.h"
 #import "Story_Defines.h"
 #import "File+Create.h"
 #import "User+Edit.h"
@@ -199,8 +199,6 @@
 - (void)main
 {    
     @try {
-        Piece *scene = nil;
-        Story *story = nil;
         User *user = nil;
         NSMutableDictionary *editParams = nil;
         
@@ -268,38 +266,6 @@
         
         // Execute the network operation
         switch (self.object.type) {
-                // SCENE
-            case BNOperationObjectTypeScene:
-                if (scene == nil)
-                    scene = [BanyanDataSource lookForSceneId:self.object.tempId inStoryId:self.object.storyId];
-                switch (self.action.actionType) {
-                        
-                    case BNOperationActionDelete:
-                        [Piece deletePiece:self.object.tempId];
-                        break;
-                        
-                    default:
-                        assert(false);
-                        NSLog(@"%s Unknown action for scene %d", __PRETTY_FUNCTION__, self.action);
-                        break;
-                }
-                break;
-                
-                // STORY
-            case BNOperationObjectTypeStory:
-                if (story == nil)
-                    story = [BanyanDataSource lookForStoryId:self.object.tempId];
-                switch (self.action.actionType) {
-                        
-                    case BNOperationActionDelete:
-                        [Story deleteStoryFromServerWithId:self.object.tempId];
-                        break;
-                        
-                    default:
-                        NSLog(@"%s Unknown action for story %@", __PRETTY_FUNCTION__, self.action);
-                        break;
-                }
-                break;
                 
             case BNOperationObjectTypeUser:
                 if (user == nil) {

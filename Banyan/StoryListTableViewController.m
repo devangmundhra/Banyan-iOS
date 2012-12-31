@@ -236,7 +236,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         Story *story = [self.dataSource objectAtIndex:indexPath.row];
-        DELETE_STORY(story);
+        [Story deleteStory:story];
         [TestFlight passCheckpoint:@"Story deleted by swipe"];
     }    
 }
@@ -396,8 +396,15 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         NSLog(@"Loading story pieces");
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
         [BanyanConnection loadPiecesForStory:story completionBlock:^{
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-            [self readStory:story];
+            if ([story.length integerValue]) {
+                [self readStory:story];
+                [MBProgressHUD hideHUDForView:self.view animated:YES];
+            }
+            else {
+                hud.mode = MBProgressHUDModeText;
+                hud.labelText = @"No pieces found for the story!";
+                [hud hide:YES afterDelay:2];
+            }
         } errorBlock:^(NSError *error){
             [MBProgressHUD hideHUDForView:self.view animated:YES];
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unable to load the pieces for this story."

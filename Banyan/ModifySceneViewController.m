@@ -9,7 +9,7 @@
 #import "ModifySceneViewController.h"
 #import "Piece+Create.h"
 #import "Piece+Edit.h"
-#import "Scene+Delete.h"
+#import "Piece+Delete.h"
 #import "Story+Delete.h"
 #import "Story+Edit.h"
 #import "Piece_Defines.h"
@@ -265,38 +265,19 @@
 - (IBAction)deleteSceneAlert:(UIBarButtonItem *)sender
 {
     UIAlertView *alertView = nil;
-    if (self.piece.previousPiece == nil)
-    {
-        alertView = [[UIAlertView alloc] initWithTitle:@"Delete Story"
-                                               message:@"Do you want to delete this story?"
-                                              delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
-    }
-    else
-    {
-        alertView = [[UIAlertView alloc] initWithTitle:@"Delete Scene"
-                                               message:@"Do you want to delete this scene?"
-                                              delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
-    }
+    alertView = [[UIAlertView alloc] initWithTitle:@"Delete Scene"
+                                           message:@"Do you want to delete this scene?"
+                                          delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
     
     [alertView show];
 }
 
-- (void)deleteScene:(UIBarButtonItem *)sender
+- (void)deletePiece:(UIBarButtonItem *)sender
 {
-    if (self.piece.previousPiece == nil)
-    {
-        NSLog(@"ModifySceneViewController_Deleting story");
-        DELETE_STORY(self.piece.story);
-        [self.delegate modifySceneViewControllerDeletedStory:self];
-        [TestFlight passCheckpoint:@"Story deleted"];
-    }
-    else
-    {
-        NSLog(@"ModifySceneViewController_Deleting scene");
-        DELETE_PIECE(self.piece);
-        [self.delegate modifySceneViewControllerDeletedScene:self];
-        [TestFlight passCheckpoint:@"Scene deleted"];
-    }
+    NSLog(@"ModifySceneViewController_Deleting scene");
+    [Piece deletePiece:self.piece];
+    [self.delegate modifySceneViewControllerDeletedScene:self];
+    [TestFlight passCheckpoint:@"Scene deleted"];
 }
 
 - (IBAction)modifyText:(id)sender
@@ -331,9 +312,8 @@
 #pragma mark UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if (([alertView.title isEqualToString:@"Delete Story"] || [alertView.title isEqualToString:@"Delete Scene"])
-        && buttonIndex==1) {
-        [self deleteScene:nil];
+    if (buttonIndex==1) {
+        [self deletePiece:nil];
     }
 }
 #pragma mark UIActionSheetDelegate

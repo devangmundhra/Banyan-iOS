@@ -25,10 +25,10 @@ typedef enum {add, edit} EditModes;
 - (void) modifySceneViewControllerDeletedScene:(ModifySceneViewController *)controller;
 
 - (void) modifySceneViewController:(ModifySceneViewController *)controller
-             didFinishEditingScene:(Piece *)scene;
+             didFinishEditingScene:(Piece *)piece;
 
 - (void) modifySceneViewController:(ModifySceneViewController *)controller
-              didFinishAddingScene:(Piece *)scene;
+              didFinishAddingScene:(Piece *)piece;
 
 - (void) modifySceneViewControllerDeletedStory:(ModifySceneViewController *)controller;
 
