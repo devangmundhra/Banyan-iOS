@@ -23,6 +23,5 @@
                          toUser:(NSString *)toUser
                         sceneId:(NSString *)sceneId
                         storyId:(NSString *)storyId;
-+ (void)createActivity:(Activity *)activity;
 
 @end

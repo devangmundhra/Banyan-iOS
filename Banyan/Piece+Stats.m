@@ -10,7 +10,7 @@
 #import "Piece+Edit.h"
 #import "User+Edit.h"
 #import "AFParseAPIClient.h"
-#import "Activity.h"
+#import "Activity+Create.h"
 
 @implementation Piece (Stats)
 

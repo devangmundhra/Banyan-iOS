@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "FollowingUsersCell.h"
-#import "Activity.h"
 
 @interface FollowingFriendsViewController : UITableViewController <FollowingUsersCellDelegate>
 

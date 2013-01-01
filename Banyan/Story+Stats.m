@@ -10,7 +10,7 @@
 #import "User+Edit.h"
 #import "Story+Edit.h"
 #import "AFParseAPIClient.h"
-#import "Activity.h"
+#import "Activity+Create.h"
 
 @implementation Story (Stats)
 
