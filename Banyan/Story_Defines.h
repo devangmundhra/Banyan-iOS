@@ -47,10 +47,6 @@
 
 #define STORY_SCENES @"scenes"
 
-#define STORY_NEW_STORY_NOTIFICATION @"New Story Added"
-#define STORY_EDIT_STORY_NOTIFICATION @"Story Edited"
-#define STORY_DELETE_STORY_NOTIFICATION @"Story Deleted"
-
 #define PARSE_OBJECT_CREATED_AT @"createdAt"
 #define PARSE_OBJECT_UPDATED_AT @"updatedAt"
 #define PARSE_OBJECT_ID @"objectId"

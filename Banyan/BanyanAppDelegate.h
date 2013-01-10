@@ -31,12 +31,15 @@
 
 #define GOOGLE_API_KEY @"AIzaSyBwOBP068EO-Ubi0Qzu8uwFnZZHaIVwNyg"
 
+#define BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT [(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate] userContentMOCtx]
+
 @interface BanyanAppDelegate : UIResponder <UIApplicationDelegate> {
     UserManagementModule *userManagementModule;
 }
 
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, strong) UserManagementModule *userManagementModule;
+@property (nonatomic, strong) NSManagedObjectContext *userContentMOCtx;
 
 - (void)facebookRequest:(PF_FBRequestConnection *)connection didFailWithError:(NSError *)error;
 - (void)facebookRequest:(PF_FBRequestConnection *)connection didLoad:(id)result;

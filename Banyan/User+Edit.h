@@ -13,5 +13,7 @@
 @interface User (Edit)
 
 + (void) editUser:(User *)user withAttributes:(NSMutableDictionary *)userParams;
++ (User *)currentUser;
++ (BOOL)loggedIn;
 
 @end

@@ -36,7 +36,7 @@
                                             storyId:story.storyId];
     [Activity createActivity:activity];
     
-    story.viewed = YES;
+    story.viewed = [NSNumber numberWithBool:YES];
     story.numberOfViews = [NSNumber numberWithInt:([story.numberOfViews intValue] + 1)];
 }
 
@@ -51,7 +51,7 @@
     Activity *activity = nil;
     if (story.liked) {
         // unlike story
-        story.liked = NO;
+        story.liked = [NSNumber numberWithBool:NO];
         story.numberOfLikes = [NSNumber numberWithInt:([story.numberOfLikes intValue] - 1)];
         activity = [Activity activityWithType:kBNActivityTypeUnlike
                                      fromUser:currentUser.userId
@@ -62,7 +62,7 @@
     }
     else {
         // like story
-        story.liked = YES;
+        story.liked = [NSNumber numberWithBool:YES];
         story.numberOfLikes = [NSNumber numberWithInt:([story.numberOfLikes intValue] + 1)];
         activity = [Activity activityWithType:kBNActivityTypeLike
                                      fromUser:currentUser.userId
@@ -90,6 +90,7 @@
                                        toUser:currentUser.userId
                                       sceneId:nil
                                       storyId:story.storyId];
+        story.favourite = [NSNumber numberWithBool:NO];
     }
     else {
         // favourite story
@@ -98,9 +99,9 @@
                                        toUser:currentUser.userId
                                       sceneId:nil
                                       storyId:story.storyId];
+        story.favourite = [NSNumber numberWithBool:YES];
     }
     [Activity createActivity:activity];
-    story.favourite = !story.favourite;
 }
 
 - (void) updateStoryStats
@@ -154,7 +155,7 @@
                                              NSDictionary *numViewFields = responseObject;
                                              NSNumber *views = [numViewFields objectForKey:@"count"];
                                              if ([views integerValue] > 0) {
-                                                 self.viewed = YES;
+                                                 self.viewed = [NSNumber numberWithBool:YES];
                                              }
                                          }
                                          failure:AF_PARSE_ERROR_BLOCK()];
@@ -191,7 +192,7 @@
                                          User *currentUser = [User currentUser];
                                          if (currentUser) {
                                              if ([self.likers containsObject:currentUser.userId]) {
-                                                 self.liked = YES;
+                                                 self.liked = [NSNumber numberWithBool:YES];
                                              }
                                          }
                                      }
@@ -226,7 +227,7 @@
                                          NSDictionary *numFavFields = responseObject;
                                          NSNumber *favs = [numFavFields objectForKey:@"count"];
                                          if ([favs integerValue] > 0) {
-                                             self.favourite = YES;
+                                             self.favourite = [NSNumber numberWithBool:YES];
                                          }
                                      }
                                      failure:AF_PARSE_ERROR_BLOCK()];

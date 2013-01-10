@@ -7,8 +7,44 @@
 //
 
 #import "User+Edit.h"
+#import "User+Create.h"
 
 @implementation User (Edit)
+
+static User *_currentUser = nil;
+
++ (User *)currentUser
+{
+    PFUser *currentUser = [PFUser currentUser];
+    _currentUser = [User getUserForPfUser:currentUser
+                    inManagedObjectContex:BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT];
+    return _currentUser;
+}
+
++ (BOOL)loggedIn
+{
+    if ([PFUser currentUser] && // Check if a user is cached
+        [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) // Check if user is linked to Facebook
+    {
+        return YES;
+    }
+    return NO;
+}
+
++ (User *)userWithId:(NSString *)id
+{
+    if (!id) {
+        return nil;
+    }
+    
+    if ([_currentUser.userId isEqualToString:id]) {
+        return _currentUser;
+    } else {
+        PFUser *pfUser = [PFQuery getUserObjectWithId:id];
+        return [User getUserForPfUser:pfUser
+                inManagedObjectContex:BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT];
+    }
+}
 
 + (void) editUser:(User *)user withAttributes:(NSMutableDictionary *)userParams
 {

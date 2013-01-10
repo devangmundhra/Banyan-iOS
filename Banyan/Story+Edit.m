@@ -10,6 +10,7 @@
 #import "AFParseAPIClient.h"
 #import "File.h"
 #import "BanyanDataSource.h"
+#import "Story+Create.h"
 
 @implementation Story (Edit)
 
@@ -19,10 +20,6 @@
         return;
     
      NSLog(@"Edit Story %@", story);
-    [[NSNotificationCenter defaultCenter] postNotificationName:STORY_EDIT_STORY_NOTIFICATION
-                                                        object:self 
-                                                      userInfo:[NSDictionary dictionaryWithObject:story 
-                                                                                           forKey:@"Story"]];
     
     // Block to upload the story
     void (^updateStory)(Story *) = ^(Story *story) {
@@ -36,7 +33,8 @@
                                                   requestDescriptorWithMapping:storyRequestMapping
                                                   objectClass:[Story class]
                                                   rootKeyPath:nil];
-        RKObjectMapping *storyResponseMapping = [RKObjectMapping mappingForClass:[Story class]];
+        RKEntityMapping *storyResponseMapping = [RKEntityMapping mappingForEntityForName:kBNStoryClassKey
+                                                                    inManagedObjectStore:[RKManagedObjectStore defaultStore]];
 
         [storyResponseMapping addAttributeMappingsFromArray:@[PARSE_OBJECT_UPDATED_AT]];
         
@@ -52,7 +50,7 @@
                        parameters:nil
                           success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                               NSLog(@"Update story successful %@", story);
-                              [[BanyanDataSource shared] addObject:story];
+                              [story persistToDatabase];
                           }
                           failure:^(RKObjectRequestOperation *operation, NSError *error) {
                               NSLog(@"Error in create story");
@@ -107,6 +105,64 @@
     } else {
         updateStory(story);
     }
+    
+    // Persist the story
+    [story persistToDatabase];
+}
+@end
+
+@implementation Story (CoreDataGeneratedAccessors)
+- (void)addPiecesObject:(Piece *)value
+{
+    NSMutableOrderedSet* tempSet = [NSMutableOrderedSet orderedSetWithOrderedSet:self.pieces];
+    [tempSet addObject:value];
+    self.pieces = tempSet;
+    
+//    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:@"pieces"]];
+//    NSUInteger idx = [tmpOrderedSet count];
+//    NSIndexSet* indexes = [NSIndexSet indexSetWithIndex:idx];
+//    [self willChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:@"pieces"];
+//    [tmpOrderedSet addObject:value];
+//    [self setPrimitiveValue:tmpOrderedSet forKey:@"pieces"];
+//    [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:@"pieces"];
 }
 
+- (void)removePiecesObject:(Piece *)value
+{
+    NSMutableOrderedSet* tempSet = [NSMutableOrderedSet orderedSetWithOrderedSet:self.pieces];
+    [tempSet removeObject:value];
+    self.pieces = tempSet;
+//    NSOrderedSet *changedObjects = [[NSOrderedSet alloc] initWithObjects:&value count:1];
+//    [self willChangeValueForKey:@"pieces" withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
+//    [[self primitiveValueForKey:@"pieces"] removeObject:value];
+//    [self didChangeValueForKey:@"pieces" withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
+}
+
+- (void)addPieces:(NSSet *)value
+{
+    [self willChangeValueForKey:@"pieces" withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];
+    [[self primitiveValueForKey:@"pieces"] unionSet:value];
+    [self didChangeValueForKey:@"pieces" withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];
+}
+
+- (void)removePieces:(NSSet *)value
+{
+    [self willChangeValueForKey:@"pieces" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
+    [[self primitiveValueForKey:@"pieces"] minusSet:value];
+    [self didChangeValueForKey:@"pieces" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
+}
+
+- (void)insertObject:(Piece *)value inPiecesAtIndex:(NSUInteger)idx
+{
+    [self willChange:NSKeyValueChangeInsertion valuesAtIndexes:[NSIndexSet indexSetWithIndex:idx] forKey:@"pieces"];
+    [[self primitiveValueForKey:@"pieces"] insertObject:value atIndex:idx];
+    [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:[NSIndexSet indexSetWithIndex:idx] forKey:@"pieces"];
+}
+
+- (void)removeObjectFromPiecesAtIndex:(NSUInteger)idx
+{
+    [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:[NSIndexSet indexSetWithIndex:idx] forKey:@"pieces"];
+    [[self primitiveValueForKey:@"pieces"] removeObjectAtIndex:idx];
+    [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:[NSIndexSet indexSetWithIndex:idx] forKey:@"pieces"];
+}
 @end

@@ -13,7 +13,7 @@ NSString *const BNUserFollowingChangedNotification = @"io.banyan.Banyan:UserFoll
 NSString *const BNUserLogInNotification = @"io.banyan.Banyan:UserLoginNotification";
 NSString *const BNUserLogOutNotification = @"io.banyan.Banyan:UserLogoutNotification";
 NSString *const BNFBSessionStateChangedNotification = @"io.banyan.Banyan:FBSessionStateChangedNotification";
-NSString *const BNDataSourceUpdatedNotification = @"io.banyan.Banyan:DataSourceUpdated";
+NSString *const BNStoryListRefreshedNotification = @"io.banyan.Banyan:StoryListRefreshed";
 
 #pragma mark - NSUserDefaults
 NSString *const BNUserDefaultsFacebookFriends = @"io.banyan.Banyan.userDefaults.facebookFriends";
@@ -61,3 +61,7 @@ NSString *const kBNActivityTypeUnfavourite  = @"unfavourite";
 NSString *const kBNActivityTypeView       = @"view";
 NSString *const kBNActivityTypeComment    = @"comment";
 NSString *const kBNActivityTypeJoined     = @"joined";
+
+#pragma mark - PFObject User Class
+// Class key
+NSString *const kBNUserClassKey           = @"User";

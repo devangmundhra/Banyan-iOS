@@ -1,63 +1,60 @@
 
 SPEC CHECKSUMS: 
-  TITokenField: 4a94409f637d5d8ffd7303ba903e069462cf7c02
-  TISwipeableTableView: 27f09ec497a97dbc33d56df24f294ef42923b5e0
-  RestKit/Network: 255d85eb5a52112b7df8b901e5fb73fc5a90f3c8
-  RestKit/CoreData: 255d85eb5a52112b7df8b901e5fb73fc5a90f3c8
-  RestKit/Support: 255d85eb5a52112b7df8b901e5fb73fc5a90f3c8
-  RestKit/Core: 255d85eb5a52112b7df8b901e5fb73fc5a90f3c8
-  SSPullToRefresh: 79a7981b5a08316749d8fae0b5c813fbc2fac7dd
-  RestKit/ObjectMapping: 255d85eb5a52112b7df8b901e5fb73fc5a90f3c8
+  SVPullToRefresh: 479bcbbf42c83366f49aab231ed6e94dad928fef
+  RestKit: ccca19640fcc3031f82ad4250c44061e2e2ddce7
   MBProgressHUD: b23ee11c42253d6d804e8e0bfabdc334e8b2571f
-  RestKit: 255d85eb5a52112b7df8b901e5fb73fc5a90f3c8
-  SOCKit: 179515c1a621dd5652a60e9be02ea4adcd25bc9b
+  TISwipeableTableView: 7e848c68e1c1e0e9c284ce0a49ee8db35f2cf3af
+  TITokenField: 4a94409f637d5d8ffd7303ba903e069462cf7c02
+  RestKit/Network: ccca19640fcc3031f82ad4250c44061e2e2ddce7
+  AFNetworking: 761a418233d280c1e0580bcb76ff9cb4c3073d17
+  RestKit/Support: ccca19640fcc3031f82ad4250c44061e2e2ddce7
   TestFlightSDK: 29e194fb148e4861f92e4c1195b9697e1f3ad19a
+  RestKit/CoreData: ccca19640fcc3031f82ad4250c44061e2e2ddce7
+  SOCKit: 179515c1a621dd5652a60e9be02ea4adcd25bc9b
+  RestKit/ObjectMapping: ccca19640fcc3031f82ad4250c44061e2e2ddce7
   MTStatusBarOverlay: e00cd3b000171748b9439d014e00ec7bbb9b82ee
-  AFNetworking: 4c11f857c9a18d65f4257c90a1e74ac49f0ac422
+  RestKit/Core: ccca19640fcc3031f82ad4250c44061e2e2ddce7
 
-DEPENDENCIES: 
-- AFNetworking (>= 1.0RC4)
-- MBProgressHUD (>= 0.5)
-- MTStatusBarOverlay (from `https://github.com/myell0w/MTStatusBarOverlay.git', commit `ec42b364ff6a908978715f52e9382b7064865564')
-- RestKit (from `https://github.com/RestKit/RestKit.git')
-- SSPullToRefresh
-- TISwipeableTableView (from `https://github.com/devangmundhra/TISwipeableTableView.git')
-- TITokenField (from `https://github.com/devangmundhra/TITokenField.git')
-- TestFlightSDK (>= 1.2)
-
-PODS: 
-- AFNetworking (1.0.1)
-- MBProgressHUD (0.5)
-- MTStatusBarOverlay (0.9.1)
-- RestKit (0.20.0pre4): 
-  - RestKit/Core (= 0.20.0pre4)
-- RestKit/Core (0.20.0pre4): 
-  - RestKit/CoreData
-  - RestKit/Network
-  - RestKit/ObjectMapping
-- RestKit/CoreData (0.20.0pre4)
-- RestKit/Network (0.20.0pre4): 
-  - AFNetworking (= 1.0.1)
-  - RestKit/ObjectMapping
-  - RestKit/Support
-  - SOCKit
-- RestKit/ObjectMapping (0.20.0pre4)
-- RestKit/Support (0.20.0pre4)
-- SOCKit (1.1)
-- SSPullToRefresh (1.0.1)
-- TISwipeableTableView (0.0.1)
-- TITokenField (0.9.0)
-- TestFlightSDK (1.2)
+COCOAPODS: 0.16.0
 
 EXTERNAL SOURCES: 
-  TITokenField: 
-    :git: https://github.com/devangmundhra/TITokenField.git
   TISwipeableTableView: 
     :git: https://github.com/devangmundhra/TISwipeableTableView.git
-  RestKit: 
-    :git: https://github.com/RestKit/RestKit.git
+  TITokenField: 
+    :git: https://github.com/devangmundhra/TITokenField.git
   MTStatusBarOverlay: 
     :git: https://github.com/myell0w/MTStatusBarOverlay.git
     :commit: ec42b364ff6a908978715f52e9382b7064865564
 
-COCOAPODS: 0.16.0
+PODS: 
+- AFNetworking (1.1.0)
+- MBProgressHUD (0.5)
+- MTStatusBarOverlay (0.9.1)
+- RestKit (0.20.0pre6): 
+  - RestKit/Core (= 0.20.0pre6)
+- RestKit/Core (0.20.0pre6): 
+  - RestKit/CoreData
+  - RestKit/Network
+  - RestKit/ObjectMapping
+- RestKit/CoreData (0.20.0pre6)
+- RestKit/Network (0.20.0pre6): 
+  - AFNetworking (= 1.1.0)
+  - RestKit/ObjectMapping
+  - RestKit/Support
+  - SOCKit
+- RestKit/ObjectMapping (0.20.0pre6)
+- RestKit/Support (0.20.0pre6)
+- SOCKit (1.1)
+- SVPullToRefresh (0.4)
+- TISwipeableTableView (0.0.1)
+- TITokenField (0.9.0)
+- TestFlightSDK (1.2)
+
+DEPENDENCIES: 
+- MBProgressHUD (>= 0.5)
+- MTStatusBarOverlay (from `https://github.com/myell0w/MTStatusBarOverlay.git', commit `ec42b364ff6a908978715f52e9382b7064865564')
+- RestKit (= 0.20.0pre6)
+- SVPullToRefresh
+- TISwipeableTableView (from `https://github.com/devangmundhra/TISwipeableTableView.git')
+- TITokenField (from `https://github.com/devangmundhra/TITokenField.git')
+- TestFlightSDK (>= 1.2)

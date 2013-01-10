@@ -8,6 +8,7 @@
 
 #import "UserManagementModule.h"
 #import "BanyanAppDelegate.h"
+#import "User+Edit.h"
 
 @interface UserManagementModule() {
     LoginTabbarViewController *loginTabbarViewController;

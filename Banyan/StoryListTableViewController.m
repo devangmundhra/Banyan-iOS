@@ -8,7 +8,8 @@
 
 #import "StoryListTableViewController.h"
 #import "BanyanAppDelegate.h"
-#import "BanyanPullToRefreshContentView.h"
+#import "SVPullToRefresh.h"
+
 
 typedef enum {
     FilterStoriesSegmentIndexPopular = 0,
@@ -20,15 +21,12 @@ typedef enum {
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *addStory;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *leftButton;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *filterStoriesSegmentedControl;
-@property (strong, nonatomic) SSPullToRefreshView *pullToRefreshView;
 @end
 
 @implementation StoryListTableViewController
 @synthesize addStory = _addStory;
 @synthesize leftButton = _leftButton;
 @synthesize filterStoriesSegmentedControl = _filterStoriesSegmentedControl;
-@synthesize dataSource = _dataSource;
-@synthesize pullToRefreshView = _pullToRefreshView;
 
 - (void)viewDidAppear:(BOOL)animated
 {
@@ -57,12 +55,9 @@ typedef enum {
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
-    // Frame size for content view. We need a big frame so that as we keep pulling the scrollview, we
-    // see the same background colour.
-    CGRect pullContentViewFrame =  self.tableView.frame;
-    pullContentViewFrame.origin.y = 0.0f - pullContentViewFrame.size.height;
-    self.pullToRefreshView = [[SSPullToRefreshView alloc] initWithScrollView:self.tableView delegate:self];
-    self.pullToRefreshView.contentView = [[BanyanPullToRefreshContentView alloc] initWithFrame:pullContentViewFrame];
+    [self.tableView addPullToRefreshWithActionHandler:^{
+        [[BanyanConnection class] performSelectorInBackground:@selector(loadDataSource) withObject:nil];
+    }];
     
     [self.tableView setRowHeight:TABLE_ROW_HEIGHT];
     
@@ -86,40 +81,29 @@ typedef enum {
         self.filterStoriesSegmentedControl.selectedSegmentIndex = FilterStoriesSegmentIndexPopular;
         self.filterStoriesSegmentedControl.apportionsSegmentWidthsByContent = YES;
     }
+
+    // Fetched results controller
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
+    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"updatedAt"
+                                                                                     ascending:YES
+                                                                                      selector:@selector(compare:)]];
+    self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                        managedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext
+                                                                          sectionNameKeyPath:nil
+                                                                                   cacheName:nil];
+    self.fetchedResultsController.delegate = self;
     
     // Notifications to refresh data
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(filterStories:)
-                                                 name:BNDataSourceUpdatedNotification
+                                                 name:BNStoryListRefreshedNotification
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(foregroundRefresh:)
                                                  name:AFNetworkingReachabilityDidChangeNotification
                                                object:nil];
-    
-    /*
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(foregroundRefresh:) 
-                                                 name:UIApplicationDidFinishLaunchingNotification 
-                                               object:nil];
-    */
-    // Notifications when story list modified
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(changeInStoryList:) 
-                                                 name:STORY_NEW_STORY_NOTIFICATION 
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(changeInStoryList:) 
-                                                 name:STORY_DELETE_STORY_NOTIFICATION
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(changeInStoryList:) 
-                                                 name:STORY_EDIT_STORY_NOTIFICATION
-                                               object:nil];
-
-    self.dataSource = [NSMutableArray array];
     
     [TestFlight passCheckpoint:@"RootViewController view loaded"];
 }
@@ -144,6 +128,10 @@ typedef enum {
         [self.navigationItem setTitleView:nil];
     }
 
+    // Reset the content context so any unwanted changes are not saved.
+    // The changes that are needed (like create/edit/etc..) should have got saved anyways.
+    [BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT reset];
+    
     // Don't reload data here as it is called everytime it comes back from sceneviewcontroller
 }
 
@@ -154,10 +142,10 @@ typedef enum {
     [self setAddStory:nil];
     [self setLeftButton:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    self.pullToRefreshView = nil;
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
     [self setFilterStoriesSegmentedControl:nil];
+    self.fetchedResultsController = nil;
     [super viewDidUnload];
     NSLog(@"Root View Controller Unloaded");
 }
@@ -169,18 +157,6 @@ typedef enum {
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    // Return the number of sections.
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    // Return the number of rows in the section.
-    return [self.dataSource count];
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Story Cell";
@@ -190,7 +166,7 @@ typedef enum {
     }
     
     // Configure the cell...
-    Story *story = [self.dataSource objectAtIndex:indexPath.row];
+    Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
     NSLog(@"Title being printed: %@", story.title);
     [cell setStory:story];
     
@@ -210,7 +186,7 @@ typedef enum {
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    Story *selectedStory = [self.dataSource objectAtIndex:indexPath.row];
+    Story *selectedStory = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [self readStory:selectedStory];
     
     [super tableView:tableView didSelectRowAtIndexPath:indexPath];
@@ -225,8 +201,8 @@ typedef enum {
 {
     return NO;
     // Give the option to delete the story only if you are a contributor to the story too
-    Story *story = [self.dataSource objectAtIndex:indexPath.row];
-    return story.canContribute;
+    Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    return [story.canContribute boolValue];
 }
 
 - (void)tableView:(UITableView *)tableView
@@ -234,7 +210,7 @@ commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
 forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        Story *story = [self.dataSource objectAtIndex:indexPath.row];
+        Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
         [Story deleteStory:story];
         [TestFlight passCheckpoint:@"Story deleted by swipe"];
     }    
@@ -243,7 +219,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (void)addSceneForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([self updateStoryAtIndex:indexPath]) {
-        Story *story = [self.dataSource objectAtIndex:indexPath.row];
+        Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
         [self addSceneToStory:story];
     }
 }
@@ -265,7 +241,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void) filterStoriesForTableDataSource
 {
-    [self.pullToRefreshView finishLoading];
+    [self.tableView.pullToRefreshView stopAnimating];
     
     NSPredicate *predicate = nil;
     NSMutableArray *arrayOfUserIdsBeingFollowed = nil;
@@ -292,9 +268,17 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             break;
     }
 
-    [self.dataSource setArray:[BanyanDataSource shared]];
-    [self.dataSource filterUsingPredicate:predicate];
-    [self.tableView reloadData];
+    NSError *error = nil;
+    self.fetchedResultsController.fetchRequest.predicate = predicate;
+	if (![[self fetchedResultsController] performFetch:&error]) {
+		/*
+		 Replace this implementation with code to handle the error appropriately.
+		 
+		 abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
+		 */
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+		abort();
+	}
 }
 
 -(void)foregroundRefresh:(NSNotification *)notification
@@ -307,52 +291,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             return;
         }
     }
-    self.tableView.contentOffset = CGPointMake(0, -65);
-    [self.pullToRefreshView startLoading];
-    [[BanyanDataSource class] performSelectorInBackground:@selector(loadDataSource) withObject:nil];
-}
-
-- (void)changeInStoryList:(NSNotification *)notification
-{
-    NSDictionary *userInfo = notification.userInfo;
-    Story *story = [userInfo objectForKey:@"Story"];
     
-    if ([notification.name isEqualToString:STORY_NEW_STORY_NOTIFICATION]) {
-        NSLog(@"%s %@ added", __PRETTY_FUNCTION__, story);
-        [self.dataSource insertObject:story atIndex:0];
-        [[BanyanDataSource shared] insertObject:story atIndex:0];
-        NSArray *insertIndexPaths = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]];
-        [self.tableView beginUpdates];
-        [self.tableView insertRowsAtIndexPaths:insertIndexPaths withRowAnimation:UITableViewRowAnimationTop];
-        [self.tableView endUpdates];
-    } else if ([notification.name isEqualToString:STORY_DELETE_STORY_NOTIFICATION]) {
-        NSLog(@"%s %@ delete", __PRETTY_FUNCTION__, story);
-        NSUInteger indexOfStory = [self. dataSource indexOfObject:story];
-        if (indexOfStory == NSNotFound) {
-            NSLog(@"%s Can't find story in the datasource", __PRETTY_FUNCTION__);
-            return;
-        }
-        NSArray *deleteIndexPaths = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:indexOfStory inSection:0]];
-        [self.dataSource removeObject:story];
-        [[BanyanDataSource shared] removeObject:story];
-        [self.tableView beginUpdates];
-        [self.tableView deleteRowsAtIndexPaths:deleteIndexPaths withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView endUpdates];
-    } else if ([notification.name isEqualToString:STORY_EDIT_STORY_NOTIFICATION]) {
-        NSLog(@"%s %@ edit", __PRETTY_FUNCTION__, story);
-        NSUInteger indexOfStory = [self.dataSource indexOfObject:story];
-        if (indexOfStory == NSNotFound) {
-            NSLog(@"%s Can't find story in the datasource", __PRETTY_FUNCTION__);
-            return;
-        }
-        NSArray *editIndexPaths = [NSArray arrayWithObject:[NSIndexPath indexPathForRow:indexOfStory inSection:0]];
-        [self.dataSource replaceObjectAtIndex:indexOfStory withObject:story];
-        [[BanyanDataSource shared] replaceObjectAtIndex:[[BanyanDataSource shared] indexOfObject:story] withObject:story];
-        [self.tableView beginUpdates];
-        [self.tableView reloadRowsAtIndexPaths:editIndexPaths withRowAnimation:UITableViewRowAnimationNone];
-        [self.tableView endUpdates];
-    }
-    [self filterStoriesForTableDataSource];
+    [self.tableView triggerPullToRefresh];
 }
 
 # pragma mark - segues
@@ -384,10 +324,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 #pragma mark Story Manipulations
 - (NSIndexPath *) updateStoryAtIndex:(NSIndexPath *)indexPath
 {
-    Story *story = [self.dataSource objectAtIndex:indexPath.row];
-    story.storyBeingRead = YES;
+    Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    story.storyBeingRead = [NSNumber numberWithBool:YES];
 
-    if (!story.pieces)
+    if (!story.pieces.count)
     {
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.labelText = @"Fetching pieces for the story";
@@ -396,6 +336,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
         [BanyanConnection loadPiecesForStory:story completionBlock:^{
             if ([story.length integerValue]) {
+                assert(story.pieces.count);
                 [self readStory:story];
                 [MBProgressHUD hideHUDForView:self.view animated:YES];
             }
@@ -432,7 +373,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     ModifySceneViewController *addSceneViewController = [[ModifySceneViewController alloc] init];
     addSceneViewController.editMode = add;
-    Piece *piece = [[Piece alloc] init];
+    Piece *piece = [NSEntityDescription insertNewObjectForEntityForName:kBNPieceClassKey
+                                                 inManagedObjectContext:BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT];
     piece.story = story;
     addSceneViewController.piece = piece;
     addSceneViewController.editMode = add;
@@ -474,19 +416,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self.navigationController popViewControllerAnimated:YES];
     scenesViewController.story.storyBeingRead = NO;
     [self refreshView];
-}
-
-#pragma SSPullToRefreshView delegate methods
-// called when the user pulls-to-refresh
-- (void)pullToRefreshViewDidStartLoading:(SSPullToRefreshView *)view
-{
-    [[BanyanDataSource class] performSelectorInBackground:@selector(loadDataSource) withObject:nil];
-}
-
-// called when the date shown needs to be updated, optional
-- (NSDate *)pullToRefreshViewLastUpdatedAt:(SSPullToRefreshView *)view
-{
-    return [[NSUserDefaults standardUserDefaults] objectForKey:BNUserDefaultsLastSuccessfulStoryUpdateTime];
 }
 
 #pragma Memory Management

@@ -12,22 +12,20 @@
 #import "BanyanDataSource.h"
 #import "AFBanyanAPIClient.h"
 #import "UIImage+ResizeAdditions.h"
+#import "User+Edit.h"
 
 @implementation Story (Create)
 
 // Upload the given story using RestKit
 + (void)createNewStory:(Story *)story
 {
-    story.canContribute = story.canView = YES;
+    story.initialized = [NSNumber numberWithBool:NO];
+    story.canContribute = story.canView = [NSNumber numberWithBool:YES];
     story.author = [User currentUser];
-    story.storyBeingRead = YES;
+    story.storyBeingRead = [NSNumber numberWithBool:YES];
+    story.createdAt = story.updatedAt = [NSDate date];
     
     NSLog(@"Adding story %@", story);
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:STORY_NEW_STORY_NOTIFICATION
-                                                        object:self 
-                                                      userInfo:[NSDictionary dictionaryWithObject:story 
-                                                                                           forKey:@"Story"]];
 
     //    PARSE
     void (^sendRequestToContributors)(NSArray *, Story *) = ^(NSArray *contributorsList, Story *story) {
@@ -104,22 +102,27 @@
     // Block to upload the story
     void (^uploadStory)(Story *) = ^(Story *story) {
         RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
+        objectManager.managedObjectStore = [RKManagedObjectStore defaultStore];
+
         // For serializing
         RKObjectMapping *storyRequestMapping = [RKObjectMapping requestMapping];
+        
         [storyRequestMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_IMAGE_URL, STORY_WRITE_ACCESS, STORY_READ_ACCESS,
-         STORY_LATITUDE, STORY_LONGITUDE, STORY_GEOCODEDLOCATION, STORY_TAGS]];
+                                                            STORY_LATITUDE, STORY_LONGITUDE, STORY_GEOCODEDLOCATION, STORY_TAGS]];
         [storyRequestMapping addAttributeMappingsFromDictionary:@{@"author.userId" : STORY_AUTHOR}];
         
         RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
                                                   requestDescriptorWithMapping:storyRequestMapping
                                                   objectClass:[Story class]
                                                   rootKeyPath:nil];
-        RKObjectMapping *storyResponseMapping = [RKObjectMapping mappingForClass:[Story class]];
+        RKEntityMapping *storyResponseMapping = [RKEntityMapping mappingForEntityForName:kBNStoryClassKey
+                                                                    inManagedObjectStore:[RKManagedObjectStore defaultStore]];
         [storyResponseMapping addAttributeMappingsFromDictionary:@{
                                                 PARSE_OBJECT_ID : @"storyId",
          }];
         [storyResponseMapping addAttributeMappingsFromArray:@[PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT]];
-        
+        storyResponseMapping.identificationAttributes = @[@"storyId"];
+
         RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:storyResponseMapping
                                                                                            pathPattern:nil
                                                                                                keyPath:nil
@@ -128,17 +131,17 @@
         [objectManager addResponseDescriptor:responseDescriptor];
         
         [objectManager postObject:story
-                             path:BANYAN_API_CLASS_URL(@"Story")
+                             path:BANYAN_API_CLASS_URL(kBNStoryClassKey)
                        parameters:nil
                           success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                               NSLog(@"Create story successful %@", story);
-                              story.initialized = YES;
+                              story.initialized = [NSNumber numberWithBool:YES];
                               NSArray *invitedFBFriends = [[story.writeAccess objectForKey:kBNStoryPrivacyInviteeList]
                                                            objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
                               if (invitedFBFriends) {
                                   sendRequestToContributors(invitedFBFriends, story);
                               }
-                              [[BanyanDataSource shared] addObject:story];
+                              [story persistToDatabase];
                           }
                           failure:^(RKObjectRequestOperation *operation, NSError *error) {
                               NSLog(@"Error in create story");
@@ -174,6 +177,32 @@
     } else {
         uploadStory(story);
     }
+    
+    [story persistToDatabase];
+}
+
+- (void)persistToDatabase
+{
+    [self.managedObjectContext performBlockAndWait:^{
+        // Persist the story
+        NSError *error = nil;
+        if (![self.managedObjectContext save:&error]) {
+            NSLog(@"Error: %@", error);
+            assert(false);
+        };
+    }];
+    
+    // Fetch the object in NSFetchedResultsController's context
+    [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext objectWithID:self.objectID];
+    
+//    [self.managedObjectContext.parentContext performBlockAndWait:^{
+//        // Persist the story on the parent context so that it is picked up by Fetched Results Controller
+//        NSError *error = nil;
+//        if (![self.managedObjectContext save:&error]) {
+//            NSLog(@"Error: %@", error);
+//            assert(false);
+//        };
+//    }];
 }
 
 @end

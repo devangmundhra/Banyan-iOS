@@ -13,7 +13,7 @@ extern NSString *const BNUserFollowingChangedNotification;
 extern NSString *const BNUserLogInNotification;
 extern NSString *const BNUserLogOutNotification;
 extern NSString *const BNFBSessionStateChangedNotification;
-extern NSString *const BNDataSourceUpdatedNotification;
+extern NSString *const BNStoryListRefreshedNotification;
 
 
 #pragma mark - NSUserDefaults
@@ -34,7 +34,7 @@ extern NSString *const kBNStoryPrivacyScopePublic;
 extern NSString *const kBNStoryPrivacyInviteeList;
 extern NSString *const kBNStoryPrivacyInvitedFacebookFriends;
 
-#pragma mark - PFObject Scene Class
+#pragma mark - PFObject Piece Class
 // Class key
 extern NSString *const kBNPieceClassKey;
 
@@ -63,3 +63,7 @@ extern NSString *const kBNActivityTypeUnfavourite;
 extern NSString *const kBNActivityTypeView;
 extern NSString *const kBNActivityTypeComment;
 extern NSString *const kBNActivityTypeJoined;
+
+#pragma mark - PFObject User Class
+// Class key
+extern NSString *const kBNUserClassKey;

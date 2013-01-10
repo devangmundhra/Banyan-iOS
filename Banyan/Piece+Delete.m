@@ -20,9 +20,28 @@
                                             NSLog(@"Piece with id %@ deleted", piece.pieceId);
                                         }
                                         failure:nil];
-    [piece.story.pieces removeObject:piece];
+    
+    [piece.story removePiecesObject:piece];
     piece.story.length = [NSNumber numberWithInteger:piece.story.pieces.count];
     if (![piece.story.length integerValue])
         piece.story.pieces = nil;
+    
+    // Delete the piece
+    [piece.managedObjectContext performBlock:^{
+        [piece.managedObjectContext deleteObject:piece];
+        NSError *error = nil;
+        if (![piece.managedObjectContext save:&error]) {
+            NSLog(@"Error: %@", error);
+            assert(false);
+        }
+    }];
+    [piece.managedObjectContext.parentContext performBlock:^{
+        [piece.managedObjectContext.parentContext deleteObject:piece];
+        NSError *error = nil;
+        if (![piece.managedObjectContext save:&error]) {
+            NSLog(@"Error: %@", error);
+            assert(false);
+        }
+    }];
 }
 @end

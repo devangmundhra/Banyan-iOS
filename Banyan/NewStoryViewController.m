@@ -9,6 +9,7 @@
 #import "NewStoryViewController.h"
 #import "Story_Defines.h"
 #import "BanyanAppDelegate.h"
+#import "User+Edit.h"
 
 @interface NewStoryViewController ()
 {
@@ -113,7 +114,8 @@ typedef enum {
     self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapAnywhere:)];
     self.invitedToContributeList = [NSMutableArray array];
     self.invitedToViewList = [NSMutableArray array];
-    self.story = [[Story alloc] init];
+    self.story = [NSEntityDescription insertNewObjectForEntityForName:kBNStoryClassKey
+                                               inManagedObjectContext:BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT];
     
     self.viewerSlider.value = StoryPrivacySliderValueLimited;
     self.inviteViewersButton.alpha = 0;
@@ -192,7 +194,7 @@ typedef enum {
     
     // Story Location
     if (self.showLocationSwitch.on == YES) {
-        self.story.isLocationEnabled = YES;
+        self.story.isLocationEnabled = [NSNumber numberWithBool:YES];
         if (self.locationManager.location) {
             
             CLLocationCoordinate2D coord = self.locationManager.location.coordinate;

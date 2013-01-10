@@ -32,7 +32,8 @@
                                                   requestDescriptorWithMapping:pieceRequestMapping
                                                   objectClass:[Piece class]
                                                   rootKeyPath:nil];
-        RKObjectMapping *pieceResponseMapping = [RKObjectMapping mappingForClass:[Piece class]];
+        RKEntityMapping *pieceResponseMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
+                                                                    inManagedObjectStore:[RKManagedObjectStore defaultStore]];
         [pieceResponseMapping addAttributeMappingsFromArray:@[PARSE_OBJECT_UPDATED_AT]];
         
         RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceResponseMapping

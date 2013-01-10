@@ -16,17 +16,31 @@
 
 + (void) deleteStory:(Story *)story
 {
-    NSLog(@"%s Story id: %@", __PRETTY_FUNCTION__, story.storyId);
-    [[NSNotificationCenter defaultCenter] postNotificationName:STORY_DELETE_STORY_NOTIFICATION
-                                                        object:self
-                                                      userInfo:[NSDictionary dictionaryWithObject:story
-                                                                                           forKey:@"Story"]];
+    NSString *storyId = story.storyId;
+    NSLog(@"%s Story id: %@", __PRETTY_FUNCTION__, storyId);
     
-    [[AFBanyanAPIClient sharedClient] deletePath:BANYAN_API_OBJECT_URL(@"Story", story.storyId)
+    [[AFBanyanAPIClient sharedClient] deletePath:BANYAN_API_OBJECT_URL(@"Story", storyId)
                                       parameters:nil
                                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                             NSLog(@"Story with id %@ deleted", story.storyId);
+                                             NSLog(@"Story with id %@ deleted", storyId);
                                          }
                                          failure:nil];
-    [[BanyanDataSource shared] removeObject:story];
-}@end
+    
+    NSManagedObjectContext *storyContext = story.managedObjectContext;
+    NSManagedObjectContext *storyContextParent = story.managedObjectContext.parentContext;
+    
+    [storyContext performBlock:^{
+        [storyContext deleteObject:story];
+        NSError *error = nil;
+        if (![storyContext save:&error]) {
+            NSLog(@"Error: %@", error);
+            assert(false);
+        }
+        if (![storyContextParent save:&error]) {
+            NSLog(@"Error: %@", error);
+            assert(false);
+        }
+    }];
+}
+
+@end

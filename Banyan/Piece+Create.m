@@ -11,12 +11,16 @@
 #import "Story_Defines.h"
 #import "AFBanyanAPIClient.h"
 #import "File.h"
+#import "User+Edit.h"
 
 @implementation Piece (Create)
 
 + (void)createNewPiece:(Piece *)piece afterPiece:(Piece *)previousPiece
 {
+    piece.initialized = [NSNumber numberWithBool:NO];
     piece.author = [User currentUser];
+    piece.createdAt = piece.updatedAt = [NSDate date];
+    
     NSLog(@"Adding scene %@ for story %@", piece, piece.story);
     
     // Block to upload the piece
@@ -31,11 +35,13 @@
                                                   requestDescriptorWithMapping:pieceRequestMapping
                                                   objectClass:[Piece class]
                                                   rootKeyPath:nil];
-        RKObjectMapping *pieceResponseMapping = [RKObjectMapping mappingForClass:[Piece class]];
+        RKEntityMapping *pieceResponseMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
+                                                                    inManagedObjectStore:[RKManagedObjectStore defaultStore]];
         [pieceResponseMapping addAttributeMappingsFromDictionary:@{
                                                 PARSE_OBJECT_ID : @"pieceId",
          }];
         [pieceResponseMapping addAttributeMappingsFromArray:@[PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT, PIECE_NUMBER]];
+        pieceResponseMapping.identificationAttributes = @[@"pieceId"];
         
         RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceResponseMapping
                                                                                            pathPattern:nil
@@ -49,7 +55,8 @@
                        parameters:nil
                           success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                               NSLog(@"Create piece successful %@", piece);
-                              piece.initialized = YES;
+                              piece.initialized = [NSNumber numberWithBool:YES];
+                              [piece persistToDatabase];
                           }
                           failure:^(RKObjectRequestOperation *operation, NSError *error) {
                               NSLog(@"Error in create piece");
@@ -89,8 +96,31 @@
     if (!piece.story.pieces) {
         piece.story.pieces = [NSMutableArray array];
     }
-    [piece.story.pieces addObject:piece];
+    [piece.story addPiecesObject:piece];
     piece.story.length = [NSNumber numberWithInteger:piece.story.pieces.count];
+    
+    [piece persistToDatabase];
+}
+
+- (void)persistToDatabase
+{
+    [self.managedObjectContext performBlock:^{
+        // Persist the story
+        NSError *error = nil;
+        if (![self.managedObjectContext save:&error]) {
+            NSLog(@"Error: %@", error);
+            assert(false);
+        };
+    }];
+    
+    [self.managedObjectContext.parentContext performBlock:^{
+        // Persist the piece on the parent context so that it is picked up by Fetched Results Controller
+        NSError *error = nil;
+        if (![self.managedObjectContext save:&error]) {
+            NSLog(@"Error: %@", error);
+            assert(false);
+        };
+    }];
 }
 
 @end

@@ -15,14 +15,13 @@
 #import "NewStoryViewController.h"
 #import "StoryReaderController.h"
 #import "UserLoginViewController.h"
-#import "SSPullToRefresh.h"
 #import "MBProgressHUD.h"
-#import "BanyanDataSource.h"
 #import "SettingsTableViewController.h"
+#import "CoreDataTableViewController.h"
+#import "BanyanConnection.h"
 
-@interface StoryListTableViewController : TISwipeableTableViewController <NewStoryViewControllerDelegate, StoryReaderControllerDelegate, SSPullToRefreshViewDelegate, ModifySceneViewControllerDelegate>
+@interface StoryListTableViewController : CoreDataTableViewController <NewStoryViewControllerDelegate, StoryReaderControllerDelegate, ModifySceneViewControllerDelegate>
 
-@property (nonatomic, strong) NSMutableArray *dataSource;
 - (void)addSceneForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 @end

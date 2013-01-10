@@ -8,6 +8,7 @@
 
 #import "StoryReaderController.h"
 #import "Story+Stats.h"
+#import "Story+Permissions.h"
 #import "MBProgressHUD.h"
 
 @interface StoryReaderController ()

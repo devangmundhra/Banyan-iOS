@@ -56,7 +56,7 @@ static NSMutableArray *_sharedDatasource = nil;
     if ([[notification name] isEqualToString:BNUserLogOutNotification]) {
         [BanyanConnection resetPermissionsForStories:_sharedDatasource];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:BNDataSourceUpdatedNotification
+            [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
                                                                 object:self];
         });
     } else if ([[notification name] isEqualToString:BNUserLogInNotification]) {
@@ -78,7 +78,7 @@ static NSMutableArray *_sharedDatasource = nil;
          _sharedDatasource = retValue;
          dispatch_async(dispatch_get_main_queue(), ^{
              [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-             [[NSNotificationCenter defaultCenter] postNotificationName:BNDataSourceUpdatedNotification
+             [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
                                                                  object:self];
          });
      } errorBlock:^(NSError *error) {
@@ -88,6 +88,8 @@ static NSMutableArray *_sharedDatasource = nil;
                                                cancelButtonTitle:@"OK"
                                                otherButtonTitles:nil];
          [alert show];
+         [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
+                                                             object:self];
          NSLog(@"Hit error: %@", error);
      }];
 }

@@ -8,7 +8,7 @@
 
 #import "FollowingFriendsViewController.h"
 #import "AFParseAPIClient.h"
-#import "User_Defines.h"
+#import "User+Edit.h"
 #import "Activity+Create.h"
 
 @interface FollowingFriendsViewController ()

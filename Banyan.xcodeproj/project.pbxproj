@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		0B8D601560334B81AE48FCCD /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6EDBDCCC91248339FDC7301 /* libPods.a */; };
+		5103C86E1699443500CC33AC /* Story.m in Sources */ = {isa = PBXBuildFile; fileRef = 5103C86D1699443500CC33AC /* Story.m */; };
 		5103FB9F166898960095B11F /* UIImage+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 5103FB9E166898960095B11F /* UIImage+Create.m */; };
 		510787C6163A36A90042B436 /* UIImage+AlphaAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787C1163A36A90042B436 /* UIImage+AlphaAdditions.m */; };
 		510787C7163A36A90042B436 /* UIImage+ResizeAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787C3163A36A90042B436 /* UIImage+ResizeAdditions.m */; };
 		510787C8163A36A90042B436 /* UIImage+RoundedCornerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787C5163A36A90042B436 /* UIImage+RoundedCornerAdditions.m */; };
-		510787CC163A36C40042B436 /* BanyanDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787CB163A36C40042B436 /* BanyanDataSource.m */; };
 		510787CF163A36D80042B436 /* AFBanyanAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787CE163A36D80042B436 /* AFBanyanAPIClient.m */; };
 		510787D2163A36F20042B436 /* BNLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787D1163A36F20042B436 /* BNLocationManager.m */; };
 		510787D5163A37190042B436 /* Activity.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787D4163A37190042B436 /* Activity.m */; };
@@ -20,7 +20,6 @@
 		510787DE163A37340042B436 /* User+Edit.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787DD163A37340042B436 /* User+Edit.m */; };
 		511E708B161A9756009AAD25 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708A161A9756009AAD25 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		511E708E161A977F009AAD25 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
-		5142BC7B1678837E007B1B62 /* BanyanPullToRefreshContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5142BC7A1678837E007B1B62 /* BanyanPullToRefreshContentView.m */; };
 		5157CD031650902900C22CCE /* BanyanConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD021650902900C22CCE /* BanyanConnection.m */; };
 		5157CD251659E5A300C22CCE /* ComposeTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD241659E5A300C22CCE /* ComposeTextViewController.m */; };
 		5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B615E75B420072749C /* buttonFacebook.png */; };
@@ -44,20 +43,17 @@
 		5189B33115B395F300562DD0 /* NewStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2E715B395F300562DD0 /* NewStoryViewController.m */; };
 		5189B33515B395F300562DD0 /* ReadSceneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2EF15B395F300562DD0 /* ReadSceneViewController.m */; };
 		5189B33615B395F300562DD0 /* ReadSceneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5189B2F015B395F300562DD0 /* ReadSceneViewController.xib */; };
-		5189B33715B395F300562DD0 /* Piece.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F315B395F300562DD0 /* Piece.m */; };
 		5189B33815B395F300562DD0 /* Piece+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F515B395F300562DD0 /* Piece+Create.m */; };
 		5189B33915B395F300562DD0 /* Piece+Delete.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F715B395F300562DD0 /* Piece+Delete.m */; };
 		5189B33A15B395F300562DD0 /* Piece+Edit.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F915B395F300562DD0 /* Piece+Edit.m */; };
 		5189B33B15B395F300562DD0 /* Piece+Stats.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2FB15B395F300562DD0 /* Piece+Stats.m */; };
 		5189B33E15B395F300562DD0 /* StoryReaderController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B30115B395F300562DD0 /* StoryReaderController.m */; };
-		5189B34215B395F300562DD0 /* Story.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B30A15B395F300562DD0 /* Story.m */; };
 		5189B34315B395F300562DD0 /* Story+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B30C15B395F300562DD0 /* Story+Create.m */; };
 		5189B34415B395F300562DD0 /* Story+Delete.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B30E15B395F300562DD0 /* Story+Delete.m */; };
 		5189B34515B395F300562DD0 /* Story+Edit.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B31015B395F300562DD0 /* Story+Edit.m */; };
 		5189B34615B395F300562DD0 /* Story+Stats.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B31215B395F300562DD0 /* Story+Stats.m */; };
 		5189B34815B395F300562DD0 /* StoryListStoryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B31615B395F300562DD0 /* StoryListStoryCell.m */; };
 		5189B34915B395F300562DD0 /* StoryListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B31815B395F300562DD0 /* StoryListTableViewController.m */; };
-		5189B34C15B395F300562DD0 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B32115B395F300562DD0 /* User.m */; };
 		5189B34D15B395F300562DD0 /* UserLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B32315B395F300562DD0 /* UserLoginViewController.m */; };
 		5189B34E15B395F300562DD0 /* UserLoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5189B32415B395F300562DD0 /* UserLoginViewController.xib */; };
 		5189B34F15B395F300562DD0 /* UserManagementModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B32615B395F300562DD0 /* UserManagementModule.m */; };
@@ -78,7 +74,13 @@
 		519233331675305F009686E4 /* LocationPickerTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 519233311675305F009686E4 /* LocationPickerTableViewController.m */; };
 		519AFA7215C26F5D00F68F3C /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */; };
 		51A8DC9116928A240017E86F /* Activity+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC9016928A240017E86F /* Activity+Create.m */; };
+		51A8DC9516928AE00017E86F /* Banyan.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC9316928AE00017E86F /* Banyan.xcdatamodeld */; };
+		51A8DC981692C4490017E86F /* Story+Permissions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC971692C4490017E86F /* Story+Permissions.m */; };
+		51A8DCC11692D52C0017E86F /* User+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DCC01692D52C0017E86F /* User+Create.m */; };
+		51A8DCC41692DA900017E86F /* CoreDataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DCC31692DA8F0017E86F /* CoreDataTableViewController.m */; };
 		51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B5989D15EB31B300DF4D9D /* BanyanConstants.m */; };
+		51B7ABED169AD55400B1488C /* Piece.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B7ABEC169AD55400B1488C /* Piece.m */; };
+		51C0CF021695899100C9B752 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C0CF011695899100C9B752 /* User.m */; };
 		51CFD92915F1F260002926F9 /* SettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD92715F1F260002926F9 /* SettingsTableViewController.m */; };
 		51CFD93615F3E80B002926F9 /* FollowingFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD93515F3E80B002926F9 /* FollowingFriendsViewController.m */; };
 		51CFD93A15F57F70002926F9 /* FollowingUsersCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD93915F57F70002926F9 /* FollowingUsersCell.m */; };
@@ -100,6 +102,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5103C86C1699443500CC33AC /* Story.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Story.h; path = Banyan/Story.h; sourceTree = "<group>"; };
+		5103C86D1699443500CC33AC /* Story.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Story.m; path = Banyan/Story.m; sourceTree = "<group>"; };
 		5103FB9D166898960095B11F /* UIImage+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+Create.h"; path = "Banyan/UIImage+Create.h"; sourceTree = "<group>"; };
 		5103FB9E166898960095B11F /* UIImage+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Create.m"; path = "Banyan/UIImage+Create.m"; sourceTree = "<group>"; };
 		510787C0163A36A90042B436 /* UIImage+AlphaAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+AlphaAdditions.h"; path = "Banyan/UIImage+AlphaAdditions.h"; sourceTree = "<group>"; };
@@ -108,8 +112,6 @@
 		510787C3163A36A90042B436 /* UIImage+ResizeAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+ResizeAdditions.m"; path = "Banyan/UIImage+ResizeAdditions.m"; sourceTree = "<group>"; };
 		510787C4163A36A90042B436 /* UIImage+RoundedCornerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+RoundedCornerAdditions.h"; path = "Banyan/UIImage+RoundedCornerAdditions.h"; sourceTree = "<group>"; };
 		510787C5163A36A90042B436 /* UIImage+RoundedCornerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+RoundedCornerAdditions.m"; path = "Banyan/UIImage+RoundedCornerAdditions.m"; sourceTree = "<group>"; };
-		510787CA163A36C40042B436 /* BanyanDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BanyanDataSource.h; path = Banyan/BanyanDataSource.h; sourceTree = "<group>"; };
-		510787CB163A36C40042B436 /* BanyanDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BanyanDataSource.m; path = Banyan/BanyanDataSource.m; sourceTree = "<group>"; };
 		510787CD163A36D80042B436 /* AFBanyanAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFBanyanAPIClient.h; path = Banyan/AFBanyanAPIClient.h; sourceTree = "<group>"; };
 		510787CE163A36D80042B436 /* AFBanyanAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFBanyanAPIClient.m; path = Banyan/AFBanyanAPIClient.m; sourceTree = "<group>"; };
 		510787D0163A36F20042B436 /* BNLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNLocationManager.h; path = Banyan/BNLocationManager.h; sourceTree = "<group>"; };
@@ -122,8 +124,6 @@
 		510787DD163A37340042B436 /* User+Edit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "User+Edit.m"; path = "Banyan/User+Edit.m"; sourceTree = "<group>"; };
 		511E708A161A9756009AAD25 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		5142BC791678837E007B1B62 /* BanyanPullToRefreshContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BanyanPullToRefreshContentView.h; sourceTree = "<group>"; };
-		5142BC7A1678837E007B1B62 /* BanyanPullToRefreshContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BanyanPullToRefreshContentView.m; sourceTree = "<group>"; };
 		5157CD011650902900C22CCE /* BanyanConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BanyanConnection.h; path = Banyan/BanyanConnection.h; sourceTree = "<group>"; };
 		5157CD021650902900C22CCE /* BanyanConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BanyanConnection.m; path = Banyan/BanyanConnection.m; sourceTree = "<group>"; };
 		5157CD231659E5A300C22CCE /* ComposeTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ComposeTextViewController.h; path = Banyan/ComposeTextViewController.h; sourceTree = "<group>"; };
@@ -162,8 +162,6 @@
 		5189B2EF15B395F300562DD0 /* ReadSceneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReadSceneViewController.m; path = Banyan/ReadSceneViewController.m; sourceTree = "<group>"; };
 		5189B2F015B395F300562DD0 /* ReadSceneViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ReadSceneViewController.xib; path = Banyan/ReadSceneViewController.xib; sourceTree = "<group>"; };
 		5189B2F115B395F300562DD0 /* Piece_Defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Piece_Defines.h; path = Banyan/Piece_Defines.h; sourceTree = "<group>"; };
-		5189B2F215B395F300562DD0 /* Piece.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Piece.h; path = Banyan/Piece.h; sourceTree = "<group>"; };
-		5189B2F315B395F300562DD0 /* Piece.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Piece.m; path = Banyan/Piece.m; sourceTree = "<group>"; };
 		5189B2F415B395F300562DD0 /* Piece+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Piece+Create.h"; path = "Banyan/Piece+Create.h"; sourceTree = "<group>"; };
 		5189B2F515B395F300562DD0 /* Piece+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Piece+Create.m"; path = "Banyan/Piece+Create.m"; sourceTree = "<group>"; };
 		5189B2F615B395F300562DD0 /* Piece+Delete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Piece+Delete.h"; path = "Banyan/Piece+Delete.h"; sourceTree = "<group>"; };
@@ -174,8 +172,6 @@
 		5189B30015B395F300562DD0 /* StoryReaderController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryReaderController.h; path = Banyan/StoryReaderController.h; sourceTree = "<group>"; };
 		5189B30115B395F300562DD0 /* StoryReaderController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryReaderController.m; path = Banyan/StoryReaderController.m; sourceTree = "<group>"; };
 		5189B30815B395F300562DD0 /* Story_Defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Story_Defines.h; path = Banyan/Story_Defines.h; sourceTree = "<group>"; };
-		5189B30915B395F300562DD0 /* Story.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Story.h; path = Banyan/Story.h; sourceTree = "<group>"; };
-		5189B30A15B395F300562DD0 /* Story.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Story.m; path = Banyan/Story.m; sourceTree = "<group>"; };
 		5189B30B15B395F300562DD0 /* Story+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Story+Create.h"; path = "Banyan/Story+Create.h"; sourceTree = "<group>"; };
 		5189B30C15B395F300562DD0 /* Story+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Story+Create.m"; path = "Banyan/Story+Create.m"; sourceTree = "<group>"; };
 		5189B30D15B395F300562DD0 /* Story+Delete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Story+Delete.h"; path = "Banyan/Story+Delete.h"; sourceTree = "<group>"; };
@@ -189,8 +185,6 @@
 		5189B31715B395F300562DD0 /* StoryListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryListTableViewController.h; path = Banyan/StoryListTableViewController.h; sourceTree = "<group>"; };
 		5189B31815B395F300562DD0 /* StoryListTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryListTableViewController.m; path = Banyan/StoryListTableViewController.m; sourceTree = "<group>"; };
 		5189B31F15B395F300562DD0 /* User_Defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = User_Defines.h; path = Banyan/User_Defines.h; sourceTree = "<group>"; };
-		5189B32015B395F300562DD0 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = User.h; path = Banyan/User.h; sourceTree = "<group>"; };
-		5189B32115B395F300562DD0 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = User.m; path = Banyan/User.m; sourceTree = "<group>"; };
 		5189B32215B395F300562DD0 /* UserLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserLoginViewController.h; path = Banyan/UserLoginViewController.h; sourceTree = "<group>"; };
 		5189B32315B395F300562DD0 /* UserLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserLoginViewController.m; path = Banyan/UserLoginViewController.m; sourceTree = "<group>"; };
 		5189B32415B395F300562DD0 /* UserLoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = UserLoginViewController.xib; path = Banyan/UserLoginViewController.xib; sourceTree = "<group>"; };
@@ -218,8 +212,19 @@
 		51A8DC72169141B90017E86F /* Piece+Stats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Piece+Stats.h"; path = "Banyan/Piece+Stats.h"; sourceTree = "<group>"; };
 		51A8DC8F16928A240017E86F /* Activity+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Activity+Create.h"; path = "Banyan/Activity+Create.h"; sourceTree = "<group>"; };
 		51A8DC9016928A240017E86F /* Activity+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Activity+Create.m"; path = "Banyan/Activity+Create.m"; sourceTree = "<group>"; };
+		51A8DC9416928AE00017E86F /* Banyan.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Banyan.xcdatamodel; sourceTree = "<group>"; };
+		51A8DC961692C4490017E86F /* Story+Permissions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Story+Permissions.h"; path = "Banyan/Story+Permissions.h"; sourceTree = "<group>"; };
+		51A8DC971692C4490017E86F /* Story+Permissions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Story+Permissions.m"; path = "Banyan/Story+Permissions.m"; sourceTree = "<group>"; };
+		51A8DCBF1692D52C0017E86F /* User+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "User+Create.h"; path = "Banyan/User+Create.h"; sourceTree = "<group>"; };
+		51A8DCC01692D52C0017E86F /* User+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "User+Create.m"; path = "Banyan/User+Create.m"; sourceTree = "<group>"; };
+		51A8DCC21692DA8F0017E86F /* CoreDataTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreDataTableViewController.h; path = Banyan/CoreDataTableViewController.h; sourceTree = "<group>"; };
+		51A8DCC31692DA8F0017E86F /* CoreDataTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CoreDataTableViewController.m; path = Banyan/CoreDataTableViewController.m; sourceTree = "<group>"; };
 		51B5989C15EB31B300DF4D9D /* BanyanConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BanyanConstants.h; sourceTree = "<group>"; };
 		51B5989D15EB31B300DF4D9D /* BanyanConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BanyanConstants.m; sourceTree = "<group>"; };
+		51B7ABEB169AD55400B1488C /* Piece.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Piece.h; path = Banyan/Piece.h; sourceTree = "<group>"; };
+		51B7ABEC169AD55400B1488C /* Piece.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Piece.m; path = Banyan/Piece.m; sourceTree = "<group>"; };
+		51C0CF001695899100C9B752 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = User.h; path = Banyan/User.h; sourceTree = "<group>"; };
+		51C0CF011695899100C9B752 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = User.m; path = Banyan/User.m; sourceTree = "<group>"; };
 		51CFD92615F1F260002926F9 /* SettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsTableViewController.h; sourceTree = "<group>"; };
 		51CFD92715F1F260002926F9 /* SettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsTableViewController.m; sourceTree = "<group>"; };
 		51CFD93415F3E80B002926F9 /* FollowingFriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowingFriendsViewController.h; sourceTree = "<group>"; };
@@ -285,15 +290,6 @@
 				510787D7163A37250042B436 /* File.m */,
 			);
 			name = File;
-			sourceTree = "<group>";
-		};
-		5142BC7D16788386007B1B62 /* PullToRefreshContentView */ = {
-			isa = PBXGroup;
-			children = (
-				5142BC791678837E007B1B62 /* BanyanPullToRefreshContentView.h */,
-				5142BC7A1678837E007B1B62 /* BanyanPullToRefreshContentView.m */,
-			);
-			name = PullToRefreshContentView;
 			sourceTree = "<group>";
 		};
 		5166B1B515E75B420072749C /* Resources */ = {
@@ -367,6 +363,7 @@
 		5189B2BD15B387E200562DD0 /* Banyan */ = {
 			isa = PBXGroup;
 			children = (
+				51A8DC9316928AE00017E86F /* Banyan.xcdatamodeld */,
 				5189B3CA15B39E7400562DD0 /* MainStoryboard.storyboard */,
 				5189B35415B3968600562DD0 /* Account Management */,
 				5189B35315B3967A00562DD0 /* New Story */,
@@ -378,7 +375,6 @@
 				5189B35B15B3976700562DD0 /* Story List */,
 				51CFD93015F3121C002926F9 /* Settings */,
 				5189B35C15B397BD00562DD0 /* Helpful Categories */,
-				5142BC7D16788386007B1B62 /* PullToRefreshContentView */,
 				51B5989C15EB31B300DF4D9D /* BanyanConstants.h */,
 				51B5989D15EB31B300DF4D9D /* BanyanConstants.m */,
 				5189B2C615B387E200562DD0 /* BanyanAppDelegate.h */,
@@ -484,9 +480,9 @@
 		5189B35715B396E700562DD0 /* Piece */ = {
 			isa = PBXGroup;
 			children = (
+				51B7ABEB169AD55400B1488C /* Piece.h */,
+				51B7ABEC169AD55400B1488C /* Piece.m */,
 				5189B2F115B395F300562DD0 /* Piece_Defines.h */,
-				5189B2F215B395F300562DD0 /* Piece.h */,
-				5189B2F315B395F300562DD0 /* Piece.m */,
 				5189B2F415B395F300562DD0 /* Piece+Create.h */,
 				5189B2F515B395F300562DD0 /* Piece+Create.m */,
 				5189B2F615B395F300562DD0 /* Piece+Delete.h */,
@@ -524,9 +520,11 @@
 		5189B35A15B3975100562DD0 /* Story */ = {
 			isa = PBXGroup;
 			children = (
+				5103C86C1699443500CC33AC /* Story.h */,
+				5103C86D1699443500CC33AC /* Story.m */,
 				5189B30815B395F300562DD0 /* Story_Defines.h */,
-				5189B30915B395F300562DD0 /* Story.h */,
-				5189B30A15B395F300562DD0 /* Story.m */,
+				51A8DC961692C4490017E86F /* Story+Permissions.h */,
+				51A8DC971692C4490017E86F /* Story+Permissions.m */,
 				5189B30B15B395F300562DD0 /* Story+Create.h */,
 				5189B30C15B395F300562DD0 /* Story+Create.m */,
 				5189B30D15B395F300562DD0 /* Story+Delete.h */,
@@ -543,10 +541,10 @@
 			isa = PBXGroup;
 			children = (
 				51CFD93715F57F35002926F9 /* UITableViewCell */,
+				51A8DCC21692DA8F0017E86F /* CoreDataTableViewController.h */,
+				51A8DCC31692DA8F0017E86F /* CoreDataTableViewController.m */,
 				5189B31715B395F300562DD0 /* StoryListTableViewController.h */,
 				5189B31815B395F300562DD0 /* StoryListTableViewController.m */,
-				510787CA163A36C40042B436 /* BanyanDataSource.h */,
-				510787CB163A36C40042B436 /* BanyanDataSource.m */,
 			);
 			name = "Story List";
 			path = ..;
@@ -564,9 +562,11 @@
 		5189B35D15B397D900562DD0 /* User */ = {
 			isa = PBXGroup;
 			children = (
+				51C0CF001695899100C9B752 /* User.h */,
+				51C0CF011695899100C9B752 /* User.m */,
+				51A8DCBF1692D52C0017E86F /* User+Create.h */,
+				51A8DCC01692D52C0017E86F /* User+Create.m */,
 				5189B31F15B395F300562DD0 /* User_Defines.h */,
-				5189B32015B395F300562DD0 /* User.h */,
-				5189B32115B395F300562DD0 /* User.m */,
 				510787DC163A37340042B436 /* User+Edit.h */,
 				510787DD163A37340042B436 /* User+Edit.m */,
 			);
@@ -755,20 +755,17 @@
 				5189B32F15B395F300562DD0 /* ModifySceneViewController.m in Sources */,
 				5189B33115B395F300562DD0 /* NewStoryViewController.m in Sources */,
 				5189B33515B395F300562DD0 /* ReadSceneViewController.m in Sources */,
-				5189B33715B395F300562DD0 /* Piece.m in Sources */,
 				5189B33815B395F300562DD0 /* Piece+Create.m in Sources */,
 				5189B33915B395F300562DD0 /* Piece+Delete.m in Sources */,
 				5189B33A15B395F300562DD0 /* Piece+Edit.m in Sources */,
 				5189B33B15B395F300562DD0 /* Piece+Stats.m in Sources */,
 				5189B33E15B395F300562DD0 /* StoryReaderController.m in Sources */,
-				5189B34215B395F300562DD0 /* Story.m in Sources */,
 				5189B34315B395F300562DD0 /* Story+Create.m in Sources */,
 				5189B34415B395F300562DD0 /* Story+Delete.m in Sources */,
 				5189B34515B395F300562DD0 /* Story+Edit.m in Sources */,
 				5189B34615B395F300562DD0 /* Story+Stats.m in Sources */,
 				5189B34815B395F300562DD0 /* StoryListStoryCell.m in Sources */,
 				5189B34915B395F300562DD0 /* StoryListTableViewController.m in Sources */,
-				5189B34C15B395F300562DD0 /* User.m in Sources */,
 				5189B34D15B395F300562DD0 /* UserLoginViewController.m in Sources */,
 				5189B34F15B395F300562DD0 /* UserManagementModule.m in Sources */,
 				51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */,
@@ -779,7 +776,6 @@
 				510787C6163A36A90042B436 /* UIImage+AlphaAdditions.m in Sources */,
 				510787C7163A36A90042B436 /* UIImage+ResizeAdditions.m in Sources */,
 				510787C8163A36A90042B436 /* UIImage+RoundedCornerAdditions.m in Sources */,
-				510787CC163A36C40042B436 /* BanyanDataSource.m in Sources */,
 				510787CF163A36D80042B436 /* AFBanyanAPIClient.m in Sources */,
 				510787D2163A36F20042B436 /* BNLocationManager.m in Sources */,
 				510787D5163A37190042B436 /* Activity.m in Sources */,
@@ -791,8 +787,14 @@
 				519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */,
 				5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */,
 				519233331675305F009686E4 /* LocationPickerTableViewController.m in Sources */,
-				5142BC7B1678837E007B1B62 /* BanyanPullToRefreshContentView.m in Sources */,
 				51A8DC9116928A240017E86F /* Activity+Create.m in Sources */,
+				51A8DC9516928AE00017E86F /* Banyan.xcdatamodeld in Sources */,
+				51A8DC981692C4490017E86F /* Story+Permissions.m in Sources */,
+				51A8DCC11692D52C0017E86F /* User+Create.m in Sources */,
+				51A8DCC41692DA900017E86F /* CoreDataTableViewController.m in Sources */,
+				51C0CF021695899100C9B752 /* User.m in Sources */,
+				5103C86E1699443500CC33AC /* Story.m in Sources */,
+				51B7ABED169AD55400B1488C /* Piece.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -917,6 +919,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		51A8DC9316928AE00017E86F /* Banyan.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				51A8DC9416928AE00017E86F /* Banyan.xcdatamodel */,
+			);
+			currentVersion = 51A8DC9416928AE00017E86F /* Banyan.xcdatamodel */;
+			path = Banyan.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 5189B2AA15B387E100562DD0 /* Project object */;
 }

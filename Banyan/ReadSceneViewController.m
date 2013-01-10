@@ -14,6 +14,7 @@
 #import "AFBanyanAPIClient.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "Piece+Edit.h"
+#import "User+Edit.h"
 
 @interface ReadSceneViewController ()
 @property (weak, nonatomic) IBOutlet UIView *contentView;
@@ -67,7 +68,7 @@
 //    self.imageView.contentMode = UIViewContentModeScaleAspectFill;
 //    self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     if (self.piece.imageURL && [self.piece.imageURL rangeOfString:@"asset"].location == NSNotFound) {
-        [self.imageView setImageWithURL:[NSURL URLWithString:self.piece.imageURL] placeholderImage:self.piece.image];
+        [self.imageView setImageWithURL:[NSURL URLWithString:self.piece.imageURL] placeholderImage:nil];
     } else if (self.piece.imageURL) {
         ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
         [library assetForURL:[NSURL URLWithString:self.piece.imageURL] resultBlock:^(ALAsset *asset) {
@@ -102,7 +103,7 @@
 //        [self.locationManager getNearbyLocations:self.scene.location];
 //    }
 
-    if (self.piece.image || self.piece.imageURL) {
+    if (self.piece.imageURL) {
         self.sceneTextView.textColor = self.storyTitleLabel.textColor = [UIColor whiteColor];
         self.contributorsButton.titleLabel.textColor = 
         self.viewsLabel.textColor = 
@@ -266,7 +267,8 @@
 {
     ModifySceneViewController *addSceneViewController = [[ModifySceneViewController alloc] init];
     addSceneViewController.editMode = add;
-    addSceneViewController.piece = [[Piece alloc] init];
+    addSceneViewController.piece = [NSEntityDescription insertNewObjectForEntityForName:kBNPieceClassKey
+                                                                 inManagedObjectContext:BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT];
     addSceneViewController.piece.story = self.piece.story;
     addSceneViewController.delegate = self;
     [addSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];

@@ -13,5 +13,6 @@
 @interface Story (Create)
 
 + (void) createNewStory:(Story *)story;
+- (void)persistToDatabase;
 
 @end

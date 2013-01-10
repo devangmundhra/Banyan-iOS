@@ -120,10 +120,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    if (self.piece.previousPiece == nil && self.editMode != add)
-        self.sceneTextView.font = [UIFont fontWithName:STORY_FONT size:24];
-    else
-        self.sceneTextView.font = [UIFont fontWithName:PIECE_FONT size:24];
+    self.sceneTextView.font = [UIFont fontWithName:PIECE_FONT size:24];
     
 //    self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapAnywhere:)];
 //    self.tapRecognizer.delegate = self;
@@ -141,7 +138,7 @@
         self.imageView.frame = [[UIScreen mainScreen] bounds];
         self.localImageURL = self.piece.imageURL;
         if (self.piece.imageURL && [self.piece.imageURL rangeOfString:@"asset"].location == NSNotFound) {
-            [self.imageView setImageWithURL:[NSURL URLWithString:self.piece.imageURL] placeholderImage:self.piece.image];
+            [self.imageView setImageWithURL:[NSURL URLWithString:self.piece.imageURL] placeholderImage:nil];
         } else if (self.piece.imageURL) {
             ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
             [library assetForURL:[NSURL URLWithString:self.piece.imageURL] resultBlock:^(ALAsset *asset) {
@@ -229,7 +226,7 @@
     
     if (self.editMode == add)
     {
-        if (self.piece.story.isLocationEnabled == YES) {
+        if ([self.piece.story.isLocationEnabled boolValue] == YES) {
             if (self.locationManager.location) {
                 
                 CLLocationCoordinate2D coord = [self.locationManager.location coordinate];
@@ -250,7 +247,7 @@
         self.piece.text = self.sceneTextView.text;
         if (self.imageChanged) {
             self.piece.imageURL = self.localImageURL;
-            self.piece.imageChanged = YES;
+            self.piece.imageChanged = [NSNumber numberWithBool:YES];
             //            self.scene.image = self.imageView.image;
         }
         [Piece editPiece:self.piece];
