@@ -212,7 +212,7 @@ typedef enum {
     NSLog(@"tags are %@", tags);
     
     // Upload Story
-    [Story createNewStory:self.story];
+    self.story = [Story createNewStory:self.story];
 
     NSLog(@"New story %@ saved", self.story);
     [self.delegate newStoryViewController:self didAddStory:self.story];

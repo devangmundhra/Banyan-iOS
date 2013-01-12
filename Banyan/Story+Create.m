@@ -17,14 +17,22 @@
 @implementation Story (Create)
 
 // Upload the given story using RestKit
-+ (void)createNewStory:(Story *)story
++ (Story *)createNewStory:(Story *)story
 {
+    // Persist so that it can be refetched in persistentStoreManagedObjectContext
+    [story persistToDatabase];
+
+    // Change the context to persistentStoreManagedObjectContext
+    story = (Story *)[[RKManagedObjectStore defaultStore].persistentStoreManagedObjectContext objectWithID:story.objectID];
+    
     story.initialized = [NSNumber numberWithBool:NO];
     story.canContribute = story.canView = [NSNumber numberWithBool:YES];
     story.author = [User currentUser];
     story.storyBeingRead = [NSNumber numberWithBool:YES];
     story.createdAt = story.updatedAt = [NSDate date];
     
+    // Persist again
+    [story persistToDatabase];
     NSLog(@"Adding story %@", story);
 
     //    PARSE
@@ -178,11 +186,12 @@
         uploadStory(story);
     }
     
-    [story persistToDatabase];
+    return story;
 }
 
 - (void)persistToDatabase
 {
+    // Use performBlockAndWait only as these needs to be synchronous in the thread
     [self.managedObjectContext performBlockAndWait:^{
         // Persist the story
         NSError *error = nil;
@@ -192,17 +201,15 @@
         };
     }];
     
-    // Fetch the object in NSFetchedResultsController's context
-    [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext objectWithID:self.objectID];
     
-//    [self.managedObjectContext.parentContext performBlockAndWait:^{
-//        // Persist the story on the parent context so that it is picked up by Fetched Results Controller
-//        NSError *error = nil;
-//        if (![self.managedObjectContext save:&error]) {
-//            NSLog(@"Error: %@", error);
-//            assert(false);
-//        };
-//    }];
+    [self.managedObjectContext.parentContext performBlockAndWait:^{
+        // Persist the story on the parent context so that it is picked up by Fetched Results Controller
+        NSError *error = nil;
+        if (![self.managedObjectContext save:&error]) {
+            NSLog(@"Error: %@", error);
+            assert(false);
+        };
+    }];
 }
 
 @end

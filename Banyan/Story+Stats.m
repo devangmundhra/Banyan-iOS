@@ -32,7 +32,7 @@
     Activity *activity = [Activity activityWithType:kBNActivityTypeView
                                            fromUser:currentUser.userId
                                              toUser:currentUser.userId
-                                            sceneId:nil
+                                            pieceId:nil
                                             storyId:story.storyId];
     [Activity createActivity:activity];
     
@@ -56,7 +56,7 @@
         activity = [Activity activityWithType:kBNActivityTypeUnlike
                                      fromUser:currentUser.userId
                                        toUser:currentUser.userId
-                                      sceneId:nil
+                                      pieceId:nil
                                       storyId:story.storyId];
         [likers removeObject:currentUser.userId];
     }
@@ -67,7 +67,7 @@
         activity = [Activity activityWithType:kBNActivityTypeLike
                                      fromUser:currentUser.userId
                                        toUser:currentUser.userId
-                                      sceneId:nil
+                                      pieceId:nil
                                       storyId:story.storyId];
 
         [likers addObject:currentUser.userId];
@@ -88,7 +88,7 @@
         activity = [Activity activityWithType:kBNActivityTypeUnfavourite
                                      fromUser:currentUser.userId
                                        toUser:currentUser.userId
-                                      sceneId:nil
+                                      pieceId:nil
                                       storyId:story.storyId];
         story.favourite = [NSNumber numberWithBool:NO];
     }
@@ -97,7 +97,7 @@
         activity = [Activity activityWithType:kBNActivityTypeFavourite
                                      fromUser:currentUser.userId
                                        toUser:currentUser.userId
-                                      sceneId:nil
+                                      pieceId:nil
                                       storyId:story.storyId];
         story.favourite = [NSNumber numberWithBool:YES];
     }

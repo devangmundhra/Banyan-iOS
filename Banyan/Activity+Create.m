@@ -14,11 +14,13 @@
 
 + (void)createActivity:(Activity *)activity
 {
-    
+    if (!activity.pieceId && !activity.storyId) {
+        NSLog(@"No!");
+    }
     RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
     // For serializing
     RKObjectMapping *activityMapping = [RKObjectMapping requestMapping];
-    [activityMapping addAttributeMappingsFromArray:@[kBNActivityTypeKey, kBNActivityFromUserKey, kBNActivityToUserKey, kBNActivitySceneKey, kBNActivityStoryKey]];
+    [activityMapping addAttributeMappingsFromArray:@[kBNActivityTypeKey, kBNActivityFromUserKey, kBNActivityToUserKey, kBNActivityPieceKey, kBNActivityStoryKey]];
     
     RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
                                               requestDescriptorWithMapping:activityMapping

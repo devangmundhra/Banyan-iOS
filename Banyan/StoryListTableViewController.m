@@ -88,7 +88,7 @@ typedef enum {
                                                                                      ascending:YES
                                                                                       selector:@selector(compare:)]];
     self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                                        managedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext
+                                                                        managedObjectContext:[RKManagedObjectStore defaultStore].persistentStoreManagedObjectContext
                                                                           sectionNameKeyPath:nil
                                                                                    cacheName:nil];
     self.fetchedResultsController.delegate = self;
@@ -167,7 +167,6 @@ typedef enum {
     
     // Configure the cell...
     Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    NSLog(@"Title being printed: %@", story.title);
     [cell setStory:story];
     
     return cell;
@@ -218,13 +217,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void)addSceneForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([self updateStoryAtIndex:indexPath]) {
-        Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
-        [self addSceneToStory:story];
-    }
+    [self updateStoryAtIndex:indexPath];
+    Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [self addSceneToStory:story];
 }
-
-
 
 #pragma mark TISwipeableTableView delegates
 - (void)tableView:(UITableView *)tableView didSwipeCellAtIndexPath:(NSIndexPath *)indexPath {
@@ -268,17 +264,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             break;
     }
 
-    NSError *error = nil;
     self.fetchedResultsController.fetchRequest.predicate = predicate;
-	if (![[self fetchedResultsController] performFetch:&error]) {
-		/*
-		 Replace this implementation with code to handle the error appropriately.
-		 
-		 abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
-		 */
-		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-		abort();
-	}
+    [self performFetch];
 }
 
 -(void)foregroundRefresh:(NSNotification *)notification
@@ -325,43 +312,66 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (NSIndexPath *) updateStoryAtIndex:(NSIndexPath *)indexPath
 {
     Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    story.storyBeingRead = [NSNumber numberWithBool:YES];
 
     if (!story.pieces.count)
     {
+        // For RunLoop
+        __block BOOL doneRun = NO;
+        __block BOOL success = NO;
+        
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.labelText = @"Fetching pieces for the story";
         hud.detailsLabelText = story.title;
         NSLog(@"Loading story pieces");
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
         [BanyanConnection loadPiecesForStory:story completionBlock:^{
-            if ([story.length integerValue]) {
-                assert(story.pieces.count);
-                [self readStory:story];
-                [MBProgressHUD hideHUDForView:self.view animated:YES];
-            }
-            else {
-                hud.mode = MBProgressHUDModeText;
-                hud.labelText = @"No pieces found for the story!";
-                [hud hide:YES afterDelay:2];
-            }
+            doneRun = YES;
+            success = YES;
         } errorBlock:^(NSError *error){
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unable to load the pieces for this story."
                                                             message:[error localizedDescription]
                                                            delegate:nil
                                                   cancelButtonTitle:@"OK"
                                                   otherButtonTitles:nil];
             [alert show];
+            doneRun = YES;
             NSLog(@"Hit error: %@", error);
         }];
-        return nil;
+        
+        do
+        {
+            // Start the run loop but return after each source is handled.
+            SInt32    result = CFRunLoopRunInMode(kCFRunLoopDefaultMode, 10, YES);
+            
+            // If a source explicitly stopped the run loop, or if there are no
+            // sources or timers, go ahead and exit.
+            if ((result == kCFRunLoopRunStopped) || (result == kCFRunLoopRunFinished))
+                doneRun = YES;
+            
+            // Check for any other exit conditions here and set the
+            // done variable as needed.
+        }
+        while (!doneRun);
+        
+        // Come here after above block has been completed
+        if ([story.length integerValue] && success) {
+            assert(story.pieces.count);
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            return indexPath;
+        }
+        else {
+            hud.mode = MBProgressHUDModeText;
+            hud.labelText = @"No pieces found for the story!";
+            [hud hide:YES afterDelay:2];
+            return nil;
+        }
     }
     return indexPath;
 }
 
 -(void) readStory:(Story *)story
 {
+    story.storyBeingRead = [NSNumber numberWithBool:YES];
     StoryReaderController *storyReaderController = [[StoryReaderController alloc] init];
     storyReaderController.story = story;
     storyReaderController.delegate = self;
@@ -375,7 +385,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     addSceneViewController.editMode = add;
     Piece *piece = [NSEntityDescription insertNewObjectForEntityForName:kBNPieceClassKey
                                                  inManagedObjectContext:BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT];
-    piece.story = story;
+    
+    Story *newStory = (Story *)[BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT objectWithID:story.objectID];
+    piece.story = newStory;
     addSceneViewController.piece = piece;
     addSceneViewController.editMode = add;
     addSceneViewController.delegate = self;

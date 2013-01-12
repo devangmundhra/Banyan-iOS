@@ -125,7 +125,7 @@
         Activity *activity = [Activity activityWithType:kBNActivityTypeUnfollowUser
                                                       fromUser:currentUser.userId
                                                         toUser:[cellUser objectForKey:@"objectId"]
-                                                       sceneId:nil
+                                                       pieceId:nil
                                                        storyId:nil];
         [Activity createActivity:activity];
         [self changeFollowingStatusForUser:cellUser toStatus:NO];
@@ -136,7 +136,7 @@
         Activity *activity = [Activity activityWithType:kBNActivityTypeFollowUser
                                                fromUser:currentUser.userId
                                                  toUser:[cellUser objectForKey:@"objectId"]
-                                                sceneId:nil
+                                                pieceId:nil
                                                 storyId:nil];
         [Activity createActivity:activity];
         [self changeFollowingStatusForUser:cellUser toStatus:YES];

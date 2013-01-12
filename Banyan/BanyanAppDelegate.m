@@ -408,7 +408,9 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     // Configure a managed object cache to ensure we do not create duplicate objects
     managedObjectStore.managedObjectCache = [[RKInMemoryManagedObjectCache alloc] initWithManagedObjectContext:managedObjectStore.persistentStoreManagedObjectContext];
     
-    self.userContentMOCtx = [managedObjectStore newChildManagedObjectContextWithConcurrencyType:NSPrivateQueueConcurrencyType];
+//    self.userContentMOCtx = [managedObjectStore newChildManagedObjectContextWithConcurrencyType:NSPrivateQueueConcurrencyType];
+
+    self.userContentMOCtx = managedObjectStore.mainQueueManagedObjectContext;
     
     [RKManagedObjectStore setDefaultStore:managedObjectStore];
 }

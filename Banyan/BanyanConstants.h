@@ -50,7 +50,7 @@ extern NSString *const kBNActivityClassKey;
 extern NSString *const kBNActivityTypeKey;
 extern NSString *const kBNActivityFromUserKey;
 extern NSString *const kBNActivityToUserKey;
-extern NSString *const kBNActivitySceneKey;
+extern NSString *const kBNActivityPieceKey;
 extern NSString *const kBNActivityStoryKey;
 
 // Type values

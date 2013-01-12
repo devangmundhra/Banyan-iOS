@@ -48,7 +48,7 @@ NSString *const kBNActivityClassKey = @"Activity";
 NSString *const kBNActivityTypeKey        = @"type";
 NSString *const kBNActivityFromUserKey    = @"fromUser";
 NSString *const kBNActivityToUserKey      = @"toUser";
-NSString *const kBNActivitySceneKey       = @"sceneId";
+NSString *const kBNActivityPieceKey       = @"pieceId";
 NSString *const kBNActivityStoryKey       = @"storyId";
 
 // Type values

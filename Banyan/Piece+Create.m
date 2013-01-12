@@ -15,12 +15,22 @@
 
 @implementation Piece (Create)
 
-+ (void)createNewPiece:(Piece *)piece afterPiece:(Piece *)previousPiece
++ (void) createNewPiece:(Piece *)piece afterPiece:(Piece *)previousPiece
 {
+    // Persist so that it can be refetched in persistentStoreManagedObjectContext
+    [piece persistToDatabase];
+    
+    // Change the context to persistentStoreManagedObjectContext
+    piece = (Piece *)[[RKManagedObjectStore defaultStore].persistentStoreManagedObjectContext objectWithID:piece.objectID];
+    
     piece.initialized = [NSNumber numberWithBool:NO];
     piece.author = [User currentUser];
     piece.createdAt = piece.updatedAt = [NSDate date];
     
+    piece.story.length = [NSNumber numberWithInteger:piece.story.pieces.count];
+    
+    // Persist again
+    [piece persistToDatabase];
     NSLog(@"Adding scene %@ for story %@", piece, piece.story);
     
     // Block to upload the piece
@@ -93,18 +103,12 @@
         uploadPiece(piece);
     }
     
-    if (!piece.story.pieces) {
-        piece.story.pieces = [NSMutableArray array];
-    }
-    [piece.story addPiecesObject:piece];
-    piece.story.length = [NSNumber numberWithInteger:piece.story.pieces.count];
-    
-    [piece persistToDatabase];
+//    return piece;
 }
 
 - (void)persistToDatabase
 {
-    [self.managedObjectContext performBlock:^{
+    [self.managedObjectContext performBlockAndWait:^{
         // Persist the story
         NSError *error = nil;
         if (![self.managedObjectContext save:&error]) {
@@ -113,7 +117,7 @@
         };
     }];
     
-    [self.managedObjectContext.parentContext performBlock:^{
+    [self.managedObjectContext.parentContext performBlockAndWait:^{
         // Persist the piece on the parent context so that it is picked up by Fetched Results Controller
         NSError *error = nil;
         if (![self.managedObjectContext save:&error]) {

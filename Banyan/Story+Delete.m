@@ -29,13 +29,17 @@
     NSManagedObjectContext *storyContext = story.managedObjectContext;
     NSManagedObjectContext *storyContextParent = story.managedObjectContext.parentContext;
     
-    [storyContext performBlock:^{
+    [storyContext performBlockAndWait:^{
         [storyContext deleteObject:story];
         NSError *error = nil;
         if (![storyContext save:&error]) {
             NSLog(@"Error: %@", error);
             assert(false);
         }
+    }];
+    
+    [storyContextParent performBlockAndWait:^{
+        NSError *error = nil;
         if (![storyContextParent save:&error]) {
             NSLog(@"Error: %@", error);
             assert(false);
