@@ -15,7 +15,7 @@
 + (void)createActivity:(Activity *)activity
 {
     if (!activity.pieceId && !activity.storyId) {
-        NSLog(@"No!");
+        return;
     }
     RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
     // For serializing
