@@ -94,10 +94,8 @@
     }
     
     // Get the object to display and set the value in the cell.
-    GooglePlacesObject *place     = [[GooglePlacesObject alloc] init];
-    
     //UPDATED from locations to locationFilter results
-    place                       = [self.locationsFilterResults objectAtIndex:[indexPath row]];
+    GooglePlacesObject *place                       = [self.locationsFilterResults objectAtIndex:[indexPath row]];
     
     cell.textLabel.text                         = place.name;
     cell.textLabel.adjustsFontSizeToFitWidth    = YES;

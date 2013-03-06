@@ -11,11 +11,10 @@
 #import "Story+Create.h"
 #import "Story+Edit.h"
 #import "Story+Delete.h"
-#import "Scene+Create.h"
-#import "Scene+Edit.h"
-#import "Scene+Delete.h"
+#import "Piece+Create.h"
+#import "Piece+Edit.h"
+#import "Piece+Delete.h"
 #import "Story_Defines.h"
-#import "Scene_Defines.h"
 #import "File+Create.h"
 #import "User+Edit.h"
 #import "Activity.h"
@@ -200,8 +199,6 @@
 - (void)main
 {    
     @try {
-        Scene *scene = nil;
-        Story *story = nil;
         User *user = nil;
         NSMutableDictionary *editParams = nil;
         
@@ -263,73 +260,10 @@
                 NSLog(@"%s ERROR: Object %@ expected to be already initialized for action %@. Ignore this job!", __PRETTY_FUNCTION__, self.object, self.action);
                 [self completeOperationWithError:YES];
             }
-            if (HAVE_ASSERTS)
-                assert([self.object isObjectInitialized]);
         }
         
         // Execute the network operation
         switch (self.object.type) {
-                // SCENE
-            case BNOperationObjectTypeScene:
-                if (scene == nil)
-                    scene = [BanyanDataSource lookForSceneId:self.object.tempId inStoryId:self.object.storyId];
-                switch (self.action.actionType) {
-                    case BNOperationActionCreate:
-                        // call network operation for creating scene
-                        [Scene createSceneOnServer:scene];
-                        break;
-                        
-                    case BNOperationActionEdit:
-                        // call network operation for editing scene
-                        [Scene editScene:scene withAttributes:editParams];
-                        NSLog(@"Edit network operation for scene %@", scene);
-                        break;
-                        
-                    case BNOperationActionIncrementAttribute:
-                        [scene incrementSceneAttribute:[self.action.context objectForKey:@"attribute"]
-                                              byAmount:[self.action.context objectForKey:@"amount"]];
-                        break;
-                        
-                    case BNOperationActionDelete:
-                        [Scene deleteSceneFromServerWithId:self.object.tempId];
-                        break;
-                        
-                    default:
-                        NSLog(@"%s Unknown action for scene %d", __PRETTY_FUNCTION__, self.action);
-                        break;
-                }
-                break;
-                
-                // STORY
-            case BNOperationObjectTypeStory:
-                if (story == nil)
-                    story = [BanyanDataSource lookForStoryId:self.object.tempId];
-                switch (self.action.actionType) {
-                    case BNOperationActionCreate:
-                        // call network operation for creating story
-                        [Story createStoryOnServer:story];
-                        break;
-                        
-                    case BNOperationActionEdit:
-                        // call network operation for editing story
-                        [Story editStory:story withAttributes:editParams];
-                        NSLog(@"Edit network operation for story %@", story);
-                        break;
-                        
-                    case BNOperationActionIncrementAttribute:
-                        [story incrementStoryAttribute:[self.action.context objectForKey:@"attribute"]
-                                              byAmount:[self.action.context objectForKey:@"amount"]];
-                        break;
-                        
-                    case BNOperationActionDelete:
-                        [Story deleteStoryFromServerWithId:self.object.tempId];
-                        break;
-                        
-                    default:
-                        NSLog(@"%s Unknown action for story %@", __PRETTY_FUNCTION__, self.action);
-                        break;
-                }
-                break;
                 
             case BNOperationObjectTypeUser:
                 if (user == nil) {
@@ -343,35 +277,7 @@
                     default:
                         break;
                 }
-                
-            case BNOperationObjectTypeFile:
-                switch (self.action.actionType) {
-                    case BNOperationActionCreate:
-                        [File uploadFileForLocalURL:self.object.tempId];
-                        break;
-                        
-                    default:
-                        NSLog(@"%s Unsupported action for file %@", __PRETTY_FUNCTION__, self.action);
-                        break;
-                }
-                break;
-                
-            case BNOperationObjectTypeActivity:
-                switch (self.action.actionType) {
-                    case BNOperationActionCreate:
-                        [Activity createActivity:self.action.context];
-                        break;
-                        
-                    case BNOperationActionDelete:
-                        [Activity deleteActivity:self.action.context];
-                        break;
-                        
-                    default:
-                        NSLog(@"%s Unsupported action for activity %@", __PRETTY_FUNCTION__, self.action);
-                        break;
-                }
-                break;
-                // DEFAULT
+
             default:
                 NSLog(@"%s Unknown object type %d", __PRETTY_FUNCTION__, self.object.type);
                 break;

@@ -8,7 +8,8 @@
 
 #import "FollowingFriendsViewController.h"
 #import "AFParseAPIClient.h"
-#import "User_Defines.h"
+#import "User+Edit.h"
+#import "Activity+Create.h"
 
 @interface FollowingFriendsViewController ()
 
@@ -121,27 +122,23 @@
     if ([cell.followButton isSelected]) {
         // Unfollow
         cell.followButton.selected = NO;
-        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:nil storyId:nil];
-        BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionDelete dependencies:nil];
-        activityOp.action.context = [Activity activityWithType:kBNActivityTypeFollowUser
+        Activity *activity = [Activity activityWithType:kBNActivityTypeUnfollowUser
                                                       fromUser:currentUser.userId
                                                         toUser:[cellUser objectForKey:@"objectId"]
-                                                       sceneId:nil
+                                                       pieceId:nil
                                                        storyId:nil];
-        ADD_OPERATION_TO_QUEUE(activityOp);
+        [Activity createActivity:activity];
         [self changeFollowingStatusForUser:cellUser toStatus:NO];
         [[NSNotificationCenter defaultCenter] postNotificationName:BNUserFollowingChangedNotification object:nil];
     } else {
         // Follow
         cell.followButton.selected = YES;
-        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:nil storyId:nil];
-        BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionCreate dependencies:nil];
-        activityOp.action.context = [Activity activityWithType:kBNActivityTypeFollowUser
-                                                      fromUser:currentUser.userId
-                                                        toUser:[cellUser objectForKey:@"objectId"]
-                                                       sceneId:nil
-                                                       storyId:nil];
-        ADD_OPERATION_TO_QUEUE(activityOp);
+        Activity *activity = [Activity activityWithType:kBNActivityTypeFollowUser
+                                               fromUser:currentUser.userId
+                                                 toUser:[cellUser objectForKey:@"objectId"]
+                                                pieceId:nil
+                                                storyId:nil];
+        [Activity createActivity:activity];
         [self changeFollowingStatusForUser:cellUser toStatus:YES];
         [[NSNotificationCenter defaultCenter] postNotificationName:BNUserFollowingChangedNotification object:nil];
     }

@@ -8,10 +8,9 @@
 
 #import "AFBanyanAPIClient.h"
 #import "AFJSONRequestOperation.h"
-#import "BNOperationQueue.h"
 
-static NSString * const kAFBanyanAPIBaseURLString = @"http://www.banyan.io/api/v1/";
-//static NSString * const kAFBanyanAPIBaseURLString = @"http://127.0.0.1:8000/api/v1/";
+//static NSString * const kAFBanyanAPIBaseURLString = @"http://www.banyan.io/api/v1/";
+static NSString * const kAFBanyanAPIBaseURLString = @"http://127.0.0.1:8000/api/v1/";
 
 @implementation AFBanyanAPIClient
 
@@ -33,17 +32,6 @@ static NSString * const kAFBanyanAPIBaseURLString = @"http://www.banyan.io/api/v
     
     [self registerHTTPOperationClass:[AFJSONRequestOperation class]];
     [self setParameterEncoding:AFJSONParameterEncoding];
-    [self setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus isNetworkReachable) {
-        if (isNetworkReachable == AFNetworkReachabilityStatusReachableViaWiFi || isNetworkReachable == AFNetworkReachabilityStatusReachableViaWWAN) {
-            [[BNOperationQueue shared] setSuspended:NO];
-            [[MTStatusBarOverlay sharedInstance] show];
-        } else {
-            [[BNOperationQueue shared] setSuspended:YES];
-            [[BNOperationQueue shared] archiveOperations];
-            [[MTStatusBarOverlay sharedInstance] hide];
-            NSLog(@"Network to banyan.io not reachable!!");
-        }
-    }];
     
     // Accept HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
     [self setDefaultHeader:@"Accept" value:@"application/json"];

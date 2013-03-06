@@ -14,6 +14,8 @@
 @property (strong, nonatomic) NSString *url;
 
 - (id)initWithUrl:(NSString *)url;
-- (BOOL) initialized;
+
++ (void) uploadFileForLocalURL:(NSString *)url block:(void (^)(BOOL succeeded, NSString *newURL, NSString *newName, NSError *error))successBlock errorBlock:(void (^)(NSError *error))errorBlock;
++ (void) deleteFileWithName:(NSString *)name block:(void (^)(void))successBlock errorBlock:(void (^)(NSError *error))errorBlock;
 
 @end

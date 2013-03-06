@@ -8,98 +8,187 @@
 
 #import "BanyanConnection.h"
 #import "AFBanyanAPIClient.h"
-#import "BNOperationQueue.h"
+#import "Story_Defines.h"
+#import "Story+Stats.h"
+#import "Piece+Stats.h"
+#import "User+Edit.h"
+#import "Story+Permissions.h"
+#import "Story+Edit.h"
 
 @implementation BanyanConnection
 
-+ (void)loadStoriesFromBanyanWithBlock:(void (^)(NSMutableArray *stories))successBlock
++ (void)initialize
 {
-    {
-        NSMutableArray *dStories = [StoryDocuments loadStoriesFromDisk];
-        
-        // We need this array because if we go into the network available case, then we filter all the stories
-        // which are initialized. But if there are ongoing operations for the story, then they will be skipped
-        // when adding from the stories from network too. So we just append this array later.
-        NSMutableArray *initializedActiveDStories = [NSMutableArray array];
-        
-        // There might be some stories in the current BanayanDataSource which are more current than
-        // the ones saves on the disk (for example if the network is really slow and this operation is taking a
-        // lot of time while an update has arrived in one of the BNOperations), then we should simple get the current stories
-        for (int index = 0; index < [dStories count]; index++) {
-            for (Story *story in [BanyanDataSource shared]) {
-                if ([story.storyId isEqualToString:UPDATED([(Story *)[dStories objectAtIndex:index] storyId])]
-                    && [[[BNOperationQueue shared] storyIdsOfActiveOperations] containsObject:story.storyId]) {
-                    [dStories replaceObjectAtIndex:index withObject:story];
-                    NSLog(@"%s Keeping story with id %@", __PRETTY_FUNCTION__, story.storyId);
-                    break;
-                }
-            }
-        }
-        
-        // If there is no internet connection, load stories from the disk
-        if (![[AFBanyanAPIClient sharedClient] isReachable]) {
-            NSLog(@"BanyanConnection: Loading stories from disk");
-            successBlock(dStories);
-        }
-        else {
-            NSLog(@"BanyanConnection: Loading stories from network");
-            if ([[BNOperationQueue shared] operationCount] == 0) {
-                [StoryDocuments deleteStoriesFromDisk];
-            }
-            
-            NSString *getPath = BANYAN_API_GET_PUBLIC_STORIES();
-            if ([User currentUser]) {
-                getPath = BANYAN_API_GET_USER_STORIES([User currentUser]);
-            }
-            [[AFBanyanAPIClient sharedClient] getPath:getPath
-                                           parameters:nil
-                                              success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                                  dispatch_queue_t postFetchQueue = dispatch_queue_create("banyan fetch story completion queue", NULL);
-                                                  dispatch_async(postFetchQueue, ^ {
-                                                      NSMutableArray *pStories = [[NSMutableArray alloc] init];
-                                                      NSArray *stories = (NSArray *)responseObject;
-                                                      for (NSDictionary *storyDict in stories)
-                                                      {
-                                                          // Don't do anything if this story has some outstanding operations currently
+    // Notifications to handle permission controls
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userLoginStatusChanged:)
+                                                 name:BNUserLogInNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userLoginStatusChanged:)
+                                                 name:BNUserLogOutNotification
+                                               object:nil];
+}
 
-                                                          if ([[[BNOperationQueue shared] storyIdsOfActiveOperations] containsObject:[storyDict objectForKey:@"objectId"]]) {
-                                                              NSLog(@"Skipping getting the story for %@", [storyDict objectForKey:@"objectId"]);
-                                                              
-                                                              // If this storyId is there in dStories, it will get filtered next (because getting a story from
-                                                              // network means the story is intializied) . So save it in a seperte array and then add it to the
-                                                              // results later
-                                                              for (Story *story in dStories) {
-                                                                  if ([UPDATED(story.storyId) isEqualToString:[storyDict objectForKey:@"objectId"]]) {
-                                                                      [initializedActiveDStories addObject:story];
-                                                                  }
-                                                              }
-                                                              continue;
-                                                          }
-                                                          
-                                                          Story *story = [[Story alloc] init];
-                                                          [story fillAttributesFromDictionary:storyDict];
-                                                          [pStories addObject:story];
-                                                      }
-                                                      // Save the time of last successful update
-                                                      NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                                                      [defaults setObject:[NSDate date] forKey:BNUserDefaultsLastSuccessfulStoryUpdateTime];
-                                                      
-                                                      // Also add the stories that have not been initialized yet
-                                                      NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(initialized == NO)"];
-                                                      [dStories filterUsingPredicate:predicate];
-                                                      [pStories addObjectsFromArray:dStories];
-                                                      [pStories addObjectsFromArray:initializedActiveDStories];
-                                                      successBlock(pStories);
-                                                  });
-                                                  dispatch_release(postFetchQueue);
-                                              }
-                                              failure:AF_BANYAN_ERROR_BLOCK()
-             ];
++ (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+# pragma Storing the stories for this app
++ (void) userLoginStatusChanged:(NSNotification *)notification
+{
+    if ([[notification name] isEqualToString:BNUserLogOutNotification]) {
+        // Get all the stories in the database
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
+        
+        NSError *error = nil;
+        NSArray *stories = [[RKManagedObjectStore defaultStore].persistentStoreManagedObjectContext executeFetchRequest:request error:&error];
+        
+        if (stories)
+        {
+            [BanyanConnection resetPermissionsForStories:stories];
         }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
+                                                                object:self];
+        });
+    } else if ([[notification name] isEqualToString:BNUserLogInNotification]) {
+        [self loadDataSource];
+    } else {
+        NSLog(@"%s Unknown notification %@", __PRETTY_FUNCTION__, [notification name]);
     }
 }
 
-+ (void) resetPermissionsForStories:(NSMutableArray *)stories
++ (void) loadDataSource
+{
+    NSLog(@"%s loadDataSource begin", __PRETTY_FUNCTION__);
+    
+    [BanyanConnection
+     loadStoriesFromBanyanWithSuccessBlock:^ {
+         NSLog(@"%s loadDataSource completed", __PRETTY_FUNCTION__);
+         dispatch_async(dispatch_get_main_queue(), ^{
+             [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+             [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
+                                                                 object:self];
+         });
+     } errorBlock:^(NSError *error) {
+         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in fetching stories."
+                                                         message:[error localizedDescription]
+                                                        delegate:nil
+                                               cancelButtonTitle:@"OK"
+                                               otherButtonTitles:nil];
+         [alert show];
+         [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
+                                                             object:self];
+         NSLog(@"Hit error: %@", error);
+     }];
+}
+
++ (void)loadStoriesFromBanyanWithSuccessBlock:(void (^)())successBlock errorBlock:(void (^)(NSError *error))errorBlock
+{
+    NSString *getPath = BANYAN_API_GET_PUBLIC_STORIES();
+    if ([User currentUser]) {
+        getPath = BANYAN_API_GET_USER_STORIES([User currentUser]);
+    }
+    
+    // Initialize RestKit
+    RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
+    objectManager.managedObjectStore = [RKManagedObjectStore defaultStore];
+    
+    RKEntityMapping *storyMapping = [RKEntityMapping mappingForEntityForName:kBNStoryClassKey
+                                                        inManagedObjectStore:[RKManagedObjectStore defaultStore]];
+    [storyMapping addAttributeMappingsFromDictionary:@{
+     STORY_CAN_VIEW : @"canView",
+     STORY_CAN_CONTRIBUTE : @"canContribute",
+     STORY_IS_INVITED: @"isInvited",
+     PARSE_OBJECT_ID : @"storyId",
+     STORY_LOCATION_ENABLED: @"isLocationEnabled",
+     }];
+    storyMapping.identificationAttributes = @[@"storyId"];
+    
+    [storyMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_READ_ACCESS, STORY_WRITE_ACCESS, STORY_TAGS, STORY_LENGTH,
+                                                    STORY_IMAGE_URL, STORY_GEOCODEDLOCATION, STORY_LATITUDE, STORY_LONGITUDE,
+                                                    PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT]];
+    
+//    //  @"object.author" : @"author.userId"
+//    RKEntityMapping *userMapping = [RKEntityMapping mappingForEntityForName:kBNUserClassKey
+//                                                       inManagedObjectStore:[RKManagedObjectStore defaultStore]];
+//    [userMapping addAttributeMappingsFromDictionary:@{@"objectId": @"userId"}];
+//    userMapping.identificationAttributes = @[@"userId"];
+//    
+//    RKRelationshipMapping *userRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:STORY_AUTHOR toKeyPath:@"author" withMapping:userMapping];
+//    [storyMapping addPropertyMapping:userRelationshipMapping];
+    
+    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:storyMapping
+                                                                                       pathPattern:nil
+                                                                                           keyPath:nil
+                                                                                       statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    [objectManager addResponseDescriptor:responseDescriptor];
+    
+    [objectManager getObjectsAtPath:getPath
+                         parameters:nil
+                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                NSArray *stories = [mappingResult array];
+                                [stories enumerateObjectsUsingBlock:^(Story *story, NSUInteger idx, BOOL *stop) {
+                                    story.initialized = [NSNumber numberWithBool:YES];
+                                    [story updateStoryStats];
+                                }];
+                                successBlock();                            }
+                            failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                errorBlock(error);
+                            }];
+}
+
++ (void) loadPiecesForStory:(Story *)story completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *error))errorBlock
+{
+    // Initialize RestKit
+    RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
+    objectManager.managedObjectStore = [RKManagedObjectStore defaultStore];
+    
+    RKEntityMapping *pieceMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
+                                                        inManagedObjectStore:[RKManagedObjectStore defaultStore]];
+    [pieceMapping addAttributeMappingsFromArray:@[PIECE_IMAGE_URL, PIECE_NUMBER, PIECE_TEXT, PIECE_LATITUDE, PIECE_LONGITUDE, PIECE_GEOCODEDLOCATION,
+                                                    PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT]];
+    [pieceMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"pieceId"}];
+    pieceMapping.identificationAttributes = @[@"pieceId"];
+    
+//    //  @"object.author" : @"author.userId"
+//    RKEntityMapping *userMapping = [RKEntityMapping mappingForEntityForName:kBNUserClassKey
+//                                                       inManagedObjectStore:[RKManagedObjectStore defaultStore]];
+//    [userMapping addAttributeMappingsFromDictionary:@{@"": @"userId"}];
+//    userMapping.identificationAttributes = @[@"userId"];
+//    
+//    RKRelationshipMapping *userRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:PIECE_AUTHOR toKeyPath:@"author" withMapping:userMapping];
+//    [pieceMapping addPropertyMapping:userRelationshipMapping];
+    
+//    [pieceMapping addConnectionForRelationship:@"story" connectedBy:@"storyId"];
+    
+    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceMapping
+                                                                                       pathPattern:nil
+                                                                                           keyPath:@"result.pieces"
+                                                                                       statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    [objectManager addResponseDescriptor:responseDescriptor];
+    
+    [objectManager getObjectsAtPath:BANYAN_API_OBJECT_URL(kBNStoryClassKey, story.storyId)
+                         parameters:@{@"attributes" : @[@"pieces"]}
+                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                NSArray *pieces = [mappingResult array];
+                                [pieces enumerateObjectsUsingBlock:^(Piece *piece, NSUInteger idx, BOOL *stop) {
+                                    [story addPiecesObject:piece];
+                                    piece.initialized = [NSNumber numberWithBool:YES];
+                                    [piece updatePieceStats];
+                                }];
+                                story.length = [NSNumber numberWithInteger:pieces.count];
+                                completionBlock();
+                            }
+                            failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                errorBlock(error);
+                            }];
+}
+
++ (void) resetPermissionsForStories:(NSArray *)stories
 {
     for (Story *story in stories)
     {

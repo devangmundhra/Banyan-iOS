@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Scene_Defines.h"
+#import "Piece_Defines.h"
 #import "Story_Defines.h"
 #import "Story+Edit.h"
 #import "ModifySceneViewController.h"
@@ -32,9 +32,9 @@
 
 @interface ReadSceneViewController : UIViewController </*UIGestureRecognizerDelegate, */ModifySceneViewControllerDelegate, InvitedTableViewControllerDelegate, BNLocationManagerDelegate>
 
-@property (strong, nonatomic) Scene *scene;
+@property (strong, nonatomic) Piece *piece;
 @property (weak, nonatomic) IBOutlet id <ReadSceneViewControllerDelegate> delegate;
 
-- (IBAction)addScene:(UIBarButtonItem *)sender;
+- (IBAction)addPiece:(UIBarButtonItem *)sender;
 
 @end

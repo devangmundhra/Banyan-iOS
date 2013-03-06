@@ -31,17 +31,6 @@ return _sharedClient;
     
     [self registerHTTPOperationClass:[AFJSONRequestOperation class]];
     [self setParameterEncoding:AFJSONParameterEncoding];
-    [self setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus isNetworkReachable) {
-        if (isNetworkReachable == AFNetworkReachabilityStatusReachableViaWiFi || isNetworkReachable == AFNetworkReachabilityStatusReachableViaWWAN) {
-            [[BNOperationQueue shared] setSuspended:NO];
-            [[MTStatusBarOverlay sharedInstance] show];
-        } else {
-            [[BNOperationQueue shared] setSuspended:YES];
-            [[BNOperationQueue shared] archiveOperations];
-            [[MTStatusBarOverlay sharedInstance] hide];
-            NSLog(@"Network to parse.com not reachable!!");
-        }
-    }];
     
     // Accept HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
     [self setDefaultHeader:@"Accept" value:@"application/json"];

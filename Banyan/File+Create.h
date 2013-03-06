@@ -11,6 +11,6 @@
 
 @interface File (Create)
 
-+ (void) uploadFileForLocalURL:(NSString *)url;
++ (void) uploadFileForLocalURL:(NSString *)url block:(void (^)(BOOL succeeded, NSString *newURL, NSError *error))successBlock errorBlock:(void (^)(NSError *error))errorBlock;
 
 @end

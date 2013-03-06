@@ -8,12 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import "Story.h"
-#import "Scene.h"
+#import "Piece.h"
 #import "BanyanDataSource.h"
 
 @interface BanyanConnection : NSObject
 
-+ (void)loadStoriesFromBanyanWithBlock:(void (^)(NSMutableArray *stories))successBlock;
-+ (void) resetPermissionsForStories:(NSMutableArray *)stories;
-
++ (void)loadStoriesFromBanyanWithSuccessBlock:(void (^)())successBlock errorBlock:(void (^)(NSError *error))errorBlock;
++ (void) resetPermissionsForStories:(NSArray *)stories;
++ (void) loadPiecesForStory:(Story *)story completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *error))errorBlock;
 @end

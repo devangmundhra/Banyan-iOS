@@ -13,7 +13,7 @@ extern NSString *const BNUserFollowingChangedNotification;
 extern NSString *const BNUserLogInNotification;
 extern NSString *const BNUserLogOutNotification;
 extern NSString *const BNFBSessionStateChangedNotification;
-extern NSString *const BNDataSourceUpdatedNotification;
+extern NSString *const BNStoryListRefreshedNotification;
 
 
 #pragma mark - NSUserDefaults
@@ -34,12 +34,12 @@ extern NSString *const kBNStoryPrivacyScopePublic;
 extern NSString *const kBNStoryPrivacyInviteeList;
 extern NSString *const kBNStoryPrivacyInvitedFacebookFriends;
 
-#pragma mark - PFObject Scene Class
+#pragma mark - PFObject Piece Class
 // Class key
-extern NSString *const kBNSceneClassKey;
+extern NSString *const kBNPieceClassKey;
 
 // Field keys
-extern NSString *const kBNSceneIdKey;
+extern NSString *const kBNPieceIdKey;
 
 #pragma mark - PFObject Activity Class
 
@@ -50,13 +50,20 @@ extern NSString *const kBNActivityClassKey;
 extern NSString *const kBNActivityTypeKey;
 extern NSString *const kBNActivityFromUserKey;
 extern NSString *const kBNActivityToUserKey;
-extern NSString *const kBNActivitySceneKey;
+extern NSString *const kBNActivityPieceKey;
 extern NSString *const kBNActivityStoryKey;
 
 // Type values
 extern NSString *const kBNActivityTypeLike;
+extern NSString *const kBNActivityTypeUnlike;
 extern NSString *const kBNActivityTypeFollowUser;
+extern NSString *const kBNActivityTypeUnfollowUser;
 extern NSString *const kBNActivityTypeFavourite;
+extern NSString *const kBNActivityTypeUnfavourite;
 extern NSString *const kBNActivityTypeView;
 extern NSString *const kBNActivityTypeComment;
 extern NSString *const kBNActivityTypeJoined;
+
+#pragma mark - PFObject User Class
+// Class key
+extern NSString *const kBNUserClassKey;

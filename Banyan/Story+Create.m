@@ -8,130 +8,33 @@
 
 #import "Story+Create.h"
 #import "Story_Defines.h"
-#import "StoryDocuments.h"
-#import "Scene_Defines.h"
 #import "User_Defines.h"
 #import "BanyanDataSource.h"
+#import "AFBanyanAPIClient.h"
+#import "UIImage+ResizeAdditions.h"
+#import "User+Edit.h"
 
 @implementation Story (Create)
 
-// Create a story here with the given attributes.
-// Get a unique id and create the story with using the attributes
-// in 'attribute' and the unique id created
-+ (Story *)createStoryWithAttributes:(NSMutableDictionary *)attributes
+// Upload the given story using RestKit
++ (Story *)createNewStory:(Story *)story
 {
-    NSLog(@"Adding story with attributes %@", attributes);
+//    // Persist so that it can be refetched in persistentStoreManagedObjectContext
+//    [story persistToDatabase];
+//
+//    // Change the context to persistentStoreManagedObjectContext
+//    story = (Story *)[[RKManagedObjectStore defaultStore].persistentStoreManagedObjectContext objectWithID:story.objectID];
     
-    [attributes setObject:[NSNumber numberWithInt:0] forKey:STORY_NUM_LIKES];
-    [attributes setObject:[NSNumber numberWithInt:0] forKey:STORY_NUM_VIEWS];
-    [attributes setObject:[NSNumber numberWithInt:0] forKey:STORY_NUM_CONTRIBUTORS];
+    story.initialized = [NSNumber numberWithBool:NO];
+    story.canContribute = story.canView = [NSNumber numberWithBool:YES];
+    story.author = [User currentUserInContext:story.managedObjectContext];
+    story.storyBeingRead = [NSNumber numberWithBool:YES];
+    story.createdAt = story.updatedAt = [NSDate date];
     
-    [attributes setObject:[NSNumber numberWithInt:0] forKey:STORY_LENGTH];
-    
-    Story *story = [Story createStoryOnDiskWithAttributes:attributes];    
-    
-//    [Story createStoryOnNetworkWithAttributes:attributes forStory:story];
-    NSLog(@"Done adding story with title %@", story.title);
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:STORY_NEW_STORY_NOTIFICATION
-                                                        object:self 
-                                                      userInfo:[NSDictionary dictionaryWithObject:story 
-                                                                                           forKey:@"Story"]];
-    
-    NSMutableDictionary *sceneParams = [NSMutableDictionary dictionaryWithCapacity:1];
-    if (![story.title isEqual:[NSNull null]] && story.title)
-        [sceneParams setObject:story.title forKey:SCENE_TEXT];
-    if (![story.image isEqual:[NSNull null]] && story.image)
-        [sceneParams setObject:story.image forKey:SCENE_IMAGE];
-    if (story.isLocationEnabled) {
-        CLLocationCoordinate2D coord = [story.location coordinate];
-        [sceneParams setObject:[NSNumber numberWithDouble:coord.latitude]
-                       forKey:SCENE_LATITUDE];
-        [sceneParams setObject:[NSNumber numberWithDouble:coord.longitude]
-                       forKey:SCENE_LONGITUDE];
-        [sceneParams setObject:REPLACE_NIL_WITH_NULL(story.geocodedLocation)
-                        forKey:SCENE_GEOCODEDLOCATION];
-    }
-    
-    [Scene createSceneForStory:story attributes:sceneParams afterScene:nil];
-    
-    // Creating the network operations snippet for offline support
-    BNOperationObject *obj = [[BNOperationObject alloc] 
-                                         initWithObjectType:BNOperationObjectTypeStory 
-                                         tempId:story.storyId 
-                                         storyId:story.storyId];
-    
-    BNOperation *operation = [[BNOperation alloc] 
-                                         initWithObject:obj
-                                         action:BNOperationActionCreate 
-                                         dependencies:nil];
-    
-    if (!story.startingScene.initialized) {
-        BNOperationDependency *dObj = [[BNOperationDependency alloc]
-                                       initWithObjectType:BNOperationObjectTypeScene
-                                       tempId:story.startingScene.sceneId
-                                       storyId:story.startingScene.story.storyId
-                                       field:STORY_STARTING_SCENE];
-        
-        [operation addDependencyObject:dObj];
-    }
-    
-    [[BNOperationQueue shared] addOperation:operation];
-    
-    [StoryDocuments saveStoryToDisk:story];
+    // Persist again
+    [story persistToDatabase];
+    NSLog(@"Adding story %@", story);
 
-    return story;
-}
-
-+ (Story *)createStoryOnDiskWithAttributes:(NSMutableDictionary *)attributes
-{
-    Story *story = [[Story alloc] init];
-    NSString *tempId = [NSString stringWithFormat:@"temp%@", [[NSProcessInfo processInfo] globallyUniqueString]];
-    
-    // DISK
-    story.storyId = tempId;
-    story.initialized = NO;
-    
-    story.title = [attributes objectForKey:STORY_TITLE];
-    if (![[attributes objectForKey:STORY_IMAGE] isEqual:[NSNull null]])
-        story.image = [attributes objectForKey:STORY_IMAGE];
-    story.canView = YES;
-    story.canContribute = YES;
-    
-    story.writeAccess = [attributes objectForKey:STORY_WRITE_ACCESS];
-    story.readAccess = [attributes objectForKey:STORY_READ_ACCESS];
-    
-    if ([[attributes objectForKey:STORY_LOCATION_ENABLED] isEqualToNumber:[NSNumber numberWithBool:YES]]) {
-        story.isLocationEnabled = YES;
-        double latitude = [[attributes objectForKey:STORY_LATITUDE] doubleValue];
-        double longitude = [[attributes objectForKey:STORY_LONGITUDE] doubleValue];
-        story.location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
-        story.geocodedLocation = [attributes objectForKey:STORY_GEOCODEDLOCATION];
-    }
-    else
-    {
-        story.isLocationEnabled = NO;
-    }
-    story.author = [User currentUser];
-    story.storyBeingRead = YES;
-    story.numberOfContributors = [NSNumber numberWithInt:0];
-    story.numberOfLikes = [NSNumber numberWithInt:0];
-    story.numberOfViews = [NSNumber numberWithInt:0];
-    story.tags = [attributes objectForKey:STORY_TAGS];
-
-    return story;
-}
-
-+ (void) createStoryOnServer:(Story *)story
-{
-    assert(story);
-    if (!story) {
-        [TestFlight passCheckpoint:@"Error 1 in createStoryOnServer"];
-        NETWORK_OPERATION_INCOMPLETE();
-    }
-    NSLog(@"%s story: %@", __PRETTY_FUNCTION__, story);
-    NSMutableDictionary *attributes = [story getAttributesInDictionary];
-    
     //    PARSE
     void (^sendRequestToContributors)(NSArray *, Story *) = ^(NSArray *contributorsList, Story *story) {
         NSMutableArray *fbIds = [NSMutableArray arrayWithCapacity:1];
@@ -146,17 +49,17 @@
         
         // send request to facebook
         /*
-        NSString *selectIDsStr = [fbIds componentsJoinedByString:@","];
-        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Check this story", @"message", selectIDsStr, @"to", nil];
-        [[PFFacebookUtils facebook] dialog:@"apprequests" 
-                                 andParams:params 
-                               andDelegate:story];
-        */
+         NSString *selectIDsStr = [fbIds componentsJoinedByString:@","];
+         NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Check this story", @"message", selectIDsStr, @"to", nil];
+         [[PFFacebookUtils facebook] dialog:@"apprequests"
+         andParams:params
+         andDelegate:story];
+         */
         // send push notifications
         
-//        UIRemoteNotificationType types = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
-//        if (types == UIRemoteNotificationTypeNone)
-//            return;
+        //        UIRemoteNotificationType types = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
+        //        if (types == UIRemoteNotificationTypeNone)
+        //            return;
         
         for (NSString *fbId in fbIds)
         {
@@ -187,7 +90,7 @@
                                                  }
                                                  NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
                                                                        [NSString stringWithFormat:@"%@ has invited you to contribute to a story titled %@",
-                                                                        [User currentUser].name, story.title], @"alert",
+                                                                        story.author.name, story.title], @"alert",
                                                                        [NSNumber numberWithInt:1], @"badge",
                                                                        story.title, @"Story title",
                                                                        nil];
@@ -199,33 +102,114 @@
                                                  [push setData:data];
                                                  [push sendPushInBackground];
                                                  [TestFlight passCheckpoint:@"Push notifications sent to contribute to a new story"];
-                                                 NETWORK_OPERATION_COMPLETE();
                                              }
-                                             failure:BN_ERROR_BLOCK_OPERATION_COMPLETE()];
+                                             failure:AF_PARSE_ERROR_BLOCK()];
         }
     };
     
-    [[AFParseAPIClient sharedClient] postPath:PARSE_API_CLASS_URL(@"Story")
-                                   parameters:attributes
-                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                          NSDictionary *response = responseObject;
-                                          NSLog(@"Got response for creating story %@", [response objectForKey:@"objectId"]);
-                                          NSString *newId = [response objectForKey:@"objectId"];
-                                          [StoryDocuments deleteStoryFromDisk:story];
-                                          [[BanyanDataSource hashTable] setObject:newId forKey:story.storyId];
-                                          [BanyanDataSource archiveHashTable];
-                                          story.storyId = newId;
-                                          
-                                          story.initialized = YES;
-                                          [StoryDocuments saveStoryToDisk:story];
-                                          NSArray *invitedFBFriends = [[story.writeAccess objectForKey:kBNStoryPrivacyInviteeList]
-                                                                       objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
-                                          if (invitedFBFriends) {
-                                              sendRequestToContributors(invitedFBFriends, story);
-                                          }
-                                          NETWORK_OPERATION_COMPLETE();
-                                      }
-                                      failure:BN_ERROR_BLOCK_OPERATION_INCOMPLETE()];
+    // Block to upload the story
+    void (^uploadStory)(Story *) = ^(Story *story) {
+        RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
+        objectManager.managedObjectStore = [RKManagedObjectStore defaultStore];
+
+        // For serializing
+        RKObjectMapping *storyRequestMapping = [RKObjectMapping requestMapping];
+        
+        [storyRequestMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_IMAGE_URL, STORY_WRITE_ACCESS, STORY_READ_ACCESS,
+                                                            STORY_LATITUDE, STORY_LONGITUDE, STORY_GEOCODEDLOCATION, STORY_TAGS]];
+        [storyRequestMapping addAttributeMappingsFromDictionary:@{@"author.userId" : STORY_AUTHOR}];
+        
+        RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
+                                                  requestDescriptorWithMapping:storyRequestMapping
+                                                  objectClass:[Story class]
+                                                  rootKeyPath:nil];
+        RKEntityMapping *storyResponseMapping = [RKEntityMapping mappingForEntityForName:kBNStoryClassKey
+                                                                    inManagedObjectStore:[RKManagedObjectStore defaultStore]];
+        [storyResponseMapping addAttributeMappingsFromDictionary:@{
+                                                PARSE_OBJECT_ID : @"storyId",
+         }];
+        [storyResponseMapping addAttributeMappingsFromArray:@[PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT]];
+        storyResponseMapping.identificationAttributes = @[@"storyId"];
+
+        RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:storyResponseMapping
+                                                                                           pathPattern:nil
+                                                                                               keyPath:nil
+                                                                                           statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+        [objectManager addRequestDescriptor:requestDescriptor];
+        [objectManager addResponseDescriptor:responseDescriptor];
+        
+        [objectManager postObject:story
+                             path:BANYAN_API_CLASS_URL(kBNStoryClassKey)
+                       parameters:nil
+                          success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                              NSLog(@"Create story successful %@", story);
+                              story.initialized = [NSNumber numberWithBool:YES];
+                              NSArray *invitedFBFriends = [[story.writeAccess objectForKey:kBNStoryPrivacyInviteeList]
+                                                           objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
+                              if (invitedFBFriends) {
+                                  sendRequestToContributors(invitedFBFriends, story);
+                              }
+                              [story persistToDatabase];
+                          }
+                          failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                              NSLog(@"Error in create story");
+                          }];
+    };
+    
+    // Upload the file and then upload the story
+    if (story.imageURL) {
+        [File uploadFileForLocalURL:story.imageURL
+                              block:^(BOOL succeeded, NSString *newURL, NSString *newName, NSError *error) {
+                                  if (succeeded) {
+                                      story.imageURL = newURL;
+                                      story.imageName = newName;
+                                      uploadStory(story);
+                                      NSLog(@"Image saved on server");
+                                  } else {
+                                      UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in uploading image"
+                                                                                      message:[NSString stringWithFormat:@"Can't upload the image due to error %@", error.localizedDescription]
+                                                                                     delegate:nil
+                                                                            cancelButtonTitle:@"OK"
+                                                                            otherButtonTitles:nil];
+                                      [alert show];
+                                  }
+                              }
+                         errorBlock:^(NSError *error) {
+                             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
+                                                                             message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
+                                                                            delegate:nil
+                                                                   cancelButtonTitle:@"OK"
+                                                                   otherButtonTitles:nil];
+                             [alert show];
+                         }];
+    } else {
+        uploadStory(story);
+    }
+    
+    return story;
+}
+
+- (void)persistToDatabase
+{
+    // Use performBlockAndWait only as these needs to be synchronous in the thread
+    [self.managedObjectContext performBlockAndWait:^{
+        // Persist the story
+        NSError *error = nil;
+        if (![self.managedObjectContext save:&error]) {
+            NSLog(@"Error: %@", error);
+            assert(false);
+        };
+    }];
+    
+    
+    [self.managedObjectContext.parentContext performBlockAndWait:^{
+        // Persist the story on the parent context so that it is picked up by Fetched Results Controller
+        NSError *error = nil;
+        if (![self.managedObjectContext.parentContext save:&error]) {
+            NSLog(@"Error: %@", error);
+            assert(false);
+        };
+    }];
 }
 
 @end

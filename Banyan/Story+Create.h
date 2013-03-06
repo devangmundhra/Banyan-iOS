@@ -7,12 +7,12 @@
 //
 
 #import "Story.h"
-#import "Scene+Create.h"
+#import "Piece+Create.h"
 #import "AFParseAPIClient.h"
 
 @interface Story (Create)
 
-+ (Story *)createStoryWithAttributes:(NSMutableDictionary *)attributes;
-+ (void) createStoryOnServer:(Story *)story;
++ (Story *) createNewStory:(Story *)story;
+- (void)persistToDatabase;
 
 @end

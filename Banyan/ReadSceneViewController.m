@@ -8,10 +8,13 @@
 
 #import "ReadSceneViewController.h"
 #import "UIImageView+AFNetworking.h"
-#import "Scene+Stats.h"
+#import "Piece+Stats.h"
 #import "Story+Stats.h"
 #import <QuartzCore/QuartzCore.h>
 #import "AFBanyanAPIClient.h"
+#import <AssetsLibrary/AssetsLibrary.h>
+#import "Piece+Edit.h"
+#import "User+Edit.h"
 
 @interface ReadSceneViewController ()
 @property (weak, nonatomic) IBOutlet UIView *contentView;
@@ -27,7 +30,6 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *locationLabel;
 
-@property (weak, nonatomic) UserManagementModule *userManagementModule;
 
 @property (strong, nonatomic) BNLocationManager *locationManager;
 
@@ -44,18 +46,9 @@
 @synthesize likesLabel = _likesLabel;
 @synthesize timeLabel = _timeLabel;
 @synthesize locationLabel = _locationLabel;
-@synthesize userManagementModule = _userManagementModule;
-@synthesize scene = _scene;
+@synthesize piece = _scene;
 @synthesize delegate = _delegate;
 @synthesize locationManager = _locationManager;
-
-- (UserManagementModule *)userManagementModule
-{
-    BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
-    delegate.userManagementModule.owningViewController = self;
-    
-    return delegate.userManagementModule;
-}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -74,11 +67,11 @@
     self.imageView.frame = [[UIScreen mainScreen] bounds];
 //    self.imageView.contentMode = UIViewContentModeScaleAspectFill;
 //    self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    if (self.scene.imageURL && [self.scene.imageURL rangeOfString:@"asset"].location == NSNotFound) {
-        [self.imageView setImageWithURL:[NSURL URLWithString:self.scene.imageURL] placeholderImage:self.scene.image];
-    } else if (self.scene.imageURL) {
+    if (self.piece.imageURL && [self.piece.imageURL rangeOfString:@"asset"].location == NSNotFound) {
+        [self.imageView setImageWithURL:[NSURL URLWithString:self.piece.imageURL] placeholderImage:nil];
+    } else if (self.piece.imageURL) {
         ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
-        [library assetForURL:[NSURL URLWithString:self.scene.imageURL] resultBlock:^(ALAsset *asset) {
+        [library assetForURL:[NSURL URLWithString:self.piece.imageURL] resultBlock:^(ALAsset *asset) {
             ALAssetRepresentation *rep = [asset defaultRepresentation];
             CGImageRef imageRef = [rep fullScreenImage];
             UIImage *image = [UIImage imageWithCGImage:imageRef];
@@ -99,18 +92,18 @@
     self.infoView.backgroundColor = [UIColor clearColor];
 //    self.sceneTextView.contentInset = UIEdgeInsetsMake(0, 20, 0, 20);
     
-    self.sceneTextView.text = self.scene.text;
-    self.storyTitleLabel.text = self.scene.story.title;
+    self.sceneTextView.text = self.piece.text;
+    self.storyTitleLabel.text = self.piece.story.title;
     
-    if (![self.scene.geocodedLocation isEqual:[NSNull null]] && self.scene.geocodedLocation)
-        self.locationLabel.text = self.scene.geocodedLocation;
+    if (![self.piece.geocodedLocation isEqual:[NSNull null]] && self.piece.geocodedLocation)
+        self.locationLabel.text = self.piece.geocodedLocation;
     // Update the scene location from the coordinates (if we were not able to get the reverse geocoded location before)
 //    else if (self.scene.story.isLocationEnabled && ![self.scene.location isEqual:[NSNull null]]) {
 //        self.locationManager = [[BNLocationManager alloc] initWithDelegate:self];
 //        [self.locationManager getNearbyLocations:self.scene.location];
 //    }
 
-    if (self.scene.image || self.scene.imageURL) {
+    if (self.piece.imageURL) {
         self.sceneTextView.textColor = self.storyTitleLabel.textColor = [UIColor whiteColor];
         self.contributorsButton.titleLabel.textColor = 
         self.viewsLabel.textColor = 
@@ -138,34 +131,25 @@
         self.infoView.alpha = 0;
     }
     
-    [[UIApplication sharedApplication] setStatusBarHidden:![self.delegate readSceneControllerEditMode] 
+    [self refreshView];
+
+    [[UIApplication sharedApplication] setStatusBarHidden:![self.delegate readSceneControllerEditMode]
                                             withAnimation:UIStatusBarAnimationNone];
     [self.navigationController setNavigationBarHidden:![self.delegate readSceneControllerEditMode] 
                                              animated:NO];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:YES];
+}
+
 - (void)locationUpdated
 {
     self.locationLabel.text = self.locationManager.locationStatus;
-    self.scene.geocodedLocation = self.locationManager.locationStatus;
+    self.piece.geocodedLocation = self.locationManager.locationStatus;
     // TODO: This should be done at the server
-    // Edit this scene with the geolocated data
-    BNOperationObject *obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeScene
-                                                                    tempId:self.scene.sceneId
-                                                                   storyId:self.scene.story.storyId];
-    BNOperation *op = [[BNOperation alloc] initWithObject:obj action:BNOperationActionEdit dependencies:nil];
-    op.action.context = [NSDictionary dictionaryWithObject:self.scene.geocodedLocation forKey:SCENE_GEOCODEDLOCATION];
-    ADD_OPERATION_TO_QUEUE(op);
-    
-    if (self.scene.previousScene == nil) {
-        self.scene.story.geocodedLocation = self.scene.geocodedLocation;
-        obj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeStory
-                                                     tempId:self.scene.story.storyId
-                                                    storyId:self.scene.story.storyId];
-        op = [[BNOperation alloc] initWithObject:obj action:BNOperationActionEdit dependencies:nil];
-        op.action.context = [NSDictionary dictionaryWithObject:self.scene.story.geocodedLocation forKey:STORY_GEOCODEDLOCATION];
-        ADD_OPERATION_TO_QUEUE(op);
-    }
+    [Piece editPiece:self.piece];
 }
 
 - (void) userLoginStatusChanged
@@ -178,8 +162,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     // Update Stats
-    [Scene viewedScene:self.scene];
-    [self refreshView];
+    [Piece viewedPiece:self.piece];
     
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(userLoginStatusChanged) 
@@ -194,11 +177,11 @@
 // Story specific refresh
 - (void)refreshStoryView
 {
-    [self.contributorsButton setTitle:[self.scene.story.writeAccess objectForKey:kBNStoryPrivacyScope]
+    [self.contributorsButton setTitle:[self.piece.story.writeAccess objectForKey:kBNStoryPrivacyScope]
                              forState:UIControlStateNormal];
 
     [self.contributorsButton addTarget:self action:@selector(storyContributors) forControlEvents:UIControlEventTouchUpInside];
-    if ([self.scene.text length] > MAX_CHAR_IN_SCENE) {
+    if ([self.piece.text length] > MAX_CHAR_IN_PIECE) {
         self.sceneTextView.scrollEnabled = YES;
         self.sceneTextView.font = [UIFont systemFontOfSize:18];
     }
@@ -208,18 +191,18 @@
     }
 }
 
-// Scene specific refresh
-- (void)refreshSceneView
+// Piece specific refresh
+- (void)refreshPieceView
 {
-    [self.contributorsButton setTitle:self.scene.author.name forState:UIControlStateNormal];
+    [self.contributorsButton setTitle:self.piece.author.name forState:UIControlStateNormal];
     [self.contributorsButton setEnabled:NO];
-    if ([self.scene.text length] > MAX_CHAR_IN_SCENE) {
+    if ([self.piece.text length] > MAX_CHAR_IN_PIECE) {
         self.sceneTextView.scrollEnabled = YES;
         self.sceneTextView.font = [UIFont systemFontOfSize:18];
     }
     else {
         self.sceneTextView.scrollEnabled = NO;
-        self.sceneTextView.font = [UIFont fontWithName:SCENE_FONT size:24];
+        self.sceneTextView.font = [UIFont fontWithName:PIECE_FONT size:24];
     }
 }
 
@@ -227,28 +210,17 @@
 // refreshed
 - (void)refreshView
 {    
-    self.viewsLabel.text = [NSString stringWithFormat:@"%u views", [self.scene.numberOfViews unsignedIntValue]];
-    self.likesLabel.text = [NSString stringWithFormat:@"%u likes", [self.scene.numberOfLikes unsignedIntValue]];
+    self.viewsLabel.text = [NSString stringWithFormat:@"%u views", [self.piece.numberOfViews unsignedIntValue]];
+    self.likesLabel.text = [NSString stringWithFormat:@"%u likes", [self.piece.numberOfLikes unsignedIntValue]];
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
     [dateFormat setDateStyle:NSDateFormatterMediumStyle];
     
-    self.timeLabel.text = [dateFormat stringFromDate:self.scene.dateCreated];
+    self.timeLabel.text = [dateFormat stringFromDate:self.piece.createdAt];
     
     [self toggleSceneLikeButtonLabel];
     [self toggleSceneFollowButtonLabel];
     
-    if (self.scene.previousScene == nil)
-        [self refreshStoryView];
-    else
-        [self refreshSceneView];
-    
-//    if ([self.userManagementModule isUserSignedIntoApp]) {
-//        // User signed in
-//        self.actionView.hidden = NO;
-//    } else {
-//        // User not signed in
-//        self.actionView.hidden = YES;
-//    }
+    [self refreshPieceView];
 }
 
 - (void)viewDidUnload
@@ -260,7 +232,6 @@
     
     [self setContentView:nil];
     [self setInfoView:nil];
-    [self setUserManagementModule:nil];
     [self setImageView:nil];
     [self setSceneTextView:nil];
     [self setStoryTitleLabel:nil];
@@ -277,7 +248,7 @@
 - (IBAction)storyContributors
 {
     NSArray *invitedToContribute = nil;
-    invitedToContribute = [[self.scene.story.writeAccess objectForKey:kBNStoryPrivacyInviteeList]
+    invitedToContribute = [[self.piece.story.writeAccess objectForKey:kBNStoryPrivacyInviteeList]
                            objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
     InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] 
                                                               initWithSearchBarAndNavigationControllerForInvitationType:INVITED_CONTRIBUTORS_STRING 
@@ -292,28 +263,30 @@
     [self.delegate doneWithReadSceneViewController:self];
 }
 
-- (IBAction)addScene:(UIBarButtonItem *)sender 
+- (IBAction)addPiece:(UIBarButtonItem *)sender 
 {
     ModifySceneViewController *addSceneViewController = [[ModifySceneViewController alloc] init];
     addSceneViewController.editMode = add;
-    addSceneViewController.scene = self.scene;
+    addSceneViewController.piece = [NSEntityDescription insertNewObjectForEntityForName:kBNPieceClassKey
+                                                                 inManagedObjectContext:BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT];
+    addSceneViewController.piece.story = (Story *)[BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT objectWithID:self.piece.story.objectID];
     addSceneViewController.delegate = self;
     [addSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
     [addSceneViewController setModalPresentationStyle:UIModalPresentationFullScreen];
     [self presentViewController:addSceneViewController animated:YES completion:nil];
 }
-- (IBAction)editScene:(UIBarButtonItem *)sender 
+- (IBAction)editPiece:(UIBarButtonItem *)sender 
 {
     ModifySceneViewController *editSceneViewController = [[ModifySceneViewController alloc] init];
     editSceneViewController.editMode = edit;
-    editSceneViewController.scene = self.scene;
+    editSceneViewController.piece = self.piece;
     editSceneViewController.delegate = self;
     [editSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
     [editSceneViewController setModalPresentationStyle:UIModalPresentationFullScreen];
     [self presentViewController:editSceneViewController animated:YES completion:nil];
 }
 
-- (IBAction)toggleSceneTextDisplay:(UIBarButtonItem *)sender 
+- (IBAction)togglePieceTextDisplay:(UIBarButtonItem *)sender 
 {
     self.sceneTextView.hidden = self.sceneTextView.hidden ? NO : YES;
     self.storyTitleLabel.hidden = self.storyTitleLabel.hidden ? NO : YES;
@@ -321,13 +294,14 @@
 
 - (void)toggleSceneLikeButtonLabel
 {
-    if (self.scene.liked) {
-        [(UIBarButtonItem *)[self.navigationController.toolbar.items objectAtIndex:0] setTitle:@"Unlike"];
+    UIBarButtonItem *likeButton = (UIBarButtonItem *)[self.navigationController.toolbar.items objectAtIndex:0];
+    if (self.piece.liked) {
+        [likeButton setTitle:@"Unlike"];
     }
     else {
-        [(UIBarButtonItem *)[self.navigationController.toolbar.items objectAtIndex:0] setTitle:@"Like"];
+        [likeButton setTitle:@"Like"];
     }
-    self.likesLabel.text = [NSString stringWithFormat:@"%u likes", [self.scene.numberOfLikes unsignedIntValue]];
+    self.likesLabel.text = [NSString stringWithFormat:@"%u likes", [self.piece.numberOfLikes unsignedIntValue]];
 }
 
 - (void)toggleSceneFollowButtonLabel
@@ -342,11 +316,7 @@
 - (IBAction)like:(UIBarButtonItem *)sender
 {
     NSLog(@"Liked!");
-    if (self.scene.previousScene == nil) {
-        [Story toggleLikedStory:self.scene.story];
-        [TestFlight passCheckpoint:@"Like story"];
-    }
-    [Scene toggleLikedScene:self.scene];
+    [Piece toggleLikedPiece:self.piece];
     [self toggleSceneLikeButtonLabel];
     [TestFlight passCheckpoint:@"Like scene"];
 }
@@ -355,11 +325,7 @@
 - (IBAction)follow:(UIBarButtonItem *)sender
 {
     NSLog(@"Following!");
-    if (self.scene.previousScene == nil) {
-        [Story toggleFavouritedStory:self.scene.story];
-        [TestFlight passCheckpoint:@"Follow story"];
-    }
-    [Scene toggleFavouritedScene:self.scene];
+    [Piece toggleFavouritedPiece:self.piece];
     [self toggleSceneFollowButtonLabel];
     
     [TestFlight passCheckpoint:@"Follow scene"];
@@ -367,8 +333,8 @@
 
 - (IBAction)share:(UIBarButtonItem *)sender 
 {    
-    if (!self.scene.story.initialized) {
-        NSLog(@"%s Can't share yet as story with title %@ is not initialized", __PRETTY_FUNCTION__, self.scene.story.title);
+    if (!self.piece.story.initialized) {
+        NSLog(@"%s Can't share yet as story with title %@ is not initialized", __PRETTY_FUNCTION__, self.piece.story.title);
         return;
     }
     
@@ -383,7 +349,7 @@
         return;
     }
     
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:self.scene.story.storyId forKey:@"object_id"];
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:self.piece.story.storyId forKey:@"object_id"];
     [[AFBanyanAPIClient sharedClient] getPath:BANYAN_API_GET_OBJECT_LINK_URL()
                                    parameters:params
                                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -397,7 +363,7 @@
                                                                          }
                                                                      }];
                                           [PF_FBNativeDialogs presentShareDialogModallyFrom:self
-                                                                                initialText:self.scene.story.title
+                                                                                initialText:self.piece.story.title
                                                                                       image:self.imageView.image
                                                                                         url:[NSURL URLWithString:[response objectForKey:@"link"]]
                                                                                     handler:nil];
@@ -437,7 +403,7 @@
 
 #pragma mark ModifySceneViewControllerDelegate
 - (void) modifySceneViewController:(ModifySceneViewController *)controller
-             didFinishEditingScene:(Scene *)scene
+             didFinishEditingScene:(Piece *)piece
 {
     [self dismissViewControllerAnimated:YES completion:^{
         [[UIApplication sharedApplication] setStatusBarHidden:![self.delegate readSceneControllerEditMode] 
@@ -449,7 +415,7 @@
 }
 
 - (void) modifySceneViewController:(ModifySceneViewController *)controller
-              didFinishAddingScene:(Scene *)scene
+              didFinishAddingScene:(Piece *)piece
 {
     NSLog(@"ReadSceneViewController_Adding scene");
     [self dismissViewControllerAnimated:NO completion:^{
@@ -503,13 +469,13 @@
     
     if ([invitingType isEqualToString:INVITED_CONTRIBUTORS_STRING])
     {
-        self.scene.story.writeAccess = readWriteAccess;
+        self.piece.story.writeAccess = readWriteAccess;
     }
     else if ([invitingType isEqualToString:INVITED_VIEWERS_STRING]) 
     {
-        self.scene.story.readAccess = readWriteAccess;
+        self.piece.story.readAccess = readWriteAccess;
     }
-    [Story editStory:self.scene.story];
+    [Story editStory:self.piece.story];
     [self.navigationController popViewControllerAnimated:YES];
     [self refreshView];
 }

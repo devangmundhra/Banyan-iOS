@@ -9,6 +9,8 @@
 #import "AFHTTPClient.h"
 #import "AFHTTPRequestOperation.h"
 
+#define BANYAN_API_CLASS_URL(__class__) [NSString stringWithFormat:@"%@/", __class__]
+#define BANYAN_API_OBJECT_URL(__class__, __objectId__) [NSString stringWithFormat:@"%@/%@/?format=json", __class__, __objectId__]
 #define BANYAN_API_GET_OBJECT_LINK_URL() @"link/"
 #define BANYAN_API_GET_PERMISSIONS(__class__) [NSString stringWithFormat:@"permission/%@", __class__]
 #define BANYAN_API_GET_USER_STORIES(__user__) [NSString stringWithFormat:@"permission/user/%@/?format=json", __user__.userId]

@@ -7,7 +7,7 @@
 //
 
 #import "SettingsTableViewController.h"
-#import "User.h"
+#import "User+Edit.h"
 
 @interface SettingsTableViewController ()
 

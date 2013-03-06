@@ -8,10 +8,9 @@
 
 #import "Story+Stats.h"
 #import "User+Edit.h"
-#import "StoryDocuments.h"
 #import "Story+Edit.h"
 #import "AFParseAPIClient.h"
-#import "Activity.h"
+#import "Activity+Create.h"
 
 @implementation Story (Stats)
 
@@ -29,18 +28,15 @@
     User *currentUser = [User currentUser];
     if (!currentUser)
         return;
+
+    Activity *activity = [Activity activityWithType:kBNActivityTypeView
+                                           fromUser:currentUser.userId
+                                             toUser:currentUser.userId
+                                            pieceId:nil
+                                            storyId:story.storyId];
+    [Activity createActivity:activity];
     
-    INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_NUM_VIEWS, 1);
-    BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:story.storyId storyId:story.storyId];
-    BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionCreate dependencies:nil];
-    activityOp.action.context = [Activity activityWithType:kBNActivityTypeView
-                                                  fromUser:currentUser.userId
-                                                    toUser:currentUser.userId
-                                                   sceneId:nil
-                                                   storyId:story.storyId];
-    ADD_OPERATION_TO_QUEUE(activityOp);
-    
-    story.viewed = YES;
+    story.viewed = [NSNumber numberWithBool:YES];
     story.numberOfViews = [NSNumber numberWithInt:([story.numberOfViews intValue] + 1)];
 }
 
@@ -52,36 +48,31 @@
     
     NSMutableArray *likers = [story.likers mutableCopy];
     
+    Activity *activity = nil;
     if (story.liked) {
         // unlike story
-        INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_NUM_LIKES, -1);        
-        story.liked = NO;
+        story.liked = [NSNumber numberWithBool:NO];
         story.numberOfLikes = [NSNumber numberWithInt:([story.numberOfLikes intValue] - 1)];
-        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:story.storyId storyId:story.storyId];
-        BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionDelete dependencies:nil];
-        activityOp.action.context = [Activity activityWithType:kBNActivityTypeLike
-                                                      fromUser:currentUser.userId
-                                                        toUser:currentUser.userId
-                                                       sceneId:nil
-                                                       storyId:story.storyId];
-        ADD_OPERATION_TO_QUEUE(activityOp);
+        activity = [Activity activityWithType:kBNActivityTypeUnlike
+                                     fromUser:currentUser.userId
+                                       toUser:currentUser.userId
+                                      pieceId:nil
+                                      storyId:story.storyId];
         [likers removeObject:currentUser.userId];
     }
     else {
         // like story
-        INCREMENT_STORY_ATTRIBUTE_OPERATION(story, STORY_NUM_LIKES, 1);
-        story.liked = YES;
+        story.liked = [NSNumber numberWithBool:YES];
         story.numberOfLikes = [NSNumber numberWithInt:([story.numberOfLikes intValue] + 1)];
-        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:story.storyId storyId:story.storyId];
-        BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionCreate dependencies:nil];
-        activityOp.action.context = [Activity activityWithType:kBNActivityTypeLike
-                                                      fromUser:currentUser.userId
-                                                        toUser:currentUser.userId
-                                                       sceneId:nil
-                                                       storyId:story.storyId];
-        ADD_OPERATION_TO_QUEUE(activityOp);
+        activity = [Activity activityWithType:kBNActivityTypeLike
+                                     fromUser:currentUser.userId
+                                       toUser:currentUser.userId
+                                      pieceId:nil
+                                      storyId:story.storyId];
+
         [likers addObject:currentUser.userId];
     }
+    [Activity createActivity:activity];
     story.likers = likers;
 }
 
@@ -91,30 +82,26 @@
     if (!currentUser)
         return;
     
+    Activity *activity = nil;
     if (story.favourite) {
         // unfavourite story
-        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:story.storyId storyId:story.storyId];
-        BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionDelete dependencies:nil];
-        activityOp.action.context = [Activity activityWithType:kBNActivityTypeFavourite
-                                                      fromUser:currentUser.userId
-                                                        toUser:currentUser.userId
-                                                       sceneId:nil
-                                                       storyId:story.storyId];
-        ADD_OPERATION_TO_QUEUE(activityOp);
+        activity = [Activity activityWithType:kBNActivityTypeUnfavourite
+                                     fromUser:currentUser.userId
+                                       toUser:currentUser.userId
+                                      pieceId:nil
+                                      storyId:story.storyId];
+        story.favourite = [NSNumber numberWithBool:NO];
     }
     else {
         // favourite story
-        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:story.storyId storyId:story.storyId];
-        BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionCreate dependencies:nil];
-        activityOp.action.context = [Activity activityWithType:kBNActivityTypeFavourite
-                                                      fromUser:currentUser.userId
-                                                        toUser:currentUser.userId
-                                                       sceneId:nil
-                                                       storyId:story.storyId];
-        ADD_OPERATION_TO_QUEUE(activityOp);
+        activity = [Activity activityWithType:kBNActivityTypeFavourite
+                                     fromUser:currentUser.userId
+                                       toUser:currentUser.userId
+                                      pieceId:nil
+                                      storyId:story.storyId];
+        story.favourite = [NSNumber numberWithBool:YES];
     }
-    
-    story.favourite = !story.favourite;
+    [Activity createActivity:activity];
 }
 
 - (void) updateStoryStats
@@ -168,7 +155,7 @@
                                              NSDictionary *numViewFields = responseObject;
                                              NSNumber *views = [numViewFields objectForKey:@"count"];
                                              if ([views integerValue] > 0) {
-                                                 self.viewed = YES;
+                                                 self.viewed = [NSNumber numberWithBool:YES];
                                              }
                                          }
                                          failure:AF_PARSE_ERROR_BLOCK()];
@@ -205,7 +192,7 @@
                                          User *currentUser = [User currentUser];
                                          if (currentUser) {
                                              if ([self.likers containsObject:currentUser.userId]) {
-                                                 self.liked = YES;
+                                                 self.liked = [NSNumber numberWithBool:YES];
                                              }
                                          }
                                      }
@@ -240,7 +227,7 @@
                                          NSDictionary *numFavFields = responseObject;
                                          NSNumber *favs = [numFavFields objectForKey:@"count"];
                                          if ([favs integerValue] > 0) {
-                                             self.favourite = YES;
+                                             self.favourite = [NSNumber numberWithBool:YES];
                                          }
                                      }
                                      failure:AF_PARSE_ERROR_BLOCK()];

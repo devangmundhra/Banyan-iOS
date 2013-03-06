@@ -11,11 +11,7 @@
 #import "UserLoginViewController.h"
 #import "User.h"
 
-@interface UserManagementModule : NSObject <UserLoginViewControllerDelegate> {
-    UIViewController *owningViewController;
-}
-
-@property (nonatomic, strong) UIViewController *owningViewController;
+@interface UserManagementModule : NSObject <UserLoginViewControllerDelegate>
 
 - (BOOL)isUserSignedIntoApp;
 - (void)addLoginTabbar;

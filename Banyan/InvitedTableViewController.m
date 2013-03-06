@@ -12,9 +12,6 @@
 
 @property (nonatomic, strong) NSArray *listContacts;
 @property (nonatomic, strong) NSMutableArray *filteredListContacts;
-
-@property (weak, nonatomic) UserManagementModule *userManagementModule;
-
 @property (strong, nonatomic) NSMutableArray *contactIndex;
 @property (strong, nonatomic) IBOutlet UISearchDisplayController *searchDisplayController;
 @property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
@@ -23,7 +20,6 @@
 @implementation InvitedTableViewController
 @synthesize listContacts = _listContacts;
 @synthesize filteredListContacts = _filteredListContacts;
-@synthesize userManagementModule = _userManagementModule;
 @synthesize objectContext = _objectContext;
 @synthesize selectedContacts = _selectedContacts;
 @synthesize delegate = _delegate;
@@ -114,14 +110,6 @@
     }
 }
 
-- (UserManagementModule *)userManagementModule
-{
-    BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
-    delegate.userManagementModule.owningViewController = self;
-    
-    return delegate.userManagementModule;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -145,7 +133,6 @@
     self.listContacts = nil;
     self.filteredListContacts = nil;
     self.selectedContacts = nil;
-    self.userManagementModule = nil;
     self.delegate = nil;
     self.invitationType = nil;
     self.contactIndex = nil;

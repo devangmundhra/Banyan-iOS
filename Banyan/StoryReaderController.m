@@ -6,13 +6,12 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "ScenesViewController.h"
-#import "ParseConnection.h"
+#import "StoryReaderController.h"
 #import "Story+Stats.h"
-#import "StoryDocuments.h"
+#import "Story+Permissions.h"
 #import "MBProgressHUD.h"
 
-@interface ScenesViewController ()
+@interface StoryReaderController ()
 
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *addSceneButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *editSceneButton;
@@ -21,29 +20,18 @@
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *likeButton;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *shareButton;
 
-@property (weak, nonatomic) UserManagementModule *userManagementModule;
-
 @end
 
-@implementation ScenesViewController
+@implementation StoryReaderController
 @synthesize pageViewController = _pageViewController;
 @synthesize story = _story;
 @synthesize delegate = _delegate;
 @synthesize readSceneControllerEditMode = _readSceneControllerEditMode;
-@synthesize userManagementModule = _userManagementModule;
 @synthesize addSceneButton = _addSceneButton;
 @synthesize editSceneButton = _editSceneButton;
 @synthesize hideTextButton = _hideTextButton;
 @synthesize likeButton = _likeButton;
 @synthesize shareButton = _shareButton;
-
-- (UserManagementModule *)userManagementModule
-{
-    BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
-    delegate.userManagementModule.owningViewController = self;
-    
-    return delegate.userManagementModule;
-}
 
 // First page of the view controller
 - (UIViewController *)startStoryTelling
@@ -89,6 +77,7 @@
 //    likeLabel.text = @"Like";
 //    self.likeButton = [[UIBarButtonItem alloc] initWithCustomView:likeLabel];
     self.likeButton = [[UIBarButtonItem alloc] initWithTitle:@"Like" style:UIBarButtonItemStyleBordered target:nil action:nil];
+    self.likeButton.possibleTitles = [NSSet setWithObjects:@"Like", @"Unlike", nil];
     self.shareButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:nil action:nil];
     [self.navigationController setToolbarHidden:YES animated:YES];
     [[self.navigationController toolbar] setTranslucent:YES];
@@ -131,8 +120,9 @@
 }
 
 - (void) refreshView
-{    
-    if ([self.userManagementModule isUserSignedIntoApp] && self.story.canContribute) {
+{
+    UserManagementModule *userManagementModule = [(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate] userManagementModule];
+    if ([userManagementModule isUserSignedIntoApp] && self.story.canContribute) {
         // User signed in AND User can Contribute
         
         NSMutableArray *rightSideButtons = [[NSMutableArray alloc] initWithCapacity:5];
@@ -208,7 +198,7 @@
     NSUInteger index = [self indexOfViewController:(ReadSceneViewController *)viewController];
     index++;
     
-    if (index >= [self.story.lengthOfStory unsignedIntegerValue]) {
+    if (index >= [self.story.length unsignedIntegerValue]  || index == NSNotFound) {
         NSLog(@"End of story reached for story %@", self.story.title);
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.mode = MBProgressHUDModeText;
@@ -226,7 +216,9 @@
       viewControllerBeforeViewController:(UIViewController *)viewController
 {
     NSUInteger index = [self indexOfViewController:(ReadSceneViewController *)viewController];
-    if (index <= 0) {
+    NSLog(@"index: %d notfound: %d", index, NSNotFound);
+    
+    if (index == 0 || index == NSNotFound) {
         NSLog(@"Beginning of story reached for story %@", self.story.title);
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.mode = MBProgressHUDModeText;
@@ -243,13 +235,13 @@
 
 - (NSUInteger)indexOfViewController:(ReadSceneViewController *)viewController
 {
-    return [self.story.scenes indexOfObject:viewController.scene];
+    return [self.story.pieces indexOfObject:viewController.piece];
 }
 
 - (ReadSceneViewController *)viewControllerAtIndex:(NSUInteger)index
 {
     ReadSceneViewController *readSceneViewController = [[ReadSceneViewController alloc] init];
-    readSceneViewController.scene = [self.story.scenes objectAtIndex:index];
+    readSceneViewController.piece = [self.story.pieces objectAtIndex:index];
     readSceneViewController.delegate = self;
     [self setNavBarButtonsWithTargetActionsFromReadSceneViewController:readSceneViewController];
 
@@ -260,20 +252,16 @@
     return readSceneViewController;
 }
 
-- (Scene *)sceneAtSceneNumberInStory:(NSNumber *)sceneNumber
+- (Piece *)pieceAtPieceNumber:(NSUInteger)pieceNumber
 {
-    // Assuming scenes is already sorted on sceneNumberInStory
-    for (Scene *scene in self.story.scenes)
-        if (scene.sceneNumberInStory == sceneNumber)
-            return scene;
-    
-    return [self.story.scenes objectAtIndex:0];
+    // Pieces are already sorted on pieceNumber    
+    return [self.story.pieces objectAtIndex:pieceNumber-1];
 }
 
-- (ReadSceneViewController *)viewControllerForSceneNumberInStory:(NSNumber *)sceneNumber
+- (ReadSceneViewController *)viewControllerForPieceNumberInStory:(NSUInteger)pieceNumber
 {
     ReadSceneViewController *readSceneViewController = [[ReadSceneViewController alloc] init];
-    readSceneViewController.scene = [self sceneAtSceneNumberInStory:sceneNumber];
+    readSceneViewController.piece = [self pieceAtPieceNumber:pieceNumber];
     readSceneViewController.delegate = self;
     [self setNavBarButtonsWithTargetActionsFromReadSceneViewController:readSceneViewController];
     return readSceneViewController;
@@ -284,9 +272,9 @@
     self.addSceneButton.target = self.editSceneButton.target = self.hideTextButton.target = readSceneViewController;
     self.likeButton.target = self.shareButton.target = readSceneViewController;
     
-    self.addSceneButton.action = @selector(addScene:);
-    self.editSceneButton.action = @selector(editScene:);
-    self.hideTextButton.action = @selector(toggleSceneTextDisplay:);
+    self.addSceneButton.action = @selector(addPiece:);
+    self.editSceneButton.action = @selector(editPiece:);
+    self.hideTextButton.action = @selector(togglePieceTextDisplay:);
     
     self.likeButton.action = @selector(like:);
     self.shareButton.action = @selector(share:);
@@ -294,29 +282,42 @@
 #pragma mark ReadSceneViewControllerDelegate
 - (void)doneWithReadSceneViewController:(ReadSceneViewController *)readSceneViewController
 {
-    [StoryDocuments saveStoryToDisk:self.story];
-    [self.delegate scenesViewContollerDone:self];
+    [self.delegate storyReaderContollerDone:self];
     // Dismiss the read scenes page view controller
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)readSceneViewControllerAddedNewScene:(ReadSceneViewController *)readSceneViewController
 {
-    NSArray *vc = [NSArray arrayWithObject:[self pageViewController:self.pageViewController viewControllerAfterViewController:readSceneViewController]];
+//    NSArray *vc = [NSArray arrayWithObject:[self pageViewController:self.pageViewController viewControllerAfterViewController:readSceneViewController]];
+    NSArray *vc = [NSArray arrayWithObject:[self viewControllerForPieceNumberInStory:[self.story.length unsignedIntegerValue]]];
     [self.pageViewController setViewControllers:vc direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
 }
 
 - (void)readSceneViewControllerDeletedScene:(ReadSceneViewController *)readSceneViewController
 {
+    NSUInteger deletedPieceNumber = [readSceneViewController.piece.pieceNumber unsignedIntegerValue];
+    deletedPieceNumber = MAX(deletedPieceNumber, [self.story.length unsignedIntegerValue]);
+    
     // Change this to come to the scene before or after the deleted scene
-    NSArray *vc = [NSArray arrayWithObject:[self viewControllerForSceneNumberInStory:[NSNumber numberWithInt:0]]];
-//    NSArray *vc = [NSArray arrayWithObject:[self pageViewController:self.pageViewController viewControllerBeforeViewController:readSceneViewController]];
-    [self.pageViewController setViewControllers:vc direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:nil];
+    UIViewController *viewController = [self viewControllerForPieceNumberInStory:deletedPieceNumber];
+    if (viewController) {
+        // Get the previous piece
+        NSArray *vc = [NSArray arrayWithObject:viewController];
+        [self.pageViewController setViewControllers:vc direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
+    } else {
+        // No more pieces left
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.mode = MBProgressHUDModeText;
+        hud.labelText = @"No more pieces left";
+        hud.detailsLabelText = @"Going back to story list";
+        [self prepareToGoToStoryList];
+    }
 }
 
 - (void)readSceneViewControllerDeletedStory:(ReadSceneViewController *)readSceneViewController
 {
-    [self.delegate scenesViewContollerDone:self];
+    [self.delegate storyReaderContollerDone:self];
     // Dismiss the read scenes page view controller
     [self dismissViewControllerAnimated:YES completion:nil];
 }

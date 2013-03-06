@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
-#import "Scene.h"
+#import "Piece.h"
 #import "Story.h"
 #import "BNLocationManager.h"
 #import "ComposeTextViewController.h"
@@ -25,10 +25,10 @@ typedef enum {add, edit} EditModes;
 - (void) modifySceneViewControllerDeletedScene:(ModifySceneViewController *)controller;
 
 - (void) modifySceneViewController:(ModifySceneViewController *)controller
-             didFinishEditingScene:(Scene *)scene;
+             didFinishEditingScene:(Piece *)piece;
 
 - (void) modifySceneViewController:(ModifySceneViewController *)controller
-              didFinishAddingScene:(Scene *)scene;
+              didFinishAddingScene:(Piece *)piece;
 
 - (void) modifySceneViewControllerDeletedStory:(ModifySceneViewController *)controller;
 
@@ -37,7 +37,7 @@ typedef enum {add, edit} EditModes;
 @interface ModifySceneViewController : UIViewController <UITextViewDelegate, UINavigationControllerDelegate, ComposeTextViewControllerDelegate, UIAlertViewDelegate,
     UIImagePickerControllerDelegate, UINavigationBarDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate, BNLocationManagerDelegate>
 
-@property (strong, nonatomic) Scene *scene;
+@property (strong, nonatomic) Piece *piece;
 @property (nonatomic) EditModes editMode;
 @property (weak, nonatomic) id <ModifySceneViewControllerDelegate> delegate;
 

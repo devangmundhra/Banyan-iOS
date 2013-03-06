@@ -7,74 +7,44 @@
 //
 
 #import "Story+Delete.h"
+#import "AFBanyanAPIClient.h"
 #import "Story_Defines.h"
-#import "Scene_Defines.h"
-#import "ParseConnection.h"
-#import "StoryDocuments.h"
-#import "Scene+Delete.h"
+#import "BanyanDataSource.h"
+#import "File.h"
 
 @implementation Story (Delete)
 
-+ (void) deleteStoryFromDisk:(Story *)story
++ (void) deleteStory:(Story *)story
 {
-    NSLog(@"%s Story id: %@", __PRETTY_FUNCTION__, story.storyId);
-    [[NSNotificationCenter defaultCenter] postNotificationName:STORY_DELETE_STORY_NOTIFICATION
-                                                        object:self
-                                                      userInfo:[NSDictionary dictionaryWithObject:story
-                                                                                           forKey:@"Story"]];
-    
-    // Delete Object
-    if (story.image || story.imageURL)
-    {
-        NSLog(@"Story Image still needs to be deleted");
-    }
-    
-    [StoryDocuments deleteStoryFromDisk:story];
-    story = nil;
-}
-
-+ (void) deleteStoryFromServerWithId:(NSString *)storyId
-{
+    NSString *storyId = story.storyId;
     NSLog(@"%s Story id: %@", __PRETTY_FUNCTION__, storyId);
-
-    NSDictionary *jsonDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:
-                                    storyId, SCENE_STORY, nil];
     
-    NSError *error = nil;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
-    
-    if (!jsonData) {
-        NSLog(@"NSJSONSerialization failed %@", error);
-    }
-    
-    NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    
-    NSMutableDictionary *getScenesForStory = [NSMutableDictionary dictionaryWithObject:json forKey:@"where"];
-    
-    [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(@"Scene")
-                                  parameters:getScenesForStory
-                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                         NSDictionary *response = responseObject;
-                                         NSArray *scenes = [response objectForKey:@"results"];
-                                         for (NSDictionary *scene in scenes)
-                                         {
-                                             [Scene removeSceneWithId:[scene objectForKey:@"objectId"]];
+    [[AFBanyanAPIClient sharedClient] deletePath:BANYAN_API_OBJECT_URL(@"Story", storyId)
+                                      parameters:nil
+                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                             NSLog(@"Story with id %@ deleted", storyId);
                                          }
-                                         
-                                     }
-                                     failure:AF_PARSE_ERROR_BLOCK()];
+                                         failure:nil];
     
-    [Story removeStoryWithId:storyId];
+    NSManagedObjectContext *storyContext = story.managedObjectContext;
+    NSManagedObjectContext *storyContextParent = story.managedObjectContext.parentContext;
+    
+    [storyContext performBlockAndWait:^{
+        [storyContext deleteObject:story];
+        NSError *error = nil;
+        if (![storyContext save:&error]) {
+            NSLog(@"Error: %@", error);
+            assert(false);
+        }
+    }];
+    
+    [storyContextParent performBlockAndWait:^{
+        NSError *error = nil;
+        if (![storyContextParent save:&error]) {
+            NSLog(@"Error: %@", error);
+            assert(false);
+        }
+    }];
 }
 
-+ (void) removeStoryWithId:(NSString *)storyId
-{
-    [[AFParseAPIClient sharedClient] deletePath:PARSE_API_OBJECT_URL(@"Story", storyId)
-                                     parameters:nil
-                                        success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                            NSLog(@"Story with id %@ deleted", storyId);
-                                            NETWORK_OPERATION_COMPLETE();
-                                        }
-                                        failure:BN_ERROR_BLOCK_OPERATION_INCOMPLETE()];
-}
 @end

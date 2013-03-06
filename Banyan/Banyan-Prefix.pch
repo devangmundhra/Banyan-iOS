@@ -14,6 +14,8 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
     #import <MobileCoreServices/UTCoreTypes.h>
+    #import <RestKit/RestKit.h>
+    #import <RestKit/CoreData.h>
     #import "TestFlight.h"
 #endif
 

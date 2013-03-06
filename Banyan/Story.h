@@ -1,55 +1,61 @@
 //
 //  Story.h
-//  Storied
+//  Banyan
 //
-//  Created by Devang Mundhra on 4/14/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Created by Devang Mundhra on 1/5/13.
+//
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreLocation/CoreLocation.h>
+#import <CoreData/CoreData.h>
 
-@class Scene, User;
+@class Piece, User;
 
-@interface Story : NSObject <NSCoding>
+@interface Story : NSManagedObject
 
-@property (assign) BOOL canContribute;
-@property (assign) BOOL canView;
-@property (assign) BOOL isInvited;
-@property (strong, nonatomic) id image;
-@property (strong, nonatomic) NSNumber * lengthOfStory;
-@property (strong, nonatomic) NSString * storyId;
-@property (strong, nonatomic) NSString * title;
-@property (strong, nonatomic) NSString * imageURL;
-@property (strong, nonatomic) NSArray *contributors;
-@property (strong, nonatomic) NSDictionary *writeAccess;
-@property (strong, nonatomic) NSDictionary *readAccess;
-@property (strong, nonatomic) Scene *startingScene;
-@property (strong, nonatomic) NSArray *scenes;
-@property (strong, nonatomic) NSDate * dateCreated;
-@property (strong, nonatomic) NSDate * dateModified;
-@property (strong, nonatomic) NSNumber * numberOfContributors;
-@property (strong, nonatomic) NSNumber * numberOfLikes;
-@property (strong, nonatomic) NSNumber * numberOfViews;
-@property (strong, nonatomic) CLLocation *location;
-@property (strong, nonatomic) NSString *geocodedLocation;
-@property (strong, nonatomic) User *author;
-@property (strong, nonatomic) NSString *tags;
+@property (nonatomic, retain) NSNumber * canContribute;
+@property (nonatomic, retain) NSNumber * canView;
+@property (nonatomic, retain) id contributors;
+@property (nonatomic, retain) NSDate * createdAt;
+@property (nonatomic, retain) NSNumber * favourite;
+@property (nonatomic, retain) NSString * geocodedLocation;
+@property (nonatomic, retain) NSNumber * imageChanged;
+@property (nonatomic, retain) NSString * imageName;
+@property (nonatomic, retain) NSString * imageURL;
+@property (nonatomic, retain) NSNumber * initialized;
+@property (nonatomic, retain) NSNumber * isInvited;
+@property (nonatomic, retain) NSNumber * isLocationEnabled;
+@property (nonatomic, retain) NSNumber * latitude;
+@property (nonatomic, retain) NSNumber * length;
+@property (nonatomic, retain) NSNumber * liked;
+@property (nonatomic, retain) id likers;
+@property (nonatomic, retain) NSNumber * location;
+@property (nonatomic, retain) NSNumber * longitude;
+@property (nonatomic, retain) NSNumber * numberOfContributors;
+@property (nonatomic, retain) NSNumber * numberOfLikes;
+@property (nonatomic, retain) NSNumber * numberOfViews;
+@property (nonatomic, retain) id readAccess;
+@property (nonatomic, retain) NSNumber * storyBeingRead;
+@property (nonatomic, retain) NSString * storyId;
+@property (nonatomic, retain) NSString * tags;
+@property (nonatomic, retain) NSString * title;
+@property (nonatomic, retain) NSDate * updatedAt;
+@property (nonatomic, retain) NSNumber * viewed;
+@property (nonatomic, retain) id writeAccess;
+@property (nonatomic, retain) User *author;
+@property (nonatomic, retain) NSOrderedSet *pieces;
+@end
 
-@property BOOL isLocationEnabled;
-@property BOOL liked;
-@property BOOL favourite;
-@property BOOL viewed;
-@property BOOL initialized;
-@property (strong, nonatomic) NSArray *likers;
+@interface Story (CoreDataGeneratedAccessors)
 
-// Session variables. No need to archive
-@property BOOL imageChanged;
-@property BOOL storyBeingRead;
-
-- (NSString *)description;
-- (NSMutableDictionary *)getAttributesInDictionary;
-- (void) fillAttributesFromDictionary:(NSDictionary *)dict;
-- (void) resetPermission;
-
+- (void)insertObject:(Piece *)value inPiecesAtIndex:(NSUInteger)idx;
+- (void)removeObjectFromPiecesAtIndex:(NSUInteger)idx;
+- (void)insertPieces:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
+- (void)removePiecesAtIndexes:(NSIndexSet *)indexes;
+- (void)replaceObjectInPiecesAtIndex:(NSUInteger)idx withObject:(Piece *)value;
+- (void)replacePiecesAtIndexes:(NSIndexSet *)indexes withPieces:(NSArray *)values;
+- (void)addPiecesObject:(Piece *)value;
+- (void)removePiecesObject:(Piece *)value;
+- (void)addPieces:(NSOrderedSet *)values;
+- (void)removePieces:(NSOrderedSet *)values;
 @end

@@ -11,14 +11,19 @@
 #import "AFParseAPIClient.h"
 #import "AFBanyanAPIClient.h"
 #import "StoryListTableViewController.h"
+#import "User+Edit.h"
 
 @implementation BanyanAppDelegate
 
 @synthesize window = _window;
 @synthesize userManagementModule;
+@synthesize userContentMOCtx = _userContentMOCtx;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
+    // Normal launch stuff
+    
     [Parse setApplicationId:PARSE_APP_ID
                   clientKey:PARSE_CLIENT_KEY];
     
@@ -42,6 +47,16 @@
 #endif
     
     [TestFlight takeOff:TESTFLIGHT_BANYAN_TEAM_TOKEN];
+    
+    //let AFNetworking manage the activity indicator
+    [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
+    
+    // RestKit initialization
+    RKLogConfigureByName("RestKit/Network*", RKLogLevelTrace);
+    RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelTrace);
+    RKLogConfigureByName("RestKit/CoreData", RKLogLevelTrace);
+    
+    [self restKitCoreDataInitialization];
     
     if (![[AFParseAPIClient sharedClient] isReachable])
         NSLog(@"Parse not reachable");
@@ -79,6 +94,13 @@
      UIRemoteNotificationTypeAlert];
     
     return YES;
+}
+
+void uncaughtExceptionHandler(NSException *exception)
+{
+    NSLog(@"CRASH: %@", exception);
+    NSLog(@"Stack Trace: %@", [exception callStackSymbols]);
+    // Internal error reporting
 }
 
 #pragma mark customize appearnaces
@@ -363,5 +385,50 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [self.userManagementModule logout];
 }
 
+- (void) restKitCoreDataInitialization
+{    
+    // Initialize managed object store
+    NSManagedObjectModel *managedObjectModel = [NSManagedObjectModel mergedModelFromBundles:nil];
+    RKManagedObjectStore *managedObjectStore = [[RKManagedObjectStore alloc] initWithManagedObjectModel:managedObjectModel];
+    /**
+     Complete Core Data stack initialization
+     */
+    [managedObjectStore createPersistentStoreCoordinator];
+    NSString *storePath = [RKApplicationDataDirectory() stringByAppendingPathComponent:@"Banyan.sqlite"];
+    NSError *error;
+    NSPersistentStore *persistentStore = [managedObjectStore addSQLitePersistentStoreAtPath:storePath
+                                                                     fromSeedDatabaseAtPath:nil
+                                                                          withConfiguration:nil options:nil
+                                                                                      error:&error];
+    NSAssert(persistentStore, @"Failed to add persistent store with error: %@", error);
+    
+    // Create the managed object contexts
+    [managedObjectStore createManagedObjectContexts];
+    
+    // Configure a managed object cache to ensure we do not create duplicate objects
+    managedObjectStore.managedObjectCache = [[RKInMemoryManagedObjectCache alloc] initWithManagedObjectContext:managedObjectStore.persistentStoreManagedObjectContext];
+    
+//    self.userContentMOCtx = [managedObjectStore newChildManagedObjectContextWithConcurrencyType:NSPrivateQueueConcurrencyType];
+
+//    self.userContentMOCtx = managedObjectStore.mainQueueManagedObjectContext;
+    
+    self.userContentMOCtx = [managedObjectStore persistentStoreManagedObjectContext];
+    
+    NSLog(@"\nPersistentCtx: %@\nMainCtx: %@\nUserCtx: %@\n", managedObjectStore.persistentStoreManagedObjectContext, managedObjectStore.mainQueueManagedObjectContext, self.userContentMOCtx);
+    
+    [RKManagedObjectStore setDefaultStore:managedObjectStore];
+}
+
+// MISCELLANEOUS METHODS
++ (UIViewController*) topMostController
+{
+    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    
+    while (topController.presentedViewController) {
+        topController = topController.presentedViewController;
+    }
+    
+    return topController;
+}
 @end
 

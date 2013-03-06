@@ -13,7 +13,7 @@ NSString *const BNUserFollowingChangedNotification = @"io.banyan.Banyan:UserFoll
 NSString *const BNUserLogInNotification = @"io.banyan.Banyan:UserLoginNotification";
 NSString *const BNUserLogOutNotification = @"io.banyan.Banyan:UserLogoutNotification";
 NSString *const BNFBSessionStateChangedNotification = @"io.banyan.Banyan:FBSessionStateChangedNotification";
-NSString *const BNDataSourceUpdatedNotification = @"io.banyan.Banyan:DataSourceUpdated";
+NSString *const BNStoryListRefreshedNotification = @"io.banyan.Banyan:StoryListRefreshed";
 
 #pragma mark - NSUserDefaults
 NSString *const BNUserDefaultsFacebookFriends = @"io.banyan.Banyan.userDefaults.facebookFriends";
@@ -33,12 +33,12 @@ NSString *const kBNStoryPrivacyScopePublic = @"Public";
 NSString *const kBNStoryPrivacyInviteeList = @"InviteeList";
 NSString *const kBNStoryPrivacyInvitedFacebookFriends = @"InvitedFacebookFriends";
 
-#pragma mark - PFObject Scene Class
+#pragma mark - PFObject Piece Class
 // Class key
-NSString *const kBNSceneClassKey = @"Scene";
+NSString *const kBNPieceClassKey = @"Piece";
 
 // Field keys
-NSString *const kBNSceneIdKey    = @"sceneId";
+NSString *const kBNPieceIdKey    = @"pieceId";
 
 #pragma mark - Activity Class
 // Class key
@@ -48,13 +48,20 @@ NSString *const kBNActivityClassKey = @"Activity";
 NSString *const kBNActivityTypeKey        = @"type";
 NSString *const kBNActivityFromUserKey    = @"fromUser";
 NSString *const kBNActivityToUserKey      = @"toUser";
-NSString *const kBNActivitySceneKey       = @"sceneId";
+NSString *const kBNActivityPieceKey       = @"pieceId";
 NSString *const kBNActivityStoryKey       = @"storyId";
 
 // Type values
 NSString *const kBNActivityTypeLike       = @"like";
+NSString *const kBNActivityTypeUnlike     = @"unlike";
 NSString *const kBNActivityTypeFollowUser = @"followUser";
+NSString *const kBNActivityTypeUnfollowUser = @"unfollowUser";
 NSString *const kBNActivityTypeFavourite  = @"favourite";
+NSString *const kBNActivityTypeUnfavourite  = @"unfavourite";
 NSString *const kBNActivityTypeView       = @"view";
 NSString *const kBNActivityTypeComment    = @"comment";
 NSString *const kBNActivityTypeJoined     = @"joined";
+
+#pragma mark - PFObject User Class
+// Class key
+NSString *const kBNUserClassKey           = @"User";

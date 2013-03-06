@@ -1,121 +1,110 @@
 //
-//  Scene+Stats.m
+//  Piece+Stats.m
 //  Storied
 //
 //  Created by Devang Mundhra on 4/26/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "Scene+Stats.h"
-#import "Scene+Edit.h"
+#import "Piece+Stats.h"
+#import "Piece+Edit.h"
 #import "User+Edit.h"
 #import "AFParseAPIClient.h"
-#import "Activity.h"
+#import "Activity+Create.h"
 
-@implementation Scene (Stats)
+@implementation Piece (Stats)
 
 
-+ (void) viewedScene:(Scene *)scene
++ (void) viewedPiece:(Piece *)piece
 {
-    if (!scene) {
-        NSLog(@"%s --ERROR-- No scene available!!", __PRETTY_FUNCTION__);
+    if (!piece) {
+        NSLog(@"%s --ERROR-- No piece available!!", __PRETTY_FUNCTION__);
         return;
     }
     
-    if (scene.viewed || !scene.initialized)
+    if (piece.viewed || !piece.initialized)
         return;
     
     User *currentUser = [User currentUser];
     if (!currentUser)
         return;
     
-    BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:scene.sceneId storyId:scene.story.storyId];
-    BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionCreate dependencies:nil];
-    activityOp.action.context = [Activity activityWithType:kBNActivityTypeView
-                                                  fromUser:currentUser.userId
-                                                    toUser:currentUser.userId
-                                                   sceneId:scene.sceneId storyId:nil];
-    ADD_OPERATION_TO_QUEUE(activityOp);
+    Activity *activity = [Activity activityWithType:kBNActivityTypeView
+                                           fromUser:currentUser.userId
+                                             toUser:currentUser.userId
+                                            pieceId:piece.pieceId
+                                            storyId:nil];
+    [Activity createActivity:activity];
     
-    scene.viewed = YES;
-    scene.numberOfViews = [NSNumber numberWithInt:([scene.numberOfViews intValue] + 1)];    
+    piece.viewed = [NSNumber numberWithBool:YES];
+    piece.numberOfViews = [NSNumber numberWithInt:([piece.numberOfViews intValue] + 1)];    
     return;
 }
 
-+ (void) toggleLikedScene:(Scene *)scene
++ (void) toggleLikedPiece:(Piece *)piece
 {
     User *currentUser = [User currentUser];
     if (!currentUser)
         return;
     
-    NSMutableArray *likers = [scene.likers mutableCopy];
-    if (scene.liked) {
-        // unlike scene
-        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:scene.sceneId storyId:scene.story.storyId];
-        BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionDelete dependencies:nil];
-        activityOp.action.context = [Activity activityWithType:kBNActivityTypeLike
-                                                      fromUser:currentUser.userId
-                                                        toUser:currentUser.userId
-                                                       sceneId:scene.sceneId
-                                                       storyId:nil];
-        ADD_OPERATION_TO_QUEUE(activityOp);
+    NSMutableArray *likers = [piece.likers mutableCopy];
+    Activity *activity = nil;
+    if (piece.liked) {
+        // unlike piece
+        activity = [Activity activityWithType:kBNActivityTypeUnlike
+                                     fromUser:currentUser.userId
+                                       toUser:currentUser.userId
+                                      pieceId:piece.pieceId
+                                      storyId:nil];
         [likers removeObject:currentUser.userId];
         
-        scene.liked = NO;
-        scene.numberOfLikes = [NSNumber numberWithInt:([scene.numberOfLikes intValue] - 1)];
+        piece.liked = [NSNumber numberWithBool:NO];
+        piece.numberOfLikes = [NSNumber numberWithInt:([piece.numberOfLikes intValue] - 1)];
     }
     else {
-        // like scene
-        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:scene.sceneId storyId:scene.story.storyId];
-        BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionCreate dependencies:nil];
-        activityOp.action.context = [Activity activityWithType:kBNActivityTypeLike
-                                                      fromUser:currentUser.userId
-                                                        toUser:currentUser.userId
-                                                       sceneId:scene.sceneId
-                                                       storyId:nil];
-        ADD_OPERATION_TO_QUEUE(activityOp);
+        // like piece
+        activity = [Activity activityWithType:kBNActivityTypeLike
+                                     fromUser:currentUser.userId
+                                       toUser:currentUser.userId
+                                      pieceId:piece.pieceId
+                                      storyId:nil];
         [likers addObject:currentUser.userId];
         
-        scene.liked = YES;
-        scene.numberOfLikes = [NSNumber numberWithInt:([scene.numberOfLikes intValue] + 1)];
+        piece.liked = [NSNumber numberWithBool:YES];
+        piece.numberOfLikes = [NSNumber numberWithInt:([piece.numberOfLikes intValue] + 1)];
     }
-    
-    scene.likers = likers;
+    [Activity createActivity:activity];
+    piece.likers = likers;
 }
 
-+ (void) toggleFavouritedScene:(Scene *)scene
++ (void) toggleFavouritedPiece:(Piece *)piece
 {
     User *currentUser = [User currentUser];
     if (!currentUser)
         return;
-    
-    if (scene.favourite) {
-        // unfavourite scene
-        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:scene.sceneId storyId:scene.story.storyId];
-        BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionDelete dependencies:nil];
-        activityOp.action.context = [Activity activityWithType:kBNActivityTypeFavourite
-                                                      fromUser:currentUser.userId
-                                                        toUser:currentUser.userId
-                                                       sceneId:scene.sceneId
-                                                       storyId:nil];
-        ADD_OPERATION_TO_QUEUE(activityOp);
+    Activity *activity = nil;
+    if (piece.favourite) {
+        // unfavourite piece
+        activity = [Activity activityWithType:kBNActivityTypeUnfavourite
+                                     fromUser:currentUser.userId
+                                       toUser:currentUser.userId
+                                      pieceId:piece.pieceId
+                                      storyId:nil];
+        piece.favourite = [NSNumber numberWithBool:NO];
     }
     else {
-        // favourite scene
-        BNOperationObject *activityObj = [[BNOperationObject alloc] initWithObjectType:BNOperationObjectTypeActivity tempId:scene.sceneId storyId:scene.story.storyId];
-        BNOperation *activityOp = [[BNOperation alloc] initWithObject:activityObj action:BNOperationActionCreate dependencies:nil];
-        activityOp.action.context = [Activity activityWithType:kBNActivityTypeFavourite
-                                                      fromUser:currentUser.userId
-                                                        toUser:currentUser.userId
-                                                       sceneId:scene.sceneId
-                                                       storyId:nil];
-        ADD_OPERATION_TO_QUEUE(activityOp);
+        // favourite piece
+        activity = [Activity activityWithType:kBNActivityTypeFavourite
+                                    fromUser:currentUser.userId
+                                      toUser:currentUser.userId
+                                     pieceId:piece.pieceId
+                                     storyId:nil];
+        piece.favourite = [NSNumber numberWithBool:YES];
     }
-    
-    scene.favourite = !scene.favourite;
+    [Activity createActivity:activity];
 }
 
-- (void) updateSceneStats
+- (void) updatePieceStats
 {
     [self updateViews];
     [self updateLikes];
@@ -125,7 +114,7 @@
 # pragma mark views
 - (void) updateViews
 {
-    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.sceneId, kBNActivitySceneKey, kBNActivityTypeView, kBNActivityTypeKey, nil];
+    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.pieceId, kBNActivityPieceKey, kBNActivityTypeView, kBNActivityTypeKey, nil];
     
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
@@ -166,7 +155,7 @@
                                              NSDictionary *numViewFields = responseObject;
                                              NSNumber *views = [numViewFields objectForKey:@"count"];
                                              if ([views integerValue] > 0) {
-                                                 self.viewed = YES;
+                                                 self.viewed = [NSNumber numberWithBool:YES];
                                              }
                                          }
                                          failure:AF_PARSE_ERROR_BLOCK()];
@@ -176,7 +165,7 @@
 # pragma mark likes
 - (void) updateLikes
 {
-    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.sceneId, kBNActivitySceneKey, kBNActivityTypeLike, kBNActivityTypeKey, nil];
+    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.pieceId, kBNActivityPieceKey, kBNActivityTypeLike, kBNActivityTypeKey, nil];
     
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
@@ -203,7 +192,7 @@
                                          User *currentUser = [User currentUser];
                                          if (currentUser) {
                                              if ([self.likers containsObject:currentUser.userId]) {
-                                                 self.liked = YES;
+                                                 self.liked = [NSNumber numberWithBool:YES];
                                              }
                                          }
                                      }
@@ -217,7 +206,7 @@
     if (!currentUser) {
         return;
     }
-    NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:self.sceneId, kBNActivitySceneKey, kBNActivityTypeFavourite, kBNActivityTypeKey, currentUser.userId, kBNActivityFromUserKey, nil];
+    NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:self.pieceId, kBNActivityPieceKey, kBNActivityTypeFavourite, kBNActivityTypeKey, currentUser.userId, kBNActivityFromUserKey, nil];
     
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
@@ -238,7 +227,7 @@
                                          NSDictionary *numFavFields = responseObject;
                                          NSNumber *favs = [numFavFields objectForKey:@"count"];
                                          if ([favs integerValue] > 0) {
-                                             self.favourite = YES;
+                                             self.favourite = [NSNumber numberWithBool:YES];
                                          }
                                      }
                                      failure:AF_PARSE_ERROR_BLOCK()];

@@ -10,19 +10,18 @@
 #import "StoryListStoryCell.h"
 #import "Story+Create.h"
 #import "Story+Delete.h"
-#import "Scene+Create.h"
+#import "Piece+Create.h"
 #import "File+Create.h"
 #import "NewStoryViewController.h"
-#import "ScenesViewController.h"
+#import "StoryReaderController.h"
 #import "UserLoginViewController.h"
-#import "SSPullToRefresh.h"
 #import "MBProgressHUD.h"
-#import "BanyanDataSource.h"
 #import "SettingsTableViewController.h"
+#import "CoreDataTableViewController.h"
+#import "BanyanConnection.h"
 
-@interface StoryListTableViewController : TISwipeableTableViewController <NewStoryViewControllerDelegate, ScenesViewControllerDelegate, SSPullToRefreshViewDelegate, ModifySceneViewControllerDelegate>
+@interface StoryListTableViewController : CoreDataTableViewController <NewStoryViewControllerDelegate, StoryReaderControllerDelegate, ModifySceneViewControllerDelegate>
 
-@property (nonatomic, strong) NSMutableArray *dataSource;
 - (void)addSceneForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 @end
