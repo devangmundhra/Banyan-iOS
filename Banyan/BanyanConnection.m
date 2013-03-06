@@ -43,7 +43,7 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
         
         NSError *error = nil;
-        NSArray *stories = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+        NSArray *stories = [[RKManagedObjectStore defaultStore].persistentStoreManagedObjectContext executeFetchRequest:request error:&error];
         
         if (stories)
         {

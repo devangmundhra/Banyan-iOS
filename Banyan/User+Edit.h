@@ -14,6 +14,7 @@
 
 + (void) editUser:(User *)user withAttributes:(NSMutableDictionary *)userParams;
 + (User *)currentUser;
++ (User *)currentUserInContext:(NSManagedObjectContext *)context;
 + (BOOL)loggedIn;
 
 @end

@@ -21,6 +21,14 @@ static User *_currentUser = nil;
     return _currentUser;
 }
 
++ (User *)currentUserInContext:(NSManagedObjectContext *)context
+{
+    PFUser *currentUser = [PFUser currentUser];
+    _currentUser = [User getUserForPfUser:currentUser
+                    inManagedObjectContex:context];
+    return _currentUser;
+}
+
 + (BOOL)loggedIn
 {
     if ([PFUser currentUser] && // Check if a user is cached

@@ -130,7 +130,7 @@ typedef enum {
 
     // Reset the content context so any unwanted changes are not saved.
     // The changes that are needed (like create/edit/etc..) should have got saved anyways.
-    [BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT reset];
+//    [BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT reset];
     
     // Don't reload data here as it is called everytime it comes back from sceneviewcontroller
 }
@@ -419,7 +419,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                     didAddStory:(Story *)story
 {
     [self.navigationController popViewControllerAnimated:NO];
-    [self addSceneToStory:story];
+    // Can't add a story to the scene yet because the story Id would not be furnished here.
+//    [self addSceneToStory:story];
 }
 
 #pragma mark ScenesViewControllerDelegate

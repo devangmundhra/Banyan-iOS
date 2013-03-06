@@ -17,11 +17,11 @@
 
 + (void) createNewPiece:(Piece *)piece afterPiece:(Piece *)previousPiece
 {
-    // Persist so that it can be refetched in persistentStoreManagedObjectContext
-    [piece persistToDatabase];
-    
-    // Change the context to persistentStoreManagedObjectContext
-    piece = (Piece *)[[RKManagedObjectStore defaultStore].persistentStoreManagedObjectContext objectWithID:piece.objectID];
+//    // Persist so that it can be refetched in persistentStoreManagedObjectContext
+//    [piece persistToDatabase];
+//    
+//    // Change the context to persistentStoreManagedObjectContext
+//    piece = (Piece *)[[RKManagedObjectStore defaultStore].persistentStoreManagedObjectContext objectWithID:piece.objectID];
     
     piece.initialized = [NSNumber numberWithBool:NO];
     piece.author = [User currentUser];
@@ -120,7 +120,7 @@
     [self.managedObjectContext.parentContext performBlockAndWait:^{
         // Persist the piece on the parent context so that it is picked up by Fetched Results Controller
         NSError *error = nil;
-        if (![self.managedObjectContext save:&error]) {
+        if (![self.managedObjectContext.parentContext save:&error]) {
             NSLog(@"Error: %@", error);
             assert(false);
         };

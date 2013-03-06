@@ -19,15 +19,15 @@
 // Upload the given story using RestKit
 + (Story *)createNewStory:(Story *)story
 {
-    // Persist so that it can be refetched in persistentStoreManagedObjectContext
-    [story persistToDatabase];
-
-    // Change the context to persistentStoreManagedObjectContext
-    story = (Story *)[[RKManagedObjectStore defaultStore].persistentStoreManagedObjectContext objectWithID:story.objectID];
+//    // Persist so that it can be refetched in persistentStoreManagedObjectContext
+//    [story persistToDatabase];
+//
+//    // Change the context to persistentStoreManagedObjectContext
+//    story = (Story *)[[RKManagedObjectStore defaultStore].persistentStoreManagedObjectContext objectWithID:story.objectID];
     
     story.initialized = [NSNumber numberWithBool:NO];
     story.canContribute = story.canView = [NSNumber numberWithBool:YES];
-    story.author = [User currentUser];
+    story.author = [User currentUserInContext:story.managedObjectContext];
     story.storyBeingRead = [NSNumber numberWithBool:YES];
     story.createdAt = story.updatedAt = [NSDate date];
     
@@ -205,7 +205,7 @@
     [self.managedObjectContext.parentContext performBlockAndWait:^{
         // Persist the story on the parent context so that it is picked up by Fetched Results Controller
         NSError *error = nil;
-        if (![self.managedObjectContext save:&error]) {
+        if (![self.managedObjectContext.parentContext save:&error]) {
             NSLog(@"Error: %@", error);
             assert(false);
         };

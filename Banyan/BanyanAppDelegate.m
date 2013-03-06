@@ -410,7 +410,11 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     
 //    self.userContentMOCtx = [managedObjectStore newChildManagedObjectContextWithConcurrencyType:NSPrivateQueueConcurrencyType];
 
-    self.userContentMOCtx = managedObjectStore.mainQueueManagedObjectContext;
+//    self.userContentMOCtx = managedObjectStore.mainQueueManagedObjectContext;
+    
+    self.userContentMOCtx = [managedObjectStore persistentStoreManagedObjectContext];
+    
+    NSLog(@"\nPersistentCtx: %@\nMainCtx: %@\nUserCtx: %@\n", managedObjectStore.persistentStoreManagedObjectContext, managedObjectStore.mainQueueManagedObjectContext, self.userContentMOCtx);
     
     [RKManagedObjectStore setDefaultStore:managedObjectStore];
 }
