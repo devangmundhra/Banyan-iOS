@@ -16,7 +16,6 @@ profile
 *.moved-aside
 DerivedData
 .idea/
-
 Parse.framework/Headers
 Parse.framework/Parse
 Parse.framework/Resources
@@ -24,6 +23,4 @@ Parse.framework/Versions/Current
 Banyan.xcodeproj/project.xcworkspace/xcuserdata/devangmundhra.xcuserdatad/
 Banyan.xcodeproj/xcuserdata/devangmundhra.xcuserdatad/xcdebugger/
 Banyan.xcworkspace/xcuserdata/devangmundhra.xcuserdata/
-Banyan.xcworkspace/xcuserdata/devangmundhra.xcuserdatad/UserInterfaceState.xcuserstate
-Banyan.xcworkspace/xcuserdata/devangmundhra.xcuserdatad/*
 Pods
