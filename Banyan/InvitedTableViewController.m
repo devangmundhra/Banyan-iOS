@@ -28,36 +28,11 @@
 @synthesize searchDisplayController;
 @synthesize searchBar;
 
-- (id) initWithSearchBarAndNavigationControllerForInvitationType:(NSString *)invitationType
-                                                        delegate:(id<InvitedTableViewControllerDelegate>)delegate
-                                                selectedContacts:(NSArray *)selectedContacts
-{
-    if ((self = [super init])) {
-        
-        /*
-        searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-        searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
-        searchDisplayController.delegate = self;
-        searchDisplayController.searchResultsDataSource = self;
-         */
-        _invitationType = invitationType;
-        _delegate = delegate;
-        _selectedContacts = [NSMutableArray arrayWithArray:selectedContacts];
-        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneInviting:)]];
-    }
-    return self;
-}
-
 // When initialized from storyboard
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     if ((self = [super initWithCoder:aDecoder])) {
-        /*
-        searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-        searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
-        searchDisplayController.delegate = self;
-        searchDisplayController.searchResultsDataSource = self;
-         */
+
     }
     return self;
 }
@@ -67,6 +42,14 @@
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
+        
+         searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+         searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
+         searchDisplayController.delegate = self;
+         searchDisplayController.searchResultsDataSource = self;
+
+        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneInviting:)]];
+        [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
     }
     return self;
 }
@@ -264,6 +247,11 @@
     [self.delegate invitedTableViewController:self 
                              finishedInviting:self.invitationType
                                  withContacts:[self.selectedContacts copy]];
+}
+
+- (IBAction)cancel:(UIBarButtonItem *)sender
+{
+    [self.delegate invitedTableViewControllerDidCancel:self];
 }
 
 #pragma mark Content Filtering

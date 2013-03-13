@@ -250,10 +250,10 @@
     NSArray *invitedToContribute = nil;
     invitedToContribute = [[self.piece.story.writeAccess objectForKey:kBNStoryPrivacyInviteeList]
                            objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
-    InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] 
-                                                              initWithSearchBarAndNavigationControllerForInvitationType:INVITED_CONTRIBUTORS_STRING 
-                                                              delegate:self 
-                                                              selectedContacts:invitedToContribute];
+    InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] initWithStyle:UITableViewStylePlain];
+    invitedTableViewController.invitationType = INVITED_CONTRIBUTORS_STRING;
+    invitedTableViewController.delegate = self;
+    [invitedTableViewController.selectedContacts setArray:invitedToContribute];
     
     [self.navigationController pushViewController:invitedTableViewController animated:YES];
 }
@@ -478,6 +478,11 @@
     [Story editStory:self.piece.story];
     [self.navigationController popViewControllerAnimated:YES];
     [self refreshView];
+}
+
+- (void) invitedTableViewControllerDidCancel:(InvitedTableViewController *)invitedTableViewController
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma Memory Management

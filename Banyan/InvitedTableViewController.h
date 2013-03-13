@@ -21,6 +21,7 @@
                    finishedInviting:(NSString *)invitingType 
                        withContacts:(NSArray *)contactsList;
 
+- (void) invitedTableViewControllerDidCancel:(InvitedTableViewController *)invitedTableViewController;
 @end
 
 @interface InvitedTableViewController : UITableViewController <UISearchBarDelegate, UISearchDisplayDelegate>
@@ -30,5 +31,4 @@
 @property (nonatomic, weak) NSString *invitationType;
 @property (nonatomic, copy) NSMutableArray *selectedContacts;
 
-- (id) initWithSearchBarAndNavigationControllerForInvitationType:(NSString *)invitationType delegate:(id<InvitedTableViewControllerDelegate>)delegate selectedContacts:(NSArray *)selectedContacts;
 @end

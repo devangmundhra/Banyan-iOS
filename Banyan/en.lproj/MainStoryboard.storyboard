@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="2843" systemVersion="12C54" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="cX6-a0-qfY">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="12C60" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="cX6-a0-qfY">
     <dependencies>
-        <deployment defaultVersion="1536" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1929"/>
+        <deployment defaultVersion="1552" identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
     </dependencies>
     <scenes>
         <!--Story List Table View Controller-->
@@ -102,9 +102,6 @@
                                         <state key="highlighted">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
-                                        <connections>
-                                            <segue destination="vMp-rM-1qw" kind="push" identifier="Add Contributors" id="5Zk-1q-WEg"/>
-                                        </connections>
                                     </button>
                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" id="Huv-pQ-6WY">
                                         <rect key="frame" x="18" y="270" width="284" height="23"/>
@@ -145,9 +142,6 @@
                                         <state key="highlighted">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
-                                        <connections>
-                                            <segue destination="vMp-rM-1qw" kind="push" identifier="Add Viewers" id="zXo-Ga-9b9"/>
-                                        </connections>
                                     </button>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Who can view the story?" lineBreakMode="clip" baselineAdjustment="alignBaselines" minimumFontSize="10" id="GaF-f1-P4t">
                                         <rect key="frame" x="20" y="247" width="250" height="21"/>
@@ -192,78 +186,6 @@
             </objects>
             <point key="canvasLocation" x="1150" y="-244"/>
         </scene>
-        <!--Invited Table View Controller - Invite-->
-        <scene sceneID="GjA-ct-c1h">
-            <objects>
-                <tableViewController id="vMp-rM-1qw" customClass="InvitedTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="JQd-40-2oz">
-                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ContactCell" textLabel="9ql-GX-wE2" style="IBUITableViewCellStyleDefault" id="Q9a-Ae-Scq">
-                                <rect key="frame" x="0.0" y="22" width="320" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="9ql-GX-wE2">
-                                            <rect key="frame" x="10" y="0.0" width="300" height="43"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                        </label>
-                                    </subviews>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                </view>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="vMp-rM-1qw" id="h3L-lr-Bup"/>
-                            <outlet property="delegate" destination="vMp-rM-1qw" id="9Od-UN-IPw"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="Invite" id="vF9-wq-QGM">
-                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="s8K-IM-BOK">
-                            <connections>
-                                <action selector="doneInviting:" destination="vMp-rM-1qw" id="pHm-VS-9fE"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                    <connections>
-                        <outlet property="searchDisplayController" destination="BAz-8m-Gqy" id="cqw-7n-wZa"/>
-                    </connections>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="26i-Qa-sIg" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <searchDisplayController id="UNr-om-pJz">
-                    <connections>
-                        <outlet property="delegate" destination="vMp-rM-1qw" id="bC4-Bq-6ra"/>
-                        <outlet property="searchContentsController" destination="vMp-rM-1qw" id="11D-Wc-NfL"/>
-                        <outlet property="searchResultsDataSource" destination="vMp-rM-1qw" id="XcH-kB-TLz"/>
-                        <outlet property="searchResultsDelegate" destination="vMp-rM-1qw" id="bIs-kB-kEM"/>
-                    </connections>
-                </searchDisplayController>
-                <searchDisplayController id="UVl-Wi-e3Z">
-                    <connections>
-                        <outlet property="delegate" destination="vMp-rM-1qw" id="9qX-yn-NQT"/>
-                        <outlet property="searchContentsController" destination="vMp-rM-1qw" id="exj-3z-WCG"/>
-                        <outlet property="searchResultsDataSource" destination="vMp-rM-1qw" id="dSK-at-xDO"/>
-                        <outlet property="searchResultsDelegate" destination="vMp-rM-1qw" id="h1f-ry-MNV"/>
-                    </connections>
-                </searchDisplayController>
-                <searchDisplayController id="BAz-8m-Gqy">
-                    <connections>
-                        <outlet property="delegate" destination="vMp-rM-1qw" id="8u6-hd-MOe"/>
-                        <outlet property="searchContentsController" destination="vMp-rM-1qw" id="jK6-1C-EvJ"/>
-                        <outlet property="searchResultsDataSource" destination="vMp-rM-1qw" id="vZ9-zv-XyI"/>
-                        <outlet property="searchResultsDelegate" destination="vMp-rM-1qw" id="GkL-rV-0hF"/>
-                    </connections>
-                </searchDisplayController>
-            </objects>
-            <point key="canvasLocation" x="1677" y="-244"/>
-        </scene>
         <!--Navigation Controller-->
         <scene sceneID="xLi-HR-ngS">
             <objects>
@@ -287,21 +209,12 @@
         </scene>
     </scenes>
     <classes>
-        <class className="InvitedTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/InvitedTableViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="searchBar" candidateClass="UISearchBar"/>
-                <relationship kind="outlet" name="searchDisplayController" candidateClass="UISearchDisplayController"/>
-            </relationships>
+        <class className="CoreDataTableViewController" superclassName="TISwipeableTableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CoreDataTableViewController.h"/>
         </class>
         <class className="NewStoryViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/NewStoryViewController.h"/>
             <relationships>
-                <relationship kind="action" name="dismissKeyboard:"/>
-                <relationship kind="action" name="doneNewStory:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="action" name="showLocationSwitchToggled:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="sliderChanged:" candidateClass="UISlider"/>
-                <relationship kind="action" name="storyContributors:" candidateClass="UISegmentedControl"/>
                 <relationship kind="outlet" name="addStorySubView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="contributorInvitationLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="contributorSegmentedControl" candidateClass="UISegmentedControl"/>
@@ -316,7 +229,7 @@
                 <relationship kind="outlet" name="viewerSlider" candidateClass="UISlider"/>
             </relationships>
         </class>
-        <class className="StoryListTableViewController" superclassName="TISwipeableTableViewController">
+        <class className="StoryListTableViewController" superclassName="CoreDataTableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/StoryListTableViewController.h"/>
             <relationships>
                 <relationship kind="outlet" name="addStory" candidateClass="UIBarButtonItem"/>
@@ -336,7 +249,4 @@
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
-    <inferredMetricsTieBreakers>
-        <segue reference="5Zk-1q-WEg"/>
-    </inferredMetricsTieBreakers>
 </document>

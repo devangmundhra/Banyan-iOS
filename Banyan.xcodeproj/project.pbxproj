@@ -97,6 +97,8 @@
 		51F22888161A9DE4006B3AA7 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F22887161A9DE4006B3AA7 /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		51F2288A161A9DF2006B3AA7 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F22889161A9DF2006B3AA7 /* StoreKit.framework */; };
 		51F2288C161A9E22006B3AA7 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F2288B161A9E22006B3AA7 /* Default-568h@2x.png */; };
+		51F60EF816E8423E00F9715E /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F60EF616E8423E00F9715E /* Icon.png */; };
+		51F60EF916E8423E00F9715E /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F60EF716E8423E00F9715E /* Icon@2x.png */; };
 		51FD96ED1665E6C7001A1709 /* dotted-pattern.png in Resources */ = {isa = PBXBuildFile; fileRef = 51FD96EB1665E6C7001A1709 /* dotted-pattern.png */; };
 		51FD96EE1665E6C7001A1709 /* dotted-pattern@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51FD96EC1665E6C7001A1709 /* dotted-pattern@2x.png */; };
 /* End PBXBuildFile section */
@@ -245,6 +247,8 @@
 		51F22887161A9DE4006B3AA7 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		51F22889161A9DF2006B3AA7 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		51F2288B161A9E22006B3AA7 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../../Default-568h@2x.png"; sourceTree = "<group>"; };
+		51F60EF616E8423E00F9715E /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		51F60EF716E8423E00F9715E /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		51FD96EB1665E6C7001A1709 /* dotted-pattern.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dotted-pattern.png"; sourceTree = "<group>"; };
 		51FD96EC1665E6C7001A1709 /* dotted-pattern@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dotted-pattern@2x.png"; sourceTree = "<group>"; };
 		8ED9F22B0C2B4CE9B82B3621 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
@@ -310,6 +314,8 @@
 				51CFD94215F58337002926F9 /* buttonFollowSelected.png */,
 				51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */,
 				51F2288B161A9E22006B3AA7 /* Default-568h@2x.png */,
+				51F60EF616E8423E00F9715E /* Icon.png */,
+				51F60EF716E8423E00F9715E /* Icon@2x.png */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -697,6 +703,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51F60EF816E8423E00F9715E /* Icon.png in Resources */,
+				51F60EF916E8423E00F9715E /* Icon@2x.png in Resources */,
 				5189B2C215B387E200562DD0 /* InfoPlist.strings in Resources */,
 				5189B32D15B395F300562DD0 /* LoginTabbarViewController.xib in Resources */,
 				5189B33015B395F300562DD0 /* ModifySceneViewController.xib in Resources */,

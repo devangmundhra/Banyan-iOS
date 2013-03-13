@@ -42,7 +42,6 @@
 @property (nonatomic) BOOL keyboardIsShown;
 
 @property (strong, nonatomic) BNLocationManager *locationManager;
-
 @end
 
 @implementation NewStoryViewController
@@ -134,6 +133,8 @@ typedef enum {
     if (!self.locationManager) {
         self.locationManager = [[BNLocationManager alloc] initWithDelegate:self];
     }
+    [self.inviteViewersButton addTarget:self action:@selector(inviteViewers) forControlEvents:UIControlEventTouchUpInside];\
+    [self.inviteContributorsButton addTarget:self action:@selector(inviteContributors) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)viewDidUnload
@@ -423,25 +424,26 @@ typedef enum {
 }
 
 
-# pragma mark segues
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+# pragma invite friends
+
+- (void) inviteViewers
 {
-    if ([segue.identifier isEqualToString:@"Add Contributors"])
-    {
-        InvitedTableViewController *invitedTableViewController = segue.destinationViewController;
-        invitedTableViewController.invitationType = INVITED_CONTRIBUTORS_STRING;
-        invitedTableViewController.delegate = self;
-        invitedTableViewController.selectedContacts = self.invitedToContributeList;
-        
-    } else if ([segue.identifier isEqualToString:@"Add Viewers"])
-    {
-        InvitedTableViewController *invitedTableViewController = segue.destinationViewController;
-        invitedTableViewController.invitationType = INVITED_VIEWERS_STRING;
-        invitedTableViewController.delegate = self;
-        invitedTableViewController.selectedContacts = self.invitedToViewList;
-    }
-    
+    InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] initWithStyle:UITableViewStylePlain];
+    invitedTableViewController.invitationType = INVITED_VIEWERS_STRING;
+    invitedTableViewController.delegate = self;
+    invitedTableViewController.selectedContacts = self.invitedToViewList;
+    [self.navigationController pushViewController:invitedTableViewController animated:YES];
 }
+
+- (void) inviteContributors
+{
+    InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] initWithStyle:UITableViewStylePlain];
+    invitedTableViewController.invitationType = INVITED_CONTRIBUTORS_STRING;
+    invitedTableViewController.delegate = self;
+    invitedTableViewController.selectedContacts = self.invitedToContributeList;
+    [self.navigationController pushViewController:invitedTableViewController animated:YES];
+}
+
 # pragma mark InvitedTableViewControllerDelegate
 - (void) invitedTableViewController:(InvitedTableViewController *)invitedTableViewController 
                    finishedInviting:(NSString *)invitingType 
@@ -450,12 +452,19 @@ typedef enum {
     if ([invitingType isEqualToString:INVITED_CONTRIBUTORS_STRING])
     {
         [self.invitedToContributeList setArray:contactsList];
+        // All contributors invited are also viewers!
+        [self.invitedToViewList addObjectsFromArray:contactsList];
     }
     else if ([invitingType isEqualToString:INVITED_VIEWERS_STRING]) 
     {
         [self.invitedToViewList setArray:contactsList];
     }
     
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void) invitedTableViewControllerDidCancel:(InvitedTableViewController *)invitedTableViewController
+{
     [self.navigationController popViewControllerAnimated:YES];
 }
 

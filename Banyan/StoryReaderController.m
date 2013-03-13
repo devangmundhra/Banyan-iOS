@@ -73,9 +73,6 @@
     // END: NAVIGATION BAR SETTINGS
     
     // START: TOOLBAR SETTINGS
-//    UILabel *likeLabel = [[UILabel alloc] init];
-//    likeLabel.text = @"Like";
-//    self.likeButton = [[UIBarButtonItem alloc] initWithCustomView:likeLabel];
     self.likeButton = [[UIBarButtonItem alloc] initWithTitle:@"Like" style:UIBarButtonItemStyleBordered target:nil action:nil];
     self.likeButton.possibleTitles = [NSSet setWithObjects:@"Like", @"Unlike", nil];
     self.shareButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:nil action:nil];
