@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 #import "UserManagementModule.h"
+#import "BNTabBarController.h"
 
 #define DEV FALSE
 
@@ -33,11 +34,13 @@
 
 #define BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT [(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate] userContentMOCtx]
 
-@interface BanyanAppDelegate : UIResponder <UIApplicationDelegate> {
+@interface BanyanAppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate> {
     UserManagementModule *userManagementModule;
 }
 
 @property (strong, nonatomic) UIWindow *window;
+@property (nonatomic, strong) BNTabBarController *tabBarController;
+@property (nonatomic, strong) UINavigationController *navController;
 @property (nonatomic, strong) UserManagementModule *userManagementModule;
 @property (nonatomic, strong) NSManagedObjectContext *userContentMOCtx;
 

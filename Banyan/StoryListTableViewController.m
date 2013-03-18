@@ -61,27 +61,25 @@ typedef enum {
     
     [self.tableView setRowHeight:TABLE_ROW_HEIGHT];
     
-    if (!self.leftButton)
-        self.leftButton = [[UIBarButtonItem alloc] initWithTitle:@"Settings" 
-                                                           style:UIBarButtonItemStyleBordered 
-                                                          target:self 
-                                                          action:@selector(settings)];
-    if (!self.addStory)
-        self.addStory = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd 
-                                                                      target:(self) 
-                                                                      action:@selector(addStorySegue:)];
+    self.leftButton = [[UIBarButtonItem alloc] initWithTitle:@"Settings"
+                                                       style:UIBarButtonItemStyleBordered
+                                                      target:self
+                                                      action:@selector(settings)];
+    self.addStory = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                                  target:(self)
+                                                                  action:@selector(createNewStory:)];
     
-    if (!self.filterStoriesSegmentedControl) {
-        self.filterStoriesSegmentedControl = [[UISegmentedControl alloc]
-                                              initWithItems:[NSArray arrayWithObjects:@"Popular", @"Following", @"Invited", nil]];
-        [self.filterStoriesSegmentedControl addTarget:self
-                                               action:@selector(filterStories:)
-                                     forControlEvents:UIControlEventValueChanged];
-        self.filterStoriesSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-        self.filterStoriesSegmentedControl.selectedSegmentIndex = FilterStoriesSegmentIndexPopular;
-        self.filterStoriesSegmentedControl.apportionsSegmentWidthsByContent = YES;
-    }
+    self.filterStoriesSegmentedControl = [[UISegmentedControl alloc]
+                                          initWithItems:[NSArray arrayWithObjects:@"Popular", @"Following", @"Invited", nil]];
+    [self.filterStoriesSegmentedControl addTarget:self
+                                           action:@selector(filterStories:)
+                                 forControlEvents:UIControlEventValueChanged];
+    self.filterStoriesSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+    self.filterStoriesSegmentedControl.selectedSegmentIndex = FilterStoriesSegmentIndexPopular;
+    self.filterStoriesSegmentedControl.apportionsSegmentWidthsByContent = YES;
 
+    [self.navigationItem setTitleView:self.filterStoriesSegmentedControl];
+    
     // Fetched results controller
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
     request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"updatedAt"
@@ -110,6 +108,8 @@ typedef enum {
 
 - (void)refreshView
 {
+    return;
+    
     self.leftButton.title = @"Settings";
     self.leftButton.target = self;
     self.leftButton.action = @selector(settings);
@@ -142,8 +142,6 @@ typedef enum {
     [self setAddStory:nil];
     [self setLeftButton:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
     [self setFilterStoriesSegmentedControl:nil];
     self.fetchedResultsController = nil;
     [super viewDidUnload];
@@ -289,23 +287,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self.navigationController pushViewController:vc animated:YES];
 }
 
-- (IBAction)addStorySegue:(UIBarButtonItem *)sender
+- (IBAction)createNewStory:(UIBarButtonItem *)sender
 {
-    [self performSegueWithIdentifier:@"New Story" sender:nil];
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"New Story"])
-    {
-        NewStoryViewController *newStoryViewController = segue.destinationViewController;
-        newStoryViewController.delegate = self;
-
-    }
-    else if ([segue.identifier isEqualToString:@"Sign In"])
-    {
-        [[segue destinationViewController] setDelegate:self];
-    }
+    NewStoryViewController *newStoryViewController = [[NewStoryViewController alloc] initWithNibName:@"NewStoryViewController" bundle:nil];
+    newStoryViewController.delegate = self;
+    [self.navigationController pushViewController:newStoryViewController animated:YES];
 }
 
 #pragma mark Story Manipulations
@@ -421,6 +407,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self.navigationController popViewControllerAnimated:NO];
     // Can't add a story to the scene yet because the story Id would not be furnished here.
 //    [self addSceneToStory:story];
+}
+
+- (void) newStoryViewControllerDidCancel:(NewStoryViewController *)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark ScenesViewControllerDelegate

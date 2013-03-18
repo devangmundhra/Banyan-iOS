@@ -20,8 +20,10 @@
 		510787DE163A37340042B436 /* User+Edit.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787DD163A37340042B436 /* User+Edit.m */; };
 		511E708B161A9756009AAD25 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708A161A9756009AAD25 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		511E708E161A977F009AAD25 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
+		512A6ADB16F175F100106BA4 /* NewStoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 512A6ADA16F175F000106BA4 /* NewStoryViewController.xib */; };
 		5157CD031650902900C22CCE /* BanyanConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD021650902900C22CCE /* BanyanConnection.m */; };
 		5157CD251659E5A300C22CCE /* ComposeTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD241659E5A300C22CCE /* ComposeTextViewController.m */; };
+		5158AE2B16F56F7F0089193E /* BNTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5158AE2916F56F7E0089193E /* BNTabBarController.m */; };
 		5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B615E75B420072749C /* buttonFacebook.png */; };
 		5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B715E75B420072749C /* buttonFacebook@2x.png */; };
 		5166B1BC15E75B420072749C /* buttonFacebookSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B815E75B420072749C /* buttonFacebookSelected.png */; };
@@ -66,7 +68,6 @@
 		5189B3C315B39BCC00562DD0 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3C215B39BCC00562DD0 /* MapKit.framework */; };
 		5189B3C715B39BE100562DD0 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3C615B39BE100562DD0 /* MobileCoreServices.framework */; };
 		5189B3C915B39BE700562DD0 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3C815B39BE700562DD0 /* AudioToolbox.framework */; };
-		5189B3CB15B39E7400562DD0 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5189B3CA15B39E7400562DD0 /* MainStoryboard.storyboard */; };
 		5189B45715B3A38E00562DD0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3C415B39BD100562DD0 /* QuartzCore.framework */; };
 		518AF02E162539D300480D5A /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 518AF02D162539D300480D5A /* Parse.framework */; };
 		519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 519232A01671CC57009686E4 /* AFGoogleAPIClient.m */; };
@@ -126,10 +127,13 @@
 		510787DD163A37340042B436 /* User+Edit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "User+Edit.m"; path = "Banyan/User+Edit.m"; sourceTree = "<group>"; };
 		511E708A161A9756009AAD25 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		512A6ADA16F175F000106BA4 /* NewStoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NewStoryViewController.xib; sourceTree = "<group>"; };
 		5157CD011650902900C22CCE /* BanyanConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BanyanConnection.h; path = Banyan/BanyanConnection.h; sourceTree = "<group>"; };
 		5157CD021650902900C22CCE /* BanyanConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BanyanConnection.m; path = Banyan/BanyanConnection.m; sourceTree = "<group>"; };
 		5157CD231659E5A300C22CCE /* ComposeTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ComposeTextViewController.h; path = Banyan/ComposeTextViewController.h; sourceTree = "<group>"; };
 		5157CD241659E5A300C22CCE /* ComposeTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ComposeTextViewController.m; path = Banyan/ComposeTextViewController.m; sourceTree = "<group>"; };
+		5158AE2816F56F7E0089193E /* BNTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNTabBarController.h; sourceTree = "<group>"; };
+		5158AE2916F56F7E0089193E /* BNTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNTabBarController.m; sourceTree = "<group>"; };
 		5166B1B615E75B420072749C /* buttonFacebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebook.png; sourceTree = "<group>"; };
 		5166B1B715E75B420072749C /* buttonFacebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFacebook@2x.png"; sourceTree = "<group>"; };
 		5166B1B815E75B420072749C /* buttonFacebookSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebookSelected.png; sourceTree = "<group>"; };
@@ -202,7 +206,6 @@
 		5189B3C415B39BD100562DD0 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		5189B3C615B39BE100562DD0 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		5189B3C815B39BE700562DD0 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		5189B3CA15B39E7400562DD0 /* MainStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MainStoryboard.storyboard; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		518AF02D162539D300480D5A /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		5192329F1671CC57009686E4 /* AFGoogleAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFGoogleAPIClient.h; path = Banyan/AFGoogleAPIClient.h; sourceTree = "<group>"; };
 		519232A01671CC57009686E4 /* AFGoogleAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFGoogleAPIClient.m; path = Banyan/AFGoogleAPIClient.m; sourceTree = "<group>"; };
@@ -296,6 +299,16 @@
 			name = File;
 			sourceTree = "<group>";
 		};
+		5158AE2D16F56F850089193E /* Tab Bar Controller */ = {
+			isa = PBXGroup;
+			children = (
+				5158AE2816F56F7E0089193E /* BNTabBarController.h */,
+				5158AE2916F56F7E0089193E /* BNTabBarController.m */,
+				5189B35B15B3976700562DD0 /* Story List */,
+			);
+			name = "Tab Bar Controller";
+			sourceTree = "<group>";
+		};
 		5166B1B515E75B420072749C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -370,7 +383,6 @@
 			isa = PBXGroup;
 			children = (
 				51A8DC9316928AE00017E86F /* Banyan.xcdatamodeld */,
-				5189B3CA15B39E7400562DD0 /* MainStoryboard.storyboard */,
 				5189B35415B3968600562DD0 /* Account Management */,
 				5189B35315B3967A00562DD0 /* New Story */,
 				5189B35915B3971400562DD0 /* Read and Edit Scenes */,
@@ -378,13 +390,13 @@
 				5192332416743EB7009686E4 /* Location */,
 				5189B35115B3964000562DD0 /* Networking Extensions */,
 				5189B35815B396FA00562DD0 /* Data handling */,
-				5189B35B15B3976700562DD0 /* Story List */,
 				51CFD93015F3121C002926F9 /* Settings */,
 				5189B35C15B397BD00562DD0 /* Helpful Categories */,
 				51B5989C15EB31B300DF4D9D /* BanyanConstants.h */,
 				51B5989D15EB31B300DF4D9D /* BanyanConstants.m */,
 				5189B2C615B387E200562DD0 /* BanyanAppDelegate.h */,
 				5189B2C715B387E200562DD0 /* BanyanAppDelegate.m */,
+				5158AE2D16F56F850089193E /* Tab Bar Controller */,
 				5189B2BE15B387E200562DD0 /* Supporting Files */,
 				5166B1B515E75B420072749C /* Resources */,
 			);
@@ -438,6 +450,7 @@
 			children = (
 				5189B2E615B395F300562DD0 /* NewStoryViewController.h */,
 				5189B2E715B395F300562DD0 /* NewStoryViewController.m */,
+				512A6ADA16F175F000106BA4 /* NewStoryViewController.xib */,
 				5189B2DD15B395F300562DD0 /* InvitedTableViewController.h */,
 				5189B2DE15B395F300562DD0 /* InvitedTableViewController.m */,
 			);
@@ -710,7 +723,6 @@
 				5189B33015B395F300562DD0 /* ModifySceneViewController.xib in Resources */,
 				5189B33615B395F300562DD0 /* ReadSceneViewController.xib in Resources */,
 				5189B34E15B395F300562DD0 /* UserLoginViewController.xib in Resources */,
-				5189B3CB15B39E7400562DD0 /* MainStoryboard.storyboard in Resources */,
 				5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */,
 				5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */,
 				5166B1BC15E75B420072749C /* buttonFacebookSelected.png in Resources */,
@@ -726,6 +738,7 @@
 				51F2288C161A9E22006B3AA7 /* Default-568h@2x.png in Resources */,
 				51FD96ED1665E6C7001A1709 /* dotted-pattern.png in Resources */,
 				51FD96EE1665E6C7001A1709 /* dotted-pattern@2x.png in Resources */,
+				512A6ADB16F175F100106BA4 /* NewStoryViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -803,6 +816,7 @@
 				51C0CF021695899100C9B752 /* User.m in Sources */,
 				5103C86E1699443500CC33AC /* Story.m in Sources */,
 				51B7ABED169AD55400B1488C /* Piece.m in Sources */,
+				5158AE2B16F56F7F0089193E /* BNTabBarController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

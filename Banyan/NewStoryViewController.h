@@ -17,7 +17,8 @@
 
 @protocol NewStoryViewControllerDelegate <NSObject>
 
-- (void) newStoryViewController:(NewStoryViewController *) sender didAddStory:(Story *)story;
+- (void) newStoryViewController:(NewStoryViewController *)sender didAddStory:(Story *)story;
+- (void) newStoryViewControllerDidCancel:(NewStoryViewController *)sender;
 
 @end
 

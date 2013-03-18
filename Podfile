@@ -7,7 +7,7 @@ pod 'MTStatusBarOverlay', :git => 'https://github.com/myell0w/MTStatusBarOverlay
 pod 'TestFlightSDK', '>= 1.2'
 pod 'SVPullToRefresh'
 pod 'RestKit', :git => 'https://github.com/RestKit/RestKit.git', :branch => 'development'
-pod 'PKRevealController'
+pod 'SVSegmentedControl'
 
 # Testing and Search are optional components
 # pod 'RestKit/Testing',  :git => 'https://github.com/RestKit/RestKit.git'

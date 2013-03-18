@@ -10,6 +10,8 @@
 #import "Story_Defines.h"
 #import "BanyanAppDelegate.h"
 #import "User+Edit.h"
+#import "SVSegmentedControl.h"
+#import "UIImage+Create.h"
 
 @interface NewStoryViewController ()
 {
@@ -17,17 +19,15 @@
     NSInteger viewers;
 }
 
-@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) NSString *storyTitle;
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UITextField *storyTitleTextField;
-@property (weak, nonatomic) IBOutlet UISegmentedControl *contributorSegmentedControl;
-@property (weak, nonatomic) IBOutlet UISlider *viewerSlider;
-@property (weak, nonatomic) IBOutlet UIView *addStorySubView;
+@property (strong, nonatomic) IBOutlet SVSegmentedControl *contributorPrivacySegmentedControl;
+@property (strong, nonatomic) IBOutlet SVSegmentedControl *viewerPrivacySegmentedControl;
 @property (weak, nonatomic) IBOutlet UIButton *inviteContributorsButton;
 @property (weak, nonatomic) IBOutlet UIButton *inviteViewersButton;
-@property (weak, nonatomic) IBOutlet UILabel *contributorInvitationLabel;
-@property (weak, nonatomic) IBOutlet UISwitch *showLocationSwitch;
-@property (weak, nonatomic) IBOutlet UILabel *locationLabel;
+@property (weak, nonatomic) IBOutlet UIButton *addLocationButton;
+@property (weak, nonatomic) IBOutlet UIButton *addPhotoButton;
 @property (weak, nonatomic) IBOutlet TITokenFieldView *tagsFieldView;
 
 @property (weak, nonatomic) UITextField *activeField;
@@ -41,23 +41,24 @@
 
 @property (nonatomic) BOOL keyboardIsShown;
 
+@property (nonatomic) BOOL isLocationEnabled;
 @property (strong, nonatomic) BNLocationManager *locationManager;
 @end
 
 @implementation NewStoryViewController
 
-// These correspond to the index for UISegmentedControl
+// These correspond to the index for UISegmentedControl for Write
 typedef enum {
-    StoryPrivacySegmentIndexInvited = 0,
-    StoryPrivacySegmentIndexPublic = 1,
+    ContributorPrivacySegmentedControlPublic = 0,
+    ContributorPrivacySegmentedControlInvited = 1,
 } StoryPrivacySegmentIndex;
 
-// These correspond to the index for UISlider
+// These correspond to the index for UISegmentedControl for Read
 typedef enum {
-    StoryPrivacySliderValueInvited = 0,
-    StoryPrivacySliderValueLimited = 1,
-    StoryPrivacySliderValuePublic = 2,
-} StoryPrivacySliderValue;
+    ViewerPrivacySegmentedControlPublic = 0,
+    ViewerPrivacySegmentedControlLimited = 1,
+    ViewerPrivacySegmentedControlInvited = 2,
+} ViewerPrivacySegmentedControl;
 
 // Timeout for finding location
 #define kFindLocationTimeOut 0.5*60 // half a minute
@@ -65,9 +66,6 @@ typedef enum {
 @synthesize scrollView = _scrollView;
 @synthesize storyTitle = _storyTitle;
 @synthesize storyTitleTextField = _storyTitleTextField;
-@synthesize contributorSegmentedControl = _contributorSegmentedControl;
-@synthesize viewerSlider = _viewerSlider;
-@synthesize addStorySubView = _addStorySubView;
 @synthesize delegate = _delegate;
 @synthesize keyboardIsShown = _keyboardIsShown;
 @synthesize tapRecognizer = _tapRecognizer;
@@ -75,28 +73,38 @@ typedef enum {
 @synthesize invitedToContributeList = _invitedToContributeList;
 @synthesize inviteContributorsButton = _inviteContributorsButton;
 @synthesize inviteViewersButton = _inviteViewersButton;
-@synthesize contributorInvitationLabel = _contributorInvitationLabel;
-@synthesize showLocationSwitch = _showLocationSwitch;
-@synthesize locationLabel = _locationLabel;
 @synthesize locationManager = _locationManager;
 @synthesize activeField = _activeField;
+@synthesize contributorPrivacySegmentedControl = _contributorPrivacySegmentedControl;
+@synthesize viewerPrivacySegmentedControl = _viewerPrivacySegmentedControl;
+@synthesize addLocationButton = _addLocationButton;
+@synthesize addPhotoButton = _addPhotoButton;
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
+        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStyleDone target:self action:@selector(doneNewStory:)]];
+        [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
+        
+        self.contributorPrivacySegmentedControl = [[SVSegmentedControl alloc] initWithSectionTitles:@[@"Public", @"Private"]];
+        [self.contributorPrivacySegmentedControl addTarget:self action:@selector(storyPrivacySegmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
+        
+        self.viewerPrivacySegmentedControl = [[SVSegmentedControl alloc] initWithSectionTitles:@[@"Public", @"Limited", @"Private"]];
+        [self.viewerPrivacySegmentedControl addTarget:self action:@selector(storyPrivacySegmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
+    }
+    return self;
+}
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     [self registerForKeyboardNotifications];
-    if (self.showLocationSwitch.on) {
-        [self.locationManager beginUpdatingLocation];
-    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
     [self unregisterForKeyboardNotifications];
-    if (self.showLocationSwitch.on) {
-        [self.locationManager stopUpdatingLocation:self.locationLabel.text];
-    }
 }
 
 - (void)viewDidLoad
@@ -104,7 +112,7 @@ typedef enum {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
-    self.inviteContributorsButton.alpha = 1;
+    self.inviteContributorsButton.enabled = 1;
     
     self.storyTitleTextField.delegate = self;
 //    [self.storyTitleTextField becomeFirstResponder];
@@ -116,24 +124,47 @@ typedef enum {
     self.story = [NSEntityDescription insertNewObjectForEntityForName:kBNStoryClassKey
                                                inManagedObjectContext:BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT];
     
-    self.viewerSlider.value = StoryPrivacySliderValueLimited;
-    self.inviteViewersButton.alpha = 0;
+    CGRect aRect = self.contributorPrivacySegmentedControl.thumb.frame;
+    self.contributorPrivacySegmentedControl.selectedIndex = ContributorPrivacySegmentedControlInvited;
+    self.contributorPrivacySegmentedControl.crossFadeLabelsOnDrag = YES;
+    self.contributorPrivacySegmentedControl.height = 25;
+    self.contributorPrivacySegmentedControl.font = [UIFont fontWithName:STORY_FONT size:12];;
+    self.contributorPrivacySegmentedControl.thumb.tintColor = BANYAN_GREEN_COLOR;
+    self.contributorPrivacySegmentedControl.textColor = BANYAN_WHITE_COLOR;
+    self.contributorPrivacySegmentedControl.sectionImages = [NSArray arrayWithObjects:[UIImage imageWithColor:BANYAN_WHITE_COLOR forRect:aRect],
+                                                             [UIImage imageWithColor:BANYAN_BROWN_COLOR forRect:aRect], nil];
     
+    self.viewerPrivacySegmentedControl.selectedIndex = ViewerPrivacySegmentedControlPublic;
+    self.viewerPrivacySegmentedControl.crossFadeLabelsOnDrag = YES;
+    self.viewerPrivacySegmentedControl.height = 25;
+    self.viewerPrivacySegmentedControl.font = [UIFont fontWithName:STORY_FONT size:12];
+    self.viewerPrivacySegmentedControl.thumb.tintColor = BANYAN_GREEN_COLOR;
+    self.viewerPrivacySegmentedControl.tintColor = BANYAN_BROWN_COLOR;
+    self.viewerPrivacySegmentedControl.titleEdgeInsets = UIEdgeInsetsMake(0, 3, 0, 3);
+    self.viewerPrivacySegmentedControl.textColor = BANYAN_WHITE_COLOR;
+    
+    self.inviteViewersButton.enabled = NO;
     [self updateContentSize];
+    
+    self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self.scrollView addSubview:self.contributorPrivacySegmentedControl];
+    [self.scrollView addSubview:self.viewerPrivacySegmentedControl];
+    self.contributorPrivacySegmentedControl.center = CGPointMake(160, 78);
+    self.viewerPrivacySegmentedControl.center = CGPointMake(160, 132);
     
     // Tags
     self.tagsFieldView.scrollEnabled = NO;
     [self.tagsFieldView.tokenField setDelegate:self];
-	[self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldFrameDidChange:) forControlEvents:TITokenFieldControlEventFrameDidChange];
+	[self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldFrameDidChange:) forControlEvents:(UIControlEvents)TITokenFieldControlEventFrameDidChange];
 	[self.tagsFieldView.tokenField setTokenizingCharacters:[NSCharacterSet characterSetWithCharactersInString:@",;."]]; // Default is a comma
     [self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldChangedEditing:) forControlEvents:UIControlEventEditingDidBegin];
 	[self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldChangedEditing:) forControlEvents:UIControlEventEditingDidEnd];
     self.tagsFieldView.tokenField.returnKeyType = UIReturnKeyDone;
-    [self.tagsFieldView.tokenField setPromptText:@"Tags:"];
+    [self.tagsFieldView.tokenField setPromptText:@"Add some tags..."];
     if (!self.locationManager) {
         self.locationManager = [[BNLocationManager alloc] initWithDelegate:self];
     }
-    [self.inviteViewersButton addTarget:self action:@selector(inviteViewers) forControlEvents:UIControlEventTouchUpInside];\
+    [self.inviteViewersButton addTarget:self action:@selector(inviteViewers) forControlEvents:UIControlEventTouchUpInside];
     [self.inviteContributorsButton addTarget:self action:@selector(inviteContributors) forControlEvents:UIControlEventTouchUpInside];
 }
 
@@ -141,21 +172,18 @@ typedef enum {
 {
     [self setStoryTitle:nil];
     [self setStoryTitleTextField:nil];
-    [self setContributorSegmentedControl:nil];
     [self setTapRecognizer:nil];
-    [self setAddStorySubView:nil];
     [self setInvitedToViewList:nil];
     [self setInvitedToContributeList:nil];
     [self setInviteContributorsButton:nil];
     [self setInviteViewersButton:nil];
-    [self setContributorInvitationLabel:nil];
-    [self setShowLocationSwitch:nil];
-    [self setLocationLabel:nil];
-    [self setScrollView:nil];
-    self.locationManager.delegate = nil;
     [self setLocationManager:nil];
-    [self setViewerSlider:nil];
     [self setTagsFieldView:nil];
+    [self setAddLocationButton:nil];
+    [self setAddPhotoButton:nil];
+    [self setScrollView:nil];
+    [self setContributorPrivacySegmentedControl:nil];
+    [self setViewerPrivacySegmentedControl:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -194,7 +222,7 @@ typedef enum {
     self.story.readAccess = viewersDictionary;
     
     // Story Location
-    if (self.showLocationSwitch.on == YES) {
+    if (self.isLocationEnabled == YES) {
         self.story.isLocationEnabled = [NSNumber numberWithBool:YES];
         if (self.locationManager.location) {
             
@@ -220,45 +248,46 @@ typedef enum {
     [TestFlight passCheckpoint:@"New Story created successfully"];
 }
 
-- (IBAction)storyContributors:(UISegmentedControl *)sender 
+- (IBAction)cancel:(id)sender
 {
-    if (sender.selectedSegmentIndex == StoryPrivacySegmentIndexInvited)
-    {
-        [self.viewerSlider setValue:StoryPrivacySliderValueLimited animated:YES];
-        self.inviteContributorsButton.alpha = 1;
-    } else {
-        [self.viewerSlider setValue:StoryPrivacySliderValuePublic animated:YES];
-        self.inviteContributorsButton.alpha = 0;
-    }
-}
-
-- (IBAction)sliderChanged:(UISlider *)sender
-{
-    int sliderValue;
-    sliderValue = lroundf(sender.value);
-    [self.viewerSlider setValue:sliderValue animated:YES];
-    if (self.viewerSlider.value == StoryPrivacySliderValueInvited) {
-        self.inviteViewersButton.alpha = 1;
-    } else {
-        self.inviteViewersButton.alpha = 0;
-    }
+    [self.delegate newStoryViewControllerDidCancel:self];
 }
 
 # pragma mark story privacy
+
+- (void) storyPrivacySegmentedControlChangedValue:(SVSegmentedControl *)segmentedControl
+{
+    if (segmentedControl == self.contributorPrivacySegmentedControl) {
+        if (segmentedControl.selectedIndex == ContributorPrivacySegmentedControlInvited){
+            self.inviteContributorsButton.enabled = YES;
+            self.viewerPrivacySegmentedControl.enabled = YES;
+            self.viewerPrivacySegmentedControl.alpha = 1;
+        } else {
+            if (self.viewerPrivacySegmentedControl.selectedIndex != ViewerPrivacySegmentedControlPublic) {
+                [self.viewerPrivacySegmentedControl setSelectedIndex:ViewerPrivacySegmentedControlPublic animated:YES];
+            }
+            self.viewerPrivacySegmentedControl.enabled = NO;
+            self.viewerPrivacySegmentedControl.alpha = 0.5;
+            self.inviteContributorsButton.enabled = NO;
+        }
+    } else if (segmentedControl == self.viewerPrivacySegmentedControl) {
+        if (self.viewerPrivacySegmentedControl.selectedIndex == ViewerPrivacySegmentedControlInvited) {
+            self.inviteViewersButton.enabled = 1;
+        } else {
+            self.inviteViewersButton.enabled = 0;
+        }
+    } else {
+        assert(false);
+    }
+    
+}
+
 - (NSString *)contributorScope
 {
-    switch (self.contributorSegmentedControl.selectedSegmentIndex) {
-        case StoryPrivacySegmentIndexInvited:
-            return kBNStoryPrivacyScopeInvited;
-            break;
-            
-        case StoryPrivacySegmentIndexPublic:
-            return kBNStoryPrivacyScopePublic;
-            break;
-            
-        default:
-            return kBNStoryPrivacyScopeInvited;
-            break;
+    if (self.contributorPrivacySegmentedControl.selectedIndex == ContributorPrivacySegmentedControlInvited) {
+        return kBNStoryPrivacyScopeInvited;
+    } else {
+        return kBNStoryPrivacyScopePublic;
     }
 }
 
@@ -280,16 +309,16 @@ typedef enum {
 
 - (NSString *)viewerScope
 {
-    switch (lroundf(self.viewerSlider.value)) {
-        case StoryPrivacySliderValueInvited:
+    switch (self.viewerPrivacySegmentedControl.selectedIndex) {
+        case ViewerPrivacySegmentedControlInvited:
             return kBNStoryPrivacyScopeInvited;
             break;
             
-        case StoryPrivacySliderValueLimited:
+        case ViewerPrivacySegmentedControlLimited:
             return kBNStoryPrivacyScopeLimited;
             break;
             
-        case StoryPrivacySliderValuePublic:
+        case ViewerPrivacySegmentedControlPublic:
             return kBNStoryPrivacyScopePublic;
             break;
             
@@ -318,19 +347,19 @@ typedef enum {
 # pragma mark location settings
 - (IBAction)showLocationSwitchToggled:(UISwitch *)sender
 {
-    if (self.showLocationSwitch.on) {
+    if (self.isLocationEnabled) {
         [self.locationManager beginUpdatingLocation];
-        [self.locationLabel setHidden:NO];
+        [self.addLocationButton.titleLabel setHidden:NO];
     } else {
         [self.locationManager stopUpdatingLocation:self.locationManager.locationStatus];
-        [self.locationLabel setHidden:YES];
+        [self.addLocationButton.titleLabel setHidden:YES];
     }
 }
 
 # pragma mark BNLocationManagerDelegate
 - (void) locationUpdated
 {   
-    self.locationLabel.text = self.locationManager.locationStatus;
+    self.addLocationButton.titleLabel.text = self.locationManager.locationStatus;
 }
 
 # pragma mark - Keyboard notifications
@@ -388,7 +417,6 @@ typedef enum {
         [self.scrollView setContentOffset:scrollPoint animated:YES];
     }
     
-//    [self.addStorySubView addGestureRecognizer:self.tapRecognizer];
     self.keyboardIsShown = YES;
 }
 
@@ -398,11 +426,8 @@ typedef enum {
     if(!self.keyboardIsShown)
         return;
     
-    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
-    self.scrollView.contentInset = contentInsets;
-    self.scrollView.scrollIndicatorInsets = contentInsets;
+    [self.scrollView setContentOffset:CGPointZero animated:YES];
     
-//    [self.addStorySubView removeGestureRecognizer:self.tapRecognizer];
     self.keyboardIsShown = NO;
 }
 

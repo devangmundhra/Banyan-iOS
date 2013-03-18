@@ -21,15 +21,14 @@
 
 @interface ModifySceneViewController ()
 
-@property (weak, nonatomic) IBOutlet UIView *contentView;
-@property (weak, nonatomic) IBOutlet UIImageView *imageView;
-@property (weak, nonatomic) IBOutlet UITextView *sceneTextView;
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (weak, nonatomic) IBOutlet UITextField *sceneCaptionView;
+@property (weak, nonatomic) IBOutlet UITextView *pieceTextView;
 @property (weak, nonatomic) IBOutlet UINavigationBar *navigationBar;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
-@property (weak, nonatomic) IBOutlet UIToolbar *actionToolbar;
-@property (strong, nonatomic) IBOutlet UIBarButtonItem *dismissKeyboardButton;
-@property (weak, nonatomic) IBOutlet UILabel *locationLabel;
+@property (weak, nonatomic) IBOutlet UIButton *addLocationButton;
+@property (weak, nonatomic) IBOutlet UIButton *addPhotoButton;
 
 @property (strong, nonatomic) NSString *localImageURL;
 @property (nonatomic) BOOL imageChanged;
@@ -47,13 +46,10 @@
 
 #define MEM_WARNING_USER_DEFAULTS_TEXT_FIELD @"ModifySceneViewControllerText"
 
-@synthesize contentView = _contentView;
-@synthesize imageView = _imageView;
-@synthesize sceneTextView = _sceneTextView;
+@synthesize pieceTextView = _pieceTextView;
 @synthesize navigationBar = _navigationBar;
 @synthesize cancelButton = _cancelButton;
 @synthesize doneButton = _doneButton;
-@synthesize actionToolbar = _actionToolbar;
 @synthesize piece = _scene;
 @synthesize delegate = _delegate;
 @synthesize keyboardIsShown = _keyboardIsShown;
@@ -63,36 +59,19 @@
 @synthesize contentViewDispositionOnKeyboard = _contentViewDispositionOnKeyboard;
 @synthesize localImageURL = _localImageURL;
 @synthesize locationManager = _locationManager;
-@synthesize locationLabel = _locationLabel;
+@synthesize sceneCaptionView, addLocationButton, addPhotoButton;
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.sceneTextView.delegate = self;
+    self.pieceTextView.delegate = self;
 
-//    self.sceneTextView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
-    self.sceneTextView.backgroundColor = [UIColor clearColor];
+    self.pieceTextView.backgroundColor = [UIColor clearColor];
     
-    if (self.imageView.image || (self.piece.imageURL && self.editMode == edit)) {
-        self.sceneTextView.textColor = [UIColor whiteColor];
-    }
-    else {
-        self.sceneTextView.textColor = [UIColor blackColor];
-    }
-    
-    if ([self.sceneTextView.text length] > MAX_CHAR_IN_PIECE) {
-        self.sceneTextView.scrollEnabled = YES;
-        self.sceneTextView.font = [UIFont systemFontOfSize:18];
-    }
-    else {
-        self.sceneTextView.scrollEnabled = NO;
-        self.sceneTextView.font = [UIFont fontWithName:PIECE_FONT size:24];
-    }
-    
-    self.sceneTextView.layer.shadowColor = [[UIColor blackColor] CGColor];
-    self.sceneTextView.layer.shadowOffset = CGSizeMake(1.0, 1.0);
-    self.sceneTextView.layer.shadowOpacity = 1.0;
-    self.sceneTextView.layer.shadowRadius = 0.3;
+    self.pieceTextView.layer.shadowColor = [[UIColor blackColor] CGColor];
+    self.pieceTextView.layer.shadowOffset = CGSizeMake(1.0, 1.0);
+    self.pieceTextView.layer.shadowOpacity = 1.0;
+    self.pieceTextView.layer.shadowRadius = 0.3;
     
     self.navigationBar.delegate = self;
 }
@@ -111,7 +90,7 @@
 {
     [super viewDidDisappear:animated];
     if (self.editMode == add && self.piece.story.isLocationEnabled) {
-        [self.locationManager stopUpdatingLocation:self.locationLabel.text];
+        [self.locationManager stopUpdatingLocation:self.addLocationButton.titleLabel.text];
     }
 }
 
@@ -120,13 +99,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    self.sceneTextView.font = [UIFont fontWithName:PIECE_FONT size:24];
-    
-//    self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapAnywhere:)];
-//    self.tapRecognizer.delegate = self;
-    
     if (self.piece.geocodedLocation && ![self.piece.geocodedLocation isEqual:[NSNull null]]) {
-        self.locationLabel.text = self.piece.geocodedLocation;
+        self.addLocationButton.titleLabel.text = self.piece.geocodedLocation;
     }
     
     if (self.editMode == add)
@@ -135,27 +109,26 @@
     }
     else if (self.editMode == edit)
     {
-        self.imageView.frame = [[UIScreen mainScreen] bounds];
         self.localImageURL = self.piece.imageURL;
         if (self.piece.imageURL && [self.piece.imageURL rangeOfString:@"asset"].location == NSNotFound) {
-            [self.imageView setImageWithURL:[NSURL URLWithString:self.piece.imageURL] placeholderImage:nil];
+            [self.addPhotoButton.imageView setImageWithURL:[NSURL URLWithString:self.piece.imageURL] placeholderImage:nil];
         } else if (self.piece.imageURL) {
             ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
             [library assetForURL:[NSURL URLWithString:self.piece.imageURL] resultBlock:^(ALAsset *asset) {
                 ALAssetRepresentation *rep = [asset defaultRepresentation];
                 CGImageRef imageRef = [rep fullScreenImage];
                 UIImage *image = [UIImage imageWithCGImage:imageRef];
-                [self.imageView setImage:image];
+                [self.addPhotoButton.imageView setImage:image];
             }
                     failureBlock:^(NSError *error) {
                         NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
                     }
              ];
         } else {
-            [self.imageView cancelImageRequestOperation];
-            [self.imageView setImageWithURL:nil];
+            [self.addPhotoButton.imageView  cancelImageRequestOperation];
+            [self.addPhotoButton.imageView  setImageWithURL:nil];
         }
-        self.sceneTextView.text = self.piece.text;
+        self.pieceTextView.text = self.piece.text;
         self.navigationBar.topItem.title = @"Edit";
     }
     
@@ -163,47 +136,35 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *previousSceneText = [defaults objectForKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
     if (previousSceneText) {
-        self.sceneTextView.text = previousSceneText;
+        self.pieceTextView.text = previousSceneText;
     }
     [defaults removeObjectForKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
     
     
-    self.sceneTextView.editable = NO;
     self.doneButton.enabled = NO;
     
     self.imageChanged = NO;
     
-//    [self registerForKeyboardNotifications];
+    [self registerForKeyboardNotifications];
     
-//    self.dismissKeyboardButton = [[UIBarButtonItem alloc] initWithTitle:@"Dismiss Keyboard"
-//                                                                  style:UIBarButtonItemStyleBordered
-//                                                                 target:self
-//                                                                 action:@selector(dismissKeyboard:)];
-    self.navigationBar.translucent = YES;
-    self.actionToolbar.translucent = YES;
+//    self.navigationBar.translucent = YES;
 }
 
 - (void)viewDidUnload
 {
-    [self setImageView:nil];
     [self setNavigationBar:nil];
-    [self setSceneTextView:nil];
+    [self setPieceTextView:nil];
     [self setCancelButton:nil];
     [self setDoneButton:nil];
-    [self setActionToolbar:nil];
-    [self setContentView:nil];
     [self setLocalImageURL:nil];
-    [self setLocationLabel:nil];
     self.locationManager.delegate = nil;
     [self setLocationManager:nil];
-    [self setDismissKeyboardButton:nil];
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-//    if (self.sceneTextView.isFirstResponder)
-//        [self.sceneTextView resignFirstResponder];
-//    
-//    [self unregisterForKeyboardNotifications];
+    [self setSceneCaptionView:nil];
+    [self setAddLocationButton:nil];
+    [self setAddPhotoButton:nil];
+    [self setScrollView:nil];
+    [super viewDidUnload]; 
+    [self unregisterForKeyboardNotifications];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -221,7 +182,7 @@
 // Done modifying scene. Now save all the changes.
 - (IBAction)done:(UIBarButtonItem *)sender 
 {
-    self.piece.text = self.sceneTextView.text;
+    self.piece.text = self.pieceTextView.text;
     self.piece.imageURL = self.localImageURL;
     
     if (self.editMode == add)
@@ -244,7 +205,7 @@
     }
     else if (self.editMode == edit)
     {
-        self.piece.text = self.sceneTextView.text;
+        self.piece.text = self.pieceTextView.text;
         if (self.imageChanged) {
             self.piece.imageURL = self.localImageURL;
             self.piece.imageChanged = [NSNumber numberWithBool:YES];
@@ -284,7 +245,7 @@
     textController.delegate = self;
     
     [self presentViewController:textController animated:YES completion:^{
-        textController.textView.text = self.sceneTextView.text;
+        textController.textView.text = self.pieceTextView.text;
     }];
 }
 
@@ -323,8 +284,8 @@
     }
     else if (buttonIndex == actionSheet.destructiveButtonIndex) {
         // MAYBE EXPLICITLY DELETE IMAGE IN FUTURE
-        [self.imageView cancelImageRequestOperation];
-        [self.imageView setImageWithURL:nil];
+        [self.addPhotoButton.imageView cancelImageRequestOperation];
+        [self.addPhotoButton.imageView setImageWithURL:nil];
         self.localImageURL = nil;
         self.imageChanged = YES;
         self.doneButton.enabled = [self checkForChanges];
@@ -438,8 +399,8 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
          }];
     }
 
-    [self.imageView cancelImageRequestOperation];
-    self.sceneTextView.textColor = [UIColor whiteColor];
+    [self.addPhotoButton.imageView  cancelImageRequestOperation];
+    self.pieceTextView.textColor = [UIColor whiteColor];
     self.imageChanged = YES;
     [NSThread detachNewThreadSelector:@selector(useImage:) toTarget:self withObject:image];
     self.doneButton.enabled = [self checkForChanges];
@@ -464,7 +425,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
                                                     bounds:screenSize.size
                                       interpolationQuality:kCGInterpolationHigh];
     
-    [self.imageView setImage:newImage];
+    [self.addPhotoButton.imageView  setImage:newImage];
 }
 
 #pragma mark ComposeTextViewControllerDelegate
@@ -474,7 +435,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 }
 - (void)doneWithComposeTextViewController:(ComposeTextViewController *)controller
 {
-    self.sceneTextView.text = controller.textView.text;
+    self.pieceTextView.text = controller.textView.text;
     [self dismissViewControllerAnimated:YES completion:^{
         self.doneButton.enabled = [self checkForChanges];
     }];
@@ -483,7 +444,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 # pragma mark BNLocationManagerDelegate
 - (void) locationUpdated
 {
-    self.locationLabel.text = self.locationManager.locationStatus;
+    self.addLocationButton.titleLabel.text = self.locationManager.locationStatus;
 }
 
 # pragma mark - Keyboard notifications
@@ -518,10 +479,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 - (void)keyboardWillShow:(NSNotification*)aNotification
 {
     if (self.keyboardIsShown)
-        return;
-    NSDictionary* info = [aNotification userInfo];
-    CGSize keyboardSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    [self.view addGestureRecognizer:self.tapRecognizer];
+        return; 
 
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationBeginsFromCurrentState:YES];
@@ -529,23 +487,13 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     
     CGRect statusRect = [[UIApplication sharedApplication] statusBarFrame];
     
-    CGRect viewFrame = self.contentView.frame;
-    self.contentViewDispositionOnKeyboard = self.sceneTextView.frame.origin.y - statusRect.size.height;
+    CGRect viewFrame = self.scrollView.frame;
+    self.contentViewDispositionOnKeyboard = self.pieceTextView.frame.origin.y - statusRect.size.height;
     viewFrame.origin.y -= self.contentViewDispositionOnKeyboard;
-    self.contentView.frame = viewFrame;
+    self.scrollView.frame = viewFrame;
     
-    CGRect screenRect = [[UIScreen mainScreen] bounds];
-    CGRect actionToolbarFrame = self.actionToolbar.frame;
-	actionToolbarFrame.origin.y = screenRect.size.height - keyboardSize.height
-                                    - actionToolbarFrame.size.height
-                                    + self.contentViewDispositionOnKeyboard;
-    self.actionToolbar.frame = actionToolbarFrame;
     [UIView commitAnimations];
-    NSMutableArray *items = [self.actionToolbar.items mutableCopy];
-    if ([items indexOfObject:self.dismissKeyboardButton] == NSNotFound) {
-        [items insertObject:self.dismissKeyboardButton atIndex:items.count-1];
-    }
-    [self.actionToolbar setItems:items animated:YES];
+
     self.keyboardIsShown = YES;
 }
 
@@ -554,42 +502,18 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     if(!self.keyboardIsShown)
         return;
-    
-    [self.view removeGestureRecognizer:self.tapRecognizer];
-    
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationBeginsFromCurrentState:YES];
-    [UIView setAnimationDuration:0.3];
-    CGRect viewFrame = self.contentView.frame;
-    viewFrame.origin.y += self.contentViewDispositionOnKeyboard;
-    self.contentView.frame = viewFrame;
-    
-    CGRect actionToolbarFrame = self.actionToolbar.frame;
-    CGRect screenRect = [[UIScreen mainScreen] bounds];
-    actionToolbarFrame.origin.y = screenRect.size.height - actionToolbarFrame.size.height;
-                                //    + self.contentViewDispositionOnKeyboard;
-	self.actionToolbar.frame = actionToolbarFrame;
-
-    [UIView commitAnimations];
-    NSMutableArray *items = [self.actionToolbar.items mutableCopy];
-    if ([items indexOfObject:self.dismissKeyboardButton] != NSNotFound) {
-        [items removeObject:self.dismissKeyboardButton];
-    }
-    [self.actionToolbar setItems:items animated:YES];
+        
     self.keyboardIsShown = NO;
     self.contentViewDispositionOnKeyboard = 0;
 }
 
--(void)didTapAnywhere: (UITapGestureRecognizer*) recognizer {    
-    [self dismissKeyboard:NULL];
-}
 
 - (IBAction)dismissKeyboard:(id)sender
 {
     self.doneButton.enabled = [self checkForChanges];
     
-    if (self.sceneTextView.isFirstResponder)
-        [self.sceneTextView resignFirstResponder];
+    if (self.pieceTextView.isFirstResponder)
+        [self.pieceTextView resignFirstResponder];
 }
 
 - (BOOL)textView:(UITextView *)textView 
@@ -605,14 +529,14 @@ shouldChangeTextInRange:(NSRange)range
     if (self.editMode == add)
     {
         if (self.imageChanged
-            || ![self.sceneTextView.text isEqualToString:@""])
+            || ![self.pieceTextView.text isEqualToString:@""])
             return YES;
         else
             return NO;
     } else if (self.editMode == edit)
     {
         if ((self.imageChanged)
-            || (![self.sceneTextView.text isEqualToString:self.piece.text]))
+            || (![self.pieceTextView.text isEqualToString:self.piece.text]))
             return YES;
         else
             return NO;
@@ -623,22 +547,13 @@ shouldChangeTextInRange:(NSRange)range
     }
 }
 
-#pragma mark UIGestureRecognizerDelegate
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
-{
-    if ([touch.view isDescendantOfView:self.actionToolbar])
-        return NO;
-    else {
-        return YES;
-    }
-}
 
 #pragma Memory Management
 - (void)didReceiveMemoryWarning
 {
     // This usually happens when taking a picture from the camera
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:REPLACE_NIL_WITH_EMPTY_STRING(self.sceneTextView.text) forKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
+    [defaults setObject:REPLACE_NIL_WITH_EMPTY_STRING(self.pieceTextView.text) forKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
     
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];

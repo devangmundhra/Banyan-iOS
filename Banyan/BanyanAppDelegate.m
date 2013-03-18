@@ -18,9 +18,13 @@
 @synthesize window = _window;
 @synthesize userManagementModule;
 @synthesize userContentMOCtx = _userContentMOCtx;
+@synthesize tabBarController = _tabBarController;
+@synthesize navController = _navController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     // Normal launch stuff
     
@@ -93,6 +97,13 @@
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
      UIRemoteNotificationTypeAlert];
     
+    [self setupTabBarController];
+    self.navController = [[UINavigationController alloc] initWithRootViewController:self.tabBarController];
+    self.navController.navigationBarHidden = YES;
+    
+    self.window.rootViewController = self.navController;
+    [self.window makeKeyAndVisible];
+    
     return YES;
 }
 
@@ -106,20 +117,21 @@ void uncaughtExceptionHandler(NSException *exception)
 #pragma mark customize appearnaces
 - (void) appearances
 {
-    [[UINavigationBar appearance] setTintColor:[UIColor colorWithRed:136/255.0 green:103/255.0 blue:68/255.0 alpha:1]];
+    [[UINavigationBar appearance] setTintColor:BANYAN_BROWN_COLOR];
     
-    [[UIToolbar appearance] setTintColor:[UIColor colorWithRed:136/255.0 green:103/255.0 blue:68/255.0 alpha:1]];
+    [[UIToolbar appearance] setTintColor:BANYAN_BROWN_COLOR];
     
-    [[UIBarButtonItem appearance] setTintColor:[UIColor colorWithRed:44/255.0 green:127/255.0 blue:84/255.0 alpha:1]];
+    [[UIBarButtonItem appearance] setTintColor:BANYAN_GREEN_COLOR];
     
-    [[UISwitch appearance] setOnTintColor:[UIColor colorWithRed:44/255.0 green:127/255.0 blue:84/255.0 alpha:1]];
+    [[UISwitch appearance] setOnTintColor:BANYAN_GREEN_COLOR];
     
-    [[UISegmentedControl appearance] setTintColor:[UIColor colorWithRed:136/255.0 green:103/255.0 blue:68/255.0 alpha:1]];
+    [[UISegmentedControl appearance] setTintColor:BANYAN_BROWN_COLOR];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent];
     
-    [[UISlider appearance] setThumbTintColor:[UIColor colorWithRed:44/255.0 green:127/255.0 blue:84/255.0 alpha:1]];
-    [[UISlider appearance] setMinimumTrackTintColor:[UIColor colorWithRed:136/255.0 green:103/255.0 blue:68/255.0 alpha:1]];
+    [[UISlider appearance] setThumbTintColor:BANYAN_GREEN_COLOR];
+    
+    [[UISlider appearance] setMinimumTrackTintColor:BANYAN_BROWN_COLOR];
 }
 
 #pragma mark Application's documents directory
@@ -419,7 +431,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [RKManagedObjectStore setDefaultStore:managedObjectStore];
 }
 
-// MISCELLANEOUS METHODS
+#pragma mark MISCELLANEOUS METHODS
 + (UIViewController*) topMostController
 {
     UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
@@ -429,6 +441,40 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     }
     
     return topController;
+}
+
+#pragma mark TabBar Controller Methods
+- (void)setupTabBarController
+{
+    self.tabBarController = [[BNTabBarController alloc] init];
+    StoryListTableViewController *storyListVC = [[StoryListTableViewController alloc] init];
+    
+    UITabBarItem *storyListTabBarItem = [[UITabBarItem alloc] initWithTitle:@"Following" image:nil tag:0];
+    [storyListTabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            [UIColor colorWithRed:86.0f/255.0f green:55.0f/255.0f blue:42.0f/255.0f alpha:1.0f], UITextAttributeTextColor,
+                                            nil] forState:UIControlStateNormal];
+    [storyListTabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                            [UIColor colorWithRed:129.0f/255.0f green:99.0f/255.0f blue:69.0f/255.0f alpha:1.0f], UITextAttributeTextColor,
+                                            nil] forState:UIControlStateSelected];
+    
+    UITableViewController *searchVC = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
+    UITabBarItem *searchTabBarItem = [[UITabBarItem alloc] initWithTitle:@"Search" image:nil tag:0];
+    [searchTabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                 [UIColor colorWithRed:86.0f/255.0f green:55.0f/255.0f blue:42.0f/255.0f alpha:1.0f], UITextAttributeTextColor,
+                                                 nil] forState:UIControlStateNormal];
+    [searchTabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                 [UIColor colorWithRed:129.0f/255.0f green:99.0f/255.0f blue:69.0f/255.0f alpha:1.0f], UITextAttributeTextColor,
+                                                 nil] forState:UIControlStateSelected];
+    
+    UINavigationController *storyListNavigationController = [[UINavigationController alloc] initWithRootViewController:storyListVC];
+    UINavigationController *emptyNavigationController = [[UINavigationController alloc] init];
+    UINavigationController *searchNavigationController = [[UINavigationController alloc] initWithRootViewController:searchVC];
+
+    [storyListNavigationController setTabBarItem:storyListTabBarItem];
+    [searchNavigationController setTabBarItem:searchTabBarItem];
+
+    self.tabBarController.delegate = self;
+    [self.tabBarController setViewControllers:@[storyListNavigationController, emptyNavigationController, searchNavigationController] animated:YES];
 }
 @end
 
