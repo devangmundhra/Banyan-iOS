@@ -7,13 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Story+Create.h"
 #import "InvitedTableViewController.h"
 #import "BNLocationManager.h"
 #import "TITokenField.h"
+#import "Story.h"
 
 @class NewStoryViewController;
-@class Story;
 
 @protocol NewStoryViewControllerDelegate <NSObject>
 

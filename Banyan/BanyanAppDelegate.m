@@ -458,7 +458,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
                                             nil] forState:UIControlStateSelected];
     
     UITableViewController *searchVC = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
-    UITabBarItem *searchTabBarItem = [[UITabBarItem alloc] initWithTitle:@"Search" image:nil tag:0];
+    UITabBarItem *searchTabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemSearch tag:0];
     [searchTabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
                                                  [UIColor colorWithRed:86.0f/255.0f green:55.0f/255.0f blue:42.0f/255.0f alpha:1.0f], UITextAttributeTextColor,
                                                  nil] forState:UIControlStateNormal];
@@ -466,15 +466,37 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
                                                  [UIColor colorWithRed:129.0f/255.0f green:99.0f/255.0f blue:69.0f/255.0f alpha:1.0f], UITextAttributeTextColor,
                                                  nil] forState:UIControlStateSelected];
     
+    
+    NewStoryViewController *newStoryViewController = [[NewStoryViewController alloc] initWithNibName:@"NewStoryViewController" bundle:nil];
+    newStoryViewController.delegate = self;
+    UITabBarItem *addTabBarItem = [[UITabBarItem alloc] initWithTitle:@"Add" image:nil tag:0];
+    
+    SettingsTableViewController *settingsVC = [[SettingsTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    UITabBarItem *settingsTabBar = [[UITabBarItem alloc] initWithTitle:@"Settings" image:nil tag:0];
+    
     UINavigationController *storyListNavigationController = [[UINavigationController alloc] initWithRootViewController:storyListVC];
-    UINavigationController *emptyNavigationController = [[UINavigationController alloc] init];
+    UINavigationController *emptyNavigationController = [[UINavigationController alloc] initWithRootViewController:newStoryViewController];
     UINavigationController *searchNavigationController = [[UINavigationController alloc] initWithRootViewController:searchVC];
+    UINavigationController *profileNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsVC];
 
     [storyListNavigationController setTabBarItem:storyListTabBarItem];
     [searchNavigationController setTabBarItem:searchTabBarItem];
+    [emptyNavigationController setTabBarItem:addTabBarItem];
+    [profileNavigationController setTabBarItem:settingsTabBar];
 
     self.tabBarController.delegate = self;
-    [self.tabBarController setViewControllers:@[storyListNavigationController, emptyNavigationController, searchNavigationController] animated:YES];
+    [self.tabBarController setViewControllers:@[storyListNavigationController, searchNavigationController, emptyNavigationController, profileNavigationController] animated:YES];
+}
+
+- (void) newStoryViewController:(NewStoryViewController *)sender
+                    didAddStory:(Story *)story
+{
+    // Can't add a story to the scene yet because the story Id would not be furnished here.
+    //    [self addSceneToStory:story];
+}
+
+- (void) newStoryViewControllerDidCancel:(NewStoryViewController *)sender
+{
 }
 @end
 

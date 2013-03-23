@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
+#import "NewStoryViewController.h"
 #import "UserManagementModule.h"
 #import "BNTabBarController.h"
 
@@ -34,7 +35,7 @@
 
 #define BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT [(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate] userContentMOCtx]
 
-@interface BanyanAppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate> {
+@interface BanyanAppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate, NewStoryViewControllerDelegate> {
     UserManagementModule *userManagementModule;
 }
 

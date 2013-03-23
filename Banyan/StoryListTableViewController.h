@@ -7,12 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "StoryListStoryCell.h"
 #import "Story+Create.h"
 #import "Story+Delete.h"
 #import "Piece+Create.h"
 #import "File+Create.h"
-#import "NewStoryViewController.h"
 #import "StoryReaderController.h"
 #import "UserLoginViewController.h"
 #import "MBProgressHUD.h"
@@ -20,7 +18,9 @@
 #import "CoreDataTableViewController.h"
 #import "BanyanConnection.h"
 
-@interface StoryListTableViewController : CoreDataTableViewController <NewStoryViewControllerDelegate, StoryReaderControllerDelegate, ModifySceneViewControllerDelegate>
+@interface StoryListTableViewController : CoreDataTableViewController <StoryReaderControllerDelegate, ModifySceneViewControllerDelegate> {
+	NSIndexPath * indexOfVisibleBackView;
+}
 
 - (void)addSceneForRowAtIndexPath:(NSIndexPath *)indexPath;
 

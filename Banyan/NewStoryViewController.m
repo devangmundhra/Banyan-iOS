@@ -12,6 +12,7 @@
 #import "User+Edit.h"
 #import "SVSegmentedControl.h"
 #import "UIImage+Create.h"
+#import "Story+Create.h"
 
 @interface NewStoryViewController ()
 {

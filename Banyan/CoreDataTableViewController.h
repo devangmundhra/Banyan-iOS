@@ -18,9 +18,8 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
-#import "TISwipeableTableView.h"
 
-@interface CoreDataTableViewController : TISwipeableTableViewController <NSFetchedResultsControllerDelegate>
+@interface CoreDataTableViewController : UITableViewController <NSFetchedResultsControllerDelegate>
 
 // The controller (this class fetches nothing if this is not set).
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;

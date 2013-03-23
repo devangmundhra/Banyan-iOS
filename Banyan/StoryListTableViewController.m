@@ -9,44 +9,21 @@
 #import "StoryListTableViewController.h"
 #import "BanyanAppDelegate.h"
 #import "SVPullToRefresh.h"
-
+#import "StoryListCell.h"
 
 typedef enum {
-    FilterStoriesSegmentIndexPopular = 0,
-    FilterStoriesSegmentIndexFollowing,
-    FilterStoriesSegmentIndexInvited
+    FilterStoriesSegmentIndexFollowing = 0,
+    FilterStoriesSegmentIndexPopular
 } FilterStoriesSegmentIndex;
 
 @interface StoryListTableViewController ()
-@property (strong, nonatomic) IBOutlet UIBarButtonItem *addStory;
-@property (strong, nonatomic) IBOutlet UIBarButtonItem *leftButton;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *filterStoriesSegmentedControl;
+@property (strong, nonatomic) NSIndexPath *indexOfVisibleBackView;
 @end
 
 @implementation StoryListTableViewController
-@synthesize addStory = _addStory;
-@synthesize leftButton = _leftButton;
 @synthesize filterStoriesSegmentedControl = _filterStoriesSegmentedControl;
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO
-                                            withAnimation:UIStatusBarAnimationNone];
-    self.navigationController.navigationBar.translucent = NO;
-    self.navigationController.navigationBarHidden = NO;
-    self.navigationController.toolbarHidden = YES;
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque];
-    [self refreshView];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-//    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent];
-    [self setEditing:NO animated:YES];
-    [self.tableView setEditing:NO animated:YES];
-}
+@synthesize indexOfVisibleBackView = _indexOfVisibleBackView;
 
 - (void)viewDidLoad
 {
@@ -55,22 +32,16 @@ typedef enum {
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
+    [self.tableView registerNib:[UINib nibWithNibName:@"StoryListCell" bundle:nil] forCellReuseIdentifier:@"Story Cell"];
+    
     [self.tableView addPullToRefreshWithActionHandler:^{
         [[BanyanConnection class] performSelectorInBackground:@selector(loadDataSource) withObject:nil];
     }];
     
     [self.tableView setRowHeight:TABLE_ROW_HEIGHT];
     
-    self.leftButton = [[UIBarButtonItem alloc] initWithTitle:@"Settings"
-                                                       style:UIBarButtonItemStyleBordered
-                                                      target:self
-                                                      action:@selector(settings)];
-    self.addStory = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                                  target:(self)
-                                                                  action:@selector(createNewStory:)];
-    
     self.filterStoriesSegmentedControl = [[UISegmentedControl alloc]
-                                          initWithItems:[NSArray arrayWithObjects:@"Popular", @"Following", @"Invited", nil]];
+                                          initWithItems:[NSArray arrayWithObjects:@"Following", @"Popular", nil]];
     [self.filterStoriesSegmentedControl addTarget:self
                                            action:@selector(filterStories:)
                                  forControlEvents:UIControlEventValueChanged];
@@ -103,47 +74,16 @@ typedef enum {
                                                  name:AFNetworkingReachabilityDidChangeNotification
                                                object:nil];
     
+//    self.indexOfVisibleBackView = [[NSIndexPath alloc] init];
     [TestFlight passCheckpoint:@"RootViewController view loaded"];
-}
-
-- (void)refreshView
-{
-    return;
-    
-    self.leftButton.title = @"Settings";
-    self.leftButton.target = self;
-    self.leftButton.action = @selector(settings);
-    [self.navigationItem setLeftBarButtonItem:self.leftButton animated:YES];
-
-    UserManagementModule *userManagementModule = [(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate] userManagementModule];
-
-    if ([userManagementModule isUserSignedIntoApp])
-    {
-        [self.navigationItem setRightBarButtonItem:self.addStory animated:YES];
-        [self.navigationItem setTitleView:self.filterStoriesSegmentedControl];
-    }
-    else {
-        [self.navigationItem setRightBarButtonItem:nil animated:YES];
-        [self.navigationItem setTitle:@"Banyan"];
-        [self.navigationItem setTitleView:nil];
-    }
-
-    // Reset the content context so any unwanted changes are not saved.
-    // The changes that are needed (like create/edit/etc..) should have got saved anyways.
-//    [BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT reset];
-    
-    // Don't reload data here as it is called everytime it comes back from sceneviewcontroller
 }
 
 - (void)viewDidUnload
 {
-    [self setAddStory:nil];
-    [self setLeftButton:nil];
-    [self setAddStory:nil];
-    [self setLeftButton:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self setFilterStoriesSegmentedControl:nil];
     self.fetchedResultsController = nil;
+    self.indexOfVisibleBackView = nil;
     [super viewDidUnload];
     NSLog(@"Root View Controller Unloaded");
 }
@@ -158,9 +98,10 @@ typedef enum {
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Story Cell";
-    StoryListStoryCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    StoryListCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[StoryListStoryCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        NSArray *nibs = [[NSBundle mainBundle] loadNibNamed:@"StoryListCell" owner:self options:nil];
+        cell = (StoryListCell *)[nibs objectAtIndex:0];
     }
     
     // Configure the cell...
@@ -173,8 +114,8 @@ typedef enum {
 #pragma mark Table View Delegates
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (![super tableView:tableView willSelectRowAtIndexPath:indexPath])
-        return nil;
+//    if ([indexPath compare:self.indexOfVisibleBackView] == NSOrderedSame)
+//        return nil;
     
     return [self updateStoryAtIndex:indexPath];
 }
@@ -186,7 +127,7 @@ typedef enum {
     Story *selectedStory = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [self readStory:selectedStory];
     
-    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+    [self hideVisibleSwipedView:YES];
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -220,12 +161,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self addSceneToStory:story];
 }
 
-#pragma mark TISwipeableTableView delegates
-- (void)tableView:(UITableView *)tableView didSwipeCellAtIndexPath:(NSIndexPath *)indexPath {
-	
-	[super tableView:tableView didSwipeCellAtIndexPath:indexPath];
-}
-
 #pragma mark Data Source Loading / Reloading Methods
 // Called by both data source updated notification and by clicking on the filter segmented control
 - (IBAction)filterStories:(id)sender
@@ -255,9 +190,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             // Create a predicate where author.userId in arrayOfUserIdsBeingFollowed
             predicate = [NSPredicate predicateWithFormat:@"((canView == YES) OR (canContribute == YES)) AND ((author.userId IN %@))", arrayOfUserIdsBeingFollowed];
             break;
-        case FilterStoriesSegmentIndexInvited:
-            predicate = [NSPredicate predicateWithFormat:@"(isInvited == YES)"];
-            break;
         default:
             break;
     }
@@ -280,19 +212,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self.tableView triggerPullToRefresh];
 }
 
-# pragma mark - segues
-- (void) settings
-{
-    SettingsTableViewController *vc = [[SettingsTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    [self.navigationController pushViewController:vc animated:YES];
-}
-
-- (IBAction)createNewStory:(UIBarButtonItem *)sender
-{
-    NewStoryViewController *newStoryViewController = [[NewStoryViewController alloc] initWithNibName:@"NewStoryViewController" bundle:nil];
-    newStoryViewController.delegate = self;
-    [self.navigationController pushViewController:newStoryViewController animated:YES];
-}
 
 #pragma mark Story Manipulations
 - (NSIndexPath *) updateStoryAtIndex:(NSIndexPath *)indexPath
@@ -390,7 +309,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"StoryListTableViewController_Adding scene");
     [self dismissViewControllerAnimated:NO completion:^{
-        [self hideVisibleBackView:YES];
+//        [self hideVisibleBackView:YES];
     }];
 }
 
@@ -399,27 +318,41 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark - NewStoryViewControllerDelegate
-
-- (void) newStoryViewController:(NewStoryViewController *)sender 
-                    didAddStory:(Story *)story
-{
-    [self.navigationController popViewControllerAnimated:NO];
-    // Can't add a story to the scene yet because the story Id would not be furnished here.
-//    [self addSceneToStory:story];
+#pragma mark - Swipeable controls
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+	[self hideVisibleSwipedView:YES];
 }
 
-- (void) newStoryViewControllerDidCancel:(NewStoryViewController *)sender
-{
-    [self.navigationController popViewControllerAnimated:YES];
+- (void)revealSwipedViewAtIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated {
+	
+	UITableViewCell * cell = [self.tableView cellForRowAtIndexPath:indexPath];
+	
+	[self hideVisibleSwipedView:animated];
+	
+	if ([cell respondsToSelector:@selector(revealSwipedViewAnimated:)]){
+		[(StoryListCell *)cell revealSwipedViewAnimated:YES];
+        [self setIndexOfVisibleBackView:indexPath];
+	}
+    self.indexOfVisibleBackView = indexPath;
 }
+
+- (void)hideVisibleSwipedView:(BOOL)animated {
+	
+	UITableViewCell * cell = [self.tableView cellForRowAtIndexPath:self.indexOfVisibleBackView];
+	if ([cell respondsToSelector:@selector(hideSwipedViewAnimated:)]) {
+		[(StoryListCell *)cell hideSwipedViewAnimated:YES];
+        [self setIndexOfVisibleBackView:nil];
+	}
+    self.indexOfVisibleBackView = nil;
+}
+
+
 
 #pragma mark ScenesViewControllerDelegate
 - (void)storyReaderContollerDone:(StoryReaderController *)scenesViewController
 {
     [self.navigationController popViewControllerAnimated:YES];
     scenesViewController.story.storyBeingRead = NO;
-    [self refreshView];
 }
 
 #pragma Memory Management

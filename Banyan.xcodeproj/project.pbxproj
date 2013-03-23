@@ -24,6 +24,13 @@
 		5157CD031650902900C22CCE /* BanyanConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD021650902900C22CCE /* BanyanConnection.m */; };
 		5157CD251659E5A300C22CCE /* ComposeTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD241659E5A300C22CCE /* ComposeTextViewController.m */; };
 		5158AE2B16F56F7F0089193E /* BNTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5158AE2916F56F7E0089193E /* BNTabBarController.m */; };
+		5166957316F82CE00014E65D /* StoryListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5166957216F82CE00014E65D /* StoryListCell.m */; };
+		5166957516F8306F0014E65D /* StoryListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5166957416F8306F0014E65D /* StoryListCell.xib */; };
+		5166957816F98ABB0014E65D /* UISwipeableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5166957716F98ABA0014E65D /* UISwipeableView.m */; };
+		5166957C16FBE35A0014E65D /* StoryListCellMiddleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5166957A16FBE35A0014E65D /* StoryListCellMiddleViewController.m */; };
+		5166957D16FBE35A0014E65D /* StoryListCellMiddleViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5166957B16FBE35A0014E65D /* StoryListCellMiddleViewController.xib */; };
+		5166958116FBE54E0014E65D /* StoryListCellReadSceneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5166957F16FBE54E0014E65D /* StoryListCellReadSceneViewController.m */; };
+		5166958216FBE54E0014E65D /* StoryListCellReadSceneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5166958016FBE54E0014E65D /* StoryListCellReadSceneViewController.xib */; };
 		5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B615E75B420072749C /* buttonFacebook.png */; };
 		5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B715E75B420072749C /* buttonFacebook@2x.png */; };
 		5166B1BC15E75B420072749C /* buttonFacebookSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B815E75B420072749C /* buttonFacebookSelected.png */; };
@@ -134,6 +141,17 @@
 		5157CD241659E5A300C22CCE /* ComposeTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ComposeTextViewController.m; path = Banyan/ComposeTextViewController.m; sourceTree = "<group>"; };
 		5158AE2816F56F7E0089193E /* BNTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNTabBarController.h; sourceTree = "<group>"; };
 		5158AE2916F56F7E0089193E /* BNTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNTabBarController.m; sourceTree = "<group>"; };
+		5166957116F82CE00014E65D /* StoryListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoryListCell.h; sourceTree = "<group>"; };
+		5166957216F82CE00014E65D /* StoryListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoryListCell.m; sourceTree = "<group>"; };
+		5166957416F8306F0014E65D /* StoryListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoryListCell.xib; sourceTree = "<group>"; };
+		5166957616F98AB90014E65D /* UISwipeableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UISwipeableView.h; sourceTree = "<group>"; };
+		5166957716F98ABA0014E65D /* UISwipeableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UISwipeableView.m; sourceTree = "<group>"; };
+		5166957916FBE3590014E65D /* StoryListCellMiddleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoryListCellMiddleViewController.h; sourceTree = "<group>"; };
+		5166957A16FBE35A0014E65D /* StoryListCellMiddleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoryListCellMiddleViewController.m; sourceTree = "<group>"; };
+		5166957B16FBE35A0014E65D /* StoryListCellMiddleViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoryListCellMiddleViewController.xib; sourceTree = "<group>"; };
+		5166957E16FBE54D0014E65D /* StoryListCellReadSceneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoryListCellReadSceneViewController.h; sourceTree = "<group>"; };
+		5166957F16FBE54E0014E65D /* StoryListCellReadSceneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoryListCellReadSceneViewController.m; sourceTree = "<group>"; };
+		5166958016FBE54E0014E65D /* StoryListCellReadSceneViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoryListCellReadSceneViewController.xib; sourceTree = "<group>"; };
 		5166B1B615E75B420072749C /* buttonFacebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebook.png; sourceTree = "<group>"; };
 		5166B1B715E75B420072749C /* buttonFacebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFacebook@2x.png"; sourceTree = "<group>"; };
 		5166B1B815E75B420072749C /* buttonFacebookSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebookSelected.png; sourceTree = "<group>"; };
@@ -396,6 +414,8 @@
 				51B5989D15EB31B300DF4D9D /* BanyanConstants.m */,
 				5189B2C615B387E200562DD0 /* BanyanAppDelegate.h */,
 				5189B2C715B387E200562DD0 /* BanyanAppDelegate.m */,
+				5166957616F98AB90014E65D /* UISwipeableView.h */,
+				5166957716F98ABA0014E65D /* UISwipeableView.m */,
 				5158AE2D16F56F850089193E /* Tab Bar Controller */,
 				5189B2BE15B387E200562DD0 /* Supporting Files */,
 				5166B1B515E75B420072749C /* Resources */,
@@ -651,6 +671,15 @@
 			children = (
 				5189B31515B395F300562DD0 /* StoryListStoryCell.h */,
 				5189B31615B395F300562DD0 /* StoryListStoryCell.m */,
+				5166957116F82CE00014E65D /* StoryListCell.h */,
+				5166957216F82CE00014E65D /* StoryListCell.m */,
+				5166957416F8306F0014E65D /* StoryListCell.xib */,
+				5166957916FBE3590014E65D /* StoryListCellMiddleViewController.h */,
+				5166957A16FBE35A0014E65D /* StoryListCellMiddleViewController.m */,
+				5166957B16FBE35A0014E65D /* StoryListCellMiddleViewController.xib */,
+				5166957E16FBE54D0014E65D /* StoryListCellReadSceneViewController.h */,
+				5166957F16FBE54E0014E65D /* StoryListCellReadSceneViewController.m */,
+				5166958016FBE54E0014E65D /* StoryListCellReadSceneViewController.xib */,
 			);
 			name = UITableViewCell;
 			sourceTree = "<group>";
@@ -739,6 +768,9 @@
 				51FD96ED1665E6C7001A1709 /* dotted-pattern.png in Resources */,
 				51FD96EE1665E6C7001A1709 /* dotted-pattern@2x.png in Resources */,
 				512A6ADB16F175F100106BA4 /* NewStoryViewController.xib in Resources */,
+				5166957516F8306F0014E65D /* StoryListCell.xib in Resources */,
+				5166957D16FBE35A0014E65D /* StoryListCellMiddleViewController.xib in Resources */,
+				5166958216FBE54E0014E65D /* StoryListCellReadSceneViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -817,6 +849,10 @@
 				5103C86E1699443500CC33AC /* Story.m in Sources */,
 				51B7ABED169AD55400B1488C /* Piece.m in Sources */,
 				5158AE2B16F56F7F0089193E /* BNTabBarController.m in Sources */,
+				5166957316F82CE00014E65D /* StoryListCell.m in Sources */,
+				5166957816F98ABB0014E65D /* UISwipeableView.m in Sources */,
+				5166957C16FBE35A0014E65D /* StoryListCellMiddleViewController.m in Sources */,
+				5166958116FBE54E0014E65D /* StoryListCellReadSceneViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
