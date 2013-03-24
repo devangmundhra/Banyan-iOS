@@ -2,7 +2,7 @@
 //  Piece.m
 //  Banyan
 //
-//  Created by Devang Mundhra on 1/7/13.
+//  Created by Devang Mundhra on 3/23/13.
 //
 //
 
@@ -30,9 +30,10 @@
 @dynamic numberOfViews;
 @dynamic pieceId;
 @dynamic pieceNumber;
-@dynamic text;
+@dynamic longText;
 @dynamic updatedAt;
 @dynamic viewed;
+@dynamic shortText;
 @dynamic author;
 @dynamic story;
 

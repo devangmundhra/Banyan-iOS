@@ -18,7 +18,7 @@
 #import "CoreDataTableViewController.h"
 #import "BanyanConnection.h"
 
-@interface StoryListTableViewController : CoreDataTableViewController <StoryReaderControllerDelegate, ModifySceneViewControllerDelegate> {
+@interface StoryListTableViewController : CoreDataTableViewController <StoryReaderControllerDelegate, ModifyPieceViewControllerDelegate> {
 	NSIndexPath * indexOfVisibleBackView;
 }
 

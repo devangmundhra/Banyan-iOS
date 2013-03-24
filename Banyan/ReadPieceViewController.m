@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "ReadSceneViewController.h"
+#import "ReadPieceViewController.h"
 #import "UIImageView+AFNetworking.h"
 #import "Piece+Stats.h"
 #import "Story+Stats.h"
@@ -16,37 +16,38 @@
 #import "Piece+Edit.h"
 #import "User+Edit.h"
 
-@interface ReadSceneViewController ()
-@property (weak, nonatomic) IBOutlet UIView *contentView;
-@property (weak, nonatomic) IBOutlet UIImageView *imageView;
-@property (weak, nonatomic) IBOutlet UITextView *sceneTextView;
-@property (weak, nonatomic) IBOutlet UILabel *storyTitleLabel;
+@interface ReadPieceViewController ()
 
-@property (weak, nonatomic) IBOutlet UIView *infoView;
-@property (weak, nonatomic) IBOutlet UIButton *contributorsButton;
-@property (weak, nonatomic) IBOutlet UILabel *viewsLabel;
-@property (weak, nonatomic) IBOutlet UILabel *likesLabel;
-@property (weak, nonatomic) IBOutlet UILabel *timeLabel;
+@property (strong, nonatomic) IBOutlet UIView *contentView;
+@property (strong, nonatomic) IBOutlet UILabel *pieceCaptionView;
+@property (strong, nonatomic) IBOutlet UITextView *pieceTextView;
+@property (strong, nonatomic) IBOutlet UIImageView *imageView;
 
-@property (weak, nonatomic) IBOutlet UILabel *locationLabel;
+@property (strong, nonatomic) IBOutlet UIView *infoView;
+@property (strong, nonatomic) IBOutlet UIButton *contributorsButton;
+@property (strong, nonatomic) IBOutlet UILabel *viewsLabel;
+@property (strong, nonatomic) IBOutlet UILabel *likesLabel;
+@property (strong, nonatomic) IBOutlet UILabel *timeLabel;
+
+@property (strong, nonatomic) IBOutlet UILabel *locationLabel;
 
 
 @property (strong, nonatomic) BNLocationManager *locationManager;
 
 @end
 
-@implementation ReadSceneViewController
+@implementation ReadPieceViewController
 @synthesize contentView = _contentView;
 @synthesize imageView = _imageView;
-@synthesize sceneTextView = _sceneTextView;
-@synthesize storyTitleLabel = _storyTitleLabel;
+@synthesize pieceCaptionView = _pieceCaptionView;
+@synthesize pieceTextView = _pieceTextView;
 @synthesize infoView = _infoView;
 @synthesize contributorsButton = _contributorsButton;
 @synthesize viewsLabel = _viewsLabel;
 @synthesize likesLabel = _likesLabel;
 @synthesize timeLabel = _timeLabel;
 @synthesize locationLabel = _locationLabel;
-@synthesize piece = _scene;
+@synthesize piece = _piece;
 @synthesize delegate = _delegate;
 @synthesize locationManager = _locationManager;
 
@@ -59,12 +60,52 @@
     return self;
 }
 
+- (id) init
+{
+    self = [super init];
+    if (self) {
+        // Custom initialization
+        // this should never be called directly.
+        // initWithPiece should be called
+        assert(false);
+    }
+    return self;
+}
+
+- (id) initWithPiece:(Piece *)piece
+{
+    self = [super init];
+    if (self) {
+        // Custom initialization
+        self.piece = piece;
+        self.contentView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        self.infoView = [[UIView alloc] init];
+        // Allocate custom parts of the view depending on what the piece contains
+        if (self.piece.imageURL) {
+            self.imageView = [[UIImageView alloc] init];
+            [self.contentView addSubview:self.imageView];
+        }
+        if (self.piece.shortText) {
+            self.pieceCaptionView = [[UILabel alloc] initWithFrame:[UIScreen mainScreen].bounds];
+            [self.contentView addSubview:self.pieceCaptionView];
+        }
+        if (self.piece.longText) {
+            self.pieceTextView = [[UITextView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+            self.pieceTextView.editable = NO;
+            [self.contentView addSubview:self.pieceTextView];
+        }
+        [self.view addSubview:self.contentView];
+        [self.view addSubview:self.infoView];
+    }
+    return self;
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self setWantsFullScreenLayout:YES];
 
-    self.imageView.frame = [[UIScreen mainScreen] bounds];
+    self.imageView.frame = [UIScreen mainScreen].applicationFrame;
 //    self.imageView.contentMode = UIViewContentModeScaleAspectFill;
 //    self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     if (self.piece.imageURL && [self.piece.imageURL rangeOfString:@"asset"].location == NSNotFound) {
@@ -86,14 +127,15 @@
         [self.imageView setImageWithURL:nil];
     }
 
-    self.sceneTextView.backgroundColor = [UIColor clearColor];
-    self.storyTitleLabel.backgroundColor = [UIColor clearColor];
-    self.contentView.backgroundColor = [UIColor clearColor];
+    self.imageView.backgroundColor = BANYAN_BROWN_COLOR;
+    self.pieceTextView.backgroundColor = [UIColor clearColor];
+    self.pieceCaptionView.backgroundColor = [UIColor clearColor];
+    self.contentView.backgroundColor = BANYAN_WHITE_COLOR;
     self.infoView.backgroundColor = [UIColor clearColor];
-//    self.sceneTextView.contentInset = UIEdgeInsetsMake(0, 20, 0, 20);
+//    self.pieceTextView.contentInset = UIEdgeInsetsMake(0, 20, 0, 20);
     
-    self.sceneTextView.text = self.piece.text;
-    self.storyTitleLabel.text = self.piece.story.title;
+    self.pieceTextView.text = self.piece.longText;
+    self.pieceCaptionView.text = self.piece.shortText;
     
     if (![self.piece.geocodedLocation isEqual:[NSNull null]] && self.piece.geocodedLocation)
         self.locationLabel.text = self.piece.geocodedLocation;
@@ -104,44 +146,25 @@
 //    }
 
     if (self.piece.imageURL) {
-        self.sceneTextView.textColor = self.storyTitleLabel.textColor = [UIColor whiteColor];
+        self.pieceTextView.textColor = [UIColor whiteColor];
         self.contributorsButton.titleLabel.textColor = 
         self.viewsLabel.textColor = 
         self.likesLabel.textColor = 
         self.timeLabel.textColor = [UIColor whiteColor];
     }
     else {
-        self.sceneTextView.textColor = self.storyTitleLabel.textColor = [UIColor blackColor];
+        self.pieceTextView.textColor = [UIColor blackColor];
         self.contributorsButton.titleLabel.textColor = 
         self.viewsLabel.textColor = 
         self.likesLabel.textColor = 
         self.timeLabel.textColor = [UIColor blackColor];
     }
-    self.sceneTextView.layer.shadowColor = [[UIColor blackColor] CGColor];
-    self.sceneTextView.layer.shadowOffset = CGSizeMake(1.0, 1.0);
-    self.sceneTextView.layer.shadowOpacity = 1.0;
-    self.sceneTextView.layer.shadowRadius = 0.3;
-    
-    if ([self.delegate readSceneControllerEditMode]) {
-        self.storyTitleLabel.alpha = 0;
-        self.infoView.alpha = 1;
-    }
-    else {
-        self.storyTitleLabel.alpha = 1;
-        self.infoView.alpha = 0;
-    }
+    self.pieceTextView.layer.shadowColor = [[UIColor blackColor] CGColor];
+    self.pieceTextView.layer.shadowOffset = CGSizeMake(1.0, 1.0);
+    self.pieceTextView.layer.shadowOpacity = 1.0;
+    self.pieceTextView.layer.shadowRadius = 0.3;
     
     [self refreshView];
-
-    [[UIApplication sharedApplication] setStatusBarHidden:![self.delegate readSceneControllerEditMode]
-                                            withAnimation:UIStatusBarAnimationNone];
-    [self.navigationController setNavigationBarHidden:![self.delegate readSceneControllerEditMode] 
-                                             animated:NO];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:YES];
 }
 
 - (void)locationUpdated
@@ -181,14 +204,8 @@
                              forState:UIControlStateNormal];
 
     [self.contributorsButton addTarget:self action:@selector(storyContributors) forControlEvents:UIControlEventTouchUpInside];
-    if ([self.piece.text length] > MAX_CHAR_IN_PIECE) {
-        self.sceneTextView.scrollEnabled = YES;
-        self.sceneTextView.font = [UIFont systemFontOfSize:18];
-    }
-    else {
-        self.sceneTextView.scrollEnabled = NO;
-        self.sceneTextView.font = [UIFont fontWithName:STORY_FONT size:24];
-    }
+    self.pieceTextView.scrollEnabled = YES;
+    self.pieceTextView.font = [UIFont systemFontOfSize:18];
 }
 
 // Piece specific refresh
@@ -196,14 +213,8 @@
 {
     [self.contributorsButton setTitle:self.piece.author.name forState:UIControlStateNormal];
     [self.contributorsButton setEnabled:NO];
-    if ([self.piece.text length] > MAX_CHAR_IN_PIECE) {
-        self.sceneTextView.scrollEnabled = YES;
-        self.sceneTextView.font = [UIFont systemFontOfSize:18];
-    }
-    else {
-        self.sceneTextView.scrollEnabled = NO;
-        self.sceneTextView.font = [UIFont fontWithName:PIECE_FONT size:24];
-    }
+    self.pieceTextView.scrollEnabled = YES;
+    self.pieceTextView.font = [UIFont systemFontOfSize:18];
 }
 
 // Part of viewDidLoad that can be called again and again whenever this view needs to be
@@ -233,8 +244,8 @@
     [self setContentView:nil];
     [self setInfoView:nil];
     [self setImageView:nil];
-    [self setSceneTextView:nil];
-    [self setStoryTitleLabel:nil];
+    [self setPieceTextView:nil];
+    [self setPieceCaptionView:nil];
     [self setViewsLabel:nil];
     [self setLikesLabel:nil];
     [self setTimeLabel:nil];
@@ -260,12 +271,12 @@
 
 - (IBAction)listStories:(id)sender 
 {
-    [self.delegate doneWithReadSceneViewController:self];
+    [self.delegate doneWithReadPieceViewController:self];
 }
 
 - (IBAction)addPiece:(UIBarButtonItem *)sender 
 {
-    ModifySceneViewController *addSceneViewController = [[ModifySceneViewController alloc] init];
+    ModifyPieceViewController *addSceneViewController = [[ModifyPieceViewController alloc] init];
     addSceneViewController.editMode = add;
     addSceneViewController.piece = [NSEntityDescription insertNewObjectForEntityForName:kBNPieceClassKey
                                                                  inManagedObjectContext:BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT];
@@ -277,19 +288,13 @@
 }
 - (IBAction)editPiece:(UIBarButtonItem *)sender 
 {
-    ModifySceneViewController *editSceneViewController = [[ModifySceneViewController alloc] init];
+    ModifyPieceViewController *editSceneViewController = [[ModifyPieceViewController alloc] init];
     editSceneViewController.editMode = edit;
     editSceneViewController.piece = self.piece;
     editSceneViewController.delegate = self;
     [editSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
     [editSceneViewController setModalPresentationStyle:UIModalPresentationFullScreen];
     [self presentViewController:editSceneViewController animated:YES completion:nil];
-}
-
-- (IBAction)togglePieceTextDisplay:(UIBarButtonItem *)sender 
-{
-    self.sceneTextView.hidden = self.sceneTextView.hidden ? NO : YES;
-    self.storyTitleLabel.hidden = self.storyTitleLabel.hidden ? NO : YES;
 }
 
 - (void)toggleSceneLikeButtonLabel
@@ -373,78 +378,42 @@
                                       failure:AF_BANYAN_ERROR_BLOCK()];
 }
 
-- (IBAction)tap:(UITapGestureRecognizer *)sender 
+
+#pragma mark ModifyPieceViewControllerDelegate
+- (void) modifyPieceViewController:(ModifyPieceViewController *)controller
+             didFinishEditingPiece:(Piece *)piece
 {
-    [self.delegate setReadSceneControllerEditMode:(![self.delegate readSceneControllerEditMode])];
-    
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationBeginsFromCurrentState:YES];
-    [UIView setAnimationDuration:0.3];
-    self.storyTitleLabel.alpha = [self.delegate readSceneControllerEditMode] ? 0 : 1;
-    self.infoView.alpha = [self.delegate readSceneControllerEditMode] ? 1 : 0;
-    [UIView commitAnimations];
-    
-    [[UIApplication sharedApplication] setStatusBarHidden:![self.delegate readSceneControllerEditMode] 
-                                            withAnimation:UIStatusBarAnimationNone];
-    [self.navigationController setNavigationBarHidden:![self.delegate readSceneControllerEditMode] animated:YES];
-    [self.navigationController setToolbarHidden:![self.delegate readSceneControllerEditMode] animated:YES];
-}
-
-//#pragma mark UIGestureRecognizerDelegate
-//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
-//{
-//    if ([touch.view isKindOfClass:[UIButton class]]) {
-//        return NO;
-//    }
-//    else {
-//        return YES;
-//    }
-//}
-
-#pragma mark ModifySceneViewControllerDelegate
-- (void) modifySceneViewController:(ModifySceneViewController *)controller
-             didFinishEditingScene:(Piece *)piece
-{
-    [self dismissViewControllerAnimated:YES completion:^{
-        [[UIApplication sharedApplication] setStatusBarHidden:![self.delegate readSceneControllerEditMode] 
-                                                withAnimation:UIStatusBarAnimationNone];
-        [self.navigationController setNavigationBarHidden:![self.delegate readSceneControllerEditMode] animated:NO];
-
-    }];
+    [self dismissViewControllerAnimated:YES completion:nil];
     NSLog(@"ReadSceneViewController_Editing scene");
 }
 
-- (void) modifySceneViewController:(ModifySceneViewController *)controller
-              didFinishAddingScene:(Piece *)piece
+- (void) modifyPieceViewController:(ModifyPieceViewController *)controller
+              didFinishAddingPiece:(Piece *)piece
 {
     NSLog(@"ReadSceneViewController_Adding scene");
     [self dismissViewControllerAnimated:NO completion:^{
-        [self.delegate readSceneViewControllerAddedNewScene:self];
+        [self.delegate readPieceViewControllerAddedNewPiece:self];
     }];
 }
 
-- (void) modifySceneViewControllerDidCancel:(ModifySceneViewController *)controller
+- (void) modifyPieceViewControllerDidCancel:(ModifyPieceViewController *)controller
 {
-    [self dismissViewControllerAnimated:YES completion:^{
-        [[UIApplication sharedApplication] setStatusBarHidden:![self.delegate readSceneControllerEditMode] 
-                                                withAnimation:UIStatusBarAnimationNone];
-        [self.navigationController setNavigationBarHidden:![self.delegate readSceneControllerEditMode] animated:NO];
-    }];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void) modifySceneViewControllerDeletedScene:(ModifySceneViewController *)controller
+- (void) modifyPieceViewControllerDeletedPiece:(ModifyPieceViewController *)controller
 {
     NSLog(@"ReadSceneViewController_Deleting scene");
     [self dismissViewControllerAnimated:NO completion:^{
-        [self.delegate readSceneViewControllerDeletedScene:self];
+        [self.delegate readPieceViewControllerDeletedPiece:self];
     }];
 }
 
-- (void) modifySceneViewControllerDeletedStory:(ModifySceneViewController *)controller 
+- (void) modifyPieceViewControllerDeletedStory:(ModifyPieceViewController *)controller
 {
     NSLog(@"ReadSceneViewController_Deleting story");
     [self dismissViewControllerAnimated:NO completion:^{
-        [self.delegate readSceneViewControllerDeletedStory:self];
+        [self.delegate readPieceViewControllerDeletedStory:self];
     }];
 }
 

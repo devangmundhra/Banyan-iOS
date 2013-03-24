@@ -43,7 +43,7 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
         
         NSError *error = nil;
-        NSArray *stories = [[RKManagedObjectStore defaultStore].persistentStoreManagedObjectContext executeFetchRequest:request error:&error];
+        NSArray *stories = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
         
         if (stories)
         {
@@ -149,7 +149,7 @@
     
     RKEntityMapping *pieceMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-    [pieceMapping addAttributeMappingsFromArray:@[PIECE_IMAGE_URL, PIECE_NUMBER, PIECE_TEXT, PIECE_LATITUDE, PIECE_LONGITUDE, PIECE_GEOCODEDLOCATION,
+    [pieceMapping addAttributeMappingsFromArray:@[PIECE_IMAGE_URL, PIECE_NUMBER, PIECE_LONGTEXT, PIECE_SHORTTEXT, PIECE_LATITUDE, PIECE_LONGITUDE, PIECE_GEOCODEDLOCATION,
                                                     PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT]];
     [pieceMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"pieceId"}];
     pieceMapping.identificationAttributes = @[@"pieceId"];

@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "ModifySceneViewController.h"
+#import "ModifyPieceViewController.h"
 #import "Piece+Create.h"
 #import "Piece+Edit.h"
 #import "Piece+Delete.h"
@@ -19,10 +19,10 @@
 #import "MBProgressHUD.h"
 #import "UIImage+ResizeAdditions.h"
 
-@interface ModifySceneViewController ()
+@interface ModifyPieceViewController ()
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (weak, nonatomic) IBOutlet UITextField *sceneCaptionView;
+@property (weak, nonatomic) IBOutlet UITextField *pieceCaptionView;
 @property (weak, nonatomic) IBOutlet UITextView *pieceTextView;
 @property (weak, nonatomic) IBOutlet UINavigationBar *navigationBar;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
@@ -42,7 +42,7 @@
 
 @end
 
-@implementation ModifySceneViewController
+@implementation ModifyPieceViewController
 
 #define MEM_WARNING_USER_DEFAULTS_TEXT_FIELD @"ModifySceneViewControllerText"
 
@@ -59,7 +59,7 @@
 @synthesize contentViewDispositionOnKeyboard = _contentViewDispositionOnKeyboard;
 @synthesize localImageURL = _localImageURL;
 @synthesize locationManager = _locationManager;
-@synthesize sceneCaptionView, addLocationButton, addPhotoButton;
+@synthesize pieceCaptionView, addLocationButton, addPhotoButton;
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -128,7 +128,7 @@
             [self.addPhotoButton.imageView  cancelImageRequestOperation];
             [self.addPhotoButton.imageView  setImageWithURL:nil];
         }
-        self.pieceTextView.text = self.piece.text;
+        self.pieceTextView.text = self.piece.longText;
         self.navigationBar.topItem.title = @"Edit";
     }
     
@@ -159,10 +159,10 @@
     [self setLocalImageURL:nil];
     self.locationManager.delegate = nil;
     [self setLocationManager:nil];
-    [self setSceneCaptionView:nil];
     [self setAddLocationButton:nil];
     [self setAddPhotoButton:nil];
     [self setScrollView:nil];
+    [self setPieceCaptionView:nil];
     [super viewDidUnload]; 
     [self unregisterForKeyboardNotifications];
 }
@@ -176,13 +176,14 @@
 
 - (IBAction)cancel:(UIBarButtonItem *)sender 
 {
-    [self.delegate modifySceneViewControllerDidCancel:self];
+    [self.delegate modifyPieceViewControllerDidCancel:self];
 }
 
 // Done modifying scene. Now save all the changes.
 - (IBAction)done:(UIBarButtonItem *)sender 
 {
-    self.piece.text = self.pieceTextView.text;
+    self.piece.longText = self.pieceTextView.text;
+    self.piece.shortText = self.pieceCaptionView.text;
     self.piece.imageURL = self.localImageURL;
     
     if (self.editMode == add)
@@ -200,19 +201,19 @@
         
         [Piece createNewPiece:self.piece afterPiece:nil];
         NSLog(@"New scene %@ saved", self.piece);
-        [self.delegate modifySceneViewController:self didFinishAddingScene:self.piece];
+        [self.delegate modifyPieceViewController:self didFinishAddingPiece:self.piece];
         [TestFlight passCheckpoint:@"New scene created successfully"];
     }
     else if (self.editMode == edit)
     {
-        self.piece.text = self.pieceTextView.text;
+        self.piece.longText = self.pieceTextView.text;
         if (self.imageChanged) {
             self.piece.imageURL = self.localImageURL;
             self.piece.imageChanged = [NSNumber numberWithBool:YES];
             //            self.scene.image = self.imageView.image;
         }
         [Piece editPiece:self.piece];
-        [self.delegate modifySceneViewController:self didFinishEditingScene:self.piece];
+        [self.delegate modifyPieceViewController:self didFinishEditingPiece:self.piece];
     }
     else {
         assert(false);
@@ -234,7 +235,7 @@
 {
     NSLog(@"ModifySceneViewController_Deleting scene");
     [Piece deletePiece:self.piece];
-    [self.delegate modifySceneViewControllerDeletedScene:self];
+    [self.delegate modifyPieceViewControllerDeletedPiece:self];
     [TestFlight passCheckpoint:@"Scene deleted"];
 }
 
@@ -536,7 +537,7 @@ shouldChangeTextInRange:(NSRange)range
     } else if (self.editMode == edit)
     {
         if ((self.imageChanged)
-            || (![self.pieceTextView.text isEqualToString:self.piece.text]))
+            || (![self.pieceTextView.text isEqualToString:self.piece.longText]))
             return YES;
         else
             return NO;

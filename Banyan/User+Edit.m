@@ -17,7 +17,7 @@ static User *_currentUser = nil;
 {
     PFUser *currentUser = [PFUser currentUser];
     _currentUser = [User getUserForPfUser:currentUser
-                    inManagedObjectContex:[RKManagedObjectStore defaultStore].persistentStoreManagedObjectContext];
+                    inManagedObjectContex:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
     return _currentUser;
 }
 
@@ -50,7 +50,7 @@ static User *_currentUser = nil;
     } else {
         PFUser *pfUser = [PFQuery getUserObjectWithId:id];
         return [User getUserForPfUser:pfUser
-                inManagedObjectContex:[RKManagedObjectStore defaultStore].persistentStoreManagedObjectContext];
+                inManagedObjectContex:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
     }
 }
 

@@ -100,7 +100,7 @@
         [controller didMoveToParentViewController:self];
         
         Piece *piece = [self.story.pieces objectAtIndex:page];
-        controller.label.text = piece.text;
+        controller.label.text = piece.shortText;
     }
 }
 
@@ -156,7 +156,6 @@
 
 - (void) prepareForReuse
 {
-    [self loadScrollViewWithPage:0];
 }
 
 @end

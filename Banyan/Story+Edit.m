@@ -112,6 +112,38 @@
 @end
 
 @implementation Story (CoreDataGeneratedAccessors)
+
+- (void)insertObject:(Piece *)value inPiecesAtIndex:(NSUInteger)idx
+{
+    [self willChange:NSKeyValueChangeInsertion valuesAtIndexes:[NSIndexSet indexSetWithIndex:idx] forKey:@"pieces"];
+    [[self primitiveValueForKey:@"pieces"] insertObject:value atIndex:idx];
+    [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:[NSIndexSet indexSetWithIndex:idx] forKey:@"pieces"];
+}
+
+- (void)removeObjectFromPiecesAtIndex:(NSUInteger)idx
+{
+    [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:[NSIndexSet indexSetWithIndex:idx] forKey:@"pieces"];
+    [[self primitiveValueForKey:@"pieces"] removeObjectAtIndex:idx];
+    [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:[NSIndexSet indexSetWithIndex:idx] forKey:@"pieces"];
+}
+
+- (void)insertPieces:(NSArray *)value atIndexes:(NSIndexSet *)indexes
+{
+    
+}
+- (void)removePiecesAtIndexes:(NSIndexSet *)indexes
+{
+    
+}
+- (void)replaceObjectInPiecesAtIndex:(NSUInteger)idx withObject:(Piece *)value
+{
+    
+}
+- (void)replacePiecesAtIndexes:(NSIndexSet *)indexes withPieces:(NSArray *)values
+{
+    
+}
+
 - (void)addPiecesObject:(Piece *)value
 {
     NSMutableOrderedSet* tempSet = [NSMutableOrderedSet orderedSetWithOrderedSet:self.pieces];
@@ -150,19 +182,5 @@
     [self willChangeValueForKey:@"pieces" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
     [[self primitiveValueForKey:@"pieces"] minusSet:value];
     [self didChangeValueForKey:@"pieces" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
-}
-
-- (void)insertObject:(Piece *)value inPiecesAtIndex:(NSUInteger)idx
-{
-    [self willChange:NSKeyValueChangeInsertion valuesAtIndexes:[NSIndexSet indexSetWithIndex:idx] forKey:@"pieces"];
-    [[self primitiveValueForKey:@"pieces"] insertObject:value atIndex:idx];
-    [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:[NSIndexSet indexSetWithIndex:idx] forKey:@"pieces"];
-}
-
-- (void)removeObjectFromPiecesAtIndex:(NSUInteger)idx
-{
-    [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:[NSIndexSet indexSetWithIndex:idx] forKey:@"pieces"];
-    [[self primitiveValueForKey:@"pieces"] removeObjectAtIndex:idx];
-    [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:[NSIndexSet indexSetWithIndex:idx] forKey:@"pieces"];
 }
 @end

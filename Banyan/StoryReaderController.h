@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ReadSceneViewController.h"
+#import "ReadPieceViewController.h"
 #import "Story.h"
 #import "Piece.h"
 
@@ -21,14 +21,13 @@
 
 @end
 
-@interface StoryReaderController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ReadSceneViewControllerDelegate>
+@interface StoryReaderController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ReadPieceViewControllerDelegate>
 
 @property (nonatomic, strong) Story *story;
 @property (nonatomic, strong) UIPageViewController *pageViewController;
 @property (nonatomic, weak) IBOutlet id <StoryReaderControllerDelegate> delegate;
-@property (nonatomic) BOOL readSceneControllerEditMode;
 
-- (NSUInteger)indexOfViewController:(ReadSceneViewController *)viewController;
-- (ReadSceneViewController *)viewControllerAtIndex:(NSUInteger)index;
+- (NSUInteger)indexOfViewController:(ReadPieceViewController *)viewController;
+- (ReadPieceViewController *)viewControllerAtIndex:(NSUInteger)index;
 
 @end

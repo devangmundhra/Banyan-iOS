@@ -31,6 +31,7 @@
 		5166957D16FBE35A0014E65D /* StoryListCellMiddleViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5166957B16FBE35A0014E65D /* StoryListCellMiddleViewController.xib */; };
 		5166958116FBE54E0014E65D /* StoryListCellReadSceneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5166957F16FBE54E0014E65D /* StoryListCellReadSceneViewController.m */; };
 		5166958216FBE54E0014E65D /* StoryListCellReadSceneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5166958016FBE54E0014E65D /* StoryListCellReadSceneViewController.xib */; };
+		5166958516FE72550014E65D /* Piece.m in Sources */ = {isa = PBXBuildFile; fileRef = 5166958416FE72520014E65D /* Piece.m */; };
 		5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B615E75B420072749C /* buttonFacebook.png */; };
 		5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B715E75B420072749C /* buttonFacebook@2x.png */; };
 		5166B1BC15E75B420072749C /* buttonFacebookSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B815E75B420072749C /* buttonFacebookSelected.png */; };
@@ -47,11 +48,10 @@
 		5189B32B15B395F300562DD0 /* InvitedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2DE15B395F300562DD0 /* InvitedTableViewController.m */; };
 		5189B32C15B395F300562DD0 /* LoginTabbarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2E015B395F300562DD0 /* LoginTabbarViewController.m */; };
 		5189B32D15B395F300562DD0 /* LoginTabbarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5189B2E115B395F300562DD0 /* LoginTabbarViewController.xib */; };
-		5189B32F15B395F300562DD0 /* ModifySceneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2E415B395F300562DD0 /* ModifySceneViewController.m */; };
-		5189B33015B395F300562DD0 /* ModifySceneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5189B2E515B395F300562DD0 /* ModifySceneViewController.xib */; };
+		5189B32F15B395F300562DD0 /* ModifyPieceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2E415B395F300562DD0 /* ModifyPieceViewController.m */; };
+		5189B33015B395F300562DD0 /* ModifyPieceViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5189B2E515B395F300562DD0 /* ModifyPieceViewController.xib */; };
 		5189B33115B395F300562DD0 /* NewStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2E715B395F300562DD0 /* NewStoryViewController.m */; };
-		5189B33515B395F300562DD0 /* ReadSceneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2EF15B395F300562DD0 /* ReadSceneViewController.m */; };
-		5189B33615B395F300562DD0 /* ReadSceneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5189B2F015B395F300562DD0 /* ReadSceneViewController.xib */; };
+		5189B33515B395F300562DD0 /* ReadPieceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2EF15B395F300562DD0 /* ReadPieceViewController.m */; };
 		5189B33815B395F300562DD0 /* Piece+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F515B395F300562DD0 /* Piece+Create.m */; };
 		5189B33915B395F300562DD0 /* Piece+Delete.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F715B395F300562DD0 /* Piece+Delete.m */; };
 		5189B33A15B395F300562DD0 /* Piece+Edit.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F915B395F300562DD0 /* Piece+Edit.m */; };
@@ -87,7 +87,6 @@
 		51A8DCC11692D52C0017E86F /* User+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DCC01692D52C0017E86F /* User+Create.m */; };
 		51A8DCC41692DA900017E86F /* CoreDataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DCC31692DA8F0017E86F /* CoreDataTableViewController.m */; };
 		51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B5989D15EB31B300DF4D9D /* BanyanConstants.m */; };
-		51B7ABED169AD55400B1488C /* Piece.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B7ABEC169AD55400B1488C /* Piece.m */; };
 		51C0CF021695899100C9B752 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C0CF011695899100C9B752 /* User.m */; };
 		51CFD92915F1F260002926F9 /* SettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD92715F1F260002926F9 /* SettingsTableViewController.m */; };
 		51CFD93615F3E80B002926F9 /* FollowingFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD93515F3E80B002926F9 /* FollowingFriendsViewController.m */; };
@@ -152,6 +151,8 @@
 		5166957E16FBE54D0014E65D /* StoryListCellReadSceneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoryListCellReadSceneViewController.h; sourceTree = "<group>"; };
 		5166957F16FBE54E0014E65D /* StoryListCellReadSceneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoryListCellReadSceneViewController.m; sourceTree = "<group>"; };
 		5166958016FBE54E0014E65D /* StoryListCellReadSceneViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoryListCellReadSceneViewController.xib; sourceTree = "<group>"; };
+		5166958316FE72510014E65D /* Piece.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Piece.h; path = Banyan/Piece.h; sourceTree = "<group>"; };
+		5166958416FE72520014E65D /* Piece.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Piece.m; path = Banyan/Piece.m; sourceTree = "<group>"; };
 		5166B1B615E75B420072749C /* buttonFacebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebook.png; sourceTree = "<group>"; };
 		5166B1B715E75B420072749C /* buttonFacebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFacebook@2x.png"; sourceTree = "<group>"; };
 		5166B1B815E75B420072749C /* buttonFacebookSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebookSelected.png; sourceTree = "<group>"; };
@@ -177,14 +178,13 @@
 		5189B2DF15B395F300562DD0 /* LoginTabbarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LoginTabbarViewController.h; path = Banyan/LoginTabbarViewController.h; sourceTree = "<group>"; };
 		5189B2E015B395F300562DD0 /* LoginTabbarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoginTabbarViewController.m; path = Banyan/LoginTabbarViewController.m; sourceTree = "<group>"; };
 		5189B2E115B395F300562DD0 /* LoginTabbarViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LoginTabbarViewController.xib; path = Banyan/LoginTabbarViewController.xib; sourceTree = "<group>"; };
-		5189B2E315B395F300562DD0 /* ModifySceneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModifySceneViewController.h; path = Banyan/ModifySceneViewController.h; sourceTree = "<group>"; };
-		5189B2E415B395F300562DD0 /* ModifySceneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ModifySceneViewController.m; path = Banyan/ModifySceneViewController.m; sourceTree = "<group>"; };
-		5189B2E515B395F300562DD0 /* ModifySceneViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ModifySceneViewController.xib; path = Banyan/ModifySceneViewController.xib; sourceTree = "<group>"; };
+		5189B2E315B395F300562DD0 /* ModifyPieceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModifyPieceViewController.h; path = Banyan/ModifyPieceViewController.h; sourceTree = "<group>"; };
+		5189B2E415B395F300562DD0 /* ModifyPieceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ModifyPieceViewController.m; path = Banyan/ModifyPieceViewController.m; sourceTree = "<group>"; };
+		5189B2E515B395F300562DD0 /* ModifyPieceViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ModifyPieceViewController.xib; path = Banyan/ModifyPieceViewController.xib; sourceTree = "<group>"; };
 		5189B2E615B395F300562DD0 /* NewStoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NewStoryViewController.h; path = Banyan/NewStoryViewController.h; sourceTree = "<group>"; };
 		5189B2E715B395F300562DD0 /* NewStoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NewStoryViewController.m; path = Banyan/NewStoryViewController.m; sourceTree = "<group>"; };
-		5189B2EE15B395F300562DD0 /* ReadSceneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReadSceneViewController.h; path = Banyan/ReadSceneViewController.h; sourceTree = "<group>"; };
-		5189B2EF15B395F300562DD0 /* ReadSceneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReadSceneViewController.m; path = Banyan/ReadSceneViewController.m; sourceTree = "<group>"; };
-		5189B2F015B395F300562DD0 /* ReadSceneViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ReadSceneViewController.xib; path = Banyan/ReadSceneViewController.xib; sourceTree = "<group>"; };
+		5189B2EE15B395F300562DD0 /* ReadPieceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReadPieceViewController.h; path = Banyan/ReadPieceViewController.h; sourceTree = "<group>"; };
+		5189B2EF15B395F300562DD0 /* ReadPieceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReadPieceViewController.m; path = Banyan/ReadPieceViewController.m; sourceTree = "<group>"; };
 		5189B2F115B395F300562DD0 /* Piece_Defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Piece_Defines.h; path = Banyan/Piece_Defines.h; sourceTree = "<group>"; };
 		5189B2F415B395F300562DD0 /* Piece+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Piece+Create.h"; path = "Banyan/Piece+Create.h"; sourceTree = "<group>"; };
 		5189B2F515B395F300562DD0 /* Piece+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Piece+Create.m"; path = "Banyan/Piece+Create.m"; sourceTree = "<group>"; };
@@ -244,8 +244,6 @@
 		51A8DCC31692DA8F0017E86F /* CoreDataTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CoreDataTableViewController.m; path = Banyan/CoreDataTableViewController.m; sourceTree = "<group>"; };
 		51B5989C15EB31B300DF4D9D /* BanyanConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BanyanConstants.h; sourceTree = "<group>"; };
 		51B5989D15EB31B300DF4D9D /* BanyanConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BanyanConstants.m; sourceTree = "<group>"; };
-		51B7ABEB169AD55400B1488C /* Piece.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Piece.h; path = Banyan/Piece.h; sourceTree = "<group>"; };
-		51B7ABEC169AD55400B1488C /* Piece.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Piece.m; path = Banyan/Piece.m; sourceTree = "<group>"; };
 		51C0CF001695899100C9B752 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = User.h; path = Banyan/User.h; sourceTree = "<group>"; };
 		51C0CF011695899100C9B752 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = User.m; path = Banyan/User.m; sourceTree = "<group>"; };
 		51CFD92615F1F260002926F9 /* SettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsTableViewController.h; sourceTree = "<group>"; };
@@ -403,7 +401,7 @@
 				51A8DC9316928AE00017E86F /* Banyan.xcdatamodeld */,
 				5189B35415B3968600562DD0 /* Account Management */,
 				5189B35315B3967A00562DD0 /* New Story */,
-				5189B35915B3971400562DD0 /* Read and Edit Scenes */,
+				5189B35915B3971400562DD0 /* Read and Edit Pieces */,
 				5189B35215B3965A00562DD0 /* Model */,
 				5192332416743EB7009686E4 /* Location */,
 				5189B35115B3964000562DD0 /* Networking Extensions */,
@@ -494,33 +492,32 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
-		5189B35515B3969700562DD0 /* Add or Edit Scene */ = {
+		5189B35515B3969700562DD0 /* Add or Edit Piece */ = {
 			isa = PBXGroup;
 			children = (
-				5189B2E315B395F300562DD0 /* ModifySceneViewController.h */,
-				5189B2E415B395F300562DD0 /* ModifySceneViewController.m */,
-				5189B2E515B395F300562DD0 /* ModifySceneViewController.xib */,
+				5189B2E315B395F300562DD0 /* ModifyPieceViewController.h */,
+				5189B2E415B395F300562DD0 /* ModifyPieceViewController.m */,
+				5189B2E515B395F300562DD0 /* ModifyPieceViewController.xib */,
 				5157CD231659E5A300C22CCE /* ComposeTextViewController.h */,
 				5157CD241659E5A300C22CCE /* ComposeTextViewController.m */,
 			);
-			name = "Add or Edit Scene";
+			name = "Add or Edit Piece";
 			sourceTree = "<group>";
 		};
-		5189B35615B396D600562DD0 /* Read Scene */ = {
+		5189B35615B396D600562DD0 /* Read Piece */ = {
 			isa = PBXGroup;
 			children = (
-				5189B2EE15B395F300562DD0 /* ReadSceneViewController.h */,
-				5189B2EF15B395F300562DD0 /* ReadSceneViewController.m */,
-				5189B2F015B395F300562DD0 /* ReadSceneViewController.xib */,
+				5189B2EE15B395F300562DD0 /* ReadPieceViewController.h */,
+				5189B2EF15B395F300562DD0 /* ReadPieceViewController.m */,
 			);
-			name = "Read Scene";
+			name = "Read Piece";
 			sourceTree = "<group>";
 		};
 		5189B35715B396E700562DD0 /* Piece */ = {
 			isa = PBXGroup;
 			children = (
-				51B7ABEB169AD55400B1488C /* Piece.h */,
-				51B7ABEC169AD55400B1488C /* Piece.m */,
+				5166958316FE72510014E65D /* Piece.h */,
+				5166958416FE72520014E65D /* Piece.m */,
 				5189B2F115B395F300562DD0 /* Piece_Defines.h */,
 				5189B2F415B395F300562DD0 /* Piece+Create.h */,
 				5189B2F515B395F300562DD0 /* Piece+Create.m */,
@@ -544,15 +541,15 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
-		5189B35915B3971400562DD0 /* Read and Edit Scenes */ = {
+		5189B35915B3971400562DD0 /* Read and Edit Pieces */ = {
 			isa = PBXGroup;
 			children = (
 				5189B30015B395F300562DD0 /* StoryReaderController.h */,
 				5189B30115B395F300562DD0 /* StoryReaderController.m */,
-				5189B35515B3969700562DD0 /* Add or Edit Scene */,
-				5189B35615B396D600562DD0 /* Read Scene */,
+				5189B35515B3969700562DD0 /* Add or Edit Piece */,
+				5189B35615B396D600562DD0 /* Read Piece */,
 			);
-			name = "Read and Edit Scenes";
+			name = "Read and Edit Pieces";
 			path = ..;
 			sourceTree = "<group>";
 		};
@@ -749,8 +746,7 @@
 				51F60EF916E8423E00F9715E /* Icon@2x.png in Resources */,
 				5189B2C215B387E200562DD0 /* InfoPlist.strings in Resources */,
 				5189B32D15B395F300562DD0 /* LoginTabbarViewController.xib in Resources */,
-				5189B33015B395F300562DD0 /* ModifySceneViewController.xib in Resources */,
-				5189B33615B395F300562DD0 /* ReadSceneViewController.xib in Resources */,
+				5189B33015B395F300562DD0 /* ModifyPieceViewController.xib in Resources */,
 				5189B34E15B395F300562DD0 /* UserLoginViewController.xib in Resources */,
 				5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */,
 				5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */,
@@ -805,9 +801,9 @@
 				5189B32A15B395F300562DD0 /* ImageToDataTransformer.m in Sources */,
 				5189B32B15B395F300562DD0 /* InvitedTableViewController.m in Sources */,
 				5189B32C15B395F300562DD0 /* LoginTabbarViewController.m in Sources */,
-				5189B32F15B395F300562DD0 /* ModifySceneViewController.m in Sources */,
+				5189B32F15B395F300562DD0 /* ModifyPieceViewController.m in Sources */,
 				5189B33115B395F300562DD0 /* NewStoryViewController.m in Sources */,
-				5189B33515B395F300562DD0 /* ReadSceneViewController.m in Sources */,
+				5189B33515B395F300562DD0 /* ReadPieceViewController.m in Sources */,
 				5189B33815B395F300562DD0 /* Piece+Create.m in Sources */,
 				5189B33915B395F300562DD0 /* Piece+Delete.m in Sources */,
 				5189B33A15B395F300562DD0 /* Piece+Edit.m in Sources */,
@@ -847,12 +843,12 @@
 				51A8DCC41692DA900017E86F /* CoreDataTableViewController.m in Sources */,
 				51C0CF021695899100C9B752 /* User.m in Sources */,
 				5103C86E1699443500CC33AC /* Story.m in Sources */,
-				51B7ABED169AD55400B1488C /* Piece.m in Sources */,
 				5158AE2B16F56F7F0089193E /* BNTabBarController.m in Sources */,
 				5166957316F82CE00014E65D /* StoryListCell.m in Sources */,
 				5166957816F98ABB0014E65D /* UISwipeableView.m in Sources */,
 				5166957C16FBE35A0014E65D /* StoryListCellMiddleViewController.m in Sources */,
 				5166958116FBE54E0014E65D /* StoryListCellReadSceneViewController.m in Sources */,
+				5166958516FE72550014E65D /* Piece.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

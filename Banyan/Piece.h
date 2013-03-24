@@ -2,7 +2,7 @@
 //  Piece.h
 //  Banyan
 //
-//  Created by Devang Mundhra on 1/7/13.
+//  Created by Devang Mundhra on 3/23/13.
 //
 //
 
@@ -30,9 +30,10 @@
 @property (nonatomic, retain) NSNumber * numberOfViews;
 @property (nonatomic, retain) NSString * pieceId;
 @property (nonatomic, retain) NSNumber * pieceNumber;
-@property (nonatomic, retain) NSString * text;
+@property (nonatomic, retain) NSString * longText;
 @property (nonatomic, retain) NSDate * updatedAt;
 @property (nonatomic, retain) NSNumber * viewed;
+@property (nonatomic, retain) NSString * shortText;
 @property (nonatomic, retain) User *author;
 @property (nonatomic, retain) Story *story;
 

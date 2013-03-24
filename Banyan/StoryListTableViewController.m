@@ -57,7 +57,7 @@ typedef enum {
                                                                                      ascending:YES
                                                                                       selector:@selector(compare:)]];
     self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                                        managedObjectContext:[RKManagedObjectStore defaultStore].persistentStoreManagedObjectContext
+                                                                        managedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext
                                                                           sectionNameKeyPath:nil
                                                                                    cacheName:nil];
     self.fetchedResultsController.delegate = self;
@@ -286,7 +286,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(void) addSceneToStory:(Story *)story
 {
-    ModifySceneViewController *addSceneViewController = [[ModifySceneViewController alloc] init];
+    ModifyPieceViewController *addSceneViewController = [[ModifyPieceViewController alloc] init];
     addSceneViewController.editMode = add;
     Piece *piece = [NSEntityDescription insertNewObjectForEntityForName:kBNPieceClassKey
                                                  inManagedObjectContext:BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT];
@@ -302,10 +302,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 
-#pragma mark ModifySceneViewControllerDelegate
+#pragma mark ModifyPieceeViewControllerDelegate
 
-- (void) modifySceneViewController:(ModifySceneViewController *)controller
-              didFinishAddingScene:(Piece *)scene
+- (void) modifyPieceViewController:(ModifyPieceViewController *)controller
+              didFinishAddingPiece:(Piece *)scene
 {
     NSLog(@"StoryListTableViewController_Adding scene");
     [self dismissViewControllerAnimated:NO completion:^{
@@ -313,7 +313,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     }];
 }
 
-- (void) modifySceneViewControllerDidCancel:(ModifySceneViewController *)controller
+- (void) modifyPieceViewControllerDidCancel:(ModifyPieceViewController *)controller
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
