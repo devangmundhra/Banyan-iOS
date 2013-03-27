@@ -15,7 +15,7 @@
 
 @class  ModifyPieceViewController;
 
-typedef enum {add, edit} EditModes;
+typedef enum {ModifyPieceViewControllerEditModeAddPiece, ModifyPieceViewControllerEditModeEditPiece} ModifyPieceViewControllerEditMode;
 
 @protocol ModifyPieceViewControllerDelegate <NSObject>
 
@@ -34,11 +34,11 @@ typedef enum {add, edit} EditModes;
 
 @end
 
-@interface ModifyPieceViewController : UIViewController <UITextViewDelegate, UINavigationControllerDelegate, ComposeTextViewControllerDelegate, UIAlertViewDelegate,
-    UIImagePickerControllerDelegate, UINavigationBarDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate, BNLocationManagerDelegate>
+@interface ModifyPieceViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, UINavigationControllerDelegate, UIAlertViewDelegate,
+    UIImagePickerControllerDelegate, UINavigationBarDelegate, UIActionSheetDelegate, BNLocationManagerDelegate>
 
 @property (strong, nonatomic) Piece *piece;
-@property (nonatomic) EditModes editMode;
+@property (nonatomic) ModifyPieceViewControllerEditMode editMode;
 @property (weak, nonatomic) id <ModifyPieceViewControllerDelegate> delegate;
 
 @end

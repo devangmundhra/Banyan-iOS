@@ -46,7 +46,7 @@
         [objectManager addResponseDescriptor:responseDescriptor];
         
         [objectManager postObject:story
-                             path:PARSE_API_OBJECT_URL(@"Story", story.storyId)
+                             path:PARSE_API_OBJECT_URL(@"Story", story.id)
                        parameters:nil
                           success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                               NSLog(@"Update story successful %@", story);

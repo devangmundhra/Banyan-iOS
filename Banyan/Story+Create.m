@@ -126,10 +126,10 @@
         RKEntityMapping *storyResponseMapping = [RKEntityMapping mappingForEntityForName:kBNStoryClassKey
                                                                     inManagedObjectStore:[RKManagedObjectStore defaultStore]];
         [storyResponseMapping addAttributeMappingsFromDictionary:@{
-                                                PARSE_OBJECT_ID : @"storyId",
+                                                PARSE_OBJECT_ID : @"id",
          }];
         [storyResponseMapping addAttributeMappingsFromArray:@[PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT]];
-        storyResponseMapping.identificationAttributes = @[@"storyId"];
+        storyResponseMapping.identificationAttributes = @[@"id"];
 
         RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:storyResponseMapping
                                                                                            pathPattern:nil

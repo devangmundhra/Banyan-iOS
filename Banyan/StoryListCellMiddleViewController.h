@@ -14,6 +14,4 @@
 
 @property (nonatomic, strong) IBOutlet Story* story;
 
-- (void) prepareForReuse;
-
 @end

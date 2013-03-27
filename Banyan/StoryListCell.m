@@ -41,6 +41,22 @@
 @synthesize middleVC = _middleVC;
 @synthesize tapRecognizer = _tapRecognizer;
 
+#pragma mark setter/getters
+
+- (StoryListCellMiddleViewController *)middleVC
+{
+    if (!_middleVC)
+        _middleVC = [[StoryListCellMiddleViewController alloc] init];
+    return _middleVC;
+}
+
+- (UIGestureRecognizer *)tapRecognizer
+{
+    if (!_tapRecognizer)
+        _tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapGestureCaptured:)];
+    return _tapRecognizer;
+}
+
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -54,8 +70,6 @@
 {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        self.middleVC = [[StoryListCellMiddleViewController alloc] init];
-        self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapGestureCaptured:)];
         // Initialization code
     }
     return self;
@@ -74,8 +88,7 @@
 {
     // So that the cell does not show any image from before
     [super prepareForReuse];
-    [self.middleVC prepareForReuse];
-    self.middleVC = nil;
+    self.story = nil;
 }
 
 - (void)setHighlighted:(BOOL)highlighted {
@@ -129,8 +142,6 @@
 #pragma mark Tap Recognizer
 - (void)singleTapGestureCaptured:(UITapGestureRecognizer *)gesture
 {
-    CGPoint touchPoint=[gesture locationInView:self.middleView];
-    NSLog(@"Tapped at %d", touchPoint);
     UITableView * tableView = (UITableView *)self.superview;
     id delegate = tableView.nextResponder; // Hopefully this is a UITableViewController.
     NSIndexPath * myIndexPath = [tableView indexPathForCell:self];
@@ -271,6 +282,46 @@
 	
 	CGGradientRelease(topGradient);
 	CGGradientRelease(bottomGradient);
+}
+
+#pragma mark back view methods
+- (void)addScene:(UIButton *)button
+{
+    UITableView * tableView = (UITableView *)self.superview;
+    id delegate = tableView.nextResponder; // Hopefully this is a UITableViewController.
+    NSIndexPath * myIndexPath = [tableView indexPathForCell:self];
+    
+    if ([delegate respondsToSelector:@selector(addSceneForRowAtIndexPath:)]) {
+        [delegate performSelector:@selector(addSceneForRowAtIndexPath:) withObject:myIndexPath];
+    }
+}
+
+- (void)deleteStoryAlert:(UIButton *)button
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Delete Story"
+                                                        message:@"Do you want to delete this story?"
+                                                       delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+    
+    [alertView show];
+}
+
+- (void)deleteStory
+{
+    UITableView * tableView = (UITableView *)self.superview;
+    id delegate = tableView.nextResponder; // Hopefully this is a UITableViewController.
+    NSIndexPath * myIndexPath = [tableView indexPathForCell:self];
+    
+    if ([delegate respondsToSelector:@selector(tableView:commitEditingStyle:forRowAtIndexPath:)]) {
+        [delegate tableView:tableView commitEditingStyle:UITableViewCellEditingStyleDelete forRowAtIndexPath:myIndexPath];
+    }
+}
+
+#pragma mark UIAlertViewDelegate
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if ([alertView.title isEqualToString:@"Delete Story"] && buttonIndex==1) {
+        [self deleteStory];
+    }
 }
 
 @end

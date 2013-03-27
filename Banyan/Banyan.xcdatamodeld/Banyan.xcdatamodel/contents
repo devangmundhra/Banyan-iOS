@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2061" systemVersion="12D78" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
-    <entity name="Piece" representedClassName="Piece" syncable="YES">
-        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+    <entity name="Piece" representedClassName="Piece" parentEntity="RemoteObject" syncable="YES">
         <attribute name="favourite" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="geocodedLocation" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="imageChanged" optional="YES" transient="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
@@ -11,25 +10,27 @@
         <attribute name="latitude" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="liked" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="likers" optional="YES" attributeType="Transformable" syncable="YES"/>
-        <attribute name="location" optional="YES" attributeType="Transformable" syncable="YES"/>
-        <attribute name="longitude" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="location" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="longText" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="numberOfContributors" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="numberOfLikes" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="numberOfViews" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <attribute name="pieceId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="pieceNumber" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="shortText" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="viewed" optional="YES" attributeType="Boolean" syncable="YES"/>
         <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="pieces" inverseEntity="User" syncable="YES"/>
         <relationship name="story" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Story" inverseName="pieces" inverseEntity="Story" syncable="YES"/>
     </entity>
-    <entity name="Story" representedClassName="Story" syncable="YES">
+    <entity name="RemoteObject" representedClassName="RemoteObject" isAbstract="YES" syncable="YES">
+        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+    </entity>
+    <entity name="Story" representedClassName="Story" parentEntity="RemoteObject" syncable="YES">
         <attribute name="canContribute" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="canView" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="contributors" optional="YES" attributeType="Transformable" syncable="YES"/>
-        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="favourite" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="geocodedLocation" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="imageChanged" optional="YES" transient="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
@@ -42,17 +43,15 @@
         <attribute name="length" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="liked" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="likers" optional="YES" attributeType="Transformable" syncable="YES"/>
-        <attribute name="location" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="location" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="longitude" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="numberOfContributors" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="numberOfLikes" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="numberOfViews" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="readAccess" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="storyBeingRead" optional="YES" transient="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="storyId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tags" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="viewed" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="writeAccess" optional="YES" attributeType="Transformable" syncable="YES"/>
         <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="stories" inverseEntity="User" syncable="YES"/>
@@ -74,8 +73,9 @@
         <relationship name="stories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Story" inverseName="author" inverseEntity="Story" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Piece" positionX="-306" positionY="-243" width="128" height="390"/>
-        <element name="Story" positionX="-20" positionY="-243" width="128" height="508"/>
+        <element name="Piece" positionX="-306" positionY="-243" width="128" height="343"/>
+        <element name="Story" positionX="-72" positionY="-454" width="128" height="463"/>
         <element name="User" positionX="-576" positionY="-207" width="128" height="238"/>
+        <element name="RemoteObject" positionX="-729" positionY="0" width="128" height="88"/>
     </elements>
 </model>

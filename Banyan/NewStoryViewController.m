@@ -40,8 +40,6 @@
 
 @property (strong, nonatomic) Story *story;
 
-@property (nonatomic) BOOL keyboardIsShown;
-
 @property (nonatomic) BOOL isLocationEnabled;
 @property (strong, nonatomic) BNLocationManager *locationManager;
 @end
@@ -68,7 +66,6 @@ typedef enum {
 @synthesize storyTitle = _storyTitle;
 @synthesize storyTitleTextField = _storyTitleTextField;
 @synthesize delegate = _delegate;
-@synthesize keyboardIsShown = _keyboardIsShown;
 @synthesize tapRecognizer = _tapRecognizer;
 @synthesize invitedToViewList = _invitedToViewList;
 @synthesize invitedToContributeList = _invitedToContributeList;
@@ -123,7 +120,7 @@ typedef enum {
     self.invitedToContributeList = [NSMutableArray array];
     self.invitedToViewList = [NSMutableArray array];
     self.story = [NSEntityDescription insertNewObjectForEntityForName:kBNStoryClassKey
-                                               inManagedObjectContext:BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT];
+                                               inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
     
     CGRect aRect = self.contributorPrivacySegmentedControl.thumb.frame;
     self.contributorPrivacySegmentedControl.selectedIndex = ContributorPrivacySegmentedControlInvited;
@@ -145,7 +142,7 @@ typedef enum {
     self.viewerPrivacySegmentedControl.textColor = BANYAN_WHITE_COLOR;
     
     self.inviteViewersButton.enabled = NO;
-    [self updateContentSize];
+    [self updateScrollViewContentSize];
     
     self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.scrollView addSubview:self.contributorPrivacySegmentedControl];
@@ -374,7 +371,6 @@ typedef enum {
                                              selector:@selector(keyboardWillBeHidden:)
                                                  name:UIKeyboardWillHideNotification object:nil];
     
-    self.keyboardIsShown = NO;
 }
 
 - (void)unregisterForKeyboardNotifications
@@ -388,15 +384,11 @@ typedef enum {
                                                     name:UIKeyboardWillHideNotification 
                                                   object:nil];
     
-    self.keyboardIsShown = NO;
 }
 
 // Called when the UIKeyboardDidShowNotification is sent.
 - (void)keyboardWasShown:(NSNotification*)aNotification
 {
-    if (self.keyboardIsShown)
-        return;
-
     NSDictionary* info = [aNotification userInfo];
     CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     
@@ -417,19 +409,12 @@ typedef enum {
         CGPoint scrollPoint = CGPointMake(0.0, activeFieldOrigin.y-kbSize.height);
         [self.scrollView setContentOffset:scrollPoint animated:YES];
     }
-    
-    self.keyboardIsShown = YES;
 }
 
 // Called when the UIKeyboardWillBeHidden is sent
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification
 {
-    if(!self.keyboardIsShown)
-        return;
-    
     [self.scrollView setContentOffset:CGPointZero animated:YES];
-    
-    self.keyboardIsShown = NO;
 }
 
 -(void)didTapAnywhere: (UITapGestureRecognizer*) recognizer {    
@@ -442,6 +427,7 @@ typedef enum {
         [self.storyTitleTextField resignFirstResponder];
 }
 
+#pragma mark UITextFieldDelegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
@@ -450,7 +436,7 @@ typedef enum {
 }
 
 
-# pragma invite friends
+# pragma mark invite friends
 
 - (void) inviteViewers
 {
@@ -517,10 +503,10 @@ typedef enum {
 
 - (void)tokenFieldFrameDidChange:(TITokenField *)tokenField
 {
-    [self updateContentSize];
+    [self updateScrollViewContentSize];
 }
 
-- (void) updateContentSize
+- (void) updateScrollViewContentSize
 {
     CGSize screenSize = [UIScreen mainScreen].applicationFrame.size;
     self.scrollView.contentSize = CGSizeMake(screenSize.width,

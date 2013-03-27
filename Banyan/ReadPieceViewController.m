@@ -277,10 +277,10 @@
 - (IBAction)addPiece:(UIBarButtonItem *)sender 
 {
     ModifyPieceViewController *addSceneViewController = [[ModifyPieceViewController alloc] init];
-    addSceneViewController.editMode = add;
+    addSceneViewController.editMode = ModifyPieceViewControllerEditModeAddPiece;
     addSceneViewController.piece = [NSEntityDescription insertNewObjectForEntityForName:kBNPieceClassKey
-                                                                 inManagedObjectContext:BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT];
-    addSceneViewController.piece.story = (Story *)[BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT objectWithID:self.piece.story.objectID];
+                                                                 inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
+    addSceneViewController.piece.story = (Story *)[[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext objectWithID:self.piece.story.objectID];
     addSceneViewController.delegate = self;
     [addSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
     [addSceneViewController setModalPresentationStyle:UIModalPresentationFullScreen];
@@ -289,7 +289,7 @@
 - (IBAction)editPiece:(UIBarButtonItem *)sender 
 {
     ModifyPieceViewController *editSceneViewController = [[ModifyPieceViewController alloc] init];
-    editSceneViewController.editMode = edit;
+    editSceneViewController.editMode = ModifyPieceViewControllerEditModeEditPiece;
     editSceneViewController.piece = self.piece;
     editSceneViewController.delegate = self;
     [editSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
@@ -354,7 +354,7 @@
         return;
     }
     
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:self.piece.story.storyId forKey:@"object_id"];
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:self.piece.story.id forKey:@"object_id"];
     [[AFBanyanAPIClient sharedClient] getPath:BANYAN_API_GET_OBJECT_LINK_URL()
                                    parameters:params
                                       success:^(AFHTTPRequestOperation *operation, id responseObject) {

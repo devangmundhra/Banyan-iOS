@@ -20,7 +20,7 @@
     if (story.viewed)
         return;
     
-    if (!story.storyId) {
+    if (!story.id) {
         NSLog(@"%s Remember to correct this later. Proper counting for views", __PRETTY_FUNCTION__);
         return;
     }
@@ -33,7 +33,7 @@
                                            fromUser:currentUser.userId
                                              toUser:currentUser.userId
                                             pieceId:nil
-                                            storyId:story.storyId];
+                                            storyId:story.id];
     [Activity createActivity:activity];
     
     story.viewed = [NSNumber numberWithBool:YES];
@@ -57,7 +57,7 @@
                                      fromUser:currentUser.userId
                                        toUser:currentUser.userId
                                       pieceId:nil
-                                      storyId:story.storyId];
+                                      storyId:story.id];
         [likers removeObject:currentUser.userId];
     }
     else {
@@ -68,7 +68,7 @@
                                      fromUser:currentUser.userId
                                        toUser:currentUser.userId
                                       pieceId:nil
-                                      storyId:story.storyId];
+                                      storyId:story.id];
 
         [likers addObject:currentUser.userId];
     }
@@ -89,7 +89,7 @@
                                      fromUser:currentUser.userId
                                        toUser:currentUser.userId
                                       pieceId:nil
-                                      storyId:story.storyId];
+                                      storyId:story.id];
         story.favourite = [NSNumber numberWithBool:NO];
     }
     else {
@@ -98,7 +98,7 @@
                                      fromUser:currentUser.userId
                                        toUser:currentUser.userId
                                       pieceId:nil
-                                      storyId:story.storyId];
+                                      storyId:story.id];
         story.favourite = [NSNumber numberWithBool:YES];
     }
     [Activity createActivity:activity];
@@ -114,7 +114,7 @@
 # pragma mark views
 - (void) updateViews
 {
-    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.storyId, kBNActivityStoryKey, kBNActivityTypeView, kBNActivityTypeKey, nil];
+    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.id, kBNActivityStoryKey, kBNActivityTypeView, kBNActivityTypeKey, nil];
     
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
@@ -165,7 +165,7 @@
 # pragma mark likes
 - (void) updateLikes
 {
-    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.storyId, kBNActivityStoryKey, kBNActivityTypeLike, kBNActivityTypeKey, nil];
+    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.id, kBNActivityStoryKey, kBNActivityTypeLike, kBNActivityTypeKey, nil];
     
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
@@ -206,7 +206,7 @@
     if (!currentUser) {
         return;
     }
-    NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:self.storyId, kBNActivityStoryKey, kBNActivityTypeFavourite, kBNActivityTypeKey, currentUser.userId, kBNActivityFromUserKey, nil];
+    NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:self.id, kBNActivityStoryKey, kBNActivityTypeFavourite, kBNActivityTypeKey, currentUser.userId, kBNActivityFromUserKey, nil];
     
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];

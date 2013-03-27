@@ -32,7 +32,7 @@
     Activity *activity = [Activity activityWithType:kBNActivityTypeView
                                            fromUser:currentUser.userId
                                              toUser:currentUser.userId
-                                            pieceId:piece.pieceId
+                                            pieceId:piece.id
                                             storyId:nil];
     [Activity createActivity:activity];
     
@@ -54,7 +54,7 @@
         activity = [Activity activityWithType:kBNActivityTypeUnlike
                                      fromUser:currentUser.userId
                                        toUser:currentUser.userId
-                                      pieceId:piece.pieceId
+                                      pieceId:piece.id
                                       storyId:nil];
         [likers removeObject:currentUser.userId];
         
@@ -66,7 +66,7 @@
         activity = [Activity activityWithType:kBNActivityTypeLike
                                      fromUser:currentUser.userId
                                        toUser:currentUser.userId
-                                      pieceId:piece.pieceId
+                                      pieceId:piece.id
                                       storyId:nil];
         [likers addObject:currentUser.userId];
         
@@ -88,7 +88,7 @@
         activity = [Activity activityWithType:kBNActivityTypeUnfavourite
                                      fromUser:currentUser.userId
                                        toUser:currentUser.userId
-                                      pieceId:piece.pieceId
+                                      pieceId:piece.id
                                       storyId:nil];
         piece.favourite = [NSNumber numberWithBool:NO];
     }
@@ -97,7 +97,7 @@
         activity = [Activity activityWithType:kBNActivityTypeFavourite
                                     fromUser:currentUser.userId
                                       toUser:currentUser.userId
-                                     pieceId:piece.pieceId
+                                     pieceId:piece.id
                                      storyId:nil];
         piece.favourite = [NSNumber numberWithBool:YES];
     }
@@ -114,7 +114,7 @@
 # pragma mark views
 - (void) updateViews
 {
-    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.pieceId, kBNActivityPieceKey, kBNActivityTypeView, kBNActivityTypeKey, nil];
+    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.id, kBNActivityPieceKey, kBNActivityTypeView, kBNActivityTypeKey, nil];
     
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
@@ -165,7 +165,7 @@
 # pragma mark likes
 - (void) updateLikes
 {
-    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.pieceId, kBNActivityPieceKey, kBNActivityTypeLike, kBNActivityTypeKey, nil];
+    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.id, kBNActivityPieceKey, kBNActivityTypeLike, kBNActivityTypeKey, nil];
     
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
@@ -206,7 +206,7 @@
     if (!currentUser) {
         return;
     }
-    NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:self.pieceId, kBNActivityPieceKey, kBNActivityTypeFavourite, kBNActivityTypeKey, currentUser.userId, kBNActivityFromUserKey, nil];
+    NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:self.id, kBNActivityPieceKey, kBNActivityTypeFavourite, kBNActivityTypeKey, currentUser.userId, kBNActivityFromUserKey, nil];
     
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];

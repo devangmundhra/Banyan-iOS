@@ -56,22 +56,56 @@
 {
     _story = story;
     
-    NSUInteger numberPages = _story.pieces.count;
-    
-    NSMutableArray *controllers = [[NSMutableArray alloc] init];
-    for (NSUInteger i = 0; i < numberPages; i++)
-    {
-		[controllers addObject:[NSNull null]];
-    }
-    self.viewControllers = controllers;
-    
-    self.scrollView.contentSize =
-    CGSizeMake(CGRectGetWidth(self.scrollView.frame) * numberPages, CGRectGetHeight(self.scrollView.frame));
-    self.pageControl.numberOfPages = numberPages;
+    [self refreshView];
+    self.pageControl.numberOfPages = _story.pieces.count;
     self.pageControl.currentPage = 0;
     
     [self loadScrollViewWithPage:0];
     [self loadScrollViewWithPage:1];
+}
+
+// rotation support for iOS 5.x and earlier, note for iOS 6.0 and later this will not be called
+//
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+{
+    // return YES for supported orientations
+    return (toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+}
+#endif
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [self refreshView];
+    
+    [self loadScrollViewWithPage:self.pageControl.currentPage - 1];
+    [self loadScrollViewWithPage:self.pageControl.currentPage];
+    [self loadScrollViewWithPage:self.pageControl.currentPage + 1];
+    [self gotoPage:NO]; // remain at the same page (don't animate)
+}
+
+- (void) refreshView
+{
+    // remove all the subviews from our scrollview
+    for (UIView *view in self.scrollView.subviews)
+    {
+        [view removeFromSuperview];
+    }
+    
+    NSUInteger numPages = self.story.pieces.count;
+    
+    // adjust the contentSize (larger or smaller) depending on the orientation
+    self.scrollView.contentSize =
+    CGSizeMake(CGRectGetWidth(self.scrollView.frame) * numPages, CGRectGetHeight(self.scrollView.frame));
+    
+    // clear out and reload our pages
+    self.viewControllers = nil;
+    NSMutableArray *controllers = [[NSMutableArray alloc] init];
+    for (NSUInteger i = 0; i < numPages; i++)
+    {
+		[controllers addObject:[NSNull null]];
+    }
+    self.viewControllers = controllers;
 }
 
 - (void)loadScrollViewWithPage:(NSUInteger)page
@@ -152,10 +186,6 @@
     [self setPageControl:nil];
     [self setViewControllers:nil];
     [super viewDidUnload];
-}
-
-- (void) prepareForReuse
-{
 }
 
 @end

@@ -23,7 +23,7 @@
     if (!currentUser) {
         NSLog(@"%s No current user", __PRETTY_FUNCTION__);
     }
-    NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:@"json", @"format", self.storyId, @"object_id", currentUser.userId, @"user_id", nil];
+    NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:@"json", @"format", self.id, @"object_id", currentUser.userId, @"user_id", nil];
     
     [[AFBanyanAPIClient sharedClient] getPath:BANYAN_API_GET_PERMISSIONS(@"Story")
                                    parameters:parameters

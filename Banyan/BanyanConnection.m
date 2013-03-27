@@ -103,10 +103,10 @@
      STORY_CAN_VIEW : @"canView",
      STORY_CAN_CONTRIBUTE : @"canContribute",
      STORY_IS_INVITED: @"isInvited",
-     PARSE_OBJECT_ID : @"storyId",
+     PARSE_OBJECT_ID : @"id",
      STORY_LOCATION_ENABLED: @"isLocationEnabled",
      }];
-    storyMapping.identificationAttributes = @[@"storyId"];
+    storyMapping.identificationAttributes = @[@"id"];
     
     [storyMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_READ_ACCESS, STORY_WRITE_ACCESS, STORY_TAGS, STORY_LENGTH,
                                                     STORY_IMAGE_URL, STORY_GEOCODEDLOCATION, STORY_LATITUDE, STORY_LONGITUDE,
@@ -151,8 +151,8 @@
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
     [pieceMapping addAttributeMappingsFromArray:@[PIECE_IMAGE_URL, PIECE_NUMBER, PIECE_LONGTEXT, PIECE_SHORTTEXT, PIECE_LATITUDE, PIECE_LONGITUDE, PIECE_GEOCODEDLOCATION,
                                                     PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT]];
-    [pieceMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"pieceId"}];
-    pieceMapping.identificationAttributes = @[@"pieceId"];
+    [pieceMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"id"}];
+    pieceMapping.identificationAttributes = @[@"id"];
     
 //    //  @"object.author" : @"author.userId"
 //    RKEntityMapping *userMapping = [RKEntityMapping mappingForEntityForName:kBNUserClassKey
@@ -163,7 +163,7 @@
 //    RKRelationshipMapping *userRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:PIECE_AUTHOR toKeyPath:@"author" withMapping:userMapping];
 //    [pieceMapping addPropertyMapping:userRelationshipMapping];
     
-//    [pieceMapping addConnectionForRelationship:@"story" connectedBy:@"storyId"];
+//    [pieceMapping addConnectionForRelationship:@"story" connectedBy:@"id"];
     
     RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceMapping
                                                                                        pathPattern:nil
@@ -171,7 +171,7 @@
                                                                                        statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [objectManager addResponseDescriptor:responseDescriptor];
     
-    [objectManager getObjectsAtPath:BANYAN_API_OBJECT_URL(kBNStoryClassKey, story.storyId)
+    [objectManager getObjectsAtPath:BANYAN_API_OBJECT_URL(kBNStoryClassKey, story.id)
                          parameters:@{@"attributes" : @[@"pieces"]}
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                 NSArray *pieces = [mappingResult array];

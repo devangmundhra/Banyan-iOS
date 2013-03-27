@@ -13,6 +13,7 @@
 @end
 
 @implementation StoryListCellReadSceneViewController
+@synthesize label = _label;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {

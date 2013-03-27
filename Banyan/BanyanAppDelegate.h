@@ -33,8 +33,6 @@
 
 #define GOOGLE_API_KEY @"AIzaSyBwOBP068EO-Ubi0Qzu8uwFnZZHaIVwNyg"
 
-#define BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT [(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate] userContentMOCtx]
-
 @interface BanyanAppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate, NewStoryViewControllerDelegate> {
     UserManagementModule *userManagementModule;
 }

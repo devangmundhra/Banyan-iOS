@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		0B8D601560334B81AE48FCCD /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6EDBDCCC91248339FDC7301 /* libPods.a */; };
-		5103C86E1699443500CC33AC /* Story.m in Sources */ = {isa = PBXBuildFile; fileRef = 5103C86D1699443500CC33AC /* Story.m */; };
 		5103FB9F166898960095B11F /* UIImage+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 5103FB9E166898960095B11F /* UIImage+Create.m */; };
 		510787C6163A36A90042B436 /* UIImage+AlphaAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787C1163A36A90042B436 /* UIImage+AlphaAdditions.m */; };
 		510787C7163A36A90042B436 /* UIImage+ResizeAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787C3163A36A90042B436 /* UIImage+ResizeAdditions.m */; };
@@ -20,18 +19,10 @@
 		510787DE163A37340042B436 /* User+Edit.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787DD163A37340042B436 /* User+Edit.m */; };
 		511E708B161A9756009AAD25 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708A161A9756009AAD25 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		511E708E161A977F009AAD25 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
-		512A6ADB16F175F100106BA4 /* NewStoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 512A6ADA16F175F000106BA4 /* NewStoryViewController.xib */; };
 		5157CD031650902900C22CCE /* BanyanConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD021650902900C22CCE /* BanyanConnection.m */; };
 		5157CD251659E5A300C22CCE /* ComposeTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD241659E5A300C22CCE /* ComposeTextViewController.m */; };
 		5158AE2B16F56F7F0089193E /* BNTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5158AE2916F56F7E0089193E /* BNTabBarController.m */; };
-		5166957316F82CE00014E65D /* StoryListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5166957216F82CE00014E65D /* StoryListCell.m */; };
-		5166957516F8306F0014E65D /* StoryListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5166957416F8306F0014E65D /* StoryListCell.xib */; };
 		5166957816F98ABB0014E65D /* UISwipeableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5166957716F98ABA0014E65D /* UISwipeableView.m */; };
-		5166957C16FBE35A0014E65D /* StoryListCellMiddleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5166957A16FBE35A0014E65D /* StoryListCellMiddleViewController.m */; };
-		5166957D16FBE35A0014E65D /* StoryListCellMiddleViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5166957B16FBE35A0014E65D /* StoryListCellMiddleViewController.xib */; };
-		5166958116FBE54E0014E65D /* StoryListCellReadSceneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5166957F16FBE54E0014E65D /* StoryListCellReadSceneViewController.m */; };
-		5166958216FBE54E0014E65D /* StoryListCellReadSceneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5166958016FBE54E0014E65D /* StoryListCellReadSceneViewController.xib */; };
-		5166958516FE72550014E65D /* Piece.m in Sources */ = {isa = PBXBuildFile; fileRef = 5166958416FE72520014E65D /* Piece.m */; };
 		5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B615E75B420072749C /* buttonFacebook.png */; };
 		5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B715E75B420072749C /* buttonFacebook@2x.png */; };
 		5166B1BC15E75B420072749C /* buttonFacebookSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B815E75B420072749C /* buttonFacebookSelected.png */; };
@@ -100,6 +91,16 @@
 		51CFD94A15F58337002926F9 /* buttonFollowSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94215F58337002926F9 /* buttonFollowSelected.png */; };
 		51CFD94B15F58337002926F9 /* buttonFollowSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */; };
 		51CFD94E15F59A13002926F9 /* FindFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD94D15F59A13002926F9 /* FindFriendsViewController.m */; };
+		51F095601702A643009D5A28 /* RemoteObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F0955F1702A643009D5A28 /* RemoteObject.m */; };
+		51F095631702A689009D5A28 /* Piece.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F095621702A689009D5A28 /* Piece.m */; };
+		51F095661702A697009D5A28 /* Story.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F095651702A697009D5A28 /* Story.m */; };
+		51F095681702A6DE009D5A28 /* NewStoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51F095671702A6DE009D5A28 /* NewStoryViewController.xib */; };
+		51F095721702A6FB009D5A28 /* StoryListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F0956A1702A6FB009D5A28 /* StoryListCell.m */; };
+		51F095731702A6FB009D5A28 /* StoryListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51F0956B1702A6FB009D5A28 /* StoryListCell.xib */; };
+		51F095741702A6FB009D5A28 /* StoryListCellMiddleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F0956D1702A6FB009D5A28 /* StoryListCellMiddleViewController.m */; };
+		51F095751702A6FB009D5A28 /* StoryListCellMiddleViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51F0956E1702A6FB009D5A28 /* StoryListCellMiddleViewController.xib */; };
+		51F095761702A6FB009D5A28 /* StoryListCellReadSceneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F095701702A6FB009D5A28 /* StoryListCellReadSceneViewController.m */; };
+		51F095771702A6FB009D5A28 /* StoryListCellReadSceneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51F095711702A6FB009D5A28 /* StoryListCellReadSceneViewController.xib */; };
 		51F22885161A9DC1006B3AA7 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F22884161A9DC1006B3AA7 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		51F22888161A9DE4006B3AA7 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F22887161A9DE4006B3AA7 /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		51F2288A161A9DF2006B3AA7 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F22889161A9DF2006B3AA7 /* StoreKit.framework */; };
@@ -111,8 +112,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5103C86C1699443500CC33AC /* Story.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Story.h; path = Banyan/Story.h; sourceTree = "<group>"; };
-		5103C86D1699443500CC33AC /* Story.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Story.m; path = Banyan/Story.m; sourceTree = "<group>"; };
 		5103FB9D166898960095B11F /* UIImage+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+Create.h"; path = "Banyan/UIImage+Create.h"; sourceTree = "<group>"; };
 		5103FB9E166898960095B11F /* UIImage+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Create.m"; path = "Banyan/UIImage+Create.m"; sourceTree = "<group>"; };
 		510787C0163A36A90042B436 /* UIImage+AlphaAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+AlphaAdditions.h"; path = "Banyan/UIImage+AlphaAdditions.h"; sourceTree = "<group>"; };
@@ -133,26 +132,14 @@
 		510787DD163A37340042B436 /* User+Edit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "User+Edit.m"; path = "Banyan/User+Edit.m"; sourceTree = "<group>"; };
 		511E708A161A9756009AAD25 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		512A6ADA16F175F000106BA4 /* NewStoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NewStoryViewController.xib; sourceTree = "<group>"; };
 		5157CD011650902900C22CCE /* BanyanConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BanyanConnection.h; path = Banyan/BanyanConnection.h; sourceTree = "<group>"; };
 		5157CD021650902900C22CCE /* BanyanConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BanyanConnection.m; path = Banyan/BanyanConnection.m; sourceTree = "<group>"; };
 		5157CD231659E5A300C22CCE /* ComposeTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ComposeTextViewController.h; path = Banyan/ComposeTextViewController.h; sourceTree = "<group>"; };
 		5157CD241659E5A300C22CCE /* ComposeTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ComposeTextViewController.m; path = Banyan/ComposeTextViewController.m; sourceTree = "<group>"; };
 		5158AE2816F56F7E0089193E /* BNTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNTabBarController.h; sourceTree = "<group>"; };
 		5158AE2916F56F7E0089193E /* BNTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNTabBarController.m; sourceTree = "<group>"; };
-		5166957116F82CE00014E65D /* StoryListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoryListCell.h; sourceTree = "<group>"; };
-		5166957216F82CE00014E65D /* StoryListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoryListCell.m; sourceTree = "<group>"; };
-		5166957416F8306F0014E65D /* StoryListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoryListCell.xib; sourceTree = "<group>"; };
 		5166957616F98AB90014E65D /* UISwipeableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UISwipeableView.h; sourceTree = "<group>"; };
 		5166957716F98ABA0014E65D /* UISwipeableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UISwipeableView.m; sourceTree = "<group>"; };
-		5166957916FBE3590014E65D /* StoryListCellMiddleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoryListCellMiddleViewController.h; sourceTree = "<group>"; };
-		5166957A16FBE35A0014E65D /* StoryListCellMiddleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoryListCellMiddleViewController.m; sourceTree = "<group>"; };
-		5166957B16FBE35A0014E65D /* StoryListCellMiddleViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoryListCellMiddleViewController.xib; sourceTree = "<group>"; };
-		5166957E16FBE54D0014E65D /* StoryListCellReadSceneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoryListCellReadSceneViewController.h; sourceTree = "<group>"; };
-		5166957F16FBE54E0014E65D /* StoryListCellReadSceneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoryListCellReadSceneViewController.m; sourceTree = "<group>"; };
-		5166958016FBE54E0014E65D /* StoryListCellReadSceneViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoryListCellReadSceneViewController.xib; sourceTree = "<group>"; };
-		5166958316FE72510014E65D /* Piece.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Piece.h; path = Banyan/Piece.h; sourceTree = "<group>"; };
-		5166958416FE72520014E65D /* Piece.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Piece.m; path = Banyan/Piece.m; sourceTree = "<group>"; };
 		5166B1B615E75B420072749C /* buttonFacebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebook.png; sourceTree = "<group>"; };
 		5166B1B715E75B420072749C /* buttonFacebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFacebook@2x.png"; sourceTree = "<group>"; };
 		5166B1B815E75B420072749C /* buttonFacebookSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebookSelected.png; sourceTree = "<group>"; };
@@ -262,6 +249,22 @@
 		51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFollowSelected@2x.png"; sourceTree = "<group>"; };
 		51CFD94C15F59A13002926F9 /* FindFriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindFriendsViewController.h; sourceTree = "<group>"; };
 		51CFD94D15F59A13002926F9 /* FindFriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindFriendsViewController.m; sourceTree = "<group>"; };
+		51F0955E1702A643009D5A28 /* RemoteObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RemoteObject.h; path = Banyan/RemoteObject.h; sourceTree = "<group>"; };
+		51F0955F1702A643009D5A28 /* RemoteObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RemoteObject.m; path = Banyan/RemoteObject.m; sourceTree = "<group>"; };
+		51F095611702A689009D5A28 /* Piece.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Piece.h; path = Banyan/Piece.h; sourceTree = "<group>"; };
+		51F095621702A689009D5A28 /* Piece.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Piece.m; path = Banyan/Piece.m; sourceTree = "<group>"; };
+		51F095641702A697009D5A28 /* Story.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Story.h; path = Banyan/Story.h; sourceTree = "<group>"; };
+		51F095651702A697009D5A28 /* Story.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Story.m; path = Banyan/Story.m; sourceTree = "<group>"; };
+		51F095671702A6DE009D5A28 /* NewStoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = NewStoryViewController.xib; path = Banyan/NewStoryViewController.xib; sourceTree = "<group>"; };
+		51F095691702A6FB009D5A28 /* StoryListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryListCell.h; path = Banyan/StoryListCell.h; sourceTree = "<group>"; };
+		51F0956A1702A6FB009D5A28 /* StoryListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryListCell.m; path = Banyan/StoryListCell.m; sourceTree = "<group>"; };
+		51F0956B1702A6FB009D5A28 /* StoryListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = StoryListCell.xib; path = Banyan/StoryListCell.xib; sourceTree = "<group>"; };
+		51F0956C1702A6FB009D5A28 /* StoryListCellMiddleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryListCellMiddleViewController.h; path = Banyan/StoryListCellMiddleViewController.h; sourceTree = "<group>"; };
+		51F0956D1702A6FB009D5A28 /* StoryListCellMiddleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryListCellMiddleViewController.m; path = Banyan/StoryListCellMiddleViewController.m; sourceTree = "<group>"; };
+		51F0956E1702A6FB009D5A28 /* StoryListCellMiddleViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = StoryListCellMiddleViewController.xib; path = Banyan/StoryListCellMiddleViewController.xib; sourceTree = "<group>"; };
+		51F0956F1702A6FB009D5A28 /* StoryListCellReadSceneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryListCellReadSceneViewController.h; path = Banyan/StoryListCellReadSceneViewController.h; sourceTree = "<group>"; };
+		51F095701702A6FB009D5A28 /* StoryListCellReadSceneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryListCellReadSceneViewController.m; path = Banyan/StoryListCellReadSceneViewController.m; sourceTree = "<group>"; };
+		51F095711702A6FB009D5A28 /* StoryListCellReadSceneViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = StoryListCellReadSceneViewController.xib; path = Banyan/StoryListCellReadSceneViewController.xib; sourceTree = "<group>"; };
 		51F22884161A9DC1006B3AA7 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		51F22887161A9DE4006B3AA7 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		51F22889161A9DF2006B3AA7 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -449,6 +452,8 @@
 		5189B35215B3965A00562DD0 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				51F0955E1702A643009D5A28 /* RemoteObject.h */,
+				51F0955F1702A643009D5A28 /* RemoteObject.m */,
 				5189B2D715B395F300562DD0 /* ArrayToDataTransformer.h */,
 				5189B2D815B395F300562DD0 /* ArrayToDataTransformer.m */,
 				5189B2DB15B395F300562DD0 /* ImageToDataTransformer.h */,
@@ -468,7 +473,7 @@
 			children = (
 				5189B2E615B395F300562DD0 /* NewStoryViewController.h */,
 				5189B2E715B395F300562DD0 /* NewStoryViewController.m */,
-				512A6ADA16F175F000106BA4 /* NewStoryViewController.xib */,
+				51F095671702A6DE009D5A28 /* NewStoryViewController.xib */,
 				5189B2DD15B395F300562DD0 /* InvitedTableViewController.h */,
 				5189B2DE15B395F300562DD0 /* InvitedTableViewController.m */,
 			);
@@ -516,8 +521,8 @@
 		5189B35715B396E700562DD0 /* Piece */ = {
 			isa = PBXGroup;
 			children = (
-				5166958316FE72510014E65D /* Piece.h */,
-				5166958416FE72520014E65D /* Piece.m */,
+				51F095611702A689009D5A28 /* Piece.h */,
+				51F095621702A689009D5A28 /* Piece.m */,
 				5189B2F115B395F300562DD0 /* Piece_Defines.h */,
 				5189B2F415B395F300562DD0 /* Piece+Create.h */,
 				5189B2F515B395F300562DD0 /* Piece+Create.m */,
@@ -556,8 +561,8 @@
 		5189B35A15B3975100562DD0 /* Story */ = {
 			isa = PBXGroup;
 			children = (
-				5103C86C1699443500CC33AC /* Story.h */,
-				5103C86D1699443500CC33AC /* Story.m */,
+				51F095641702A697009D5A28 /* Story.h */,
+				51F095651702A697009D5A28 /* Story.m */,
 				5189B30815B395F300562DD0 /* Story_Defines.h */,
 				51A8DC961692C4490017E86F /* Story+Permissions.h */,
 				51A8DC971692C4490017E86F /* Story+Permissions.m */,
@@ -668,15 +673,15 @@
 			children = (
 				5189B31515B395F300562DD0 /* StoryListStoryCell.h */,
 				5189B31615B395F300562DD0 /* StoryListStoryCell.m */,
-				5166957116F82CE00014E65D /* StoryListCell.h */,
-				5166957216F82CE00014E65D /* StoryListCell.m */,
-				5166957416F8306F0014E65D /* StoryListCell.xib */,
-				5166957916FBE3590014E65D /* StoryListCellMiddleViewController.h */,
-				5166957A16FBE35A0014E65D /* StoryListCellMiddleViewController.m */,
-				5166957B16FBE35A0014E65D /* StoryListCellMiddleViewController.xib */,
-				5166957E16FBE54D0014E65D /* StoryListCellReadSceneViewController.h */,
-				5166957F16FBE54E0014E65D /* StoryListCellReadSceneViewController.m */,
-				5166958016FBE54E0014E65D /* StoryListCellReadSceneViewController.xib */,
+				51F095691702A6FB009D5A28 /* StoryListCell.h */,
+				51F0956A1702A6FB009D5A28 /* StoryListCell.m */,
+				51F0956B1702A6FB009D5A28 /* StoryListCell.xib */,
+				51F0956C1702A6FB009D5A28 /* StoryListCellMiddleViewController.h */,
+				51F0956D1702A6FB009D5A28 /* StoryListCellMiddleViewController.m */,
+				51F0956E1702A6FB009D5A28 /* StoryListCellMiddleViewController.xib */,
+				51F0956F1702A6FB009D5A28 /* StoryListCellReadSceneViewController.h */,
+				51F095701702A6FB009D5A28 /* StoryListCellReadSceneViewController.m */,
+				51F095711702A6FB009D5A28 /* StoryListCellReadSceneViewController.xib */,
 			);
 			name = UITableViewCell;
 			sourceTree = "<group>";
@@ -763,10 +768,10 @@
 				51F2288C161A9E22006B3AA7 /* Default-568h@2x.png in Resources */,
 				51FD96ED1665E6C7001A1709 /* dotted-pattern.png in Resources */,
 				51FD96EE1665E6C7001A1709 /* dotted-pattern@2x.png in Resources */,
-				512A6ADB16F175F100106BA4 /* NewStoryViewController.xib in Resources */,
-				5166957516F8306F0014E65D /* StoryListCell.xib in Resources */,
-				5166957D16FBE35A0014E65D /* StoryListCellMiddleViewController.xib in Resources */,
-				5166958216FBE54E0014E65D /* StoryListCellReadSceneViewController.xib in Resources */,
+				51F095681702A6DE009D5A28 /* NewStoryViewController.xib in Resources */,
+				51F095731702A6FB009D5A28 /* StoryListCell.xib in Resources */,
+				51F095751702A6FB009D5A28 /* StoryListCellMiddleViewController.xib in Resources */,
+				51F095771702A6FB009D5A28 /* StoryListCellReadSceneViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -842,13 +847,14 @@
 				51A8DCC11692D52C0017E86F /* User+Create.m in Sources */,
 				51A8DCC41692DA900017E86F /* CoreDataTableViewController.m in Sources */,
 				51C0CF021695899100C9B752 /* User.m in Sources */,
-				5103C86E1699443500CC33AC /* Story.m in Sources */,
 				5158AE2B16F56F7F0089193E /* BNTabBarController.m in Sources */,
-				5166957316F82CE00014E65D /* StoryListCell.m in Sources */,
 				5166957816F98ABB0014E65D /* UISwipeableView.m in Sources */,
-				5166957C16FBE35A0014E65D /* StoryListCellMiddleViewController.m in Sources */,
-				5166958116FBE54E0014E65D /* StoryListCellReadSceneViewController.m in Sources */,
-				5166958516FE72550014E65D /* Piece.m in Sources */,
+				51F095601702A643009D5A28 /* RemoteObject.m in Sources */,
+				51F095631702A689009D5A28 /* Piece.m in Sources */,
+				51F095661702A697009D5A28 /* Story.m in Sources */,
+				51F095721702A6FB009D5A28 /* StoryListCell.m in Sources */,
+				51F095741702A6FB009D5A28 /* StoryListCellMiddleViewController.m in Sources */,
+				51F095761702A6FB009D5A28 /* StoryListCellReadSceneViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

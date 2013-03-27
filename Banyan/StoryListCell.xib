@@ -46,7 +46,7 @@
 								<string key="NSFrameSize">{320, 54}</string>
 								<reference key="NSSuperview" ref="782688406"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
+								<reference key="NSNextKeyView" ref="1017483176"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<object class="NSColor" key="IBUIBackgroundColor">
 									<int key="NSColorSpace">3</int>
@@ -106,6 +106,7 @@
 				<string key="NSReuseIdentifierKey">_NS:9</string>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 				<reference key="IBUIContentView" ref="782688406"/>
+				<string key="IBUIReuseIdentifier">Story Cell</string>
 				<real value="210" key="IBUIRowHeight"/>
 			</object>
 		</array>
@@ -117,15 +118,7 @@
 						<reference key="source" ref="911409871"/>
 						<reference key="destination" ref="740684095"/>
 					</object>
-					<int key="connectionID">66</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">middleView</string>
-						<reference key="source" ref="911409871"/>
-						<reference key="destination" ref="1017483176"/>
-					</object>
-					<int key="connectionID">67</int>
+					<int key="connectionID">80</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
@@ -133,7 +126,15 @@
 						<reference key="source" ref="911409871"/>
 						<reference key="destination" ref="1011291528"/>
 					</object>
-					<int key="connectionID">68</int>
+					<int key="connectionID">81</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">middleView</string>
+						<reference key="source" ref="911409871"/>
+						<reference key="destination" ref="1017483176"/>
+					</object>
+					<int key="connectionID">82</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -159,9 +160,9 @@
 						<int key="objectID">3</int>
 						<reference key="object" ref="911409871"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="740684095"/>
 							<reference ref="1017483176"/>
 							<reference ref="1011291528"/>
+							<reference ref="740684095"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -199,13 +200,21 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">70</int>
+			<int key="maxID">82</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<object class="IBPartialClassDescription">
-					<string key="className">Story</string>
+					<string key="className">RemoteObject</string>
 					<string key="superclassName">NSManagedObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/RemoteObject.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">Story</string>
+					<string key="superclassName">RemoteObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/Story.h</string>
@@ -216,6 +225,7 @@
 					<string key="superclassName">UITableViewCell</string>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="bottomView">UIView</string>
+						<string key="middleVC">StoryListCellMiddleViewController</string>
 						<string key="middleView">UIView</string>
 						<string key="story">Story</string>
 						<string key="storyLocationLabel">UILabel</string>
@@ -226,6 +236,10 @@
 						<object class="IBToOneOutletInfo" key="bottomView">
 							<string key="name">bottomView</string>
 							<string key="candidateClassName">UIView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="middleVC">
+							<string key="name">middleVC</string>
+							<string key="candidateClassName">StoryListCellMiddleViewController</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="middleView">
 							<string key="name">middleView</string>
@@ -251,6 +265,33 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/StoryListCell.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">StoryListCellMiddleViewController</string>
+					<string key="superclassName">UIViewController</string>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="pageControl">UIPageControl</string>
+						<string key="scrollView">UIScrollView</string>
+						<string key="story">Story</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="pageControl">
+							<string key="name">pageControl</string>
+							<string key="candidateClassName">UIPageControl</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="scrollView">
+							<string key="name">scrollView</string>
+							<string key="candidateClassName">UIScrollView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="story">
+							<string key="name">story</string>
+							<string key="candidateClassName">Story</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/StoryListCellMiddleViewController.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">

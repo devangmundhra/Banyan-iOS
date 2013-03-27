@@ -106,6 +106,7 @@ typedef enum {
     
     // Configure the cell...
     Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
+//    [self updateStoryAtIndex:indexPath];
     [cell setStory:story];
     
     return cell;
@@ -113,10 +114,7 @@ typedef enum {
 
 #pragma mark Table View Delegates
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-//    if ([indexPath compare:self.indexOfVisibleBackView] == NSOrderedSame)
-//        return nil;
-    
+{    
     return [self updateStoryAtIndex:indexPath];
 }
 
@@ -138,9 +136,6 @@ typedef enum {
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return NO;
-    // Give the option to delete the story only if you are a contributor to the story too
-    Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    return [story.canContribute boolValue];
 }
 
 - (void)tableView:(UITableView *)tableView
@@ -287,14 +282,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 -(void) addSceneToStory:(Story *)story
 {
     ModifyPieceViewController *addSceneViewController = [[ModifyPieceViewController alloc] init];
-    addSceneViewController.editMode = add;
+    addSceneViewController.editMode = ModifyPieceViewControllerEditModeAddPiece;
     Piece *piece = [NSEntityDescription insertNewObjectForEntityForName:kBNPieceClassKey
-                                                 inManagedObjectContext:BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT];
+                                                 inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
     
-    Story *newStory = (Story *)[BANYAN_USER_CONTENT_MANAGED_OBJECT_CONTEXT objectWithID:story.objectID];
+    Story *newStory = (Story *)[[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext objectWithID:story.objectID];
     piece.story = newStory;
     addSceneViewController.piece = piece;
-    addSceneViewController.editMode = add;
+    addSceneViewController.editMode = ModifyPieceViewControllerEditModeAddPiece;
     addSceneViewController.delegate = self;
     [addSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
     [addSceneViewController setModalPresentationStyle:UIModalPresentationFullScreen];

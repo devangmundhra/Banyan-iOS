@@ -33,12 +33,9 @@
 @property (strong, nonatomic) NSString *localImageURL;
 @property (nonatomic) BOOL imageChanged;
 
-@property (strong, nonatomic) UITapGestureRecognizer *tapRecognizer;
-
-@property (nonatomic) BOOL keyboardIsShown;
-@property (nonatomic) NSUInteger contentViewDispositionOnKeyboard;
-
 @property (strong, nonatomic) BNLocationManager *locationManager;
+
+@property (strong, nonatomic) Piece *backupPiece_;
 
 @end
 
@@ -52,26 +49,18 @@
 @synthesize doneButton = _doneButton;
 @synthesize piece = _scene;
 @synthesize delegate = _delegate;
-@synthesize keyboardIsShown = _keyboardIsShown;
 @synthesize editMode = _editMode;
-@synthesize tapRecognizer = _tapRecognizer;
 @synthesize imageChanged = _imageChanged;
-@synthesize contentViewDispositionOnKeyboard = _contentViewDispositionOnKeyboard;
 @synthesize localImageURL = _localImageURL;
 @synthesize locationManager = _locationManager;
 @synthesize pieceCaptionView, addLocationButton, addPhotoButton;
+@synthesize backupPiece_ = _backupPiece_;
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     self.pieceTextView.delegate = self;
-
     self.pieceTextView.backgroundColor = [UIColor clearColor];
-    
-    self.pieceTextView.layer.shadowColor = [[UIColor blackColor] CGColor];
-    self.pieceTextView.layer.shadowOffset = CGSizeMake(1.0, 1.0);
-    self.pieceTextView.layer.shadowOpacity = 1.0;
-    self.pieceTextView.layer.shadowRadius = 0.3;
     
     self.navigationBar.delegate = self;
 }
@@ -79,7 +68,7 @@
 {
     [super viewDidAppear:animated];
     
-    if (self.editMode == add && self.piece.story.isLocationEnabled) {
+    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && self.piece.story.isLocationEnabled) {
         self.locationManager = [[BNLocationManager alloc] init];
         self.locationManager.delegate = self;
         [self.locationManager beginUpdatingLocation];
@@ -89,7 +78,7 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    if (self.editMode == add && self.piece.story.isLocationEnabled) {
+    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && self.piece.story.isLocationEnabled) {
         [self.locationManager stopUpdatingLocation:self.addLocationButton.titleLabel.text];
     }
 }
@@ -99,15 +88,17 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
+    self.pieceCaptionView.delegate = self;
+    
     if (self.piece.geocodedLocation && ![self.piece.geocodedLocation isEqual:[NSNull null]]) {
         self.addLocationButton.titleLabel.text = self.piece.geocodedLocation;
     }
     
-    if (self.editMode == add)
+    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
     {
         self.navigationBar.topItem.title = @"Add Scene";
     }
-    else if (self.editMode == edit)
+    else if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
     {
         self.localImageURL = self.piece.imageURL;
         if (self.piece.imageURL && [self.piece.imageURL rangeOfString:@"asset"].location == NSNotFound) {
@@ -146,8 +137,11 @@
     self.imageChanged = NO;
     
     [self registerForKeyboardNotifications];
-    
-//    self.navigationBar.translucent = YES;
+
+    CGSize screenSize = [UIScreen mainScreen].applicationFrame.size;
+    self.scrollView.contentSize = CGSizeMake(screenSize.width,
+                                             screenSize.height
+                                             - self.navigationController.navigationBar.frame.size.height);
 }
 
 - (void)viewDidUnload
@@ -186,7 +180,7 @@
     self.piece.shortText = self.pieceCaptionView.text;
     self.piece.imageURL = self.localImageURL;
     
-    if (self.editMode == add)
+    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
     {
         if ([self.piece.story.isLocationEnabled boolValue] == YES) {
             if (self.locationManager.location) {
@@ -204,7 +198,7 @@
         [self.delegate modifyPieceViewController:self didFinishAddingPiece:self.piece];
         [TestFlight passCheckpoint:@"New scene created successfully"];
     }
-    else if (self.editMode == edit)
+    else if (self.editMode == ModifyPieceViewControllerEditModeEditPiece)
     {
         self.piece.longText = self.pieceTextView.text;
         if (self.imageChanged) {
@@ -237,17 +231,6 @@
     [Piece deletePiece:self.piece];
     [self.delegate modifyPieceViewControllerDeletedPiece:self];
     [TestFlight passCheckpoint:@"Scene deleted"];
-}
-
-- (IBAction)modifyText:(id)sender
-{
-    // Create a text view scene controller
-    ComposeTextViewController *textController = [[ComposeTextViewController alloc] init];
-    textController.delegate = self;
-    
-    [self presentViewController:textController animated:YES completion:^{
-        textController.textView.text = self.pieceTextView.text;
-    }];
 }
 
 #define CAMERA @"Camera"
@@ -429,19 +412,6 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     [self.addPhotoButton.imageView  setImage:newImage];
 }
 
-#pragma mark ComposeTextViewControllerDelegate
-- (void)cancelComposeTextViewController:(ComposeTextViewController *)controller
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-- (void)doneWithComposeTextViewController:(ComposeTextViewController *)controller
-{
-    self.pieceTextView.text = controller.textView.text;
-    [self dismissViewControllerAnimated:YES completion:^{
-        self.doneButton.enabled = [self checkForChanges];
-    }];
-}
-
 # pragma mark BNLocationManagerDelegate
 - (void) locationUpdated
 {
@@ -458,8 +428,6 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification object:nil];
-    
-    self.keyboardIsShown = NO;
 }
 
 - (void)unregisterForKeyboardNotifications
@@ -472,40 +440,18 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillHideNotification 
                                                   object:nil];
-    
-    self.keyboardIsShown = NO;
 }
 
 // Called when the UIKeyboardDidShowNotification is sent.
 - (void)keyboardWillShow:(NSNotification*)aNotification
 {
-    if (self.keyboardIsShown)
-        return; 
 
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationBeginsFromCurrentState:YES];
-    [UIView setAnimationDuration:0.3];
-    
-    CGRect statusRect = [[UIApplication sharedApplication] statusBarFrame];
-    
-    CGRect viewFrame = self.scrollView.frame;
-    self.contentViewDispositionOnKeyboard = self.pieceTextView.frame.origin.y - statusRect.size.height;
-    viewFrame.origin.y -= self.contentViewDispositionOnKeyboard;
-    self.scrollView.frame = viewFrame;
-    
-    [UIView commitAnimations];
-
-    self.keyboardIsShown = YES;
 }
 
 // Called when the UIKeyboardWillHideNotification is sent
 - (void)keyboardWillHide:(NSNotification*)aNotification
 {
-    if(!self.keyboardIsShown)
-        return;
-        
-    self.keyboardIsShown = NO;
-    self.contentViewDispositionOnKeyboard = 0;
+    [self.scrollView setContentOffset:CGPointZero animated:YES];
 }
 
 
@@ -517,27 +463,47 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         [self.pieceTextView resignFirstResponder];
 }
 
-- (BOOL)textView:(UITextView *)textView 
-shouldChangeTextInRange:(NSRange)range 
- replacementText:(NSString *)text
+#pragma mark TextView and TextField delegates
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView
 {
-    NSUInteger newLength = [textView.text length] + [text length] - range.length;
-    return (newLength > MAX_CHAR_IN_PIECE) ? NO : YES;
+    if (textView.tag == 0) {
+        textView.text = @"";
+        textView.textColor = [UIColor blackColor];
+        textView.tag = 1;
+    }
+    return YES;
+}
+
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView
+{
+    if ([textView.text length] == 0) {
+        textView.text = @"Additional scene description...";
+        textView.textColor = [UIColor lightGrayColor];
+        textView.tag = 0;
+    }
+    return YES;
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
+    self.doneButton.enabled = [self checkForChanges];
 }
 
 - (BOOL)checkForChanges
 {
-    if (self.editMode == add)
+    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
     {
         if (self.imageChanged
-            || ![self.pieceTextView.text isEqualToString:@""])
+            || ![self.pieceTextView.text isEqualToString:@""]
+            || ![self.pieceCaptionView.text isEqualToString:@""])
             return YES;
         else
             return NO;
-    } else if (self.editMode == edit)
+    } else if (self.editMode == ModifyPieceViewControllerEditModeEditPiece)
     {
         if ((self.imageChanged)
-            || (![self.pieceTextView.text isEqualToString:self.piece.longText]))
+            || (![self.pieceTextView.text isEqualToString:self.piece.longText])
+            || (![self.pieceCaptionView.text isEqualToString:self.piece.shortText]))
             return YES;
         else
             return NO;
@@ -548,6 +514,16 @@ shouldChangeTextInRange:(NSRange)range
     }
 }
 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    self.doneButton.enabled = [self checkForChanges];
+}
 
 #pragma Memory Management
 - (void)didReceiveMemoryWarning

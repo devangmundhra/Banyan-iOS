@@ -2,7 +2,7 @@
 //  Story.m
 //  Banyan
 //
-//  Created by Devang Mundhra on 1/5/13.
+//  Created by Devang Mundhra on 3/26/13.
 //
 //
 
@@ -16,7 +16,6 @@
 @dynamic canContribute;
 @dynamic canView;
 @dynamic contributors;
-@dynamic createdAt;
 @dynamic favourite;
 @dynamic geocodedLocation;
 @dynamic imageChanged;
@@ -25,23 +24,21 @@
 @dynamic initialized;
 @dynamic isInvited;
 @dynamic isLocationEnabled;
-@dynamic latitude;
 @dynamic length;
 @dynamic liked;
 @dynamic likers;
-@dynamic location;
-@dynamic longitude;
 @dynamic numberOfContributors;
 @dynamic numberOfLikes;
 @dynamic numberOfViews;
 @dynamic readAccess;
 @dynamic storyBeingRead;
-@dynamic storyId;
 @dynamic tags;
 @dynamic title;
-@dynamic updatedAt;
 @dynamic viewed;
 @dynamic writeAccess;
+@dynamic latitude;
+@dynamic location;
+@dynamic longitude;
 @dynamic author;
 @dynamic pieces;
 
