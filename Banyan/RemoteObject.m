@@ -11,8 +11,26 @@
 
 @implementation RemoteObject
 
-@dynamic id;
+@dynamic bnObjectId;
 @dynamic createdAt;
 @dynamic updatedAt;
+@dynamic remoteStatusNumber;
+
+#pragma mark -
+#pragma mark Revision management
+- (void)cloneFrom:(RemoteObject *)source {
+    for (NSString *key in [[[source entity] attributesByName] allKeys]) {
+        NSLog(@"Copying attribute %@", key);
+        [self setValue:[source valueForKey:key] forKey:key];
+    }
+}
+
+- (RemoteObjectStatus)remoteStatus {
+    return (RemoteObjectStatus)[[self remoteStatusNumber] intValue];
+}
+
+- (void)setRemoteStatus:(RemoteObjectStatus)aStatus {
+    [self setRemoteStatusNumber:[NSNumber numberWithInt:aStatus]];
+}
 
 @end

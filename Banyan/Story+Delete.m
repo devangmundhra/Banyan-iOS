@@ -16,7 +16,7 @@
 
 + (void) deleteStory:(Story *)story
 {
-    NSString *storyId = story.id;
+    NSString *storyId = story.bnObjectId;
     NSLog(@"%s Story id: %@", __PRETTY_FUNCTION__, storyId);
     
     [[AFBanyanAPIClient sharedClient] deletePath:BANYAN_API_OBJECT_URL(@"Story", storyId)

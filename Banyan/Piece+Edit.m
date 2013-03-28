@@ -44,7 +44,7 @@
         [objectManager addResponseDescriptor:responseDescriptor];
         
         [objectManager putObject:piece
-                             path:PARSE_API_OBJECT_URL(@"Piece", piece.id)
+                             path:PARSE_API_OBJECT_URL(@"Piece", piece.bnObjectId)
                        parameters:nil
                           success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                               NSLog(@"Update piece successful %@", piece);

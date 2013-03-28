@@ -14,10 +14,10 @@
 
 + (void) deletePiece:(Piece *)piece
 {    
-    [[AFBanyanAPIClient sharedClient] deletePath:BANYAN_API_OBJECT_URL(@"Piece", piece.id)
+    [[AFBanyanAPIClient sharedClient] deletePath:BANYAN_API_OBJECT_URL(@"Piece", piece.bnObjectId)
                                      parameters:nil
                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                            NSLog(@"Piece with id %@ deleted", piece.id);
+                                            NSLog(@"Piece with id %@ deleted", piece.bnObjectId);
                                         }
                                         failure:nil];
     

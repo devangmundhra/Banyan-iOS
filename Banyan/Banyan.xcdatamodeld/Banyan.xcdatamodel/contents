@@ -23,8 +23,9 @@
         <relationship name="story" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Story" inverseName="pieces" inverseEntity="Story" syncable="YES"/>
     </entity>
     <entity name="RemoteObject" representedClassName="RemoteObject" isAbstract="YES" syncable="YES">
+        <attribute name="bnObjectId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="remoteStatusNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
     </entity>
     <entity name="Story" representedClassName="Story" parentEntity="RemoteObject" syncable="YES">
@@ -74,8 +75,8 @@
     </entity>
     <elements>
         <element name="Piece" positionX="-306" positionY="-243" width="128" height="343"/>
+        <element name="RemoteObject" positionX="-729" positionY="0" width="128" height="105"/>
         <element name="Story" positionX="-72" positionY="-454" width="128" height="463"/>
         <element name="User" positionX="-576" positionY="-207" width="128" height="238"/>
-        <element name="RemoteObject" positionX="-729" positionY="0" width="128" height="88"/>
     </elements>
 </model>

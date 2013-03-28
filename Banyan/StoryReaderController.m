@@ -72,7 +72,7 @@
                                                  name:BNUserLogOutNotification
                                                object:nil];
     
-    [TestFlight passCheckpoint:[NSString stringWithFormat:@"Story with id %@ started to be read", self.story.id]];
+    [TestFlight passCheckpoint:[NSString stringWithFormat:@"Story with id %@ started to be read", self.story.bnObjectId]];
 }
 
 

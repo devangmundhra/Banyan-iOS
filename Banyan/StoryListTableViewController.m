@@ -281,15 +281,13 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(void) addSceneToStory:(Story *)story
 {
-    ModifyPieceViewController *addSceneViewController = [[ModifyPieceViewController alloc] init];
-    addSceneViewController.editMode = ModifyPieceViewControllerEditModeAddPiece;
     Piece *piece = [NSEntityDescription insertNewObjectForEntityForName:kBNPieceClassKey
                                                  inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
     
     Story *newStory = (Story *)[[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext objectWithID:story.objectID];
     piece.story = newStory;
-    addSceneViewController.piece = piece;
-    addSceneViewController.editMode = ModifyPieceViewControllerEditModeAddPiece;
+    piece.remoteStatus = RemoteObjectStatusLocal;
+    ModifyPieceViewController *addSceneViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
     addSceneViewController.delegate = self;
     [addSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
     [addSceneViewController setModalPresentationStyle:UIModalPresentationFullScreen];

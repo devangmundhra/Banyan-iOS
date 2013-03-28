@@ -276,11 +276,11 @@
 
 - (IBAction)addPiece:(UIBarButtonItem *)sender 
 {
-    ModifyPieceViewController *addSceneViewController = [[ModifyPieceViewController alloc] init];
-    addSceneViewController.editMode = ModifyPieceViewControllerEditModeAddPiece;
-    addSceneViewController.piece = [NSEntityDescription insertNewObjectForEntityForName:kBNPieceClassKey
-                                                                 inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
-    addSceneViewController.piece.story = (Story *)[[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext objectWithID:self.piece.story.objectID];
+    Piece *piece = [NSEntityDescription insertNewObjectForEntityForName:kBNPieceClassKey
+                                                 inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
+    piece.story = (Story *)[[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext objectWithID:self.piece.story.objectID];
+    piece.remoteStatus = RemoteObjectStatusLocal;
+    ModifyPieceViewController *addSceneViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
     addSceneViewController.delegate = self;
     [addSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
     [addSceneViewController setModalPresentationStyle:UIModalPresentationFullScreen];
@@ -288,9 +288,7 @@
 }
 - (IBAction)editPiece:(UIBarButtonItem *)sender 
 {
-    ModifyPieceViewController *editSceneViewController = [[ModifyPieceViewController alloc] init];
-    editSceneViewController.editMode = ModifyPieceViewControllerEditModeEditPiece;
-    editSceneViewController.piece = self.piece;
+    ModifyPieceViewController *editSceneViewController = [[ModifyPieceViewController alloc] initWithPiece:self.piece];
     editSceneViewController.delegate = self;
     [editSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
     [editSceneViewController setModalPresentationStyle:UIModalPresentationFullScreen];
@@ -354,7 +352,7 @@
         return;
     }
     
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:self.piece.story.id forKey:@"object_id"];
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:self.piece.story.bnObjectId forKey:@"object_id"];
     [[AFBanyanAPIClient sharedClient] getPath:BANYAN_API_GET_OBJECT_LINK_URL()
                                    parameters:params
                                       success:^(AFHTTPRequestOperation *operation, id responseObject) {

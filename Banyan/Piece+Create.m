@@ -39,7 +39,7 @@
         // For serializing
         RKObjectMapping *pieceRequestMapping = [RKObjectMapping requestMapping];
         [pieceRequestMapping addAttributeMappingsFromArray:@[PIECE_LONGTEXT, PIECE_SHORTTEXT, PIECE_IMAGE_URL, PIECE_IMAGE_NAME, PIECE_LATITUDE, PIECE_LONGITUDE, PIECE_GEOCODEDLOCATION]];
-        [pieceRequestMapping addAttributeMappingsFromDictionary:@{@"author.userId" : PIECE_AUTHOR, @"story.id" : PIECE_STORY}];
+        [pieceRequestMapping addAttributeMappingsFromDictionary:@{@"author.userId" : PIECE_AUTHOR, @"story.bnObjectId" : PIECE_STORY}];
         
         RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
                                                   requestDescriptorWithMapping:pieceRequestMapping
@@ -48,10 +48,10 @@
         RKEntityMapping *pieceResponseMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
                                                                     inManagedObjectStore:[RKManagedObjectStore defaultStore]];
         [pieceResponseMapping addAttributeMappingsFromDictionary:@{
-                                                PARSE_OBJECT_ID : @"id",
+                                                PARSE_OBJECT_ID : @"bnObjectId",
          }];
         [pieceResponseMapping addAttributeMappingsFromArray:@[PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT, PIECE_NUMBER]];
-        pieceResponseMapping.identificationAttributes = @[@"id"];
+        pieceResponseMapping.identificationAttributes = @[@"bnObjectId"];
         
         RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceResponseMapping
                                                                                            pathPattern:nil
