@@ -119,8 +119,7 @@ typedef enum {
     self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapAnywhere:)];
     self.invitedToContributeList = [NSMutableArray array];
     self.invitedToViewList = [NSMutableArray array];
-    self.story = [NSEntityDescription insertNewObjectForEntityForName:kBNStoryClassKey
-                                               inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
+    self.story = [Story newDraftStory];
     
     CGRect aRect = self.contributorPrivacySegmentedControl.thumb.frame;
     self.contributorPrivacySegmentedControl.selectedIndex = ContributorPrivacySegmentedControlInvited;
@@ -302,7 +301,8 @@ typedef enum {
             assert(false);
         return nil;
     }
-    return [NSDictionary dictionaryWithObject:self.invitedToContributeList forKey:kBNStoryPrivacyInvitedFacebookFriends];
+    NSDictionary *dictToReturn = [NSDictionary dictionaryWithObject:self.invitedToContributeList forKey:kBNStoryPrivacyInvitedFacebookFriends];
+    return dictToReturn;
 }
 
 - (NSString *)viewerScope
@@ -343,8 +343,13 @@ typedef enum {
 }
 
 # pragma mark location settings
-- (IBAction)showLocationSwitchToggled:(UISwitch *)sender
+- (IBAction)addLocationButtonPressed:(UIButton *)sender
 {
+    [self.locationManager showLocationPickerTableViewController];
+    
+    return;
+    
+    self.isLocationEnabled = TRUE;
     if (self.isLocationEnabled) {
         [self.locationManager beginUpdatingLocation];
         [self.addLocationButton.titleLabel setHidden:NO];

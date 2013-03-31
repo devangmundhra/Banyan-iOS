@@ -137,7 +137,6 @@ static CLLocationManager *_sharedLocationManager;
 # pragma mark BNLocationManager
 - (void)beginUpdatingLocation
 {
-    return;
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(stopUpdatingLocation:) object:nil];
     [self.delegate locationUpdated];
     _sharedLocationManager.delegate = self;
@@ -211,6 +210,7 @@ static CLLocationManager *_sharedLocationManager;
 -(void)getGoogleObjectsWithQuery:(NSString *)query
                   andCoordinates:(CLLocationCoordinate2D)coords
 {
+    assert(coords.latitude!=0 && coords.longitude!=0);
     NSString *coordsString = [NSString stringWithFormat:@"%f,%f", coords.latitude, coords.longitude];
     NSString *types =[NSString stringWithFormat:@"%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@",
                       kBar,
@@ -269,6 +269,7 @@ static CLLocationManager *_sharedLocationManager;
     self.locationPickerViewController.currentLocation = self.bestEffortAtLocation;
     self.locationPickerViewController.locations = [self.locationsNearThisLocation mutableCopy];
     self.locationPickerViewController.locationsFilterResults = self.locationPickerViewController.locations;
+    self.locationPickerViewController.delegate = self;
     if ([self.delegate isKindOfClass:[UIViewController class]]) {
         [[(UIViewController *)self.delegate navigationController] pushViewController:self.locationPickerViewController animated:YES];
     }
