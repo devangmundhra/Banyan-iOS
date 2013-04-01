@@ -11,6 +11,7 @@
 #import "BNLocationManager.h"
 #import "TITokenField.h"
 #import "Story.h"
+#import "LocationPickerButton.h"
 
 @class NewStoryViewController;
 
@@ -21,7 +22,7 @@
 
 @end
 
-@interface NewStoryViewController : UIViewController <UITextFieldDelegate, InvitedTableViewControllerDelegate, UIScrollViewDelegate, BNLocationManagerDelegate, TITokenFieldDelegate>
+@interface NewStoryViewController : UIViewController <UITextFieldDelegate, InvitedTableViewControllerDelegate, UIScrollViewDelegate, BNLocationManagerDelegate, TITokenFieldDelegate, LocationPickerButtonDelegate>
 
 // Delegate to save the story and close the window on done and edit
 @property (weak, nonatomic) IBOutlet id <NewStoryViewControllerDelegate> delegate;

@@ -171,5 +171,6 @@ internationalPhone:(NSString *)intPhone
        searchTerms:(NSString *)search
     distanceInFeet:(NSString *)distanceFeet
    distanceInMiles:(NSString *)distanceMiles;
+- (NSString *)getFormattedName;
 
 @end

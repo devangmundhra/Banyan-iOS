@@ -120,4 +120,13 @@ internationalPhone:(NSString *)intPhone
     return [self initWithJsonResultDict:jsonResultDict searchTerms:@"" andUserCoordinates:userCoords];
     
 }
+
+# pragma mark Helper functions
+- (NSString *)getFormattedName
+{
+    if (!self)
+        return nil;
+    return [NSString stringWithFormat:@"%@, %@", self.name, self.vicinity];
+}
+
 @end

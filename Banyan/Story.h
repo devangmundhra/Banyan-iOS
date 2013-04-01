@@ -22,7 +22,6 @@
 @property (nonatomic, retain) NSNumber * imageChanged;
 @property (nonatomic, retain) NSString * imageName;
 @property (nonatomic, retain) NSString * imageURL;
-@property (nonatomic, retain) NSNumber * initialized;
 @property (nonatomic, retain) NSNumber * isInvited;
 @property (nonatomic, retain) NSNumber * isLocationEnabled;
 @property (nonatomic, retain) NSNumber * length;

@@ -16,7 +16,7 @@
 
 + (void) editPiece:(Piece *)piece
 {
-    if (!piece.initialized)
+    if (piece.remoteStatus != RemoteObjectStatusSync)
         return;
     
     NSLog(@"Update scene %@ for story %@", piece, piece.story);

@@ -21,7 +21,6 @@
 @dynamic imageChanged;
 @dynamic imageName;
 @dynamic imageURL;
-@dynamic initialized;
 @dynamic isInvited;
 @dynamic isLocationEnabled;
 @dynamic length;

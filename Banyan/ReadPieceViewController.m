@@ -14,6 +14,7 @@
 #import "AFBanyanAPIClient.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "Piece+Edit.h"
+#import "Piece+Create.h"
 #import "User+Edit.h"
 
 @interface ReadPieceViewController ()
@@ -103,7 +104,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self setWantsFullScreenLayout:YES];
 
     self.imageView.frame = [UIScreen mainScreen].applicationFrame;
 //    self.imageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -276,12 +276,8 @@
 
 - (IBAction)addPiece:(UIBarButtonItem *)sender 
 {
-    Piece *piece = [NSEntityDescription insertNewObjectForEntityForName:kBNPieceClassKey
-                                                 inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
-    piece.story = (Story *)[[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext objectWithID:self.piece.story.objectID];
-    piece.remoteStatus = RemoteObjectStatusLocal;
+    Piece *piece = [Piece newPieceDraftForStory:self.piece.story];
     ModifyPieceViewController *addSceneViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
-    addSceneViewController.delegate = self;
     [addSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
     [addSceneViewController setModalPresentationStyle:UIModalPresentationFullScreen];
     [self presentViewController:addSceneViewController animated:YES completion:nil];
@@ -289,7 +285,6 @@
 - (IBAction)editPiece:(UIBarButtonItem *)sender 
 {
     ModifyPieceViewController *editSceneViewController = [[ModifyPieceViewController alloc] initWithPiece:self.piece];
-    editSceneViewController.delegate = self;
     [editSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
     [editSceneViewController setModalPresentationStyle:UIModalPresentationFullScreen];
     [self presentViewController:editSceneViewController animated:YES completion:nil];
@@ -336,8 +331,8 @@
 
 - (IBAction)share:(UIBarButtonItem *)sender 
 {    
-    if (!self.piece.story.initialized) {
-        NSLog(@"%s Can't share yet as story with title %@ is not initialized", __PRETTY_FUNCTION__, self.piece.story.title);
+    if (self.piece.story.remoteStatus != RemoteObjectStatusSync) {
+        NSLog(@"%s Can't share yet as story with title %@ is not sync'ed", __PRETTY_FUNCTION__, self.piece.story.title);
         return;
     }
     
@@ -374,45 +369,6 @@
                                           [TestFlight passCheckpoint:@"Story shared"];
                                       }
                                       failure:AF_BANYAN_ERROR_BLOCK()];
-}
-
-
-#pragma mark ModifyPieceViewControllerDelegate
-- (void) modifyPieceViewController:(ModifyPieceViewController *)controller
-             didFinishEditingPiece:(Piece *)piece
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-    NSLog(@"ReadSceneViewController_Editing scene");
-}
-
-- (void) modifyPieceViewController:(ModifyPieceViewController *)controller
-              didFinishAddingPiece:(Piece *)piece
-{
-    NSLog(@"ReadSceneViewController_Adding scene");
-    [self dismissViewControllerAnimated:NO completion:^{
-        [self.delegate readPieceViewControllerAddedNewPiece:self];
-    }];
-}
-
-- (void) modifyPieceViewControllerDidCancel:(ModifyPieceViewController *)controller
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void) modifyPieceViewControllerDeletedPiece:(ModifyPieceViewController *)controller
-{
-    NSLog(@"ReadSceneViewController_Deleting scene");
-    [self dismissViewControllerAnimated:NO completion:^{
-        [self.delegate readPieceViewControllerDeletedPiece:self];
-    }];
-}
-
-- (void) modifyPieceViewControllerDeletedStory:(ModifyPieceViewController *)controller
-{
-    NSLog(@"ReadSceneViewController_Deleting story");
-    [self dismissViewControllerAnimated:NO completion:^{
-        [self.delegate readPieceViewControllerDeletedStory:self];
-    }];
 }
 
 # pragma mark InvitedTableViewControllerDelegate

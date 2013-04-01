@@ -18,7 +18,6 @@
 @dynamic imageChanged;
 @dynamic imageName;
 @dynamic imageURL;
-@dynamic initialized;
 @dynamic liked;
 @dynamic likers;
 @dynamic longText;

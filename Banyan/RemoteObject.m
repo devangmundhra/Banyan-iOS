@@ -33,4 +33,13 @@
     [self setRemoteStatusNumber:[NSNumber numberWithInt:aStatus]];
 }
 
+- (void)save
+{
+    NSError *error = nil;
+    if (![self.managedObjectContext saveToPersistentStore:&error]) {
+        NSLog(@"Unresolved Core Data Save error %@, %@", error, [error userInfo]);
+        exit(-1);
+    }
+}
+
 @end

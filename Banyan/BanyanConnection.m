@@ -132,7 +132,7 @@
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                 NSArray *stories = [mappingResult array];
                                 [stories enumerateObjectsUsingBlock:^(Story *story, NSUInteger idx, BOOL *stop) {
-                                    story.initialized = [NSNumber numberWithBool:YES];
+                                    story.remoteStatus = RemoteObjectStatusSync;
                                     [story updateStoryStats];
                                 }];
                                 successBlock();                            }
@@ -177,7 +177,7 @@
                                 NSArray *pieces = [mappingResult array];
                                 [pieces enumerateObjectsUsingBlock:^(Piece *piece, NSUInteger idx, BOOL *stop) {
                                     [story addPiecesObject:piece];
-                                    piece.initialized = [NSNumber numberWithBool:YES];
+                                    piece.remoteStatus = RemoteObjectStatusSync;
                                     [piece updatePieceStats];
                                 }];
                                 story.length = [NSNumber numberWithInteger:pieces.count];

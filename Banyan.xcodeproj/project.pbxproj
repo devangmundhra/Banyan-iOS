@@ -27,6 +27,7 @@
 		5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B715E75B420072749C /* buttonFacebook@2x.png */; };
 		5166B1BC15E75B420072749C /* buttonFacebookSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B815E75B420072749C /* buttonFacebookSelected.png */; };
 		5166B1BD15E75B420072749C /* buttonFacebookSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B915E75B420072749C /* buttonFacebookSelected@2x.png */; };
+		517A018C1706D92E00665F0F /* LocationPickerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 517A018B1706D92E00665F0F /* LocationPickerButton.m */; };
 		5189B2B815B387E200562DD0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2B715B387E200562DD0 /* UIKit.framework */; };
 		5189B2BA15B387E200562DD0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2B915B387E200562DD0 /* Foundation.framework */; };
 		5189B2BC15B387E200562DD0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2BB15B387E200562DD0 /* CoreGraphics.framework */; };
@@ -144,6 +145,8 @@
 		5166B1B715E75B420072749C /* buttonFacebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFacebook@2x.png"; sourceTree = "<group>"; };
 		5166B1B815E75B420072749C /* buttonFacebookSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebookSelected.png; sourceTree = "<group>"; };
 		5166B1B915E75B420072749C /* buttonFacebookSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFacebookSelected@2x.png"; sourceTree = "<group>"; };
+		517A018A1706D92E00665F0F /* LocationPickerButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationPickerButton.h; path = Banyan/LocationPickerButton.h; sourceTree = "<group>"; };
+		517A018B1706D92E00665F0F /* LocationPickerButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationPickerButton.m; path = Banyan/LocationPickerButton.m; sourceTree = "<group>"; };
 		5189B2B315B387E200562DD0 /* Banyan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Banyan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5189B2B715B387E200562DD0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		5189B2B915B387E200562DD0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -623,6 +626,8 @@
 				5192332616743F02009686E4 /* GooglePlacesObject.m */,
 				519233301675305F009686E4 /* LocationPickerTableViewController.h */,
 				519233311675305F009686E4 /* LocationPickerTableViewController.m */,
+				517A018A1706D92E00665F0F /* LocationPickerButton.h */,
+				517A018B1706D92E00665F0F /* LocationPickerButton.m */,
 			);
 			name = Location;
 			path = ..;
@@ -855,6 +860,7 @@
 				51F095721702A6FB009D5A28 /* StoryListCell.m in Sources */,
 				51F095741702A6FB009D5A28 /* StoryListCellMiddleViewController.m in Sources */,
 				51F095761702A6FB009D5A28 /* StoryListCellReadSceneViewController.m in Sources */,
+				517A018C1706D92E00665F0F /* LocationPickerButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -21,7 +21,7 @@
 
 @end
 
-@interface StoryReaderController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ReadPieceViewControllerDelegate>
+@interface StoryReaderController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ReadPieceViewControllerDelegate, UIActionSheetDelegate>
 
 @property (nonatomic, strong) Story *story;
 @property (nonatomic, strong) UIPageViewController *pageViewController;

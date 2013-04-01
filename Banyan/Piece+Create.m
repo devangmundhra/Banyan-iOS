@@ -15,22 +15,34 @@
 
 @implementation Piece (Create)
 
-+ (void) createNewPiece:(Piece *)piece afterPiece:(Piece *)previousPiece
++ (Piece *) newPieceForStory:(Story *)story
 {
-//    // Persist so that it can be refetched in persistentStoreManagedObjectContext
-//    [piece persistToDatabase];
-//    
-//    // Change the context to persistentStoreManagedObjectContext
-//    piece = (Piece *)[[RKManagedObjectStore defaultStore].persistentStoreManagedObjectContext objectWithID:piece.objectID];
+    Piece *piece = [[Piece alloc] initWithEntity:[NSEntityDescription entityForName:kBNPieceClassKey
+                                                          inManagedObjectContext:[story managedObjectContext]]
+               insertIntoManagedObjectContext:[story managedObjectContext]];
     
-    piece.initialized = [NSNumber numberWithBool:NO];
-    piece.author = [User currentUser];
+    piece.story = story;
+    
+    return piece;
+}
+
++ (Piece *) newPieceDraftForStory:(Story *)story
+{
+    Piece *piece = [self newPieceForStory:story];
+    piece.remoteStatus = RemoteObjectStatusLocal;
+    piece.author = [User currentUserInContext:piece.managedObjectContext];
     piece.createdAt = piece.updatedAt = [NSDate date];
     
+    [piece save];
+    
+    return piece;
+}
+
++ (void) createNewPiece:(Piece *)piece afterPiece:(Piece *)previousPiece
+{    
     piece.story.length = [NSNumber numberWithInteger:piece.story.pieces.count];
     
-    // Persist again
-    [piece persistToDatabase];
+    [piece save];
     NSLog(@"Adding scene %@ for story %@", piece, piece.story);
     
     // Block to upload the piece
@@ -60,15 +72,17 @@
         [objectManager addRequestDescriptor:requestDescriptor];
         [objectManager addResponseDescriptor:responseDescriptor];
         
+        piece.remoteStatus = RemoteObjectStatusPushing;
         [objectManager postObject:piece
                              path:BANYAN_API_CLASS_URL(@"Piece")
                        parameters:nil
                           success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                               NSLog(@"Create piece successful %@", piece);
-                              piece.initialized = [NSNumber numberWithBool:YES];
-                              [piece persistToDatabase];
+                              piece.remoteStatus = RemoteObjectStatusSync;
+                              [piece save];
                           }
                           failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                              piece.remoteStatus = RemoteObjectStatusFailed;
                               NSLog(@"Error in create piece");
                           }];
     };
@@ -104,27 +118,6 @@
     }
     
 //    return piece;
-}
-
-- (void)persistToDatabase
-{
-    [self.managedObjectContext performBlockAndWait:^{
-        // Persist the story
-        NSError *error = nil;
-        if (![self.managedObjectContext save:&error]) {
-            NSLog(@"Error: %@", error);
-            assert(false);
-        };
-    }];
-    
-    [self.managedObjectContext.parentContext performBlockAndWait:^{
-        // Persist the piece on the parent context so that it is picked up by Fetched Results Controller
-        NSError *error = nil;
-        if (![self.managedObjectContext.parentContext save:&error]) {
-            NSLog(@"Error: %@", error);
-            assert(false);
-        };
-    }];
 }
 
 @end

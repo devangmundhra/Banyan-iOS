@@ -14,7 +14,7 @@
 
 #define DEV FALSE
 
-#define HAVE_ASSERTS FALSE
+#define HAVE_ASSERTS TRUE
 
 //#ifdef DEV
 //#define PARSE_APP_ID @"5mvyH3aLGv22GeEmYugRZokcrprPevbA4ko1kF6v"

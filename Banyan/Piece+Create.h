@@ -14,4 +14,6 @@
 @interface Piece (Create)
 + (void)createNewPiece:(Piece *)piece afterPiece:(Piece *)previousPiece;
 
++ (Piece *) newPieceDraftForStory:(Story *)story;
+
 @end

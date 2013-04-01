@@ -22,7 +22,7 @@
         return;
     }
     
-    if (piece.viewed || !piece.initialized)
+    if (piece.viewed || piece.remoteStatus != RemoteObjectStatusSync)
         return;
     
     User *currentUser = [User currentUser];

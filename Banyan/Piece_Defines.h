@@ -33,8 +33,6 @@
 #define PIECE_LOCATION @"location"
 #define PIECE_GEOCODEDLOCATION @"geocodedLocation"
 
-#define PIECE_IS_INITIALIZED @"PieceInitialized"
-
 #define MAX_CHAR_IN_PIECE 140
 
 @end

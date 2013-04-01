@@ -16,23 +16,35 @@
 
 @implementation Story (Create)
 
++ (Story *) newStory
+{
+    Story *story = [NSEntityDescription insertNewObjectForEntityForName:kBNStoryClassKey
+                                                 inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
+    return story;
+}
+
++ (Story *) newDraftStory
+{
+    Story *story = [Story newStory];
+    story.remoteStatus = RemoteObjectStatusLocal;
+    story.author = [User currentUser];
+    story.createdAt = story.updatedAt = [NSDate date];
+    story.author = [User currentUserInContext:story.managedObjectContext];
+    story.createdAt = story.updatedAt = [NSDate date];
+
+    [story save];
+    
+    return story;
+}
+
 // Upload the given story using RestKit
 + (Story *)createNewStory:(Story *)story
-{
-//    // Persist so that it can be refetched in persistentStoreManagedObjectContext
-//    [story persistToDatabase];
-//
-//    // Change the context to persistentStoreManagedObjectContext
-//    story = (Story *)[[RKManagedObjectStore defaultStore].persistentStoreManagedObjectContext objectWithID:story.objectID];
-    
-    story.initialized = [NSNumber numberWithBool:NO];
+{    
     story.canContribute = story.canView = [NSNumber numberWithBool:YES];
-    story.author = [User currentUserInContext:story.managedObjectContext];
     story.storyBeingRead = [NSNumber numberWithBool:YES];
-    story.createdAt = story.updatedAt = [NSDate date];
     
     // Persist again
-    [story persistToDatabase];
+    [story save];
     NSLog(@"Adding story %@", story);
 
     //    PARSE
@@ -138,20 +150,22 @@
         [objectManager addRequestDescriptor:requestDescriptor];
         [objectManager addResponseDescriptor:responseDescriptor];
         
+        story.remoteStatus = RemoteObjectStatusPushing;
         [objectManager postObject:story
                              path:BANYAN_API_CLASS_URL(kBNStoryClassKey)
                        parameters:nil
                           success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                               NSLog(@"Create story successful %@", story);
-                              story.initialized = [NSNumber numberWithBool:YES];
+                              story.remoteStatus = RemoteObjectStatusSync;
                               NSArray *invitedFBFriends = [[story.writeAccess objectForKey:kBNStoryPrivacyInviteeList]
                                                            objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
                               if (invitedFBFriends) {
                                   sendRequestToContributors(invitedFBFriends, story);
                               }
-                              [story persistToDatabase];
+                              [story save];
                           }
                           failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                              story.remoteStatus = RemoteObjectStatusFailed;
                               NSLog(@"Error in create story");
                           }];
     };
@@ -187,29 +201,6 @@
     }
     
     return story;
-}
-
-- (void)persistToDatabase
-{
-    // Use performBlockAndWait only as these needs to be synchronous in the thread
-    [self.managedObjectContext performBlockAndWait:^{
-        // Persist the story
-        NSError *error = nil;
-        if (![self.managedObjectContext save:&error]) {
-            NSLog(@"Error: %@", error);
-            assert(false);
-        };
-    }];
-    
-    
-    [self.managedObjectContext.parentContext performBlockAndWait:^{
-        // Persist the story on the parent context so that it is picked up by Fetched Results Controller
-        NSError *error = nil;
-        if (![self.managedObjectContext.parentContext save:&error]) {
-            NSLog(@"Error: %@", error);
-            assert(false);
-        };
-    }];
 }
 
 @end

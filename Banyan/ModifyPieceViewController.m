@@ -1,5 +1,5 @@
 //
-//  ModifySceneViewController.m
+//  ModifyPieceViewController.m
 //  Storied
 //
 //  Created by Devang Mundhra on 3/17/12.
@@ -27,7 +27,7 @@
 @property (weak, nonatomic) IBOutlet UINavigationBar *navigationBar;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
-@property (weak, nonatomic) IBOutlet UIButton *addLocationButton;
+@property (weak, nonatomic) IBOutlet LocationPickerButton *addLocationButton;
 @property (weak, nonatomic) IBOutlet UIButton *addPhotoButton;
 
 @property (strong, nonatomic) NSString *localImageURL;
@@ -41,20 +41,36 @@
 
 @implementation ModifyPieceViewController
 
-#define MEM_WARNING_USER_DEFAULTS_TEXT_FIELD @"ModifySceneViewControllerText"
+#define MEM_WARNING_USER_DEFAULTS_TEXT_FIELD @"ModifyPieceViewControllerText"
 
 @synthesize pieceTextView = _pieceTextView;
 @synthesize navigationBar = _navigationBar;
 @synthesize cancelButton = _cancelButton;
 @synthesize doneButton = _doneButton;
-@synthesize piece = _scene;
-@synthesize delegate = _delegate;
+@synthesize piece = _piece;
+//@synthesize delegate = _delegate;
 @synthesize editMode = _editMode;
 @synthesize imageChanged = _imageChanged;
 @synthesize localImageURL = _localImageURL;
 @synthesize locationManager = _locationManager;
 @synthesize pieceCaptionView, addLocationButton, addPhotoButton;
 @synthesize backupPiece_ = _backupPiece_;
+
+- (id) initWithPiece:(Piece *)piece
+{
+    if (self = [super initWithNibName:@"ModifyPieceViewController" bundle:nil]) {
+        self.piece = piece;
+        if (self.piece.remoteStatus == RemoteObjectStatusLocal) {
+            self.editMode = ModifyPieceViewControllerEditModeAddPiece;
+        } else {
+            self.editMode = ModifyPieceViewControllerEditModeEditPiece;
+            self.backupPiece_ = [NSEntityDescription insertNewObjectForEntityForName:[[piece entity] name] inManagedObjectContext:[piece managedObjectContext]];
+            [self.backupPiece_ cloneFrom:piece];
+        }
+    }
+    
+    return self;
+}
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -67,19 +83,13 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
-    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && self.piece.story.isLocationEnabled) {
-        self.locationManager = [[BNLocationManager alloc] init];
-        self.locationManager.delegate = self;
-        [self.locationManager beginUpdatingLocation];
-    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && self.piece.story.isLocationEnabled) {
-        [self.locationManager stopUpdatingLocation:self.addLocationButton.titleLabel.text];
+    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && [self.piece.story.isLocationEnabled boolValue]) {
+        [self.locationManager stopUpdatingLocation:self.piece.geocodedLocation];
     }
 }
 
@@ -88,17 +98,23 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    self.pieceCaptionView.delegate = self;
+    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && [self.piece.story.isLocationEnabled boolValue]) {
+        self.locationManager = [[BNLocationManager alloc] init];
+        self.locationManager.delegate = self;
+        [self.locationManager beginUpdatingLocation];
+    } else {
+        [self.addLocationButton setEnabled:NO];
+    }
     
     if (self.piece.geocodedLocation && ![self.piece.geocodedLocation isEqual:[NSNull null]]) {
-        self.addLocationButton.titleLabel.text = self.piece.geocodedLocation;
+        [self.addLocationButton locationPickerLocationEnabled:YES];
+        [self.addLocationButton setLocationPickerTitle:self.piece.geocodedLocation];
     }
     
-    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
-    {
-        self.navigationBar.topItem.title = @"Add Scene";
-    }
-    else if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
+    self.pieceCaptionView.delegate = self;
+    self.addLocationButton.delegate = self;
+    
+    if (self.editMode == ModifyPieceViewControllerEditModeEditPiece)
     {
         self.localImageURL = self.piece.imageURL;
         if (self.piece.imageURL && [self.piece.imageURL rangeOfString:@"asset"].location == NSNotFound) {
@@ -120,14 +136,16 @@
             [self.addPhotoButton.imageView  setImageWithURL:nil];
         }
         self.pieceTextView.text = self.piece.longText;
-        self.navigationBar.topItem.title = @"Edit";
+        self.navigationBar.topItem.title = @"Edit Piece";
+    } else {
+        self.navigationBar.topItem.title = @"Add Piece";
     }
-    
+
     // if there is a saved mem object due to a memory warning, get that field
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *previousSceneText = [defaults objectForKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
-    if (previousSceneText) {
-        self.pieceTextView.text = previousSceneText;
+    NSString *previousPieceText = [defaults objectForKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
+    if (previousPieceText) {
+        self.pieceTextView.text = previousPieceText;
     }
     [defaults removeObjectForKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
     
@@ -168,12 +186,38 @@
 
 #pragma mark target actions from navigation bar
 
-- (IBAction)cancel:(UIBarButtonItem *)sender 
+- (void)deleteBackupPiece
 {
-    [self.delegate modifyPieceViewControllerDidCancel:self];
+    if (self.backupPiece_) {
+        NSManagedObjectContext *moc = self.backupPiece_.managedObjectContext;
+        [moc deleteObject:self.backupPiece_];
+        NSError *error;
+        [moc save:&error];
+        self.backupPiece_ = nil;
+    }
 }
 
-// Done modifying scene. Now save all the changes.
+- (void)restoreBackupPiece:(BOOL)upload {
+    if (self.backupPiece_) {
+        [self.piece cloneFrom:self.backupPiece_];
+    }
+}
+
+- (IBAction)cancel:(UIBarButtonItem *)sender
+{
+    if (self.editMode == ModifyPieceViewControllerEditModeEditPiece) {
+        [self restoreBackupPiece:NO];
+    }
+    
+	//remove the original post in case of local draft unsaved
+	if(self.editMode == ModifyPieceViewControllerEditModeAddPiece)
+		[self.piece.managedObjectContext deleteObject:self.piece];
+    
+	self.piece = nil; // Just in case
+    [self dismissEditView];
+}
+
+// Done modifying piece. Now save all the changes.
 - (IBAction)done:(UIBarButtonItem *)sender 
 {
     self.piece.longText = self.pieceTextView.text;
@@ -194,9 +238,8 @@
         }
         
         [Piece createNewPiece:self.piece afterPiece:nil];
-        NSLog(@"New scene %@ saved", self.piece);
-        [self.delegate modifyPieceViewController:self didFinishAddingPiece:self.piece];
-        [TestFlight passCheckpoint:@"New scene created successfully"];
+        NSLog(@"New piece %@ saved", self.piece);
+        [TestFlight passCheckpoint:@"New piece created successfully"];
     }
     else if (self.editMode == ModifyPieceViewControllerEditModeEditPiece)
     {
@@ -204,22 +247,22 @@
         if (self.imageChanged) {
             self.piece.imageURL = self.localImageURL;
             self.piece.imageChanged = [NSNumber numberWithBool:YES];
-            //            self.scene.image = self.imageView.image;
+            //            self.piece.image = self.imageView.image;
         }
         [Piece editPiece:self.piece];
-        [self.delegate modifyPieceViewController:self didFinishEditingPiece:self.piece];
     }
     else {
         assert(false);
-        NSLog(@"ModifySceneViewController_No valid edit mode");
+        NSLog(@"ModifyPieceViewController_No valid edit mode");
     }
+    [self dismissEditView];
 }
 
-- (IBAction)deleteSceneAlert:(UIBarButtonItem *)sender
+- (IBAction)deletePieceAlert:(UIBarButtonItem *)sender
 {
     UIAlertView *alertView = nil;
-    alertView = [[UIAlertView alloc] initWithTitle:@"Delete Scene"
-                                           message:@"Do you want to delete this scene?"
+    alertView = [[UIAlertView alloc] initWithTitle:@"Delete Piece"
+                                           message:@"Do you want to delete this piece?"
                                           delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
     
     [alertView show];
@@ -227,10 +270,10 @@
 
 - (void)deletePiece:(UIBarButtonItem *)sender
 {
-    NSLog(@"ModifySceneViewController_Deleting scene");
+    NSLog(@"ModifyPieceViewController_Deleting piece");
     [Piece deletePiece:self.piece];
-    [self.delegate modifyPieceViewControllerDeletedPiece:self];
-    [TestFlight passCheckpoint:@"Scene deleted"];
+    [self dismissEditView];
+    [TestFlight passCheckpoint:@"Piece deleted"];
 }
 
 #define CAMERA @"Camera"
@@ -281,7 +324,7 @@
         [self shouldStartPhotoLibraryPickerController];
     }
     else {
-        NSLog(@"ModifySceneViewController_actionSheetclickedButtonAtIndex %@", [actionSheet buttonTitleAtIndex:buttonIndex]);
+        NSLog(@"ModifyPieceViewController_actionSheetclickedButtonAtIndex %@", [actionSheet buttonTitleAtIndex:buttonIndex]);
     }
 }
 
@@ -412,10 +455,27 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     [self.addPhotoButton.imageView  setImage:newImage];
 }
 
+# pragma mark LocationPickerButtonDelegate
+- (void)locationPickerButtonTapped:(LocationPickerButton *)sender
+{
+    [self.addLocationButton locationPickerLocationEnabled:YES];
+    [self.locationManager showLocationPickerTableViewController];
+}
+
+- (void)locationPickerButtonToggleLocationEnable:(LocationPickerButton *)sender
+{
+    [self.addLocationButton locationPickerLocationEnabled:[self.piece.story.isLocationEnabled boolValue]];
+    if (self.piece.story.isLocationEnabled) {
+        [self.locationManager beginUpdatingLocation];
+    } else {
+        [self.locationManager stopUpdatingLocation:@"Add Location"];
+    }
+}
+
 # pragma mark BNLocationManagerDelegate
 - (void) locationUpdated
 {
-    self.addLocationButton.titleLabel.text = self.locationManager.locationStatus;
+    [self.addLocationButton locationPickerLocationUpdatedWithLocation:self.locationManager.location];
 }
 
 # pragma mark - Keyboard notifications
@@ -477,7 +537,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 - (BOOL)textViewShouldEndEditing:(UITextView *)textView
 {
     if ([textView.text length] == 0) {
-        textView.text = @"Additional scene description...";
+        textView.text = @"Additional piece description...";
         textView.textColor = [UIColor lightGrayColor];
         textView.tag = 0;
     }
@@ -509,7 +569,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
             return NO;
     } else
     {
-        NSLog(@"ModifySceneViewController_checkForChanges_1");
+        NSLog(@"ModifyPieceViewController_checkForChanges_1");
         return NO;
     }
 }
@@ -523,6 +583,13 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
     self.doneButton.enabled = [self checkForChanges];
+}
+
+#pragma mark Methods to interface between views
+- (void) dismissEditView
+{
+    [self deleteBackupPiece];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma Memory Management

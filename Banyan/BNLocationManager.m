@@ -26,9 +26,9 @@ static CLLocationManager *_sharedLocationManager;
 @synthesize locationPickerViewController = _locationPickerViewController;
 @synthesize locationsNearThisLocation = _locationsNearThisLocation;
 
-- (void)setLocationStatus:(NSString *)locationStatus
+- (void)setLocation:(GooglePlacesObject *)location
 {
-    _locationStatus = locationStatus;
+    _location = location;
     // Also let the delegate know that we have a new string so that it can use it
     [self.delegate locationUpdated];
 }
@@ -37,7 +37,7 @@ static CLLocationManager *_sharedLocationManager;
 {
     _locationsNearThisLocation = locationsNearThisLocation;
     self.location = [locationsNearThisLocation objectAtIndex:0];
-    self.locationStatus = self.location.name;
+    self.locationStatus = [self.location getFormattedName];
 }
 
 - (LocationPickerTableViewController *)locationPickerViewController
@@ -55,7 +55,7 @@ static CLLocationManager *_sharedLocationManager;
     if (self) {
         _location = nil;
         _delegate = delegate;
-        _locationStatus = @"Finding location...";
+        _locationStatus = FINDING_LOCATION_STRING;
     }
     return self;
 }
@@ -153,6 +153,7 @@ static CLLocationManager *_sharedLocationManager;
 
 - (void) getNearbyLocations:(CLLocation *)location
 {
+    self.locationPickerViewController.currentLocation = self.bestEffortAtLocation;
     NSString *coords = [NSString stringWithFormat:@"%f,%f", location.coordinate.latitude, location.coordinate.longitude];
     NSString *types =[NSString stringWithFormat:@"%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@",
                       kBar,
@@ -195,7 +196,7 @@ static CLLocationManager *_sharedLocationManager;
                                                       GooglePlacesObject *object = [[GooglePlacesObject alloc] initWithJsonResultDict:[googlePlacesObjects objectAtIndex:x] andUserCoordinates:location.coordinate];
                                                       [googlePlacesObjects replaceObjectAtIndex:x withObject:object];
                                                   }
-                                                  
+                                                  [self.locationPickerViewController locationManagerDidFinishLoadingWithGooglePlacesObjects:googlePlacesObjects];
                                                   self.locationsNearThisLocation = [googlePlacesObjects copy];
                                               }
                                           } else {
@@ -266,10 +267,6 @@ static CLLocationManager *_sharedLocationManager;
 - (void) showLocationPickerTableViewController
 {
     [self beginUpdatingLocation];
-    self.locationPickerViewController.currentLocation = self.bestEffortAtLocation;
-    self.locationPickerViewController.locations = [self.locationsNearThisLocation mutableCopy];
-    self.locationPickerViewController.locationsFilterResults = self.locationPickerViewController.locations;
-    self.locationPickerViewController.delegate = self;
     if ([self.delegate isKindOfClass:[UIViewController class]]) {
         [[(UIViewController *)self.delegate navigationController] pushViewController:self.locationPickerViewController animated:YES];
     }
@@ -286,7 +283,7 @@ static CLLocationManager *_sharedLocationManager;
 - (void)locationPickerTableViewControllerPickedLocation:(GooglePlacesObject *)place
 {
     self.location = place;
-    self.locationStatus = self.location.name;
+    self.locationStatus = [self.location getFormattedName];
     [self stopUpdatingLocation:self.locationStatus];
     if ([self.delegate isKindOfClass:[UIViewController class]]) {
         [[(UIViewController *)self.delegate navigationController] popViewControllerAnimated:YES];

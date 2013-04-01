@@ -20,6 +20,11 @@
 @synthesize locations = _locations;
 @synthesize currentLocation = _currentLocation;
 
+- (void) setCurrentLocation:(CLLocation *)currentLocation
+{
+    _currentLocation = currentLocation;
+}
+
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];

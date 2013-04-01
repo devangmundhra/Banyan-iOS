@@ -153,7 +153,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self updateStoryAtIndex:indexPath];
     Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    [self addSceneToStory:story];
+    [self addPieceToStory:story];
 }
 
 #pragma mark Data Source Loading / Reloading Methods
@@ -279,36 +279,13 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self.navigationController pushViewController:storyReaderController animated:YES];
 }
 
--(void) addSceneToStory:(Story *)story
+-(void) addPieceToStory:(Story *)story
 {
-    Piece *piece = [NSEntityDescription insertNewObjectForEntityForName:kBNPieceClassKey
-                                                 inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
-    
-    Story *newStory = (Story *)[[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext objectWithID:story.objectID];
-    piece.story = newStory;
-    piece.remoteStatus = RemoteObjectStatusLocal;
+    Piece *piece = [Piece newPieceDraftForStory:story];
     ModifyPieceViewController *addSceneViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
-    addSceneViewController.delegate = self;
     [addSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
     [addSceneViewController setModalPresentationStyle:UIModalPresentationFullScreen];
     [self presentViewController:addSceneViewController animated:YES completion:nil];
-}
-
-
-#pragma mark ModifyPieceeViewControllerDelegate
-
-- (void) modifyPieceViewController:(ModifyPieceViewController *)controller
-              didFinishAddingPiece:(Piece *)scene
-{
-    NSLog(@"StoryListTableViewController_Adding scene");
-    [self dismissViewControllerAnimated:NO completion:^{
-//        [self hideVisibleBackView:YES];
-    }];
-}
-
-- (void) modifyPieceViewControllerDidCancel:(ModifyPieceViewController *)controller
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Swipeable controls

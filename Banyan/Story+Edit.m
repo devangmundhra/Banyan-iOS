@@ -16,7 +16,7 @@
 
 + (void) editStory:(Story *)story
 {
-    if (!story.initialized)
+    if (story.remoteStatus != RemoteObjectStatusSync)
         return;
     
      NSLog(@"Edit Story %@", story);
@@ -50,7 +50,7 @@
                        parameters:nil
                           success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                               NSLog(@"Update story successful %@", story);
-                              [story persistToDatabase];
+                              [story save];
                           }
                           failure:^(RKObjectRequestOperation *operation, NSError *error) {
                               NSLog(@"Error in create story");
@@ -107,7 +107,7 @@
     }
     
     // Persist the story
-    [story persistToDatabase];
+    [story save];
 }
 @end
 

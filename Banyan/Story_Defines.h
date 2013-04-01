@@ -43,7 +43,6 @@
 #define STORY_LIKED @"liked"
 #define STORY_VIEWED @"viewed"
 #define STORY_FAVOURITE @"favourite"
-#define STORY_IS_INITIALIZED @"storyInitialized"
 
 #define STORY_SCENES @"scenes"
 

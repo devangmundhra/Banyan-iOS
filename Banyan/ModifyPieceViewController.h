@@ -12,33 +12,34 @@
 #import "Story.h"
 #import "BNLocationManager.h"
 #import "ComposeTextViewController.h"
+#import "LocationPickerButton.h"
 
 @class  ModifyPieceViewController;
 
 typedef enum {ModifyPieceViewControllerEditModeAddPiece, ModifyPieceViewControllerEditModeEditPiece} ModifyPieceViewControllerEditMode;
 
-@protocol ModifyPieceViewControllerDelegate <NSObject>
-
-- (void) modifyPieceViewControllerDidCancel:(ModifyPieceViewController *)controller;
-
-@optional
-- (void) modifyPieceViewControllerDeletedPiece:(ModifyPieceViewController *)controller;
-
-- (void) modifyPieceViewController:(ModifyPieceViewController *)controller
-             didFinishEditingPiece:(Piece *)piece;
-
-- (void) modifyPieceViewController:(ModifyPieceViewController *)controller
-              didFinishAddingPiece:(Piece *)piece;
-
-- (void) modifyPieceViewControllerDeletedStory:(ModifyPieceViewController *)controller;
-
-@end
+//@protocol ModifyPieceViewControllerDelegate <NSObject>
+//
+//@optional
+//- (void) modifyPieceViewControllerDeletedPiece:(ModifyPieceViewController *)controller;
+//
+//- (void) modifyPieceViewController:(ModifyPieceViewController *)controller
+//             didFinishEditingPiece:(Piece *)piece;
+//
+//- (void) modifyPieceViewController:(ModifyPieceViewController *)controller
+//              didFinishAddingPiece:(Piece *)piece;
+//
+//- (void) modifyPieceViewControllerDeletedStory:(ModifyPieceViewController *)controller;
+//
+//@end
 
 @interface ModifyPieceViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, UINavigationControllerDelegate, UIAlertViewDelegate,
-    UIImagePickerControllerDelegate, UINavigationBarDelegate, UIActionSheetDelegate, BNLocationManagerDelegate>
+    UIImagePickerControllerDelegate, UINavigationBarDelegate, UIActionSheetDelegate, BNLocationManagerDelegate, LocationPickerButtonDelegate>
 
 @property (strong, nonatomic) Piece *piece;
 @property (nonatomic) ModifyPieceViewControllerEditMode editMode;
-@property (weak, nonatomic) id <ModifyPieceViewControllerDelegate> delegate;
+//@property (weak, nonatomic) id <ModifyPieceViewControllerDelegate> delegate;
+
+- (id) initWithPiece:(Piece *)piece;
 
 @end

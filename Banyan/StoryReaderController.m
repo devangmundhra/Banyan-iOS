@@ -10,6 +10,7 @@
 #import "Story+Stats.h"
 #import "Story+Permissions.h"
 #import "MBProgressHUD.h"
+#import "Piece+Create.h"
 
 @implementation StoryReaderController
 @synthesize pageViewController = _pageViewController;
@@ -40,6 +41,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.title = self.story.title;
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Settings"
+                                                                              style:UIBarButtonItemStyleBordered
+                                                                             target:self
+                                                                             action:@selector(settingsPopup:)];
     
     [Story viewedStory:self.story];
     
@@ -82,6 +89,53 @@
     // Release any retained subviews of the main view.
     self.pageViewController = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+//- (void)drawRect:(CGRect)rect {
+//    
+//    UIImage *myImage = [UIImage imageNamed:@"pumpkin.jpg"];
+//    
+//    CGRect imageRect = CGRectMake(10, 10, 300, 400);
+//    
+//    [myImage drawInRect:imageRect];    
+//}
+
+# pragma mark
+# pragma mark target actions
+- (void)settingsPopup:(UIBarButtonItem *)sender
+{
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                             delegate:self
+                                                    cancelButtonTitle:@"Cancel"
+                                               destructiveButtonTitle:nil
+                                                    otherButtonTitles:@"Add a piece", @"Share via Facebook", nil];
+    actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
+    [actionSheet showInView:self.view];
+}
+
+// Action sheet delegate method.
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    // the user clicked one of the OK/Cancel buttons
+    if (buttonIndex == actionSheet.cancelButtonIndex) {
+        // DO NOTHING ON CANCEL
+    }
+    else if (buttonIndex == actionSheet.destructiveButtonIndex) {
+        // delete story
+    }
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Add a piece"]) {
+        Piece *piece = [Piece newPieceDraftForStory:self.story];
+        ModifyPieceViewController *addSceneViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
+        //    addSceneViewController.delegate = self;
+        [addSceneViewController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
+        [self presentViewController:addSceneViewController animated:YES completion:nil];
+    }
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share via Facebook"]) {
+        // Share
+    }
+    else {
+        NSLog(@"StoryReaderController_actionSheetclickedButtonAtIndex %@", [actionSheet buttonTitleAtIndex:buttonIndex]);
+    }
 }
 
 # pragma mark - HUD when transitioning back

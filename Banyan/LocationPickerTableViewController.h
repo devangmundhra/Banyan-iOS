@@ -13,7 +13,7 @@
 
 - (void)locationPickerTableViewControllerDidCancel;
 - (void)locationPickerTableViewControllerPickedLocation:(GooglePlacesObject *)place;
--(void)getGoogleObjectsWithQuery:(NSString *)query
+- (void)getGoogleObjectsWithQuery:(NSString *)query
                   andCoordinates:(CLLocationCoordinate2D)coords;
 @end
 

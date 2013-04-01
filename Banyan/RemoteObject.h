@@ -27,5 +27,5 @@ typedef enum {
 
 // Revision management
 - (void)cloneFrom:(RemoteObject *)source;
-
+- (void)save;
 @end

@@ -13,6 +13,7 @@
 #import "SVSegmentedControl.h"
 #import "UIImage+Create.h"
 #import "Story+Create.h"
+#import "LocationPickerButton.h"
 
 @interface NewStoryViewController ()
 {
@@ -27,7 +28,7 @@
 @property (strong, nonatomic) IBOutlet SVSegmentedControl *viewerPrivacySegmentedControl;
 @property (weak, nonatomic) IBOutlet UIButton *inviteContributorsButton;
 @property (weak, nonatomic) IBOutlet UIButton *inviteViewersButton;
-@property (weak, nonatomic) IBOutlet UIButton *addLocationButton;
+@property (weak, nonatomic) IBOutlet LocationPickerButton *addLocationButton;
 @property (weak, nonatomic) IBOutlet UIButton *addPhotoButton;
 @property (weak, nonatomic) IBOutlet TITokenFieldView *tagsFieldView;
 
@@ -113,8 +114,15 @@ typedef enum {
     self.inviteContributorsButton.enabled = 1;
     
     self.storyTitleTextField.delegate = self;
-//    [self.storyTitleTextField becomeFirstResponder];
     self.storyTitleTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
+    
+    if (!self.locationManager) {
+        self.locationManager = [[BNLocationManager alloc] initWithDelegate:self];
+    }
+    self.isLocationEnabled = YES;
+    self.addLocationButton.delegate = self;
+    [self.addLocationButton locationPickerLocationEnabled:self.isLocationEnabled];
+    [self.locationManager beginUpdatingLocation];
     
     self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapAnywhere:)];
     self.invitedToContributeList = [NSMutableArray array];
@@ -158,9 +166,7 @@ typedef enum {
 	[self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldChangedEditing:) forControlEvents:UIControlEventEditingDidEnd];
     self.tagsFieldView.tokenField.returnKeyType = UIReturnKeyDone;
     [self.tagsFieldView.tokenField setPromptText:@"Add some tags..."];
-    if (!self.locationManager) {
-        self.locationManager = [[BNLocationManager alloc] initWithDelegate:self];
-    }
+
     [self.inviteViewersButton addTarget:self action:@selector(inviteViewers) forControlEvents:UIControlEventTouchUpInside];
     [self.inviteContributorsButton addTarget:self action:@selector(inviteContributors) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -342,27 +348,28 @@ typedef enum {
     return [NSDictionary dictionaryWithObject:self.invitedToViewList forKey:kBNStoryPrivacyInvitedFacebookFriends];
 }
 
-# pragma mark location settings
-- (IBAction)addLocationButtonPressed:(UIButton *)sender
+# pragma mark LocationPickerButtonDelegate
+- (void)locationPickerButtonTapped:(LocationPickerButton *)sender
 {
+    [self.addLocationButton locationPickerLocationEnabled:YES];
     [self.locationManager showLocationPickerTableViewController];
-    
-    return;
-    
-    self.isLocationEnabled = TRUE;
+}
+
+- (void)locationPickerButtonToggleLocationEnable:(LocationPickerButton *)sender
+{
+    self.isLocationEnabled = !self.isLocationEnabled;
+    [self.addLocationButton locationPickerLocationEnabled:self.isLocationEnabled];
     if (self.isLocationEnabled) {
         [self.locationManager beginUpdatingLocation];
-        [self.addLocationButton.titleLabel setHidden:NO];
     } else {
-        [self.locationManager stopUpdatingLocation:self.locationManager.locationStatus];
-        [self.addLocationButton.titleLabel setHidden:YES];
+        [self.locationManager stopUpdatingLocation:@"Add Location"];
     }
 }
 
 # pragma mark BNLocationManagerDelegate
 - (void) locationUpdated
-{   
-    self.addLocationButton.titleLabel.text = self.locationManager.locationStatus;
+{
+    [self.addLocationButton locationPickerLocationUpdatedWithLocation:self.locationManager.location];
 }
 
 # pragma mark - Keyboard notifications

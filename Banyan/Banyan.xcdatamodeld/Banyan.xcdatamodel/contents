@@ -6,7 +6,6 @@
         <attribute name="imageChanged" optional="YES" transient="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="imageName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="imageURL" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="initialized" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="liked" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="likers" optional="YES" attributeType="Transformable" syncable="YES"/>
@@ -37,7 +36,6 @@
         <attribute name="imageChanged" optional="YES" transient="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="imageName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="imageURL" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="initialized" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="isInvited" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="isLocationEnabled" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -74,9 +72,9 @@
         <relationship name="stories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Story" inverseName="author" inverseEntity="Story" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Piece" positionX="-306" positionY="-243" width="128" height="343"/>
+        <element name="Piece" positionX="-306" positionY="-243" width="128" height="330"/>
         <element name="RemoteObject" positionX="-729" positionY="0" width="128" height="105"/>
-        <element name="Story" positionX="-72" positionY="-454" width="128" height="463"/>
+        <element name="Story" positionX="-72" positionY="-454" width="128" height="450"/>
         <element name="User" positionX="-576" positionY="-207" width="128" height="238"/>
     </elements>
 </model>
