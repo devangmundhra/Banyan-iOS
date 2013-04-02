@@ -49,7 +49,7 @@
     self.pageControl.numberOfPages = 0;
     self.pageControl.currentPage = 0;
     self.pageControl.hidesForSinglePage = YES;
-    [self.scrollView setBackgroundColor:BANYAN_GREEN_COLOR];
+    [self.scrollView setBackgroundColor:[UIColor clearColor]];
 }
 
 - (void)setStory:(Story *)story

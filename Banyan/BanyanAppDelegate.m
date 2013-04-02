@@ -117,7 +117,7 @@ void uncaughtExceptionHandler(NSException *exception)
 #pragma mark customize appearnaces
 - (void) appearances
 {
-    [[UINavigationBar appearance] setTintColor:BANYAN_BROWN_COLOR];
+    [[UINavigationBar appearance] setTintColor:BANYAN_GREEN_COLOR];
     
     [[UIToolbar appearance] setTintColor:BANYAN_BROWN_COLOR];
     
@@ -125,7 +125,7 @@ void uncaughtExceptionHandler(NSException *exception)
     
     [[UISwitch appearance] setOnTintColor:BANYAN_GREEN_COLOR];
     
-    [[UISegmentedControl appearance] setTintColor:BANYAN_BROWN_COLOR];
+    [[UISegmentedControl appearance] setTintColor:BANYAN_GREEN_COLOR];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent];
     
