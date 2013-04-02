@@ -20,7 +20,6 @@
 		511E708B161A9756009AAD25 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708A161A9756009AAD25 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		511E708E161A977F009AAD25 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
 		5157CD031650902900C22CCE /* BanyanConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD021650902900C22CCE /* BanyanConnection.m */; };
-		5157CD251659E5A300C22CCE /* ComposeTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD241659E5A300C22CCE /* ComposeTextViewController.m */; };
 		5158AE2B16F56F7F0089193E /* BNTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5158AE2916F56F7E0089193E /* BNTabBarController.m */; };
 		5166957816F98ABB0014E65D /* UISwipeableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5166957716F98ABA0014E65D /* UISwipeableView.m */; };
 		5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B615E75B420072749C /* buttonFacebook.png */; };
@@ -33,6 +32,8 @@
 		517A01BA17095EDC00665F0F /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 517A01B917095EDC00665F0F /* CoreText.framework */; };
 		517A01BC17095F0E00665F0F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 517A01BB17095F0E00665F0F /* OpenGLES.framework */; };
 		517A01BF17095F2E00665F0F /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F22889161A9DF2006B3AA7 /* StoreKit.framework */; };
+		517A01D4170983B400665F0F /* MediaPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 517A01D3170983B400665F0F /* MediaPickerViewController.m */; };
+		517A01D7170A7A9E00665F0F /* MediaPickerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 517A01D6170A7A9E00665F0F /* MediaPickerButton.m */; };
 		5189B2B815B387E200562DD0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2B715B387E200562DD0 /* UIKit.framework */; };
 		5189B2BA15B387E200562DD0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2B915B387E200562DD0 /* Foundation.framework */; };
 		5189B2BC15B387E200562DD0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2BB15B387E200562DD0 /* CoreGraphics.framework */; };
@@ -139,8 +140,6 @@
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		5157CD011650902900C22CCE /* BanyanConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BanyanConnection.h; path = Banyan/BanyanConnection.h; sourceTree = "<group>"; };
 		5157CD021650902900C22CCE /* BanyanConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BanyanConnection.m; path = Banyan/BanyanConnection.m; sourceTree = "<group>"; };
-		5157CD231659E5A300C22CCE /* ComposeTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ComposeTextViewController.h; path = Banyan/ComposeTextViewController.h; sourceTree = "<group>"; };
-		5157CD241659E5A300C22CCE /* ComposeTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ComposeTextViewController.m; path = Banyan/ComposeTextViewController.m; sourceTree = "<group>"; };
 		5158AE2816F56F7E0089193E /* BNTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNTabBarController.h; sourceTree = "<group>"; };
 		5158AE2916F56F7E0089193E /* BNTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNTabBarController.m; sourceTree = "<group>"; };
 		5166957616F98AB90014E65D /* UISwipeableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UISwipeableView.h; sourceTree = "<group>"; };
@@ -162,6 +161,10 @@
 		517A01B917095EDC00665F0F /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		517A01BB17095F0E00665F0F /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		517A01BD17095F2100665F0F /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		517A01D2170983B400665F0F /* MediaPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaPickerViewController.h; sourceTree = "<group>"; };
+		517A01D3170983B400665F0F /* MediaPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaPickerViewController.m; sourceTree = "<group>"; };
+		517A01D5170A7A9E00665F0F /* MediaPickerButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaPickerButton.h; sourceTree = "<group>"; };
+		517A01D6170A7A9E00665F0F /* MediaPickerButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaPickerButton.m; sourceTree = "<group>"; };
 		5189B2B315B387E200562DD0 /* Banyan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Banyan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5189B2B715B387E200562DD0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		5189B2B915B387E200562DD0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -412,6 +415,17 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		517A01C417097A2C00665F0F /* Media Picker */ = {
+			isa = PBXGroup;
+			children = (
+				517A01D2170983B400665F0F /* MediaPickerViewController.h */,
+				517A01D3170983B400665F0F /* MediaPickerViewController.m */,
+				517A01D5170A7A9E00665F0F /* MediaPickerButton.h */,
+				517A01D6170A7A9E00665F0F /* MediaPickerButton.m */,
+			);
+			name = "Media Picker";
+			sourceTree = "<group>";
+		};
 		5189B2A815B387E100562DD0 = {
 			isa = PBXGroup;
 			children = (
@@ -466,6 +480,7 @@
 			children = (
 				51A8DC9316928AE00017E86F /* Banyan.xcdatamodeld */,
 				5189B35415B3968600562DD0 /* Account Management */,
+				517A01C417097A2C00665F0F /* Media Picker */,
 				5189B35315B3967A00562DD0 /* New Story */,
 				5189B35915B3971400562DD0 /* Read and Edit Pieces */,
 				5189B35215B3965A00562DD0 /* Model */,
@@ -567,8 +582,6 @@
 				5189B2E315B395F300562DD0 /* ModifyPieceViewController.h */,
 				5189B2E415B395F300562DD0 /* ModifyPieceViewController.m */,
 				5189B2E515B395F300562DD0 /* ModifyPieceViewController.xib */,
-				5157CD231659E5A300C22CCE /* ComposeTextViewController.h */,
-				5157CD241659E5A300C22CCE /* ComposeTextViewController.m */,
 			);
 			name = "Add or Edit Piece";
 			sourceTree = "<group>";
@@ -903,7 +916,6 @@
 				510787DA163A37250042B436 /* File.m in Sources */,
 				510787DE163A37340042B436 /* User+Edit.m in Sources */,
 				5157CD031650902900C22CCE /* BanyanConnection.m in Sources */,
-				5157CD251659E5A300C22CCE /* ComposeTextViewController.m in Sources */,
 				5103FB9F166898960095B11F /* UIImage+Create.m in Sources */,
 				519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */,
 				5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */,
@@ -923,6 +935,8 @@
 				51F095741702A6FB009D5A28 /* StoryListCellMiddleViewController.m in Sources */,
 				51F095761702A6FB009D5A28 /* StoryListCellReadSceneViewController.m in Sources */,
 				517A018C1706D92E00665F0F /* LocationPickerButton.m in Sources */,
+				517A01D4170983B400665F0F /* MediaPickerViewController.m in Sources */,
+				517A01D7170A7A9E00665F0F /* MediaPickerButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

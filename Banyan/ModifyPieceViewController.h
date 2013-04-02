@@ -11,8 +11,9 @@
 #import "Piece.h"
 #import "Story.h"
 #import "BNLocationManager.h"
-#import "ComposeTextViewController.h"
 #import "LocationPickerButton.h"
+#import "MediaPickerViewController.h"
+#import "MediaPickerButton.h"
 
 @class  ModifyPieceViewController;
 
@@ -33,11 +34,9 @@ typedef enum {ModifyPieceViewControllerEditModeAddPiece, ModifyPieceViewControll
 //
 //@end
 
-@interface ModifyPieceViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, UINavigationControllerDelegate, UIAlertViewDelegate,
-    UIImagePickerControllerDelegate, UINavigationBarDelegate, UIActionSheetDelegate, BNLocationManagerDelegate, LocationPickerButtonDelegate>
+@interface ModifyPieceViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, UINavigationControllerDelegate, UIAlertViewDelegate, UINavigationBarDelegate, UIActionSheetDelegate, BNLocationManagerDelegate, LocationPickerButtonDelegate, MediaPickerViewControllerDelegate, MediaPickerButtonDelegate>
 
 @property (strong, nonatomic) Piece *piece;
-@property (nonatomic) ModifyPieceViewControllerEditMode editMode;
 //@property (weak, nonatomic) id <ModifyPieceViewControllerDelegate> delegate;
 
 - (id) initWithPiece:(Piece *)piece;

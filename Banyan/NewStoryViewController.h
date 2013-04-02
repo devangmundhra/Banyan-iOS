@@ -12,8 +12,11 @@
 #import "TITokenField.h"
 #import "Story.h"
 #import "LocationPickerButton.h"
+#import "MediaPickerViewController.h"
+#import "MediaPickerButton.h"
 
 @class NewStoryViewController;
+typedef enum {NewStoryViewControllerEditModeAdd, NewStoryViewControllerEditModeEdit} NewStoryViewControllerEditMode;
 
 @protocol NewStoryViewControllerDelegate <NSObject>
 
@@ -22,7 +25,7 @@
 
 @end
 
-@interface NewStoryViewController : UIViewController <UITextFieldDelegate, InvitedTableViewControllerDelegate, UIScrollViewDelegate, BNLocationManagerDelegate, TITokenFieldDelegate, LocationPickerButtonDelegate>
+@interface NewStoryViewController : UIViewController <UITextFieldDelegate, InvitedTableViewControllerDelegate, UIScrollViewDelegate, BNLocationManagerDelegate, TITokenFieldDelegate, LocationPickerButtonDelegate, MediaPickerButtonDelegate, MediaPickerViewControllerDelegate, UIActionSheetDelegate>
 
 // Delegate to save the story and close the window on done and edit
 @property (weak, nonatomic) IBOutlet id <NewStoryViewControllerDelegate> delegate;

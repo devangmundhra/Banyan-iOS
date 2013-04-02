@@ -29,7 +29,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *inviteContributorsButton;
 @property (weak, nonatomic) IBOutlet UIButton *inviteViewersButton;
 @property (weak, nonatomic) IBOutlet LocationPickerButton *addLocationButton;
-@property (weak, nonatomic) IBOutlet UIButton *addPhotoButton;
+@property (weak, nonatomic) IBOutlet MediaPickerButton *addPhotoButton;
 @property (weak, nonatomic) IBOutlet TITokenFieldView *tagsFieldView;
 
 @property (weak, nonatomic) UITextField *activeField;
@@ -43,6 +43,10 @@
 
 @property (nonatomic) BOOL isLocationEnabled;
 @property (strong, nonatomic) BNLocationManager *locationManager;
+
+@property (strong, nonatomic) NSString *localImageURL;
+@property (nonatomic) BOOL imageChanged;
+
 @end
 
 @implementation NewStoryViewController
@@ -78,6 +82,7 @@ typedef enum {
 @synthesize viewerPrivacySegmentedControl = _viewerPrivacySegmentedControl;
 @synthesize addLocationButton = _addLocationButton;
 @synthesize addPhotoButton = _addPhotoButton;
+@synthesize localImageURL = _localImageURL;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -123,6 +128,8 @@ typedef enum {
     self.addLocationButton.delegate = self;
     [self.addLocationButton locationPickerLocationEnabled:self.isLocationEnabled];
     [self.locationManager beginUpdatingLocation];
+    
+    self.addPhotoButton.delegate = self;
     
     self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapAnywhere:)];
     self.invitedToContributeList = [NSMutableArray array];
@@ -187,6 +194,7 @@ typedef enum {
     [self setScrollView:nil];
     [self setContributorPrivacySegmentedControl:nil];
     [self setViewerPrivacySegmentedControl:nil];
+    [self setLocalImageURL:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -346,6 +354,83 @@ typedef enum {
         return nil;
     }
     return [NSDictionary dictionaryWithObject:self.invitedToViewList forKey:kBNStoryPrivacyInvitedFacebookFriends];
+}
+
+#pragma mark MediaPickerButtonDelegate methods
+- (void) mediaPickerButtonTapped:(MediaPickerButton *)sender
+{
+    [self dismissKeyboard:sender];
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Modify Photo"
+                                                             delegate:self
+                                                    cancelButtonTitle:@"Cancel"
+                                               destructiveButtonTitle:self.localImageURL ? @"Delete Photo" : nil
+                                                    otherButtonTitles:nil];
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
+        [actionSheet addButtonWithTitle:MediaPickerControllerSourceTypeCamera];
+    [actionSheet addButtonWithTitle:MediaPickerControllerSourceTypePhotoLib];
+    actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
+    [actionSheet showFromTabBar:self.tabBarController.tabBar];
+}
+
+#pragma mark UIActionSheetDelegate
+// Action sheet delegate method.
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    // the user clicked one of the OK/Cancel buttons
+    if (buttonIndex == actionSheet.cancelButtonIndex) {
+        // DO NOTHING ON CANCEL
+    }
+    else if (buttonIndex == actionSheet.destructiveButtonIndex) {
+        // MAYBE EXPLICITLY DELETE IMAGE IN FUTURE
+        [self.addPhotoButton.imageView cancelImageRequestOperation];
+        [self.addPhotoButton.imageView setImageWithURL:nil];
+        self.localImageURL = nil;
+        self.imageChanged = YES;
+    }
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:MediaPickerControllerSourceTypeCamera]) {
+        MediaPickerViewController *mediaPicker = [[MediaPickerViewController alloc] init];
+        mediaPicker.delegate = self;
+        [self addChildViewController:mediaPicker];
+        [mediaPicker shouldStartCameraController];
+    }
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:MediaPickerControllerSourceTypePhotoLib]) {
+        MediaPickerViewController *mediaPicker = [[MediaPickerViewController alloc] init];
+        mediaPicker.delegate = self;
+        [self addChildViewController:mediaPicker];
+        [mediaPicker shouldStartPhotoLibraryPickerController];
+    }
+    else {
+        NSLog(@"ModifyPieceViewController_actionSheetclickedButtonAtIndex %@", [actionSheet buttonTitleAtIndex:buttonIndex]);
+    }
+}
+
+#pragma mark MediaPickerViewControllerDelegate methods
+- (void) mediaPicker:(MediaPickerViewController *)mediaPicker finishedPickingMediaWithInfo:(NSDictionary *)info
+{
+    UIImage *image = [info objectForKey:MediaPickerViewControllerInfoImage];
+    self.localImageURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
+    
+    [self.addPhotoButton.imageView  cancelImageRequestOperation];
+    self.imageChanged = YES;
+    [NSThread detachNewThreadSelector:@selector(useImage:) toTarget:self withObject:image];
+    [mediaPicker removeFromParentViewController];
+}
+
+- (void)mediaPickerDidCancel:(MediaPickerViewController *)mediaPicker
+{
+    self.localImageURL = nil;
+    self.imageChanged = NO;
+    [mediaPicker removeFromParentViewController];
+}
+
+- (void)useImage:(UIImage *)image {
+    // Create a graphics image context
+    UIImage* newImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill
+                                                    bounds:self.addPhotoButton.frame.size
+                                      interpolationQuality:kCGInterpolationHigh];
+    
+    [self.addPhotoButton.imageView setImage:newImage];
 }
 
 # pragma mark LocationPickerButtonDelegate

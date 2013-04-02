@@ -14,10 +14,6 @@
 #import "Story+Edit.h"
 #import "Piece_Defines.h"
 #import "Story_Defines.h"
-#import "UIImageView+AFNetworking.h"
-#import <AssetsLibrary/AssetsLibrary.h>
-#import "MBProgressHUD.h"
-#import "UIImage+ResizeAdditions.h"
 
 @interface ModifyPieceViewController ()
 
@@ -28,20 +24,19 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 @property (weak, nonatomic) IBOutlet LocationPickerButton *addLocationButton;
-@property (weak, nonatomic) IBOutlet UIButton *addPhotoButton;
+@property (weak, nonatomic) IBOutlet MediaPickerButton *addPhotoButton;
 
 @property (strong, nonatomic) NSString *localImageURL;
 @property (nonatomic) BOOL imageChanged;
 
 @property (strong, nonatomic) BNLocationManager *locationManager;
 
+@property (nonatomic) ModifyPieceViewControllerEditMode editMode;
 @property (strong, nonatomic) Piece *backupPiece_;
 
 @end
 
 @implementation ModifyPieceViewController
-
-#define MEM_WARNING_USER_DEFAULTS_TEXT_FIELD @"ModifyPieceViewControllerText"
 
 @synthesize pieceTextView = _pieceTextView;
 @synthesize navigationBar = _navigationBar;
@@ -113,6 +108,7 @@
     
     self.pieceCaptionView.delegate = self;
     self.addLocationButton.delegate = self;
+    self.addPhotoButton.delegate = self;
     
     if (self.editMode == ModifyPieceViewControllerEditModeEditPiece)
     {
@@ -135,20 +131,12 @@
             [self.addPhotoButton.imageView  cancelImageRequestOperation];
             [self.addPhotoButton.imageView  setImageWithURL:nil];
         }
+        self.pieceCaptionView.text = self.piece.shortText;
         self.pieceTextView.text = self.piece.longText;
         self.navigationBar.topItem.title = @"Edit Piece";
     } else {
         self.navigationBar.topItem.title = @"Add Piece";
     }
-
-    // if there is a saved mem object due to a memory warning, get that field
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *previousPieceText = [defaults objectForKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
-    if (previousPieceText) {
-        self.pieceTextView.text = previousPieceText;
-    }
-    [defaults removeObjectForKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
-    
     
     self.doneButton.enabled = NO;
     
@@ -276,9 +264,16 @@
     [TestFlight passCheckpoint:@"Piece deleted"];
 }
 
-#define CAMERA @"Camera"
-#define PHOTO_LIB @"Photo Library"
-- (IBAction)modifyImage:(id)sender
+#pragma mark UIAlertViewDelegate
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex==1) {
+        [self deletePiece:nil];
+    }
+}
+
+#pragma mark MediaPickerButtonDelegate methods
+- (void) mediaPickerButtonTapped:(MediaPickerButton *)sender
 {
     [self dismissKeyboard:sender];
     
@@ -288,19 +283,12 @@
                                                destructiveButtonTitle:self.localImageURL ? @"Delete Photo" : nil
                                                     otherButtonTitles:nil];
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
-        [actionSheet addButtonWithTitle:CAMERA];
-    [actionSheet addButtonWithTitle:PHOTO_LIB];
+        [actionSheet addButtonWithTitle:MediaPickerControllerSourceTypeCamera];
+    [actionSheet addButtonWithTitle:MediaPickerControllerSourceTypePhotoLib];
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
     [actionSheet showInView:self.view];
 }
 
-#pragma mark UIAlertViewDelegate
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex==1) {
-        [self deletePiece:nil];
-    }
-}
 #pragma mark UIActionSheetDelegate
 // Action sheet delegate method.
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -317,142 +305,50 @@
         self.imageChanged = YES;
         self.doneButton.enabled = [self checkForChanges];
     }
-    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:CAMERA]) {
-        [self shouldStartCameraController];
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:MediaPickerControllerSourceTypeCamera]) {
+        MediaPickerViewController *mediaPicker = [[MediaPickerViewController alloc] init];
+        mediaPicker.delegate = self;
+        [self addChildViewController:mediaPicker];
+        [mediaPicker shouldStartCameraController];
     }
-    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:PHOTO_LIB]) {
-        [self shouldStartPhotoLibraryPickerController];
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:MediaPickerControllerSourceTypePhotoLib]) {
+        MediaPickerViewController *mediaPicker = [[MediaPickerViewController alloc] init];
+        mediaPicker.delegate = self;
+        [self addChildViewController:mediaPicker];
+        [mediaPicker shouldStartPhotoLibraryPickerController];
     }
     else {
         NSLog(@"ModifyPieceViewController_actionSheetclickedButtonAtIndex %@", [actionSheet buttonTitleAtIndex:buttonIndex]);
     }
 }
 
-- (BOOL)shouldStartCameraController {
-    
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera] == NO) {
-        return NO;
-    }
-    
-    UIImagePickerController *cameraUI = [[UIImagePickerController alloc] init];
-    
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]
-        && [[UIImagePickerController availableMediaTypesForSourceType:
-             UIImagePickerControllerSourceTypeCamera] containsObject:(NSString *)kUTTypeImage]) {
-        
-        cameraUI.mediaTypes = [NSArray arrayWithObject:(NSString *) kUTTypeImage];
-        cameraUI.sourceType = UIImagePickerControllerSourceTypeCamera;
-        
-        if ([UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear]) {
-            cameraUI.cameraDevice = UIImagePickerControllerCameraDeviceRear;
-        } else if ([UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceFront]) {
-            cameraUI.cameraDevice = UIImagePickerControllerCameraDeviceFront;
-        }
-        
-    } else {
-        return NO;
-    }
-    
-//    cameraUI.allowsEditing = YES;
-    cameraUI.showsCameraControls = YES;
-    cameraUI.delegate = self;
-
-    [self presentViewController:cameraUI animated:YES completion:nil];
-    
-    return YES;
-}
-
-- (BOOL)shouldStartPhotoLibraryPickerController {
-    if (([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary] == NO
-         && [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum] == NO)) {
-        return NO;
-    }
-    
-    UIImagePickerController *cameraUI = [[UIImagePickerController alloc] init];
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]
-        && [[UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypePhotoLibrary] containsObject:(NSString *)kUTTypeImage]) {
-        
-        cameraUI.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        cameraUI.mediaTypes = [NSArray arrayWithObject:(NSString *) kUTTypeImage];
-        
-    } else if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum]
-               && [[UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeSavedPhotosAlbum] containsObject:(NSString *)kUTTypeImage]) {
-        
-        cameraUI.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
-        cameraUI.mediaTypes = [NSArray arrayWithObject:(NSString *) kUTTypeImage];
-        
-    } else {
-        return NO;
-    }
-    
-//    cameraUI.allowsEditing = YES;
-    cameraUI.delegate = self;
-    
-    [self presentViewController:cameraUI animated:YES completion:nil];
-    
-    return YES;
-}
-
-# pragma mark - Image Picker
-- (void)imagePickerController:(UIImagePickerController *)picker 
-didFinishPickingMediaWithInfo:(NSDictionary *)info
+#pragma mark MediaPickerViewControllerDelegate methods
+- (void) mediaPicker:(MediaPickerViewController *)mediaPicker finishedPickingMediaWithInfo:(NSDictionary *)info
 {
-    [self dismissViewControllerAnimated:YES completion:^{
-        // If the image view controller is completed successfully, we don't really need to keep this saved
-        // as a presented screen will not be affected by mem warning.
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
-    }];
+    UIImage *image = [info objectForKey:MediaPickerViewControllerInfoImage];
+    self.localImageURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
     
-    UIImage *image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
-    self.localImageURL = [(NSURL *)[info objectForKey:@"UIImagePickerControllerReferenceURL"] absoluteString];
-    
-    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-    if( [picker sourceType] == UIImagePickerControllerSourceTypeCamera )
-    {
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        hud.labelText = @"Saving Picture";
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
-        
-        UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
-        [library writeImageToSavedPhotosAlbum:image.CGImage orientation:(ALAssetOrientation)image.imageOrientation completionBlock:^(NSURL *assetURL, NSError *error )
-         {
-             if (assetURL) {
-                 NSLog(@"%s Image saved to photo albums %@", __PRETTY_FUNCTION__, assetURL);
-                 self.localImageURL = [assetURL absoluteString];
-             } else {
-                 NSLog(@"%s Error saving image: %@",error);
-             }
-             [MBProgressHUD hideHUDForView:self.view animated:YES];
-         }];
-    }
-
     [self.addPhotoButton.imageView  cancelImageRequestOperation];
-    self.pieceTextView.textColor = [UIColor whiteColor];
     self.imageChanged = YES;
     [NSThread detachNewThreadSelector:@selector(useImage:) toTarget:self withObject:image];
     self.doneButton.enabled = [self checkForChanges];
+    [mediaPicker removeFromParentViewController];
 }
 
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker 
+- (void)mediaPickerDidCancel:(MediaPickerViewController *)mediaPicker
 {
     self.localImageURL = nil;
     self.imageChanged = NO;
-    [self dismissViewControllerAnimated:YES completion:^{
-        // If the image view controller is completed successfully, we don't really need to keep this saved
-        // as a presented screen will not be affected by mem warning.
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
-    }];
+    [mediaPicker removeFromParentViewController];
 }
 
-- (void)useImage:(UIImage *)image {    
-    // Create a graphics image context
-    CGRect screenSize = [[UIScreen mainScreen] bounds];
-
+- (void)useImage:(UIImage *)image {
+    // Create a graphics image context    
     UIImage* newImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill
-                                                    bounds:screenSize.size
+                                                    bounds:self.addPhotoButton.frame.size
                                       interpolationQuality:kCGInterpolationHigh];
     
-    [self.addPhotoButton.imageView  setImage:newImage];
+    [self.addPhotoButton.imageView setImage:newImage];
 }
 
 # pragma mark LocationPickerButtonDelegate
@@ -595,10 +491,6 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 #pragma Memory Management
 - (void)didReceiveMemoryWarning
 {
-    // This usually happens when taking a picture from the camera
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:REPLACE_NIL_WITH_EMPTY_STRING(self.pieceTextView.text) forKey:MEM_WARNING_USER_DEFAULTS_TEXT_FIELD];
-    
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     // Release any cached data, images, etc that aren't in use.

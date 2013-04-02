@@ -12,15 +12,22 @@
 #import "MBProgressHUD.h"
 #import "Piece+Create.h"
 
+@interface StoryReaderController ()
+@property (strong, nonatomic) Piece *currentPiece;
+@end
+
 @implementation StoryReaderController
 @synthesize pageViewController = _pageViewController;
 @synthesize story = _story;
 @synthesize delegate = _delegate;
+@synthesize currentPiece;
 
 // First page of the view controller
 - (UIViewController *)startStoryTelling
 {
-    return [self viewControllerAtIndex:0];
+    ReadPieceViewController *startVC = [self viewControllerAtIndex:0];
+    currentPiece = startVC.piece;
+    return startVC;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -108,7 +115,7 @@
                                                              delegate:self
                                                     cancelButtonTitle:@"Cancel"
                                                destructiveButtonTitle:nil
-                                                    otherButtonTitles:@"Add a piece", @"Share via Facebook", nil];
+                                                    otherButtonTitles:@"Add a piece", @"Edit piece", @"Share via Facebook", nil];
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
     [actionSheet showInView:self.view];
 }
@@ -126,6 +133,12 @@
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Add a piece"]) {
         Piece *piece = [Piece newPieceDraftForStory:self.story];
         ModifyPieceViewController *addSceneViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
+        //    addSceneViewController.delegate = self;
+        [addSceneViewController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
+        [self presentViewController:addSceneViewController animated:YES completion:nil];
+    }
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Edit piece"]) {
+        ModifyPieceViewController *addSceneViewController = [[ModifyPieceViewController alloc] initWithPiece:currentPiece];
         //    addSceneViewController.delegate = self;
         [addSceneViewController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
         [self presentViewController:addSceneViewController animated:YES completion:nil];
@@ -167,10 +180,14 @@
         hud.labelText = @"End of story";
         hud.detailsLabelText = self.story.title;
         [self prepareToGoToStoryList];
+        currentPiece = nil;
         return nil;
     }
-    else
-        return [self viewControllerAtIndex:index];
+    else {
+        ReadPieceViewController *nextVC = [self viewControllerAtIndex:index];
+        currentPiece = nextVC.piece;
+        return nextVC;
+    }
 }
 
 // View controller to display after the current view controller has been turned back
@@ -191,7 +208,9 @@
     }
     else {
         index--;
-        return [self viewControllerAtIndex:index];
+        ReadPieceViewController *previousVC = [self viewControllerAtIndex:index];
+        currentPiece = previousVC.piece;
+        return previousVC;
     }
 }
 
