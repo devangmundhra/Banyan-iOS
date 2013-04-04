@@ -17,15 +17,21 @@
 @property (strong, nonatomic) NSMutableArray *contactIndex;
 @property (strong, nonatomic) IBOutlet UISearchDisplayController *searchDisplayController;
 @property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
+
+@property (nonatomic) BOOL allViewers;
+@property (nonatomic, strong) NSMutableArray *selectedViewerContacts;
+
+@property (nonatomic) BOOL allContributors;
+@property (nonatomic, strong) NSMutableArray *selectedContributorContacts;
+
 @end
 
 @implementation InvitedTableViewController
 @synthesize listContacts = _listContacts;
 @synthesize filteredListContacts = _filteredListContacts;
-@synthesize objectContext = _objectContext;
-@synthesize selectedContacts = _selectedContacts;
+@synthesize selectedViewerContacts = _selectedViewerContacts;
+@synthesize selectedContributorContacts = _selectedContributorContacts;
 @synthesize delegate = _delegate;
-@synthesize invitationType = _invitationType;
 @synthesize contactIndex = _contactIndex;
 @synthesize searchDisplayController;
 @synthesize searchBar;
@@ -56,26 +62,46 @@
     return self;
 }
 
+- (id)initWithViewerPermissions:(NSDictionary *)viewerPermission contributorPermission:(NSDictionary *)contributorPermission
+{
+    self = [super initWithStyle:UITableViewStylePlain];
+    if (self) {
+        // Custom initialization
+        
+        searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+        searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
+        searchDisplayController.delegate = self;
+        searchDisplayController.searchResultsDataSource = self;
+        
+        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneInviting:)]];
+        [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
+        
+        if (![[viewerPermission objectForKey:kBNStoryPrivacyScope] isEqualToString:kBNStoryPrivacyScopeInvited]) {
+            self.allViewers = YES;
+            self.selectedViewerContacts = nil;
+        } else {
+            self.allViewers = NO;
+            self.selectedViewerContacts = [NSMutableArray arrayWithArray:[[viewerPermission objectForKey:kBNStoryPrivacyScopeInvited]
+                                                                          objectForKey:kBNStoryPrivacyInvitedFacebookFriends]];
+        }
+        if (![[contributorPermission objectForKey:kBNStoryPrivacyScope] isEqualToString:kBNStoryPrivacyScopeInvited]) {
+            self.allContributors = YES;
+            self.selectedContributorContacts = nil;
+        } else {
+            self.allContributors = NO;
+            self.selectedContributorContacts = [NSMutableArray arrayWithArray:[[contributorPermission objectForKey:kBNStoryPrivacyScopeInvited]
+                                                                          objectForKey:kBNStoryPrivacyInvitedFacebookFriends]];
+        }        
+    }
+    return self;
+}
+
 - (void)setListContacts:(NSArray *)listContacts
 {
     if (listContacts == _listContacts)
         return;
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
     _listContacts = [listContacts sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
-}
-
-- (void)setSelectedContacts:(NSMutableArray *)selectedContacts
-{
-    if (!_selectedContacts)
-        _selectedContacts = [NSMutableArray arrayWithArray:selectedContacts];
-}
-
-- (NSMutableArray *)selectedContacts
-{
-    if (!_selectedContacts)
-        _selectedContacts = [NSMutableArray array];
-    
-    return _selectedContacts;
 }
 
 - (void)setContactIndex 
@@ -99,17 +125,18 @@
 {
     [super viewDidLoad];
 
+    [self.tableView registerNib:[UINib nibWithNibName:@"InviteFriendCell" bundle:nil] forCellReuseIdentifier:@"InviteFriendCell"];
     [[self tableView] setTableHeaderView:searchBar];
     self.searchDisplayController.searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
     self.tableView.scrollEnabled = YES;
-    self.navigationItem.title = self.invitationType;
+    self.navigationItem.title = @"Invitations";
 
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSArray *array = [defaults objectForKey:BNUserDefaultsFacebookFriends];
     self.listContacts = array;
     [self setContactIndex];
     
-    [TestFlight passCheckpoint:[NSString stringWithFormat:@"Invitation view loaded for type %@", self.invitationType]];
+    [TestFlight passCheckpoint:@"Invitation view loaded"];
 }
 
 
@@ -117,12 +144,12 @@
 {
     self.listContacts = nil;
     self.filteredListContacts = nil;
-    self.selectedContacts = nil;
     self.delegate = nil;
-    self.invitationType = nil;
     self.contactIndex = nil;
     self.searchDisplayController = nil;
     self.searchBar = nil;
+    self.selectedContributorContacts = nil;
+    self.selectedViewerContacts = nil;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
@@ -185,70 +212,120 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"ContactCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil)
-    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    static NSString *CellIdentifier = @"InviteFriendCell";
+    InviteFriendCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        NSArray *nibs = [[NSBundle mainBundle] loadNibNamed:@"InviteFriendCell" owner:self options:nil];
+        cell = (InviteFriendCell *)[nibs objectAtIndex:0];
+    }
+
     // Configure the cell...
     NSDictionary *friend = nil;
     
-    if (tableView == self.searchDisplayController.searchResultsTableView)
-	{
+    if (tableView == self.searchDisplayController.searchResultsTableView) {
         friend = [self.filteredListContacts objectAtIndex:indexPath.row];
-        if ([self.selectedContacts containsObject:friend])
-            cell.accessoryType = UITableViewCellAccessoryCheckmark;
-        else
-            cell.accessoryType = UITableViewCellAccessoryNone;
     } else {
         NSArray *contacts = [self getContactsForSection:indexPath.section];
         friend = [contacts objectAtIndex:indexPath.row];
-        if ([self.selectedContacts containsObject:friend])
-            cell.accessoryType = UITableViewCellAccessoryCheckmark;
-        else
-            cell.accessoryType = UITableViewCellAccessoryNone;
     }
     
-    cell.textLabel.text = [friend objectForKey:@"name"];
+    cell.delegate = self;
+    
+    // Set the name
+    [cell setName:[friend objectForKey:@"name"]];
+
+    // Set/disable write button. If write is enabled, read is automatically enabled.
+    
+    // Set/disable read button
+    [cell disableReadButton:!self.allViewers];
+    [cell disableWriteButton:!self.allContributors];
+    
+    [cell canRead:[self hasReadPermission:friend]];
+    [cell canWrite:[self hasWritePermission:friend]];
 
     return cell;
 }
 
+- (BOOL) hasReadPermission:(NSDictionary *)friend
+{
+    if (self.allContributors || self.allViewers)
+        return TRUE;
+    
+    if (HAVE_ASSERTS)
+        assert(self.selectedViewerContacts);
+    
+    return [self.selectedViewerContacts containsObject:friend];
+}
+
+- (BOOL) hasWritePermission:(NSDictionary *)friend
+{
+    if (self.allContributors)
+        return TRUE;
+    
+    if (HAVE_ASSERTS)
+        assert(self.selectedContributorContacts);
+    
+    return [self.selectedContributorContacts containsObject:friend];
+}
+
+# pragma mark InviteFriendCellDelegate methods
+- (void)inviteFriendCellReadButtonTapped:(InviteFriendCell *)cell
+{
+    NSIndexPath * myIndexPath = [self.tableView indexPathForCell:cell];
+    NSDictionary *friend = nil;
+    
+    if (self.tableView == self.searchDisplayController.searchResultsTableView) {
+        friend = [self.filteredListContacts objectAtIndex:myIndexPath.row];
+    } else {
+        NSArray *contacts = [self getContactsForSection:myIndexPath.section];
+        friend = [contacts objectAtIndex:myIndexPath.row];
+    }
+    
+    // Toggle read permission
+    if ([self hasReadPermission:friend]) {
+        [self.selectedViewerContacts removeObject:friend];
+        [cell canRead:NO];
+    } else {
+        [self.selectedViewerContacts addObject:friend];
+        [cell canRead:YES];
+    }
+}
+
+- (void)inviteFriendCellWriteButtonTapped:(InviteFriendCell *)cell
+{
+    NSIndexPath * myIndexPath = [self.tableView indexPathForCell:cell];
+    NSDictionary *friend = nil;
+    
+    if (self.tableView == self.searchDisplayController.searchResultsTableView) {
+        friend = [self.filteredListContacts objectAtIndex:myIndexPath.row];
+    } else {
+        NSArray *contacts = [self getContactsForSection:myIndexPath.section];
+        friend = [contacts objectAtIndex:myIndexPath.row];
+    }
+    
+    // Toggle write permission
+    if ([self hasWritePermission:friend]) {
+        [self.selectedContributorContacts removeObject:friend];
+        [cell canWrite:NO];
+    } else {
+        [self.selectedContributorContacts addObject:friend];
+        [cell canWrite:YES];
+    }
+}
+
 #pragma mark - Table view delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    if (tableView == self.searchDisplayController.searchResultsTableView)
-	{
-        if (![self.selectedContacts containsObject:[self.filteredListContacts objectAtIndex:indexPath.row]])
-        {
-            [self.selectedContacts addObject:[self.filteredListContacts objectAtIndex:indexPath.row]];
-            cell.accessoryType = UITableViewCellAccessoryCheckmark;
-        }
-        else
-        {
-            [self.selectedContacts removeObject:[self.filteredListContacts objectAtIndex:indexPath.row]];
-            cell.accessoryType = UITableViewCellAccessoryNone;
-        }
-    } else {
-        if (![self.selectedContacts containsObject:[[self getContactsForSection:indexPath.section] objectAtIndex:indexPath.row]])
-        {
-            [self.selectedContacts addObject:[[self getContactsForSection:indexPath.section] objectAtIndex:indexPath.row]];
-            cell.accessoryType = UITableViewCellAccessoryCheckmark;
-        }
-        else
-        {
-            [self.selectedContacts removeObject:[[self getContactsForSection:indexPath.section] objectAtIndex:indexPath.row]];
-            cell.accessoryType = UITableViewCellAccessoryNone;
-        }
-    }
+    // Don't handle touch events here, let the tableviewcells take care of taps on read/write buttons
+    return nil;
 }
 
 - (IBAction)doneInviting:(UIBarButtonItem *)sender 
 {
-    [self.delegate invitedTableViewController:self 
-                             finishedInviting:self.invitationType
-                                 withContacts:[self.selectedContacts copy]];
+    [self.delegate invitedTableViewController:self
+                   finishedInvitingForViewers:self.selectedViewerContacts
+                                 contributors:self.selectedContributorContacts];
 }
 
 - (IBAction)cancel:(UIBarButtonItem *)sender

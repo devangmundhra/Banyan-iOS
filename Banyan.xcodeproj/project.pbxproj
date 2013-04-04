@@ -34,6 +34,8 @@
 		517A01BF17095F2E00665F0F /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F22889161A9DF2006B3AA7 /* StoreKit.framework */; };
 		517A01D4170983B400665F0F /* MediaPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 517A01D3170983B400665F0F /* MediaPickerViewController.m */; };
 		517A01D7170A7A9E00665F0F /* MediaPickerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 517A01D6170A7A9E00665F0F /* MediaPickerButton.m */; };
+		517A01DA170BFA3000665F0F /* InviteFriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 517A01D9170BFA2F00665F0F /* InviteFriendCell.m */; };
+		517A01DD170BFA5B00665F0F /* InviteFriendCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 517A01DC170BFA5A00665F0F /* InviteFriendCell.xib */; };
 		5189B2B815B387E200562DD0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2B715B387E200562DD0 /* UIKit.framework */; };
 		5189B2BA15B387E200562DD0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2B915B387E200562DD0 /* Foundation.framework */; };
 		5189B2BC15B387E200562DD0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2BB15B387E200562DD0 /* CoreGraphics.framework */; };
@@ -165,6 +167,9 @@
 		517A01D3170983B400665F0F /* MediaPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaPickerViewController.m; sourceTree = "<group>"; };
 		517A01D5170A7A9E00665F0F /* MediaPickerButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaPickerButton.h; sourceTree = "<group>"; };
 		517A01D6170A7A9E00665F0F /* MediaPickerButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaPickerButton.m; sourceTree = "<group>"; };
+		517A01D8170BFA2F00665F0F /* InviteFriendCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InviteFriendCell.h; path = Banyan/InviteFriendCell.h; sourceTree = "<group>"; };
+		517A01D9170BFA2F00665F0F /* InviteFriendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InviteFriendCell.m; path = Banyan/InviteFriendCell.m; sourceTree = "<group>"; };
+		517A01DC170BFA5A00665F0F /* InviteFriendCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = InviteFriendCell.xib; path = Banyan/InviteFriendCell.xib; sourceTree = "<group>"; };
 		5189B2B315B387E200562DD0 /* Banyan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Banyan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5189B2B715B387E200562DD0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		5189B2B915B387E200562DD0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -426,6 +431,16 @@
 			name = "Media Picker";
 			sourceTree = "<group>";
 		};
+		517A01DB170BFA3700665F0F /* InviteFriendCell */ = {
+			isa = PBXGroup;
+			children = (
+				517A01D8170BFA2F00665F0F /* InviteFriendCell.h */,
+				517A01D9170BFA2F00665F0F /* InviteFriendCell.m */,
+				517A01DC170BFA5A00665F0F /* InviteFriendCell.xib */,
+			);
+			name = InviteFriendCell;
+			sourceTree = "<group>";
+		};
 		5189B2A815B387E100562DD0 = {
 			isa = PBXGroup;
 			children = (
@@ -555,6 +570,7 @@
 				51F095671702A6DE009D5A28 /* NewStoryViewController.xib */,
 				5189B2DD15B395F300562DD0 /* InvitedTableViewController.h */,
 				5189B2DE15B395F300562DD0 /* InvitedTableViewController.m */,
+				517A01DB170BFA3700665F0F /* InviteFriendCell */,
 			);
 			name = "New Story";
 			path = ..;
@@ -852,6 +868,7 @@
 				51F095751702A6FB009D5A28 /* StoryListCellMiddleViewController.xib in Resources */,
 				51F095771702A6FB009D5A28 /* StoryListCellReadSceneViewController.xib in Resources */,
 				517A01B7170953BD00665F0F /* AviarySDKResources.bundle in Resources */,
+				517A01DD170BFA5B00665F0F /* InviteFriendCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -937,6 +954,7 @@
 				517A018C1706D92E00665F0F /* LocationPickerButton.m in Sources */,
 				517A01D4170983B400665F0F /* MediaPickerViewController.m in Sources */,
 				517A01D7170A7A9E00665F0F /* MediaPickerButton.m in Sources */,
+				517A01DA170BFA3000665F0F /* InviteFriendCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

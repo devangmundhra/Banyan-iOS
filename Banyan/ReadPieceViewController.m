@@ -258,13 +258,9 @@
 #pragma mark target actions for read scene buttons
 - (IBAction)storyContributors
 {
-    NSArray *invitedToContribute = nil;
-    invitedToContribute = [[self.piece.story.writeAccess objectForKey:kBNStoryPrivacyInviteeList]
-                           objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
-    InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] initWithStyle:UITableViewStylePlain];
-    invitedTableViewController.invitationType = INVITED_CONTRIBUTORS_STRING;
+    InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] initWithViewerPermissions:self.piece.story.readAccess
+                                                                                                     contributorPermission:self.piece.story.writeAccess];
     invitedTableViewController.delegate = self;
-    [invitedTableViewController.selectedContacts setArray:invitedToContribute];
     
     [self.navigationController pushViewController:invitedTableViewController animated:YES];
 }
@@ -372,32 +368,43 @@
 }
 
 # pragma mark InvitedTableViewControllerDelegate
-- (void) invitedTableViewController:(InvitedTableViewController *)invitedTableViewController 
-                   finishedInviting:(NSString *)invitingType 
-                       withContacts:(NSArray *)contactsList
+- (void)invitedTableViewController:(InvitedTableViewController *)invitedTableViewController
+        finishedInvitingForViewers:(NSArray *)selectedViewers
+                      contributors:(NSArray *)selectedContributors
 {
-    NSMutableDictionary *readWriteAccess = nil;
-    NSMutableArray *invitedList = [NSMutableArray arrayWithArray:contactsList];
+    NSDictionary *selfInvitation = nil;
     User *currentUser = [User currentUser];
+    if (HAVE_ASSERTS)
+        assert(currentUser);
+    
     if (currentUser) {
-        NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
+        selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
                                         currentUser.name, @"name",
                                         currentUser.facebookId, @"id", nil];
-        [invitedList addObject:selfInvitation];
+    }
+    // Update read access
+    if (selectedViewers) {
+        NSMutableDictionary *readAccess = nil;
+        NSMutableArray *readList = [NSMutableArray arrayWithArray:selectedViewers];
+        [readList addObjectsFromArray:selectedContributors];
+        [readList addObject:selfInvitation];
+        [readAccess setObject:kBNStoryPrivacyScopeInvited forKey:kBNStoryPrivacyScope];
+        [readAccess setObject:[NSDictionary dictionaryWithObject:readList forKey:kBNStoryPrivacyInvitedFacebookFriends]
+                       forKey:kBNStoryPrivacyInviteeList];
+        self.piece.story.readAccess = readAccess;
     }
     
-    [readWriteAccess setObject:kBNStoryPrivacyScopeInvited forKey:kBNStoryPrivacyScope];
-    [readWriteAccess setObject:[NSDictionary dictionaryWithObject:invitedList forKey:kBNStoryPrivacyInvitedFacebookFriends]
-                        forKey:kBNStoryPrivacyInviteeList];
+    // Update write access
+    if (selectedContributors) {
+        NSMutableDictionary *writeAccess = nil;
+        NSMutableArray *writeList = [NSMutableArray arrayWithArray:selectedContributors];
+        [writeList addObject:selfInvitation];
+        [writeAccess setObject:kBNStoryPrivacyScopeInvited forKey:kBNStoryPrivacyScope];
+        [writeAccess setObject:[NSDictionary dictionaryWithObject:writeList forKey:kBNStoryPrivacyInvitedFacebookFriends]
+                       forKey:kBNStoryPrivacyInviteeList];
+        self.piece.story.writeAccess = writeAccess;
+    }
     
-    if ([invitingType isEqualToString:INVITED_CONTRIBUTORS_STRING])
-    {
-        self.piece.story.writeAccess = readWriteAccess;
-    }
-    else if ([invitingType isEqualToString:INVITED_VIEWERS_STRING]) 
-    {
-        self.piece.story.readAccess = readWriteAccess;
-    }
     [Story editStory:self.piece.story];
     [self.navigationController popViewControllerAnimated:YES];
     [self refreshView];

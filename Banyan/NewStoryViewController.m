@@ -26,8 +26,8 @@
 @property (weak, nonatomic) IBOutlet UITextField *storyTitleTextField;
 @property (strong, nonatomic) IBOutlet SVSegmentedControl *contributorPrivacySegmentedControl;
 @property (strong, nonatomic) IBOutlet SVSegmentedControl *viewerPrivacySegmentedControl;
-@property (weak, nonatomic) IBOutlet UIButton *inviteContributorsButton;
-@property (weak, nonatomic) IBOutlet UIButton *inviteViewersButton;
+
+@property (weak, nonatomic) IBOutlet UIButton *inviteContactsButton;
 @property (weak, nonatomic) IBOutlet LocationPickerButton *addLocationButton;
 @property (weak, nonatomic) IBOutlet MediaPickerButton *addPhotoButton;
 @property (weak, nonatomic) IBOutlet TITokenFieldView *tagsFieldView;
@@ -51,19 +51,6 @@
 
 @implementation NewStoryViewController
 
-// These correspond to the index for UISegmentedControl for Write
-typedef enum {
-    ContributorPrivacySegmentedControlPublic = 0,
-    ContributorPrivacySegmentedControlInvited = 1,
-} StoryPrivacySegmentIndex;
-
-// These correspond to the index for UISegmentedControl for Read
-typedef enum {
-    ViewerPrivacySegmentedControlPublic = 0,
-    ViewerPrivacySegmentedControlLimited = 1,
-    ViewerPrivacySegmentedControlInvited = 2,
-} ViewerPrivacySegmentedControl;
-
 // Timeout for finding location
 #define kFindLocationTimeOut 0.5*60 // half a minute
 
@@ -74,8 +61,6 @@ typedef enum {
 @synthesize tapRecognizer = _tapRecognizer;
 @synthesize invitedToViewList = _invitedToViewList;
 @synthesize invitedToContributeList = _invitedToContributeList;
-@synthesize inviteContributorsButton = _inviteContributorsButton;
-@synthesize inviteViewersButton = _inviteViewersButton;
 @synthesize locationManager = _locationManager;
 @synthesize activeField = _activeField;
 @synthesize contributorPrivacySegmentedControl = _contributorPrivacySegmentedControl;
@@ -116,7 +101,7 @@ typedef enum {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
-    self.inviteContributorsButton.enabled = 1;
+    self.inviteContactsButton.enabled = 1;
     
     self.storyTitleTextField.delegate = self;
     self.storyTitleTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
@@ -155,7 +140,6 @@ typedef enum {
     self.viewerPrivacySegmentedControl.titleEdgeInsets = UIEdgeInsetsMake(0, 3, 0, 3);
     self.viewerPrivacySegmentedControl.textColor = BANYAN_WHITE_COLOR;
     
-    self.inviteViewersButton.enabled = NO;
     [self updateScrollViewContentSize];
     
     self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -174,8 +158,7 @@ typedef enum {
     self.tagsFieldView.tokenField.returnKeyType = UIReturnKeyDone;
     [self.tagsFieldView.tokenField setPromptText:@"Add some tags..."];
 
-    [self.inviteViewersButton addTarget:self action:@selector(inviteViewers) forControlEvents:UIControlEventTouchUpInside];
-    [self.inviteContributorsButton addTarget:self action:@selector(inviteContributors) forControlEvents:UIControlEventTouchUpInside];
+    [self.inviteContactsButton addTarget:self action:@selector(inviteContacts:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)viewDidUnload
@@ -185,8 +168,6 @@ typedef enum {
     [self setTapRecognizer:nil];
     [self setInvitedToViewList:nil];
     [self setInvitedToContributeList:nil];
-    [self setInviteContributorsButton:nil];
-    [self setInviteViewersButton:nil];
     [self setLocationManager:nil];
     [self setTagsFieldView:nil];
     [self setAddLocationButton:nil];
@@ -195,6 +176,7 @@ typedef enum {
     [self setContributorPrivacySegmentedControl:nil];
     [self setViewerPrivacySegmentedControl:nil];
     [self setLocalImageURL:nil];
+    [self setInviteContactsButton:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -205,6 +187,14 @@ typedef enum {
 }
 
 # pragma mark- Target Actions for new story
+- (void) inviteContacts:(id)sender
+{
+    InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] initWithViewerPermissions:[self viewerPrivacyDictionary]
+                                                                                                     contributorPermission:[self contributorPrivacyDictionary]];
+    invitedTableViewController.delegate = self;
+    [self.navigationController pushViewController:invitedTableViewController animated:YES];
+}
+
 - (NSString *)defaultStoryTitle
 {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -219,18 +209,9 @@ typedef enum {
     // Title
     self.story.title = ![self.storyTitleTextField.text isEqualToString:@""] ? self.storyTitleTextField.text : [self defaultStoryTitle];
     
-    // Story Privacy
-    NSMutableDictionary *contributorsDictionary = [NSMutableDictionary dictionary];
-    NSMutableDictionary *viewersDictionary = [NSMutableDictionary dictionary];
-
-    [contributorsDictionary setObject:[self contributorScope] forKey:kBNStoryPrivacyScope];
-    [contributorsDictionary setObject:[self contributorsInvited] forKey:kBNStoryPrivacyInviteeList];
-    
-    [viewersDictionary setObject:[self viewerScope] forKey:kBNStoryPrivacyScope];
-    [viewersDictionary setObject:[self viewersInvited] forKey:kBNStoryPrivacyInviteeList];
-    
-    self.story.writeAccess = contributorsDictionary;
-    self.story.readAccess = viewersDictionary;
+    // Story Privacy    
+    self.story.writeAccess = [self contributorPrivacyDictionary];
+    self.story.readAccess = [self viewerPrivacyDictionary];
     
     // Story Location
     if (self.isLocationEnabled == YES) {
@@ -270,7 +251,6 @@ typedef enum {
 {
     if (segmentedControl == self.contributorPrivacySegmentedControl) {
         if (segmentedControl.selectedIndex == ContributorPrivacySegmentedControlInvited){
-            self.inviteContributorsButton.enabled = YES;
             self.viewerPrivacySegmentedControl.enabled = YES;
             self.viewerPrivacySegmentedControl.alpha = 1;
         } else {
@@ -279,18 +259,10 @@ typedef enum {
             }
             self.viewerPrivacySegmentedControl.enabled = NO;
             self.viewerPrivacySegmentedControl.alpha = 0.5;
-            self.inviteContributorsButton.enabled = NO;
         }
-    } else if (segmentedControl == self.viewerPrivacySegmentedControl) {
-        if (self.viewerPrivacySegmentedControl.selectedIndex == ViewerPrivacySegmentedControlInvited) {
-            self.inviteViewersButton.enabled = 1;
-        } else {
-            self.inviteViewersButton.enabled = 0;
-        }
-    } else {
-        assert(false);
     }
     
+    self.inviteContactsButton.enabled = (self.contributorPrivacySegmentedControl.selectedIndex == ContributorPrivacySegmentedControlInvited) || (self.viewerPrivacySegmentedControl.selectedIndex == ViewerPrivacySegmentedControlInvited);
 }
 
 - (NSString *)contributorScope
@@ -317,6 +289,15 @@ typedef enum {
     }
     NSDictionary *dictToReturn = [NSDictionary dictionaryWithObject:self.invitedToContributeList forKey:kBNStoryPrivacyInvitedFacebookFriends];
     return dictToReturn;
+}
+
+- (NSDictionary *)contributorPrivacyDictionary
+{
+    NSMutableDictionary *contributorsDictionary = [NSMutableDictionary dictionary];
+    
+    [contributorsDictionary setObject:[self contributorScope] forKey:kBNStoryPrivacyScope];
+    [contributorsDictionary setObject:[self contributorsInvited] forKey:kBNStoryPrivacyInviteeList];
+    return [contributorsDictionary copy];
 }
 
 - (NSString *)viewerScope
@@ -354,6 +335,15 @@ typedef enum {
         return nil;
     }
     return [NSDictionary dictionaryWithObject:self.invitedToViewList forKey:kBNStoryPrivacyInvitedFacebookFriends];
+}
+
+- (NSDictionary *)viewerPrivacyDictionary
+{
+    NSMutableDictionary *viewersDictionary = [NSMutableDictionary dictionary];
+    
+    [viewersDictionary setObject:[self viewerScope] forKey:kBNStoryPrivacyScope];
+    [viewersDictionary setObject:[self viewersInvited] forKey:kBNStoryPrivacyInviteeList];
+    return [viewersDictionary copy];
 }
 
 #pragma mark MediaPickerButtonDelegate methods
@@ -532,41 +522,16 @@ typedef enum {
     return YES;
 }
 
-
-# pragma mark invite friends
-
-- (void) inviteViewers
-{
-    InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] initWithStyle:UITableViewStylePlain];
-    invitedTableViewController.invitationType = INVITED_VIEWERS_STRING;
-    invitedTableViewController.delegate = self;
-    invitedTableViewController.selectedContacts = self.invitedToViewList;
-    [self.navigationController pushViewController:invitedTableViewController animated:YES];
-}
-
-- (void) inviteContributors
-{
-    InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] initWithStyle:UITableViewStylePlain];
-    invitedTableViewController.invitationType = INVITED_CONTRIBUTORS_STRING;
-    invitedTableViewController.delegate = self;
-    invitedTableViewController.selectedContacts = self.invitedToContributeList;
-    [self.navigationController pushViewController:invitedTableViewController animated:YES];
-}
-
 # pragma mark InvitedTableViewControllerDelegate
-- (void) invitedTableViewController:(InvitedTableViewController *)invitedTableViewController 
-                   finishedInviting:(NSString *)invitingType 
-                       withContacts:(NSArray *)contactsList
+- (void)invitedTableViewController:(InvitedTableViewController *)invitedTableViewController
+        finishedInvitingForViewers:(NSArray *)selectedViewers
+                      contributors:(NSArray *)selectedContributors
 {
-    if ([invitingType isEqualToString:INVITED_CONTRIBUTORS_STRING])
-    {
-        [self.invitedToContributeList setArray:contactsList];
-        // All contributors invited are also viewers!
-        [self.invitedToViewList addObjectsFromArray:contactsList];
-    }
-    else if ([invitingType isEqualToString:INVITED_VIEWERS_STRING]) 
-    {
-        [self.invitedToViewList setArray:contactsList];
+    if (selectedViewers)
+        [self.invitedToViewList setArray:selectedViewers];
+    if (selectedContributors) {
+        [self.invitedToViewList addObjectsFromArray:selectedContributors];
+        [self.invitedToContributeList setArray:selectedContributors];
     }
     
     [self.navigationController popViewControllerAnimated:YES];

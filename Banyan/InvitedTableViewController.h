@@ -8,25 +8,36 @@
 
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
+#import "InviteFriendCell.h"
 
 @class InvitedTableViewController;
 
-#define INVITED_VIEWERS_STRING @"Viewers"
-#define INVITED_CONTRIBUTORS_STRING @"Contributors"
+// These correspond to the index for UISegmentedControl for Write
+typedef enum {
+    ContributorPrivacySegmentedControlPublic = 0,
+    ContributorPrivacySegmentedControlInvited = 1,
+} StoryPrivacySegmentIndex;
+
+// These correspond to the index for UISegmentedControl for Read
+typedef enum {
+    ViewerPrivacySegmentedControlPublic = 0,
+    ViewerPrivacySegmentedControlLimited = 1,
+    ViewerPrivacySegmentedControlInvited = 2,
+} ViewerPrivacySegmentedControl;
+
 @protocol InvitedTableViewControllerDelegate <NSObject>
 
-- (void) invitedTableViewController:(InvitedTableViewController *)invitedTableViewController 
-                   finishedInviting:(NSString *)invitingType 
-                       withContacts:(NSArray *)contactsList;
+- (void) invitedTableViewController:(InvitedTableViewController *)invitedTableViewController
+         finishedInvitingForViewers:(NSArray *)selectedViewers
+                       contributors:(NSArray *)selectedContributors;
 
 - (void) invitedTableViewControllerDidCancel:(InvitedTableViewController *)invitedTableViewController;
 @end
 
-@interface InvitedTableViewController : UITableViewController <UISearchBarDelegate, UISearchDisplayDelegate>
+@interface InvitedTableViewController : UITableViewController <UISearchBarDelegate, UISearchDisplayDelegate, InviteFriendCellDelegate>
 
-@property (nonatomic, weak) NSManagedObjectContext *objectContext;
 @property (nonatomic, weak) id<InvitedTableViewControllerDelegate> delegate;
-@property (nonatomic, weak) NSString *invitationType;
-@property (nonatomic, copy) NSMutableArray *selectedContacts;
+
+- (id)initWithViewerPermissions:(NSDictionary *)viewerPermission contributorPermission:(NSDictionary *)contributorPermission;
 
 @end
