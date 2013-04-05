@@ -267,8 +267,12 @@ static CLLocationManager *_sharedLocationManager;
 - (void) showLocationPickerTableViewController
 {
     [self beginUpdatingLocation];
+    
     if ([self.delegate isKindOfClass:[UIViewController class]]) {
-        [[(UIViewController *)self.delegate navigationController] pushViewController:self.locationPickerViewController animated:YES];
+        // Create the navigation controller and present it.
+        UINavigationController *navigationController = [[UINavigationController alloc]
+                                                        initWithRootViewController:self.locationPickerViewController];
+        [(UIViewController *)self.delegate presentViewController:navigationController animated:YES completion:nil];
     }
 }
 
@@ -276,7 +280,7 @@ static CLLocationManager *_sharedLocationManager;
 - (void)locationPickerTableViewControllerDidCancel
 {
     if ([self.delegate isKindOfClass:[UIViewController class]]) {
-        [[(UIViewController *)self.delegate navigationController] popViewControllerAnimated:YES];
+        [(UIViewController *)self.delegate dismissViewControllerAnimated:YES completion:nil];
     }
 }
 
@@ -286,7 +290,7 @@ static CLLocationManager *_sharedLocationManager;
     self.locationStatus = [self.location getFormattedName];
     [self stopUpdatingLocation:self.locationStatus];
     if ([self.delegate isKindOfClass:[UIViewController class]]) {
-        [[(UIViewController *)self.delegate navigationController] popViewControllerAnimated:YES];
+        [(UIViewController *)self.delegate dismissViewControllerAnimated:YES completion:nil];
     }
 }
 
