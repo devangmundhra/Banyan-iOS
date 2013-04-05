@@ -42,4 +42,14 @@
     }
 }
 
+- (void) remove
+{
+    if (self.remoteStatus == RemoteObjectStatusPushing || self.remoteStatus == RemoteObjectStatusLocal) {
+        // Send notification to cancel this upload
+    }
+    
+    [[self managedObjectContext] deleteObject:self];
+    [self save];
+}
+
 @end

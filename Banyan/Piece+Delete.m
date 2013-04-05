@@ -12,6 +12,12 @@
 
 @implementation Piece (Delete)
 
+- (void) remove
+{
+    self.story = nil;
+    [super remove];
+}
+
 + (void) deletePiece:(Piece *)piece
 {    
     [[AFBanyanAPIClient sharedClient] deletePath:BANYAN_API_OBJECT_URL(@"Piece", piece.bnObjectId)

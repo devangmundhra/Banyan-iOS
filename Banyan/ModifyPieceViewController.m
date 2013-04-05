@@ -197,9 +197,9 @@
         [self restoreBackupPiece:NO];
     }
     
-	//remove the original post in case of local draft unsaved
-	if(self.editMode == ModifyPieceViewControllerEditModeAddPiece)
-		[self.piece.managedObjectContext deleteObject:self.piece];
+	//remove the original piece in case of local draft unsaved
+	if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
+		[self.piece remove];
     
 	self.piece = nil; // Just in case
     [self dismissEditView];

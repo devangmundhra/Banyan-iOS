@@ -316,8 +316,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     self.indexOfVisibleBackView = nil;
 }
 
-
-
 #pragma mark ScenesViewControllerDelegate
 - (void)storyReaderContollerDone:(StoryReaderController *)scenesViewController
 {
