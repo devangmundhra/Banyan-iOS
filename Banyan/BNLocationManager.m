@@ -109,6 +109,7 @@ static CLLocationManager *_sharedLocationManager;
         if (newLocation.horizontalAccuracy <= 10) {
             // IMPORTANT!!! Minimize power usage by stopping the location manager as soon as possible.
             [self getNearbyLocations:newLocation];
+            self.locationPickerViewController.currentLocation = newLocation;
             [self stopUpdatingLocation:self.locationStatus];
         }
     }
@@ -153,7 +154,6 @@ static CLLocationManager *_sharedLocationManager;
 
 - (void) getNearbyLocations:(CLLocation *)location
 {
-    self.locationPickerViewController.currentLocation = self.bestEffortAtLocation;
     NSString *coords = [NSString stringWithFormat:@"%f,%f", location.coordinate.latitude, location.coordinate.longitude];
     NSString *types =[NSString stringWithFormat:@"%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@",
                       kBar,

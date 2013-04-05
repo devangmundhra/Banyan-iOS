@@ -28,7 +28,7 @@
 - (id)initWithDelegate:(id<BNLocationManagerDelegate>)delegate;
 - (void) beginUpdatingLocation;
 - (void) stopUpdatingLocation:(NSString *)state;
-//- (void) getNearbyLocations:(CLLocation *)location;
+- (void) getNearbyLocations:(CLLocation *)location;
 - (void) showLocationPickerTableViewController;
 
 @end
