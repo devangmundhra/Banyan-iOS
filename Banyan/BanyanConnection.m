@@ -11,7 +11,6 @@
 #import "Story_Defines.h"
 #import "Story+Stats.h"
 #import "Piece+Stats.h"
-#import "User+Edit.h"
 #import "Story+Permissions.h"
 #import "Story+Edit.h"
 
@@ -89,8 +88,8 @@
 + (void)loadStoriesFromBanyanWithSuccessBlock:(void (^)())successBlock errorBlock:(void (^)(NSError *error))errorBlock
 {
     NSString *getPath = BANYAN_API_GET_PUBLIC_STORIES();
-    if ([User currentUser]) {
-        getPath = BANYAN_API_GET_USER_STORIES([User currentUser]);
+    if ([PFUser currentUser]) {
+        getPath = BANYAN_API_GET_USER_STORIES([PFUser currentUser]);
     }
     
     // Initialize RestKit

@@ -14,7 +14,6 @@
 @protocol UserLoginViewControllerDelegate <NSObject>
 
 - (void)logInViewController:(UserLoginViewController *)logInController didLogInUser:(PFUser *)user;
-- (void)logInViewControllerDidCancelLogIn:(UserLoginViewController *)logInController;
 
 @end
 

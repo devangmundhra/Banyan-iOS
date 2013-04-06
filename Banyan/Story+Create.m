@@ -12,7 +12,6 @@
 #import "BanyanDataSource.h"
 #import "AFBanyanAPIClient.h"
 #import "UIImage+ResizeAdditions.h"
-#import "User+Edit.h"
 
 @implementation Story (Create)
 
@@ -27,9 +26,7 @@
 {
     Story *story = [Story newStory];
     story.remoteStatus = RemoteObjectStatusLocal;
-    story.author = [User currentUser];
-    story.createdAt = story.updatedAt = [NSDate date];
-    story.author = [User currentUserInContext:story.managedObjectContext];
+    story.authorId = [PFUser currentUser].objectId;
     story.createdAt = story.updatedAt = [NSDate date];
 
     [story save];
@@ -52,7 +49,7 @@
         NSMutableArray *fbIds = [NSMutableArray arrayWithCapacity:1];
         for (NSDictionary *contributor in contributorsList)
         {
-            if (![[contributor objectForKey:@"id"] isEqualToString:[User currentUser].facebookId])
+            if (![[contributor objectForKey:@"id"] isEqualToString:[[PFUser currentUser] objectForKey:USER_FACEBOOK_ID]])
                 [fbIds addObject:[contributor objectForKey:@"id"]];
         }
         
@@ -101,11 +98,11 @@
                                                      [usersContributing addObject:[user objectForKey:@"objectId"]];
                                                  }
                                                  NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                                       [NSString stringWithFormat:@"%@ has invited you to contribute to a story titled %@",
-                                                                        story.author.name, story.title], @"alert",
-                                                                       [NSNumber numberWithInt:1], @"badge",
-                                                                       story.title, @"Story title",
-                                                                       nil];
+                                                                        [NSString stringWithFormat:@"%@ has invited you to contribute to a story titled %@",
+                                                                        [[PFUser currentUser] objectForKey:USER_NAME], story.title], @"alert",
+                                                                        [NSNumber numberWithInt:1], @"badge",
+                                                                        story.title, @"Story title",
+                                                                        nil];
                                                  // send push notication to this user id
                                                  PFPush *push = [[PFPush alloc] init];
                                                  [push setChannels:usersContributing];

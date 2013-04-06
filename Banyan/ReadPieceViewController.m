@@ -15,7 +15,6 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "Piece+Edit.h"
 #import "Piece+Create.h"
-#import "User+Edit.h"
 
 @interface ReadPieceViewController ()
 
@@ -213,7 +212,7 @@
 // Piece specific refresh
 - (void)refreshPieceView
 {
-    [self.contributorsButton setTitle:self.piece.author.name forState:UIControlStateNormal];
+    [self.contributorsButton setTitle:@"Contributors" forState:UIControlStateNormal];
     [self.contributorsButton setEnabled:NO];
     self.pieceTextView.scrollEnabled = YES;
     self.pieceTextView.font = [UIFont systemFontOfSize:18];
@@ -375,14 +374,14 @@
                       contributors:(NSArray *)selectedContributors
 {
     NSDictionary *selfInvitation = nil;
-    User *currentUser = [User currentUser];
+    PFUser *currentUser = [PFUser currentUser];
     if (HAVE_ASSERTS)
         assert(currentUser);
     
     if (currentUser) {
         selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
-                                        currentUser.name, @"name",
-                                        currentUser.facebookId, @"id", nil];
+                                        [currentUser objectForKey:USER_NAME], @"name",
+                                        [currentUser objectForKey:USER_FACEBOOK_ID], @"id", nil];
     }
     // Update read access
     if (selectedViewers) {

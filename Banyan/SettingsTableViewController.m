@@ -7,7 +7,6 @@
 //
 
 #import "SettingsTableViewController.h"
-#import "User+Edit.h"
 
 @interface SettingsTableViewController ()
 
@@ -33,11 +32,15 @@ typedef enum {
 {
     [super viewDidLoad];
 
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    // Notifications to handle permission controls
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userLoginStatusChanged:)
+                                                 name:BNUserLogInNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userLoginStatusChanged:)
+                                                 name:BNUserLogOutNotification
+                                               object:nil];
 }
 
 - (void)viewDidUnload
@@ -45,11 +48,17 @@ typedef enum {
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void) userLoginStatusChanged:(NSNotification *)notification
+{
+    [self.tableView reloadData];
 }
 
 #pragma mark - Table view data source
@@ -65,7 +74,7 @@ typedef enum {
     // Return the number of rows in the section.
     switch (section) {
         case SettingsTableViewAccountSection:
-            if ([User currentUser])
+            if ([PFUser currentUser])
                 return 3; // My Stories, Find Friends, Sign Out
             else
                 return 1; // Sign In
@@ -137,7 +146,7 @@ typedef enum {
 
 - (NSString *) textForAccountInfoSectionAtRow:(NSInteger)row
 {
-    if (![User currentUser]) {
+    if (![PFUser currentUser]) {
         return @"Sign In";
     }
     switch (row) {
@@ -163,9 +172,8 @@ typedef enum {
     
     BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
     
-    if (![User currentUser]) {
-        [delegate.userManagementModule login];
-        [self.navigationController popViewControllerAnimated:YES];
+    if (![PFUser currentUser]) {
+        [delegate login];
         return;
     }
     switch (row) {
@@ -178,7 +186,7 @@ typedef enum {
             [self.navigationController pushViewController:findFriendsVc animated:YES];
             break;
         case SettingsTableViewControllerAccountInfoSectionSignOut:
-            [delegate.userManagementModule logout];
+            [delegate logout];
             [self.navigationController popViewControllerAnimated:YES];
             break;
             

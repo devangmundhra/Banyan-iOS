@@ -9,8 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 #import "NewStoryViewController.h"
-#import "UserManagementModule.h"
 #import "BNTabBarController.h"
+#import "UserLoginViewController.h"
 
 #define DEV FALSE
 
@@ -33,19 +33,16 @@
 
 #define GOOGLE_API_KEY @"AIzaSyBwOBP068EO-Ubi0Qzu8uwFnZZHaIVwNyg"
 
-@interface BanyanAppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate, NewStoryViewControllerDelegate> {
-    UserManagementModule *userManagementModule;
-}
+@interface BanyanAppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate, NewStoryViewControllerDelegate, UserLoginViewControllerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, strong) BNTabBarController *tabBarController;
 @property (nonatomic, strong) UINavigationController *navController;
-@property (nonatomic, strong) UserManagementModule *userManagementModule;
-@property (nonatomic, strong) NSManagedObjectContext *userContentMOCtx;
 
 - (void)facebookRequest:(PF_FBRequestConnection *)connection didFailWithError:(NSError *)error;
 - (void)facebookRequest:(PF_FBRequestConnection *)connection didLoad:(id)result;
 - (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI;;
+- (void) login;
 - (void) logout;
 + (UIViewController*) topMostController;
 

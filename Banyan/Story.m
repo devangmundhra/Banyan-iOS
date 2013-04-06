@@ -8,8 +8,6 @@
 
 #import "Story.h"
 #import "Piece.h"
-#import "User.h"
-
 
 @implementation Story
 
@@ -38,7 +36,6 @@
 @dynamic latitude;
 @dynamic location;
 @dynamic longitude;
-@dynamic author;
 @dynamic pieces;
 
 @end

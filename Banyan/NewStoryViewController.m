@@ -9,11 +9,11 @@
 #import "NewStoryViewController.h"
 #import "Story_Defines.h"
 #import "BanyanAppDelegate.h"
-#import "User+Edit.h"
 #import "SVSegmentedControl.h"
 #import "UIImage+Create.h"
 #import "Story+Create.h"
 #import "LocationPickerButton.h"
+#import "User_Defines.h"
 
 @interface NewStoryViewController ()
 {
@@ -276,11 +276,11 @@
 
 - (NSDictionary *)contributorsInvited
 {
-    User *currentUser = [User currentUser];
+    PFUser *currentUser = [PFUser currentUser];
     if (currentUser) {
         NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
-                                        currentUser.name, @"name",
-                                        currentUser.facebookId, @"id", nil];
+                                        [currentUser objectForKey:USER_NAME], @"name",
+                                        [currentUser objectForKey:USER_FACEBOOK_ID], @"id", nil];
         [self.invitedToContributeList addObject:selfInvitation];
     } else {
         if (HAVE_ASSERTS)
@@ -323,11 +323,11 @@
 
 - (NSDictionary *)viewersInvited
 {
-    User *currentUser = [User currentUser];
+    PFUser *currentUser = [PFUser currentUser];
     if (currentUser) {
         NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
-                                        currentUser.name, @"name",
-                                        currentUser.facebookId, @"id", nil];
+                                        [currentUser objectForKey:USER_NAME], @"name",
+                                        [currentUser objectForKey:USER_FACEBOOK_ID], @"id", nil];
         [self.invitedToViewList addObject:selfInvitation];
     } else {
         if (HAVE_ASSERTS)

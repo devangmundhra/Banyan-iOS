@@ -88,13 +88,13 @@
     }];
     
     [self.activityIndicator startAnimating]; // Show loading indicator until login is finished
-    
+    [self dismissViewControllerAnimated:YES completion:nil];
     return;
 }
 
 - (IBAction)cancel:(id)sender 
 {
-    [self.delegate logInViewControllerDidCancelLogIn:self];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma Memory Management

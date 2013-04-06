@@ -8,7 +8,6 @@
 
 #import "InvitedTableViewController.h"
 #import "BanyanAppDelegate.h"
-#import "UserManagementModule.h"
 
 @interface InvitedTableViewController ()
 

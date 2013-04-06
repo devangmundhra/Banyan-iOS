@@ -39,7 +39,6 @@
 @property (nonatomic, retain) NSNumber * latitude;
 @property (nonatomic, retain) NSString * location;
 @property (nonatomic, retain) NSNumber * longitude;
-@property (nonatomic, retain) User *author;
 @property (nonatomic, retain) NSOrderedSet *pieces;
 @end
 

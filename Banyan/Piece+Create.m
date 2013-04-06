@@ -11,7 +11,6 @@
 #import "Story_Defines.h"
 #import "AFBanyanAPIClient.h"
 #import "File.h"
-#import "User+Edit.h"
 
 @implementation Piece (Create)
 
@@ -30,7 +29,7 @@
 {
     Piece *piece = [self newPieceForStory:story];
     piece.remoteStatus = RemoteObjectStatusLocal;
-    piece.author = [User currentUserInContext:piece.managedObjectContext];
+    piece.authorId = [PFUser currentUser].objectId;
     piece.createdAt = piece.updatedAt = [NSDate date];
     
     [piece save];

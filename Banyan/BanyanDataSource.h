@@ -10,7 +10,6 @@
 #import "Story.h"
 #import "Piece.h"
 #import "File.h"
-#import "User.h"
 #import "BanyanConnection.h"
 
 @interface BanyanDataSource : NSObject

@@ -7,8 +7,8 @@
 //
 
 #import "Story+Permissions.h"
-#import "User+Edit.h"
 #import "AFBanyanAPIClient.h"
+#import <Parse/Parse.h>
 
 @implementation Story (Permissions)
 
@@ -18,12 +18,11 @@
     self.isInvited = NO;
     self.canContribute = NO;
     self.canView = NO;
-    User *currentUser = [User currentUser];
     
-    if (!currentUser) {
+    if (![PFUser currentUser]) {
         NSLog(@"%s No current user", __PRETTY_FUNCTION__);
     }
-    NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:@"json", @"format", self.bnObjectId, @"object_id", currentUser.userId, @"user_id", nil];
+    NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:@"json", @"format", self.bnObjectId, @"object_id", [PFUser currentUser].objectId, @"user_id", nil];
     
     [[AFBanyanAPIClient sharedClient] getPath:BANYAN_API_GET_PERMISSIONS(@"Story")
                                    parameters:parameters

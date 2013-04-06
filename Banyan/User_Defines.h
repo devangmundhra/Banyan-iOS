@@ -6,9 +6,6 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "User.h"
-
-@interface User ()
 
 #define USER_ID @"userId"
 #define USER_NAME @"name"
@@ -21,4 +18,4 @@
 #define USER_FACEBOOK_ID @"facebookId"
 
 #define USER_BEING_FOLLOWED @"userBeingFollowed"
-@end
+

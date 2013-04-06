@@ -16,7 +16,6 @@
 		510787D2163A36F20042B436 /* BNLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787D1163A36F20042B436 /* BNLocationManager.m */; };
 		510787D5163A37190042B436 /* Activity.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787D4163A37190042B436 /* Activity.m */; };
 		510787DA163A37250042B436 /* File.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787D7163A37250042B436 /* File.m */; };
-		510787DE163A37340042B436 /* User+Edit.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787DD163A37340042B436 /* User+Edit.m */; };
 		511E708B161A9756009AAD25 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708A161A9756009AAD25 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		511E708E161A977F009AAD25 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
 		5157CD031650902900C22CCE /* BanyanConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD021650902900C22CCE /* BanyanConnection.m */; };
@@ -46,8 +45,6 @@
 		5189B32815B395F300562DD0 /* ArrayToDataTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2D815B395F300562DD0 /* ArrayToDataTransformer.m */; };
 		5189B32A15B395F300562DD0 /* ImageToDataTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2DC15B395F300562DD0 /* ImageToDataTransformer.m */; };
 		5189B32B15B395F300562DD0 /* InvitedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2DE15B395F300562DD0 /* InvitedTableViewController.m */; };
-		5189B32C15B395F300562DD0 /* LoginTabbarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2E015B395F300562DD0 /* LoginTabbarViewController.m */; };
-		5189B32D15B395F300562DD0 /* LoginTabbarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5189B2E115B395F300562DD0 /* LoginTabbarViewController.xib */; };
 		5189B32F15B395F300562DD0 /* ModifyPieceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2E415B395F300562DD0 /* ModifyPieceViewController.m */; };
 		5189B33015B395F300562DD0 /* ModifyPieceViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5189B2E515B395F300562DD0 /* ModifyPieceViewController.xib */; };
 		5189B33115B395F300562DD0 /* NewStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2E715B395F300562DD0 /* NewStoryViewController.m */; };
@@ -65,7 +62,6 @@
 		5189B34915B395F300562DD0 /* StoryListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B31815B395F300562DD0 /* StoryListTableViewController.m */; };
 		5189B34D15B395F300562DD0 /* UserLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B32315B395F300562DD0 /* UserLoginViewController.m */; };
 		5189B34E15B395F300562DD0 /* UserLoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5189B32415B395F300562DD0 /* UserLoginViewController.xib */; };
-		5189B34F15B395F300562DD0 /* UserManagementModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B32615B395F300562DD0 /* UserManagementModule.m */; };
 		5189B3B715B39B9300562DD0 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3B615B39B9300562DD0 /* CoreLocation.framework */; };
 		5189B3BA15B39BA400562DD0 /* libz.1.1.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3B815B39BA400562DD0 /* libz.1.1.3.dylib */; };
 		5189B3BB15B39BA400562DD0 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3B915B39BA400562DD0 /* libz.dylib */; };
@@ -84,10 +80,8 @@
 		51A8DC9116928A240017E86F /* Activity+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC9016928A240017E86F /* Activity+Create.m */; };
 		51A8DC9516928AE00017E86F /* Banyan.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC9316928AE00017E86F /* Banyan.xcdatamodeld */; };
 		51A8DC981692C4490017E86F /* Story+Permissions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC971692C4490017E86F /* Story+Permissions.m */; };
-		51A8DCC11692D52C0017E86F /* User+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DCC01692D52C0017E86F /* User+Create.m */; };
 		51A8DCC41692DA900017E86F /* CoreDataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DCC31692DA8F0017E86F /* CoreDataTableViewController.m */; };
 		51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B5989D15EB31B300DF4D9D /* BanyanConstants.m */; };
-		51C0CF021695899100C9B752 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C0CF011695899100C9B752 /* User.m */; };
 		51CFD92915F1F260002926F9 /* SettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD92715F1F260002926F9 /* SettingsTableViewController.m */; };
 		51CFD93615F3E80B002926F9 /* FollowingFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD93515F3E80B002926F9 /* FollowingFriendsViewController.m */; };
 		51CFD93A15F57F70002926F9 /* FollowingUsersCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD93915F57F70002926F9 /* FollowingUsersCell.m */; };
@@ -136,8 +130,6 @@
 		510787D4163A37190042B436 /* Activity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Activity.m; path = Banyan/Activity.m; sourceTree = "<group>"; };
 		510787D6163A37250042B436 /* File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = File.h; path = Banyan/File.h; sourceTree = "<group>"; };
 		510787D7163A37250042B436 /* File.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = File.m; path = Banyan/File.m; sourceTree = "<group>"; };
-		510787DC163A37340042B436 /* User+Edit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "User+Edit.h"; path = "Banyan/User+Edit.h"; sourceTree = "<group>"; };
-		510787DD163A37340042B436 /* User+Edit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "User+Edit.m"; path = "Banyan/User+Edit.m"; sourceTree = "<group>"; };
 		511E708A161A9756009AAD25 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		5157CD011650902900C22CCE /* BanyanConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BanyanConnection.h; path = Banyan/BanyanConnection.h; sourceTree = "<group>"; };
@@ -170,6 +162,7 @@
 		517A01D8170BFA2F00665F0F /* InviteFriendCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InviteFriendCell.h; path = Banyan/InviteFriendCell.h; sourceTree = "<group>"; };
 		517A01D9170BFA2F00665F0F /* InviteFriendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InviteFriendCell.m; path = Banyan/InviteFriendCell.m; sourceTree = "<group>"; };
 		517A01DC170BFA5A00665F0F /* InviteFriendCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = InviteFriendCell.xib; path = Banyan/InviteFriendCell.xib; sourceTree = "<group>"; };
+		517A01DE170EB02900665F0F /* User_Defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = User_Defines.h; path = Banyan/User_Defines.h; sourceTree = "<group>"; };
 		5189B2B315B387E200562DD0 /* Banyan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Banyan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5189B2B715B387E200562DD0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		5189B2B915B387E200562DD0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -188,9 +181,6 @@
 		5189B2DC15B395F300562DD0 /* ImageToDataTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ImageToDataTransformer.m; path = Banyan/ImageToDataTransformer.m; sourceTree = "<group>"; };
 		5189B2DD15B395F300562DD0 /* InvitedTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InvitedTableViewController.h; path = Banyan/InvitedTableViewController.h; sourceTree = "<group>"; };
 		5189B2DE15B395F300562DD0 /* InvitedTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InvitedTableViewController.m; path = Banyan/InvitedTableViewController.m; sourceTree = "<group>"; };
-		5189B2DF15B395F300562DD0 /* LoginTabbarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LoginTabbarViewController.h; path = Banyan/LoginTabbarViewController.h; sourceTree = "<group>"; };
-		5189B2E015B395F300562DD0 /* LoginTabbarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LoginTabbarViewController.m; path = Banyan/LoginTabbarViewController.m; sourceTree = "<group>"; };
-		5189B2E115B395F300562DD0 /* LoginTabbarViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LoginTabbarViewController.xib; path = Banyan/LoginTabbarViewController.xib; sourceTree = "<group>"; };
 		5189B2E315B395F300562DD0 /* ModifyPieceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModifyPieceViewController.h; path = Banyan/ModifyPieceViewController.h; sourceTree = "<group>"; };
 		5189B2E415B395F300562DD0 /* ModifyPieceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ModifyPieceViewController.m; path = Banyan/ModifyPieceViewController.m; sourceTree = "<group>"; };
 		5189B2E515B395F300562DD0 /* ModifyPieceViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ModifyPieceViewController.xib; path = Banyan/ModifyPieceViewController.xib; sourceTree = "<group>"; };
@@ -221,12 +211,9 @@
 		5189B31615B395F300562DD0 /* StoryListStoryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryListStoryCell.m; path = Banyan/StoryListStoryCell.m; sourceTree = "<group>"; };
 		5189B31715B395F300562DD0 /* StoryListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryListTableViewController.h; path = Banyan/StoryListTableViewController.h; sourceTree = "<group>"; };
 		5189B31815B395F300562DD0 /* StoryListTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryListTableViewController.m; path = Banyan/StoryListTableViewController.m; sourceTree = "<group>"; };
-		5189B31F15B395F300562DD0 /* User_Defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = User_Defines.h; path = Banyan/User_Defines.h; sourceTree = "<group>"; };
 		5189B32215B395F300562DD0 /* UserLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserLoginViewController.h; path = Banyan/UserLoginViewController.h; sourceTree = "<group>"; };
 		5189B32315B395F300562DD0 /* UserLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserLoginViewController.m; path = Banyan/UserLoginViewController.m; sourceTree = "<group>"; };
 		5189B32415B395F300562DD0 /* UserLoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = UserLoginViewController.xib; path = Banyan/UserLoginViewController.xib; sourceTree = "<group>"; };
-		5189B32515B395F300562DD0 /* UserManagementModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserManagementModule.h; path = Banyan/UserManagementModule.h; sourceTree = "<group>"; };
-		5189B32615B395F300562DD0 /* UserManagementModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserManagementModule.m; path = Banyan/UserManagementModule.m; sourceTree = "<group>"; };
 		5189B3B615B39B9300562DD0 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		5189B3B815B39BA400562DD0 /* libz.1.1.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.1.3.dylib; path = usr/lib/libz.1.1.3.dylib; sourceTree = SDKROOT; };
 		5189B3B915B39BA400562DD0 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -251,14 +238,10 @@
 		51A8DC9416928AE00017E86F /* Banyan.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Banyan.xcdatamodel; sourceTree = "<group>"; };
 		51A8DC961692C4490017E86F /* Story+Permissions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Story+Permissions.h"; path = "Banyan/Story+Permissions.h"; sourceTree = "<group>"; };
 		51A8DC971692C4490017E86F /* Story+Permissions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Story+Permissions.m"; path = "Banyan/Story+Permissions.m"; sourceTree = "<group>"; };
-		51A8DCBF1692D52C0017E86F /* User+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "User+Create.h"; path = "Banyan/User+Create.h"; sourceTree = "<group>"; };
-		51A8DCC01692D52C0017E86F /* User+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "User+Create.m"; path = "Banyan/User+Create.m"; sourceTree = "<group>"; };
 		51A8DCC21692DA8F0017E86F /* CoreDataTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreDataTableViewController.h; path = Banyan/CoreDataTableViewController.h; sourceTree = "<group>"; };
 		51A8DCC31692DA8F0017E86F /* CoreDataTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CoreDataTableViewController.m; path = Banyan/CoreDataTableViewController.m; sourceTree = "<group>"; };
 		51B5989C15EB31B300DF4D9D /* BanyanConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BanyanConstants.h; sourceTree = "<group>"; };
 		51B5989D15EB31B300DF4D9D /* BanyanConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BanyanConstants.m; sourceTree = "<group>"; };
-		51C0CF001695899100C9B752 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = User.h; path = Banyan/User.h; sourceTree = "<group>"; };
-		51C0CF011695899100C9B752 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = User.m; path = Banyan/User.m; sourceTree = "<group>"; };
 		51CFD92615F1F260002926F9 /* SettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsTableViewController.h; sourceTree = "<group>"; };
 		51CFD92715F1F260002926F9 /* SettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsTableViewController.m; sourceTree = "<group>"; };
 		51CFD93415F3E80B002926F9 /* FollowingFriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowingFriendsViewController.h; sourceTree = "<group>"; };
@@ -441,6 +424,14 @@
 			name = InviteFriendCell;
 			sourceTree = "<group>";
 		};
+		517A01DF170EB02D00665F0F /* User */ = {
+			isa = PBXGroup;
+			children = (
+				517A01DE170EB02900665F0F /* User_Defines.h */,
+			);
+			name = User;
+			sourceTree = "<group>";
+		};
 		5189B2A815B387E100562DD0 = {
 			isa = PBXGroup;
 			children = (
@@ -554,7 +545,7 @@
 				5189B2DC15B395F300562DD0 /* ImageToDataTransformer.m */,
 				51B598A315EB451600DF4D9D /* Activity */,
 				5123CF3B15CDFEB700970A3E /* File */,
-				5189B35D15B397D900562DD0 /* User */,
+				517A01DF170EB02D00665F0F /* User */,
 				5189B35715B396E700562DD0 /* Piece */,
 				5189B35A15B3975100562DD0 /* Story */,
 			);
@@ -579,14 +570,9 @@
 		5189B35415B3968600562DD0 /* Account Management */ = {
 			isa = PBXGroup;
 			children = (
-				5189B2DF15B395F300562DD0 /* LoginTabbarViewController.h */,
-				5189B2E015B395F300562DD0 /* LoginTabbarViewController.m */,
-				5189B2E115B395F300562DD0 /* LoginTabbarViewController.xib */,
 				5189B32215B395F300562DD0 /* UserLoginViewController.h */,
 				5189B32315B395F300562DD0 /* UserLoginViewController.m */,
 				5189B32415B395F300562DD0 /* UserLoginViewController.xib */,
-				5189B32515B395F300562DD0 /* UserManagementModule.h */,
-				5189B32615B395F300562DD0 /* UserManagementModule.m */,
 			);
 			name = "Account Management";
 			path = ..;
@@ -691,20 +677,6 @@
 			);
 			name = "Helpful Categories";
 			path = ..;
-			sourceTree = "<group>";
-		};
-		5189B35D15B397D900562DD0 /* User */ = {
-			isa = PBXGroup;
-			children = (
-				51C0CF001695899100C9B752 /* User.h */,
-				51C0CF011695899100C9B752 /* User.m */,
-				51A8DCBF1692D52C0017E86F /* User+Create.h */,
-				51A8DCC01692D52C0017E86F /* User+Create.m */,
-				5189B31F15B395F300562DD0 /* User_Defines.h */,
-				510787DC163A37340042B436 /* User+Edit.h */,
-				510787DD163A37340042B436 /* User+Edit.m */,
-			);
-			name = User;
 			sourceTree = "<group>";
 		};
 		5192332416743EB7009686E4 /* Location */ = {
@@ -845,7 +817,6 @@
 				51F60EF816E8423E00F9715E /* Icon.png in Resources */,
 				51F60EF916E8423E00F9715E /* Icon@2x.png in Resources */,
 				5189B2C215B387E200562DD0 /* InfoPlist.strings in Resources */,
-				5189B32D15B395F300562DD0 /* LoginTabbarViewController.xib in Resources */,
 				5189B33015B395F300562DD0 /* ModifyPieceViewController.xib in Resources */,
 				5189B34E15B395F300562DD0 /* UserLoginViewController.xib in Resources */,
 				5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */,
@@ -902,7 +873,6 @@
 				5189B32815B395F300562DD0 /* ArrayToDataTransformer.m in Sources */,
 				5189B32A15B395F300562DD0 /* ImageToDataTransformer.m in Sources */,
 				5189B32B15B395F300562DD0 /* InvitedTableViewController.m in Sources */,
-				5189B32C15B395F300562DD0 /* LoginTabbarViewController.m in Sources */,
 				5189B32F15B395F300562DD0 /* ModifyPieceViewController.m in Sources */,
 				5189B33115B395F300562DD0 /* NewStoryViewController.m in Sources */,
 				5189B33515B395F300562DD0 /* ReadPieceViewController.m in Sources */,
@@ -918,7 +888,6 @@
 				5189B34815B395F300562DD0 /* StoryListStoryCell.m in Sources */,
 				5189B34915B395F300562DD0 /* StoryListTableViewController.m in Sources */,
 				5189B34D15B395F300562DD0 /* UserLoginViewController.m in Sources */,
-				5189B34F15B395F300562DD0 /* UserManagementModule.m in Sources */,
 				51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */,
 				51CFD92915F1F260002926F9 /* SettingsTableViewController.m in Sources */,
 				51CFD93615F3E80B002926F9 /* FollowingFriendsViewController.m in Sources */,
@@ -931,7 +900,6 @@
 				510787D2163A36F20042B436 /* BNLocationManager.m in Sources */,
 				510787D5163A37190042B436 /* Activity.m in Sources */,
 				510787DA163A37250042B436 /* File.m in Sources */,
-				510787DE163A37340042B436 /* User+Edit.m in Sources */,
 				5157CD031650902900C22CCE /* BanyanConnection.m in Sources */,
 				5103FB9F166898960095B11F /* UIImage+Create.m in Sources */,
 				519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */,
@@ -940,9 +908,7 @@
 				51A8DC9116928A240017E86F /* Activity+Create.m in Sources */,
 				51A8DC9516928AE00017E86F /* Banyan.xcdatamodeld in Sources */,
 				51A8DC981692C4490017E86F /* Story+Permissions.m in Sources */,
-				51A8DCC11692D52C0017E86F /* User+Create.m in Sources */,
 				51A8DCC41692DA900017E86F /* CoreDataTableViewController.m in Sources */,
-				51C0CF021695899100C9B752 /* User.m in Sources */,
 				5158AE2B16F56F7F0089193E /* BNTabBarController.m in Sources */,
 				5166957816F98ABB0014E65D /* UISwipeableView.m in Sources */,
 				51F095601702A643009D5A28 /* RemoteObject.m in Sources */,

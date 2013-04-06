@@ -7,7 +7,6 @@
 //
 
 #import "Story+Stats.h"
-#import "User+Edit.h"
 #import "Story+Edit.h"
 #import "AFParseAPIClient.h"
 #import "Activity+Create.h"
@@ -25,13 +24,13 @@
         return;
     }
     
-    User *currentUser = [User currentUser];
+    PFUser *currentUser = [PFUser currentUser];
     if (!currentUser)
         return;
 
     Activity *activity = [Activity activityWithType:kBNActivityTypeView
-                                           fromUser:currentUser.userId
-                                             toUser:currentUser.userId
+                                           fromUser:currentUser.objectId
+                                             toUser:currentUser.objectId
                                             pieceId:nil
                                             storyId:story.bnObjectId];
     [Activity createActivity:activity];
@@ -42,7 +41,7 @@
 
 + (void) toggleLikedStory:(Story *)story
 {
-    User *currentUser = [User currentUser];
+    PFUser *currentUser = [PFUser currentUser];
     if (!currentUser)
         return;
     
@@ -54,23 +53,23 @@
         story.liked = [NSNumber numberWithBool:NO];
         story.numberOfLikes = [NSNumber numberWithInt:([story.numberOfLikes intValue] - 1)];
         activity = [Activity activityWithType:kBNActivityTypeUnlike
-                                     fromUser:currentUser.userId
-                                       toUser:currentUser.userId
+                                     fromUser:currentUser.objectId
+                                       toUser:currentUser.objectId
                                       pieceId:nil
                                       storyId:story.bnObjectId];
-        [likers removeObject:currentUser.userId];
+        [likers removeObject:currentUser.objectId];
     }
     else {
         // like story
         story.liked = [NSNumber numberWithBool:YES];
         story.numberOfLikes = [NSNumber numberWithInt:([story.numberOfLikes intValue] + 1)];
         activity = [Activity activityWithType:kBNActivityTypeLike
-                                     fromUser:currentUser.userId
-                                       toUser:currentUser.userId
+                                     fromUser:currentUser.objectId
+                                       toUser:currentUser.objectId
                                       pieceId:nil
                                       storyId:story.bnObjectId];
 
-        [likers addObject:currentUser.userId];
+        [likers addObject:currentUser.objectId];
     }
     [Activity createActivity:activity];
     story.likers = likers;
@@ -78,7 +77,7 @@
 
 + (void) toggleFavouritedStory:(Story *)story
 {
-    User *currentUser = [User currentUser];
+    PFUser *currentUser = [PFUser currentUser];
     if (!currentUser)
         return;
     
@@ -86,8 +85,8 @@
     if (story.favourite) {
         // unfavourite story
         activity = [Activity activityWithType:kBNActivityTypeUnfavourite
-                                     fromUser:currentUser.userId
-                                       toUser:currentUser.userId
+                                     fromUser:currentUser.objectId
+                                       toUser:currentUser.objectId
                                       pieceId:nil
                                       storyId:story.bnObjectId];
         story.favourite = [NSNumber numberWithBool:NO];
@@ -95,8 +94,8 @@
     else {
         // favourite story
         activity = [Activity activityWithType:kBNActivityTypeFavourite
-                                     fromUser:currentUser.userId
-                                       toUser:currentUser.userId
+                                     fromUser:currentUser.objectId
+                                       toUser:currentUser.objectId
                                       pieceId:nil
                                       storyId:story.bnObjectId];
         story.favourite = [NSNumber numberWithBool:YES];
@@ -137,9 +136,9 @@
                                      }
                                      failure:AF_PARSE_ERROR_BLOCK()];
     
-    User *currentUser = [User currentUser];
+    PFUser *currentUser = [PFUser currentUser];
     if (currentUser) {
-        [jsonDictionary setObject:currentUser.userId forKey:kBNActivityFromUserKey];
+        [jsonDictionary setObject:currentUser.objectId forKey:kBNActivityFromUserKey];
         jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
         if (!jsonData) {
             NSLog(@"NSJSONSerialization failed %@", error);
@@ -189,9 +188,9 @@
                                              [likers addObject:[liker objectForKey:kBNActivityFromUserKey]];
                                          }
                                          self.likers = [likers copy];
-                                         User *currentUser = [User currentUser];
+                                         PFUser *currentUser = [PFUser currentUser];
                                          if (currentUser) {
-                                             if ([self.likers containsObject:currentUser.userId]) {
+                                             if ([self.likers containsObject:currentUser.objectId]) {
                                                  self.liked = [NSNumber numberWithBool:YES];
                                              }
                                          }
@@ -202,11 +201,11 @@
 # pragma mark favourites
 - (void) updateFavourites
 {
-    User *currentUser = [User currentUser];
+    PFUser *currentUser = [PFUser currentUser];
     if (!currentUser) {
         return;
     }
-    NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:self.bnObjectId, kBNActivityStoryKey, kBNActivityTypeFavourite, kBNActivityTypeKey, currentUser.userId, kBNActivityFromUserKey, nil];
+    NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:self.bnObjectId, kBNActivityStoryKey, kBNActivityTypeFavourite, kBNActivityTypeKey, currentUser.objectId, kBNActivityFromUserKey, nil];
     
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];

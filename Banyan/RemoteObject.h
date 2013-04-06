@@ -20,6 +20,7 @@ typedef enum {
 @interface RemoteObject : NSManagedObject
 
 @property (nonatomic, retain) NSString * bnObjectId;
+@property (nonatomic, retain) NSString * authorId;
 @property (nonatomic, retain) NSDate * createdAt;
 @property (nonatomic, retain) NSDate * updatedAt;
 @property (nonatomic, retain) NSNumber * remoteStatusNumber;

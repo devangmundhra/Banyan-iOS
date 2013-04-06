@@ -11,13 +11,10 @@
 #import "AFParseAPIClient.h"
 #import "AFBanyanAPIClient.h"
 #import "StoryListTableViewController.h"
-#import "User+Edit.h"
 
 @implementation BanyanAppDelegate
 
 @synthesize window = _window;
-@synthesize userManagementModule;
-@synthesize userContentMOCtx = _userContentMOCtx;
 @synthesize tabBarController = _tabBarController;
 @synthesize navController = _navController;
 
@@ -77,10 +74,8 @@
     }
     
     [self appearances];
-    
-    userManagementModule = [[UserManagementModule alloc] init];
-    
-    if ([User loggedIn]) {
+        
+    if ([BanyanAppDelegate loggedIn]) {
         // User has Facebook ID.
         // Update user details and get updates on FB friends
         [PF_FBRequestConnection startForMeWithCompletionHandler:^(PF_FBRequestConnection *connection, id result, NSError *error) {
@@ -181,7 +176,6 @@ void uncaughtExceptionHandler(NSException *exception)
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     [PF_FBSession.activeSession close];
-    [self setUserManagementModule:nil];
 }
 
 # pragma mark push notifications
@@ -197,6 +191,39 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
 - (void)application:(UIApplication *)application 
 didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [PFPush handlePush:userInfo];
+}
+
+# pragma mark User Account Management
+- (void)login
+{
+    // animate the tabbar up to the screen
+    UserLoginViewController *userLoginViewController = [[UserLoginViewController alloc] init];
+    userLoginViewController.delegate = self;
+    userLoginViewController.facebookPermissions = [NSArray arrayWithObjects: @"email", @"user_about_me", nil];
+    [self.navController presentViewController:userLoginViewController animated:YES completion:nil];    
+}
+
+- (void)logout
+{    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults removeObjectForKey:BNUserDefaultsUserInfo];
+    [defaults removeObjectForKey:BNUserDefaultsFacebookFriends];
+    [defaults synchronize];
+    [PFPush unsubscribeFromChannelInBackground:[[PFUser currentUser] objectId]];
+    [PFUser logOut];
+    [[NSNotificationCenter defaultCenter] postNotificationName:BNUserLogOutNotification
+                                                        object:nil];
+    return;
+}
+
++ (BOOL)loggedIn
+{
+    if ([PFUser currentUser] && // Check if a user is cached
+        [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) // Check if user is linked to Facebook
+    {
+        return YES;
+    }
+    return NO;
 }
 
 - (void)facebookRequest:(PF_FBRequestConnection *)connection didLoad:(id)result
@@ -231,7 +258,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
                                              
                                              NSDictionary *constraint = [NSDictionary dictionaryWithObject:idOfFriendsOnBanyan forKey:@"$in"];    
                                              NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:kBNActivityTypeFollowUser, kBNActivityTypeKey,
-                                                                             [User currentUser].userId, kBNActivityFromUserKey,
+                                                                             [PFUser currentUser].objectId, kBNActivityFromUserKey,
                                                                              constraint, kBNActivityToUserKey, nil];
                                              NSError *error = nil;
                                              NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
@@ -331,7 +358,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         if ([[[[error userInfo] objectForKey:@"error"] objectForKey:@"type"]
              isEqualToString: @"OAuthException"]) {
             NSLog(@"The facebook token was invalidated");
-            [self.userManagementModule logout];
+            [self logout];
         }
     }
 }
@@ -390,11 +417,6 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
                                                                  state:state
                                                                  error:error];
                                          }];
-}
-
-- (void) logout
-{
-    [self.userManagementModule logout];
 }
 
 - (void) restKitCoreDataInitialization
@@ -492,5 +514,20 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 - (void) newStoryViewControllerDidCancel:(NewStoryViewController *)sender
 {
 }
+
+# pragma mark UserLoginViewControllerDelegate
+- (void)logInViewController:(UserLoginViewController *)logInController didLogInUser:(PFUser *)user
+{
+    NSLog(@"Getting user info");
+    [PF_FBRequestConnection startForMeWithCompletionHandler:^(PF_FBRequestConnection *connection, id result, NSError *error) {
+        if (!error) {
+            [(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate] facebookRequest:connection didLoad:result];
+        } else {
+            [(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate] facebookRequest:connection didFailWithError:error];
+        }
+    }];
+    [PFPush subscribeToChannelInBackground:[[PFUser currentUser] objectId]];
+}
+
 @end
 
