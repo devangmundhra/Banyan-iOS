@@ -110,15 +110,7 @@
     [storyMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_READ_ACCESS, STORY_WRITE_ACCESS, STORY_TAGS, STORY_LENGTH,
                                                     STORY_IMAGE_URL, STORY_GEOCODEDLOCATION, STORY_LATITUDE, STORY_LONGITUDE,
                                                     PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT]];
-    
-//    //  @"object.author" : @"author.userId"
-//    RKEntityMapping *userMapping = [RKEntityMapping mappingForEntityForName:kBNUserClassKey
-//                                                       inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-//    [userMapping addAttributeMappingsFromDictionary:@{@"objectId": @"userId"}];
-//    userMapping.identificationAttributes = @[@"userId"];
-//    
-//    RKRelationshipMapping *userRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:STORY_AUTHOR toKeyPath:@"author" withMapping:userMapping];
-//    [storyMapping addPropertyMapping:userRelationshipMapping];
+    [storyMapping addAttributeMappingsFromDictionary:@{STORY_AUTHOR: @"authorId"}];
     
     RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:storyMapping
                                                                                        pathPattern:nil
@@ -150,17 +142,10 @@
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
     [pieceMapping addAttributeMappingsFromArray:@[PIECE_IMAGE_URL, PIECE_NUMBER, PIECE_LONGTEXT, PIECE_SHORTTEXT, PIECE_LATITUDE, PIECE_LONGITUDE, PIECE_GEOCODEDLOCATION,
                                                     PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT]];
-    [pieceMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"bnObjectId"}];
+    [pieceMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"bnObjectId", PIECE_AUTHOR : @"authorId"}];
     pieceMapping.identificationAttributes = @[@"bnObjectId"];
     
-//    //  @"object.author" : @"author.userId"
-//    RKEntityMapping *userMapping = [RKEntityMapping mappingForEntityForName:kBNUserClassKey
-//                                                       inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-//    [userMapping addAttributeMappingsFromDictionary:@{@"": @"userId"}];
-//    userMapping.identificationAttributes = @[@"userId"];
-//    
-//    RKRelationshipMapping *userRelationshipMapping = [RKRelationshipMapping relationshipMappingFromKeyPath:PIECE_AUTHOR toKeyPath:@"author" withMapping:userMapping];
-//    [pieceMapping addPropertyMapping:userRelationshipMapping];
+    //  @"object.author" : @"author.userId"
     
 //    [pieceMapping addConnectionForRelationship:@"story" connectedBy:@"bnObjectId"];
     

@@ -126,7 +126,7 @@
         
         [storyRequestMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_IMAGE_URL, STORY_WRITE_ACCESS, STORY_READ_ACCESS,
                                                             STORY_LATITUDE, STORY_LONGITUDE, STORY_GEOCODEDLOCATION, STORY_TAGS]];
-        [storyRequestMapping addAttributeMappingsFromDictionary:@{@"author.userId" : STORY_AUTHOR}];
+        [storyRequestMapping addAttributeMappingsFromDictionary:@{@"authorId" : STORY_AUTHOR}];
         
         RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
                                                   requestDescriptorWithMapping:storyRequestMapping
