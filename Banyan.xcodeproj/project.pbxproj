@@ -18,6 +18,14 @@
 		510787DA163A37250042B436 /* File.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787D7163A37250042B436 /* File.m */; };
 		511E708B161A9756009AAD25 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708A161A9756009AAD25 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		511E708E161A977F009AAD25 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
+		5144EC6A1712277600F0B265 /* cameraSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC601712277600F0B265 /* cameraSymbol.png */; };
+		5144EC6B1712277600F0B265 /* cameraSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC611712277600F0B265 /* cameraSymbol@2x.png */; };
+		5144EC6C1712277600F0B265 /* locationSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC621712277600F0B265 /* locationSymbol.png */; };
+		5144EC6D1712277600F0B265 /* locationSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC631712277600F0B265 /* locationSymbol@2x.png */; };
+		5144EC6E1712277600F0B265 /* readButtonSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC641712277600F0B265 /* readButtonSelected.png */; };
+		5144EC6F1712277600F0B265 /* readButtonSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC651712277600F0B265 /* readButtonSelected@2x.png */; };
+		5144EC701712277600F0B265 /* writeButtonSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC661712277600F0B265 /* writeButtonSelected.png */; };
+		5144EC711712277600F0B265 /* writeButtonSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC671712277600F0B265 /* writeButtonSelected@2x.png */; };
 		5157CD031650902900C22CCE /* BanyanConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD021650902900C22CCE /* BanyanConnection.m */; };
 		5158AE2B16F56F7F0089193E /* BNTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5158AE2916F56F7E0089193E /* BNTabBarController.m */; };
 		5166957816F98ABB0014E65D /* UISwipeableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5166957716F98ABA0014E65D /* UISwipeableView.m */; };
@@ -35,6 +43,10 @@
 		517A01D7170A7A9E00665F0F /* MediaPickerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 517A01D6170A7A9E00665F0F /* MediaPickerButton.m */; };
 		517A01DA170BFA3000665F0F /* InviteFriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 517A01D9170BFA2F00665F0F /* InviteFriendCell.m */; };
 		517A01DD170BFA5B00665F0F /* InviteFriendCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 517A01DC170BFA5A00665F0F /* InviteFriendCell.xib */; };
+		51815328171230AB006F73D3 /* readButtonUnselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 51815326171230AB006F73D3 /* readButtonUnselected.png */; };
+		51815329171230AB006F73D3 /* readButtonUnselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51815327171230AB006F73D3 /* readButtonUnselected@2x.png */; };
+		5181532C17123412006F73D3 /* writeButtonUnselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181532A17123412006F73D3 /* writeButtonUnselected.png */; };
+		5181532D17123412006F73D3 /* writeButtonUnselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181532B17123412006F73D3 /* writeButtonUnselected@2x.png */; };
 		5189B2B815B387E200562DD0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2B715B387E200562DD0 /* UIKit.framework */; };
 		5189B2BA15B387E200562DD0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2B915B387E200562DD0 /* Foundation.framework */; };
 		5189B2BC15B387E200562DD0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2BB15B387E200562DD0 /* CoreGraphics.framework */; };
@@ -132,6 +144,14 @@
 		510787D7163A37250042B436 /* File.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = File.m; path = Banyan/File.m; sourceTree = "<group>"; };
 		511E708A161A9756009AAD25 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		5144EC601712277600F0B265 /* cameraSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cameraSymbol.png; sourceTree = "<group>"; };
+		5144EC611712277600F0B265 /* cameraSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cameraSymbol@2x.png"; sourceTree = "<group>"; };
+		5144EC621712277600F0B265 /* locationSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = locationSymbol.png; sourceTree = "<group>"; };
+		5144EC631712277600F0B265 /* locationSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "locationSymbol@2x.png"; sourceTree = "<group>"; };
+		5144EC641712277600F0B265 /* readButtonSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = readButtonSelected.png; sourceTree = "<group>"; };
+		5144EC651712277600F0B265 /* readButtonSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "readButtonSelected@2x.png"; sourceTree = "<group>"; };
+		5144EC661712277600F0B265 /* writeButtonSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = writeButtonSelected.png; sourceTree = "<group>"; };
+		5144EC671712277600F0B265 /* writeButtonSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "writeButtonSelected@2x.png"; sourceTree = "<group>"; };
 		5157CD011650902900C22CCE /* BanyanConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BanyanConnection.h; path = Banyan/BanyanConnection.h; sourceTree = "<group>"; };
 		5157CD021650902900C22CCE /* BanyanConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BanyanConnection.m; path = Banyan/BanyanConnection.m; sourceTree = "<group>"; };
 		5158AE2816F56F7E0089193E /* BNTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNTabBarController.h; sourceTree = "<group>"; };
@@ -163,6 +183,10 @@
 		517A01D9170BFA2F00665F0F /* InviteFriendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InviteFriendCell.m; path = Banyan/InviteFriendCell.m; sourceTree = "<group>"; };
 		517A01DC170BFA5A00665F0F /* InviteFriendCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = InviteFriendCell.xib; path = Banyan/InviteFriendCell.xib; sourceTree = "<group>"; };
 		517A01DE170EB02900665F0F /* User_Defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = User_Defines.h; path = Banyan/User_Defines.h; sourceTree = "<group>"; };
+		51815326171230AB006F73D3 /* readButtonUnselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = readButtonUnselected.png; sourceTree = "<group>"; };
+		51815327171230AB006F73D3 /* readButtonUnselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "readButtonUnselected@2x.png"; sourceTree = "<group>"; };
+		5181532A17123412006F73D3 /* writeButtonUnselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = writeButtonUnselected.png; sourceTree = "<group>"; };
+		5181532B17123412006F73D3 /* writeButtonUnselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "writeButtonUnselected@2x.png"; sourceTree = "<group>"; };
 		5189B2B315B387E200562DD0 /* Banyan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Banyan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5189B2B715B387E200562DD0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		5189B2B915B387E200562DD0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -343,6 +367,16 @@
 		5166B1B515E75B420072749C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				5144EC601712277600F0B265 /* cameraSymbol.png */,
+				5144EC611712277600F0B265 /* cameraSymbol@2x.png */,
+				5144EC621712277600F0B265 /* locationSymbol.png */,
+				5144EC631712277600F0B265 /* locationSymbol@2x.png */,
+				5144EC641712277600F0B265 /* readButtonSelected.png */,
+				5144EC651712277600F0B265 /* readButtonSelected@2x.png */,
+				5144EC661712277600F0B265 /* writeButtonSelected.png */,
+				5144EC671712277600F0B265 /* writeButtonSelected@2x.png */,
+				5181532A17123412006F73D3 /* writeButtonUnselected.png */,
+				5181532B17123412006F73D3 /* writeButtonUnselected@2x.png */,
 				51FD96EB1665E6C7001A1709 /* dotted-pattern.png */,
 				51FD96EC1665E6C7001A1709 /* dotted-pattern@2x.png */,
 				5166B1B615E75B420072749C /* buttonFacebook.png */,
@@ -353,6 +387,8 @@
 				51CFD93D15F58337002926F9 /* buttonFollow@2x.png */,
 				51CFD93E15F58337002926F9 /* buttonFollowing.png */,
 				51CFD93F15F58337002926F9 /* buttonFollowing@2x.png */,
+				51815326171230AB006F73D3 /* readButtonUnselected.png */,
+				51815327171230AB006F73D3 /* readButtonUnselected@2x.png */,
 				51CFD94015F58337002926F9 /* buttonFollowingSelected.png */,
 				51CFD94115F58337002926F9 /* buttonFollowingSelected@2x.png */,
 				51CFD94215F58337002926F9 /* buttonFollowSelected.png */,
@@ -840,6 +876,18 @@
 				51F095771702A6FB009D5A28 /* StoryListCellReadSceneViewController.xib in Resources */,
 				517A01B7170953BD00665F0F /* AviarySDKResources.bundle in Resources */,
 				517A01DD170BFA5B00665F0F /* InviteFriendCell.xib in Resources */,
+				5144EC6A1712277600F0B265 /* cameraSymbol.png in Resources */,
+				5144EC6B1712277600F0B265 /* cameraSymbol@2x.png in Resources */,
+				5144EC6C1712277600F0B265 /* locationSymbol.png in Resources */,
+				5144EC6D1712277600F0B265 /* locationSymbol@2x.png in Resources */,
+				5144EC6E1712277600F0B265 /* readButtonSelected.png in Resources */,
+				5144EC6F1712277600F0B265 /* readButtonSelected@2x.png in Resources */,
+				5144EC701712277600F0B265 /* writeButtonSelected.png in Resources */,
+				5144EC711712277600F0B265 /* writeButtonSelected@2x.png in Resources */,
+				51815328171230AB006F73D3 /* readButtonUnselected.png in Resources */,
+				51815329171230AB006F73D3 /* readButtonUnselected@2x.png in Resources */,
+				5181532C17123412006F73D3 /* writeButtonUnselected.png in Resources */,
+				5181532D17123412006F73D3 /* writeButtonUnselected@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

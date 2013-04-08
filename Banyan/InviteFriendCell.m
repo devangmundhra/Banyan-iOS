@@ -39,10 +39,7 @@
 
 - (void)awakeFromNib
 {
-    [readButton addTarget:self action:@selector(readButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [writeButton addTarget:self action:@selector(writeButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    self.selectionStyle = UITableViewCellSelectionStyleNone;
-    [self setBackgroundColor:[UIColor clearColor]];
+    [self setup];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
@@ -53,6 +50,18 @@
 }
 
 # pragma mark Instance methods
+
+- (void) setup
+{
+    // Read button
+    [readButton addTarget:self action:@selector(readButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    
+    // Write button
+    [writeButton addTarget:self action:@selector(writeButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    [self setBackgroundColor:[UIColor clearColor]];
+}
+
 - (void)disableReadButton:(BOOL)set
 {
     readButton.enabled = set;
@@ -92,17 +101,17 @@
 - (void) canRead:(BOOL)set
 {
     if (set)
-        [readButton setTitle:@"R" forState:UIControlStateNormal];
+        [readButton setImage:[UIImage imageNamed:@"readButtonSelected"] forState:UIControlStateNormal];
     else
-        [readButton setTitle:@"nr" forState:UIControlStateNormal];
+        [readButton setImage:[UIImage imageNamed:@"readButtonUnselected"] forState:UIControlStateNormal];
 }
 
 - (void) canWrite:(BOOL)set
 {
     if (set)
-        [writeButton setTitle:@"W" forState:UIControlStateNormal];
+        [writeButton setImage:[UIImage imageNamed:@"writeButtonSelected"] forState:UIControlStateNormal];
     else
-        [writeButton setTitle:@"nw" forState:UIControlStateNormal];
+        [writeButton setImage:[UIImage imageNamed:@"writeButtonUnselected"] forState:UIControlStateNormal];
 }
 
 @end

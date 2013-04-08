@@ -53,6 +53,7 @@
 
 // Timeout for finding location
 #define kFindLocationTimeOut 0.5*60 // half a minute
+#define kTokenisingCharacter @","
 
 @synthesize scrollView = _scrollView;
 @synthesize storyTitle = _storyTitle;
@@ -156,8 +157,16 @@
     [self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldChangedEditing:) forControlEvents:UIControlEventEditingDidBegin];
 	[self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldChangedEditing:) forControlEvents:UIControlEventEditingDidEnd];
     self.tagsFieldView.tokenField.returnKeyType = UIReturnKeyDone;
-    [self.tagsFieldView.tokenField setPromptText:@"Add some tags..."];
-
+    if (self.story.tags) {
+        [[self.story.tags componentsSeparatedByString:kTokenisingCharacter]
+         enumerateObjectsUsingBlock:^(NSString *token, NSUInteger idx, BOOL *stop) {
+            [self.tagsFieldView.tokenField addTokenWithTitle:token];
+        }];
+    }
+    else {
+        [self.tagsFieldView.tokenField setPromptText:@"Tags: "];
+    }
+    
     [self.inviteContactsButton addTarget:self action:@selector(inviteContacts:) forControlEvents:UIControlEventTouchUpInside];
 }
 
@@ -228,7 +237,7 @@
     }
     
     NSArray *tagsArray = [self.tagsFieldView tokenTitles];
-    NSString *tags = [tagsArray componentsJoinedByString:@","];
+    NSString *tags = [tagsArray componentsJoinedByString:kTokenisingCharacter];
     self.story.tags = tags;
     NSLog(@"tags are %@", tags);
     
@@ -479,21 +488,13 @@
     NSDictionary* info = [aNotification userInfo];
     CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height - self.navigationController.navigationBar.frame.size.height, 0.0);
     self.scrollView.contentInset = contentInsets;
     self.scrollView.scrollIndicatorInsets = contentInsets;
-    
-    // If active text field is hidden by keyboard, scroll it so it's visible
-    CGRect aRect = self.view.frame;
-    aRect.size.height -= kbSize.height;
-    CGPoint activeFieldOrigin = self.activeField.frame.origin;
+
+    // If active text field is hidden by keyboard, scroll it so it's visible    
     if (self.activeField == self.tagsFieldView.tokenField) {
-        activeFieldOrigin = self.tagsFieldView.frame.origin;
-        activeFieldOrigin.y += self.tagsFieldView.frame.size.height;
-    }
-    
-    if (!CGRectContainsPoint(aRect, activeFieldOrigin)) {
-        CGPoint scrollPoint = CGPointMake(0.0, activeFieldOrigin.y-kbSize.height);
+        CGPoint scrollPoint = CGPointMake(0, self.tagsFieldView.frame.origin.y + self.tagsFieldView.separator.frame.origin.y - self.navigationController.navigationBar.frame.size.height);
         [self.scrollView setContentOffset:scrollPoint animated:YES];
     }
 }
@@ -501,6 +502,10 @@
 // Called when the UIKeyboardWillBeHidden is sent
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification
 {
+    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
+    self.scrollView.contentInset = contentInsets;
+    self.scrollView.scrollIndicatorInsets = contentInsets;
+    
     [self.scrollView setContentOffset:CGPointZero animated:YES];
 }
 
@@ -564,18 +569,19 @@
 }
 
 - (void)tokenFieldFrameDidChange:(TITokenField *)tokenField
-{
-    [self updateScrollViewContentSize];
-}
+{    
+    if (self.activeField == self.tagsFieldView.tokenField) {
+        CGPoint scrollPoint = CGPointMake(0, self.tagsFieldView.frame.origin.y + self.tagsFieldView.separator.frame.origin.y - self.navigationController.navigationBar.frame.size.height);
+        [self.scrollView setContentOffset:scrollPoint animated:YES];
+    }}
 
 - (void) updateScrollViewContentSize
 {
     CGSize screenSize = [UIScreen mainScreen].applicationFrame.size;
     self.scrollView.contentSize = CGSizeMake(screenSize.width,
                                              screenSize.height
-                                                - self.navigationController.navigationBar.frame.size.height
-                                                + self.tagsFieldView.contentView.frame.origin.y
-                                                - self.tagsFieldView.contentView.frame.size.height);
+                                             - self.navigationController.navigationBar.frame.size.height);
+//                                             + self.tagsFieldView.separator.frame.origin.y);
 }
 
 #pragma Memory Management
