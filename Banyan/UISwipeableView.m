@@ -9,6 +9,22 @@
 #import "UISwipeableView.h"
 #import <QuartzCore/QuartzCore.h>
 
+@implementation UISwipeableViewFrontView
+- (void)drawRect:(CGRect)rect {
+    
+    if ([((UISwipeableView *)self.superview).delegate respondsToSelector:@selector(drawFrontView:)])
+        [((UISwipeableView *)self.superview).delegate drawFrontView:rect];
+}
+@end
+
+@implementation UISwipeableViewBackView
+- (void)drawRect:(CGRect)rect {
+    if ([((UISwipeableView *)self.superview).delegate respondsToSelector:@selector(drawBackView:)])
+        [((UISwipeableView *)self.superview).delegate drawBackView:rect];
+}
+
+@end
+
 @interface UISwipeableView (Private)
 - (void)initialSetup;
 - (void)resetViews:(BOOL)animated;
@@ -16,8 +32,8 @@
 
 @implementation UISwipeableView
 @synthesize backView;
-@synthesize contentView;
-@synthesize contentViewMoving;
+@synthesize frontView;
+@synthesize frontViewMoving;
 @synthesize shouldBounce;
 @synthesize delegate;
 
@@ -44,22 +60,21 @@
     [self setBackgroundColor:[UIColor whiteColor]];
     
     CGRect newBounds = self.bounds;
-    newBounds.size.height -= 1;
-    
-	contentView = [[UIView alloc] initWithFrame:newBounds];
-	[contentView setClipsToBounds:YES];
-	[contentView setOpaque:YES];
-	[contentView setBackgroundColor:[UIColor clearColor]];
+        
+	frontView = [[UISwipeableViewFrontView alloc] initWithFrame:newBounds];
+	[frontView setClipsToBounds:YES];
+	[frontView setOpaque:YES];
+	[frontView setBackgroundColor:[UIColor clearColor]];
 	
     UISwipeGestureRecognizer * frontSwipeRecognizerLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(frontViewWasSwiped:)];
 	[frontSwipeRecognizerLeft setDirection:UISwipeGestureRecognizerDirectionLeft];
-	[contentView addGestureRecognizer:frontSwipeRecognizerLeft];
+	[frontView addGestureRecognizer:frontSwipeRecognizerLeft];
 	
-	backView = [[UIView alloc] initWithFrame:newBounds];
+	backView = [[UISwipeableViewBackView alloc] initWithFrame:newBounds];
 	[backView setOpaque:YES];
 	[backView setClipsToBounds:YES];
 	[backView setHidden:YES];
-	[backView setBackgroundColor:[UIColor clearColor]];
+	[backView setBackgroundColor:[UIColor redColor]];
     
 	UISwipeGestureRecognizer * backSwipeRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(backViewWasSwiped:)];
     // The direction of backview swipe depends on how it was revealed
@@ -67,9 +82,9 @@
 	[backView addGestureRecognizer:backSwipeRecognizer];
 	
 	[self addSubview:backView];
-	[self addSubview:contentView];
+	[self addSubview:frontView];
 	
-	contentViewMoving = NO;
+	frontViewMoving = NO;
 	shouldBounce = YES;
 }
 
@@ -78,20 +93,19 @@
 	[self resetViews:NO];
 }
 
-//- (void)setFrame:(CGRect)aFrame {
-//	
-//	[super setFrame:aFrame];
-//	
-//	CGRect newBounds = self.bounds;
-//	newBounds.size.height -= 1;
-//	[backView setFrame:newBounds];
-//	[contentView setFrame:newBounds];
-//}
+- (void)setFrame:(CGRect)aFrame
+{	
+	[super setFrame:aFrame];
+	
+	CGRect newBounds = self.bounds;
+	[backView setFrame:newBounds];
+	[frontView setFrame:newBounds];
+}
 
 - (void)setNeedsDisplay {
 	
 	[super setNeedsDisplay];
-	if (!contentView.hidden) [contentView setNeedsDisplay];
+	if (!frontView.hidden) [frontView setNeedsDisplay];
 	if (!backView.hidden) [backView setNeedsDisplay];
 }
 
@@ -109,12 +123,12 @@
     [self hideBackViewAnimated:YES inDirection:recognizer.direction];
 }
 
+#define FRONTVIEW_SCALE_FACTOR 0.03
 - (void)revealBackViewAnimated:(BOOL)animated inDirection:(UISwipeGestureRecognizerDirection)direction
 {
-	if (!contentViewMoving && backView.hidden) {
+	if (!frontViewMoving && backView.hidden) {
 		
-		contentViewMoving = YES;
-		
+		frontViewMoving = YES;
 		[backView.layer setHidden:NO];
 		[backView setNeedsDisplay];
 		
@@ -126,14 +140,14 @@
             [UIView setAnimationDuration:0.2];
             
             if (direction == UISwipeGestureRecognizerDirectionRight) {
-                [contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
-                [contentView.layer setPosition:CGPointMake(contentView.frame.size.width, contentView.layer.position.y)];
+                CGAffineTransform scale = CGAffineTransformMakeScale(FRONTVIEW_SCALE_FACTOR, 1);
+                [frontView setTransform:CGAffineTransformTranslate(scale, self.frame.size.width/2/FRONTVIEW_SCALE_FACTOR, 0)];
             } else {
-                [contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
-                [contentView.layer setPosition:CGPointMake(-contentView.frame.size.width, contentView.layer.position.y)];
+                CGAffineTransform scale = CGAffineTransformMakeScale(FRONTVIEW_SCALE_FACTOR, 1);
+                [frontView setTransform:CGAffineTransformTranslate(scale, -self.frame.size.width/2/FRONTVIEW_SCALE_FACTOR, 0)];
             }
             [UIView setAnimationDelegate:self];
-            [UIView setAnimationCurve:UIViewAnimationCurveLinear];
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
             [UIView setAnimationDidStopSelector:@selector(animationDidStopAddingBackView:finished:context:)];
             [UIView commitAnimations];
 		}
@@ -142,36 +156,27 @@
             if ([delegate respondsToSelector:@selector(backViewDidAppear:)])
                 [delegate backViewDidAppear:animated];
 			
-			contentViewMoving = NO;
+			frontViewMoving = NO;
 		}
 	}
 }
 
-#define BOUNCE_PIXELS 20.0
-
 - (void)hideBackViewAnimated:(BOOL)animated inDirection:(UISwipeGestureRecognizerDirection)direction
 {
 	
-	if (!contentViewMoving && !backView.hidden){
+	if (!frontViewMoving && !backView.hidden){
 		
-		contentViewMoving = YES;
+		frontViewMoving = YES;
 		
         if ([delegate respondsToSelector:@selector(backViewWillDisappear:)])
             [delegate backViewWillDisappear:animated];
 		
 		if (animated) {
-            // The first step in a bounce animation is to move the side swipe view a bit offscreen
             [UIView beginAnimations:nil context:(void *)([NSNumber numberWithInt:direction])];
             [UIView setAnimationDuration:0.2];
-            if (direction == UISwipeGestureRecognizerDirectionLeft) {
-                [contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
-                [contentView.layer setPosition:CGPointMake(-BOUNCE_PIXELS/2, contentView.layer.position.y)];
-            } else {
-                [contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
-                [contentView.layer setPosition:CGPointMake(BOUNCE_PIXELS/2, contentView.layer.position.y)];
-            }
+            [frontView setTransform:CGAffineTransformIdentity];
             [UIView setAnimationDelegate:self];
-            [UIView setAnimationDidStopSelector:@selector(animationDidStopOne:finished:context:)];
+            [UIView setAnimationDidStopSelector:@selector(animationDidStopHidingBackView:finished:context:)];
             [UIView commitAnimations];
 		}
 		else
@@ -181,49 +186,11 @@
 	}
 }
 
-#pragma mark Bounce animation when removing the side swipe view
-// The next step in a bounce animation is to move the side swipe view a bit on screen
-- (void)animationDidStopOne:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context
-{
-    UISwipeGestureRecognizerDirection direction = (UISwipeGestureRecognizerDirection)[(__bridge NSNumber *)context intValue];
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:0.2];
-    if (direction == UISwipeGestureRecognizerDirectionLeft) {
-        [contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
-        [contentView.layer setPosition:CGPointMake(-BOUNCE_PIXELS, contentView.layer.position.y)];
-    }
-    else {
-        [contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
-        [contentView.layer setPosition:CGPointMake(BOUNCE_PIXELS, contentView.layer.position.y)];
-    }
-    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDidStopSelector:@selector(animationDidStopTwo:finished:context:)];
-    [UIView setAnimationCurve:UIViewAnimationCurveLinear];
-    [UIView commitAnimations];
-}
-
-// The final step in a bounce animation is to move the side swipe completely offscreen
-- (void)animationDidStopTwo:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context
-{
-    [UIView commitAnimations];
-    [UIView beginAnimations:nil context:context];
-    [UIView setAnimationDuration:0.2];
-    
-    [contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
-    [contentView.layer setPosition:CGPointMake(0, contentView.layer.position.y)];
-    
-    [UIView setAnimationDelegate:self];
-    [UIView setAnimationDidStopSelector:@selector(animationDidStopHidingBackView:finished:context:)];
-    [UIView setAnimationCurve:UIViewAnimationCurveLinear];
-    [UIView commitAnimations];
-}
-
 - (void)resetViews:(BOOL)animated {
 	
-	contentViewMoving = NO;
+	frontViewMoving = NO;
 	
-	[contentView.layer setAnchorPoint:CGPointMake(0, 0.5)];
-	[contentView.layer setPosition:CGPointMake(0, contentView.layer.position.y)];
+    [frontView setTransform:CGAffineTransformIdentity];
 	
 	[backView.layer setHidden:YES];
 	[backView.layer setOpacity:1.0];
@@ -238,20 +205,20 @@
     if ([delegate respondsToSelector:@selector(backViewDidAppear:)])
         [delegate backViewDidAppear:YES];
     
-    contentViewMoving = NO;
+    frontViewMoving = NO;
 }
 
 - (void)animationDidStopHidingBackView:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context
 {
     [self resetViews:YES];
     
-    contentViewMoving = NO;
+    frontViewMoving = NO;
 }
 
 #pragma mark - Other
 - (NSString *)description {
 	
-	NSString * extraInfo = backView.hidden ? @"ContentView visible": @"BackView visible";
+	NSString * extraInfo = backView.hidden ? @"FrontView visible": @"BackView visible";
 	return [NSString stringWithFormat:@"<UISwipeableView %p; '%@'>", self, extraInfo];
 }
 

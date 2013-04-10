@@ -77,11 +77,7 @@
 
 - (void)awakeFromNib
 {
-    [self setupTopSwipeableContentView];
-    self.topSwipeableView.delegate = self;
-    [self setupMiddleView];
-    self.selectionStyle = UITableViewCellSelectionStyleNone;
-    [self setBackgroundColor:[UIColor clearColor]];
+    [self setup];
 }
 
 - (void)prepareForReuse
@@ -109,6 +105,16 @@
 	[self setNeedsDisplay];
 }
 
+- (void) setup
+{
+    [self setupTopSwipeableFrontView];
+    self.topSwipeableView.delegate = self;
+    [self setupMiddleView];
+    [self setupBottomView];
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    [self setBackgroundColor:BANYAN_WHITE_COLOR];
+}
+
 #pragma mark setter/getter functions
 
 - (void)setStory:(Story *)story
@@ -130,11 +136,14 @@
 }
 
 # pragma mark methods for Bottom View
+- (void) setupBottomView
+{
+}
 
 # pragma mark methods for Middle View
 - (void) setupMiddleView
 {
-    [self.middleView setBackgroundColor:[UIColor clearColor]];
+    [self.middleView setBackgroundColor:BANYAN_GREEN_COLOR];
     [self.middleView addSubview:self.middleVC.view];
     [self.middleView addGestureRecognizer:self.tapRecognizer];
 }
@@ -157,9 +166,11 @@
 }
 
 # pragma mark methods for Top View
-- (void) setupTopSwipeableContentView
+- (void) setupTopSwipeableFrontView
 {
-    [self.topSwipeableView.contentView setBackgroundColor:[UIColor whiteColor]];
+    [self.topSwipeableView.frontView setBackgroundColor:[UIColor whiteColor]];
+    [self.topSwipeableView.backView setBackgroundColor:BANYAN_DARKGRAY_COLOR];
+    
     self.storyTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(TABLE_CELL_MARGIN, TABLE_CELL_MARGIN/2,
                                                                      self.topSwipeableView.frame.size.width - TABLE_CELL_MARGIN,
                                                                      self.topSwipeableView.frame.size.height - 2 * TABLE_CELL_MARGIN)];
@@ -168,7 +179,7 @@
     self.storyTitleLabel.minimumFontSize = 12;
     self.storyTitleLabel.backgroundColor = [UIColor clearColor];
     [self.contentView addSubview:self.storyTitleLabel];
-    [self.topSwipeableView.contentView addSubview:self.storyTitleLabel];
+    [self.topSwipeableView.frontView addSubview:self.storyTitleLabel];
     
     self.storyLocationLabel = [[UILabel alloc] initWithFrame:CGRectMake(TABLE_CELL_MARGIN, TABLE_CELL_MARGIN/2 + 15,
                                                                         self.topSwipeableView.frame.size.width - TABLE_CELL_MARGIN,
@@ -178,7 +189,7 @@
     self.storyLocationLabel.minimumFontSize = 10;
     self.storyLocationLabel.textAlignment = NSTextAlignmentLeft;
     self.storyLocationLabel.backgroundColor = [UIColor clearColor];
-    [self.topSwipeableView.contentView addSubview:self.storyLocationLabel];
+    [self.topSwipeableView.frontView addSubview:self.storyLocationLabel];
 }
 
 - (void) setupBackView
@@ -230,7 +241,7 @@
         label.font = [UIFont systemFontOfSize:15];
         label.text = @"You do not have permission to modify this story";
         label.textAlignment = NSTextAlignmentCenter;
-        label.backgroundColor = [UIColor colorWithRed:136/255.0 green:103/255.0 blue:68/255.0 alpha:1];
+        label.backgroundColor = BANYAN_BROWN_COLOR;
         [label.layer setCornerRadius:4];
         
         [self.topSwipeableView.backView addSubview:label];
@@ -261,8 +272,8 @@
 
 - (void)drawBackView:(CGRect)rect
 {
-	[[UIImage imageNamed:@"dotted-pattern.png"] drawAsPatternInRect:rect];
-	[self drawShadowsWithHeight:10 opacity:0.3 InRect:rect forContext:UIGraphicsGetCurrentContext()];
+//	[[UIImage imageNamed:@"dotted-pattern.png"] drawAsPatternInRect:rect];
+//	[self drawShadowsWithHeight:10 opacity:0.3 InRect:rect forContext:UIGraphicsGetCurrentContext()];
 }
 
 - (void)drawShadowsWithHeight:(CGFloat)shadowHeight opacity:(CGFloat)opacity InRect:(CGRect)rect forContext:(CGContextRef)context {

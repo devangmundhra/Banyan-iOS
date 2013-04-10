@@ -127,6 +127,8 @@ void uncaughtExceptionHandler(NSException *exception)
     [[UISlider appearance] setThumbTintColor:BANYAN_GREEN_COLOR];
     
     [[UISlider appearance] setMinimumTrackTintColor:BANYAN_BROWN_COLOR];
+    
+    [[UITabBar appearance] setSelectedImageTintColor:BANYAN_BROWN_COLOR];
 }
 
 #pragma mark Application's documents directory
@@ -463,32 +465,20 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 - (void)setupTabBarController
 {
     self.tabBarController = [[BNTabBarController alloc] init];
-    StoryListTableViewController *storyListVC = [[StoryListTableViewController alloc] init];
+    StoryListTableViewController *storyListVC = [[StoryListTableViewController alloc] initWithStyle:UITableViewStylePlain];
+    storyListVC.title = @"Stories";
     
-    UITabBarItem *storyListTabBarItem = [[UITabBarItem alloc] initWithTitle:@"Following" image:nil tag:0];
-    [storyListTabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                            [UIColor colorWithRed:86.0f/255.0f green:55.0f/255.0f blue:42.0f/255.0f alpha:1.0f], UITextAttributeTextColor,
-                                            nil] forState:UIControlStateNormal];
-    [storyListTabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                            [UIColor colorWithRed:129.0f/255.0f green:99.0f/255.0f blue:69.0f/255.0f alpha:1.0f], UITextAttributeTextColor,
-                                            nil] forState:UIControlStateSelected];
+    UITabBarItem *storyListTabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:[UIImage imageNamed:@"homeTabSymbol"] tag:0];
     
     UITableViewController *searchVC = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
-    UITabBarItem *searchTabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemSearch tag:0];
-    [searchTabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                 [UIColor colorWithRed:86.0f/255.0f green:55.0f/255.0f blue:42.0f/255.0f alpha:1.0f], UITextAttributeTextColor,
-                                                 nil] forState:UIControlStateNormal];
-    [searchTabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                 [UIColor colorWithRed:129.0f/255.0f green:99.0f/255.0f blue:69.0f/255.0f alpha:1.0f], UITextAttributeTextColor,
-                                                 nil] forState:UIControlStateSelected];
-    
+    UITabBarItem *searchTabBarItem = [[UITabBarItem alloc] initWithTitle:@"Search" image:[UIImage imageNamed:@"searchTabSymbol"] tag:0];
     
     NewStoryViewController *newStoryViewController = [[NewStoryViewController alloc] initWithNibName:@"NewStoryViewController" bundle:nil];
     newStoryViewController.delegate = self;
-    UITabBarItem *addTabBarItem = [[UITabBarItem alloc] initWithTitle:@"Add" image:nil tag:0];
+    UITabBarItem *addTabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:[UIImage imageNamed:@"addTabSymbol"] tag:0];
     
     SettingsTableViewController *settingsVC = [[SettingsTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    UITabBarItem *settingsTabBar = [[UITabBarItem alloc] initWithTitle:@"Settings" image:nil tag:0];
+    UITabBarItem *settingsTabBar = [[UITabBarItem alloc] initWithTitle:nil image:[UIImage imageNamed:@"userProfileTabSymbol"] tag:0];
     
     UINavigationController *storyListNavigationController = [[UINavigationController alloc] initWithRootViewController:storyListVC];
     UINavigationController *emptyNavigationController = [[UINavigationController alloc] initWithRootViewController:newStoryViewController];
@@ -501,7 +491,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [profileNavigationController setTabBarItem:settingsTabBar];
 
     self.tabBarController.delegate = self;
-    [self.tabBarController setViewControllers:@[storyListNavigationController, searchNavigationController, emptyNavigationController, profileNavigationController] animated:YES];
+    [self.tabBarController setViewControllers:@[storyListNavigationController, /*searchNavigationController,*/ emptyNavigationController, profileNavigationController] animated:YES];
 }
 
 - (void) newStoryViewController:(NewStoryViewController *)sender

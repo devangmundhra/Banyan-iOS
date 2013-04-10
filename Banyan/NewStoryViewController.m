@@ -103,6 +103,8 @@
 	// Do any additional setup after loading the view, typically from a nib.
     
     self.inviteContactsButton.enabled = 1;
+    [self.inviteContactsButton setBackgroundColor:BANYAN_GREEN_COLOR];
+    [self.inviteContactsButton setImage:[UIImage imageNamed:@"addUserSymbol"] forState:UIControlStateNormal];
     
     self.storyTitleTextField.delegate = self;
     self.storyTitleTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;

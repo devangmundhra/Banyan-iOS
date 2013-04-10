@@ -32,6 +32,9 @@ typedef enum {
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
+    [self.tableView setBackgroundColor:[UIColor lightGrayColor]];
+    [self.tableView setSeparatorColor:[UIColor clearColor]];
+    
     [self.tableView registerNib:[UINib nibWithNibName:@"StoryListCell" bundle:nil] forCellReuseIdentifier:@"Story Cell"];
     
     [self.tableView addPullToRefreshWithActionHandler:^{
@@ -113,6 +116,7 @@ typedef enum {
 }
 
 #pragma mark Table View Delegates
+
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {    
     return [self updateStoryAtIndex:indexPath];
@@ -182,8 +186,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                     [arrayOfUserIdsBeingFollowed addObject:[user objectForKey:@"objectId"]];
                 }
             }
-            // Create a predicate where author.userId in arrayOfUserIdsBeingFollowed
-            predicate = [NSPredicate predicateWithFormat:@"((canView == YES) OR (canContribute == YES)) AND ((author.userId IN %@))", arrayOfUserIdsBeingFollowed];
+            // Create a predicate where author in arrayOfUserIdsBeingFollowed
+            predicate = [NSPredicate predicateWithFormat:@"((canView == YES) OR (canContribute == YES)) AND ((author IN %@))", arrayOfUserIdsBeingFollowed];
             break;
         default:
             break;

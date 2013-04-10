@@ -47,6 +47,28 @@
 		51815329171230AB006F73D3 /* readButtonUnselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51815327171230AB006F73D3 /* readButtonUnselected@2x.png */; };
 		5181532C17123412006F73D3 /* writeButtonUnselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181532A17123412006F73D3 /* writeButtonUnselected.png */; };
 		5181532D17123412006F73D3 /* writeButtonUnselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181532B17123412006F73D3 /* writeButtonUnselected@2x.png */; };
+		5181533017129F83006F73D3 /* addUserSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181532E17129F83006F73D3 /* addUserSymbol.png */; };
+		5181533117129F83006F73D3 /* addUserSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181532F17129F83006F73D3 /* addUserSymbol@2x.png */; };
+		5181533C1712A5F1006F73D3 /* addTabSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 518153321712A5F1006F73D3 /* addTabSymbol.png */; };
+		5181533D1712A5F1006F73D3 /* addTabSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 518153331712A5F1006F73D3 /* addTabSymbol@2x.png */; };
+		5181533E1712A5F1006F73D3 /* homeTabSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 518153341712A5F1006F73D3 /* homeTabSymbol.png */; };
+		5181533F1712A5F1006F73D3 /* homeTabSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 518153351712A5F1006F73D3 /* homeTabSymbol@2x.png */; };
+		518153401712A5F1006F73D3 /* notificationTabSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 518153361712A5F1006F73D3 /* notificationTabSymbol.png */; };
+		518153411712A5F1006F73D3 /* notificationTabSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 518153371712A5F1006F73D3 /* notificationTabSymbol@2x.png */; };
+		518153421712A5F1006F73D3 /* searchTabSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 518153381712A5F1006F73D3 /* searchTabSymbol.png */; };
+		518153431712A5F1006F73D3 /* searchTabSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 518153391712A5F1006F73D3 /* searchTabSymbol@2x.png */; };
+		518153441712A5F1006F73D3 /* userProfileTabSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181533A1712A5F1006F73D3 /* userProfileTabSymbol.png */; };
+		518153451712A5F1006F73D3 /* userProfileTabSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181533B1712A5F1006F73D3 /* userProfileTabSymbol@2x.png */; };
+		518153511713F474006F73D3 /* addPieceButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 518153471713F469006F73D3 /* addPieceButton.png */; };
+		518153521713F474006F73D3 /* addPieceButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 518153481713F46D006F73D3 /* addPieceButton@2x.png */; };
+		518153531713F474006F73D3 /* backViewHideButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 518153491713F46E006F73D3 /* backViewHideButton.png */; };
+		518153541713F474006F73D3 /* backViewHideButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181534A1713F46E006F73D3 /* backViewHideButton@2x.png */; };
+		518153551713F474006F73D3 /* backViewShowButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181534B1713F46F006F73D3 /* backViewShowButton.png */; };
+		518153561713F474006F73D3 /* backViewShowButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181534C1713F470006F73D3 /* backViewShowButton@2x.png */; };
+		518153571713F474006F73D3 /* deleteStoryButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181534D1713F471006F73D3 /* deleteStoryButton.png */; };
+		518153581713F474006F73D3 /* deleteStoryButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181534E1713F471006F73D3 /* deleteStoryButton@2x.png */; };
+		518153591713F474006F73D3 /* shareButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181534F1713F474006F73D3 /* shareButton.png */; };
+		5181535A1713F474006F73D3 /* shareButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 518153501713F474006F73D3 /* shareButton@2x.png */; };
 		5189B2B815B387E200562DD0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2B715B387E200562DD0 /* UIKit.framework */; };
 		5189B2BA15B387E200562DD0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2B915B387E200562DD0 /* Foundation.framework */; };
 		5189B2BC15B387E200562DD0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2BB15B387E200562DD0 /* CoreGraphics.framework */; };
@@ -187,6 +209,28 @@
 		51815327171230AB006F73D3 /* readButtonUnselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "readButtonUnselected@2x.png"; sourceTree = "<group>"; };
 		5181532A17123412006F73D3 /* writeButtonUnselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = writeButtonUnselected.png; sourceTree = "<group>"; };
 		5181532B17123412006F73D3 /* writeButtonUnselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "writeButtonUnselected@2x.png"; sourceTree = "<group>"; };
+		5181532E17129F83006F73D3 /* addUserSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addUserSymbol.png; sourceTree = "<group>"; };
+		5181532F17129F83006F73D3 /* addUserSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "addUserSymbol@2x.png"; sourceTree = "<group>"; };
+		518153321712A5F1006F73D3 /* addTabSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addTabSymbol.png; sourceTree = "<group>"; };
+		518153331712A5F1006F73D3 /* addTabSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "addTabSymbol@2x.png"; sourceTree = "<group>"; };
+		518153341712A5F1006F73D3 /* homeTabSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = homeTabSymbol.png; sourceTree = "<group>"; };
+		518153351712A5F1006F73D3 /* homeTabSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "homeTabSymbol@2x.png"; sourceTree = "<group>"; };
+		518153361712A5F1006F73D3 /* notificationTabSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = notificationTabSymbol.png; sourceTree = "<group>"; };
+		518153371712A5F1006F73D3 /* notificationTabSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "notificationTabSymbol@2x.png"; sourceTree = "<group>"; };
+		518153381712A5F1006F73D3 /* searchTabSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = searchTabSymbol.png; sourceTree = "<group>"; };
+		518153391712A5F1006F73D3 /* searchTabSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "searchTabSymbol@2x.png"; sourceTree = "<group>"; };
+		5181533A1712A5F1006F73D3 /* userProfileTabSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = userProfileTabSymbol.png; sourceTree = "<group>"; };
+		5181533B1712A5F1006F73D3 /* userProfileTabSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "userProfileTabSymbol@2x.png"; sourceTree = "<group>"; };
+		518153471713F469006F73D3 /* addPieceButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addPieceButton.png; sourceTree = "<group>"; };
+		518153481713F46D006F73D3 /* addPieceButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "addPieceButton@2x.png"; sourceTree = "<group>"; };
+		518153491713F46E006F73D3 /* backViewHideButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backViewHideButton.png; sourceTree = "<group>"; };
+		5181534A1713F46E006F73D3 /* backViewHideButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backViewHideButton@2x.png"; sourceTree = "<group>"; };
+		5181534B1713F46F006F73D3 /* backViewShowButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backViewShowButton.png; sourceTree = "<group>"; };
+		5181534C1713F470006F73D3 /* backViewShowButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backViewShowButton@2x.png"; sourceTree = "<group>"; };
+		5181534D1713F471006F73D3 /* deleteStoryButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = deleteStoryButton.png; sourceTree = "<group>"; };
+		5181534E1713F471006F73D3 /* deleteStoryButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "deleteStoryButton@2x.png"; sourceTree = "<group>"; };
+		5181534F1713F474006F73D3 /* shareButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shareButton.png; sourceTree = "<group>"; };
+		518153501713F474006F73D3 /* shareButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shareButton@2x.png"; sourceTree = "<group>"; };
 		5189B2B315B387E200562DD0 /* Banyan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Banyan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5189B2B715B387E200562DD0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		5189B2B915B387E200562DD0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -367,6 +411,10 @@
 		5166B1B515E75B420072749C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				518153461712A5FC006F73D3 /* Tab Symbols */,
+				5181535B1713F49F006F73D3 /* Back View Symbols */,
+				5181532E17129F83006F73D3 /* addUserSymbol.png */,
+				5181532F17129F83006F73D3 /* addUserSymbol@2x.png */,
 				5144EC601712277600F0B265 /* cameraSymbol.png */,
 				5144EC611712277600F0B265 /* cameraSymbol@2x.png */,
 				5144EC621712277600F0B265 /* locationSymbol.png */,
@@ -466,6 +514,40 @@
 				517A01DE170EB02900665F0F /* User_Defines.h */,
 			);
 			name = User;
+			sourceTree = "<group>";
+		};
+		518153461712A5FC006F73D3 /* Tab Symbols */ = {
+			isa = PBXGroup;
+			children = (
+				518153321712A5F1006F73D3 /* addTabSymbol.png */,
+				518153331712A5F1006F73D3 /* addTabSymbol@2x.png */,
+				518153341712A5F1006F73D3 /* homeTabSymbol.png */,
+				518153351712A5F1006F73D3 /* homeTabSymbol@2x.png */,
+				518153361712A5F1006F73D3 /* notificationTabSymbol.png */,
+				518153371712A5F1006F73D3 /* notificationTabSymbol@2x.png */,
+				518153381712A5F1006F73D3 /* searchTabSymbol.png */,
+				518153391712A5F1006F73D3 /* searchTabSymbol@2x.png */,
+				5181533A1712A5F1006F73D3 /* userProfileTabSymbol.png */,
+				5181533B1712A5F1006F73D3 /* userProfileTabSymbol@2x.png */,
+			);
+			name = "Tab Symbols";
+			sourceTree = "<group>";
+		};
+		5181535B1713F49F006F73D3 /* Back View Symbols */ = {
+			isa = PBXGroup;
+			children = (
+				518153471713F469006F73D3 /* addPieceButton.png */,
+				518153481713F46D006F73D3 /* addPieceButton@2x.png */,
+				518153491713F46E006F73D3 /* backViewHideButton.png */,
+				5181534A1713F46E006F73D3 /* backViewHideButton@2x.png */,
+				5181534B1713F46F006F73D3 /* backViewShowButton.png */,
+				5181534C1713F470006F73D3 /* backViewShowButton@2x.png */,
+				5181534D1713F471006F73D3 /* deleteStoryButton.png */,
+				5181534E1713F471006F73D3 /* deleteStoryButton@2x.png */,
+				5181534F1713F474006F73D3 /* shareButton.png */,
+				518153501713F474006F73D3 /* shareButton@2x.png */,
+			);
+			name = "Back View Symbols";
 			sourceTree = "<group>";
 		};
 		5189B2A815B387E100562DD0 = {
@@ -888,6 +970,28 @@
 				51815329171230AB006F73D3 /* readButtonUnselected@2x.png in Resources */,
 				5181532C17123412006F73D3 /* writeButtonUnselected.png in Resources */,
 				5181532D17123412006F73D3 /* writeButtonUnselected@2x.png in Resources */,
+				5181533017129F83006F73D3 /* addUserSymbol.png in Resources */,
+				5181533117129F83006F73D3 /* addUserSymbol@2x.png in Resources */,
+				5181533C1712A5F1006F73D3 /* addTabSymbol.png in Resources */,
+				5181533D1712A5F1006F73D3 /* addTabSymbol@2x.png in Resources */,
+				5181533E1712A5F1006F73D3 /* homeTabSymbol.png in Resources */,
+				5181533F1712A5F1006F73D3 /* homeTabSymbol@2x.png in Resources */,
+				518153401712A5F1006F73D3 /* notificationTabSymbol.png in Resources */,
+				518153411712A5F1006F73D3 /* notificationTabSymbol@2x.png in Resources */,
+				518153421712A5F1006F73D3 /* searchTabSymbol.png in Resources */,
+				518153431712A5F1006F73D3 /* searchTabSymbol@2x.png in Resources */,
+				518153441712A5F1006F73D3 /* userProfileTabSymbol.png in Resources */,
+				518153451712A5F1006F73D3 /* userProfileTabSymbol@2x.png in Resources */,
+				518153511713F474006F73D3 /* addPieceButton.png in Resources */,
+				518153521713F474006F73D3 /* addPieceButton@2x.png in Resources */,
+				518153531713F474006F73D3 /* backViewHideButton.png in Resources */,
+				518153541713F474006F73D3 /* backViewHideButton@2x.png in Resources */,
+				518153551713F474006F73D3 /* backViewShowButton.png in Resources */,
+				518153561713F474006F73D3 /* backViewShowButton@2x.png in Resources */,
+				518153571713F474006F73D3 /* deleteStoryButton.png in Resources */,
+				518153581713F474006F73D3 /* deleteStoryButton@2x.png in Resources */,
+				518153591713F474006F73D3 /* shareButton.png in Resources */,
+				5181535A1713F474006F73D3 /* shareButton@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

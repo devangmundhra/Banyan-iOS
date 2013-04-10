@@ -8,10 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+@interface UISwipeableViewFrontView : UIView
+@end
+
+@interface UISwipeableViewBackView : UIView
+@end
+
 @protocol UISwipeableViewDelegate <NSObject>
 
 @optional
-- (void)drawContentView:(CGRect)rect;
+- (void)drawFrontView:(CGRect)rect;
 - (void)drawBackView:(CGRect)rect;
 
 - (void)backViewWillAppear:(BOOL)animated;
@@ -23,7 +29,7 @@
 
 @interface UISwipeableView : UIView <UIGestureRecognizerDelegate> {
 	
-	UIView * contentView;
+	UIView * frontView;
 	UIView * backView;
 	
 	BOOL contentViewMoving;
@@ -31,8 +37,8 @@
 }
 
 @property (nonatomic, strong) UIView * backView;
-@property (nonatomic, strong) UIView * contentView;
-@property (nonatomic, assign) BOOL contentViewMoving;
+@property (nonatomic, strong) UIView * frontView;
+@property (nonatomic, assign) BOOL frontViewMoving;
 @property (nonatomic, assign) BOOL shouldBounce;
 @property (nonatomic, strong) id<UISwipeableViewDelegate> delegate;
 
