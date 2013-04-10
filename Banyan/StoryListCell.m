@@ -19,6 +19,7 @@
 @property (weak, nonatomic) IBOutlet UISwipeableView *topSwipeableView;
 @property (nonatomic, strong) IBOutlet UILabel *storyTitleLabel;
 @property (nonatomic, strong) IBOutlet UILabel *storyLocationLabel;
+@property (nonatomic, strong) IBOutlet UIButton *storyFrontViewControl;
 
 // Middle View Properties
 @property (weak, nonatomic) IBOutlet UIView *middleView;
@@ -38,6 +39,7 @@
 @synthesize bottomView = _bottomView;
 @synthesize storyTitleLabel = _storyTitleLabel;
 @synthesize storyLocationLabel = _storyLocationLabel;
+@synthesize storyFrontViewControl = _storyFrontViewControl;
 @synthesize middleVC = _middleVC;
 @synthesize tapRecognizer = _tapRecognizer;
 
@@ -84,6 +86,10 @@
 {
     // So that the cell does not show any image from before
     [super prepareForReuse];
+    [self.storyFrontViewControl removeFromSuperview];
+    [self.storyFrontViewControl removeTarget:nil
+                       action:NULL
+             forControlEvents:UIControlEventAllEvents];
     self.story = nil;
 }
 
@@ -117,20 +123,46 @@
 
 #pragma mark setter/getter functions
 
+#define BUTTON_SPACING 20.0
+
 - (void)setStory:(Story *)story
 {
     _story = story;
+    
+    // Top View Setup
     self.storyTitleLabel.text = story.title;
     self.storyTitleLabel.font = [UIFont fontWithName:STORY_FONT size:16];
     
     self.storyTitleLabel.textColor = [UIColor blackColor];
     self.storyLocationLabel.textColor = [UIColor grayColor];
     
-    if (story.isLocationEnabled && ![story.geocodedLocation isEqual:[NSNull null]]) {
+    if ([story.isLocationEnabled boolValue] && ![story.geocodedLocation isEqual:[NSNull null]]) {
         // add the location information about the cells
         self.storyLocationLabel.text = story.geocodedLocation;
     }
     
+    if (story)
+    {
+        UIImage *frontViewControlImage = nil;
+        if ([self.story.canContribute boolValue]) {
+            // Have the reveal Backview button on front view
+            frontViewControlImage = [UIImage imageNamed:@"backViewShowButton"];
+            [self.storyFrontViewControl addTarget:self action:@selector(showBackView:) forControlEvents:UIControlEventTouchUpInside];
+        } else {
+            // Just have the share button in front view.
+            frontViewControlImage = [UIImage imageNamed:@"shareButtonBlack"];
+            [self.storyFrontViewControl addTarget:self action:@selector(shareStory:) forControlEvents:UIControlEventTouchUpInside];
+        }
+        [self.storyFrontViewControl setImage:frontViewControlImage forState:UIControlStateNormal];
+        // Set the button's frame
+        CGRect frontViewControlButtonFrame = self.storyFrontViewControl.bounds;
+        frontViewControlButtonFrame.origin.x = CGRectGetMaxX(self.topSwipeableView.frontView.frame) - frontViewControlImage.size.width - BUTTON_SPACING;
+        frontViewControlButtonFrame.origin.y = self.topSwipeableView.frontView.bounds.origin.y;
+        frontViewControlButtonFrame.size = frontViewControlImage.size;
+        frontViewControlButtonFrame.size.height = self.topSwipeableView.frontView.bounds.size.height;
+        self.storyFrontViewControl.frame = frontViewControlButtonFrame;
+        [self.topSwipeableView.frontView addSubview:self.storyFrontViewControl];
+    }
     // Middle View Setup
     self.middleVC.story = story;
 }
@@ -190,54 +222,83 @@
     self.storyLocationLabel.textAlignment = NSTextAlignmentLeft;
     self.storyLocationLabel.backgroundColor = [UIColor clearColor];
     [self.topSwipeableView.frontView addSubview:self.storyLocationLabel];
+    
+    self.storyFrontViewControl = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.storyFrontViewControl.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
 }
 
 - (void) setupBackView
 {
-#define BUTTON_LEFT_MARGIN 10.0
-#define BUTTON_SPACING 80.0
-    if (self.story.canContribute)
+    if ([self.story.canContribute boolValue])
     {
-        NSArray *buttonData = [NSArray arrayWithObjects:
-                               [NSDictionary dictionaryWithObjectsAndKeys:@"Add-Scene", @"title", @"addScene:", @"selector", [UIColor colorWithRed:44/255.0 green:127/255.0 blue:84/255.0 alpha:1], @"color", nil],
-                               [NSDictionary dictionaryWithObjectsAndKeys:@"Delete-Story", @"title", @"deleteStoryAlert:", @"selector", [UIColor redColor], @"color", nil],
-                               nil];
+        // Add backview control button
+        UIButton *backViewControlButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIImage *backViewControlImage = [UIImage imageNamed:@"backViewHideButton"];
+        // Make sure the button ends up in the right place when the cell is resized
+        backViewControlButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
+        [backViewControlButton setImage:backViewControlImage forState:UIControlStateNormal];
+        [backViewControlButton addTarget:self action:@selector(hideBackView:) forControlEvents:UIControlEventTouchUpInside];
+        // Set the button's frame
+        CGRect backViewControlButtonFrame = backViewControlButton.bounds;
+        backViewControlButtonFrame.origin.x = 10;
+        backViewControlButtonFrame.origin.y = self.topSwipeableView.backView.bounds.origin.y;
+        backViewControlButtonFrame.size = backViewControlImage.size;
+        backViewControlButtonFrame.size.height = self.topSwipeableView.backView.bounds.size.height;
+        backViewControlButton.frame = backViewControlButtonFrame;
         
-        // Iterate through the button data and create a button for each entry
-        CGFloat leftEdge = BUTTON_LEFT_MARGIN;
-        for (NSDictionary* buttonInfo in buttonData)
-        {
-            // Create the button
-            UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
-            
-            // Make sure the button ends up in the right place when the cell is resized
-            button.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
-            
-            // Get the button image
-            UIImage* buttonImage = [UIImage imageFromText:[buttonInfo objectForKey:@"title"] withSize:16];
-            
-            // Set the button's frame
-            button.frame = CGRectMake(leftEdge, self.topSwipeableView.backView.center.y - buttonImage.size.height/2.0, buttonImage.size.width, buttonImage.size.height);
-            
-            // Add the image as the button's background image
-            UIImage* colorImage = [UIImage imageFilledWith:[UIColor whiteColor] using:buttonImage];
-            [button setImage:colorImage forState:UIControlStateNormal];
-            UIImage* backgroundImage = [UIImage imageWithColor:[buttonInfo objectForKey:@"color"] forRect:CGRectMake(0, 0, buttonImage.size.width, buttonImage.size.height)];
-            [button setBackgroundImage:backgroundImage forState:UIControlStateNormal];
-            UIImage* bkgHighlightedImage = [UIImage imageWithColor:[UIColor brownColor] forRect:CGRectMake(0, 0, buttonImage.size.width, buttonImage.size.height)];
-            [button setBackgroundImage:bkgHighlightedImage forState:UIControlStateSelected];
-            
-            // Add a touch up inside action
-            [button addTarget:self action:NSSelectorFromString([buttonInfo objectForKey:@"selector"]) forControlEvents:UIControlEventTouchUpInside];
-            
-            // Add the button to the side swipe view
-            [self.topSwipeableView.backView addSubview:button];
-            
-            // Move the left edge in prepartion for the next button
-            leftEdge = leftEdge + buttonImage.size.width + BUTTON_SPACING;
-        }
+        [self.topSwipeableView.backView addSubview:backViewControlButton];
+        
+        // Add Piece Button
+        UIButton *addPieceButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIImage *addPieceImage = [UIImage imageNamed:@"addPieceButton"];
+        // Make sure the button ends up in the right place when the cell is resized
+        addPieceButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
+        [addPieceButton setImage:addPieceImage forState:UIControlStateNormal];
+        [addPieceButton addTarget:self action:@selector(addPiece:) forControlEvents:UIControlEventTouchUpInside];
+        // Set the button's frame
+        CGRect addPieceButtonFrame = addPieceButton.bounds;
+        addPieceButtonFrame.origin.x = CGRectGetMaxX(backViewControlButton.frame) + BUTTON_SPACING;;
+        addPieceButtonFrame.origin.y = self.topSwipeableView.backView.bounds.origin.y;
+        addPieceButtonFrame.size = addPieceImage.size;
+        addPieceButtonFrame.size.height = self.topSwipeableView.backView.bounds.size.height;
+        addPieceButton.frame = addPieceButtonFrame;
+        
+        [self.topSwipeableView.backView addSubview:addPieceButton];
+        
+        // Delete Story Button
+        UIButton *deleteStoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIImage *deleteStoryImage = [UIImage imageNamed:@"deleteStoryButton"];
+
+        deleteStoryButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
+        [deleteStoryButton setImage:deleteStoryImage forState:UIControlStateNormal];
+        [deleteStoryButton addTarget:self action:@selector(deleteStoryAlert:) forControlEvents:UIControlEventTouchUpInside];
+
+        CGRect deleteStoryButtonFrame = deleteStoryButton.bounds;
+        deleteStoryButtonFrame.origin.x = CGRectGetMaxX(addPieceButton.frame) + BUTTON_SPACING;
+        deleteStoryButtonFrame.origin.y = self.topSwipeableView.backView.bounds.origin.y;
+        deleteStoryButtonFrame.size = deleteStoryImage.size;
+        deleteStoryButtonFrame.size.height = self.topSwipeableView.backView.bounds.size.height;
+        deleteStoryButton.frame = deleteStoryButtonFrame;
+        
+        [self.topSwipeableView.backView addSubview:deleteStoryButton];
+        // Share Button
+        UIButton *shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIImage *shareButtonImage = [UIImage imageNamed:@"shareButtonWhite"];
+        
+        shareButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
+        [shareButton setImage:shareButtonImage forState:UIControlStateNormal];
+        [shareButton addTarget:self action:@selector(shareStory:) forControlEvents:UIControlEventTouchUpInside];
+        
+        CGRect shareButtonFrame = shareButton.bounds;
+        shareButtonFrame.origin.x = CGRectGetMaxX(deleteStoryButton.frame) + BUTTON_SPACING;
+        shareButtonFrame.origin.y = self.topSwipeableView.backView.bounds.origin.y;
+        shareButtonFrame.size = shareButtonImage.size;
+        shareButtonFrame.size.height = self.topSwipeableView.backView.bounds.size.height;
+        shareButton.frame = shareButtonFrame;
+        
+        [self.topSwipeableView.backView addSubview:shareButton];
     } else {
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, self.frame.size.width, TABLE_ROW_HEIGHT-30)];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, self.topSwipeableView.bounds.size.width, 30)];
         label.font = [UIFont systemFontOfSize:15];
         label.text = @"You do not have permission to modify this story";
         label.textAlignment = NSTextAlignmentCenter;
@@ -249,6 +310,17 @@
 }
 
 #pragma mark UISwipeableViewDelegate methods
+
+- (BOOL)shouldSwipe
+{
+    return [self.story.canContribute boolValue];
+}
+
+- (void)didSwipe
+{
+    
+}
+
 - (void) hideSwipedViewAnimated:(BOOL)animated
 {
     [self.topSwipeableView hideBackViewAnimated:animated inDirection:UISwipeGestureRecognizerDirectionRight];
@@ -262,6 +334,16 @@
 - (void)backViewWillAppear:(BOOL)animated
 {
     [self setupBackView];
+}
+
+- (void)backViewDidAppear:(BOOL)animated
+{
+    
+}
+
+- (void)backViewWillDisappear:(BOOL)animated
+{
+    
 }
 
 - (void)backViewDidDisappear:(BOOL)animated
@@ -296,14 +378,14 @@
 }
 
 #pragma mark back view methods
-- (void)addScene:(UIButton *)button
+- (void)addPiece:(UIButton *)button
 {
     UITableView * tableView = (UITableView *)self.superview;
     id delegate = tableView.nextResponder; // Hopefully this is a UITableViewController.
     NSIndexPath * myIndexPath = [tableView indexPathForCell:self];
     
-    if ([delegate respondsToSelector:@selector(addSceneForRowAtIndexPath:)]) {
-        [delegate performSelector:@selector(addSceneForRowAtIndexPath:) withObject:myIndexPath];
+    if ([delegate respondsToSelector:@selector(addPieceForRowAtIndexPath:)]) {
+        [delegate performSelector:@selector(addPieceForRowAtIndexPath:) withObject:myIndexPath];
     }
 }
 
@@ -325,6 +407,27 @@
     if ([delegate respondsToSelector:@selector(tableView:commitEditingStyle:forRowAtIndexPath:)]) {
         [delegate tableView:tableView commitEditingStyle:UITableViewCellEditingStyleDelete forRowAtIndexPath:myIndexPath];
     }
+}
+
+- (void) shareStory:(UIButton *)button
+{
+    UITableView * tableView = (UITableView *)self.superview;
+    id delegate = tableView.nextResponder; // Hopefully this is a UITableViewController.
+    NSIndexPath * myIndexPath = [tableView indexPathForCell:self];
+    
+    if ([delegate respondsToSelector:@selector(shareStoryAtIndexPath:)]) {
+        [delegate performSelector:@selector(shareStoryAtIndexPath:) withObject:myIndexPath];
+    }
+}
+
+- (void) hideBackView:(UIButton *)button
+{
+    [self hideSwipedViewAnimated:YES];
+}
+
+- (void) showBackView:(UIButton *)button
+{
+    [self revealSwipedViewAnimated:YES];
 }
 
 #pragma mark UIAlertViewDelegate

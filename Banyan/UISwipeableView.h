@@ -16,6 +16,8 @@
 
 @protocol UISwipeableViewDelegate <NSObject>
 
+- (BOOL)shouldSwipe;
+
 @optional
 - (void)drawFrontView:(CGRect)rect;
 - (void)drawBackView:(CGRect)rect;
@@ -24,6 +26,8 @@
 - (void)backViewDidAppear:(BOOL)animated;
 - (void)backViewWillDisappear:(BOOL)animated;
 - (void)backViewDidDisappear:(BOOL)animated;
+
+- (void)didSwipe;
 
 @end
 

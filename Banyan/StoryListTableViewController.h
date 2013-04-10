@@ -22,6 +22,4 @@
 	NSIndexPath * indexOfVisibleBackView;
 }
 
-- (void)addSceneForRowAtIndexPath:(NSIndexPath *)indexPath;
-
 @end

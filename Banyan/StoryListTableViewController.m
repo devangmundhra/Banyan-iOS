@@ -153,11 +153,18 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     }    
 }
 
-- (void)addSceneForRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)addPieceForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self updateStoryAtIndex:indexPath];
     Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [self addPieceToStory:story];
+}
+
+- (void) shareStoryAtIndexPath:(NSIndexPath *)indexPath
+{
+    Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSLog(@"Sharing story: %@", story);
+    assert(false);
 }
 
 #pragma mark Data Source Loading / Reloading Methods
@@ -293,6 +300,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 #pragma mark - Swipeable controls
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	[self hideVisibleSwipedView:YES];
 }

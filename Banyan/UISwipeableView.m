@@ -115,7 +115,13 @@
 
 - (void)frontViewWasSwiped:(UISwipeGestureRecognizer *)recognizer
 {
-	[self revealBackViewAnimated:YES inDirection:recognizer.direction];
+    if ([delegate respondsToSelector:@selector(shouldSwipe)])
+    {
+        if ([delegate shouldSwipe])
+            [self revealBackViewAnimated:YES inDirection:recognizer.direction];
+    }
+    if ([delegate respondsToSelector:@selector(didSwipe)])
+        [delegate didSwipe];
 }
 
 - (void)backViewWasSwiped:(UISwipeGestureRecognizer *)recognizer
@@ -123,7 +129,7 @@
     [self hideBackViewAnimated:YES inDirection:recognizer.direction];
 }
 
-#define FRONTVIEW_SCALE_FACTOR 0.03
+#define FRONTVIEW_SCALE_FACTOR 0.000000000000001
 - (void)revealBackViewAnimated:(BOOL)animated inDirection:(UISwipeGestureRecognizerDirection)direction
 {
 	if (!frontViewMoving && backView.hidden) {
