@@ -142,6 +142,7 @@
 		51B2351617168BF9004241C1 /* locationSymbolSmall.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B2351017168BF9004241C1 /* locationSymbolSmall.png */; };
 		51B2351717168BF9004241C1 /* locationSymbolSmall@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B2351117168BF9004241C1 /* locationSymbolSmall@2x.png */; };
 		51B2351A17168C69004241C1 /* BNImageLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2351917168C68004241C1 /* BNImageLabel.m */; };
+		51B235211717DBA9004241C1 /* BNTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B235201717DBA9004241C1 /* BNTableViewController.m */; };
 		51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B5989D15EB31B300DF4D9D /* BanyanConstants.m */; };
 		51CFD92915F1F260002926F9 /* SettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD92715F1F260002926F9 /* SettingsTableViewController.m */; };
 		51CFD93615F3E80B002926F9 /* FollowingFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD93515F3E80B002926F9 /* FollowingFriendsViewController.m */; };
@@ -362,6 +363,8 @@
 		51B2351117168BF9004241C1 /* locationSymbolSmall@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "locationSymbolSmall@2x.png"; sourceTree = "<group>"; };
 		51B2351817168C68004241C1 /* BNImageLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNImageLabel.h; path = Banyan/BNImageLabel.h; sourceTree = "<group>"; };
 		51B2351917168C68004241C1 /* BNImageLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNImageLabel.m; path = Banyan/BNImageLabel.m; sourceTree = "<group>"; };
+		51B2351F1717DBA9004241C1 /* BNTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNTableViewController.h; path = Banyan/BNTableViewController.h; sourceTree = "<group>"; };
+		51B235201717DBA9004241C1 /* BNTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNTableViewController.m; path = Banyan/BNTableViewController.m; sourceTree = "<group>"; };
 		51B5989C15EB31B300DF4D9D /* BanyanConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BanyanConstants.h; sourceTree = "<group>"; };
 		51B5989D15EB31B300DF4D9D /* BanyanConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BanyanConstants.m; sourceTree = "<group>"; };
 		51CFD92615F1F260002926F9 /* SettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsTableViewController.h; sourceTree = "<group>"; };
@@ -846,6 +849,8 @@
 				51A8DCC31692DA8F0017E86F /* CoreDataTableViewController.m */,
 				5189B31715B395F300562DD0 /* StoryListTableViewController.h */,
 				5189B31815B395F300562DD0 /* StoryListTableViewController.m */,
+				51B2351F1717DBA9004241C1 /* BNTableViewController.h */,
+				51B235201717DBA9004241C1 /* BNTableViewController.m */,
 			);
 			name = "Story List";
 			path = ..;
@@ -1197,6 +1202,7 @@
 				517A01DA170BFA3000665F0F /* InviteFriendCell.m in Sources */,
 				51B234E817154D2B004241C1 /* StoryListCell.m in Sources */,
 				51B2351A17168C69004241C1 /* BNImageLabel.m in Sources */,
+				51B235211717DBA9004241C1 /* BNTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

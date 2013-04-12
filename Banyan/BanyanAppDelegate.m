@@ -465,7 +465,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 - (void)setupTabBarController
 {
     self.tabBarController = [[BNTabBarController alloc] init];
-    StoryListTableViewController *storyListVC = [[StoryListTableViewController alloc] initWithStyle:UITableViewStylePlain];
+    StoryListTableViewController *storyListVC = [[StoryListTableViewController alloc] init];
     storyListVC.title = @"Stories";
     
     UITabBarItem *storyListTabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:[UIImage imageNamed:@"homeTabSymbol"] tag:0];

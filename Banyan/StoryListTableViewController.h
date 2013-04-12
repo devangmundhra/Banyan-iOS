@@ -15,10 +15,10 @@
 #import "UserLoginViewController.h"
 #import "MBProgressHUD.h"
 #import "SettingsTableViewController.h"
-#import "CoreDataTableViewController.h"
+#import "BNTableViewController.h"
 #import "BanyanConnection.h"
 
-@interface StoryListTableViewController : CoreDataTableViewController <StoryReaderControllerDelegate> {
+@interface StoryListTableViewController : BNTableViewController <StoryReaderControllerDelegate> {
 	NSIndexPath * indexOfVisibleBackView;
 }
 

@@ -18,6 +18,7 @@
 @interface StoryListCell () {
     NSDateFormatter *dateFormatter;
 }
+@property (weak, nonatomic) IBOutlet UIView *containingView;
 // Content View Properties
 @property (weak, nonatomic) IBOutlet UISwipeableView *topSwipeableView;
 @property (nonatomic, strong) IBOutlet UILabel *storyTitleLabel;
@@ -50,6 +51,7 @@
 @synthesize middleVC = _middleVC;
 @synthesize tapRecognizer = _tapRecognizer;
 @synthesize dateFormatter;
+@synthesize containingView;
 
 #pragma mark setter/getters
 
@@ -125,17 +127,17 @@
         dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
     [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-//    NSLocale *frLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"fr_FR"];
-//    [dateFormatter setLocale:frLocale];
-    
     [dateFormatter setDoesRelativeDateFormatting:YES];
+    
+    [containingView.layer setCornerRadius:10.0f];
+    [containingView.layer setMasksToBounds:YES];
     
     [self setupTopSwipeableFrontView];
     self.topSwipeableView.delegate = self;
     [self setupMiddleView];
     [self setupBottomView];
     self.selectionStyle = UITableViewCellSelectionStyleNone;
-    [self setBackgroundColor:BANYAN_WHITE_COLOR];
+    [self setBackgroundColor:[UIColor clearColor]];
 }
 
 #pragma mark setter/getter functions
