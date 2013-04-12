@@ -73,4 +73,5 @@ extern NSString *const kBNUserClassKey;
 #define BANYAN_GREEN_COLOR [UIColor colorWithRed:71/255.0 green:114/255.0 blue:4/255.0 alpha:1]
 #define BANYAN_BROWN_COLOR [UIColor colorWithRed:136/255.0 green:103/255.0 blue:68/255.0 alpha:1]
 #define BANYAN_DARKGRAY_COLOR [UIColor colorWithRed:52/255.0 green:52/255.0 blue:52/255.0 alpha:1]
+#define BANYAN_LIGHTGRAY_COLOR [UIColor colorWithRed:223/255.0 green:223/255.0 blue:223/255.0 alpha:1]
 #define BANYAN_WHITE_COLOR [UIColor whiteColor]

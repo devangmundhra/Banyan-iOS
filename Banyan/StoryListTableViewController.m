@@ -32,7 +32,7 @@ typedef enum {
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
-    [self.tableView setBackgroundColor:[UIColor lightGrayColor]];
+    [self.tableView setBackgroundColor:BANYAN_LIGHTGRAY_COLOR];
     [self.tableView setSeparatorColor:[UIColor clearColor]];
     
     [self.tableView registerNib:[UINib nibWithNibName:@"StoryListCell" bundle:nil] forCellReuseIdentifier:@"Story Cell"];

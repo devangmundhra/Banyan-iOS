@@ -43,7 +43,7 @@
 								<reference key="NSNextResponder" ref="782688406"/>
 								<int key="NSvFlags">292</int>
 								<array class="NSMutableArray" key="NSSubviews"/>
-								<string key="NSFrame">{{10, 8}, {300, 45}}</string>
+								<string key="NSFrame">{{10, 8}, {300, 54}}</string>
 								<reference key="NSSuperview" ref="782688406"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="1017483176"/>
@@ -58,7 +58,7 @@
 								<reference key="NSNextResponder" ref="782688406"/>
 								<int key="NSvFlags">292</int>
 								<array class="NSMutableArray" key="NSSubviews"/>
-								<string key="NSFrame">{{10, 53}, {300, 109}}</string>
+								<string key="NSFrame">{{10, 61}, {300, 109}}</string>
 								<reference key="NSSuperview" ref="782688406"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="1011291528"/>
@@ -72,7 +72,7 @@
 							<object class="IBUIView" id="1011291528">
 								<reference key="NSNextResponder" ref="782688406"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{10, 161}, {300, 48}}</string>
+								<string key="NSFrame">{{10, 170}, {300, 39}}</string>
 								<reference key="NSSuperview" ref="782688406"/>
 								<reference key="NSWindow"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
@@ -205,6 +205,14 @@
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<object class="IBPartialClassDescription">
+					<string key="className">BNImageLabel</string>
+					<string key="superclassName">UIView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/BNImageLabel.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">RemoteObject</string>
 					<string key="superclassName">NSManagedObject</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -225,17 +233,23 @@
 					<string key="superclassName">UITableViewCell</string>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="bottomView">UIView</string>
+						<string key="locationLabel">BNImageLabel</string>
 						<string key="middleVC">StoryListCellMiddleViewController</string>
 						<string key="middleView">UIView</string>
 						<string key="story">Story</string>
-						<string key="storyLocationLabel">UILabel</string>
+						<string key="storyFrontViewControl">UIButton</string>
 						<string key="storyTitleLabel">UILabel</string>
+						<string key="timeLabel">BNImageLabel</string>
 						<string key="topSwipeableView">UISwipeableView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="bottomView">
 							<string key="name">bottomView</string>
 							<string key="candidateClassName">UIView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="locationLabel">
+							<string key="name">locationLabel</string>
+							<string key="candidateClassName">BNImageLabel</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="middleVC">
 							<string key="name">middleVC</string>
@@ -249,13 +263,17 @@
 							<string key="name">story</string>
 							<string key="candidateClassName">Story</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="storyLocationLabel">
-							<string key="name">storyLocationLabel</string>
-							<string key="candidateClassName">UILabel</string>
+						<object class="IBToOneOutletInfo" key="storyFrontViewControl">
+							<string key="name">storyFrontViewControl</string>
+							<string key="candidateClassName">UIButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="storyTitleLabel">
 							<string key="name">storyTitleLabel</string>
 							<string key="candidateClassName">UILabel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="timeLabel">
+							<string key="name">timeLabel</string>
+							<string key="candidateClassName">BNImageLabel</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="topSwipeableView">
 							<string key="name">topSwipeableView</string>

@@ -13,13 +13,17 @@
 #import "UIImage+Create.h"
 #import <QuartzCore/QuartzCore.h>
 #import "StoryListCellMiddleViewController.h"
+#import "BNImageLabel.h"
 
-@interface StoryListCell ()
+@interface StoryListCell () {
+    NSDateFormatter *dateFormatter;
+}
 // Content View Properties
 @property (weak, nonatomic) IBOutlet UISwipeableView *topSwipeableView;
 @property (nonatomic, strong) IBOutlet UILabel *storyTitleLabel;
-@property (nonatomic, strong) IBOutlet UILabel *storyLocationLabel;
 @property (nonatomic, strong) IBOutlet UIButton *storyFrontViewControl;
+@property (nonatomic, strong) IBOutlet BNImageLabel *timeLabel;
+@property (nonatomic, strong) IBOutlet BNImageLabel *locationLabel;
 
 // Middle View Properties
 @property (weak, nonatomic) IBOutlet UIView *middleView;
@@ -28,6 +32,8 @@
 
 // Bottom View Properties
 @property (weak, nonatomic) IBOutlet UIView *bottomView;
+
+@property (strong, nonatomic) NSDateFormatter *dateFormatter;
 
 @end
 
@@ -38,10 +44,12 @@
 @synthesize middleView = _middleView;
 @synthesize bottomView = _bottomView;
 @synthesize storyTitleLabel = _storyTitleLabel;
-@synthesize storyLocationLabel = _storyLocationLabel;
 @synthesize storyFrontViewControl = _storyFrontViewControl;
+@synthesize timeLabel = _timeLabel;
+@synthesize locationLabel = _locationLabel;
 @synthesize middleVC = _middleVC;
 @synthesize tapRecognizer = _tapRecognizer;
+@synthesize dateFormatter;
 
 #pragma mark setter/getters
 
@@ -113,6 +121,15 @@
 
 - (void) setup
 {
+    if (!dateFormatter)
+        dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
+    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+//    NSLocale *frLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"fr_FR"];
+//    [dateFormatter setLocale:frLocale];
+    
+    [dateFormatter setDoesRelativeDateFormatting:YES];
+    
     [self setupTopSwipeableFrontView];
     self.topSwipeableView.delegate = self;
     [self setupMiddleView];
@@ -131,14 +148,16 @@
     
     // Top View Setup
     self.storyTitleLabel.text = story.title;
-    self.storyTitleLabel.font = [UIFont fontWithName:STORY_FONT size:16];
     
-    self.storyTitleLabel.textColor = [UIColor blackColor];
-    self.storyLocationLabel.textColor = [UIColor grayColor];
+    NSString *dateString = [dateFormatter stringFromDate:story.createdAt];
+    self.timeLabel.label.text = dateString;
     
-    if ([story.isLocationEnabled boolValue] && ![story.geocodedLocation isEqual:[NSNull null]]) {
+    if ([story.isLocationEnabled boolValue] && story.geocodedLocation) {
         // add the location information about the cells
-        self.storyLocationLabel.text = story.geocodedLocation;
+        self.locationLabel.label.text = story.geocodedLocation;
+        self.locationLabel.hidden = NO;
+    } else {
+        self.locationLabel.hidden = YES;
     }
     
     if (story)
@@ -204,27 +223,41 @@
     [self.topSwipeableView.backView setBackgroundColor:BANYAN_DARKGRAY_COLOR];
     
     self.storyTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(TABLE_CELL_MARGIN, TABLE_CELL_MARGIN/2,
-                                                                     self.topSwipeableView.frame.size.width - TABLE_CELL_MARGIN,
-                                                                     self.topSwipeableView.frame.size.height - 2 * TABLE_CELL_MARGIN)];
-    self.storyTitleLabel.font = [UIFont systemFontOfSize:12.0];
+                                                                     self.topSwipeableView.frame.size.width - TABLE_CELL_MARGIN - BUTTON_SPACING,
+                                                                     self.topSwipeableView.frame.size.height/2)];
+    self.storyTitleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:20];
+    self.storyTitleLabel.textColor = [UIColor blackColor];
     self.storyTitleLabel.textAlignment = NSTextAlignmentLeft;
-    self.storyTitleLabel.minimumFontSize = 12;
-    self.storyTitleLabel.backgroundColor = [UIColor clearColor];
-    [self.contentView addSubview:self.storyTitleLabel];
+    self.storyTitleLabel.minimumFontSize = 15;
     [self.topSwipeableView.frontView addSubview:self.storyTitleLabel];
     
-    self.storyLocationLabel = [[UILabel alloc] initWithFrame:CGRectMake(TABLE_CELL_MARGIN, TABLE_CELL_MARGIN/2 + 15,
-                                                                        self.topSwipeableView.frame.size.width - TABLE_CELL_MARGIN,
-                                                                        self.topSwipeableView.frame.size.height - 2 * TABLE_CELL_MARGIN)];
-    self.storyLocationLabel.font = [UIFont systemFontOfSize:12];
-    self.storyLocationLabel.textColor = [UIColor whiteColor];
-    self.storyLocationLabel.minimumFontSize = 10;
-    self.storyLocationLabel.textAlignment = NSTextAlignmentLeft;
-    self.storyLocationLabel.backgroundColor = [UIColor clearColor];
-    [self.topSwipeableView.frontView addSubview:self.storyLocationLabel];
+    UIImage *timeImage = [UIImage imageNamed:@"clockSymbol"];
+    self.timeLabel = [[BNImageLabel alloc] initWithFrameAtOrigin:CGPointMake(TABLE_CELL_MARGIN, self.topSwipeableView.frame.size.height/2)
+                                                       imageViewSize:timeImage.size
+                                                           labelSize:CGSizeMake(self.topSwipeableView.frame.size.width/2 - TABLE_CELL_MARGIN - BUTTON_SPACING,
+                                                                                self.topSwipeableView.frame.size.height/2)];
+    [self.timeLabel.imageView setImage:timeImage];
+    self.timeLabel.label.font = [UIFont fontWithName:@"Roboto-Medium" size:12];
+    self.timeLabel.label.textColor = [UIColor grayColor];
+    self.timeLabel.label.minimumFontSize = 10;
+    self.timeLabel.label.textAlignment = NSTextAlignmentLeft;
+    [self.topSwipeableView.frontView addSubview:self.timeLabel];
+    
+    UIImage *locationImage = [UIImage imageNamed:@"locationSymbolSmall"];
+    self.locationLabel = [[BNImageLabel alloc] initWithFrameAtOrigin:CGPointMake(CGRectGetMaxX(self.timeLabel.frame) + 5, CGRectGetMinY(self.timeLabel.frame))
+                                                       imageViewSize:locationImage.size
+                                                           labelSize:CGSizeMake(self.topSwipeableView.frame.size.width/2 - TABLE_CELL_MARGIN - BUTTON_SPACING,
+                                                                                self.topSwipeableView.frame.size.height/2 - TABLE_CELL_MARGIN)];
+    [self.locationLabel.imageView setImage:locationImage];
+    self.locationLabel.label.font = [UIFont fontWithName:@"Roboto-Medium" size:12];
+    self.locationLabel.label.textColor = [UIColor grayColor];
+    self.locationLabel.label.minimumFontSize = 10;
+    self.locationLabel.label.textAlignment = NSTextAlignmentLeft;
+    [self.topSwipeableView.frontView addSubview:self.locationLabel];
     
     self.storyFrontViewControl = [UIButton buttonWithType:UIButtonTypeCustom];
     self.storyFrontViewControl.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
+    
 }
 
 - (void) setupBackView
