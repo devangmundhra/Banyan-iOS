@@ -15,6 +15,26 @@
 #import "StoryListCellMiddleViewController.h"
 #import "BNImageLabel.h"
 
+@implementation UIViewWithTopLine
+- (void)drawRect:(CGRect)rect
+{
+    [super drawRect:rect];
+    
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetStrokeColorWithColor(context, [UIColor lightGrayColor].CGColor);
+    
+    // Draw them with a 2.0 stroke width so they are a bit more visible.
+    CGContextSetLineWidth(context, 2.0);
+    
+    CGContextMoveToPoint(context, 0, 0); //start at this point
+    
+    CGContextAddLineToPoint(context, CGRectGetMaxX(self.frame), 0); //draw to this point
+    
+    // and now draw the Path!
+    CGContextStrokePath(context);
+}
+@end
+
 @interface StoryListCell () {
     NSDateFormatter *dateFormatter;
 }
@@ -27,12 +47,13 @@
 @property (nonatomic, strong) IBOutlet BNImageLabel *locationLabel;
 
 // Middle View Properties
-@property (weak, nonatomic) IBOutlet UIView *middleView;
+@property (weak, nonatomic) IBOutlet UIViewWithTopLine *middleView;
 @property (strong, nonatomic) IBOutlet StoryListCellMiddleViewController *middleVC;
 @property (strong, nonatomic) UIGestureRecognizer *tapRecognizer;
 
 // Bottom View Properties
-@property (weak, nonatomic) IBOutlet UIView *bottomView;
+@property (weak, nonatomic) IBOutlet UIViewWithTopLine *bottomView;
+@property (nonatomic, strong) IBOutlet UILabel *storyTags;
 
 @property (strong, nonatomic) NSDateFormatter *dateFormatter;
 
@@ -52,6 +73,7 @@
 @synthesize tapRecognizer = _tapRecognizer;
 @synthesize dateFormatter;
 @synthesize containingView;
+@synthesize storyTags = _storyTags;
 
 #pragma mark setter/getters
 
@@ -162,6 +184,9 @@
         self.locationLabel.hidden = YES;
     }
     
+    NSArray *tags = [story.tags componentsSeparatedByString:@","];
+    self.storyTags.text = [tags componentsJoinedByString:@" "];
+    
     if (story)
     {
         UIImage *frontViewControlImage = nil;
@@ -191,12 +216,22 @@
 # pragma mark methods for Bottom View
 - (void) setupBottomView
 {
+    CGRect aFrame = self.bottomView.bounds;
+    aFrame.origin.y += 2;
+    aFrame.origin.x += TABLE_CELL_MARGIN;
+    aFrame.size.width -= 2*TABLE_CELL_MARGIN;
+    aFrame.size.height -= 2*2;
+    self.bottomView.backgroundColor = BANYAN_WHITE_COLOR;
+    self.storyTags = [[UILabel alloc] initWithFrame:aFrame];
+    self.storyTags.font = [UIFont fontWithName:@"Roboto-Medium" size:12];
+    self.storyTags.textColor = [UIColor grayColor];
+    [self.bottomView addSubview:self.storyTags];
 }
 
 # pragma mark methods for Middle View
 - (void) setupMiddleView
 {
-    [self.middleView setBackgroundColor:BANYAN_GREEN_COLOR];
+    [self.middleView setBackgroundColor:BANYAN_WHITE_COLOR];
     [self.middleView addSubview:self.middleVC.view];
     [self.middleView addGestureRecognizer:self.tapRecognizer];
 }

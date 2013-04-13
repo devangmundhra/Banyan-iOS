@@ -7,8 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Piece.h"
 
 @interface StoryListCellReadSceneViewController : UIViewController
-@property (weak, nonatomic) IBOutlet UILabel *label;
+@property (weak, nonatomic) IBOutlet UIImageView *imageView;
+@property (weak, nonatomic) IBOutlet UITextView *textView;
+
+- (void) setPiece:(Piece *)piece;
 
 @end

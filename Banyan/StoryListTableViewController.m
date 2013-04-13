@@ -199,7 +199,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                 }
             }
             // Create a predicate where author in arrayOfUserIdsBeingFollowed
-            predicate = [NSPredicate predicateWithFormat:@"((canView == YES) OR (canContribute == YES)) AND ((author IN %@))", arrayOfUserIdsBeingFollowed];
+            predicate = [NSPredicate predicateWithFormat:@"((canView == YES) OR (canContribute == YES)) AND ((authorId IN %@))", arrayOfUserIdsBeingFollowed];
             break;
         default:
             break;

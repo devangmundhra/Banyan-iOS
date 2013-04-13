@@ -12,7 +12,7 @@
 #import "UISwipeableView.h"
 
 #define TABLE_CELL_MARGIN 10.0
-#define TABLE_ROW_HEIGHT 210.0 // from nib file
+#define TABLE_ROW_HEIGHT 200.0 // from nib file
 
 @interface StoryListCell : UITableViewCell <UISwipeableViewDelegate, UIAlertViewDelegate>
 
@@ -21,4 +21,7 @@
 - (void) hideSwipedViewAnimated:(BOOL)animated;
 - (void) revealSwipedViewAnimated:(BOOL)animated;
 
+@end
+
+@interface UIViewWithTopLine : UIView
 @end

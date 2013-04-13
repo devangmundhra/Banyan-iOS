@@ -8,6 +8,7 @@ pod 'TestFlightSDK', '>= 1.2'
 pod 'SVPullToRefresh'
 pod 'RestKit', :git => 'https://github.com/RestKit/RestKit.git', :branch => 'development'
 pod 'SVSegmentedControl'
+pod 'SMPageControl', '~> 1.0'
 
 # Testing and Search are optional components
 # pod 'RestKit/Testing',  :git => 'https://github.com/RestKit/RestKit.git'

@@ -9,10 +9,11 @@
 #import "StoryListCellMiddleViewController.h"
 #import "StoryListCellReadSceneViewController.h"
 #import "Story.h"
+#import "SMPageControl.h"
 
 @interface StoryListCellMiddleViewController ()
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (weak, nonatomic) IBOutlet UIPageControl *pageControl;
+@property (strong, nonatomic) IBOutlet SMPageControl *pageControl;
 @property (nonatomic, strong) NSMutableArray *viewControllers;
 
 @end
@@ -46,9 +47,12 @@
     self.scrollView.showsVerticalScrollIndicator = NO;
     self.scrollView.scrollsToTop = NO;
     self.scrollView.delegate = self;
+    
     self.pageControl.numberOfPages = 0;
     self.pageControl.currentPage = 0;
     self.pageControl.hidesForSinglePage = YES;
+    self.pageControl.currentPageIndicatorTintColor = BANYAN_BROWN_COLOR;
+    self.pageControl.pageIndicatorTintColor = [BANYAN_BROWN_COLOR colorWithAlphaComponent:0.5];
     [self.scrollView setBackgroundColor:[UIColor clearColor]];
 }
 
@@ -61,7 +65,7 @@
     self.pageControl.currentPage = 0;
     
     [self loadScrollViewWithPage:0];
-    [self loadScrollViewWithPage:1];
+//    [self loadScrollViewWithPage:1]; // TODO: Uncommenting this creates a problem during loading with more than 1 pieces
 }
 
 // rotation support for iOS 5.x and earlier, note for iOS 6.0 and later this will not be called
@@ -134,7 +138,7 @@
         [controller didMoveToParentViewController:self];
         
         Piece *piece = [self.story.pieces objectAtIndex:page];
-        controller.label.text = piece.shortText;
+        [controller setPiece:piece];
     }
 }
 
