@@ -14,6 +14,7 @@
 #import "Story+Create.h"
 #import "LocationPickerButton.h"
 #import "User_Defines.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface NewStoryViewController ()
 {
@@ -73,7 +74,7 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
-        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStyleDone target:self action:@selector(doneNewStory:)]];
+//        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStyleDone target:self action:@selector(doneNewStory:)]];
 //        [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
         
         self.title = @"Create New Story";
@@ -98,11 +99,32 @@
     [self unregisterForKeyboardNotifications];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    if (![BanyanAppDelegate loggedIn]) {
+        [self.view setUserInteractionEnabled:NO];
+        CALayer *layer = [self.view layer];
+        [layer setRasterizationScale:0.3];
+        [layer setShouldRasterize:YES];
+        layer.opacity = 0.3;
+        [self.navigationItem setRightBarButtonItem:nil];
+    } else {
+        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStyleDone target:self action:@selector(doneNewStory:)]];
+        [self.view setUserInteractionEnabled:YES];
+        CALayer *layer = [self.view layer];
+        [layer setRasterizationScale:1.0];
+        [layer setShouldRasterize:NO];
+        layer.opacity = 1;
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
+    self.story = [Story newDraftStory];
+
     self.inviteContactsButton.enabled = 1;
     [self.inviteContactsButton setBackgroundColor:BANYAN_GREEN_COLOR];
     [self.inviteContactsButton setImage:[UIImage imageNamed:@"addUserSymbol"] forState:UIControlStateNormal];
@@ -123,7 +145,6 @@
     self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapAnywhere:)];
     self.invitedToContributeList = [NSMutableArray array];
     self.invitedToViewList = [NSMutableArray array];
-    self.story = [Story newDraftStory];
     
     CGRect aRect = self.contributorPrivacySegmentedControl.thumb.frame;
     self.contributorPrivacySegmentedControl.selectedIndex = ContributorPrivacySegmentedControlInvited;

@@ -69,6 +69,10 @@
          NSLog(@"%s loadDataSource completed", __PRETTY_FUNCTION__);
          dispatch_async(dispatch_get_main_queue(), ^{
              [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+             NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+             [userDefaults setObject:[NSDate date] forKey:BNUserDefaultsLastSuccessfulStoryUpdateTime];
+             [userDefaults synchronize];
+             
              [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
                                                                  object:self];
          });
@@ -121,9 +125,22 @@
     [objectManager getObjectsAtPath:getPath
                          parameters:nil
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                // Delete all unsaved stories
+                                NSArray *unsavedStories = [BanyanConnection unsavedObjectsWithEntityName:kBNStoryClassKey];
+                                for (Story *story in unsavedStories) {
+                                    [story.managedObjectContext deleteObject:story];
+                                }
+                                
                                 NSArray *stories = [mappingResult array];
+                                // Delete stories that have been deleted on the server
+                                NSArray *syncedStories =[BanyanConnection syncedObjectsWithEntityName:kBNStoryClassKey];
+                                for (Story *story in stories) {
+                                    if (![syncedStories containsObject:story])
+                                        [story.managedObjectContext deleteObject:story];
+                                }
                                 [stories enumerateObjectsUsingBlock:^(Story *story, NSUInteger idx, BOOL *stop) {
                                     story.remoteStatus = RemoteObjectStatusSync;
+                                    story.lastSynced = [NSDate date];
                                     [story updateStoryStats];
                                 }];
                                 successBlock();                            }
@@ -144,9 +161,7 @@
                                                     PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT]];
     [pieceMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"bnObjectId", PIECE_AUTHOR : @"authorId"}];
     pieceMapping.identificationAttributes = @[@"bnObjectId"];
-    
-    //  @"object.author" : @"author.userId"
-    
+        
 //    [pieceMapping addConnectionForRelationship:@"story" connectedBy:@"bnObjectId"];
     
     RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceMapping
@@ -159,10 +174,14 @@
                          parameters:@{@"attributes" : @[@"pieces"]}
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                 NSArray *pieces = [mappingResult array];
+                                if ([story isDeleted] || story.managedObjectContext == nil ) // Don't bother doing anything if story was deleted while fetching pieces
+                                    return;
+                                
                                 [pieces enumerateObjectsUsingBlock:^(Piece *piece, NSUInteger idx, BOOL *stop) {
                                     [story addPiecesObject:piece];
                                     piece.remoteStatus = RemoteObjectStatusSync;
                                     [piece updatePieceStats];
+                                    piece.lastSynced = [NSDate date];
                                 }];
                                 story.length = [NSNumber numberWithInteger:pieces.count];
                                 completionBlock();
@@ -178,6 +197,42 @@
     {
         [story resetPermission];
     }
+}
+
++ (NSArray *)syncedObjectsWithEntityName:(NSString *)entityName
+{
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:[NSEntityDescription entityForName:entityName inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@) AND (bnObjectId != NULL)",
+							  [NSNumber numberWithInt:RemoteObjectStatusSync]];
+    [request setPredicate:predicate];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
+    [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+    
+    NSError *error = nil;
+    NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+    if (array == nil) {
+        array = [NSArray array];
+    }
+    return array;
+}
+
++ (NSArray *)unsavedObjectsWithEntityName:(NSString *)entityName
+{
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:[NSEntityDescription entityForName:entityName inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@) AND (bnObjectId == NULL)",
+							  [NSNumber numberWithInt:RemoteObjectStatusLocal]];
+    [request setPredicate:predicate];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
+    [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+    
+    NSError *error = nil;
+    NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+    if (array == nil) {
+        array = [NSArray array];
+    }
+    return array;
 }
 
 @end

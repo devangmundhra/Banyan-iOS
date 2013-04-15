@@ -15,7 +15,8 @@
 @dynamic createdAt;
 @dynamic updatedAt;
 @dynamic remoteStatusNumber;
-@synthesize authorId;
+@dynamic lastSynced;
+@dynamic authorId;
 
 #pragma mark -
 #pragma mark Revision management

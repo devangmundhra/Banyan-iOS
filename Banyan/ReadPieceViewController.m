@@ -351,13 +351,13 @@
                                           NSDictionary *response = (NSDictionary *)responseObject;
                                           [PFFacebookUtils reauthorizeUser:[PFUser currentUser]
                                                     withPublishPermissions:[NSArray arrayWithObject:@"publish_stream"]
-                                                                  audience:PF_FBSessionDefaultAudienceFriends
+                                                                  audience:FBSessionDefaultAudienceFriends
                                                                      block:^(BOOL succeeded, NSError *error) {
                                                                          if (!succeeded) {
                                                                              NSLog(@"Error in getting permissions to publish");
                                                                          }
                                                                      }];
-                                          [PF_FBNativeDialogs presentShareDialogModallyFrom:self
+                                          [FBNativeDialogs presentShareDialogModallyFrom:self
                                                                                 initialText:self.piece.story.title
                                                                                       image:self.imageView.image
                                                                                         url:[NSURL URLWithString:[response objectForKey:@"link"]]

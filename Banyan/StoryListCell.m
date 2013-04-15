@@ -240,7 +240,7 @@
 - (void)singleTapGestureCaptured:(UITapGestureRecognizer *)gesture
 {
     UITableView * tableView = (UITableView *)self.superview;
-    id delegate = tableView.nextResponder; // Hopefully this is a UITableViewController.
+    id delegate = tableView.superview.nextResponder; // Hopefully this is a BNTableViewController.
     NSIndexPath * myIndexPath = [tableView indexPathForCell:self];
     
     if ([delegate respondsToSelector:@selector(tableView:willSelectRowAtIndexPath:)]) {
@@ -271,7 +271,7 @@
     UIImage *timeImage = [UIImage imageNamed:@"clockSymbol"];
     self.timeLabel = [[BNImageLabel alloc] initWithFrameAtOrigin:CGPointMake(TABLE_CELL_MARGIN, self.topSwipeableView.frame.size.height/2)
                                                        imageViewSize:timeImage.size
-                                                           labelSize:CGSizeMake(self.topSwipeableView.frame.size.width/2 - TABLE_CELL_MARGIN - BUTTON_SPACING,
+                                                           labelSize:CGSizeMake(self.topSwipeableView.frame.size.width/2 - 2*TABLE_CELL_MARGIN - 3*BUTTON_SPACING,
                                                                                 self.topSwipeableView.frame.size.height/2)];
     [self.timeLabel.imageView setImage:timeImage];
     self.timeLabel.label.font = [UIFont fontWithName:@"Roboto-Medium" size:12];
@@ -281,10 +281,10 @@
     [self.topSwipeableView.frontView addSubview:self.timeLabel];
     
     UIImage *locationImage = [UIImage imageNamed:@"locationSymbolSmall"];
-    self.locationLabel = [[BNImageLabel alloc] initWithFrameAtOrigin:CGPointMake(CGRectGetMaxX(self.timeLabel.frame) + 5, CGRectGetMinY(self.timeLabel.frame))
+    self.locationLabel = [[BNImageLabel alloc] initWithFrameAtOrigin:CGPointMake(CGRectGetMaxX(self.timeLabel.frame) + 5, self.topSwipeableView.frame.size.height/2)
                                                        imageViewSize:locationImage.size
                                                            labelSize:CGSizeMake(self.topSwipeableView.frame.size.width/2 - TABLE_CELL_MARGIN - BUTTON_SPACING,
-                                                                                self.topSwipeableView.frame.size.height/2 - TABLE_CELL_MARGIN)];
+                                                                                self.topSwipeableView.frame.size.height/2)];
     [self.locationLabel.imageView setImage:locationImage];
     self.locationLabel.label.font = [UIFont fontWithName:@"Roboto-Medium" size:12];
     self.locationLabel.label.textColor = [UIColor grayColor];
@@ -451,7 +451,7 @@
 - (void)addPiece:(UIButton *)button
 {
     UITableView * tableView = (UITableView *)self.superview;
-    id delegate = tableView.nextResponder; // Hopefully this is a UITableViewController.
+    id delegate = tableView.superview.nextResponder; // Hopefully this is a BNTableViewController.
     NSIndexPath * myIndexPath = [tableView indexPathForCell:self];
     
     if ([delegate respondsToSelector:@selector(addPieceForRowAtIndexPath:)]) {
@@ -471,7 +471,7 @@
 - (void)deleteStory
 {
     UITableView * tableView = (UITableView *)self.superview;
-    id delegate = tableView.nextResponder; // Hopefully this is a UITableViewController.
+    id delegate = tableView.superview.nextResponder; // Hopefully this is a BNTableViewController.
     NSIndexPath * myIndexPath = [tableView indexPathForCell:self];
     
     if ([delegate respondsToSelector:@selector(tableView:commitEditingStyle:forRowAtIndexPath:)]) {
@@ -482,7 +482,7 @@
 - (void) shareStory:(UIButton *)button
 {
     UITableView * tableView = (UITableView *)self.superview;
-    id delegate = tableView.nextResponder; // Hopefully this is a UITableViewController.
+    id delegate = tableView.superview.nextResponder; // Hopefully this is a BNTableViewController.
     NSIndexPath * myIndexPath = [tableView indexPathForCell:self];
     
     if ([delegate respondsToSelector:@selector(shareStoryAtIndexPath:)]) {

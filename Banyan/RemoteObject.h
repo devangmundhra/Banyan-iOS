@@ -23,6 +23,7 @@ typedef enum {
 @property (nonatomic, retain) NSString * authorId;
 @property (nonatomic, retain) NSDate * createdAt;
 @property (nonatomic, retain) NSDate * updatedAt;
+@property (nonatomic, retain) NSDate * lastSynced;
 @property (nonatomic, retain) NSNumber * remoteStatusNumber;
 @property (nonatomic) RemoteObjectStatus remoteStatus;
 

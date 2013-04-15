@@ -104,11 +104,12 @@
 		5189B3C715B39BE100562DD0 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3C615B39BE100562DD0 /* MobileCoreServices.framework */; };
 		5189B3C915B39BE700562DD0 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3C815B39BE700562DD0 /* AudioToolbox.framework */; };
 		5189B45715B3A38E00562DD0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3C415B39BD100562DD0 /* QuartzCore.framework */; };
-		518AF02E162539D300480D5A /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 518AF02D162539D300480D5A /* Parse.framework */; };
 		519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 519232A01671CC57009686E4 /* AFGoogleAPIClient.m */; };
 		5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 5192332616743F02009686E4 /* GooglePlacesObject.m */; };
 		519233331675305F009686E4 /* LocationPickerTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 519233311675305F009686E4 /* LocationPickerTableViewController.m */; };
 		519AFA7215C26F5D00F68F3C /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */; };
+		51A84945171BD95600367039 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51A84944171BD95600367039 /* Parse.framework */; };
+		51A84947171BEC6200367039 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51A84946171BEC6200367039 /* FacebookSDK.framework */; };
 		51A8DC9116928A240017E86F /* Activity+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC9016928A240017E86F /* Activity+Create.m */; };
 		51A8DC9516928AE00017E86F /* Banyan.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC9316928AE00017E86F /* Banyan.xcdatamodeld */; };
 		51A8DC981692C4490017E86F /* Story+Permissions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC971692C4490017E86F /* Story+Permissions.m */; };
@@ -317,7 +318,6 @@
 		5189B3C415B39BD100562DD0 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		5189B3C615B39BE100562DD0 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		5189B3C815B39BE700562DD0 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		518AF02D162539D300480D5A /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		5192329F1671CC57009686E4 /* AFGoogleAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFGoogleAPIClient.h; path = Banyan/AFGoogleAPIClient.h; sourceTree = "<group>"; };
 		519232A01671CC57009686E4 /* AFGoogleAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFGoogleAPIClient.m; path = Banyan/AFGoogleAPIClient.m; sourceTree = "<group>"; };
 		5192332516743F02009686E4 /* GooglePlacesObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GooglePlacesObject.h; path = Banyan/GooglePlacesObject.h; sourceTree = "<group>"; };
@@ -325,6 +325,8 @@
 		519233301675305F009686E4 /* LocationPickerTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationPickerTableViewController.h; path = Banyan/LocationPickerTableViewController.h; sourceTree = "<group>"; };
 		519233311675305F009686E4 /* LocationPickerTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationPickerTableViewController.m; path = Banyan/LocationPickerTableViewController.m; sourceTree = "<group>"; };
 		519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		51A84944171BD95600367039 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
+		51A84946171BEC6200367039 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		51A8DC72169141B90017E86F /* Piece+Stats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Piece+Stats.h"; path = "Banyan/Piece+Stats.h"; sourceTree = "<group>"; };
 		51A8DC8F16928A240017E86F /* Activity+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Activity+Create.h"; path = "Banyan/Activity+Create.h"; sourceTree = "<group>"; };
 		51A8DC9016928A240017E86F /* Activity+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Activity+Create.m"; path = "Banyan/Activity+Create.m"; sourceTree = "<group>"; };
@@ -436,9 +438,10 @@
 				5189B3B715B39B9300562DD0 /* CoreLocation.framework in Frameworks */,
 				5189B2B815B387E200562DD0 /* UIKit.framework in Frameworks */,
 				5189B2BA15B387E200562DD0 /* Foundation.framework in Frameworks */,
-				518AF02E162539D300480D5A /* Parse.framework in Frameworks */,
 				0B8D601560334B81AE48FCCD /* libPods.a in Frameworks */,
 				517A01B81709591B00665F0F /* libAviarySDK.a in Frameworks */,
+				51A84945171BD95600367039 /* Parse.framework in Frameworks */,
+				51A84947171BEC6200367039 /* FacebookSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -636,6 +639,8 @@
 		5189B2B615B387E200562DD0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				51A84946171BEC6200367039 /* FacebookSDK.framework */,
+				51A84944171BD95600367039 /* Parse.framework */,
 				517A01BD17095F2100665F0F /* Accelerate.framework */,
 				517A01BB17095F0E00665F0F /* OpenGLES.framework */,
 				517A01B917095EDC00665F0F /* CoreText.framework */,
@@ -656,7 +661,6 @@
 				5189B3B915B39BA400562DD0 /* libz.dylib */,
 				5189B3B615B39B9300562DD0 /* CoreLocation.framework */,
 				5189B2B715B387E200562DD0 /* UIKit.framework */,
-				518AF02D162539D300480D5A /* Parse.framework */,
 				5189B2B915B387E200562DD0 /* Foundation.framework */,
 				5189B2BB15B387E200562DD0 /* CoreGraphics.framework */,
 				F6EDBDCCC91248339FDC7301 /* libPods.a */,

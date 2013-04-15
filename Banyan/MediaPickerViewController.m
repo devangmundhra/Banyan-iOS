@@ -20,6 +20,7 @@ NSString *const MediaPickerViewControllerInfoImage = @"MediaPickerViewController
 
 @property (strong, nonatomic) NSURL *imageURL;
 @property (strong, nonatomic) UIImage *image;
+@property (nonatomic) BOOL pickerIsCamera;
 @end
 
 @implementation MediaPickerViewController
@@ -27,6 +28,7 @@ NSString *const MediaPickerViewControllerInfoImage = @"MediaPickerViewController
 @synthesize imageURL = _imageURL;
 @synthesize image = _image;
 @synthesize delegate = _delegate;
+@synthesize pickerIsCamera;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -111,6 +113,7 @@ NSString *const MediaPickerViewControllerInfoImage = @"MediaPickerViewController
 - (void)imagePickerController:(UIImagePickerController *)picker
 didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
+    pickerIsCamera = ([picker sourceType] == UIImagePickerControllerSourceTypeCamera);
     [self dismissViewControllerAnimated:NO completion:^{
         // If the image view controller is completed successfully, we don't really need to keep this saved
         // as a presented screen will not be affected by mem warning.
@@ -141,25 +144,29 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
     // Handle the result image here
     [self dismissViewControllerAnimated:YES completion:nil];
     self.image = image;
+    AFPhotoEditorSession *session = editor.session;
     
-    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    hud.labelText = @"Saving Picture";
-    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
-    
-    [library writeImageToSavedPhotosAlbum:image.CGImage orientation:(ALAssetOrientation)image.imageOrientation completionBlock:^(NSURL *assetURL, NSError *error )
-     {
-         if (assetURL) {
-             NSLog(@"%s Image saved to photo albums %@", __PRETTY_FUNCTION__, assetURL);
-             self.imageURL = assetURL;
-         } else {
-             NSLog(@"%s Error saving image: %@",error);
-         }
-         [MBProgressHUD hideHUDForView:self.view animated:YES];
-         NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:self.imageURL, MediaPickerViewControllerInfoURL, self.image, MediaPickerViewControllerInfoImage, nil];
-         if (self.delegate)
-             [self.delegate mediaPicker:self finishedPickingMediaWithInfo:infoDict];
-     }];    
+    if (session.modified || pickerIsCamera)
+    {
+        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.labelText = @"Saving Picture";
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+        
+        [library writeImageToSavedPhotosAlbum:image.CGImage orientation:(ALAssetOrientation)image.imageOrientation completionBlock:^(NSURL *assetURL, NSError *error )
+         {
+             if (assetURL) {
+                 NSLog(@"%s Image saved to photo albums %@", __PRETTY_FUNCTION__, assetURL);
+                 self.imageURL = assetURL;
+             } else {
+                 NSLog(@"%s Error saving image: %@",error);
+             }
+             [MBProgressHUD hideHUDForView:self.view animated:YES];
+         }];
+    }
+    NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:self.imageURL, MediaPickerViewControllerInfoURL, self.image, MediaPickerViewControllerInfoImage, nil];
+    if (self.delegate)
+        [self.delegate mediaPicker:self finishedPickingMediaWithInfo:infoDict];
 }
 
 - (void)photoEditorCanceled:(AFPhotoEditorController *)editor

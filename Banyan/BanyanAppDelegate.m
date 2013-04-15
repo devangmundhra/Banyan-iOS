@@ -29,7 +29,7 @@
                   clientKey:PARSE_CLIENT_KEY];
     
     // Override point for customization after application launch.
-    [PFFacebookUtils initializeWithApplicationId:FACEBOOK_APP_ID];
+    [PFFacebookUtils initializeFacebook];
     
 #define TESTING 1
 #ifdef TESTING
@@ -78,7 +78,7 @@
     if ([BanyanAppDelegate loggedIn]) {
         // User has Facebook ID.
         // Update user details and get updates on FB friends
-        [PF_FBRequestConnection startForMeWithCompletionHandler:^(PF_FBRequestConnection *connection, id result, NSError *error) {
+        [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
             if (!error) {
                 [self facebookRequest:connection didLoad:result];
             } else {
@@ -147,6 +147,11 @@ void uncaughtExceptionHandler(NSException *exception)
     return [PFFacebookUtils handleOpenURL:url];
 }
 
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
+{
+    return [PFFacebookUtils handleOpenURL:url];
+}
+
 #pragma mark application methods
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -171,13 +176,13 @@ void uncaughtExceptionHandler(NSException *exception)
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     // We need to properly handle activation of the application with regards to SSO
     // (e.g., returning from iOS 6.0 authorization dialog or from fast app switching).
-    [PF_FBSession.activeSession handleDidBecomeActive];
+    [FBSession.activeSession handleDidBecomeActive];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    [PF_FBSession.activeSession close];
+    [FBSession.activeSession close];
 }
 
 # pragma mark push notifications
@@ -202,7 +207,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     UserLoginViewController *userLoginViewController = [[UserLoginViewController alloc] init];
     userLoginViewController.delegate = self;
     userLoginViewController.facebookPermissions = [NSArray arrayWithObjects: @"email", @"user_about_me", nil];
-    [self.navController presentViewController:userLoginViewController animated:YES completion:nil];    
+    [self.navController presentViewController:userLoginViewController animated:YES completion:nil];
 }
 
 - (void)logout
@@ -228,7 +233,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     return NO;
 }
 
-- (void)facebookRequest:(PF_FBRequestConnection *)connection didLoad:(id)result
+- (void)facebookRequest:(FBRequestConnection *)connection didLoad:(id)result
 {
     // This method is called twice - once for the user's /me profile, and a second time when obtaining their friends. We will try and handle both scenarios in a single method.
     
@@ -342,7 +347,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             }];
         }
         
-        [PF_FBRequestConnection startForMyFriendsWithCompletionHandler:^(PF_FBRequestConnection *connection, id result, NSError *error) {
+        [FBRequestConnection startForMyFriendsWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
             if (!error) {
                 [self facebookRequest:connection didLoad:result];
             } else {
@@ -352,7 +357,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     }
 }
 
-- (void)facebookRequest:(PF_FBRequestConnection *)connection didFailWithError:(NSError *)error
+- (void)facebookRequest:(FBRequestConnection *)connection didFailWithError:(NSError *)error
 {
     NSLog(@"Facebook error: %@", error);
     
@@ -368,20 +373,20 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 /*
  * Callback for session changes.
  */
-- (void)sessionStateChanged:(PF_FBSession *)session
-                      state:(PF_FBSessionState) state
+- (void)sessionStateChanged:(FBSession *)session
+                      state:(FBSessionState) state
                       error:(NSError *)error
 {
     switch (state) {
-        case PF_FBSessionStateOpen:
+        case FBSessionStateOpen:
             if (!error) {
                 // We have a valid session
                 NSLog(@"User session found");
             }
             break;
-        case PF_FBSessionStateClosed:
-        case PF_FBSessionStateClosedLoginFailed:
-            [PF_FBSession.activeSession closeAndClearTokenInformation];
+        case FBSessionStateClosed:
+        case FBSessionStateClosedLoginFailed:
+            [FBSession.activeSession closeAndClearTokenInformation];
             break;
         default:
             break;
@@ -410,10 +415,10 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
                             @"user_about_me",
                             nil];
     
-    return [PF_FBSession openActiveSessionWithReadPermissions:permissions
+    return [FBSession openActiveSessionWithReadPermissions:permissions
                                               allowLoginUI:allowLoginUI
-                                         completionHandler:^(PF_FBSession *session,
-                                                             PF_FBSessionState state,
+                                         completionHandler:^(FBSession *session,
+                                                             FBSessionState state,
                                                              NSError *error) {
                                              [self sessionStateChanged:session
                                                                  state:state
@@ -481,17 +486,17 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     UITabBarItem *settingsTabBar = [[UITabBarItem alloc] initWithTitle:nil image:[UIImage imageNamed:@"userProfileTabSymbol"] tag:0];
     
     UINavigationController *storyListNavigationController = [[UINavigationController alloc] initWithRootViewController:storyListVC];
-    UINavigationController *emptyNavigationController = [[UINavigationController alloc] initWithRootViewController:newStoryViewController];
+    UINavigationController *addNavigationController = [[UINavigationController alloc] initWithRootViewController:newStoryViewController];
     UINavigationController *searchNavigationController = [[UINavigationController alloc] initWithRootViewController:searchVC];
     UINavigationController *profileNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsVC];
 
     [storyListNavigationController setTabBarItem:storyListTabBarItem];
     [searchNavigationController setTabBarItem:searchTabBarItem];
-    [emptyNavigationController setTabBarItem:addTabBarItem];
+    [addNavigationController setTabBarItem:addTabBarItem];
     [profileNavigationController setTabBarItem:settingsTabBar];
 
     self.tabBarController.delegate = self;
-    [self.tabBarController setViewControllers:@[storyListNavigationController, /*searchNavigationController,*/ emptyNavigationController, profileNavigationController] animated:YES];
+    [self.tabBarController setViewControllers:@[storyListNavigationController, /*searchNavigationController,*/ addNavigationController, profileNavigationController] animated:YES];
 }
 
 - (void) newStoryViewController:(NewStoryViewController *)sender
@@ -509,7 +514,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 - (void)logInViewController:(UserLoginViewController *)logInController didLogInUser:(PFUser *)user
 {
     NSLog(@"Getting user info");
-    [PF_FBRequestConnection startForMeWithCompletionHandler:^(PF_FBRequestConnection *connection, id result, NSError *error) {
+    [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (!error) {
             [(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate] facebookRequest:connection didLoad:result];
         } else {
