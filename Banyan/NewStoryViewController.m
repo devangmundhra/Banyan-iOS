@@ -43,7 +43,7 @@
 @property (strong, nonatomic) Story *story;
 
 @property (nonatomic) BOOL isLocationEnabled;
-@property (strong, nonatomic) BNLocationManager *locationManager;
+@property (strong, nonatomic) BNFBLocationManager *locationManager;
 
 @property (strong, nonatomic) NSString *localImageURL;
 @property (nonatomic) BOOL imageChanged;
@@ -133,12 +133,13 @@
     self.storyTitleTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
     
     if (!self.locationManager) {
-        self.locationManager = [[BNLocationManager alloc] initWithDelegate:self];
+        self.locationManager = [[BNFBLocationManager alloc] initWithDelegate:self];
     }
-    self.isLocationEnabled = YES;
+    self.isLocationEnabled = NO;
     self.addLocationButton.delegate = self;
     [self.addLocationButton locationPickerLocationEnabled:self.isLocationEnabled];
-    [self.locationManager beginUpdatingLocation];
+    if (self.isLocationEnabled)
+        [self.locationManager beginUpdatingLocation];
     
     self.addPhotoButton.delegate = self;
     
@@ -249,11 +250,9 @@
     // Story Location
     if (self.isLocationEnabled == YES) {
         self.story.isLocationEnabled = [NSNumber numberWithBool:YES];
-        if (self.locationManager.location) {
-            
-            CLLocationCoordinate2D coord = self.locationManager.location.coordinate;
-            self.story.latitude = [NSNumber numberWithDouble:coord.latitude];
-            self.story.longitude = [NSNumber numberWithDouble:coord.longitude];
+        if (self.locationManager.location) {            
+            self.story.latitude = self.locationManager.location.location.latitude;
+            self.story.longitude = self.locationManager.location.location.longitude;
             self.story.geocodedLocation = self.locationManager.location.name;
         }
     } else  {
@@ -437,14 +436,12 @@
     [self.addPhotoButton.imageView  cancelImageRequestOperation];
     self.imageChanged = YES;
     [NSThread detachNewThreadSelector:@selector(useImage:) toTarget:self withObject:image];
-    [mediaPicker removeFromParentViewController];
 }
 
 - (void)mediaPickerDidCancel:(MediaPickerViewController *)mediaPicker
 {
     self.localImageURL = nil;
     self.imageChanged = NO;
-    [mediaPicker removeFromParentViewController];
 }
 
 - (void)useImage:(UIImage *)image {
@@ -460,7 +457,7 @@
 - (void)locationPickerButtonTapped:(LocationPickerButton *)sender
 {
     [self.addLocationButton locationPickerLocationEnabled:YES];
-    [self.locationManager showLocationPickerTableViewController];
+    [self.locationManager showPlacePickerViewController];
 }
 
 - (void)locationPickerButtonToggleLocationEnable:(LocationPickerButton *)sender
@@ -468,7 +465,7 @@
     self.isLocationEnabled = !self.isLocationEnabled;
     [self.addLocationButton locationPickerLocationEnabled:self.isLocationEnabled];
     if (self.isLocationEnabled) {
-        [self.locationManager beginUpdatingLocation];
+        [self locationPickerButtonTapped:sender];
     } else {
         [self.locationManager stopUpdatingLocation:@"Add Location"];
     }

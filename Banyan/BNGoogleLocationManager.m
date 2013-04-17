@@ -1,21 +1,21 @@
 //
-//  BNLocationManager.m
+//  BNGoogleLocationManager.m
 //  Banyan
 //
 //  Created by Devang Mundhra on 8/7/12.
 //
 //
 
-#import "BNLocationManager.h"
+#import "BNGoogleLocationManager.h"
 #import "AFGoogleAPIClient.h"
 #import "BanyanAppDelegate.h"
 
-@interface BNLocationManager ()
+@interface BNGoogleLocationManager ()
 @property (strong, nonatomic) CLLocation *bestEffortAtLocation;
 @property (strong, nonatomic) NSArray *locationsNearThisLocation;
 @end
 
-@implementation BNLocationManager
+@implementation BNGoogleLocationManager
 
 static CLLocationManager *_sharedLocationManager;
 
@@ -49,7 +49,7 @@ static CLLocationManager *_sharedLocationManager;
     return _locationPickerViewController;
 }
 
-- (id)initWithDelegate:(id<BNLocationManagerDelegate>)delegate
+- (id)initWithDelegate:(id<BNGoogleLocationManagerDelegate>)delegate
 {
     self = [super init];
     if (self) {

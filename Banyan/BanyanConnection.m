@@ -128,16 +128,17 @@
                                 // Delete all unsaved stories
                                 NSArray *unsavedStories = [BanyanConnection unsavedObjectsWithEntityName:kBNStoryClassKey];
                                 for (Story *story in unsavedStories) {
-                                    [story.managedObjectContext deleteObject:story];
+                                    [story remove];
                                 }
                                 
                                 NSArray *stories = [mappingResult array];
                                 // Delete stories that have been deleted on the server
                                 NSArray *syncedStories =[BanyanConnection syncedObjectsWithEntityName:kBNStoryClassKey];
-                                for (Story *story in stories) {
-                                    if (![syncedStories containsObject:story])
-                                        [story.managedObjectContext deleteObject:story];
+                                for (Story *story in syncedStories) {
+                                    if (![stories containsObject:story])
+                                        [story remove];
                                 }
+                                [BanyanConnection dataSave];
                                 [stories enumerateObjectsUsingBlock:^(Story *story, NSUInteger idx, BOOL *stop) {
                                     story.remoteStatus = RemoteObjectStatusSync;
                                     story.lastSynced = [NSDate date];
@@ -233,6 +234,15 @@
         array = [NSArray array];
     }
     return array;
+}
+
++ (void) dataSave
+{
+    NSError *error = nil;
+    if (![[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:&error]) {
+        NSLog(@"Unresolved Core Data Save error %@, %@", error, [error userInfo]);
+        exit(-1);
+    }
 }
 
 @end

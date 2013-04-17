@@ -10,7 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "Piece.h"
 #import "Story.h"
-#import "BNLocationManager.h"
+#import "BNFBLocationManager.h"
 #import "LocationPickerButton.h"
 #import "MediaPickerViewController.h"
 #import "MediaPickerButton.h"
@@ -34,7 +34,7 @@ typedef enum {ModifyPieceViewControllerEditModeAddPiece, ModifyPieceViewControll
 //
 //@end
 
-@interface ModifyPieceViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, UINavigationControllerDelegate, UIAlertViewDelegate, UINavigationBarDelegate, UIActionSheetDelegate, BNLocationManagerDelegate, LocationPickerButtonDelegate, MediaPickerViewControllerDelegate, MediaPickerButtonDelegate>
+@interface ModifyPieceViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, UINavigationControllerDelegate, UIAlertViewDelegate, UINavigationBarDelegate, UIActionSheetDelegate, BNFBLocationManagerDelegate, LocationPickerButtonDelegate, MediaPickerViewControllerDelegate, MediaPickerButtonDelegate>
 
 @property (strong, nonatomic) Piece *piece;
 //@property (weak, nonatomic) id <ModifyPieceViewControllerDelegate> delegate;

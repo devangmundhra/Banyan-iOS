@@ -29,7 +29,7 @@
 @property (strong, nonatomic) NSString *localImageURL;
 @property (nonatomic) BOOL imageChanged;
 
-@property (strong, nonatomic) BNLocationManager *locationManager;
+@property (strong, nonatomic) BNFBLocationManager *locationManager;
 
 @property (nonatomic) ModifyPieceViewControllerEditMode editMode;
 @property (strong, nonatomic) Piece *backupPiece_;
@@ -94,7 +94,7 @@
     // Do any additional setup after loading the view from its nib.
     
     if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && [self.piece.story.isLocationEnabled boolValue]) {
-        self.locationManager = [[BNLocationManager alloc] init];
+        self.locationManager = [[BNFBLocationManager alloc] init];
         self.locationManager.delegate = self;
         [self.locationManager beginUpdatingLocation];
     } else {
@@ -216,11 +216,8 @@
     {
         if ([self.piece.story.isLocationEnabled boolValue] == YES) {
             if (self.locationManager.location) {
-                
-                CLLocationCoordinate2D coord = [self.locationManager.location coordinate];
-                
-                self.piece.latitude = [NSNumber numberWithDouble:coord.latitude];
-                self.piece.longitude = [NSNumber numberWithDouble:coord.longitude];
+                self.piece.latitude = self.locationManager.location.location.latitude;
+                self.piece.longitude = self.locationManager.location.location.longitude;
                 self.piece.geocodedLocation = self.locationManager.location.name;
             }
         }
@@ -355,14 +352,14 @@
 - (void)locationPickerButtonTapped:(LocationPickerButton *)sender
 {
     [self.addLocationButton locationPickerLocationEnabled:YES];
-    [self.locationManager showLocationPickerTableViewController];
+    [self.locationManager showPlacePickerViewController];
 }
 
 - (void)locationPickerButtonToggleLocationEnable:(LocationPickerButton *)sender
 {
     [self.addLocationButton locationPickerLocationEnabled:[self.piece.story.isLocationEnabled boolValue]];
     if (self.piece.story.isLocationEnabled) {
-        [self.locationManager beginUpdatingLocation];
+        [self.locationManager showPlacePickerViewController];
     } else {
         [self.locationManager stopUpdatingLocation:@"Add Location"];
     }

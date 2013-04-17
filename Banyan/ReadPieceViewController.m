@@ -32,7 +32,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *locationLabel;
 
 
-@property (strong, nonatomic) BNLocationManager *locationManager;
+@property (strong, nonatomic) BNFBLocationManager *locationManager;
 
 @end
 
@@ -138,13 +138,12 @@
     
     if (![self.piece.geocodedLocation isEqual:[NSNull null]] && self.piece.geocodedLocation)
         self.locationLabel.text = self.piece.geocodedLocation;
-    // Update the scene location from the coordinates (if we were not able to get the reverse geocoded location before)
-    else if (self.piece.story.isLocationEnabled && ![self.piece.location isEqual:[NSNull null]]) {
-        CLLocation *location = [[CLLocation alloc] initWithLatitude:(CLLocationDegrees)[self.piece.latitude doubleValue]
-                                                          longitude:(CLLocationDegrees)[self.piece.longitude doubleValue]];
-        self.locationManager = [[BNLocationManager alloc] initWithDelegate:self];
-        [self.locationManager getNearbyLocations:location];
-    }
+//    // Update the piece location from the coordinates (if we were not able to get the reverse geocoded location before)
+//    else if (self.piece.story.isLocationEnabled && ![self.piece.location isEqual:[NSNull null]]) {
+//        CLLocation *location = [[CLLocation alloc] initWithLatitude:(CLLocationDegrees)[self.piece.latitude doubleValue]
+//                                                          longitude:(CLLocationDegrees)[self.piece.longitude doubleValue]];
+//        self.locationManager = [[BNFBLocationManager alloc] initWithDelegate:self];
+//    }
 
     if (self.piece.imageURL) {
         self.pieceTextView.textColor = [UIColor whiteColor];

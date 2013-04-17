@@ -162,11 +162,15 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
                  NSLog(@"%s Error saving image: %@",error);
              }
              [MBProgressHUD hideHUDForView:self.view animated:YES];
+             NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:self.imageURL, MediaPickerViewControllerInfoURL, self.image, MediaPickerViewControllerInfoImage, nil];
+             if (self.delegate)
+                 [self.delegate mediaPicker:self finishedPickingMediaWithInfo:infoDict];
          }];
+    } else {
+        NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:self.imageURL, MediaPickerViewControllerInfoURL, self.image, MediaPickerViewControllerInfoImage, nil];
+        if (self.delegate)
+            [self.delegate mediaPicker:self finishedPickingMediaWithInfo:infoDict];
     }
-    NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:self.imageURL, MediaPickerViewControllerInfoURL, self.image, MediaPickerViewControllerInfoImage, nil];
-    if (self.delegate)
-        [self.delegate mediaPicker:self finishedPickingMediaWithInfo:infoDict];
 }
 
 - (void)photoEditorCanceled:(AFPhotoEditorController *)editor

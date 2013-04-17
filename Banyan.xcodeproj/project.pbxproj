@@ -13,7 +13,7 @@
 		510787C7163A36A90042B436 /* UIImage+ResizeAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787C3163A36A90042B436 /* UIImage+ResizeAdditions.m */; };
 		510787C8163A36A90042B436 /* UIImage+RoundedCornerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787C5163A36A90042B436 /* UIImage+RoundedCornerAdditions.m */; };
 		510787CF163A36D80042B436 /* AFBanyanAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787CE163A36D80042B436 /* AFBanyanAPIClient.m */; };
-		510787D2163A36F20042B436 /* BNLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787D1163A36F20042B436 /* BNLocationManager.m */; };
+		510787D2163A36F20042B436 /* BNGoogleLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787D1163A36F20042B436 /* BNGoogleLocationManager.m */; };
 		510787D5163A37190042B436 /* Activity.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787D4163A37190042B436 /* Activity.m */; };
 		510787DA163A37250042B436 /* File.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787D7163A37250042B436 /* File.m */; };
 		511E708B161A9756009AAD25 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708A161A9756009AAD25 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -110,6 +110,8 @@
 		519AFA7215C26F5D00F68F3C /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */; };
 		51A84945171BD95600367039 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51A84944171BD95600367039 /* Parse.framework */; };
 		51A84947171BEC6200367039 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51A84946171BEC6200367039 /* FacebookSDK.framework */; };
+		51A8494A171CF4A500367039 /* BNPlacePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A84949171CF4A500367039 /* BNPlacePickerViewController.m */; };
+		51A8494D171D24E900367039 /* BNFBLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8494C171D24E900367039 /* BNFBLocationManager.m */; };
 		51A8DC9116928A240017E86F /* Activity+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC9016928A240017E86F /* Activity+Create.m */; };
 		51A8DC9516928AE00017E86F /* Banyan.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC9316928AE00017E86F /* Banyan.xcdatamodeld */; };
 		51A8DC981692C4490017E86F /* Story+Permissions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC971692C4490017E86F /* Story+Permissions.m */; };
@@ -186,8 +188,8 @@
 		510787C5163A36A90042B436 /* UIImage+RoundedCornerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+RoundedCornerAdditions.m"; path = "Banyan/UIImage+RoundedCornerAdditions.m"; sourceTree = "<group>"; };
 		510787CD163A36D80042B436 /* AFBanyanAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFBanyanAPIClient.h; path = Banyan/AFBanyanAPIClient.h; sourceTree = "<group>"; };
 		510787CE163A36D80042B436 /* AFBanyanAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFBanyanAPIClient.m; path = Banyan/AFBanyanAPIClient.m; sourceTree = "<group>"; };
-		510787D0163A36F20042B436 /* BNLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNLocationManager.h; path = Banyan/BNLocationManager.h; sourceTree = "<group>"; };
-		510787D1163A36F20042B436 /* BNLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNLocationManager.m; path = Banyan/BNLocationManager.m; sourceTree = "<group>"; };
+		510787D0163A36F20042B436 /* BNGoogleLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNGoogleLocationManager.h; path = Banyan/BNGoogleLocationManager.h; sourceTree = "<group>"; };
+		510787D1163A36F20042B436 /* BNGoogleLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNGoogleLocationManager.m; path = Banyan/BNGoogleLocationManager.m; sourceTree = "<group>"; };
 		510787D3163A37190042B436 /* Activity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Activity.h; path = Banyan/Activity.h; sourceTree = "<group>"; };
 		510787D4163A37190042B436 /* Activity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Activity.m; path = Banyan/Activity.m; sourceTree = "<group>"; };
 		510787D6163A37250042B436 /* File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = File.h; path = Banyan/File.h; sourceTree = "<group>"; };
@@ -327,6 +329,10 @@
 		519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		51A84944171BD95600367039 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		51A84946171BEC6200367039 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
+		51A84948171CF4A500367039 /* BNPlacePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNPlacePickerViewController.h; path = Banyan/BNPlacePickerViewController.h; sourceTree = "<group>"; };
+		51A84949171CF4A500367039 /* BNPlacePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNPlacePickerViewController.m; path = Banyan/BNPlacePickerViewController.m; sourceTree = "<group>"; };
+		51A8494B171D24E900367039 /* BNFBLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNFBLocationManager.h; path = Banyan/BNFBLocationManager.h; sourceTree = "<group>"; };
+		51A8494C171D24E900367039 /* BNFBLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNFBLocationManager.m; path = Banyan/BNFBLocationManager.m; sourceTree = "<group>"; };
 		51A8DC72169141B90017E86F /* Piece+Stats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Piece+Stats.h"; path = "Banyan/Piece+Stats.h"; sourceTree = "<group>"; };
 		51A8DC8F16928A240017E86F /* Activity+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Activity+Create.h"; path = "Banyan/Activity+Create.h"; sourceTree = "<group>"; };
 		51A8DC9016928A240017E86F /* Activity+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Activity+Create.m"; path = "Banyan/Activity+Create.m"; sourceTree = "<group>"; };
@@ -872,12 +878,8 @@
 		5192332416743EB7009686E4 /* Location */ = {
 			isa = PBXGroup;
 			children = (
-				510787D0163A36F20042B436 /* BNLocationManager.h */,
-				510787D1163A36F20042B436 /* BNLocationManager.m */,
-				5192332516743F02009686E4 /* GooglePlacesObject.h */,
-				5192332616743F02009686E4 /* GooglePlacesObject.m */,
-				519233301675305F009686E4 /* LocationPickerTableViewController.h */,
-				519233311675305F009686E4 /* LocationPickerTableViewController.m */,
+				51A8494E171D24F000367039 /* Location using Google */,
+				51A8494F171D24FE00367039 /* Location using FB */,
 				517A018A1706D92E00665F0F /* LocationPickerButton.h */,
 				517A018B1706D92E00665F0F /* LocationPickerButton.m */,
 			);
@@ -898,6 +900,30 @@
 				5103FB9E166898960095B11F /* UIImage+Create.m */,
 			);
 			name = "UIImage Categories";
+			sourceTree = "<group>";
+		};
+		51A8494E171D24F000367039 /* Location using Google */ = {
+			isa = PBXGroup;
+			children = (
+				510787D0163A36F20042B436 /* BNGoogleLocationManager.h */,
+				510787D1163A36F20042B436 /* BNGoogleLocationManager.m */,
+				5192332516743F02009686E4 /* GooglePlacesObject.h */,
+				5192332616743F02009686E4 /* GooglePlacesObject.m */,
+				519233301675305F009686E4 /* LocationPickerTableViewController.h */,
+				519233311675305F009686E4 /* LocationPickerTableViewController.m */,
+			);
+			name = "Location using Google";
+			sourceTree = "<group>";
+		};
+		51A8494F171D24FE00367039 /* Location using FB */ = {
+			isa = PBXGroup;
+			children = (
+				51A8494B171D24E900367039 /* BNFBLocationManager.h */,
+				51A8494C171D24E900367039 /* BNFBLocationManager.m */,
+				51A84948171CF4A500367039 /* BNPlacePickerViewController.h */,
+				51A84949171CF4A500367039 /* BNPlacePickerViewController.m */,
+			);
+			name = "Location using FB";
 			sourceTree = "<group>";
 		};
 		51B234E9171658BF004241C1 /* Roboto Font */ = {
@@ -1181,7 +1207,7 @@
 				510787C7163A36A90042B436 /* UIImage+ResizeAdditions.m in Sources */,
 				510787C8163A36A90042B436 /* UIImage+RoundedCornerAdditions.m in Sources */,
 				510787CF163A36D80042B436 /* AFBanyanAPIClient.m in Sources */,
-				510787D2163A36F20042B436 /* BNLocationManager.m in Sources */,
+				510787D2163A36F20042B436 /* BNGoogleLocationManager.m in Sources */,
 				510787D5163A37190042B436 /* Activity.m in Sources */,
 				510787DA163A37250042B436 /* File.m in Sources */,
 				5157CD031650902900C22CCE /* BanyanConnection.m in Sources */,
@@ -1207,6 +1233,8 @@
 				51B234E817154D2B004241C1 /* StoryListCell.m in Sources */,
 				51B2351A17168C69004241C1 /* BNImageLabel.m in Sources */,
 				51B235211717DBA9004241C1 /* BNTableViewController.m in Sources */,
+				51A8494A171CF4A500367039 /* BNPlacePickerViewController.m in Sources */,
+				51A8494D171D24E900367039 /* BNFBLocationManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

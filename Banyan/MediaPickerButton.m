@@ -42,11 +42,9 @@
     self.button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame = self.bounds;
     [button.titleLabel setFont:[UIFont boldSystemFontOfSize:15.0f]];
-//    [button setTitle:@"+ Photo" forState:UIControlStateNormal];
     [button addTarget:self action:@selector(handleButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     [button setBackgroundColor:BANYAN_GREEN_COLOR];
     [button setImage:[UIImage imageNamed:@"cameraSymbol"] forState:UIControlStateNormal];
-//    [button setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 12.0f, 0.0f, 10.0f)];
     [button setImageEdgeInsets:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
     [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
     [button setAdjustsImageWhenHighlighted:NO];

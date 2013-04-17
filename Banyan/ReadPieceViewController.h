@@ -28,7 +28,7 @@
 
 @end
 
-@interface ReadPieceViewController : UIViewController <InvitedTableViewControllerDelegate, BNLocationManagerDelegate>
+@interface ReadPieceViewController : UIViewController <InvitedTableViewControllerDelegate, BNFBLocationManagerDelegate>
 
 @property (strong, nonatomic) Piece *piece;
 @property (weak, nonatomic) IBOutlet id <ReadPieceViewControllerDelegate> delegate;

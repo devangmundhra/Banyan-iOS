@@ -271,7 +271,7 @@
     UIImage *timeImage = [UIImage imageNamed:@"clockSymbol"];
     self.timeLabel = [[BNImageLabel alloc] initWithFrameAtOrigin:CGPointMake(TABLE_CELL_MARGIN, self.topSwipeableView.frame.size.height/2)
                                                        imageViewSize:timeImage.size
-                                                           labelSize:CGSizeMake(self.topSwipeableView.frame.size.width/2 - 2*TABLE_CELL_MARGIN - 3*BUTTON_SPACING,
+                                                           labelSize:CGSizeMake(self.topSwipeableView.frame.size.width/2 - 3*TABLE_CELL_MARGIN - 2*BUTTON_SPACING,
                                                                                 self.topSwipeableView.frame.size.height/2)];
     [self.timeLabel.imageView setImage:timeImage];
     self.timeLabel.label.font = [UIFont fontWithName:@"Roboto-Medium" size:12];

@@ -12,7 +12,7 @@
 
 @property (nonatomic, strong) UIButton *nameButton;
 @property (nonatomic, strong) UIButton *onOffButton;
-@property (nonatomic, strong) GooglePlacesObject *location;
+@property (nonatomic, strong) id <FBGraphPlace> location;
 
 - (void)setup;
 
@@ -98,10 +98,10 @@
     }
 }
 
-- (void)locationPickerLocationUpdatedWithLocation:(GooglePlacesObject *)newLocation
+- (void)locationPickerLocationUpdatedWithLocation:(id <FBGraphPlace>)newLocation
 {
     location = newLocation;
-    [nameButton setTitle:[location getFormattedName] forState:UIControlStateNormal];
+    [nameButton setTitle:location.name forState:UIControlStateNormal];
 }
 
 - (void)locationPickerLocationEnabled:(BOOL)enable
