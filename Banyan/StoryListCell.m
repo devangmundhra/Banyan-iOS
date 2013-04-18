@@ -202,11 +202,12 @@
         [self.storyFrontViewControl setImage:frontViewControlImage forState:UIControlStateNormal];
         // Set the button's frame
         CGRect frontViewControlButtonFrame = self.storyFrontViewControl.bounds;
-        frontViewControlButtonFrame.origin.x = CGRectGetMaxX(self.topSwipeableView.frontView.frame) - frontViewControlImage.size.width - BUTTON_SPACING;
+        frontViewControlButtonFrame.origin.x = CGRectGetMaxX(self.topSwipeableView.frontView.bounds) - frontViewControlImage.size.width - BUTTON_SPACING;
         frontViewControlButtonFrame.origin.y = self.topSwipeableView.frontView.bounds.origin.y;
         frontViewControlButtonFrame.size = frontViewControlImage.size;
         frontViewControlButtonFrame.size.height = self.topSwipeableView.frontView.bounds.size.height;
         self.storyFrontViewControl.frame = frontViewControlButtonFrame;
+
         [self.topSwipeableView.frontView addSubview:self.storyFrontViewControl];
     }
     // Middle View Setup
