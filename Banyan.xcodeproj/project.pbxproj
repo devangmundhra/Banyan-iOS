@@ -171,6 +171,8 @@
 		51F22885161A9DC1006B3AA7 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F22884161A9DC1006B3AA7 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		51F22888161A9DE4006B3AA7 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F22887161A9DE4006B3AA7 /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		51F2288C161A9E22006B3AA7 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F2288B161A9E22006B3AA7 /* Default-568h@2x.png */; };
+		51F57C4E171E95BE00A76FA5 /* addWithGreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F57C4C171E95BE00A76FA5 /* addWithGreen.png */; };
+		51F57C4F171E95BE00A76FA5 /* addWithGreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F57C4D171E95BE00A76FA5 /* addWithGreen@2x.png */; };
 		51F60EF816E8423E00F9715E /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F60EF616E8423E00F9715E /* Icon.png */; };
 		51F60EF916E8423E00F9715E /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F60EF716E8423E00F9715E /* Icon@2x.png */; };
 		51FD96ED1665E6C7001A1709 /* dotted-pattern.png in Resources */ = {isa = PBXBuildFile; fileRef = 51FD96EB1665E6C7001A1709 /* dotted-pattern.png */; };
@@ -410,6 +412,8 @@
 		51F22887161A9DE4006B3AA7 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		51F22889161A9DF2006B3AA7 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		51F2288B161A9E22006B3AA7 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../../Default-568h@2x.png"; sourceTree = "<group>"; };
+		51F57C4C171E95BE00A76FA5 /* addWithGreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addWithGreen.png; sourceTree = "<group>"; };
+		51F57C4D171E95BE00A76FA5 /* addWithGreen@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "addWithGreen@2x.png"; sourceTree = "<group>"; };
 		51F60EF616E8423E00F9715E /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		51F60EF716E8423E00F9715E /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		51FD96EB1665E6C7001A1709 /* dotted-pattern.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dotted-pattern.png"; sourceTree = "<group>"; };
@@ -587,6 +591,8 @@
 		518153461712A5FC006F73D3 /* Tab Symbols */ = {
 			isa = PBXGroup;
 			children = (
+				51F57C4C171E95BE00A76FA5 /* addWithGreen.png */,
+				51F57C4D171E95BE00A76FA5 /* addWithGreen@2x.png */,
 				518153321712A5F1006F73D3 /* addTabSymbol.png */,
 				518153331712A5F1006F73D3 /* addTabSymbol@2x.png */,
 				518153341712A5F1006F73D3 /* homeTabSymbol.png */,
@@ -1150,6 +1156,8 @@
 				51B2351517168BF9004241C1 /* heartSmallPink@2x.png in Resources */,
 				51B2351617168BF9004241C1 /* locationSymbolSmall.png in Resources */,
 				51B2351717168BF9004241C1 /* locationSymbolSmall@2x.png in Resources */,
+				51F57C4E171E95BE00A76FA5 /* addWithGreen.png in Resources */,
+				51F57C4F171E95BE00A76FA5 /* addWithGreen@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

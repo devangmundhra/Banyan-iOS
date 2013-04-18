@@ -18,16 +18,8 @@
 @class NewStoryViewController;
 typedef enum {NewStoryViewControllerEditModeAdd, NewStoryViewControllerEditModeEdit} NewStoryViewControllerEditMode;
 
-@protocol NewStoryViewControllerDelegate <NSObject>
-
-- (void) newStoryViewController:(NewStoryViewController *)sender didAddStory:(Story *)story;
-- (void) newStoryViewControllerDidCancel:(NewStoryViewController *)sender;
-
-@end
-
 @interface NewStoryViewController : UIViewController <UITextFieldDelegate, InvitedTableViewControllerDelegate, UIScrollViewDelegate, BNFBLocationManagerDelegate, TITokenFieldDelegate, LocationPickerButtonDelegate, MediaPickerButtonDelegate, MediaPickerViewControllerDelegate, UIActionSheetDelegate>
 
 // Delegate to save the story and close the window on done and edit
-@property (weak, nonatomic) IBOutlet id <NewStoryViewControllerDelegate> delegate;
 
 @end

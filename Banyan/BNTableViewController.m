@@ -192,6 +192,8 @@
     self.tableView.backgroundColor = [UIColor clearColor];
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
+    [self.tableView setShowsHorizontalScrollIndicator:NO];
+    [self.tableView setShowsVerticalScrollIndicator:NO];
 }
 
 - (void)viewDidLoad

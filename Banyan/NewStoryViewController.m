@@ -22,6 +22,10 @@
     NSInteger viewers;
 }
 
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
+
+
 @property (weak, nonatomic) NSString *storyTitle;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UITextField *storyTitleTextField;
@@ -59,7 +63,6 @@
 @synthesize scrollView = _scrollView;
 @synthesize storyTitle = _storyTitle;
 @synthesize storyTitleTextField = _storyTitleTextField;
-@synthesize delegate = _delegate;
 @synthesize tapRecognizer = _tapRecognizer;
 @synthesize invitedToViewList = _invitedToViewList;
 @synthesize invitedToContributeList = _invitedToContributeList;
@@ -76,6 +79,7 @@
     if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
 //        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStyleDone target:self action:@selector(doneNewStory:)]];
 //        [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
+        self.hidesBottomBarWhenPushed = YES;
         
         self.title = @"Create New Story";
         self.contributorPrivacySegmentedControl = [[SVSegmentedControl alloc] initWithSectionTitles:@[@"Public", @"Private"]];
@@ -99,8 +103,10 @@
     [self unregisterForKeyboardNotifications];
 }
 
+/*
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     if (![BanyanAppDelegate loggedIn]) {
         [self.view setUserInteractionEnabled:NO];
         CALayer *layer = [self.view layer];
@@ -109,7 +115,6 @@
         layer.opacity = 0.3;
         [self.navigationItem setRightBarButtonItem:nil];
     } else {
-        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Next" style:UIBarButtonItemStyleDone target:self action:@selector(doneNewStory:)]];
         [self.view setUserInteractionEnabled:YES];
         CALayer *layer = [self.view layer];
         [layer setRasterizationScale:1.0];
@@ -117,6 +122,7 @@
         layer.opacity = 1;
     }
 }
+ */
 
 - (void)viewDidLoad
 {
@@ -211,6 +217,8 @@
     [self setViewerPrivacySegmentedControl:nil];
     [self setLocalImageURL:nil];
     [self setInviteContactsButton:nil];
+    [self setDoneButton:nil];
+    [self setCancelButton:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -256,7 +264,7 @@
             self.story.geocodedLocation = self.locationManager.location.name;
         }
     } else  {
-        self.story.isLocationEnabled = NO;
+        self.story.isLocationEnabled = [NSNumber numberWithBool:NO];
     }
     
     NSArray *tagsArray = [self.tagsFieldView tokenTitles];
@@ -268,13 +276,14 @@
     self.story = [Story createNewStory:self.story];
 
     NSLog(@"New story %@ saved", self.story);
-    [self.delegate newStoryViewController:self didAddStory:self.story];
     [TestFlight passCheckpoint:@"New Story created successfully"];
+    
+    [self dismissEditView];
 }
 
 - (IBAction)cancel:(id)sender
 {
-    [self.delegate newStoryViewControllerDidCancel:self];
+    [self dismissEditView];
 }
 
 # pragma mark story privacy
@@ -392,7 +401,8 @@
         [actionSheet addButtonWithTitle:MediaPickerControllerSourceTypeCamera];
     [actionSheet addButtonWithTitle:MediaPickerControllerSourceTypePhotoLib];
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
-    [actionSheet showFromTabBar:self.tabBarController.tabBar];
+    [actionSheet showInView:self.view];
+//    [actionSheet showFromTabBar:self.tabBarController.tabBar];
 }
 
 #pragma mark UIActionSheetDelegate
@@ -474,6 +484,9 @@
 # pragma mark BNLocationManagerDelegate
 - (void) locationUpdated
 {
+    if (self.locationManager.location)
+        self.isLocationEnabled = YES;
+    
     [self.addLocationButton locationPickerLocationUpdatedWithLocation:self.locationManager.location];
 }
 
@@ -603,6 +616,13 @@
                                              screenSize.height
                                              - self.navigationController.navigationBar.frame.size.height);
 //                                             + self.tagsFieldView.separator.frame.origin.y);
+}
+
+#pragma mark Methods to interface between views
+- (void) dismissEditView
+{
+//    [self deleteBackupStory];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma Memory Management

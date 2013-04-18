@@ -62,7 +62,7 @@
 										<reference key="NSNextResponder" ref="553618028"/>
 										<int key="NSvFlags">292</int>
 										<array class="NSMutableArray" key="NSSubviews"/>
-										<string key="NSFrame">{{0, 49}, {300, 109}}</string>
+										<string key="NSFrame">{{0, 49}, {300, 129}}</string>
 										<reference key="NSSuperview" ref="553618028"/>
 										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="1011291528"/>
@@ -77,10 +77,9 @@
 										<reference key="NSNextResponder" ref="553618028"/>
 										<int key="NSvFlags">292</int>
 										<array class="NSMutableArray" key="NSSubviews"/>
-										<string key="NSFrame">{{0, 157}, {300, 33}}</string>
+										<string key="NSFrame">{{0, 178}, {300, 33}}</string>
 										<reference key="NSSuperview" ref="553618028"/>
 										<reference key="NSWindow"/>
-										<reference key="NSNextKeyView"/>
 										<string key="NSReuseIdentifierKey">_NS:9</string>
 										<object class="NSColor" key="IBUIBackgroundColor">
 											<int key="NSColorSpace">3</int>
@@ -89,7 +88,7 @@
 										<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 									</object>
 								</array>
-								<string key="NSFrame">{{0, 9}, {300, 190}}</string>
+								<string key="NSFrame">{{0, 9}, {300, 210}}</string>
 								<reference key="NSSuperview" ref="782688406"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="740684095"/>
@@ -104,7 +103,7 @@
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 							</object>
 						</array>
-						<string key="NSFrameSize">{300, 199}</string>
+						<string key="NSFrameSize">{300, 219}</string>
 						<reference key="NSSuperview" ref="911409871"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="553618028"/>
@@ -120,7 +119,7 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 					</object>
 				</array>
-				<string key="NSFrameSize">{300, 200}</string>
+				<string key="NSFrameSize">{300, 220}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="782688406"/>
@@ -128,7 +127,7 @@
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 				<reference key="IBUIContentView" ref="782688406"/>
 				<string key="IBUIReuseIdentifier">Story Cell</string>
-				<real value="200" key="IBUIRowHeight"/>
+				<real value="220" key="IBUIRowHeight"/>
 			</object>
 		</array>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -286,6 +285,7 @@
 						<string key="middleView">UIViewWithTopLine</string>
 						<string key="story">Story</string>
 						<string key="storyFrontViewControl">UIButton</string>
+						<string key="storyTags">UILabel</string>
 						<string key="storyTitleLabel">UILabel</string>
 						<string key="timeLabel">BNImageLabel</string>
 						<string key="topSwipeableView">UISwipeableView</string>
@@ -319,6 +319,10 @@
 							<string key="name">storyFrontViewControl</string>
 							<string key="candidateClassName">UIButton</string>
 						</object>
+						<object class="IBToOneOutletInfo" key="storyTags">
+							<string key="name">storyTags</string>
+							<string key="candidateClassName">UILabel</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="storyTitleLabel">
 							<string key="name">storyTitleLabel</string>
 							<string key="candidateClassName">UILabel</string>
@@ -340,6 +344,17 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">StoryListCellMiddleViewController</string>
 					<string key="superclassName">UIViewController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">changePage:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">changePage:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">changePage:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="pageControl">SMPageControl</string>
 						<string key="scrollView">UIScrollView</string>

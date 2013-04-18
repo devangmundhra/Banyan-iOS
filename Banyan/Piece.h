@@ -33,4 +33,7 @@
 @property (nonatomic, retain) NSNumber * longitude;
 @property (nonatomic, retain) Story *story;
 
++ (NSArray *)syncedPiecesInStory:(Story *)story;
++ (NSArray *)unsavedPiecesInStory:(Story *)story;
+
 @end

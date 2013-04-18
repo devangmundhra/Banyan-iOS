@@ -40,6 +40,9 @@
 @property (nonatomic, retain) NSString * location;
 @property (nonatomic, retain) NSNumber * longitude;
 @property (nonatomic, retain) NSOrderedSet *pieces;
+
++ (NSArray *)syncedStories;
++ (NSArray *)unsavedStories;
 @end
 
 @interface Story (CoreDataGeneratedAccessors)
@@ -54,4 +57,5 @@
 - (void)removePiecesObject:(Piece *)value;
 - (void)addPieces:(NSOrderedSet *)values;
 - (void)removePieces:(NSOrderedSet *)values;
+
 @end

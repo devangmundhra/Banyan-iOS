@@ -14,13 +14,21 @@
 
 @interface StoryReaderController ()
 @property (strong, nonatomic) Piece *currentPiece;
+@property (strong, nonatomic) UIToolbar *toolbar;
+
+@property (strong, nonatomic) UIBarButtonItem *cancelButton;
+@property (strong, nonatomic) UIBarButtonItem *settingsButton;
+@property (strong, nonatomic) UIBarButtonItem *titleLabel;
+
 @end
 
 @implementation StoryReaderController
 @synthesize pageViewController = _pageViewController;
 @synthesize story = _story;
-@synthesize delegate = _delegate;
-@synthesize currentPiece;
+@synthesize currentPiece, toolbar;
+@synthesize cancelButton = _cancelButton;
+@synthesize settingsButton = _settingsButton;
+@synthesize titleLabel = _titleLabel;
 
 // First page of the view controller
 - (UIViewController *)startStoryTelling
@@ -50,11 +58,6 @@
     [super viewDidLoad];
     self.title = self.story.title;
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Settings"
-                                                                              style:UIBarButtonItemStyleBordered
-                                                                             target:self
-                                                                             action:@selector(settingsPopup:)];
-    
     [Story viewedStory:self.story];
     
     self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStylePageCurl navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
@@ -74,8 +77,7 @@
     
     [self.pageViewController didMoveToParentViewController:self];
     
-    // Add the page view controller's gesture recognizers to the book view controller's view so that the gestures are started more easily.
-//    self.view.gestureRecognizers = self.pageViewController.gestureRecognizers;
+    [self setupToolbar];
         
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(userLoginStatusChanged) 
@@ -98,14 +100,73 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-//- (void)drawRect:(CGRect)rect {
-//    
-//    UIImage *myImage = [UIImage imageNamed:@"pumpkin.jpg"];
-//    
-//    CGRect imageRect = CGRectMake(10, 10, 300, 400);
-//    
-//    [myImage drawInRect:imageRect];    
-//}
+- (void)setupToolbar
+{
+    if (self.toolbar == nil) {
+        self.toolbar = [[UIToolbar alloc] init];
+        self.toolbar.barStyle = UIBarStyleDefault;
+        
+        [self.toolbar setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+        
+        [self.view addSubview:self.toolbar];
+    }
+    
+    NSMutableArray *buttons = [NSMutableArray array];
+    if (self.cancelButton == nil) {
+        self.cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"
+                                                             style:UIBarButtonItemStyleBordered
+                                                            target:self
+                                                            action:@selector(cancelButtonPressed:)];
+    }
+    [buttons addObject:self.cancelButton];
+
+    if (self.title.length > 0) {
+        UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                                                                target:nil
+                                                                                action:nil];
+        
+        if (self.titleLabel == nil) {
+            UILabel *label = [[UILabel alloc] init];
+            label.font = [UIFont fontWithName:@"Helvetica-Bold" size:20];
+            label.backgroundColor = [UIColor clearColor];
+            label.textColor = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0];
+            label.textAlignment = UITextAlignmentCenter;
+            label.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.5];
+            
+            self.titleLabel = [[UIBarButtonItem alloc] initWithCustomView:label];
+        }
+        [(UILabel*)self.titleLabel.customView setText:self.title];
+        [self.titleLabel.customView sizeToFit];
+        
+        [buttons addObject:self.titleLabel];
+        
+        space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                                               target:nil
+                                                               action:nil];
+        [buttons addObject:space];
+        
+    }
+    if (self.settingsButton == nil) {
+        self.settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"Settings"
+                                                             style:UIBarButtonItemStyleBordered
+                                                            target:self
+                                                            action:@selector(settingsPopup:)];
+    }
+    [buttons addObject:self.settingsButton];
+    
+    [self.toolbar sizeToFit];
+    CGRect bounds = self.toolbar.bounds;
+    bounds = CGRectMake(0, 0, self.view.bounds.size.width, bounds.size.height);
+    self.toolbar.bounds = bounds;
+    
+    // Make the canvas shorter to account for the toolbar.
+    bounds = self.view.bounds;
+    CGFloat toolbarHeight = self.toolbar.bounds.size.height;
+    bounds.origin.y += toolbarHeight;
+    bounds.size.height -= toolbarHeight;
+    
+    self.toolbar.items = buttons;
+}
 
 # pragma mark
 # pragma mark target actions
@@ -120,6 +181,10 @@
     [actionSheet showInView:self.view];
 }
 
+- (void)cancelButtonPressed:(UIBarButtonItem *)sender
+{
+    [self dismissReadView];
+}
 // Action sheet delegate method.
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -247,9 +312,10 @@
 #pragma mark ReadPieceViewControllerDelegate
 - (void)doneWithReadPieceViewController:(ReadPieceViewController *)readPieceViewController
 {
-    [self.delegate storyReaderContollerDone:self];
     // Dismiss the read scenes page view controller
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:^{
+        [self dismissReadView];
+    }];
 }
 
 - (void)readPieceViewControllerAddedNewPiece:(ReadPieceViewController *)readPieceViewController
@@ -282,9 +348,17 @@
 
 - (void)readPieceViewControllerDeletedStory:(ReadPieceViewController *)readPieceViewController
 {
-    [self.delegate storyReaderContollerDone:self];
     // Dismiss the read scenes page view controller
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:^{
+        [self dismissReadView];
+    }];
+}
+
+- (void) dismissReadView
+{
+    [self dismissViewControllerAnimated:YES completion:^{
+        self.story.storyBeingRead = NO;
+    }];
 }
 
 #pragma Memory Management

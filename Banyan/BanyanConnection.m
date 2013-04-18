@@ -126,20 +126,23 @@
                          parameters:nil
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                 // Delete all unsaved stories
-                                NSArray *unsavedStories = [BanyanConnection unsavedObjectsWithEntityName:kBNStoryClassKey];
+                                NSArray *unsavedStories = [Story unsavedStories];
                                 for (Story *story in unsavedStories) {
                                     [story remove];
                                 }
                                 
                                 NSArray *stories = [mappingResult array];
                                 // Delete stories that have been deleted on the server
-                                NSArray *syncedStories =[BanyanConnection syncedObjectsWithEntityName:kBNStoryClassKey];
+                                NSArray *syncedStories =[Story syncedStories];
                                 for (Story *story in syncedStories) {
                                     if (![stories containsObject:story])
                                         [story remove];
                                 }
-                                [BanyanConnection dataSave];
                                 [stories enumerateObjectsUsingBlock:^(Story *story, NSUInteger idx, BOOL *stop) {
+                                    NSArray *unsavedPieces = [Piece unsavedPiecesInStory:story];
+                                    for (Piece *piece in unsavedPieces) {
+                                        [piece remove];
+                                    }
                                     story.remoteStatus = RemoteObjectStatusSync;
                                     story.lastSynced = [NSDate date];
                                     [story updateStoryStats];
@@ -174,7 +177,14 @@
     [objectManager getObjectsAtPath:BANYAN_API_OBJECT_URL(kBNStoryClassKey, story.bnObjectId)
                          parameters:@{@"attributes" : @[@"pieces"]}
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                // Delete all unsaved pieces                                
                                 NSArray *pieces = [mappingResult array];
+                                // Delete pieces that have been deleted on the server
+                                NSArray *syncedPieces =[Piece syncedPiecesInStory:story];
+                                for (Piece *piece in syncedPieces) {
+                                    if (![pieces containsObject:piece])
+                                        [piece remove];
+                                }
                                 if ([story isDeleted] || story.managedObjectContext == nil ) // Don't bother doing anything if story was deleted while fetching pieces
                                     return;
                                 
@@ -197,51 +207,6 @@
     for (Story *story in stories)
     {
         [story resetPermission];
-    }
-}
-
-+ (NSArray *)syncedObjectsWithEntityName:(NSString *)entityName
-{
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    [request setEntity:[NSEntityDescription entityForName:entityName inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@) AND (bnObjectId != NULL)",
-							  [NSNumber numberWithInt:RemoteObjectStatusSync]];
-    [request setPredicate:predicate];
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
-    [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
-    
-    NSError *error = nil;
-    NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
-    if (array == nil) {
-        array = [NSArray array];
-    }
-    return array;
-}
-
-+ (NSArray *)unsavedObjectsWithEntityName:(NSString *)entityName
-{
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    [request setEntity:[NSEntityDescription entityForName:entityName inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@) AND (bnObjectId == NULL)",
-							  [NSNumber numberWithInt:RemoteObjectStatusLocal]];
-    [request setPredicate:predicate];
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
-    [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
-    
-    NSError *error = nil;
-    NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
-    if (array == nil) {
-        array = [NSArray array];
-    }
-    return array;
-}
-
-+ (void) dataSave
-{
-    NSError *error = nil;
-    if (![[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:&error]) {
-        NSLog(@"Unresolved Core Data Save error %@, %@", error, [error userInfo]);
-        exit(-1);
     }
 }
 

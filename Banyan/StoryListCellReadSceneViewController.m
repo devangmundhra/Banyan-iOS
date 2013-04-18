@@ -65,7 +65,7 @@
     self.textView.scrollEnabled = NO;
     self.textView.backgroundColor = [UIColor clearColor];
     
-    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.imageView.contentMode = UIViewContentModeScaleAspectFill;
     self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
 
     // Do any additional setup after loading the view from its nib.

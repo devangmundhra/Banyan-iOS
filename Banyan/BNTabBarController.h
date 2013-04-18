@@ -10,4 +10,6 @@
 
 @interface BNTabBarController : UITabBarController
 
+- (void) addCenterButtonWithImage:(UIImage *)image andTarget:(id)target withAction:(SEL)action;
+
 @end

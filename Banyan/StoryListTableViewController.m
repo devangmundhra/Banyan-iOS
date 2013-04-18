@@ -10,6 +10,11 @@
 #import "BanyanAppDelegate.h"
 #import "SVPullToRefresh.h"
 #import "StoryListCell.h"
+#import "Story+Delete.h"
+#import "Piece+Create.h"
+#import "StoryReaderController.h"
+#import "MBProgressHUD.h"
+#import "BanyanConnection.h"
 
 typedef enum {
     FilterStoriesSegmentIndexFollowing = 0,
@@ -82,7 +87,6 @@ typedef enum {
                                                  name:AFNetworkingReachabilityDidChangeNotification
                                                object:nil];
     
-//    self.indexOfVisibleBackView = [[NSIndexPath alloc] init];
     [TestFlight passCheckpoint:@"RootViewController view loaded"];
 }
 
@@ -290,18 +294,16 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     story.storyBeingRead = [NSNumber numberWithBool:YES];
     StoryReaderController *storyReaderController = [[StoryReaderController alloc] init];
     storyReaderController.story = story;
-    storyReaderController.delegate = self;
-    [storyReaderController setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
-    [self.navigationController pushViewController:storyReaderController animated:YES];
+    [self presentViewController:storyReaderController animated:YES completion:nil];
 }
 
 -(void) addPieceToStory:(Story *)story
 {
     Piece *piece = [Piece newPieceDraftForStory:story];
-    ModifyPieceViewController *addSceneViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
-    [addSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
-    [addSceneViewController setModalPresentationStyle:UIModalPresentationFullScreen];
-    [self presentViewController:addSceneViewController animated:YES completion:nil];
+    ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
+    [addPieceViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+    [addPieceViewController setModalPresentationStyle:UIModalPresentationFullScreen];
+    [self presentViewController:addPieceViewController animated:YES completion:nil];
 }
 
 #pragma mark - Swipeable controls
@@ -318,7 +320,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 	
 	if ([cell respondsToSelector:@selector(revealSwipedViewAnimated:)]){
 		[(StoryListCell *)cell revealSwipedViewAnimated:YES];
-        [self setIndexOfVisibleBackView:indexPath];
 	}
     self.indexOfVisibleBackView = indexPath;
 }
@@ -328,16 +329,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 	UITableViewCell * cell = [self.tableView cellForRowAtIndexPath:self.indexOfVisibleBackView];
 	if ([cell respondsToSelector:@selector(hideSwipedViewAnimated:)]) {
 		[(StoryListCell *)cell hideSwipedViewAnimated:YES];
-        [self setIndexOfVisibleBackView:nil];
 	}
     self.indexOfVisibleBackView = nil;
-}
-
-#pragma mark ScenesViewControllerDelegate
-- (void)storyReaderContollerDone:(StoryReaderController *)scenesViewController
-{
-    [self.navigationController popViewControllerAnimated:YES];
-    scenesViewController.story.storyBeingRead = NO;
 }
 
 #pragma Memory Management

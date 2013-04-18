@@ -329,14 +329,12 @@
     self.imageChanged = YES;
     [NSThread detachNewThreadSelector:@selector(useImage:) toTarget:self withObject:image];
     self.doneButton.enabled = [self checkForChanges];
-    [mediaPicker removeFromParentViewController];
 }
 
 - (void)mediaPickerDidCancel:(MediaPickerViewController *)mediaPicker
 {
     self.localImageURL = nil;
     self.imageChanged = NO;
-    [mediaPicker removeFromParentViewController];
 }
 
 - (void)useImage:(UIImage *)image {

@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
-#import "NewStoryViewController.h"
 #import "BNTabBarController.h"
 #import "UserLoginViewController.h"
 
@@ -33,7 +32,7 @@
 
 #define GOOGLE_API_KEY @"AIzaSyBwOBP068EO-Ubi0Qzu8uwFnZZHaIVwNyg"
 
-@interface BanyanAppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate, NewStoryViewControllerDelegate, UserLoginViewControllerDelegate>
+@interface BanyanAppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate, UserLoginViewControllerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, strong) BNTabBarController *tabBarController;

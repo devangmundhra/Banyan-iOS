@@ -11,6 +11,8 @@
 #import "AFParseAPIClient.h"
 #import "AFBanyanAPIClient.h"
 #import "StoryListTableViewController.h"
+#import "SettingsTableViewController.h"
+#import "NewStoryViewController.h"
 
 @implementation BanyanAppDelegate
 
@@ -479,8 +481,10 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     UITabBarItem *searchTabBarItem = [[UITabBarItem alloc] initWithTitle:@"Search" image:[UIImage imageNamed:@"searchTabSymbol"] tag:0];
     
     NewStoryViewController *newStoryViewController = [[NewStoryViewController alloc] initWithNibName:@"NewStoryViewController" bundle:nil];
-    newStoryViewController.delegate = self;
     UITabBarItem *addTabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:[UIImage imageNamed:@"addTabSymbol"] tag:0];
+    
+    UIImage *buttonImage = [UIImage imageNamed:@"addWithGreen"];
+    [self.tabBarController addCenterButtonWithImage:buttonImage andTarget:self withAction:@selector(addTabButtonPressed:)];
     
     SettingsTableViewController *settingsVC = [[SettingsTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
     UITabBarItem *settingsTabBar = [[UITabBarItem alloc] initWithTitle:nil image:[UIImage imageNamed:@"userProfileTabSymbol"] tag:0];
@@ -496,19 +500,20 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [profileNavigationController setTabBarItem:settingsTabBar];
 
     self.tabBarController.delegate = self;
-    [self.tabBarController setViewControllers:@[storyListNavigationController, /*searchNavigationController,*/ addNavigationController, profileNavigationController] animated:YES];
+    [self.tabBarController setViewControllers:@[storyListNavigationController, /*searchNavigationController,*/ /*addNavigationController, */profileNavigationController] animated:YES];
 }
 
-- (void) newStoryViewController:(NewStoryViewController *)sender
-                    didAddStory:(Story *)story
+-(IBAction) addTabButtonPressed:(UIButton *)sender
 {
-    // Can't add a story to the scene yet because the story Id would not be furnished here.
-    //    [self addSceneToStory:story];
+    if (![BanyanAppDelegate loggedIn]) {
+        [self login];
+    } else {
+        NewStoryViewController *newStoryViewController = [[NewStoryViewController alloc] initWithNibName:@"NewStoryViewController" bundle:nil];
+        [self.navController presentViewController:newStoryViewController animated:YES completion:nil];
+    }
+
 }
 
-- (void) newStoryViewControllerDidCancel:(NewStoryViewController *)sender
-{
-}
 
 # pragma mark UserLoginViewControllerDelegate
 - (void)logInViewController:(UserLoginViewController *)logInController didLogInUser:(PFUser *)user

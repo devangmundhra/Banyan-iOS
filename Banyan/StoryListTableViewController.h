@@ -7,18 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Story+Create.h"
-#import "Story+Delete.h"
-#import "Piece+Create.h"
-#import "File+Create.h"
-#import "StoryReaderController.h"
-#import "UserLoginViewController.h"
-#import "MBProgressHUD.h"
-#import "SettingsTableViewController.h"
 #import "BNTableViewController.h"
-#import "BanyanConnection.h"
 
-@interface StoryListTableViewController : BNTableViewController <StoryReaderControllerDelegate> {
+@interface StoryListTableViewController : BNTableViewController {
 	NSIndexPath * indexOfVisibleBackView;
 }
 
