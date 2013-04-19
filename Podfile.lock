@@ -1,15 +1,46 @@
 
+DEPENDENCIES: 
+- MBProgressHUD (>= 0.5)
+- MTStatusBarOverlay (from `https://github.com/myell0w/MTStatusBarOverlay.git', commit `ec42b364ff6a908978715f52e9382b7064865564')
+- RestKit (from `https://github.com/RestKit/RestKit.git', branch `development')
+- SMPageControl (~> 1.0)
+- SSToolkit
+- SVPullToRefresh
+- SVSegmentedControl
+- TISwipeableTableView (from `https://github.com/devangmundhra/TISwipeableTableView.git')
+- TITokenField (from `https://github.com/devangmundhra/TITokenField.git')
+- TestFlightSDK (>= 1.2)
+
+SPEC CHECKSUMS: 
+  SVPullToRefresh: 61a0e4bd12bd6f8e3465909810b0fbeb1a28d5f2
+  SSToolkit: fcf7d81b20f92158c78d474f53665813a518e243
+  AFNetworking: 3cbae45f61a9f995cdbd56bd571223910d7f4e44
+  TITokenField: 4a94409f637d5d8ffd7303ba903e069462cf7c02
+  MTStatusBarOverlay: e00cd3b000171748b9439d014e00ec7bbb9b82ee
+  MBProgressHUD: 9b55a90566fb5d07df0602f6fd9fa04510ad5d52
+  RestKit/Support: 731c04eaedd8084154202a739994f335ba5dbb65
+  RestKit/CoreData: 731c04eaedd8084154202a739994f335ba5dbb65
+  RestKit: 731c04eaedd8084154202a739994f335ba5dbb65
+  RestKit/Network: 731c04eaedd8084154202a739994f335ba5dbb65
+  SMPageControl: 9d100f9aa8ca0cf10222666ff31d4d1cbfdac674
+  RestKit/Core: 731c04eaedd8084154202a739994f335ba5dbb65
+  TISwipeableTableView: 7e848c68e1c1e0e9c284ce0a49ee8db35f2cf3af
+  RestKit/ObjectMapping: 731c04eaedd8084154202a739994f335ba5dbb65
+  SVSegmentedControl: b3aaea66a4a6ea16738ed991f0fc92b95d2c5e5a
+  TestFlightSDK: 185b9bfd710bfb85ce5f57bcb89651330081090f
+  SOCKit: ed67aeeca4a697b63a933229e53f4670d5b9300f
+
 EXTERNAL SOURCES: 
-  RestKit: 
-    :branch: development
-    :git: https://github.com/RestKit/RestKit.git
-  TISwipeableTableView: 
-    :git: https://github.com/devangmundhra/TISwipeableTableView.git
   TITokenField: 
     :git: https://github.com/devangmundhra/TITokenField.git
   MTStatusBarOverlay: 
     :git: https://github.com/myell0w/MTStatusBarOverlay.git
     :commit: ec42b364ff6a908978715f52e9382b7064865564
+  RestKit: 
+    :branch: development
+    :git: https://github.com/RestKit/RestKit.git
+  TISwipeableTableView: 
+    :git: https://github.com/devangmundhra/TISwipeableTableView.git
 
 PODS: 
 - AFNetworking (1.2.0)
@@ -31,39 +62,11 @@ PODS:
 - RestKit/Support (0.20.1dev)
 - SMPageControl (1.0)
 - SOCKit (1.1)
+- SSToolkit (1.0.3)
 - SVPullToRefresh (0.4.1)
 - SVSegmentedControl (0.1)
 - TISwipeableTableView (0.0.1)
 - TITokenField (0.9.0)
 - TestFlightSDK (1.3.0.beta2)
-
-SPEC CHECKSUMS: 
-  TestFlightSDK: 185b9bfd710bfb85ce5f57bcb89651330081090f
-  SVSegmentedControl: b3aaea66a4a6ea16738ed991f0fc92b95d2c5e5a
-  SVPullToRefresh: 61a0e4bd12bd6f8e3465909810b0fbeb1a28d5f2
-  RestKit/CoreData: 731c04eaedd8084154202a739994f335ba5dbb65
-  RestKit: 731c04eaedd8084154202a739994f335ba5dbb65
-  MBProgressHUD: 9b55a90566fb5d07df0602f6fd9fa04510ad5d52
-  RestKit/ObjectMapping: 731c04eaedd8084154202a739994f335ba5dbb65
-  RestKit/Core: 731c04eaedd8084154202a739994f335ba5dbb65
-  AFNetworking: 3cbae45f61a9f995cdbd56bd571223910d7f4e44
-  TISwipeableTableView: 7e848c68e1c1e0e9c284ce0a49ee8db35f2cf3af
-  SOCKit: ed67aeeca4a697b63a933229e53f4670d5b9300f
-  RestKit/Network: 731c04eaedd8084154202a739994f335ba5dbb65
-  TITokenField: 4a94409f637d5d8ffd7303ba903e069462cf7c02
-  MTStatusBarOverlay: e00cd3b000171748b9439d014e00ec7bbb9b82ee
-  SMPageControl: 9d100f9aa8ca0cf10222666ff31d4d1cbfdac674
-  RestKit/Support: 731c04eaedd8084154202a739994f335ba5dbb65
-
-DEPENDENCIES: 
-- MBProgressHUD (>= 0.5)
-- MTStatusBarOverlay (from `https://github.com/myell0w/MTStatusBarOverlay.git', commit `ec42b364ff6a908978715f52e9382b7064865564')
-- RestKit (from `https://github.com/RestKit/RestKit.git', branch `development')
-- SMPageControl (~> 1.0)
-- SVPullToRefresh
-- SVSegmentedControl
-- TISwipeableTableView (from `https://github.com/devangmundhra/TISwipeableTableView.git')
-- TITokenField (from `https://github.com/devangmundhra/TITokenField.git')
-- TestFlightSDK (>= 1.2)
 
 COCOAPODS: 0.16.1

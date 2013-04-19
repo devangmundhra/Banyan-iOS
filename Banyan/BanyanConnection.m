@@ -143,6 +143,7 @@
                                     for (Piece *piece in unsavedPieces) {
                                         [piece remove];
                                     }
+//                                    [story removePieces:story.pieces];
                                     story.remoteStatus = RemoteObjectStatusSync;
                                     story.lastSynced = [NSDate date];
                                     [story updateStoryStats];

@@ -77,8 +77,9 @@
     self = [super init];
     if (self) {
         // Custom initialization
+        CGRect frame = [UIScreen mainScreen].applicationFrame; /* [UIScreen mainScreen].bounds] */
         self.piece = piece;
-        self.contentView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        self.contentView = [[UIView alloc] initWithFrame:frame];
         self.infoView = [[UIView alloc] init];
         // Allocate custom parts of the view depending on what the piece contains
         if (self.piece.imageURL) {
@@ -86,11 +87,11 @@
             [self.contentView addSubview:self.imageView];
         }
         if (self.piece.shortText) {
-            self.pieceCaptionView = [[UILabel alloc] initWithFrame:[UIScreen mainScreen].bounds];
+            self.pieceCaptionView = [[UILabel alloc] initWithFrame:frame];
             [self.contentView addSubview:self.pieceCaptionView];
         }
         if (self.piece.longText) {
-            self.pieceTextView = [[UITextView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+            self.pieceTextView = [[UITextView alloc] initWithFrame:frame];
             self.pieceTextView.editable = NO;
             [self.contentView addSubview:self.pieceTextView];
         }
@@ -98,73 +99,6 @@
         [self.view addSubview:self.infoView];
     }
     return self;
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-
-    self.imageView.frame = [UIScreen mainScreen].applicationFrame;
-//    self.imageView.contentMode = UIViewContentModeScaleAspectFill;
-//    self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    if (self.piece.imageURL && [self.piece.imageURL rangeOfString:@"asset"].location == NSNotFound) {
-        [self.imageView setImageWithURL:[NSURL URLWithString:self.piece.imageURL] placeholderImage:nil];
-    } else if (self.piece.imageURL) {
-        ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
-        [library assetForURL:[NSURL URLWithString:self.piece.imageURL] resultBlock:^(ALAsset *asset) {
-            ALAssetRepresentation *rep = [asset defaultRepresentation];
-            CGImageRef imageRef = [rep fullScreenImage];
-            UIImage *image = [UIImage imageWithCGImage:imageRef];
-            [self.imageView setImage:image];
-        }
-                failureBlock:^(NSError *error) {
-                    NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
-                }
-         ];
-    } else {
-        [self.imageView cancelImageRequestOperation];
-        [self.imageView setImageWithURL:nil];
-    }
-
-    self.imageView.backgroundColor = BANYAN_BROWN_COLOR;
-    self.pieceTextView.backgroundColor = [UIColor clearColor];
-    self.pieceCaptionView.backgroundColor = [UIColor clearColor];
-    self.contentView.backgroundColor = BANYAN_WHITE_COLOR;
-    self.infoView.backgroundColor = [UIColor clearColor];
-//    self.pieceTextView.contentInset = UIEdgeInsetsMake(0, 20, 0, 20);
-    
-    self.pieceTextView.text = self.piece.longText;
-    self.pieceCaptionView.text = self.piece.shortText;
-    
-    if (![self.piece.geocodedLocation isEqual:[NSNull null]] && self.piece.geocodedLocation)
-        self.locationLabel.text = self.piece.geocodedLocation;
-//    // Update the piece location from the coordinates (if we were not able to get the reverse geocoded location before)
-//    else if (self.piece.story.isLocationEnabled && ![self.piece.location isEqual:[NSNull null]]) {
-//        CLLocation *location = [[CLLocation alloc] initWithLatitude:(CLLocationDegrees)[self.piece.latitude doubleValue]
-//                                                          longitude:(CLLocationDegrees)[self.piece.longitude doubleValue]];
-//        self.locationManager = [[BNFBLocationManager alloc] initWithDelegate:self];
-//    }
-
-    if (self.piece.imageURL) {
-        self.pieceTextView.textColor = [UIColor whiteColor];
-        self.contributorsButton.titleLabel.textColor = 
-        self.viewsLabel.textColor = 
-        self.likesLabel.textColor = 
-        self.timeLabel.textColor = [UIColor whiteColor];
-    }
-    else {
-        self.pieceTextView.textColor = [UIColor blackColor];
-        self.contributorsButton.titleLabel.textColor = 
-        self.viewsLabel.textColor = 
-        self.likesLabel.textColor = 
-        self.timeLabel.textColor = [UIColor blackColor];
-    }
-    self.pieceTextView.layer.shadowColor = [[UIColor blackColor] CGColor];
-    self.pieceTextView.layer.shadowOffset = CGSizeMake(1.0, 1.0);
-    self.pieceTextView.layer.shadowOpacity = 1.0;
-    self.pieceTextView.layer.shadowRadius = 0.3;
-    
-    [self refreshView];
 }
 
 - (void)locationUpdated
@@ -183,6 +117,69 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.imageView.frame = [UIScreen mainScreen].applicationFrame;
+    self.imageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    if (self.piece.imageURL && [self.piece.imageURL rangeOfString:@"asset"].location == NSNotFound) {
+        [self.imageView setImageWithURL:[NSURL URLWithString:self.piece.imageURL] placeholderImage:nil];
+    } else if (self.piece.imageURL) {
+        ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
+        [library assetForURL:[NSURL URLWithString:self.piece.imageURL] resultBlock:^(ALAsset *asset) {
+            ALAssetRepresentation *rep = [asset defaultRepresentation];
+            CGImageRef imageRef = [rep fullScreenImage];
+            UIImage *image = [UIImage imageWithCGImage:imageRef];
+            [self.imageView setImage:image];
+        }
+                failureBlock:^(NSError *error) {
+                    NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
+                }
+         ];
+    } else {
+        [self.imageView cancelImageRequestOperation];
+        [self.imageView setImageWithURL:nil];
+    }
+    
+    self.imageView.backgroundColor = BANYAN_BROWN_COLOR;
+    self.pieceTextView.backgroundColor = [UIColor clearColor];
+    self.pieceCaptionView.backgroundColor = [UIColor clearColor];
+    self.contentView.backgroundColor = BANYAN_WHITE_COLOR;
+    self.infoView.backgroundColor = [UIColor clearColor];
+    //    self.pieceTextView.contentInset = UIEdgeInsetsMake(0, 20, 0, 20);
+    
+    self.pieceTextView.text = self.piece.longText;
+    self.pieceCaptionView.text = self.piece.shortText;
+    
+    if (![self.piece.geocodedLocation isEqual:[NSNull null]] && self.piece.geocodedLocation)
+        self.locationLabel.text = self.piece.geocodedLocation;
+    //    // Update the piece location from the coordinates (if we were not able to get the reverse geocoded location before)
+    //    else if (self.piece.story.isLocationEnabled && ![self.piece.location isEqual:[NSNull null]]) {
+    //        CLLocation *location = [[CLLocation alloc] initWithLatitude:(CLLocationDegrees)[self.piece.latitude doubleValue]
+    //                                                          longitude:(CLLocationDegrees)[self.piece.longitude doubleValue]];
+    //        self.locationManager = [[BNFBLocationManager alloc] initWithDelegate:self];
+    //    }
+    
+    if (self.piece.imageURL) {
+        self.pieceTextView.textColor = [UIColor whiteColor];
+        self.contributorsButton.titleLabel.textColor =
+        self.viewsLabel.textColor =
+        self.likesLabel.textColor =
+        self.timeLabel.textColor = [UIColor whiteColor];
+    }
+    else {
+        self.pieceTextView.textColor = [UIColor blackColor];
+        self.contributorsButton.titleLabel.textColor =
+        self.viewsLabel.textColor =
+        self.likesLabel.textColor =
+        self.timeLabel.textColor = [UIColor blackColor];
+    }
+    self.pieceTextView.layer.shadowColor = [[UIColor blackColor] CGColor];
+    self.pieceTextView.layer.shadowOffset = CGSizeMake(1.0, 1.0);
+    self.pieceTextView.layer.shadowOpacity = 1.0;
+    self.pieceTextView.layer.shadowRadius = 0.3;
+    
+    [self refreshView];
+    
     // Do any additional setup after loading the view from its nib.
     // Update Stats
     [Piece viewedPiece:self.piece];
@@ -195,26 +192,6 @@
                                              selector:@selector(userLoginStatusChanged) 
                                                  name:BNUserLogOutNotification
                                                object:nil];
-}
-
-// Story specific refresh
-- (void)refreshStoryView
-{
-    [self.contributorsButton setTitle:[self.piece.story.writeAccess objectForKey:kBNStoryPrivacyScope]
-                             forState:UIControlStateNormal];
-
-    [self.contributorsButton addTarget:self action:@selector(storyContributors) forControlEvents:UIControlEventTouchUpInside];
-    self.pieceTextView.scrollEnabled = YES;
-    self.pieceTextView.font = [UIFont systemFontOfSize:18];
-}
-
-// Piece specific refresh
-- (void)refreshPieceView
-{
-    [self.contributorsButton setTitle:@"Contributors" forState:UIControlStateNormal];
-    [self.contributorsButton setEnabled:NO];
-    self.pieceTextView.scrollEnabled = YES;
-    self.pieceTextView.font = [UIFont systemFontOfSize:18];
 }
 
 // Part of viewDidLoad that can be called again and again whenever this view needs to be
@@ -231,8 +208,10 @@
     [self toggleSceneLikeButtonLabel];
     [self toggleSceneFollowButtonLabel];
     
-    [self refreshPieceView];
-}
+    [self.contributorsButton setTitle:@"Contributors" forState:UIControlStateNormal];
+    [self.contributorsButton setEnabled:NO];
+    self.pieceTextView.scrollEnabled = YES;
+    self.pieceTextView.font = [UIFont systemFontOfSize:18];}
 
 - (void)viewDidUnload
 {

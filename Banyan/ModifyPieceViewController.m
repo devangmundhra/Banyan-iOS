@@ -14,12 +14,14 @@
 #import "Story+Edit.h"
 #import "Piece_Defines.h"
 #import "Story_Defines.h"
+#import "SSTextView.h"
+#import "SSTextField.h"
 
 @interface ModifyPieceViewController ()
 
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (weak, nonatomic) IBOutlet UITextField *pieceCaptionView;
-@property (weak, nonatomic) IBOutlet UITextView *pieceTextView;
+@property (weak, nonatomic) IBOutlet SSTextField *pieceCaptionView;
+@property (weak, nonatomic) IBOutlet SSTextView *pieceTextView;
 @property (weak, nonatomic) IBOutlet UINavigationBar *navigationBar;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
@@ -107,6 +109,9 @@
     }
     
     self.pieceCaptionView.delegate = self;
+    self.pieceCaptionView.textEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 5);
+    self.pieceTextView.placeholder = @"Enter more details here";
+    self.pieceTextView.textColor = BANYAN_BLACK_COLOR;
     self.addLocationButton.delegate = self;
     self.addPhotoButton.delegate = self;
     
@@ -412,27 +417,6 @@
     
     if (self.pieceTextView.isFirstResponder)
         [self.pieceTextView resignFirstResponder];
-}
-
-#pragma mark TextView and TextField delegates
-- (BOOL)textViewShouldBeginEditing:(UITextView *)textView
-{
-    if (textView.tag == 0) {
-        textView.text = @"";
-        textView.textColor = [UIColor blackColor];
-        textView.tag = 1;
-    }
-    return YES;
-}
-
-- (BOOL)textViewShouldEndEditing:(UITextView *)textView
-{
-    if ([textView.text length] == 0) {
-        textView.text = @"Additional piece description...";
-        textView.textColor = [UIColor lightGrayColor];
-        textView.tag = 0;
-    }
-    return YES;
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView

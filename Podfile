@@ -9,6 +9,7 @@ pod 'SVPullToRefresh'
 pod 'RestKit', :git => 'https://github.com/RestKit/RestKit.git', :branch => 'development'
 pod 'SVSegmentedControl'
 pod 'SMPageControl', '~> 1.0'
+pod 'SSToolkit'
 
 # Testing and Search are optional components
 # pod 'RestKit/Testing',  :git => 'https://github.com/RestKit/RestKit.git'

@@ -59,7 +59,7 @@
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIContentVerticalAlignment">0</int>
 								<string key="IBUIText"/>
-								<string key="IBUIPlaceholder">   Enter a caption</string>
+								<string key="IBUIPlaceholder">Enter a caption</string>
 								<object class="NSColor" key="IBUITextColor">
 									<int key="NSColorSpace">3</int>
 									<bytes key="NSWhite">MC4zMzMzMzMzMzMzAA</bytes>
@@ -86,9 +86,9 @@
 							<object class="IBUITextView" id="238661057">
 								<reference key="NSNextResponder" ref="36202901"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{0, 47}, {320, 114}}</string>
+								<string key="NSFrame">{{7, 47}, {305, 114}}</string>
 								<reference key="NSSuperview" ref="36202901"/>
-								<reference key="NSNextKeyView" ref="48044117"/>
+								<reference key="NSNextKeyView" ref="82101759"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<object class="NSColor" key="IBUIBackgroundColor">
 									<int key="NSColorSpace">1</int>
@@ -122,7 +122,7 @@
 								<array class="NSMutableArray" key="NSSubviews"/>
 								<string key="NSFrame">{{0, 327}, {320, 48}}</string>
 								<reference key="NSSuperview" ref="36202901"/>
-								<reference key="NSNextKeyView" ref="82101759"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<object class="NSColor" key="IBUIBackgroundColor">
 									<int key="NSColorSpace">3</int>
@@ -152,6 +152,7 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{115, 232}, {91, 87}}</string>
 								<reference key="NSSuperview" ref="36202901"/>
+								<reference key="NSNextKeyView" ref="48044117"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<object class="NSColor" key="IBUIBackgroundColor">
 									<int key="NSColorSpace">3</int>
@@ -411,9 +412,11 @@
 				<string key="19.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="27.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="81.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="83.CustomClassName">SSTextField</string>
 				<string key="83.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<reference key="83.IBUserGuides" ref="0"/>
 				<boolean value="NO" key="83.showNotes"/>
+				<string key="84.CustomClassName">SSTextView</string>
 				<string key="84.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="87.CustomClassName">TITokenFieldView</string>
 				<string key="87.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>

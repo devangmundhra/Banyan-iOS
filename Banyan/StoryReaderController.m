@@ -11,6 +11,7 @@
 #import "Story+Permissions.h"
 #import "MBProgressHUD.h"
 #import "Piece+Create.h"
+#import "Piece+Delete.h"
 
 @interface StoryReaderController ()
 @property (strong, nonatomic) Piece *currentPiece;
@@ -124,15 +125,15 @@
         UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
                                                                                 target:nil
                                                                                 action:nil];
-        
+        [buttons addObject:space];
         if (self.titleLabel == nil) {
             UILabel *label = [[UILabel alloc] init];
-            label.font = [UIFont fontWithName:@"Helvetica-Bold" size:20];
+            label.font = [UIFont fontWithName:@"Roboto-Bold" size:20];
             label.backgroundColor = [UIColor clearColor];
             label.textColor = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0];
             label.textAlignment = UITextAlignmentCenter;
             label.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.5];
-            
+            [label sizeToFit];
             self.titleLabel = [[UIBarButtonItem alloc] initWithCustomView:label];
         }
         [(UILabel*)self.titleLabel.customView setText:self.title];
@@ -159,7 +160,6 @@
     bounds = CGRectMake(0, 0, self.view.bounds.size.width, bounds.size.height);
     self.toolbar.bounds = bounds;
     
-    // Make the canvas shorter to account for the toolbar.
     bounds = self.view.bounds;
     CGFloat toolbarHeight = self.toolbar.bounds.size.height;
     bounds.origin.y += toolbarHeight;
@@ -176,7 +176,7 @@
                                                              delegate:self
                                                     cancelButtonTitle:@"Cancel"
                                                destructiveButtonTitle:nil
-                                                    otherButtonTitles:@"Add a piece", @"Edit piece", @"Share via Facebook", nil];
+                                                    otherButtonTitles:@"Add a piece", @"Edit piece", @"Delete piece", @"Share via Facebook", nil];
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
     [actionSheet showInView:self.view];
 }
@@ -197,16 +197,19 @@
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Add a piece"]) {
         Piece *piece = [Piece newPieceDraftForStory:self.story];
-        ModifyPieceViewController *addSceneViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
+        ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
         //    addSceneViewController.delegate = self;
-        [addSceneViewController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
-        [self presentViewController:addSceneViewController animated:YES completion:nil];
+        [addPieceViewController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
+        [self presentViewController:addPieceViewController animated:YES completion:nil];
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Edit piece"]) {
-        ModifyPieceViewController *addSceneViewController = [[ModifyPieceViewController alloc] initWithPiece:currentPiece];
+        ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:currentPiece];
         //    addSceneViewController.delegate = self;
-        [addSceneViewController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
-        [self presentViewController:addSceneViewController animated:YES completion:nil];
+        [addPieceViewController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
+        [self presentViewController:addPieceViewController animated:YES completion:nil];
+    }
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Delete piece"]) {
+        [Piece deletePiece:self.currentPiece];
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share via Facebook"]) {
         // Share

@@ -33,21 +33,6 @@
         piece.story.pieces = nil;
     
     // Delete the piece
-    [piece.managedObjectContext performBlock:^{
-        [piece.managedObjectContext deleteObject:piece];
-        NSError *error = nil;
-        if (![piece.managedObjectContext save:&error]) {
-            NSLog(@"Error: %@", error);
-            assert(false);
-        }
-    }];
-    [piece.managedObjectContext.parentContext performBlock:^{
-        [piece.managedObjectContext.parentContext deleteObject:piece];
-        NSError *error = nil;
-        if (![piece.managedObjectContext save:&error]) {
-            NSLog(@"Error: %@", error);
-            assert(false);
-        }
-    }];
+    [piece remove];
 }
 @end

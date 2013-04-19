@@ -118,7 +118,6 @@ typedef enum {
     
     // Configure the cell...
     Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
-//    [self updateStoryAtIndex:indexPath];
     [cell setStory:story];
     
     return cell;
@@ -128,7 +127,12 @@ typedef enum {
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {    
-    return [self updateStoryAtIndex:indexPath];
+    NSIndexPath *myIndexPath = [self updateStoryAtIndex:indexPath];
+    if (!myIndexPath) {
+        Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        [self addPieceToStory:story];
+    }
+    return myIndexPath;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -280,9 +284,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             return indexPath;
         }
         else {
-            hud.mode = MBProgressHUDModeText;
-            hud.labelText = @"No pieces found for the story!";
-            [hud hide:YES afterDelay:2];
+            [hud hide:YES];
             return nil;
         }
     }

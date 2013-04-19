@@ -64,8 +64,21 @@
     self.pageControl.numberOfPages = _story.pieces.count;
     self.pageControl.currentPage = 0;
     
-    [self loadScrollViewWithPage:0];
-//    [self loadScrollViewWithPage:1]; // TODO: Uncommenting this creates a problem during loading with more than 1 pieces
+    if (_story.pieces.count) {
+        [self loadScrollViewWithPage:0];
+//        [self loadScrollViewWithPage:1]; // TODO: Uncommenting this creates a problem during loading with more than 1 pieces
+    } else {
+        CGRect frame = self.scrollView.bounds;
+        frame.origin.y += 2.0f;
+        UILabel *label = [[UILabel alloc] initWithFrame:frame];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.text = @"No pieces in the story. Click to add a piece!";
+        label.font = [UIFont fontWithName:@"Roboto-Bold" size:20];
+        label.textColor = BANYAN_GREEN_COLOR;
+        label.numberOfLines = 2;
+        label.backgroundColor = BANYAN_WHITE_COLOR;
+        [self.scrollView addSubview:label];
+    }
 }
 
 // rotation support for iOS 5.x and earlier, note for iOS 6.0 and later this will not be called
