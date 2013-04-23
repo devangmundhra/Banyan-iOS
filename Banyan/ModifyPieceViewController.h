@@ -19,25 +19,17 @@
 
 typedef enum {ModifyPieceViewControllerEditModeAddPiece, ModifyPieceViewControllerEditModeEditPiece} ModifyPieceViewControllerEditMode;
 
-//@protocol ModifyPieceViewControllerDelegate <NSObject>
-//
-//@optional
-//- (void) modifyPieceViewControllerDeletedPiece:(ModifyPieceViewController *)controller;
-//
-//- (void) modifyPieceViewController:(ModifyPieceViewController *)controller
-//             didFinishEditingPiece:(Piece *)piece;
-//
-//- (void) modifyPieceViewController:(ModifyPieceViewController *)controller
-//              didFinishAddingPiece:(Piece *)piece;
-//
-//- (void) modifyPieceViewControllerDeletedStory:(ModifyPieceViewController *)controller;
-//
-//@end
+@protocol ModifyPieceViewControllerDelegate <NSObject>
 
-@interface ModifyPieceViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, UINavigationControllerDelegate, UIAlertViewDelegate, UINavigationBarDelegate, UIActionSheetDelegate, BNFBLocationManagerDelegate, LocationPickerButtonDelegate, MediaPickerViewControllerDelegate, MediaPickerButtonDelegate>
+- (void) modifyPieceViewController:(ModifyPieceViewController *)controller
+              didFinishAddingPiece:(Piece *)piece;
+
+@end
+
+@interface ModifyPieceViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, UIAlertViewDelegate, UIActionSheetDelegate, BNFBLocationManagerDelegate, LocationPickerButtonDelegate, MediaPickerViewControllerDelegate, MediaPickerButtonDelegate>
 
 @property (strong, nonatomic) Piece *piece;
-//@property (weak, nonatomic) id <ModifyPieceViewControllerDelegate> delegate;
+@property (weak, nonatomic) id <ModifyPieceViewControllerDelegate> delegate;
 
 - (id) initWithPiece:(Piece *)piece;
 

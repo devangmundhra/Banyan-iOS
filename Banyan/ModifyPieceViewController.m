@@ -73,13 +73,7 @@
 {
     [super viewWillAppear:animated];
     self.pieceTextView.delegate = self;
-    self.pieceTextView.backgroundColor = [UIColor clearColor];
-    
-    self.navigationBar.delegate = self;
-}
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
+    self.pieceTextView.backgroundColor = [UIColor clearColor];    
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -152,7 +146,7 @@
     CGSize screenSize = [UIScreen mainScreen].applicationFrame.size;
     self.scrollView.contentSize = CGSizeMake(screenSize.width,
                                              screenSize.height
-                                             - self.navigationController.navigationBar.frame.size.height);
+                                             - self.navigationBar.frame.size.height);
 }
 
 - (void)viewDidUnload
@@ -245,6 +239,9 @@
         assert(false);
         NSLog(@"ModifyPieceViewController_No valid edit mode");
     }
+    if (self.delegate)
+        [self.delegate modifyPieceViewController:self didFinishAddingPiece:self.piece];
+    
     [self dismissEditView];
 }
 

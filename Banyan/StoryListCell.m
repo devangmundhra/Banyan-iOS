@@ -14,6 +14,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "StoryListCellMiddleViewController.h"
 #import "BNImageLabel.h"
+#import <Parse/Parse.h>
 
 @implementation UIViewWithTopLine
 - (void)drawRect:(CGRect)rect
@@ -118,6 +119,7 @@
 {
     // So that the cell does not show any image from before
     [super prepareForReuse];
+    [self.topSwipeableView.backView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [self.storyFrontViewControl removeFromSuperview];
     [self.storyFrontViewControl removeTarget:nil
                        action:NULL
@@ -190,7 +192,7 @@
     if (story)
     {
         UIImage *frontViewControlImage = nil;
-        if ([self.story.canContribute boolValue]) {
+        if ([self.story.canContribute boolValue] && [PFUser currentUser]) {
             // Have the reveal Backview button on front view
             frontViewControlImage = [UIImage imageNamed:@"backViewShowButton"];
             [self.storyFrontViewControl addTarget:self action:@selector(showBackView:) forControlEvents:UIControlEventTouchUpInside];

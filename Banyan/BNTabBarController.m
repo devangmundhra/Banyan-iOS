@@ -62,7 +62,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if (self.centerButton)
+    if (self.centerButton && ![self.centerButton superview])
         [self.view addSubview:self.centerButton];
     
 }
@@ -70,7 +70,7 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    if (self.centerButton)
+    if (self.centerButton && [self.centerButton superview])
         [self.centerButton removeFromSuperview];
 }
 

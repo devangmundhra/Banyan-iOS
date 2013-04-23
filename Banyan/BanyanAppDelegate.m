@@ -116,16 +116,14 @@ void uncaughtExceptionHandler(NSException *exception)
 {
     [[UINavigationBar appearance] setTintColor:BANYAN_GREEN_COLOR];
     
-    [[UIToolbar appearance] setTintColor:BANYAN_BROWN_COLOR];
+    [[UIToolbar appearance] setTintColor:BANYAN_GREEN_COLOR];
     
     [[UIBarButtonItem appearance] setTintColor:BANYAN_GREEN_COLOR];
     
     [[UISwitch appearance] setOnTintColor:BANYAN_GREEN_COLOR];
     
     [[UISegmentedControl appearance] setTintColor:BANYAN_GREEN_COLOR];
-    
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent];
-    
+        
     [[UISlider appearance] setThumbTintColor:BANYAN_GREEN_COLOR];
     
     [[UISlider appearance] setMinimumTrackTintColor:BANYAN_BROWN_COLOR];

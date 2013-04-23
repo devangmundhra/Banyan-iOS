@@ -10,7 +10,6 @@
 #import "Piece_Defines.h"
 #import "Story_Defines.h"
 #import "Story+Edit.h"
-#import "ModifyPieceViewController.h"
 #import "BanyanAppDelegate.h"
 #import "UIImageView+AFNetworking.h"
 #import <Parse/Parse.h>
@@ -21,19 +20,15 @@
 
 @protocol ReadPieceViewControllerDelegate <NSObject>
 
-- (void)doneWithReadPieceViewController:(ReadPieceViewController *)readSceneViewController;
-- (void)readPieceViewControllerAddedNewPiece:(ReadPieceViewController *)readSceneViewController;
-- (void)readPieceViewControllerDeletedPiece:(ReadPieceViewController *)readSceneViewController;
-- (void)readPieceViewControllerDeletedStory:(ReadPieceViewController *)readSceneViewController;
+- (BOOL)readPieceViewControllerFlipToPiece:(NSNumber *)pieceNumber;
 
 @end
 
-@interface ReadPieceViewController : UIViewController <InvitedTableViewControllerDelegate, BNFBLocationManagerDelegate>
+@interface ReadPieceViewController : UIViewController <InvitedTableViewControllerDelegate>
 
 @property (strong, nonatomic) Piece *piece;
 @property (weak, nonatomic) IBOutlet id <ReadPieceViewControllerDelegate> delegate;
 
-- (IBAction)addPiece:(UIBarButtonItem *)sender;
 - (id) initWithPiece:(Piece *)piece;
 
 @end

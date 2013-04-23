@@ -66,4 +66,18 @@
     return array;
 }
 
++ (Piece *)pieceForStory:(Story *)story withAttribute:(NSString *)attribute asValue:(id)value
+{
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:[NSEntityDescription entityForName:kBNPieceClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(%K == %@) AND (story = %@)",
+							  attribute, value, story];
+    [request setPredicate:predicate];
+    
+    NSError *error = nil;
+    NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+
+    return array.count ? [array objectAtIndex:0] : nil;
+}
+
 @end

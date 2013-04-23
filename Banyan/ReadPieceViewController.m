@@ -15,6 +15,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "Piece+Edit.h"
 #import "Piece+Create.h"
+#import "SMPageControl.h"
 
 @interface ReadPieceViewController ()
 
@@ -31,8 +32,8 @@
 
 @property (strong, nonatomic) IBOutlet UILabel *locationLabel;
 
+@property (strong, nonatomic) SMPageControl *pageControl;
 
-@property (strong, nonatomic) BNFBLocationManager *locationManager;
 
 @end
 
@@ -49,7 +50,7 @@
 @synthesize locationLabel = _locationLabel;
 @synthesize piece = _piece;
 @synthesize delegate = _delegate;
-@synthesize locationManager = _locationManager;
+@synthesize pageControl = _pageControl;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -67,46 +68,21 @@
         // Custom initialization
         // this should never be called directly.
         // initWithPiece should be called
-        assert(false);
+        if (HAVE_ASSERTS)
+            assert(false);
     }
     return self;
 }
 
+#define INFOVIEW_HEIGHT 64.0f // Status bar + tool bar. TODO: Find a way to do this programmatically
 - (id) initWithPiece:(Piece *)piece
 {
     self = [super init];
     if (self) {
         // Custom initialization
-        CGRect frame = [UIScreen mainScreen].applicationFrame; /* [UIScreen mainScreen].bounds] */
         self.piece = piece;
-        self.contentView = [[UIView alloc] initWithFrame:frame];
-        self.infoView = [[UIView alloc] init];
-        // Allocate custom parts of the view depending on what the piece contains
-        if (self.piece.imageURL) {
-            self.imageView = [[UIImageView alloc] init];
-            [self.contentView addSubview:self.imageView];
-        }
-        if (self.piece.shortText) {
-            self.pieceCaptionView = [[UILabel alloc] initWithFrame:frame];
-            [self.contentView addSubview:self.pieceCaptionView];
-        }
-        if (self.piece.longText) {
-            self.pieceTextView = [[UITextView alloc] initWithFrame:frame];
-            self.pieceTextView.editable = NO;
-            [self.contentView addSubview:self.pieceTextView];
-        }
-        [self.view addSubview:self.contentView];
-        [self.view addSubview:self.infoView];
     }
     return self;
-}
-
-- (void)locationUpdated
-{
-    self.locationLabel.text = self.locationManager.locationStatus;
-    self.piece.geocodedLocation = self.locationManager.locationStatus;
-    // TODO: This should be done at the server
-    [Piece editPiece:self.piece];
 }
 
 - (void) userLoginStatusChanged
@@ -117,13 +93,53 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    NSLog(@"View bounds: %@ frame: %@ screen: %@", NSStringFromCGRect(self.view.bounds), NSStringFromCGRect(self.view.frame), NSStringFromCGRect([UIScreen mainScreen].bounds));
+    self.view.backgroundColor = BANYAN_WHITE_COLOR;
     
-    self.imageView.frame = [UIScreen mainScreen].applicationFrame;
-    self.imageView.contentMode = UIViewContentModeScaleAspectFill;
-    self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    if (self.piece.imageURL && [self.piece.imageURL rangeOfString:@"asset"].location == NSNotFound) {
+    self.infoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, INFOVIEW_HEIGHT)];
+
+    UILabel *topStoryLabel = [[UILabel alloc] initWithFrame:self.infoView.bounds];
+    topStoryLabel.text = self.piece.story.title;
+    topStoryLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:18];
+    topStoryLabel.textColor = [UIColor grayColor];
+    topStoryLabel.minimumFontSize = 14;
+    topStoryLabel.textAlignment = NSTextAlignmentCenter;
+    [self.infoView addSubview:topStoryLabel];
+    [self.view addSubview:self.infoView];
+    
+
+    CGRect frame = self.view.bounds;
+    frame.size.height -= CGRectGetHeight(self.infoView.bounds);
+    frame.origin.y += CGRectGetHeight(self.infoView.bounds);
+    self.contentView = [[UIView alloc] initWithFrame:frame];
+    self.contentView.backgroundColor = BANYAN_WHITE_COLOR;
+    frame = self.contentView.bounds;
+    // Allocate custom parts of the view depending on what the piece contains
+    if ([self.piece.imageURL length]) {
+        self.imageView = [[UIImageView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
+        self.imageView.contentMode = UIViewContentModeScaleAspectFill;
+        self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        self.imageView.backgroundColor = [UIColor clearColor];
+        [self.contentView addSubview:self.imageView];
+    }
+    if ([self.piece.shortText length]) {
+        self.pieceCaptionView = [[UILabel alloc] initWithFrame:frame];
+        self.pieceCaptionView.backgroundColor = [UIColor clearColor];
+        self.pieceCaptionView.text = self.piece.shortText;
+        [self.contentView addSubview:self.pieceCaptionView];
+    }
+    if ([self.piece.longText length]) {
+        self.pieceTextView = [[UITextView alloc] initWithFrame:frame];
+        self.pieceTextView.editable = NO;
+        self.pieceTextView.backgroundColor = [UIColor clearColor];
+        self.pieceTextView.text = self.piece.longText;
+        [self.contentView addSubview:self.pieceTextView];
+    }
+    [self.view addSubview:self.contentView];
+
+    if ([self.piece.imageURL length] && [self.piece.imageURL rangeOfString:@"asset"].location == NSNotFound) {
         [self.imageView setImageWithURL:[NSURL URLWithString:self.piece.imageURL] placeholderImage:nil];
-    } else if (self.piece.imageURL) {
+    } else if ([self.piece.imageURL length]) {
         ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
         [library assetForURL:[NSURL URLWithString:self.piece.imageURL] resultBlock:^(ALAsset *asset) {
             ALAssetRepresentation *rep = [asset defaultRepresentation];
@@ -139,25 +155,9 @@
         [self.imageView cancelImageRequestOperation];
         [self.imageView setImageWithURL:nil];
     }
-    
-    self.imageView.backgroundColor = BANYAN_BROWN_COLOR;
-    self.pieceTextView.backgroundColor = [UIColor clearColor];
-    self.pieceCaptionView.backgroundColor = [UIColor clearColor];
-    self.contentView.backgroundColor = BANYAN_WHITE_COLOR;
-    self.infoView.backgroundColor = [UIColor clearColor];
-    //    self.pieceTextView.contentInset = UIEdgeInsetsMake(0, 20, 0, 20);
-    
-    self.pieceTextView.text = self.piece.longText;
-    self.pieceCaptionView.text = self.piece.shortText;
-    
+
     if (![self.piece.geocodedLocation isEqual:[NSNull null]] && self.piece.geocodedLocation)
         self.locationLabel.text = self.piece.geocodedLocation;
-    //    // Update the piece location from the coordinates (if we were not able to get the reverse geocoded location before)
-    //    else if (self.piece.story.isLocationEnabled && ![self.piece.location isEqual:[NSNull null]]) {
-    //        CLLocation *location = [[CLLocation alloc] initWithLatitude:(CLLocationDegrees)[self.piece.latitude doubleValue]
-    //                                                          longitude:(CLLocationDegrees)[self.piece.longitude doubleValue]];
-    //        self.locationManager = [[BNFBLocationManager alloc] initWithDelegate:self];
-    //    }
     
     if (self.piece.imageURL) {
         self.pieceTextView.textColor = [UIColor whiteColor];
@@ -178,6 +178,17 @@
     self.pieceTextView.layer.shadowOpacity = 1.0;
     self.pieceTextView.layer.shadowRadius = 0.3;
     
+    self.pageControl = [[SMPageControl alloc] initWithFrame:CGRectMake(100, 100, CGRectGetWidth(self.view.frame), 40)];
+    self.pageControl.center = CGPointMake(CGRectGetMidX(self.view.frame), CGRectGetMaxY(self.view.frame) - 20.0f);
+    self.pageControl.numberOfPages = [self.piece.story.length integerValue];
+    self.pageControl.currentPage = [self.piece.pieceNumber integerValue]-1;
+    self.pageControl.hidesForSinglePage = YES;
+    self.pageControl.currentPageIndicatorTintColor = BANYAN_BROWN_COLOR;
+    self.pageControl.pageIndicatorTintColor = [BANYAN_BROWN_COLOR colorWithAlphaComponent:0.5];
+    self.pageControl.backgroundColor = [UIColor clearColor];
+    [self.pageControl addTarget:self action:@selector(changePage:) forControlEvents:UIControlEventValueChanged];
+    [self.view addSubview:self.pageControl];
+
     [self refreshView];
     
     // Do any additional setup after loading the view from its nib.
@@ -229,9 +240,16 @@
     [self setLikesLabel:nil];
     [self setTimeLabel:nil];
     [self setContributorsButton:nil];
-    self.locationManager.delegate = nil;
-    [self setLocationManager:nil];
+    [self setPageControl:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    if ([self.delegate respondsToSelector:@selector(setCurrentPiece:)]) {
+        [self.delegate performSelector:@selector(setCurrentPiece:) withObject:self.piece];
+    }
 }
 
 #pragma mark target actions for read scene buttons
@@ -241,28 +259,7 @@
                                                                                                      contributorPermission:self.piece.story.writeAccess];
     invitedTableViewController.delegate = self;
     
-    [self.navigationController pushViewController:invitedTableViewController animated:YES];
-}
-
-- (IBAction)listStories:(id)sender 
-{
-    [self.delegate doneWithReadPieceViewController:self];
-}
-
-- (IBAction)addPiece:(UIBarButtonItem *)sender 
-{
-    Piece *piece = [Piece newPieceDraftForStory:self.piece.story];
-    ModifyPieceViewController *addSceneViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
-    [addSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
-    [addSceneViewController setModalPresentationStyle:UIModalPresentationFullScreen];
-    [self presentViewController:addSceneViewController animated:YES completion:nil];
-}
-- (IBAction)editPiece:(UIBarButtonItem *)sender 
-{
-    ModifyPieceViewController *editSceneViewController = [[ModifyPieceViewController alloc] initWithPiece:self.piece];
-    [editSceneViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
-    [editSceneViewController setModalPresentationStyle:UIModalPresentationFullScreen];
-    [self presentViewController:editSceneViewController animated:YES completion:nil];
+    [self presentViewController:[[UINavigationController alloc] initWithRootViewController:invitedTableViewController] animated:YES completion:nil];
 }
 
 - (void)toggleSceneLikeButtonLabel
@@ -346,6 +343,14 @@
                                       failure:AF_BANYAN_ERROR_BLOCK()];
 }
 
+- (IBAction)changePage:(id)sender
+{
+    NSInteger page = self.pageControl.currentPage;
+    if ([self.delegate respondsToSelector:@selector(readPieceViewControllerFlipToPiece:)]) {
+        [self.delegate performSelector:@selector(readPieceViewControllerFlipToPiece:) withObject:[NSNumber numberWithInteger:page+1]];
+    }
+}
+
 # pragma mark InvitedTableViewControllerDelegate
 - (void)invitedTableViewController:(InvitedTableViewController *)invitedTableViewController
         finishedInvitingForViewers:(NSArray *)selectedViewers
@@ -385,13 +390,7 @@
     }
     
     [Story editStory:self.piece.story];
-    [self.navigationController popViewControllerAnimated:YES];
     [self refreshView];
-}
-
-- (void) invitedTableViewControllerDidCancel:(InvitedTableViewController *)invitedTableViewController
-{
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma Memory Management

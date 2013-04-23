@@ -10,12 +10,13 @@
 #import "ReadPieceViewController.h"
 #import "Story.h"
 #import "Piece.h"
+#import "ModifyPieceViewController.h"
 
 @class StoryReaderController;
 
 #define HUD_STAY_DELAY 1.2 // amount of time HUD progress bar stays (in seconds)
 
-@interface StoryReaderController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ReadPieceViewControllerDelegate, UIActionSheetDelegate>
+@interface StoryReaderController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ReadPieceViewControllerDelegate, UIActionSheetDelegate, UIGestureRecognizerDelegate, ModifyPieceViewControllerDelegate>
 
 @property (nonatomic, strong) Story *story;
 @property (nonatomic, strong) UIPageViewController *pageViewController;

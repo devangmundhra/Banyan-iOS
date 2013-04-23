@@ -35,5 +35,6 @@
 
 + (NSArray *)syncedPiecesInStory:(Story *)story;
 + (NSArray *)unsavedPiecesInStory:(Story *)story;
++ (Piece *)pieceForStory:(Story *)story withAttribute:(NSString *)attribute asValue:(id)value;
 
 @end

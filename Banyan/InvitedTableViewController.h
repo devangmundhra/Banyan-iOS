@@ -30,8 +30,6 @@ typedef enum {
 - (void) invitedTableViewController:(InvitedTableViewController *)invitedTableViewController
          finishedInvitingForViewers:(NSArray *)selectedViewers
                        contributors:(NSArray *)selectedContributors;
-
-- (void) invitedTableViewControllerDidCancel:(InvitedTableViewController *)invitedTableViewController;
 @end
 
 @interface InvitedTableViewController : UITableViewController <UISearchBarDelegate, UISearchDisplayDelegate, InviteFriendCellDelegate>

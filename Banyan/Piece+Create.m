@@ -40,6 +40,9 @@
 + (void) createNewPiece:(Piece *)piece afterPiece:(Piece *)previousPiece
 {    
     piece.story.length = [NSNumber numberWithInteger:piece.story.pieces.count];
+    [piece.story.pieces enumerateObjectsUsingBlock:^(Piece *localPiece, NSUInteger idx, BOOL *stop) {
+        localPiece.pieceNumber = [NSNumber numberWithUnsignedInteger:idx+1];
+    }];
     
     [piece save];
     NSLog(@"Adding scene %@ for story %@", piece, piece.story);

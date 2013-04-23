@@ -15,8 +15,8 @@
 
 @interface StoryReaderController ()
 @property (strong, nonatomic) Piece *currentPiece;
-@property (strong, nonatomic) UIToolbar *toolbar;
 
+@property (strong, nonatomic) UIToolbar *toolbar;
 @property (strong, nonatomic) UIBarButtonItem *cancelButton;
 @property (strong, nonatomic) UIBarButtonItem *settingsButton;
 @property (strong, nonatomic) UIBarButtonItem *titleLabel;
@@ -26,60 +26,38 @@
 @implementation StoryReaderController
 @synthesize pageViewController = _pageViewController;
 @synthesize story = _story;
-@synthesize currentPiece, toolbar;
+@synthesize currentPiece = _currentPiece;
+@synthesize toolbar = _toolbar;
 @synthesize cancelButton = _cancelButton;
 @synthesize settingsButton = _settingsButton;
 @synthesize titleLabel = _titleLabel;
-
-// First page of the view controller
-- (UIViewController *)startStoryTelling
-{
-    ReadPieceViewController *startVC = [self viewControllerAtIndex:0];
-    currentPiece = startVC.piece;
-    return startVC;
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{    
-    [super viewWillAppear:animated];
-}
-
-- (void) userLoginStatusChanged
-{
-    [self.story resetPermission];
-}
-
--(BOOL)hidesBottomBarWhenPushed
-{
-    return YES;
-}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.title = self.story.title;
-    
+    self.view.backgroundColor = BANYAN_WHITE_COLOR;
+    self.view.frame = [UIScreen mainScreen].bounds;
+
     [Story viewedStory:self.story];
     
-    self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStylePageCurl navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
+    self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStylePageCurl
+                                                              navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
+                                                                            options:nil];
     self.pageViewController.delegate = self;
     
     NSArray *viewControllers = [NSArray arrayWithObject:[self startStoryTelling]];
     [self.pageViewController setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:NULL];
     
     self.pageViewController.dataSource = self;
-    
+
     [self addChildViewController:self.pageViewController];
     [self.view addSubview:self.pageViewController.view];
-    
-    // Set the page view controller's bounds using an inset rect so that self's view is visible around the edges of the pages.
-    CGRect pageViewRect = self.view.bounds;
-    self.pageViewController.view.frame = pageViewRect;
-    
+    self.pageViewController.view.frame = self.view.frame;
     [self.pageViewController didMoveToParentViewController:self];
     
     [self setupToolbar];
-        
+    
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(userLoginStatusChanged) 
                                                  name:BNUserLogInNotification 
@@ -98,8 +76,26 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     self.pageViewController = nil;
+    self.currentPiece = nil;
+    self.toolbar = nil;
+    self.cancelButton = nil;
+    self.settingsButton = nil;
+    self.titleLabel = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+
+// First page of the view controller
+- (UIViewController *)startStoryTelling
+{
+    ReadPieceViewController *startVC = [self viewControllerAtIndex:0];
+    return startVC;
+}
+
+- (void) userLoginStatusChanged
+{
+    [self.story resetPermission];
+}
+
 
 - (void)setupToolbar
 {
@@ -107,14 +103,14 @@
         self.toolbar = [[UIToolbar alloc] init];
         self.toolbar.barStyle = UIBarStyleDefault;
         
-        [self.toolbar setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+        [self.toolbar setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
         
         [self.view addSubview:self.toolbar];
     }
     
     NSMutableArray *buttons = [NSMutableArray array];
     if (self.cancelButton == nil) {
-        self.cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"
+        self.cancelButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backArrow"]
                                                              style:UIBarButtonItemStyleBordered
                                                             target:self
                                                             action:@selector(cancelButtonPressed:)];
@@ -123,21 +119,26 @@
 
     if (self.title.length > 0) {
         UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-                                                                                target:nil
-                                                                                action:nil];
+                                                                               target:nil
+                                                                               action:nil];
         [buttons addObject:space];
+        
         if (self.titleLabel == nil) {
-            UILabel *label = [[UILabel alloc] init];
+            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0 , 0.0f, self.view.frame.size.width, 21.0f)];
+            label.center = self.toolbar.center;
+            CGRect lbFrame = label.frame;
+            lbFrame.size.width -= 100.0f;
+            label.frame = lbFrame;
+            
             label.font = [UIFont fontWithName:@"Roboto-Bold" size:20];
+            label.minimumFontSize = 12;
             label.backgroundColor = [UIColor clearColor];
             label.textColor = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0];
             label.textAlignment = UITextAlignmentCenter;
             label.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.5];
-            [label sizeToFit];
             self.titleLabel = [[UIBarButtonItem alloc] initWithCustomView:label];
         }
         [(UILabel*)self.titleLabel.customView setText:self.title];
-        [self.titleLabel.customView sizeToFit];
         
         [buttons addObject:self.titleLabel];
         
@@ -145,10 +146,10 @@
                                                                target:nil
                                                                action:nil];
         [buttons addObject:space];
-        
     }
+    
     if (self.settingsButton == nil) {
-        self.settingsButton = [[UIBarButtonItem alloc] initWithTitle:@"Settings"
+        self.settingsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settingsButton"]
                                                              style:UIBarButtonItemStyleBordered
                                                             target:self
                                                             action:@selector(settingsPopup:)];
@@ -160,12 +161,43 @@
     bounds = CGRectMake(0, 0, self.view.bounds.size.width, bounds.size.height);
     self.toolbar.bounds = bounds;
     
-    bounds = self.view.bounds;
-    CGFloat toolbarHeight = self.toolbar.bounds.size.height;
-    bounds.origin.y += toolbarHeight;
-    bounds.size.height -= toolbarHeight;
+    CGRect frame = self.toolbar.frame;
+    frame.origin.y += [UIApplication sharedApplication].statusBarFrame.size.height;
+    self.toolbar.frame = frame;
     
     self.toolbar.items = buttons;
+}
+
+- (void) hideToolbar:(BOOL)hide
+{
+    [[UIApplication sharedApplication] setStatusBarHidden:hide withAnimation:UIStatusBarAnimationSlide];
+
+    if (hide) {        
+        [UIView animateWithDuration:0.3
+                         animations:^{                             
+                             CGRect tbFrame = self.toolbar.frame;
+                             tbFrame.origin.y -= tbFrame.size.height;
+                             self.toolbar.frame = tbFrame;
+                         }
+                         completion:^(BOOL finished) {
+                             [self.toolbar removeFromSuperview];
+                         }];
+    } else {        
+        [UIView animateWithDuration:0.3
+                         animations:^{                             
+                             [self.view addSubview:self.toolbar];
+                             
+                             CGRect tbFrame = self.toolbar.frame;
+                             tbFrame.origin.y += tbFrame.size.height;
+                             self.toolbar.frame = tbFrame;
+                         }];
+    }
+}
+
+- (IBAction)tap:(id)sender
+{
+    BOOL hidden = [[UIApplication sharedApplication] isStatusBarHidden];
+    [self hideToolbar:!hidden];
 }
 
 # pragma mark
@@ -198,18 +230,31 @@
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Add a piece"]) {
         Piece *piece = [Piece newPieceDraftForStory:self.story];
         ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
-        //    addSceneViewController.delegate = self;
+        addPieceViewController.delegate = self;
         [addPieceViewController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
         [self presentViewController:addPieceViewController animated:YES completion:nil];
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Edit piece"]) {
-        ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:currentPiece];
+        ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:self.currentPiece];
         //    addSceneViewController.delegate = self;
         [addPieceViewController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
         [self presentViewController:addPieceViewController animated:YES completion:nil];
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Delete piece"]) {
+        NSUInteger curPieceNum = [self.currentPiece.pieceNumber unsignedIntegerValue];
+        NSNumber *turnToPage = nil;
+        if (curPieceNum != [self.story.pieces count]) {
+            turnToPage = [NSNumber numberWithUnsignedInteger:curPieceNum];
+        } else { // This was the last piece
+            turnToPage = [NSNumber numberWithUnsignedInteger:curPieceNum-1];
+        }
         [Piece deletePiece:self.currentPiece];
+        
+        if (!self.story.pieces.count) {
+            [self prepareToGoToStoryList];
+        } else {
+            [self readPieceViewControllerFlipToPiece:turnToPage];
+        }
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share via Facebook"]) {
         // Share
@@ -229,8 +274,10 @@
 - (void)hideHUDAndDone
 {
     [MBProgressHUD hideHUDForView:self.view animated:YES];
-    [self doneWithReadPieceViewController:nil];
-}
+    // Dismiss the read scenes page view controller
+    [self dismissViewControllerAnimated:YES completion:^{
+        [self dismissReadView];
+    }];}
 
 # pragma mark - UIPageViewControllerDataSource
 // View controller to display after the current view controller has been turned ahead
@@ -248,12 +295,11 @@
         hud.labelText = @"End of story";
         hud.detailsLabelText = self.story.title;
         [self prepareToGoToStoryList];
-        currentPiece = nil;
+        self.currentPiece = nil;
         return nil;
     }
     else {
         ReadPieceViewController *nextVC = [self viewControllerAtIndex:index];
-        currentPiece = nextVC.piece;
         return nextVC;
     }
 }
@@ -277,7 +323,6 @@
     else {
         index--;
         ReadPieceViewController *previousVC = [self viewControllerAtIndex:index];
-        currentPiece = previousVC.piece;
         return previousVC;
     }
 }
@@ -292,9 +337,10 @@
     ReadPieceViewController *readSceneViewController = [[ReadPieceViewController alloc] initWithPiece:[self.story.pieces objectAtIndex:index]];
     readSceneViewController.delegate = self;
 
-//    // Prevent the buttons in the readSceneViewController to trigger page changes
-//    for (UIGestureRecognizer *gesture in self.pageViewController.gestureRecognizers)
-//        gesture.delegate = self;
+    // Prevent the controls in the readSceneViewController to trigger page changes
+    UIGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
+    gestureRecognizer.delegate = self;
+    [readSceneViewController.view addGestureRecognizer:gestureRecognizer];
     
     return readSceneViewController;
 }
@@ -312,49 +358,33 @@
     return readSceneViewController;
 }
 
+#pragma mark ModifyPieceViewControllerDelegate
+- (void)modifyPieceViewController:(ModifyPieceViewController *)controller didFinishAddingPiece:(Piece *)piece
+{
+    [self readPieceViewControllerFlipToPiece:piece.pieceNumber];
+}
+
 #pragma mark ReadPieceViewControllerDelegate
-- (void)doneWithReadPieceViewController:(ReadPieceViewController *)readPieceViewController
+- (BOOL)readPieceViewControllerFlipToPiece:(NSNumber *)pieceNumber
 {
-    // Dismiss the read scenes page view controller
-    [self dismissViewControllerAnimated:YES completion:^{
-        [self dismissReadView];
-    }];
-}
-
-- (void)readPieceViewControllerAddedNewPiece:(ReadPieceViewController *)readPieceViewController
-{
-//    NSArray *vc = [NSArray arrayWithObject:[self pageViewController:self.pageViewController viewControllerAfterViewController:readSceneViewController]];
-    NSArray *vc = [NSArray arrayWithObject:[self viewControllerForPieceNumberInStory:[self.story.length unsignedIntegerValue]]];
-    [self.pageViewController setViewControllers:vc direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
-}
-
-- (void)readPieceViewControllerDeletedPiece:(ReadPieceViewController *)readPieceViewController
-{
-    NSUInteger deletedPieceNumber = [readPieceViewController.piece.pieceNumber unsignedIntegerValue];
-    deletedPieceNumber = MAX(deletedPieceNumber, [self.story.length unsignedIntegerValue]);
+    NSUInteger oldPieceNum = [self.currentPiece.pieceNumber unsignedIntegerValue];
+    NSUInteger newPieceNum = [pieceNumber unsignedIntegerValue];
+    UIPageViewControllerNavigationDirection direction;
+    if (oldPieceNum < newPieceNum)
+        direction = UIPageViewControllerNavigationDirectionForward;
+    else if (oldPieceNum > newPieceNum)
+        direction = UIPageViewControllerNavigationDirectionReverse;
+    else
+        return true; // Same piece as now, so not turning
     
-    // Change this to come to the scene before or after the deleted scene
-    UIViewController *viewController = [self viewControllerForPieceNumberInStory:deletedPieceNumber];
+    UIViewController *viewController = [self viewControllerForPieceNumberInStory:newPieceNum];
     if (viewController) {
         // Get the previous piece
         NSArray *vc = [NSArray arrayWithObject:viewController];
-        [self.pageViewController setViewControllers:vc direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
-    } else {
-        // No more pieces left
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        hud.mode = MBProgressHUDModeText;
-        hud.labelText = @"No more pieces left";
-        hud.detailsLabelText = @"Going back to story list";
-        [self prepareToGoToStoryList];
+        [self.pageViewController setViewControllers:vc direction:direction animated:YES completion:nil];
+        return true;
     }
-}
-
-- (void)readPieceViewControllerDeletedStory:(ReadPieceViewController *)readPieceViewController
-{
-    // Dismiss the read scenes page view controller
-    [self dismissViewControllerAnimated:YES completion:^{
-        [self dismissReadView];
-    }];
+    return false;
 }
 
 - (void) dismissReadView
@@ -362,6 +392,17 @@
     [self dismissViewControllerAnimated:YES completion:^{
         self.story.storyBeingRead = NO;
     }];
+}
+
+#pragma mark UIGestureRecognizerDelegate
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    if ([touch.view isKindOfClass:[UIControl class]]) {
+        return NO;
+    }
+    else {
+        return YES;
+    }
 }
 
 #pragma Memory Management

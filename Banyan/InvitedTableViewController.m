@@ -322,14 +322,16 @@
 
 - (IBAction)doneInviting:(UIBarButtonItem *)sender 
 {
-    [self.delegate invitedTableViewController:self
-                   finishedInvitingForViewers:self.selectedViewerContacts
-                                 contributors:self.selectedContributorContacts];
+    [self dismissViewControllerAnimated:YES completion:^{
+        [self.delegate invitedTableViewController:self
+                       finishedInvitingForViewers:self.selectedViewerContacts
+                                     contributors:self.selectedContributorContacts];
+    }];
 }
 
 - (IBAction)cancel:(UIBarButtonItem *)sender
 {
-    [self.delegate invitedTableViewControllerDidCancel:self];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark Content Filtering

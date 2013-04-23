@@ -148,9 +148,11 @@
                                     story.lastSynced = [NSDate date];
                                     [story updateStoryStats];
                                 }];
-                                successBlock();                            }
+                                if (successBlock)
+                                    successBlock();                            }
                             failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                errorBlock(error);
+                                if (errorBlock)
+                                    errorBlock(error);
                             }];
 }
 
@@ -167,7 +169,7 @@
     [pieceMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"bnObjectId", PIECE_AUTHOR : @"authorId"}];
     pieceMapping.identificationAttributes = @[@"bnObjectId"];
         
-//    [pieceMapping addConnectionForRelationship:@"story" connectedBy:@"bnObjectId"];
+//    [pieceMapping addConnectionForRelationship:@"story" connectedBy:@"story.bnObjectId"];
     
     RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceMapping
                                                                                        pathPattern:nil
@@ -195,11 +197,53 @@
                                     [piece updatePieceStats];
                                     piece.lastSynced = [NSDate date];
                                 }];
-                                story.length = [NSNumber numberWithInteger:pieces.count];
-                                completionBlock();
+                                if (completionBlock)
+                                    completionBlock();
                             }
                             failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                errorBlock(error);
+                                if (errorBlock)
+                                    errorBlock(error);
+                            }];
+}
+
++ (void) loadPiecesForStory:(Story *)story atPieceNumbers:(NSArray *)pieceNumbers completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *error))errorBlock
+{
+    // Initialize RestKit
+    RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
+    objectManager.managedObjectStore = [RKManagedObjectStore defaultStore];
+    
+    RKEntityMapping *pieceMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
+                                                        inManagedObjectStore:[RKManagedObjectStore defaultStore]];
+    [pieceMapping addAttributeMappingsFromArray:@[PIECE_IMAGE_URL, PIECE_NUMBER, PIECE_LONGTEXT, PIECE_SHORTTEXT, PIECE_LATITUDE, PIECE_LONGITUDE, PIECE_GEOCODEDLOCATION,
+     PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT]];
+    [pieceMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"bnObjectId", PIECE_AUTHOR : @"authorId"}];
+    pieceMapping.identificationAttributes = @[@"bnObjectId"];
+
+    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceMapping
+                                                                                       pathPattern:nil
+                                                                                           keyPath:@"result.pieces"
+                                                                                       statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    [objectManager addResponseDescriptor:responseDescriptor];
+    
+    [objectManager getObjectsAtPath:BANYAN_API_OBJECT_URL(kBNStoryClassKey, story.bnObjectId)
+                         parameters:@{@"pieces" : pieceNumbers}
+                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                NSArray *pieces = [mappingResult array];
+                                if ([story isDeleted] || story.managedObjectContext == nil ) // Don't bother doing anything if story was deleted while fetching pieces
+                                    return;
+                                
+                                [pieces enumerateObjectsUsingBlock:^(Piece *piece, NSUInteger idx, BOOL *stop) {
+                                    [story addPiecesObject:piece];
+                                    piece.remoteStatus = RemoteObjectStatusSync;
+                                    [piece updatePieceStats];
+                                    piece.lastSynced = [NSDate date];
+                                }];
+                                if (completionBlock)
+                                    completionBlock();
+                            }
+                            failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                if (errorBlock)
+                                    errorBlock(error);
                             }];
 }
 

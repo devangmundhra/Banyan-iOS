@@ -126,13 +126,15 @@ typedef enum {
 #pragma mark Table View Delegates
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{    
-    NSIndexPath *myIndexPath = [self updateStoryAtIndex:indexPath];
-    if (!myIndexPath) {
-        Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
+{
+    Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    if ([story.length integerValue]) {
+        [self updateStoyInBackgroud:story];
+        return indexPath;
+    } else {
         [self addPieceToStory:story];
+        return nil;
     }
-    return myIndexPath;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -168,7 +170,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void)addPieceForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self updateStoryAtIndex:indexPath];
     Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [self addPieceToStory:story];
 }
@@ -233,62 +234,57 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 
 #pragma mark Story Manipulations
-- (NSIndexPath *) updateStoryAtIndex:(NSIndexPath *)indexPath
+- (void) updateStoyInBackgroud:(Story *)story
 {
-    Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [BanyanConnection loadPiecesForStory:story completionBlock:^{
+        NSLog(@"Pieces updated for story: %@ with title %@", story.bnObjectId, story.title);
+    } errorBlock:^(NSError *error){
+        NSLog(@"Error when fetching pieces for story: %@ with title %@", story.bnObjectId, story.title);
+    }];
+}
 
-    if (!story.pieces.count)
+- (BOOL) updateStoryInForeground:(Story *)story
+{
+    // For RunLoop
+    __block BOOL doneRun = NO;
+    __block BOOL success = NO;
+    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = @"Fetching pieces for the story";
+    hud.detailsLabelText = story.title;
+    NSLog(@"Loading story pieces");
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+    [BanyanConnection loadPiecesForStory:story completionBlock:^{
+        doneRun = YES;
+        success = YES;
+    } errorBlock:^(NSError *error){
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unable to load the pieces for this story."
+                                                        message:[error localizedDescription]
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        doneRun = YES;
+        NSLog(@"Hit error: %@", error);
+    }];
+    
+    do
     {
-        // For RunLoop
-        __block BOOL doneRun = NO;
-        __block BOOL success = NO;
+        // Start the run loop but return after each source is handled.
+        SInt32    result = CFRunLoopRunInMode(kCFRunLoopDefaultMode, 10, YES);
         
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        hud.labelText = @"Fetching pieces for the story";
-        hud.detailsLabelText = story.title;
-        NSLog(@"Loading story pieces");
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
-        [BanyanConnection loadPiecesForStory:story completionBlock:^{
+        // If a source explicitly stopped the run loop, or if there are no
+        // sources or timers, go ahead and exit.
+        if ((result == kCFRunLoopRunStopped) || (result == kCFRunLoopRunFinished))
             doneRun = YES;
-            success = YES;
-        } errorBlock:^(NSError *error){
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unable to load the pieces for this story."
-                                                            message:[error localizedDescription]
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
-            [alert show];
-            doneRun = YES;
-            NSLog(@"Hit error: %@", error);
-        }];
         
-        do
-        {
-            // Start the run loop but return after each source is handled.
-            SInt32    result = CFRunLoopRunInMode(kCFRunLoopDefaultMode, 10, YES);
-            
-            // If a source explicitly stopped the run loop, or if there are no
-            // sources or timers, go ahead and exit.
-            if ((result == kCFRunLoopRunStopped) || (result == kCFRunLoopRunFinished))
-                doneRun = YES;
-            
-            // Check for any other exit conditions here and set the
-            // done variable as needed.
-        }
-        while (!doneRun);
-        
-        // Come here after above block has been completed
-        if ([story.length integerValue] && success) {
-            assert(story.pieces.count);
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-            return indexPath;
-        }
-        else {
-            [hud hide:YES];
-            return nil;
-        }
+        // Check for any other exit conditions here and set the
+        // done variable as needed.
     }
-    return indexPath;
+    while (!doneRun);
+    [hud hide:YES];
+    
+    return success;
 }
 
 -(void) readStory:(Story *)story
@@ -296,6 +292,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     story.storyBeingRead = [NSNumber numberWithBool:YES];
     StoryReaderController *storyReaderController = [[StoryReaderController alloc] init];
     storyReaderController.story = story;
+    storyReaderController.wantsFullScreenLayout = YES;
+    storyReaderController.hidesBottomBarWhenPushed = YES;
     [self presentViewController:storyReaderController animated:YES completion:nil];
 }
 
@@ -309,10 +307,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 #pragma mark - Swipeable controls
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	[self hideVisibleSwipedView:YES];
-}
 
 - (void)revealSwipedViewAtIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated {
 	
@@ -333,6 +327,13 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 		[(StoryListCell *)cell hideSwipedViewAnimated:YES];
 	}
     self.indexOfVisibleBackView = nil;
+}
+
+#pragma mark UIScrollViewDelegate Methods
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    [self hideVisibleSwipedView:YES];    
 }
 
 #pragma Memory Management

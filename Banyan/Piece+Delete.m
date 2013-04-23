@@ -19,7 +19,9 @@
 }
 
 + (void) deletePiece:(Piece *)piece
-{    
+{
+    Story *story = piece.story;
+    
     [[AFBanyanAPIClient sharedClient] deletePath:BANYAN_API_OBJECT_URL(@"Piece", piece.bnObjectId)
                                      parameters:nil
                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -27,12 +29,18 @@
                                         }
                                         failure:nil];
     
-    [piece.story removePiecesObject:piece];
-    piece.story.length = [NSNumber numberWithInteger:piece.story.pieces.count];
-    if (![piece.story.length integerValue])
-        piece.story.pieces = nil;
-    
     // Delete the piece
     [piece remove];
+    
+    // Update the length
+    story.length = [NSNumber numberWithInteger:story.pieces.count];
+    // Update the value for the piece numbers
+    if (![story.length integerValue])
+        story.pieces = nil;
+    else {
+        [story.pieces enumerateObjectsUsingBlock:^(Piece *localPiece, NSUInteger idx, BOOL *stop) {
+            localPiece.pieceNumber = [NSNumber numberWithUnsignedInteger:idx+1];
+        }];
+    }
 }
 @end

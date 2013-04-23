@@ -15,6 +15,7 @@
 #import "LocationPickerButton.h"
 #import "User_Defines.h"
 #import <QuartzCore/QuartzCore.h>
+#import "SSTextField.h"
 
 @interface NewStoryViewController ()
 {
@@ -28,7 +29,7 @@
 
 @property (weak, nonatomic) NSString *storyTitle;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (weak, nonatomic) IBOutlet UITextField *storyTitleTextField;
+@property (weak, nonatomic) IBOutlet SSTextField *storyTitleTextField;
 @property (strong, nonatomic) IBOutlet SVSegmentedControl *contributorPrivacySegmentedControl;
 @property (strong, nonatomic) IBOutlet SVSegmentedControl *viewerPrivacySegmentedControl;
 
@@ -136,6 +137,7 @@
     [self.inviteContactsButton setImage:[UIImage imageNamed:@"addUserSymbol"] forState:UIControlStateNormal];
     
     self.storyTitleTextField.delegate = self;
+    self.storyTitleTextField.textEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 5);
     self.storyTitleTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
     
     if (!self.locationManager) {
@@ -234,7 +236,7 @@
     InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] initWithViewerPermissions:[self viewerPrivacyDictionary]
                                                                                                      contributorPermission:[self contributorPrivacyDictionary]];
     invitedTableViewController.delegate = self;
-    [self.navigationController pushViewController:invitedTableViewController animated:YES];
+    [self presentViewController:[[UINavigationController alloc] initWithRootViewController:invitedTableViewController] animated:YES completion:nil];
 }
 
 - (NSString *)defaultStoryTitle
@@ -572,13 +574,6 @@
         [self.invitedToViewList addObjectsFromArray:selectedContributors];
         [self.invitedToContributeList setArray:selectedContributors];
     }
-    
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (void) invitedTableViewControllerDidCancel:(InvitedTableViewController *)invitedTableViewController
-{
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark UITextFieldDelegate

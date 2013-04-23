@@ -10,6 +10,8 @@
 #import "StoryListCellReadSceneViewController.h"
 #import "Story.h"
 #import "SMPageControl.h"
+#import "BanyanConnection.h"
+#import "Piece.h"
 
 @interface StoryListCellMiddleViewController ()
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
@@ -61,10 +63,10 @@
     _story = story;
     
     [self refreshView];
-    self.pageControl.numberOfPages = _story.pieces.count;
+    self.pageControl.numberOfPages = [_story.length unsignedIntegerValue];
     self.pageControl.currentPage = 0;
     
-    if (_story.pieces.count) {
+    if ([_story.length unsignedIntegerValue]) {
         [self loadScrollViewWithPage:0];
 //        [self loadScrollViewWithPage:1]; // TODO: Uncommenting this creates a problem during loading with more than 1 pieces
     } else {
@@ -109,7 +111,7 @@
         [view removeFromSuperview];
     }
     
-    NSUInteger numPages = self.story.pieces.count;
+    NSUInteger numPages = [self.story.length unsignedIntegerValue];
     
     // adjust the contentSize (larger or smaller) depending on the orientation
     self.scrollView.contentSize =
@@ -127,20 +129,27 @@
 
 - (void)loadScrollViewWithPage:(NSUInteger)page
 {
-    if (page >= self.story.pieces.count)
+    NSUInteger pieceNum = page+1;
+    
+    if (pieceNum > [self.story.length unsignedIntegerValue])
         return;
     
-    // replace the placeholder if necessary
-    StoryListCellReadSceneViewController *controller = [self.viewControllers objectAtIndex:page];
-    if ((NSNull *)controller == [NSNull null])
-    {
-        controller = [[StoryListCellReadSceneViewController alloc] init];
-        [self.viewControllers replaceObjectAtIndex:page withObject:controller];
-    }
+    Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:pieceNum]];
     
-    // add the controller's view to the scroll view
-    if (controller.view.superview == nil)
+    if (piece)
     {
+        // replace the placeholder if necessary
+        StoryListCellReadSceneViewController *controller = [self.viewControllers objectAtIndex:page];
+        if ((NSNull *)controller == [NSNull null])
+        {
+            controller = [[StoryListCellReadSceneViewController alloc] init];
+            [self.viewControllers replaceObjectAtIndex:page withObject:controller];
+        }
+        
+        if (controller.view.superview != nil)
+            return;
+        
+        // add the controller's view to the scroll view
         CGRect frame = self.scrollView.frame;
         frame.origin.x = CGRectGetWidth(frame) * page;
         frame.origin.y = 0;
@@ -150,9 +159,39 @@
         [self.scrollView addSubview:controller.view];
         [controller didMoveToParentViewController:self];
         
-        Piece *piece = [self.story.pieces objectAtIndex:page];
         [controller setPiece:piece];
+        return;
     }
+    
+    [BanyanConnection loadPiecesForStory:self.story atPieceNumbers:@[[NSNumber numberWithUnsignedInteger:pieceNum]]
+                         completionBlock:^{
+                             Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSString stringWithFormat:@"%u", pieceNum]];
+                             
+                             if (piece) {
+                                 // replace the placeholder if necessary
+                                 StoryListCellReadSceneViewController *controller = [self.viewControllers objectAtIndex:page];
+                                 if ((NSNull *)controller == [NSNull null])
+                                 {
+                                     controller = [[StoryListCellReadSceneViewController alloc] init];
+                                     [self.viewControllers replaceObjectAtIndex:page withObject:controller];
+                                 }
+                                 
+                                 if (controller.view.superview != nil)
+                                     return;
+                                 
+                                 // add the controller's view to the scroll view
+                                 CGRect frame = self.scrollView.frame;
+                                 frame.origin.x = CGRectGetWidth(frame) * page;
+                                 frame.origin.y = 0;
+                                 controller.view.frame = frame;
+                                 
+                                 [self addChildViewController:controller];
+                                 [self.scrollView addSubview:controller.view];
+                                 [controller didMoveToParentViewController:self];
+                                 [controller setPiece:piece];
+                             }
+                         }
+                              errorBlock:nil];
 }
 
 // at the end of scroll animation, reset the boolean used when scrolls originate from the UIPageControl
