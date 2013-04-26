@@ -16,11 +16,14 @@
 #import "Piece+Edit.h"
 #import "Piece+Create.h"
 #import "SMPageControl.h"
+#import "NSObject+BlockObservation.h"
+#import "SSLabel.h"
+#import "Media.h"
 
 @interface ReadPieceViewController ()
 
-@property (strong, nonatomic) IBOutlet UIView *contentView;
-@property (strong, nonatomic) IBOutlet UILabel *pieceCaptionView;
+@property (strong, nonatomic) IBOutlet UIScrollView *contentView;
+@property (strong, nonatomic) IBOutlet SSLabel *pieceCaptionView;
 @property (strong, nonatomic) IBOutlet UITextView *pieceTextView;
 @property (strong, nonatomic) IBOutlet UIImageView *imageView;
 
@@ -33,6 +36,11 @@
 @property (strong, nonatomic) IBOutlet UILabel *locationLabel;
 
 @property (strong, nonatomic) SMPageControl *pageControl;
+
+@property (strong, nonatomic) AMBlockToken *pieceObserverToken1;
+@property (strong, nonatomic) AMBlockToken *pieceObserverToken2;
+@property (strong, nonatomic) AMBlockToken *pieceObserverToken3;
+@property (strong, nonatomic) AMBlockToken *pieceObserverToken4;
 
 
 @end
@@ -51,6 +59,7 @@
 @synthesize piece = _piece;
 @synthesize delegate = _delegate;
 @synthesize pageControl = _pageControl;
+@synthesize pieceObserverToken1, pieceObserverToken2, pieceObserverToken3, pieceObserverToken4;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -87,18 +96,19 @@
 
 - (void) userLoginStatusChanged
 {
-    [self refreshView];
+    [self refreshUI];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    NSLog(@"View bounds: %@ frame: %@ screen: %@", NSStringFromCGRect(self.view.bounds), NSStringFromCGRect(self.view.frame), NSStringFromCGRect([UIScreen mainScreen].bounds));
-    self.view.backgroundColor = BANYAN_WHITE_COLOR;
+    self.view.backgroundColor = BANYAN_BLACK_COLOR;
     
     self.infoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, INFOVIEW_HEIGHT)];
+    self.infoView.backgroundColor = [UIColor clearColor];
 
     UILabel *topStoryLabel = [[UILabel alloc] initWithFrame:self.infoView.bounds];
+    topStoryLabel.backgroundColor = [UIColor clearColor];
     topStoryLabel.text = self.piece.story.title;
     topStoryLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:18];
     topStoryLabel.textColor = [UIColor grayColor];
@@ -106,82 +116,15 @@
     topStoryLabel.textAlignment = NSTextAlignmentCenter;
     [self.infoView addSubview:topStoryLabel];
     [self.view addSubview:self.infoView];
-    
 
     CGRect frame = self.view.bounds;
     frame.size.height -= CGRectGetHeight(self.infoView.bounds);
     frame.origin.y += CGRectGetHeight(self.infoView.bounds);
-    self.contentView = [[UIView alloc] initWithFrame:frame];
-    self.contentView.backgroundColor = BANYAN_WHITE_COLOR;
-    frame = self.contentView.bounds;
-    // Allocate custom parts of the view depending on what the piece contains
-    if ([self.piece.imageURL length]) {
-        self.imageView = [[UIImageView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
-        self.imageView.contentMode = UIViewContentModeScaleAspectFill;
-        self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        self.imageView.backgroundColor = [UIColor clearColor];
-        [self.contentView addSubview:self.imageView];
-    }
-    if ([self.piece.shortText length]) {
-        self.pieceCaptionView = [[UILabel alloc] initWithFrame:frame];
-        self.pieceCaptionView.backgroundColor = [UIColor clearColor];
-        self.pieceCaptionView.text = self.piece.shortText;
-        [self.contentView addSubview:self.pieceCaptionView];
-    }
-    if ([self.piece.longText length]) {
-        self.pieceTextView = [[UITextView alloc] initWithFrame:frame];
-        self.pieceTextView.editable = NO;
-        self.pieceTextView.backgroundColor = [UIColor clearColor];
-        self.pieceTextView.text = self.piece.longText;
-        [self.contentView addSubview:self.pieceTextView];
-    }
-    [self.view addSubview:self.contentView];
-
-    if ([self.piece.imageURL length] && [self.piece.imageURL rangeOfString:@"asset"].location == NSNotFound) {
-        [self.imageView setImageWithURL:[NSURL URLWithString:self.piece.imageURL] placeholderImage:nil];
-    } else if ([self.piece.imageURL length]) {
-        ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
-        [library assetForURL:[NSURL URLWithString:self.piece.imageURL] resultBlock:^(ALAsset *asset) {
-            ALAssetRepresentation *rep = [asset defaultRepresentation];
-            CGImageRef imageRef = [rep fullScreenImage];
-            UIImage *image = [UIImage imageWithCGImage:imageRef];
-            [self.imageView setImage:image];
-        }
-                failureBlock:^(NSError *error) {
-                    NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
-                }
-         ];
-    } else {
-        [self.imageView cancelImageRequestOperation];
-        [self.imageView setImageWithURL:nil];
-    }
-
-    if (![self.piece.geocodedLocation isEqual:[NSNull null]] && self.piece.geocodedLocation)
-        self.locationLabel.text = self.piece.geocodedLocation;
-    
-    if (self.piece.imageURL) {
-        self.pieceTextView.textColor = [UIColor whiteColor];
-        self.contributorsButton.titleLabel.textColor =
-        self.viewsLabel.textColor =
-        self.likesLabel.textColor =
-        self.timeLabel.textColor = [UIColor whiteColor];
-    }
-    else {
-        self.pieceTextView.textColor = [UIColor blackColor];
-        self.contributorsButton.titleLabel.textColor =
-        self.viewsLabel.textColor =
-        self.likesLabel.textColor =
-        self.timeLabel.textColor = [UIColor blackColor];
-    }
-    self.pieceTextView.layer.shadowColor = [[UIColor blackColor] CGColor];
-    self.pieceTextView.layer.shadowOffset = CGSizeMake(1.0, 1.0);
-    self.pieceTextView.layer.shadowOpacity = 1.0;
-    self.pieceTextView.layer.shadowRadius = 0.3;
+    self.contentView = [[UIScrollView alloc] initWithFrame:frame];
+    self.contentView.backgroundColor = BANYAN_BLACK_COLOR;
     
     self.pageControl = [[SMPageControl alloc] initWithFrame:CGRectMake(100, 100, CGRectGetWidth(self.view.frame), 40)];
     self.pageControl.center = CGPointMake(CGRectGetMidX(self.view.frame), CGRectGetMaxY(self.view.frame) - 20.0f);
-    self.pageControl.numberOfPages = [self.piece.story.length integerValue];
-    self.pageControl.currentPage = [self.piece.pieceNumber integerValue]-1;
     self.pageControl.hidesForSinglePage = YES;
     self.pageControl.currentPageIndicatorTintColor = BANYAN_BROWN_COLOR;
     self.pageControl.pageIndicatorTintColor = [BANYAN_BROWN_COLOR colorWithAlphaComponent:0.5];
@@ -189,13 +132,15 @@
     [self.pageControl addTarget:self action:@selector(changePage:) forControlEvents:UIControlEventValueChanged];
     [self.view addSubview:self.pageControl];
 
-    [self refreshView];
+    [self refreshUI];
     
     // Do any additional setup after loading the view from its nib.
     // Update Stats
     [Piece viewedPiece:self.piece];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self 
+    [self addPieceObserver];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(userLoginStatusChanged) 
                                                  name:BNUserLogInNotification 
                                                object:nil];
@@ -204,25 +149,6 @@
                                                  name:BNUserLogOutNotification
                                                object:nil];
 }
-
-// Part of viewDidLoad that can be called again and again whenever this view needs to be
-// refreshed
-- (void)refreshView
-{    
-    self.viewsLabel.text = [NSString stringWithFormat:@"%u views", [self.piece.numberOfViews unsignedIntValue]];
-    self.likesLabel.text = [NSString stringWithFormat:@"%u likes", [self.piece.numberOfLikes unsignedIntValue]];
-    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateStyle:NSDateFormatterMediumStyle];
-    
-    self.timeLabel.text = [dateFormat stringFromDate:self.piece.createdAt];
-    
-    [self toggleSceneLikeButtonLabel];
-    [self toggleSceneFollowButtonLabel];
-    
-    [self.contributorsButton setTitle:@"Contributors" forState:UIControlStateNormal];
-    [self.contributorsButton setEnabled:NO];
-    self.pieceTextView.scrollEnabled = YES;
-    self.pieceTextView.font = [UIFont systemFontOfSize:18];}
 
 - (void)viewDidUnload
 {
@@ -241,6 +167,7 @@
     [self setTimeLabel:nil];
     [self setContributorsButton:nil];
     [self setPageControl:nil];
+    [self removePieceObserver];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -252,7 +179,185 @@
     }
 }
 
-#pragma mark target actions for read scene buttons
+- (void)refreshUI
+{
+    if ([self.pieceCaptionView superview]) {
+        [self.pieceCaptionView removeFromSuperview];
+    }
+    self.pieceCaptionView = nil;
+    if ([self.pieceTextView superview]) {
+        [self.pieceTextView removeFromSuperview];
+    }
+    self.pieceTextView = nil;
+    if ([self.imageView superview]) {
+        [self.imageView removeFromSuperview];
+    }
+    self.imageView = nil;
+    
+    // Allocate custom parts of the view depending on what the piece contains
+    BOOL hasImage = [self.piece.media.localURL length] || [self.piece.media.remoteURL length];
+    BOOL hasCaption = [self.piece.shortText length];
+    BOOL hasDescription = [self.piece.longText length];
+    
+    // If there is no long text full screen image, else image size of half size
+    // If there is an image and no long text, caption is at the bottom
+    // If there is no image or long text, caption in the middle
+    // Long text always below caption
+    CGRect frame;
+    CGSize csize = self.contentView.contentSize;
+    csize.height = 0;
+    
+    if (hasImage) {
+        frame = [UIScreen mainScreen].bounds;
+        if (hasDescription) {
+            frame.origin.y += 20.0f;
+            frame.size.height = frame.size.height/2;
+            frame.origin.x = 20.0f; // 20f offset
+            frame.size.width -= 2*20.0f;
+        }
+        self.imageView = [[UIImageView alloc] initWithFrame:frame];
+        self.imageView.contentMode = hasDescription ? UIViewContentModeScaleAspectFit : UIViewContentModeScaleAspectFill;
+        self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        self.imageView.backgroundColor = [UIColor clearColor];
+        [self.contentView addSubview:self.imageView];
+        csize.height = CGRectGetMaxY(self.imageView.frame);
+    }
+    if (hasCaption) {
+        frame = [UIScreen mainScreen].bounds;
+        if (hasImage) {
+            if (hasDescription) {
+                
+            } else {
+                
+            }
+        } else {
+            CGRectMake(0, 0, frame.size.width, 0.5*frame.size.height);
+        }
+        if (hasImage && !hasDescription) {
+            frame = CGRectMake(0, 0.5*frame.size.height, frame.size.width, 0.5*frame.size.height);
+        } else {
+            frame = CGRectMake(0, CGRectGetMaxY(self.imageView.frame), frame.size.width, 0.5*frame.size.height);
+        }
+        CGSize maximumLabelSize = frame.size;
+        CGSize expectedLabelSize = [self.piece.shortText sizeWithFont:[UIFont fontWithName:@"Roboto-BoldCondensed" size:26]
+                                                    constrainedToSize:maximumLabelSize lineBreakMode:NSLineBreakByTruncatingTail];
+        frame.size.height = expectedLabelSize.height;
+        
+        self.pieceCaptionView = [[SSLabel alloc] initWithFrame:frame];
+        self.pieceCaptionView.backgroundColor = [UIColor clearColor];
+        self.pieceCaptionView.font = [UIFont fontWithName:@"Roboto-BoldCondensed" size:26];
+        self.pieceCaptionView.minimumFontSize = 20;
+        self.pieceCaptionView.textAlignment = NSTextAlignmentLeft;
+        self.pieceCaptionView.textEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 20);
+        self.pieceCaptionView.numberOfLines = 4;
+        [self.contentView addSubview:self.pieceCaptionView];
+        self.pieceCaptionView.text = self.piece.shortText;
+        csize.height = CGRectGetMaxY(self.pieceCaptionView.frame); // overwrite because caption will always be lower than image.
+    }
+    if (hasDescription) {
+        frame = CGRectMake(20, CGRectGetMaxY(frame), frame.size.width-2*20, [UIScreen mainScreen].applicationFrame.size.height - CGRectGetMaxY(frame));
+        self.pieceTextView = [[UITextView alloc] initWithFrame:frame];
+        self.pieceTextView.editable = NO;
+        self.pieceTextView.backgroundColor = [UIColor clearColor];
+        self.pieceTextView.font = [UIFont fontWithName:@"Roboto" size:18];
+        self.pieceTextView.textAlignment = NSTextAlignmentLeft;
+        self.pieceTextView.scrollEnabled = NO;
+        [self.contentView addSubview:self.pieceTextView];
+        self.pieceTextView.text = self.piece.longText;
+        frame = self.pieceTextView.frame;
+        frame.size.height = self.pieceTextView.contentSize.height;
+        self.pieceTextView.frame = frame;
+        csize.height += CGRectGetHeight(self.pieceTextView.frame);
+    }
+    [self.contentView sizeToFit];
+    [self.view addSubview:self.contentView];
+    self.contentView.contentSize = csize;
+    [self.contentView setContentOffset:CGPointMake(0,0)];
+    
+    if (hasImage) {        
+        if ([self.piece.media.remoteURL length]) {
+            [self.imageView setImageWithURL:[NSURL URLWithString:self.piece.media.remoteURL] placeholderImage:nil];
+        } else {
+            ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
+            [library assetForURL:[NSURL URLWithString:self.piece.media.localURL] resultBlock:^(ALAsset *asset) {
+                ALAssetRepresentation *rep = [asset defaultRepresentation];
+                CGImageRef imageRef = [rep fullScreenImage];
+                UIImage *image = [UIImage imageWithCGImage:imageRef];
+                [self.imageView setImage:image];
+            }
+                    failureBlock:^(NSError *error) {
+                        NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
+                    }
+             ];
+        }
+    } else {
+        [self.imageView cancelImageRequestOperation];
+        [self.imageView setImageWithURL:nil];
+    }
+    
+    self.pieceCaptionView.textColor =
+    self.pieceTextView.textColor =
+    self.contributorsButton.titleLabel.textColor =
+    self.viewsLabel.textColor =
+    self.likesLabel.textColor =
+    self.timeLabel.textColor = BANYAN_WHITE_COLOR;
+    
+    if ([self.piece.location.locationName length])
+        self.locationLabel.text = self.piece.location.locationName;
+    
+    self.viewsLabel.text = [NSString stringWithFormat:@"%u views", [self.piece.statistics.numberOfViews unsignedIntValue]];
+    self.likesLabel.text = [NSString stringWithFormat:@"%u likes", [self.piece.statistics.numberOfLikes unsignedIntValue]];
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateStyle:NSDateFormatterMediumStyle];
+    
+    self.timeLabel.text = [dateFormat stringFromDate:self.piece.createdAt];
+    
+    self.pageControl.numberOfPages = [self.piece.story.length integerValue];
+    self.pageControl.currentPage = [self.piece.pieceNumber integerValue]-1;
+
+    [self toggleSceneLikeButtonLabel];
+    [self toggleSceneFollowButtonLabel];
+    
+    [self.contributorsButton setTitle:@"Contributors" forState:UIControlStateNormal];
+    [self.contributorsButton setEnabled:NO];
+}
+
+#pragma mark notifications
+- (void)addPieceObserver
+{
+    __weak ReadPieceViewController *readPieceViewController = self;
+    pieceObserverToken1 = [self.piece addObserverForKeyPath:@"shortText" task:^(id obj, NSDictionary *change) {
+        [readPieceViewController refreshUI];
+    }];
+    pieceObserverToken2 = [self.piece addObserverForKeyPath:@"longText" task:^(id obj, NSDictionary *change) {
+        [readPieceViewController refreshUI];
+    }];
+    pieceObserverToken3 = [self.piece addObserverForKeyPath:@"imageURL" task:^(id obj, NSDictionary *change) {
+        [readPieceViewController refreshUI];
+    }];
+}
+
+- (void)removePieceObserver
+{
+    if (pieceObserverToken1) {
+        [self.piece removeObserverWithBlockToken:pieceObserverToken1];
+        pieceObserverToken1 = nil;
+    }
+    if (pieceObserverToken2) {
+        [self.piece removeObserverWithBlockToken:pieceObserverToken2];
+        pieceObserverToken2 = nil;
+    }
+    if (pieceObserverToken3) {
+        [self.piece removeObserverWithBlockToken:pieceObserverToken3];
+        pieceObserverToken3 = nil;
+    }
+    if (pieceObserverToken4) {
+        [self.piece removeObserverWithBlockToken:pieceObserverToken4];
+        pieceObserverToken4 = nil;
+    }
+}
+
+#pragma mark target actions for read piece buttons
 - (IBAction)storyContributors
 {
     InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] initWithViewerPermissions:self.piece.story.readAccess
@@ -265,13 +370,13 @@
 - (void)toggleSceneLikeButtonLabel
 {
     UIBarButtonItem *likeButton = (UIBarButtonItem *)[self.navigationController.toolbar.items objectAtIndex:0];
-    if (self.piece.liked) {
+    if (self.piece.statistics.liked) {
         [likeButton setTitle:@"Unlike"];
     }
     else {
         [likeButton setTitle:@"Like"];
     }
-    self.likesLabel.text = [NSString stringWithFormat:@"%u likes", [self.piece.numberOfLikes unsignedIntValue]];
+    self.likesLabel.text = [NSString stringWithFormat:@"%u likes", [self.piece.statistics.numberOfLikes unsignedIntValue]];
 }
 
 - (void)toggleSceneFollowButtonLabel
@@ -390,7 +495,7 @@
     }
     
     [Story editStory:self.piece.story];
-    [self refreshView];
+    [self refreshUI];
 }
 
 #pragma Memory Management

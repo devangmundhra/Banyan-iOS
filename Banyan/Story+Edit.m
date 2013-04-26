@@ -8,7 +8,7 @@
 
 #import "Story+Edit.h"
 #import "AFParseAPIClient.h"
-#import "File.h"
+#import "Media.h"
 #import "BanyanDataSource.h"
 #import "Story+Create.h"
 
@@ -57,57 +57,25 @@
                           }];
     };
     
-    if (story.imageChanged)
-    {
-        story.imageChanged = NO;
-        // Upload the image then update the story
-        if (story.imageURL)
-        {
-            [File uploadFileForLocalURL:story.imageURL
-                                  block:^(BOOL succeeded, NSString *newURL, NSString *newName, NSError *error) {
-                                      if (succeeded) {
-                                          story.imageURL = newURL;
-                                          story.imageName = newName;
-                                          updateStory(story);
-                                          NSLog(@"Image updated on server");
-                                      } else {
-                                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in uploading image"
-                                                                                          message:[NSString stringWithFormat:@"Can't upload the image due to error %@", error.localizedDescription]
-                                                                                         delegate:nil
-                                                                                cancelButtonTitle:@"OK"
-                                                                                otherButtonTitles:nil];
-                                          [alert show];
-                                      }
-                                  }
-                             errorBlock:^(NSError *error) {
-                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
-                                                                                 message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
-                                                                                delegate:nil
-                                                                       cancelButtonTitle:@"OK"
-                                                                       otherButtonTitles:nil];
-                                 [alert show];
-                             }];
-        } else {
-            // Delete the file from db and update the story
-            [File deleteFileWithName:story.imageName
-                               block:nil
-                          errorBlock:^(NSError *error) {
-                              UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in deleting image"
-                                                                              message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]
-                                                                             delegate:nil
-                                                                    cancelButtonTitle:@"OK"
-                                                                    otherButtonTitles:nil];
-                              [alert show];
-                          }];
-            story.imageName = nil;
-            updateStory(story);
-        }
-    } else {
+    if ([story.media.localURL length]) {
+        // Upload the image then update the piece
+        [story.media
+         uploadWithSuccess:^{
+             updateStory(story);
+         }
+         failure:^(NSError *error) {
+             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
+                                                             message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
+                                                            delegate:nil
+                                                   cancelButtonTitle:@"OK"
+                                                   otherButtonTitles:nil];
+             [alert show];
+         }];
+    }
+    // Image wasn't changed.
+    else {
         updateStory(story);
     }
-    
-    // Persist the story
-    [story save];
 }
 @end
 

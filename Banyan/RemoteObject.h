@@ -2,12 +2,14 @@
 //  RemoteObject.h
 //  Banyan
 //
-//  Created by Devang Mundhra on 3/26/13.
+//  Created by Devang Mundhra on 4/26/13.
 //
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+#import "Location.h"
+#import "Statistics.h"
 
 typedef enum {
     RemoteObjectStatusPushing,    // Uploading post
@@ -16,15 +18,20 @@ typedef enum {
     RemoteObjectStatusSync,       // Post uploaded
 } RemoteObjectStatus;
 
+@class Location, Statistics, Media;
 
 @interface RemoteObject : NSManagedObject
 
-@property (nonatomic, retain) NSString * bnObjectId;
 @property (nonatomic, retain) NSString * authorId;
+@property (nonatomic, retain) NSString * bnObjectId;
 @property (nonatomic, retain) NSDate * createdAt;
-@property (nonatomic, retain) NSDate * updatedAt;
 @property (nonatomic, retain) NSDate * lastSynced;
 @property (nonatomic, retain) NSNumber * remoteStatusNumber;
+@property (nonatomic, retain) NSDate * updatedAt;
+@property (nonatomic, retain) Statistics *statistics;
+@property (nonatomic, retain) Location *location;
+@property (nonatomic, retain) Media *media;
+
 @property (nonatomic) RemoteObjectStatus remoteStatus;
 
 // Revision management
@@ -33,4 +40,5 @@ typedef enum {
 
 #pragma mark Data management
 - (void) remove;
+
 @end

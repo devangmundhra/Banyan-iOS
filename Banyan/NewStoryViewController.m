@@ -259,14 +259,14 @@
     
     // Story Location
     if (self.isLocationEnabled == YES) {
-        self.story.isLocationEnabled = [NSNumber numberWithBool:YES];
+        self.story.location.isLocationEnabled = [NSNumber numberWithBool:YES];
         if (self.locationManager.location) {            
-            self.story.latitude = self.locationManager.location.location.latitude;
-            self.story.longitude = self.locationManager.location.location.longitude;
-            self.story.geocodedLocation = self.locationManager.location.name;
+            self.story.location.latitude = self.locationManager.location.location.latitude;
+            self.story.location.longitude = self.locationManager.location.location.longitude;
+            self.story.location.locationName = self.locationManager.location.name;
         }
     } else  {
-        self.story.isLocationEnabled = [NSNumber numberWithBool:NO];
+        self.story.location.isLocationEnabled = [NSNumber numberWithBool:NO];
     }
     
     NSArray *tagsArray = [self.tagsFieldView tokenTitles];

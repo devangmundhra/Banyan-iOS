@@ -49,7 +49,7 @@
     }
 #endif
     
-    [TestFlight takeOff:TESTFLIGHT_BANYAN_TEAM_TOKEN];
+    [TestFlight takeOff:TESTFLIGHT_BANYAN_APP_TOKEN];
     
     //let AFNetworking manage the activity indicator
     [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;

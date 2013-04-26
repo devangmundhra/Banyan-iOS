@@ -2,21 +2,24 @@
 //  RemoteObject.m
 //  Banyan
 //
-//  Created by Devang Mundhra on 3/26/13.
+//  Created by Devang Mundhra on 4/26/13.
 //
 //
 
 #import "RemoteObject.h"
-
+#import "Location.h"
+#import "Statistics.h"
 
 @implementation RemoteObject
 
+@dynamic authorId;
 @dynamic bnObjectId;
 @dynamic createdAt;
-@dynamic updatedAt;
-@dynamic remoteStatusNumber;
 @dynamic lastSynced;
-@dynamic authorId;
+@dynamic remoteStatusNumber;
+@dynamic updatedAt;
+@dynamic media;
+@synthesize location, statistics;
 
 #pragma mark -
 #pragma mark Revision management

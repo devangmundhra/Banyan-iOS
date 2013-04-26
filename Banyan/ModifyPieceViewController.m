@@ -16,6 +16,8 @@
 #import "Story_Defines.h"
 #import "SSTextView.h"
 #import "SSTextField.h"
+#import "Media.h"
+#import "Location.h"
 
 @interface ModifyPieceViewController ()
 
@@ -27,9 +29,6 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 @property (weak, nonatomic) IBOutlet LocationPickerButton *addLocationButton;
 @property (weak, nonatomic) IBOutlet MediaPickerButton *addPhotoButton;
-
-@property (strong, nonatomic) NSString *localImageURL;
-@property (nonatomic) BOOL imageChanged;
 
 @property (strong, nonatomic) BNFBLocationManager *locationManager;
 
@@ -45,10 +44,8 @@
 @synthesize cancelButton = _cancelButton;
 @synthesize doneButton = _doneButton;
 @synthesize piece = _piece;
-//@synthesize delegate = _delegate;
+@synthesize delegate = _delegate;
 @synthesize editMode = _editMode;
-@synthesize imageChanged = _imageChanged;
-@synthesize localImageURL = _localImageURL;
 @synthesize locationManager = _locationManager;
 @synthesize pieceCaptionView, addLocationButton, addPhotoButton;
 @synthesize backupPiece_ = _backupPiece_;
@@ -79,8 +76,8 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && [self.piece.story.isLocationEnabled boolValue]) {
-        [self.locationManager stopUpdatingLocation:self.piece.geocodedLocation];
+    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && [self.piece.story.location.isLocationEnabled boolValue]) {
+        [self.locationManager stopUpdatingLocation:self.piece.location.locationName];
     }
 }
 
@@ -89,7 +86,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && [self.piece.story.isLocationEnabled boolValue]) {
+    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && [self.piece.story.location.isLocationEnabled boolValue]) {
         self.locationManager = [[BNFBLocationManager alloc] init];
         self.locationManager.delegate = self;
         [self.locationManager beginUpdatingLocation];
@@ -97,13 +94,13 @@
         [self.addLocationButton setEnabled:NO];
     }
     
-    if (self.piece.geocodedLocation && ![self.piece.geocodedLocation isEqual:[NSNull null]]) {
+    if ([self.piece.location.locationName length]) {
         [self.addLocationButton locationPickerLocationEnabled:YES];
-        [self.addLocationButton setLocationPickerTitle:self.piece.geocodedLocation];
+        [self.addLocationButton setLocationPickerTitle:self.piece.location.locationName];
     }
     
     self.pieceCaptionView.delegate = self;
-    self.pieceCaptionView.textEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 5);
+    self.pieceCaptionView.textEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 20);
     self.pieceTextView.placeholder = @"Enter more details here";
     self.pieceTextView.textColor = BANYAN_BLACK_COLOR;
     self.addLocationButton.delegate = self;
@@ -111,12 +108,11 @@
     
     if (self.editMode == ModifyPieceViewControllerEditModeEditPiece)
     {
-        self.localImageURL = self.piece.imageURL;
-        if (self.piece.imageURL && [self.piece.imageURL rangeOfString:@"asset"].location == NSNotFound) {
-            [self.addPhotoButton.imageView setImageWithURL:[NSURL URLWithString:self.piece.imageURL] placeholderImage:nil];
-        } else if (self.piece.imageURL) {
+        if ([self.piece.media.remoteURL length]) {
+            [self.addPhotoButton.imageView setImageWithURL:[NSURL URLWithString:self.piece.media.remoteURL] placeholderImage:nil];
+        } else if ([self.piece.media.localURL length]) {
             ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
-            [library assetForURL:[NSURL URLWithString:self.piece.imageURL] resultBlock:^(ALAsset *asset) {
+            [library assetForURL:[NSURL URLWithString:self.piece.media.localURL] resultBlock:^(ALAsset *asset) {
                 ALAssetRepresentation *rep = [asset defaultRepresentation];
                 CGImageRef imageRef = [rep fullScreenImage];
                 UIImage *image = [UIImage imageWithCGImage:imageRef];
@@ -138,9 +134,7 @@
     }
     
     self.doneButton.enabled = NO;
-    
-    self.imageChanged = NO;
-    
+        
     [self registerForKeyboardNotifications];
 
     CGSize screenSize = [UIScreen mainScreen].applicationFrame.size;
@@ -155,7 +149,6 @@
     [self setPieceTextView:nil];
     [self setCancelButton:nil];
     [self setDoneButton:nil];
-    [self setLocalImageURL:nil];
     self.locationManager.delegate = nil;
     [self setLocationManager:nil];
     [self setAddLocationButton:nil];
@@ -209,15 +202,14 @@
 {
     self.piece.longText = self.pieceTextView.text;
     self.piece.shortText = self.pieceCaptionView.text;
-    self.piece.imageURL = self.localImageURL;
     
     if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
     {
-        if ([self.piece.story.isLocationEnabled boolValue] == YES) {
+        if ([self.piece.story.location.isLocationEnabled boolValue] == YES) {
             if (self.locationManager.location) {
-                self.piece.latitude = self.locationManager.location.location.latitude;
-                self.piece.longitude = self.locationManager.location.location.longitude;
-                self.piece.geocodedLocation = self.locationManager.location.name;
+                self.piece.location.latitude = self.locationManager.location.location.latitude;
+                self.piece.location.longitude = self.locationManager.location.location.longitude;
+                self.piece.location.locationName = self.locationManager.location.name;
             }
         }
         
@@ -227,12 +219,6 @@
     }
     else if (self.editMode == ModifyPieceViewControllerEditModeEditPiece)
     {
-        self.piece.longText = self.pieceTextView.text;
-        if (self.imageChanged) {
-            self.piece.imageURL = self.localImageURL;
-            self.piece.imageChanged = [NSNumber numberWithBool:YES];
-            //            self.piece.image = self.imageView.image;
-        }
         [Piece editPiece:self.piece];
     }
     else {
@@ -279,7 +265,7 @@
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Modify Photo"
                                                              delegate:self
                                                     cancelButtonTitle:@"Cancel"
-                                               destructiveButtonTitle:self.localImageURL ? @"Delete Photo" : nil
+                                               destructiveButtonTitle:[self.piece.media.localURL length] || [self.piece.media remoteURL] ? @"Delete Photo" : nil
                                                     otherButtonTitles:nil];
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
         [actionSheet addButtonWithTitle:MediaPickerControllerSourceTypeCamera];
@@ -297,12 +283,16 @@
         // DO NOTHING ON CANCEL
     }
     else if (buttonIndex == actionSheet.destructiveButtonIndex) {
-        // MAYBE EXPLICITLY DELETE IMAGE IN FUTURE
+        // If its a local image, don't delete it
+        if ([self.piece.media.localURL length])
+            self.piece.media.localURL = nil;
+        if ([self.piece.media.remoteURL length]) {
+            [self.piece.media deleteWitSuccess:nil failure:nil];
+        }
+        [self.piece.media remove];
         [self.addPhotoButton.imageView cancelImageRequestOperation];
         [self.addPhotoButton.imageView setImageWithURL:nil];
-        self.localImageURL = nil;
-        self.imageChanged = YES;
-        self.doneButton.enabled = [self checkForChanges];
+        self.doneButton.enabled = YES;
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:MediaPickerControllerSourceTypeCamera]) {
         MediaPickerViewController *mediaPicker = [[MediaPickerViewController alloc] init];
@@ -325,18 +315,16 @@
 - (void) mediaPicker:(MediaPickerViewController *)mediaPicker finishedPickingMediaWithInfo:(NSDictionary *)info
 {
     UIImage *image = [info objectForKey:MediaPickerViewControllerInfoImage];
-    self.localImageURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
+    self.piece.media.localURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
     
     [self.addPhotoButton.imageView  cancelImageRequestOperation];
-    self.imageChanged = YES;
     [NSThread detachNewThreadSelector:@selector(useImage:) toTarget:self withObject:image];
     self.doneButton.enabled = [self checkForChanges];
 }
 
 - (void)mediaPickerDidCancel:(MediaPickerViewController *)mediaPicker
 {
-    self.localImageURL = nil;
-    self.imageChanged = NO;
+    
 }
 
 - (void)useImage:(UIImage *)image {
@@ -357,8 +345,8 @@
 
 - (void)locationPickerButtonToggleLocationEnable:(LocationPickerButton *)sender
 {
-    [self.addLocationButton locationPickerLocationEnabled:[self.piece.story.isLocationEnabled boolValue]];
-    if (self.piece.story.isLocationEnabled) {
+    [self.addLocationButton locationPickerLocationEnabled:[self.piece.story.location.isLocationEnabled boolValue]];
+    if (self.piece.story.location.isLocationEnabled) {
         [self.locationManager showPlacePickerViewController];
     } else {
         [self.locationManager stopUpdatingLocation:@"Add Location"];
@@ -425,16 +413,14 @@
 {
     if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
     {
-        if (self.imageChanged
-            || ![self.pieceTextView.text isEqualToString:@""]
+        if (![self.pieceTextView.text isEqualToString:@""]
             || ![self.pieceCaptionView.text isEqualToString:@""])
             return YES;
         else
             return NO;
     } else if (self.editMode == ModifyPieceViewControllerEditModeEditPiece)
     {
-        if ((self.imageChanged)
-            || (![self.pieceTextView.text isEqualToString:self.piece.longText])
+        if ((![self.pieceTextView.text isEqualToString:self.piece.longText])
             || (![self.pieceCaptionView.text isEqualToString:self.piece.shortText]))
             return YES;
         else

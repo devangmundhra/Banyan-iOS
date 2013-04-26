@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 #import "BNPlacePickerViewController.h"
+#import "Location.h"
 
 #define FINDING_LOCATION_STRING @"Finding location..."
 

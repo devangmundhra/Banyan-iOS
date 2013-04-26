@@ -15,6 +15,7 @@
 #import "StoryListCellMiddleViewController.h"
 #import "BNImageLabel.h"
 #import <Parse/Parse.h>
+#import "Location.h"
 
 @implementation UIViewWithTopLine
 - (void)drawRect:(CGRect)rect
@@ -178,9 +179,9 @@
     NSString *dateString = [dateFormatter stringFromDate:story.createdAt];
     self.timeLabel.label.text = dateString;
     
-    if ([story.isLocationEnabled boolValue] && story.geocodedLocation) {
+    if ([story.location.isLocationEnabled boolValue] && [story.location.locationName length]) {
         // add the location information about the cells
-        self.locationLabel.label.text = story.geocodedLocation;
+        self.locationLabel.label.text = story.location.locationName;
         self.locationLabel.hidden = NO;
     } else {
         self.locationLabel.hidden = YES;

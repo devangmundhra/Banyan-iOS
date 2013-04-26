@@ -10,7 +10,7 @@
 #import "Piece+Edit.h"
 #import "Story_Defines.h"
 #import "AFParseAPIClient.h"
-#import "File.h"
+#import "Media.h"
 
 @implementation Piece (Edit)
 
@@ -19,7 +19,7 @@
     if (piece.remoteStatus != RemoteObjectStatusSync)
         return;
     
-    NSLog(@"Update scene %@ for story %@", piece, piece.story);
+    NSLog(@"Update piece %@ for story %@", piece, piece.story);
     
     // Block to upload the piece
     void (^updatePiece)(Piece *) = ^(Piece *piece) {
@@ -54,59 +54,25 @@
                           }];
     };
     
-    if (piece.imageChanged) {
-        piece.imageChanged = NO;
-        // Maybe delete the image that was stored previously if another image has
-        // come in
-        
-        if (piece.imageURL) {
-            // Upload the image then update the piece
-            [File uploadFileForLocalURL:piece.imageURL
-                                  block:^(BOOL succeeded, NSString *newURL, NSString *newName, NSError *error) {
-                                      if (succeeded) {
-                                          piece.imageURL = newURL;
-                                          piece.imageName = newName;
-                                          updatePiece(piece);
-                                          NSLog(@"Image saved on server");
-                                      } else {
-                                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in uploading image"
-                                                                                          message:[NSString stringWithFormat:@"Can't upload the image due to error %@", error.localizedDescription]
-                                                                                         delegate:nil
-                                                                                cancelButtonTitle:@"OK"
-                                                                                otherButtonTitles:nil];
-                                          [alert show];
-                                      }
-                                  }
-                             errorBlock:^(NSError *error) {
-                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
-                                                                                 message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
-                                                                                delegate:nil
-                                                                       cancelButtonTitle:@"OK"
-                                                                       otherButtonTitles:nil];
-                                 [alert show];
-                             }];
-        } else {
-            // Delete the file from db and update the piece
-            [File deleteFileWithName:piece.imageName
-                            block:nil
-                       errorBlock:^(NSError *error) {
-                           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
-                                                                           message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
-                                                                          delegate:nil
-                                                                 cancelButtonTitle:@"OK"
-                                                                 otherButtonTitles:nil];
-                           [alert show];
-                       }];
-            piece.imageName = nil;
+    if ([piece.media.localURL length]) {
+        // Upload the image then update the piece
+        [piece.media
+         uploadWithSuccess:^{
             updatePiece(piece);
         }
+         failure:^(NSError *error) {
+             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
+                                                             message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
+                                                            delegate:nil
+                                                   cancelButtonTitle:@"OK"
+                                                   otherButtonTitles:nil];
+                                   [alert show];
+                               }];
     }
     // Image wasn't changed.
     else {
         updatePiece(piece);
     }
-    
-    return;
 }
 
 @end

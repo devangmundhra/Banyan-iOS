@@ -12,6 +12,7 @@
 #import "BanyanDataSource.h"
 #import "AFBanyanAPIClient.h"
 #import "UIImage+ResizeAdditions.h"
+#import "Media.h"
 
 @implementation Story (Create)
 
@@ -168,31 +169,19 @@
     };
     
     // Upload the file and then upload the story
-    if (story.imageURL) {
-        [File uploadFileForLocalURL:story.imageURL
-                              block:^(BOOL succeeded, NSString *newURL, NSString *newName, NSError *error) {
-                                  if (succeeded) {
-                                      story.imageURL = newURL;
-                                      story.imageName = newName;
-                                      uploadStory(story);
-                                      NSLog(@"Image saved on server");
-                                  } else {
-                                      UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in uploading image"
-                                                                                      message:[NSString stringWithFormat:@"Can't upload the image due to error %@", error.localizedDescription]
-                                                                                     delegate:nil
-                                                                            cancelButtonTitle:@"OK"
-                                                                            otherButtonTitles:nil];
-                                      [alert show];
-                                  }
-                              }
-                         errorBlock:^(NSError *error) {
-                             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
-                                                                             message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
-                                                                            delegate:nil
-                                                                   cancelButtonTitle:@"OK"
-                                                                   otherButtonTitles:nil];
-                             [alert show];
-                         }];
+    if ([story.media.localURL length]) {
+        [story.media uploadWithSuccess:^{
+            uploadStory(story);
+            NSLog(@"Image saved on server");
+        }
+                               failure:^(NSError *error) {
+                                   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
+                                                                                   message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
+                                                                                  delegate:nil
+                                                                         cancelButtonTitle:@"OK"
+                                                                         otherButtonTitles:nil];
+                                   [alert show];
+        }];
     } else {
         uploadStory(story);
     }

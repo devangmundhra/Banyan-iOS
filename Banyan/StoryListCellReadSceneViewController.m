@@ -10,6 +10,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <QuartzCore/QuartzCore.h>
 #import "UIImageView+AFNetworking.h"
+#import "Media.h"
 
 @interface StoryListCellReadSceneViewController ()
 
@@ -21,11 +22,11 @@
 
 - (void)setPiece:(Piece *)piece
 {
-    if (piece.imageURL && [piece.imageURL rangeOfString:@"asset"].location == NSNotFound) {
-        [self.imageView setImageWithURL:[NSURL URLWithString:piece.imageURL] placeholderImage:nil];
-    } else if (piece.imageURL) {
+    if ([piece.media.remoteURL length]) {
+        [self.imageView setImageWithURL:[NSURL URLWithString:piece.media.remoteURL] placeholderImage:nil];
+    } else if ([piece.media.localURL length]) {
         ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
-        [library assetForURL:[NSURL URLWithString:piece.imageURL] resultBlock:^(ALAsset *asset) {
+        [library assetForURL:[NSURL URLWithString:piece.media.localURL] resultBlock:^(ALAsset *asset) {
             ALAssetRepresentation *rep = [asset defaultRepresentation];
             CGImageRef imageRef = [rep fullScreenImage];
             UIImage *image = [UIImage imageWithCGImage:imageRef];

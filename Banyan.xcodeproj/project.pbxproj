@@ -15,7 +15,13 @@
 		510787CF163A36D80042B436 /* AFBanyanAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787CE163A36D80042B436 /* AFBanyanAPIClient.m */; };
 		510787D2163A36F20042B436 /* BNGoogleLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787D1163A36F20042B436 /* BNGoogleLocationManager.m */; };
 		510787D5163A37190042B436 /* Activity.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787D4163A37190042B436 /* Activity.m */; };
-		510787DA163A37250042B436 /* File.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787D7163A37250042B436 /* File.m */; };
+		510F49171727D191005BC5ED /* NSObject+BlockObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F49161727D191005BC5ED /* NSObject+BlockObservation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		510F4920172A5B86005BC5ED /* Piece.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F491F172A5B86005BC5ED /* Piece.m */; };
+		510F4923172A5C17005BC5ED /* Story.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F4922172A5C17005BC5ED /* Story.m */; };
+		510F4926172A5C5F005BC5ED /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F4925172A5C5E005BC5ED /* Location.m */; };
+		510F4929172A5C7A005BC5ED /* Statistics.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F4928172A5C7A005BC5ED /* Statistics.m */; };
+		510F492E172A5E83005BC5ED /* RemoteObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F492D172A5E82005BC5ED /* RemoteObject.m */; };
+		510F4931172A5F94005BC5ED /* Media.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F4930172A5F94005BC5ED /* Media.m */; };
 		511E708B161A9756009AAD25 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708A161A9756009AAD25 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		511E708E161A977F009AAD25 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
 		5144EC6A1712277600F0B265 /* cameraSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC601712277600F0B265 /* cameraSymbol.png */; };
@@ -158,9 +164,6 @@
 		51CFD94A15F58337002926F9 /* buttonFollowSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94215F58337002926F9 /* buttonFollowSelected.png */; };
 		51CFD94B15F58337002926F9 /* buttonFollowSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */; };
 		51CFD94E15F59A13002926F9 /* FindFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD94D15F59A13002926F9 /* FindFriendsViewController.m */; };
-		51F095601702A643009D5A28 /* RemoteObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F0955F1702A643009D5A28 /* RemoteObject.m */; };
-		51F095631702A689009D5A28 /* Piece.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F095621702A689009D5A28 /* Piece.m */; };
-		51F095661702A697009D5A28 /* Story.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F095651702A697009D5A28 /* Story.m */; };
 		51F095681702A6DE009D5A28 /* NewStoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51F095671702A6DE009D5A28 /* NewStoryViewController.xib */; };
 		51F095731702A6FB009D5A28 /* StoryListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51F0956B1702A6FB009D5A28 /* StoryListCell.xib */; };
 		51F095741702A6FB009D5A28 /* StoryListCellMiddleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F0956D1702A6FB009D5A28 /* StoryListCellMiddleViewController.m */; };
@@ -198,8 +201,20 @@
 		510787D1163A36F20042B436 /* BNGoogleLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNGoogleLocationManager.m; path = Banyan/BNGoogleLocationManager.m; sourceTree = "<group>"; };
 		510787D3163A37190042B436 /* Activity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Activity.h; path = Banyan/Activity.h; sourceTree = "<group>"; };
 		510787D4163A37190042B436 /* Activity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Activity.m; path = Banyan/Activity.m; sourceTree = "<group>"; };
-		510787D6163A37250042B436 /* File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = File.h; path = Banyan/File.h; sourceTree = "<group>"; };
-		510787D7163A37250042B436 /* File.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = File.m; path = Banyan/File.m; sourceTree = "<group>"; };
+		510F49151727D191005BC5ED /* NSObject+BlockObservation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+BlockObservation.h"; sourceTree = "<group>"; };
+		510F49161727D191005BC5ED /* NSObject+BlockObservation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+BlockObservation.m"; sourceTree = "<group>"; };
+		510F491E172A5B85005BC5ED /* Piece.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Piece.h; path = Banyan/Piece.h; sourceTree = "<group>"; };
+		510F491F172A5B86005BC5ED /* Piece.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Piece.m; path = Banyan/Piece.m; sourceTree = "<group>"; };
+		510F4921172A5C17005BC5ED /* Story.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Story.h; path = Banyan/Story.h; sourceTree = "<group>"; };
+		510F4922172A5C17005BC5ED /* Story.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Story.m; path = Banyan/Story.m; sourceTree = "<group>"; };
+		510F4924172A5C5E005BC5ED /* Location.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Location.h; path = Banyan/Location.h; sourceTree = "<group>"; };
+		510F4925172A5C5E005BC5ED /* Location.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Location.m; path = Banyan/Location.m; sourceTree = "<group>"; };
+		510F4927172A5C7A005BC5ED /* Statistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Statistics.h; path = Banyan/Statistics.h; sourceTree = "<group>"; };
+		510F4928172A5C7A005BC5ED /* Statistics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Statistics.m; path = Banyan/Statistics.m; sourceTree = "<group>"; };
+		510F492C172A5E82005BC5ED /* RemoteObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RemoteObject.h; path = Banyan/RemoteObject.h; sourceTree = "<group>"; };
+		510F492D172A5E82005BC5ED /* RemoteObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RemoteObject.m; path = Banyan/RemoteObject.m; sourceTree = "<group>"; };
+		510F492F172A5F93005BC5ED /* Media.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Media.h; path = Banyan/Media.h; sourceTree = "<group>"; };
+		510F4930172A5F94005BC5ED /* Media.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Media.m; path = Banyan/Media.m; sourceTree = "<group>"; };
 		511E708A161A9756009AAD25 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		5144EC601712277600F0B265 /* cameraSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cameraSymbol.png; sourceTree = "<group>"; };
@@ -395,12 +410,6 @@
 		51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFollowSelected@2x.png"; sourceTree = "<group>"; };
 		51CFD94C15F59A13002926F9 /* FindFriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindFriendsViewController.h; sourceTree = "<group>"; };
 		51CFD94D15F59A13002926F9 /* FindFriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindFriendsViewController.m; sourceTree = "<group>"; };
-		51F0955E1702A643009D5A28 /* RemoteObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RemoteObject.h; path = Banyan/RemoteObject.h; sourceTree = "<group>"; };
-		51F0955F1702A643009D5A28 /* RemoteObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RemoteObject.m; path = Banyan/RemoteObject.m; sourceTree = "<group>"; };
-		51F095611702A689009D5A28 /* Piece.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Piece.h; path = Banyan/Piece.h; sourceTree = "<group>"; };
-		51F095621702A689009D5A28 /* Piece.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Piece.m; path = Banyan/Piece.m; sourceTree = "<group>"; };
-		51F095641702A697009D5A28 /* Story.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Story.h; path = Banyan/Story.h; sourceTree = "<group>"; };
-		51F095651702A697009D5A28 /* Story.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Story.m; path = Banyan/Story.m; sourceTree = "<group>"; };
 		51F095671702A6DE009D5A28 /* NewStoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = NewStoryViewController.xib; path = Banyan/NewStoryViewController.xib; sourceTree = "<group>"; };
 		51F095691702A6FB009D5A28 /* StoryListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryListCell.h; path = Banyan/StoryListCell.h; sourceTree = "<group>"; };
 		51F0956B1702A6FB009D5A28 /* StoryListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = StoryListCell.xib; path = Banyan/StoryListCell.xib; sourceTree = "<group>"; };
@@ -466,13 +475,49 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5123CF3B15CDFEB700970A3E /* File */ = {
+		510F490F1727D13F005BC5ED /* NSObject */ = {
 			isa = PBXGroup;
 			children = (
-				510787D6163A37250042B436 /* File.h */,
-				510787D7163A37250042B436 /* File.m */,
+				510F49141727D191005BC5ED /* KVO+Blocks */,
 			);
-			name = File;
+			name = NSObject;
+			sourceTree = "<group>";
+		};
+		510F49141727D191005BC5ED /* KVO+Blocks */ = {
+			isa = PBXGroup;
+			children = (
+				510F49151727D191005BC5ED /* NSObject+BlockObservation.h */,
+				510F49161727D191005BC5ED /* NSObject+BlockObservation.m */,
+			);
+			name = "KVO+Blocks";
+			path = "Banyan/KVO+Blocks";
+			sourceTree = "<group>";
+		};
+		510F492A172A5C82005BC5ED /* Statistics */ = {
+			isa = PBXGroup;
+			children = (
+				510F4927172A5C7A005BC5ED /* Statistics.h */,
+				510F4928172A5C7A005BC5ED /* Statistics.m */,
+			);
+			name = Statistics;
+			sourceTree = "<group>";
+		};
+		510F492B172A5C8F005BC5ED /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				510F4924172A5C5E005BC5ED /* Location.h */,
+				510F4925172A5C5E005BC5ED /* Location.m */,
+			);
+			name = Location;
+			sourceTree = "<group>";
+		};
+		510F4932172A5F9C005BC5ED /* Media */ = {
+			isa = PBXGroup;
+			children = (
+				510F492F172A5F93005BC5ED /* Media.h */,
+				510F4930172A5F94005BC5ED /* Media.m */,
+			);
+			name = Media;
 			sourceTree = "<group>";
 		};
 		5158AE2D16F56F850089193E /* Tab Bar Controller */ = {
@@ -750,17 +795,19 @@
 		5189B35215B3965A00562DD0 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				51F0955E1702A643009D5A28 /* RemoteObject.h */,
-				51F0955F1702A643009D5A28 /* RemoteObject.m */,
+				510F492C172A5E82005BC5ED /* RemoteObject.h */,
+				510F492D172A5E82005BC5ED /* RemoteObject.m */,
 				5189B2D715B395F300562DD0 /* ArrayToDataTransformer.h */,
 				5189B2D815B395F300562DD0 /* ArrayToDataTransformer.m */,
 				5189B2DB15B395F300562DD0 /* ImageToDataTransformer.h */,
 				5189B2DC15B395F300562DD0 /* ImageToDataTransformer.m */,
 				51B598A315EB451600DF4D9D /* Activity */,
-				5123CF3B15CDFEB700970A3E /* File */,
+				510F4932172A5F9C005BC5ED /* Media */,
 				517A01DF170EB02D00665F0F /* User */,
 				5189B35715B396E700562DD0 /* Piece */,
 				5189B35A15B3975100562DD0 /* Story */,
+				510F492A172A5C82005BC5ED /* Statistics */,
+				510F492B172A5C8F005BC5ED /* Location */,
 			);
 			name = Model;
 			path = ..;
@@ -813,8 +860,8 @@
 		5189B35715B396E700562DD0 /* Piece */ = {
 			isa = PBXGroup;
 			children = (
-				51F095611702A689009D5A28 /* Piece.h */,
-				51F095621702A689009D5A28 /* Piece.m */,
+				510F491E172A5B85005BC5ED /* Piece.h */,
+				510F491F172A5B86005BC5ED /* Piece.m */,
 				5189B2F115B395F300562DD0 /* Piece_Defines.h */,
 				5189B2F415B395F300562DD0 /* Piece+Create.h */,
 				5189B2F515B395F300562DD0 /* Piece+Create.m */,
@@ -853,8 +900,8 @@
 		5189B35A15B3975100562DD0 /* Story */ = {
 			isa = PBXGroup;
 			children = (
-				51F095641702A697009D5A28 /* Story.h */,
-				51F095651702A697009D5A28 /* Story.m */,
+				510F4921172A5C17005BC5ED /* Story.h */,
+				510F4922172A5C17005BC5ED /* Story.m */,
 				5189B30815B395F300562DD0 /* Story_Defines.h */,
 				51A8DC961692C4490017E86F /* Story+Permissions.h */,
 				51A8DC971692C4490017E86F /* Story+Permissions.m */,
@@ -888,6 +935,7 @@
 		5189B35C15B397BD00562DD0 /* Helpful Categories */ = {
 			isa = PBXGroup;
 			children = (
+				510F490F1727D13F005BC5ED /* NSObject */,
 				51979A7B15F08E6F008194AF /* UIImage Categories */,
 			);
 			name = "Helpful Categories";
@@ -1231,7 +1279,6 @@
 				510787CF163A36D80042B436 /* AFBanyanAPIClient.m in Sources */,
 				510787D2163A36F20042B436 /* BNGoogleLocationManager.m in Sources */,
 				510787D5163A37190042B436 /* Activity.m in Sources */,
-				510787DA163A37250042B436 /* File.m in Sources */,
 				5157CD031650902900C22CCE /* BanyanConnection.m in Sources */,
 				5103FB9F166898960095B11F /* UIImage+Create.m in Sources */,
 				519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */,
@@ -1243,9 +1290,6 @@
 				51A8DCC41692DA900017E86F /* CoreDataTableViewController.m in Sources */,
 				5158AE2B16F56F7F0089193E /* BNTabBarController.m in Sources */,
 				5166957816F98ABB0014E65D /* UISwipeableView.m in Sources */,
-				51F095601702A643009D5A28 /* RemoteObject.m in Sources */,
-				51F095631702A689009D5A28 /* Piece.m in Sources */,
-				51F095661702A697009D5A28 /* Story.m in Sources */,
 				51F095741702A6FB009D5A28 /* StoryListCellMiddleViewController.m in Sources */,
 				51F095761702A6FB009D5A28 /* StoryListCellReadSceneViewController.m in Sources */,
 				517A018C1706D92E00665F0F /* LocationPickerButton.m in Sources */,
@@ -1257,6 +1301,13 @@
 				51B235211717DBA9004241C1 /* BNTableViewController.m in Sources */,
 				51A8494A171CF4A500367039 /* BNPlacePickerViewController.m in Sources */,
 				51A8494D171D24E900367039 /* BNFBLocationManager.m in Sources */,
+				510F49171727D191005BC5ED /* NSObject+BlockObservation.m in Sources */,
+				510F4920172A5B86005BC5ED /* Piece.m in Sources */,
+				510F4923172A5C17005BC5ED /* Story.m in Sources */,
+				510F4926172A5C5F005BC5ED /* Location.m in Sources */,
+				510F4929172A5C7A005BC5ED /* Statistics.m in Sources */,
+				510F492E172A5E83005BC5ED /* RemoteObject.m in Sources */,
+				510F4931172A5F94005BC5ED /* Media.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
