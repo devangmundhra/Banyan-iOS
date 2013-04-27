@@ -47,7 +47,7 @@
     if (!currentUser)
         return;
     
-    NSMutableArray *likers = [piece.statistics.likers mutableCopy];
+    NSMutableSet *likers = [piece.statistics.likers mutableCopy];
     Activity *activity = nil;
     if (piece.statistics.liked) {
         // unlike piece

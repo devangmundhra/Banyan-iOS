@@ -76,8 +76,8 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && [self.piece.story.location.isLocationEnabled boolValue]) {
-        [self.locationManager stopUpdatingLocation:self.piece.location.locationName];
+    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && [self.piece.story.isLocationEnabled boolValue]) {
+        [self.locationManager stopUpdatingLocation:self.piece.location.name];
     }
 }
 
@@ -86,21 +86,23 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && [self.piece.story.location.isLocationEnabled boolValue]) {
+    if (/*self.editMode == ModifyPieceViewControllerEditModeAddPiece && */[self.piece.story.isLocationEnabled boolValue]) {
         self.locationManager = [[BNFBLocationManager alloc] init];
         self.locationManager.delegate = self;
         [self.locationManager beginUpdatingLocation];
+        self.locationManager.location = self.piece.location;
     } else {
         [self.addLocationButton setEnabled:NO];
     }
     
-    if ([self.piece.location.locationName length]) {
+    if ([self.piece.location.name length]) {
         [self.addLocationButton locationPickerLocationEnabled:YES];
-        [self.addLocationButton setLocationPickerTitle:self.piece.location.locationName];
+        [self.addLocationButton setLocationPickerTitle:self.piece.location.name];
     }
     
     self.pieceCaptionView.delegate = self;
     self.pieceCaptionView.textEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 20);
+    self.pieceCaptionView.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.pieceTextView.placeholder = @"Enter more details here";
     self.pieceTextView.textColor = BANYAN_BLACK_COLOR;
     self.addLocationButton.delegate = self;
@@ -133,7 +135,7 @@
         self.navigationBar.topItem.title = @"Add Piece";
     }
     
-    self.doneButton.enabled = NO;
+    self.doneButton.enabled = [self checkForChanges];
         
     [self registerForKeyboardNotifications];
 
@@ -203,16 +205,12 @@
     self.piece.longText = self.pieceTextView.text;
     self.piece.shortText = self.pieceCaptionView.text;
     
+    if ([self.piece.story.isLocationEnabled boolValue] == YES ) {
+        self.piece.location = self.locationManager.location;
+    }
+    
     if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
-    {
-        if ([self.piece.story.location.isLocationEnabled boolValue] == YES) {
-            if (self.locationManager.location) {
-                self.piece.location.latitude = self.locationManager.location.location.latitude;
-                self.piece.location.longitude = self.locationManager.location.location.longitude;
-                self.piece.location.locationName = self.locationManager.location.name;
-            }
-        }
-        
+    {        
         [Piece createNewPiece:self.piece afterPiece:nil];
         NSLog(@"New piece %@ saved", self.piece);
         [TestFlight passCheckpoint:@"New piece created successfully"];
@@ -265,7 +263,7 @@
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Modify Photo"
                                                              delegate:self
                                                     cancelButtonTitle:@"Cancel"
-                                               destructiveButtonTitle:[self.piece.media.localURL length] || [self.piece.media remoteURL] ? @"Delete Photo" : nil
+                                               destructiveButtonTitle:self.piece.media ? @"Delete Photo" : nil
                                                     otherButtonTitles:nil];
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
         [actionSheet addButtonWithTitle:MediaPickerControllerSourceTypeCamera];
@@ -314,6 +312,8 @@
 #pragma mark MediaPickerViewControllerDelegate methods
 - (void) mediaPicker:(MediaPickerViewController *)mediaPicker finishedPickingMediaWithInfo:(NSDictionary *)info
 {
+    if (!self.piece.media)
+        self.piece.media = [Media newMediaForObject:self.piece];
     UIImage *image = [info objectForKey:MediaPickerViewControllerInfoImage];
     self.piece.media.localURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
     
@@ -345,8 +345,8 @@
 
 - (void)locationPickerButtonToggleLocationEnable:(LocationPickerButton *)sender
 {
-    [self.addLocationButton locationPickerLocationEnabled:[self.piece.story.location.isLocationEnabled boolValue]];
-    if (self.piece.story.location.isLocationEnabled) {
+    [self.addLocationButton locationPickerLocationEnabled:[self.piece.story.isLocationEnabled boolValue]];
+    if (self.piece.story.isLocationEnabled) {
         [self.locationManager showPlacePickerViewController];
     } else {
         [self.locationManager stopUpdatingLocation:@"Add Location"];
@@ -411,25 +411,8 @@
 
 - (BOOL)checkForChanges
 {
-    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
-    {
-        if (![self.pieceTextView.text isEqualToString:@""]
-            || ![self.pieceCaptionView.text isEqualToString:@""])
-            return YES;
-        else
-            return NO;
-    } else if (self.editMode == ModifyPieceViewControllerEditModeEditPiece)
-    {
-        if ((![self.pieceTextView.text isEqualToString:self.piece.longText])
-            || (![self.pieceCaptionView.text isEqualToString:self.piece.shortText]))
-            return YES;
-        else
-            return NO;
-    } else
-    {
-        NSLog(@"ModifyPieceViewController_checkForChanges_1");
-        return NO;
-    }
+    // TODO check with backup and return appropriately
+    return YES;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField

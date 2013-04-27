@@ -52,8 +52,19 @@
         RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
         // For serializing
         RKObjectMapping *pieceRequestMapping = [RKObjectMapping requestMapping];
-        [pieceRequestMapping addAttributeMappingsFromArray:@[PIECE_LONGTEXT, PIECE_SHORTTEXT, PIECE_IMAGE_URL, PIECE_IMAGE_NAME, PIECE_LATITUDE, PIECE_LONGITUDE, PIECE_GEOCODEDLOCATION]];
         [pieceRequestMapping addAttributeMappingsFromDictionary:@{@"authorId" : PIECE_AUTHOR, @"story.bnObjectId" : PIECE_STORY}];
+        [pieceRequestMapping addAttributeMappingsFromArray:@[PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled"]];
+        
+        RKObjectMapping *locationMapping = [RKObjectMapping requestMapping];
+        [locationMapping addAttributeMappingsFromArray:@[@"id", @"category", @"name"]];
+        RKObjectMapping *locationLocationMapping = [RKObjectMapping requestMapping];
+        [locationLocationMapping addAttributeMappingsFromArray:@[@"street", @"city", @"state", @"country", @"zip", @"latitude", @"longitude"]];
+        [locationMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationLocationMapping]];
+        [pieceRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationMapping]];
+        
+        RKObjectMapping *mediaMapping = [RKObjectMapping requestMapping];
+        [mediaMapping addAttributeMappingsFromDictionary:@{@"remoteURL": @"url"}];
+        [pieceRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:mediaMapping]];
         
         RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
                                                   requestDescriptorWithMapping:pieceRequestMapping

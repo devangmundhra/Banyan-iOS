@@ -21,7 +21,7 @@ NSString *const BNUserDefaultsUserInfo = @"io.banyan.Banyan.userDefaults.userInf
 NSString *const BNUserDefaultsBanyanUsersFacebookFriends = @"io.banyan.Banyan.userDefaults.banyanUsersFacebookFriends";
 NSString *const BNUserDefaultsLastSuccessfulStoryUpdateTime = @"io.banyan.Banyan.userDefaults.banyanLastSuccessfulUpdatedTime";
 
-#pragma mark - PFObject Story Class
+#pragma mark - ManagedObject Story Class
 // Class key
 NSString *const kBNStoryClassKey   = @"Story";
 
@@ -33,14 +33,14 @@ NSString *const kBNStoryPrivacyScopePublic = @"Public";
 NSString *const kBNStoryPrivacyInviteeList = @"InviteeList";
 NSString *const kBNStoryPrivacyInvitedFacebookFriends = @"InvitedFacebookFriends";
 
-#pragma mark - PFObject Piece Class
+#pragma mark - ManagedObject Piece Class
 // Class key
 NSString *const kBNPieceClassKey = @"Piece";
 
 // Field keys
 NSString *const kBNPieceIdKey    = @"pieceId";
 
-#pragma mark - Activity Class
+#pragma mark - ManagedObject Class
 // Class key
 NSString *const kBNActivityClassKey = @"Activity";
 
@@ -62,6 +62,6 @@ NSString *const kBNActivityTypeView       = @"view";
 NSString *const kBNActivityTypeComment    = @"comment";
 NSString *const kBNActivityTypeJoined     = @"joined";
 
-#pragma mark - PFObject User Class
+#pragma mark - ManagedObject Media Class
 // Class key
-NSString *const kBNUserClassKey           = @"User";
+NSString *const kBNMediaClassKey           = @"Media";

@@ -46,7 +46,7 @@
     if (!currentUser)
         return;
     
-    NSMutableArray *likers = [story.statistics.likers mutableCopy];
+    NSMutableSet *likers = [story.statistics.likers mutableCopy];
     
     Activity *activity = nil;
     if (story.statistics.liked) {

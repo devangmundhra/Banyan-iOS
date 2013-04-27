@@ -19,7 +19,9 @@
 @dynamic remoteStatusNumber;
 @dynamic updatedAt;
 @dynamic media;
-@synthesize location, statistics;
+@dynamic location;
+@dynamic statistics;
+@dynamic isLocationEnabled;
 
 #pragma mark -
 #pragma mark Revision management

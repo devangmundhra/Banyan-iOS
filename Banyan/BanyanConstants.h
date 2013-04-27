@@ -34,14 +34,14 @@ extern NSString *const kBNStoryPrivacyScopePublic;
 extern NSString *const kBNStoryPrivacyInviteeList;
 extern NSString *const kBNStoryPrivacyInvitedFacebookFriends;
 
-#pragma mark - PFObject Piece Class
+#pragma mark - ManagedObject Piece Class
 // Class key
 extern NSString *const kBNPieceClassKey;
 
 // Field keys
 extern NSString *const kBNPieceIdKey;
 
-#pragma mark - PFObject Activity Class
+#pragma mark - ManagedObject Activity Class
 
 // Class key
 extern NSString *const kBNActivityClassKey;
@@ -64,9 +64,9 @@ extern NSString *const kBNActivityTypeView;
 extern NSString *const kBNActivityTypeComment;
 extern NSString *const kBNActivityTypeJoined;
 
-#pragma mark - PFObject User Class
+#pragma mark - ManagedObject Media Class
 // Class key
-extern NSString *const kBNUserClassKey;
+extern NSString *const kBNMediaClassKey;
 
 #pragma mark - Colors
 #define BANYAN_ORIG_GREEN_COLOR [UIColor colorWithRed:44/255.0 green:127/255.0 blue:84/255.0 alpha:1]

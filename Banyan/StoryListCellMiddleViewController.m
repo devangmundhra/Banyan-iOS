@@ -12,6 +12,7 @@
 #import "SMPageControl.h"
 #import "BanyanConnection.h"
 #import "Piece.h"
+#import "BanyanAppDelegate.h"
 
 @interface StoryListCellMiddleViewController ()
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
@@ -69,7 +70,7 @@
     if ([_story.length unsignedIntegerValue]) {
         [self loadScrollViewWithPage:0];
 //        [self loadScrollViewWithPage:1]; // TODO: Uncommenting this creates a problem during loading with more than 1 pieces
-    } else {
+    } else if ([BanyanAppDelegate loggedIn]) {
         CGRect frame = self.scrollView.bounds;
         frame.origin.y += 2.0f;
         UILabel *label = [[UILabel alloc] initWithFrame:frame];

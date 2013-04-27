@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
-#import "Location.h"
 #import "Statistics.h"
+#import <FacebookSDK/FacebookSDK.h>
 
 typedef enum {
     RemoteObjectStatusPushing,    // Uploading post
@@ -18,7 +18,7 @@ typedef enum {
     RemoteObjectStatusSync,       // Post uploaded
 } RemoteObjectStatus;
 
-@class Location, Statistics, Media;
+@class Statistics, Media;
 
 @interface RemoteObject : NSManagedObject
 
@@ -28,10 +28,10 @@ typedef enum {
 @property (nonatomic, retain) NSDate * lastSynced;
 @property (nonatomic, retain) NSNumber * remoteStatusNumber;
 @property (nonatomic, retain) NSDate * updatedAt;
-@property (nonatomic, retain) Statistics *statistics;
-@property (nonatomic, retain) Location *location;
 @property (nonatomic, retain) Media *media;
-
+@property (nonatomic, strong) Statistics *statistics;
+@property (nonatomic, retain) NSNumber * isLocationEnabled;
+@property (nonatomic, strong) id<FBGraphPlace> location;
 @property (nonatomic) RemoteObjectStatus remoteStatus;
 
 // Revision management

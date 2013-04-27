@@ -302,8 +302,8 @@
     self.likesLabel.textColor =
     self.timeLabel.textColor = BANYAN_WHITE_COLOR;
     
-    if ([self.piece.location.locationName length])
-        self.locationLabel.text = self.piece.location.locationName;
+    if ([self.piece.location.name length])
+        self.locationLabel.text = self.piece.location.name;
     
     self.viewsLabel.text = [NSString stringWithFormat:@"%u views", [self.piece.statistics.numberOfViews unsignedIntValue]];
     self.likesLabel.text = [NSString stringWithFormat:@"%u likes", [self.piece.statistics.numberOfLikes unsignedIntValue]];

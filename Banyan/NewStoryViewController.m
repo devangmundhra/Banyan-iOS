@@ -16,6 +16,7 @@
 #import "User_Defines.h"
 #import <QuartzCore/QuartzCore.h>
 #import "SSTextField.h"
+#import "Media.h"
 
 @interface NewStoryViewController ()
 {
@@ -50,9 +51,6 @@
 @property (nonatomic) BOOL isLocationEnabled;
 @property (strong, nonatomic) BNFBLocationManager *locationManager;
 
-@property (strong, nonatomic) NSString *localImageURL;
-@property (nonatomic) BOOL imageChanged;
-
 @end
 
 @implementation NewStoryViewController
@@ -73,7 +71,6 @@
 @synthesize viewerPrivacySegmentedControl = _viewerPrivacySegmentedControl;
 @synthesize addLocationButton = _addLocationButton;
 @synthesize addPhotoButton = _addPhotoButton;
-@synthesize localImageURL = _localImageURL;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -217,7 +214,6 @@
     [self setScrollView:nil];
     [self setContributorPrivacySegmentedControl:nil];
     [self setViewerPrivacySegmentedControl:nil];
-    [self setLocalImageURL:nil];
     [self setInviteContactsButton:nil];
     [self setDoneButton:nil];
     [self setCancelButton:nil];
@@ -259,14 +255,10 @@
     
     // Story Location
     if (self.isLocationEnabled == YES) {
-        self.story.location.isLocationEnabled = [NSNumber numberWithBool:YES];
-        if (self.locationManager.location) {            
-            self.story.location.latitude = self.locationManager.location.location.latitude;
-            self.story.location.longitude = self.locationManager.location.location.longitude;
-            self.story.location.locationName = self.locationManager.location.name;
-        }
+        self.story.isLocationEnabled = [NSNumber numberWithBool:YES];
+        self.story.location = self.locationManager.location;
     } else  {
-        self.story.location.isLocationEnabled = [NSNumber numberWithBool:NO];
+        self.story.isLocationEnabled = [NSNumber numberWithBool:NO];
     }
     
     NSArray *tagsArray = [self.tagsFieldView tokenTitles];
@@ -397,7 +389,7 @@
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Modify Photo"
                                                              delegate:self
                                                     cancelButtonTitle:@"Cancel"
-                                               destructiveButtonTitle:self.localImageURL ? @"Delete Photo" : nil
+                                               destructiveButtonTitle:self.story.media ? @"Delete Photo" : nil
                                                     otherButtonTitles:nil];
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
         [actionSheet addButtonWithTitle:MediaPickerControllerSourceTypeCamera];
@@ -416,11 +408,15 @@
         // DO NOTHING ON CANCEL
     }
     else if (buttonIndex == actionSheet.destructiveButtonIndex) {
-        // MAYBE EXPLICITLY DELETE IMAGE IN FUTURE
+        // If its a local image, don't delete it
+        if ([self.story.media.localURL length])
+            self.story.media.localURL = nil;
+        if ([self.story.media.remoteURL length]) {
+            [self.story.media deleteWitSuccess:nil failure:nil];
+        }
+        [self.story.media remove];
         [self.addPhotoButton.imageView cancelImageRequestOperation];
         [self.addPhotoButton.imageView setImageWithURL:nil];
-        self.localImageURL = nil;
-        self.imageChanged = YES;
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:MediaPickerControllerSourceTypeCamera]) {
         MediaPickerViewController *mediaPicker = [[MediaPickerViewController alloc] init];
@@ -442,18 +438,17 @@
 #pragma mark MediaPickerViewControllerDelegate methods
 - (void) mediaPicker:(MediaPickerViewController *)mediaPicker finishedPickingMediaWithInfo:(NSDictionary *)info
 {
+    if (!self.story.media)
+        self.story.media = [Media newMediaForObject:self.story];
     UIImage *image = [info objectForKey:MediaPickerViewControllerInfoImage];
-    self.localImageURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
+    self.story.media.localURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
     
     [self.addPhotoButton.imageView  cancelImageRequestOperation];
-    self.imageChanged = YES;
     [NSThread detachNewThreadSelector:@selector(useImage:) toTarget:self withObject:image];
 }
 
 - (void)mediaPickerDidCancel:(MediaPickerViewController *)mediaPicker
 {
-    self.localImageURL = nil;
-    self.imageChanged = NO;
 }
 
 - (void)useImage:(UIImage *)image {

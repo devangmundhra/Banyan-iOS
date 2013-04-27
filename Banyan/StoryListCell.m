@@ -14,8 +14,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "StoryListCellMiddleViewController.h"
 #import "BNImageLabel.h"
-#import <Parse/Parse.h>
-#import "Location.h"
+#import "BanyanAppDelegate.h"
 
 @implementation UIViewWithTopLine
 - (void)drawRect:(CGRect)rect
@@ -179,9 +178,9 @@
     NSString *dateString = [dateFormatter stringFromDate:story.createdAt];
     self.timeLabel.label.text = dateString;
     
-    if ([story.location.isLocationEnabled boolValue] && [story.location.locationName length]) {
+    if ([story.isLocationEnabled boolValue] && [story.location.name length]) {
         // add the location information about the cells
-        self.locationLabel.label.text = story.location.locationName;
+        self.locationLabel.label.text = story.location.name;
         self.locationLabel.hidden = NO;
     } else {
         self.locationLabel.hidden = YES;
@@ -193,7 +192,7 @@
     if (story)
     {
         UIImage *frontViewControlImage = nil;
-        if ([self.story.canContribute boolValue] && [PFUser currentUser]) {
+        if ([self.story.canContribute boolValue] && [BanyanAppDelegate loggedIn]) {
             // Have the reveal Backview button on front view
             frontViewControlImage = [UIImage imageNamed:@"backViewShowButton"];
             [self.storyFrontViewControl addTarget:self action:@selector(showBackView:) forControlEvents:UIControlEventTouchUpInside];

@@ -8,14 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Statistics : NSManagedObject
+@interface Statistics : NSObject <NSCoding>
 
-@property (nonatomic, retain) NSNumber * viewed;
-@property (nonatomic, retain) NSNumber * liked;
-@property (nonatomic, retain) NSNumber * numberOfLikes;
-@property (nonatomic, retain) NSNumber * numberOfViews;
-@property (nonatomic, retain) id likers;
-@property (nonatomic, retain) id viewers;
-@property (nonatomic, retain) NSNumber * favourite;
+@property (nonatomic, strong) NSNumber * viewed;
+@property (nonatomic, strong) NSNumber * liked;
+@property (nonatomic, strong) NSNumber * numberOfLikes;
+@property (nonatomic, strong) NSNumber * numberOfViews;
+@property (nonatomic, strong) NSSet * likers;
+@property (nonatomic, strong) NSSet * viewers;
+@property (nonatomic, strong) NSNumber * favourite;
 
 @end

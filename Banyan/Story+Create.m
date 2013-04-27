@@ -124,10 +124,19 @@
 
         // For serializing
         RKObjectMapping *storyRequestMapping = [RKObjectMapping requestMapping];
+        [storyRequestMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_WRITE_ACCESS, STORY_READ_ACCESS, STORY_TAGS, @"isLocationEnabled"]];
+        [storyRequestMapping addAttributeMappingsFromDictionary:@{@"authorId" : STORY_AUTHOR}];
         
-        [storyRequestMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_IMAGE_URL, STORY_WRITE_ACCESS, STORY_READ_ACCESS,
-                                                            STORY_LATITUDE, STORY_LONGITUDE, STORY_GEOCODEDLOCATION, STORY_TAGS]];
-        [storyRequestMapping addAttributeMappingsFromDictionary:@{@"authorId" : STORY_AUTHOR, @"isLocationEnabled" : STORY_LOCATION_ENABLED}];
+        RKObjectMapping *locationMapping = [RKObjectMapping requestMapping];
+        [locationMapping addAttributeMappingsFromArray:@[@"id", @"category", @"name"]];
+        RKObjectMapping *locationLocationMapping = [RKObjectMapping requestMapping];
+        [locationLocationMapping addAttributeMappingsFromArray:@[@"street", @"city", @"state", @"country", @"zip", @"latitude", @"longitude"]];
+        [locationMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationLocationMapping]];
+        [storyRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationMapping]];
+        
+        RKObjectMapping *mediaMapping = [RKObjectMapping requestMapping];
+        [mediaMapping addAttributeMappingsFromDictionary:@{@"remoteURL": @"url"}];
+        [storyRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:mediaMapping]];
         
         RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
                                                   requestDescriptorWithMapping:storyRequestMapping

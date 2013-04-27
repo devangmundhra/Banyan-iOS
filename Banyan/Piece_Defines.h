@@ -10,9 +10,6 @@
 
 @interface Piece ()
 
-#define PIECE_IMAGE @"image"
-#define PIECE_IMAGE_URL @"imageURL"
-#define PIECE_IMAGE_NAME @"imageName"
 #define PIECE_NUMBER @"pieceNumber"
 #define PIECE_LONGTEXT @"longText"
 #define PIECE_SHORTTEXT @"shortText"
@@ -20,18 +17,7 @@
 #define PIECE_STORY @"story"
 #define PIECE_FONT @"HelveticaNeue-CondensedBold"
 
-#define PIECE_NUM_VIEWS @"numberOfViews"
-#define PIECE_NUM_LIKES @"numberOfLikes"
 #define PIECE_NUM_CONTRIBUTORS @"numberOfContributors"
-#define PIECE_LIKED @"liked"
-#define PIECE_VIEWED @"viewed"
-#define PIECE_FAVOURITE @"favourite"
-#define PIECE_LIKERS @"likers"
-
-#define PIECE_LATITUDE @"latitude"
-#define PIECE_LONGITUDE @"longitude"
-#define PIECE_LOCATION @"location"
-#define PIECE_GEOCODEDLOCATION @"geocodedLocation"
 
 #define MAX_CHAR_IN_PIECE 140
 

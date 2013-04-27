@@ -9,11 +9,11 @@
 #import <Foundation/Foundation.h>
 
 
-@interface Location : NSObject
+@interface Location : NSObject <NSCoding>
 
-@property (nonatomic, retain) NSNumber * isLocationEnabled;
-@property (nonatomic, retain) NSNumber * longitude;
-@property (nonatomic, retain) NSNumber * latitude;
-@property (nonatomic, retain) NSString * locationName;
+@property (nonatomic, strong) NSNumber * isLocationEnabled;
+@property (nonatomic, strong) NSNumber * longitude;
+@property (nonatomic, strong) NSNumber * latitude;
+@property (nonatomic, strong) NSString * locationName;
 
 @end
