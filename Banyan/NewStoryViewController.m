@@ -24,6 +24,7 @@
     NSInteger viewers;
 }
 
+@property (weak, nonatomic) IBOutlet UINavigationBar *navigationBar;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 
@@ -217,6 +218,7 @@
     [self setInviteContactsButton:nil];
     [self setDoneButton:nil];
     [self setCancelButton:nil];
+    [self setNavigationBar:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -246,6 +248,7 @@
 // Save the new story added
 - (IBAction)doneNewStory:(UIBarButtonItem *)sender 
 {
+    [self dismissKeyboard:nil];
     // Title
     self.story.title = ![self.storyTitleTextField.text isEqualToString:@""] ? self.storyTitleTextField.text : [self defaultStoryTitle];
     
@@ -256,7 +259,7 @@
     // Story Location
     if (self.isLocationEnabled == YES) {
         self.story.isLocationEnabled = [NSNumber numberWithBool:YES];
-        self.story.location = self.locationManager.location;
+        self.story.location = (FBGraphObject<FBGraphPlace> *)self.locationManager.location;
     } else  {
         self.story.isLocationEnabled = [NSNumber numberWithBool:NO];
     }
@@ -491,8 +494,8 @@
 - (void)registerForKeyboardNotifications
 {
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWasShown:)
-                                                 name:UIKeyboardDidShowNotification object:nil];
+                                             selector:@selector(keyboardWillBeShown:)
+                                                 name:UIKeyboardWillShowNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillBeHidden:)
@@ -504,7 +507,7 @@
 {
     
     [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardDidShowNotification 
+                                                    name:UIKeyboardWillShowNotification 
                                                   object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self
@@ -513,26 +516,26 @@
     
 }
 
-// Called when the UIKeyboardDidShowNotification is sent.
-- (void)keyboardWasShown:(NSNotification*)aNotification
+// Called when the UIKeyboardWillShowotification is sent.
+- (void)keyboardWillBeShown:(NSNotification*)aNotification
 {
     NSDictionary* info = [aNotification userInfo];
     CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height - self.navigationController.navigationBar.frame.size.height, 0.0);
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
     self.scrollView.contentInset = contentInsets;
     self.scrollView.scrollIndicatorInsets = contentInsets;
 
     // If active text field is hidden by keyboard, scroll it so it's visible    
     if (self.activeField == self.tagsFieldView.tokenField) {
-        CGPoint scrollPoint = CGPointMake(0, self.tagsFieldView.frame.origin.y + self.tagsFieldView.separator.frame.origin.y - self.navigationController.navigationBar.frame.size.height);
+        CGPoint scrollPoint = CGPointMake(0, self.tagsFieldView.frame.origin.y + self.tagsFieldView.separator.frame.origin.y - self.navigationBar.frame.size.height);
         [self.scrollView setContentOffset:scrollPoint animated:YES];
     }
 }
 
 // Called when the UIKeyboardWillBeHidden is sent
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification
-{
+{    
     UIEdgeInsets contentInsets = UIEdgeInsetsZero;
     self.scrollView.contentInset = contentInsets;
     self.scrollView.scrollIndicatorInsets = contentInsets;
@@ -546,8 +549,8 @@
 
 - (IBAction)dismissKeyboard:(id)sender 
 {
-    if (self.storyTitleTextField.isFirstResponder)
-        [self.storyTitleTextField resignFirstResponder];
+    if (self.activeField.isFirstResponder)
+        [self.activeField resignFirstResponder];
 }
 
 #pragma mark UITextFieldDelegate

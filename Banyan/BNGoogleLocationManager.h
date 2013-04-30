@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "GooglePlacesObject.h"
 #import "LocationPickerTableViewController.h"
-#import "Location.h"
 
 #define FINDING_LOCATION_STRING @"Finding location..."
 

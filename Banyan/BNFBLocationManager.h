@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 #import "BNPlacePickerViewController.h"
-#import "Location.h"
 
 #define FINDING_LOCATION_STRING @"Finding location..."
 
@@ -21,7 +20,7 @@
 
 @interface BNFBLocationManager : NSObject <CLLocationManagerDelegate, FBPlacePickerDelegate, FBViewControllerDelegate>
 
-@property (nonatomic, strong) id<FBGraphPlace> location;
+@property (nonatomic, strong) NSDictionary<FBGraphPlace> *location;
 @property (nonatomic, strong) NSString *locationStatus;
 @property (nonatomic, weak) id <BNFBLocationManagerDelegate> delegate;
 @property (nonatomic, strong) BNPlacePickerViewController *placePickerViewController;

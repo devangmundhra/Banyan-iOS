@@ -17,7 +17,6 @@
 #import "SSTextView.h"
 #import "SSTextField.h"
 #import "Media.h"
-#import "Location.h"
 
 @interface ModifyPieceViewController ()
 
@@ -206,7 +205,7 @@
     self.piece.shortText = self.pieceCaptionView.text;
     
     if ([self.piece.story.isLocationEnabled boolValue] == YES ) {
-        self.piece.location = self.locationManager.location;
+        self.piece.location = (FBGraphObject<FBGraphPlace> *)self.locationManager.location;
     }
     
     if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)

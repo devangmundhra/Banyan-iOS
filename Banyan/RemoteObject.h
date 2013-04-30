@@ -28,11 +28,14 @@ typedef enum {
 @property (nonatomic, retain) NSDate * lastSynced;
 @property (nonatomic, retain) NSNumber * remoteStatusNumber;
 @property (nonatomic, retain) NSDate * updatedAt;
-@property (nonatomic, retain) Media *media;
 @property (nonatomic, strong) Statistics *statistics;
 @property (nonatomic, retain) NSNumber * isLocationEnabled;
-@property (nonatomic, strong) id<FBGraphPlace> location;
+@property (nonatomic, strong) FBGraphObject<FBGraphPlace> * location;
 @property (nonatomic) RemoteObjectStatus remoteStatus;
+
+// Relationships
+@property (nonatomic, strong) NSMutableSet * comments;
+@property (nonatomic, retain) Media *media;
 
 // Revision management
 - (void)cloneFrom:(RemoteObject *)source;

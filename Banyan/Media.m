@@ -127,17 +127,24 @@
 
 - (void) deleteWitSuccess:(void (^)(void))successBlock failure:(void (^)(NSError *error))errorBlock
 {
+    if (!self.filename)
+        return;
+    
+    [[AFParseAPIClient sharedClient] setDefaultHeader:@"X-Parse-Master-Key" value:PARSE_MASTER_KEY];
     [[AFParseAPIClient sharedClient] deletePath:PARSE_API_FILES_URL(self.filename)
                                      parameters:nil
                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                             self.remoteStatus = MediaRemoteStatusSync;
-                                            successBlock();
+                                            if (successBlock)
+                                                successBlock();
                                             [self remove];
                                         }
                                         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                             self.remoteStatus = MediaRemoteStatusFailed;
-                                            errorBlock(error);
+                                            if (errorBlock)
+                                                errorBlock(error);
                                         }];
+    [[AFParseAPIClient sharedClient] setDefaultHeader:@"X-Parse-Master-Key" value:nil];
 }
 
 @end

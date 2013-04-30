@@ -136,6 +136,7 @@
         
         RKObjectMapping *mediaMapping = [RKObjectMapping requestMapping];
         [mediaMapping addAttributeMappingsFromDictionary:@{@"remoteURL": @"url"}];
+        [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width"]];
         [storyRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:mediaMapping]];
         
         RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor

@@ -111,18 +111,13 @@
     storyMapping.identificationAttributes = @[@"bnObjectId"];
     
     [storyMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_READ_ACCESS, STORY_WRITE_ACCESS, STORY_TAGS, STORY_LENGTH,
-                                                    PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT, @"isLocationEnabled"]];
+                                                    PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT, @"isLocationEnabled", @"location"]];
     [storyMapping addAttributeMappingsFromDictionary:@{STORY_AUTHOR: @"authorId"}];
-    
-    RKObjectMapping *locationMapping = [RKObjectMapping mappingForClass:[FBGraphObject class]];
-    [locationMapping addAttributeMappingsFromArray:@[@"id", @"category", @"name"]];
-    RKObjectMapping *locationLocationMapping = [RKObjectMapping requestMapping];
-    [locationLocationMapping addAttributeMappingsFromArray:@[@"street", @"city", @"state", @"country", @"zip", @"latitude", @"longitude"]];
-    [locationMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationLocationMapping]];    [storyMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationMapping]];
 
     RKEntityMapping *mediaMapping = [RKEntityMapping mappingForEntityForName:kBNMediaClassKey
                                                          inManagedObjectStore:[RKManagedObjectStore defaultStore]];
     [mediaMapping addAttributeMappingsFromDictionary:@{@"url": @"remoteURL"}];
+    [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width"]];
     [storyMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:mediaMapping]];
     
     
@@ -173,20 +168,15 @@
     
     RKEntityMapping *pieceMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-    [pieceMapping addAttributeMappingsFromArray:@[PIECE_NUMBER, PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled",
+    [pieceMapping addAttributeMappingsFromArray:@[PIECE_NUMBER, PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled", @"location",
                                                     PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT]];
     [pieceMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"bnObjectId", PIECE_AUTHOR : @"authorId"}];
     pieceMapping.identificationAttributes = @[@"bnObjectId"];
-
-    RKObjectMapping *locationMapping = [RKObjectMapping mappingForClass:[FBGraphObject class]];
-    [locationMapping addAttributeMappingsFromArray:@[@"id", @"category", @"name"]];
-    RKObjectMapping *locationLocationMapping = [RKObjectMapping requestMapping];
-    [locationLocationMapping addAttributeMappingsFromArray:@[@"street", @"city", @"state", @"country", @"zip", @"latitude", @"longitude"]];
-    [locationMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationLocationMapping]];    [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationMapping]];
     
     RKEntityMapping *mediaMapping = [RKEntityMapping mappingForEntityForName:kBNMediaClassKey
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
     [mediaMapping addAttributeMappingsFromDictionary:@{@"url": @"remoteURL"}];
+    [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width"]];
     [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:mediaMapping]];
     
 //    [pieceMapping addConnectionForRelationship:@"story" connectedBy:@"story.bnObjectId"];
@@ -234,19 +224,14 @@
     
     RKEntityMapping *pieceMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-    [pieceMapping addAttributeMappingsFromArray:@[PIECE_NUMBER, PIECE_LONGTEXT, PIECE_SHORTTEXT, PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT, @"isLocationEnabled"]];
+    [pieceMapping addAttributeMappingsFromArray:@[PIECE_NUMBER, PIECE_LONGTEXT, PIECE_SHORTTEXT, PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT, @"isLocationEnabled", @"location"]];
     [pieceMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"bnObjectId", PIECE_AUTHOR : @"authorId"}];
     pieceMapping.identificationAttributes = @[@"bnObjectId"];
-
-    RKObjectMapping *locationMapping = [RKObjectMapping mappingForClass:[FBGraphObject class]];
-    [locationMapping addAttributeMappingsFromArray:@[@"id", @"category", @"name"]];
-    RKObjectMapping *locationLocationMapping = [RKObjectMapping requestMapping];
-    [locationLocationMapping addAttributeMappingsFromArray:@[@"street", @"city", @"state", @"country", @"zip", @"latitude", @"longitude"]];
-    [locationMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationLocationMapping]];    [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationMapping]];
     
     RKEntityMapping *mediaMapping = [RKEntityMapping mappingForEntityForName:kBNMediaClassKey
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
     [mediaMapping addAttributeMappingsFromDictionary:@{@"url": @"remoteURL"}];
+    [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width"]];
     [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:mediaMapping]];
     
     RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceMapping

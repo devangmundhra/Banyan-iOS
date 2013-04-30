@@ -7,8 +7,8 @@
 //
 
 #import "RemoteObject.h"
-#import "Location.h"
 #import "Statistics.h"
+#import "Media.h"
 
 @implementation RemoteObject
 
@@ -22,6 +22,7 @@
 @dynamic location;
 @dynamic statistics;
 @dynamic isLocationEnabled;
+@dynamic comments;
 
 #pragma mark -
 #pragma mark Revision management
@@ -29,6 +30,24 @@
     for (NSString *key in [[[source entity] attributesByName] allKeys]) {
         NSLog(@"Copying attribute %@", key);
         [self setValue:[source valueForKey:key] forKey:key];
+    }
+    for (NSString *key in [[[source entity] relationshipsByName] allKeys]) {
+        if ([key isEqualToString:@"original"] || [key isEqualToString:@"revision"]) {
+            NSLog(@"Skipping relationship %@", key);
+        } else if ([key isEqualToString:@"comments"]) {
+            NSLog(@"Copying relationship %@", key);
+            [self setComments:[source comments]];
+        } else if ([key isEqualToString:@"media"]) { // TODO find a way to not have to do this
+            NSLog(@"Copying relationship %@", key);
+            self.media = [Media newMediaForObject:self];
+            for (NSString *key in [[[source.media entity] attributesByName] allKeys]) {
+                NSLog(@"Copying media attribute %@", key);
+                [self.media setValue:[source.media valueForKey:key] forKey:key];
+            }
+        } else {
+            NSLog(@"Copying relationship %@", key);
+            [self setValue: [source valueForKey:key] forKey: key];
+        }
     }
 }
 
@@ -38,6 +57,23 @@
 
 - (void)setRemoteStatus:(RemoteObjectStatus)aStatus {
     [self setRemoteStatusNumber:[NSNumber numberWithInt:aStatus]];
+}
+
++ (NSString *)titleForRemoteStatus:(NSNumber *)remoteStatus {
+    switch ([remoteStatus intValue]) {
+        case RemoteObjectStatusPushing:
+            return NSLocalizedString(@"Uploading", @"");
+            break;
+        case RemoteObjectStatusFailed:
+            return NSLocalizedString(@"Failed", @"");
+            break;
+        case RemoteObjectStatusSync:
+            return NSLocalizedString(@"Posts", @"");
+            break;
+        default:
+            return NSLocalizedString(@"Local", @"");
+            break;
+    }
 }
 
 - (void)save
@@ -57,6 +93,14 @@
     
     [[self managedObjectContext] deleteObject:self];
     [self save];
+}
+
+#pragma mark-
+#pragma mark RestKit dynamic mapping
+- (BOOL)validateLocation:(id *)ioValue error:(NSError **)outError
+{
+    *ioValue = [FBGraphObject graphObjectWrappingDictionary:*ioValue];
+    return YES;
 }
 
 @end

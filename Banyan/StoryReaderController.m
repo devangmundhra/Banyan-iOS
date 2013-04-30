@@ -204,11 +204,21 @@
 # pragma mark target actions
 - (void)settingsPopup:(UIBarButtonItem *)sender
 {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                             delegate:self
-                                                    cancelButtonTitle:@"Cancel"
-                                               destructiveButtonTitle:nil
-                                                    otherButtonTitles:@"Add a piece", @"Edit piece", @"Delete piece", @"Share via Facebook", nil];
+    UIActionSheet *actionSheet = nil;
+    if ([self.story.canContribute boolValue] && [BanyanAppDelegate loggedIn]) {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                  delegate:self
+                                         cancelButtonTitle:@"Cancel"
+                                    destructiveButtonTitle:nil
+                                         otherButtonTitles:@"Add a piece", @"Edit piece", @"Delete piece", @"Share via Facebook", nil];
+    } else {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                  delegate:self
+                                         cancelButtonTitle:@"Cancel"
+                                    destructiveButtonTitle:nil
+                                         otherButtonTitles:@"Share via Facebook", nil];
+    }
+
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
     [actionSheet showInView:self.view];
 }
