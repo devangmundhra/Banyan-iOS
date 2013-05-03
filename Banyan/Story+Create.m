@@ -27,7 +27,7 @@
 {
     Story *story = [Story newStory];
     story.remoteStatus = RemoteObjectStatusLocal;
-    story.authorId = [PFUser currentUser].objectId;
+    story.author = [User userForPfUser:[PFUser currentUser]];
     story.createdAt = story.updatedAt = [NSDate date];
 
     [story save];
@@ -125,7 +125,7 @@
         // For serializing
         RKObjectMapping *storyRequestMapping = [RKObjectMapping requestMapping];
         [storyRequestMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_WRITE_ACCESS, STORY_READ_ACCESS, STORY_TAGS, @"isLocationEnabled"]];
-        [storyRequestMapping addAttributeMappingsFromDictionary:@{@"authorId" : STORY_AUTHOR}];
+        [storyRequestMapping addAttributeMappingsFromDictionary:@{@"author.userId" : @"authorId"}];
         
         RKObjectMapping *locationMapping = [RKObjectMapping requestMapping];
         [locationMapping addAttributeMappingsFromArray:@[@"id", @"category", @"name"]];

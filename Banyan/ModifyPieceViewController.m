@@ -28,6 +28,9 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 @property (weak, nonatomic) IBOutlet LocationPickerButton *addLocationButton;
 @property (weak, nonatomic) IBOutlet MediaPickerButton *addPhotoButton;
+@property (weak, nonatomic) IBOutlet TITokenFieldView *tagsFieldView;
+
+@property (weak, nonatomic) UITextField *activeField;
 
 @property (strong, nonatomic) BNFBLocationManager *locationManager;
 
@@ -48,6 +51,9 @@
 @synthesize locationManager = _locationManager;
 @synthesize pieceCaptionView, addLocationButton, addPhotoButton;
 @synthesize backupPiece_ = _backupPiece_;
+@synthesize activeField = _activeField;
+
+#define kTokenisingCharacter @","
 
 - (id) initWithPiece:(Piece *)piece
 {
@@ -134,6 +140,24 @@
         self.navigationBar.topItem.title = @"Add Piece";
     }
     
+    // Tags
+    self.tagsFieldView.scrollEnabled = NO;
+    [self.tagsFieldView.tokenField setDelegate:self];
+	[self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldFrameDidChange:) forControlEvents:(UIControlEvents)TITokenFieldControlEventFrameDidChange];
+	[self.tagsFieldView.tokenField setTokenizingCharacters:[NSCharacterSet characterSetWithCharactersInString:@",;."]]; // Default is a comma
+    [self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldChangedEditing:) forControlEvents:UIControlEventEditingDidBegin];
+	[self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldChangedEditing:) forControlEvents:UIControlEventEditingDidEnd];
+    self.tagsFieldView.tokenField.returnKeyType = UIReturnKeyDone;
+    if (self.piece.tags) {
+        [[self.piece.tags componentsSeparatedByString:kTokenisingCharacter]
+         enumerateObjectsUsingBlock:^(NSString *token, NSUInteger idx, BOOL *stop) {
+             [self.tagsFieldView.tokenField addTokenWithTitle:token];
+         }];
+    }
+    else {
+        [self.tagsFieldView.tokenField setPromptText:@"Tags: "];
+    }
+    
     self.doneButton.enabled = [self checkForChanges];
         
     [self registerForKeyboardNotifications];
@@ -156,6 +180,7 @@
     [self setAddPhotoButton:nil];
     [self setScrollView:nil];
     [self setPieceCaptionView:nil];
+    [self setTagsFieldView:nil];
     [super viewDidUnload]; 
     [self unregisterForKeyboardNotifications];
 }
@@ -385,14 +410,28 @@
 // Called when the UIKeyboardDidShowNotification is sent.
 - (void)keyboardWillShow:(NSNotification*)aNotification
 {
-
+    NSDictionary* info = [aNotification userInfo];
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
+    self.scrollView.contentInset = contentInsets;
+    self.scrollView.scrollIndicatorInsets = contentInsets;
+    
+    // If active text field is hidden by keyboard, scroll it so it's visible
+    if (self.activeField == self.tagsFieldView.tokenField) {
+        CGPoint scrollPoint = CGPointMake(0, self.tagsFieldView.frame.origin.y + self.tagsFieldView.separator.frame.origin.y - self.navigationBar.frame.size.height);
+        [self.scrollView setContentOffset:scrollPoint animated:YES];
+    }
 }
 
 // Called when the UIKeyboardWillHideNotification is sent
 - (void)keyboardWillHide:(NSNotification*)aNotification
 {
-    [self.scrollView setContentOffset:CGPointZero animated:YES];
-}
+    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
+    self.scrollView.contentInset = contentInsets;
+    self.scrollView.scrollIndicatorInsets = contentInsets;
+    
+    [self.scrollView setContentOffset:CGPointZero animated:YES];}
 
 
 - (IBAction)dismissKeyboard:(id)sender
@@ -401,11 +440,9 @@
     
     if (self.pieceTextView.isFirstResponder)
         [self.pieceTextView resignFirstResponder];
-}
-
-- (void)textViewDidEndEditing:(UITextView *)textView
-{
-    self.doneButton.enabled = [self checkForChanges];
+    
+    if (self.activeField.isFirstResponder)
+        [self.activeField resignFirstResponder];
 }
 
 - (BOOL)checkForChanges
@@ -414,15 +451,46 @@
     return YES;
 }
 
+#pragma mark UITextFieldDelegate
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    self.activeField = textField;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    self.activeField = nil;
+    self.doneButton.enabled = [self checkForChanges];
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
+    self.doneButton.enabled = [self checkForChanges];
+}
+
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [textField resignFirstResponder];
     return YES;
 }
 
-- (void)textFieldDidEndEditing:(UITextField *)textField
+#pragma mark TITokenField Delegate
+- (BOOL)tokenField:(TITokenField *)tokenField willRemoveToken:(TIToken *)token {
+	return YES;
+}
+
+- (void)tokenFieldChangedEditing:(TITokenField *)tokenField {
+	// There's some kind of annoying bug where UITextFieldViewModeWhile/UnlessEditing doesn't do anything.
+	[tokenField setRightViewMode:(tokenField.editing ? UITextFieldViewModeAlways : UITextFieldViewModeNever)];
+}
+
+- (void)tokenFieldFrameDidChange:(TITokenField *)tokenField
 {
-    self.doneButton.enabled = [self checkForChanges];
+    if (self.activeField == self.tagsFieldView.tokenField) {
+        CGPoint scrollPoint = CGPointMake(0, self.tagsFieldView.frame.origin.y + self.tagsFieldView.separator.frame.origin.y - self.navigationController.navigationBar.frame.size.height);
+        [self.scrollView setContentOffset:scrollPoint animated:YES];
+    }
 }
 
 #pragma mark Methods to interface between views

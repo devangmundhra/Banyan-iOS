@@ -29,7 +29,7 @@
 {
     Piece *piece = [self newPieceForStory:story];
     piece.remoteStatus = RemoteObjectStatusLocal;
-    piece.authorId = [PFUser currentUser].objectId;
+    piece.author = [User userForPfUser:[PFUser currentUser]];
     piece.createdAt = piece.updatedAt = [NSDate date];
     
     [piece save];
@@ -52,7 +52,7 @@
         RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
         // For serializing
         RKObjectMapping *pieceRequestMapping = [RKObjectMapping requestMapping];
-        [pieceRequestMapping addAttributeMappingsFromDictionary:@{@"authorId" : PIECE_AUTHOR, @"story.bnObjectId" : PIECE_STORY}];
+        [pieceRequestMapping addAttributeMappingsFromDictionary:@{@"author.userId" : @"authorId", @"story.bnObjectId" : PIECE_STORY}];
         [pieceRequestMapping addAttributeMappingsFromArray:@[PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled"]];
         
         RKObjectMapping *locationMapping = [RKObjectMapping requestMapping];

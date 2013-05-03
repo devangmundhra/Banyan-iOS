@@ -36,7 +36,7 @@
                                             storyId:nil];
     [Activity createActivity:activity];
     
-    piece.statistics.viewed = [NSNumber numberWithBool:YES];
+    piece.statistics.viewed = YES;
     piece.statistics.numberOfViews = [NSNumber numberWithInt:([piece.statistics.numberOfViews intValue] + 1)];    
     return;
 }
@@ -58,7 +58,7 @@
                                       storyId:nil];
         [likers removeObject:currentUser.objectId];
         
-        piece.statistics.liked = [NSNumber numberWithBool:NO];
+        piece.statistics.liked = NO;
         piece.statistics.numberOfLikes = [NSNumber numberWithInt:([piece.statistics.numberOfLikes intValue] - 1)];
     }
     else {
@@ -70,7 +70,7 @@
                                       storyId:nil];
         [likers addObject:currentUser.objectId];
         
-        piece.statistics.liked = [NSNumber numberWithBool:YES];
+        piece.statistics.liked = YES;
         piece.statistics.numberOfLikes = [NSNumber numberWithInt:([piece.statistics.numberOfLikes intValue] + 1)];
     }
     [Activity createActivity:activity];
@@ -90,7 +90,7 @@
                                        toUser:currentUser.objectId
                                       pieceId:piece.bnObjectId
                                       storyId:nil];
-        piece.statistics.favourite = [NSNumber numberWithBool:NO];
+        piece.statistics.favourite = NO;
     }
     else {
         // favourite piece
@@ -99,13 +99,15 @@
                                       toUser:currentUser.objectId
                                      pieceId:piece.bnObjectId
                                      storyId:nil];
-        piece.statistics.favourite = [NSNumber numberWithBool:YES];
+        piece.statistics.favourite = YES;
     }
     [Activity createActivity:activity];
 }
 
 - (void) updatePieceStats
 {
+    if (!self.statistics)
+        self.statistics = [[Statistics alloc] init];
     [self updateViews];
     [self updateLikes];
     [self updateFavourites];
@@ -155,7 +157,7 @@
                                              NSDictionary *numViewFields = responseObject;
                                              NSNumber *views = [numViewFields objectForKey:@"count"];
                                              if ([views integerValue] > 0) {
-                                                 self.statistics.viewed = [NSNumber numberWithBool:YES];
+                                                 self.statistics.viewed = YES;
                                              }
                                          }
                                          failure:AF_PARSE_ERROR_BLOCK()];
@@ -192,7 +194,7 @@
                                          PFUser *currentUser = [PFUser currentUser];
                                          if (currentUser) {
                                              if ([self.statistics.likers containsObject:currentUser.objectId]) {
-                                                 self.statistics.liked = [NSNumber numberWithBool:YES];
+                                                 self.statistics.liked = YES;
                                              }
                                          }
                                      }
@@ -227,7 +229,7 @@
                                          NSDictionary *numFavFields = responseObject;
                                          NSNumber *favs = [numFavFields objectForKey:@"count"];
                                          if ([favs integerValue] > 0) {
-                                             self.statistics.favourite = [NSNumber numberWithBool:YES];
+                                             self.statistics.favourite = YES;
                                          }
                                      }
                                      failure:AF_PARSE_ERROR_BLOCK()];

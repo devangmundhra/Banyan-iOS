@@ -55,6 +55,9 @@
     [self.view addSubview:self.pageViewController.view];
     self.pageViewController.view.frame = self.view.frame;
     [self.pageViewController didMoveToParentViewController:self];
+    [self.pageViewController.gestureRecognizers enumerateObjectsUsingBlock:^(UIGestureRecognizer *gestureRecognizer, NSUInteger idx, BOOL *stop) {
+        gestureRecognizer.delegate = self;
+    }];
     
     [self setupToolbar];
     
@@ -344,15 +347,20 @@
 
 - (ReadPieceViewController *)viewControllerAtIndex:(NSUInteger)index
 {
-    ReadPieceViewController *readSceneViewController = [[ReadPieceViewController alloc] initWithPiece:[self.story.pieces objectAtIndex:index]];
-    readSceneViewController.delegate = self;
-
-    // Prevent the controls in the readSceneViewController to trigger page changes
-    UIGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
-    gestureRecognizer.delegate = self;
-    [readSceneViewController.view addGestureRecognizer:gestureRecognizer];
-    
-    return readSceneViewController;
+    @try {
+        ReadPieceViewController *readSceneViewController = [[ReadPieceViewController alloc] initWithPiece:[self.story.pieces objectAtIndex:index]];
+        readSceneViewController.delegate = self;
+        // Prevent the controls in the readSceneViewController to trigger page changes
+        UIGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
+        gestureRecognizer.delegate = self;
+        [readSceneViewController.view addGestureRecognizer:gestureRecognizer];
+        
+        return readSceneViewController;
+    }
+    @catch (NSException *exception) {
+        NSLog(@"%s An exception %@", __PRETTY_FUNCTION__, exception);
+        return nil;
+    }
 }
 
 - (Piece *)pieceAtPieceNumber:(NSUInteger)pieceNumber
@@ -407,7 +415,8 @@
 #pragma mark UIGestureRecognizerDelegate
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
-    if ([touch.view isKindOfClass:[UIControl class]]) {
+    if ([touch.view isKindOfClass:[UIControl class]]
+        || [touch.view isKindOfClass:[UIButton class]]) {
         return NO;
     }
     else {

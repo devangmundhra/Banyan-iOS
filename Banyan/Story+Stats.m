@@ -36,7 +36,7 @@
                                             storyId:story.bnObjectId];
     [Activity createActivity:activity];
     
-    story.statistics.viewed = [NSNumber numberWithBool:YES];
+    story.statistics.viewed = YES;
     story.statistics.numberOfViews = [NSNumber numberWithInt:([story.statistics.numberOfViews intValue] + 1)];
 }
 
@@ -51,7 +51,7 @@
     Activity *activity = nil;
     if (story.statistics.liked) {
         // unlike story
-        story.statistics.liked = [NSNumber numberWithBool:NO];
+        story.statistics.liked = NO;
         story.statistics.numberOfLikes = [NSNumber numberWithInt:([story.statistics.numberOfLikes intValue] - 1)];
         activity = [Activity activityWithType:kBNActivityTypeUnlike
                                      fromUser:currentUser.objectId
@@ -62,7 +62,7 @@
     }
     else {
         // like story
-        story.statistics.liked = [NSNumber numberWithBool:YES];
+        story.statistics.liked = YES;
         story.statistics.numberOfLikes = [NSNumber numberWithInt:([story.statistics.numberOfLikes intValue] + 1)];
         activity = [Activity activityWithType:kBNActivityTypeLike
                                      fromUser:currentUser.objectId
@@ -90,7 +90,7 @@
                                        toUser:currentUser.objectId
                                       pieceId:nil
                                       storyId:story.bnObjectId];
-        story.statistics.favourite = [NSNumber numberWithBool:NO];
+        story.statistics.favourite = NO;
     }
     else {
         // favourite story
@@ -99,13 +99,15 @@
                                        toUser:currentUser.objectId
                                       pieceId:nil
                                       storyId:story.bnObjectId];
-        story.statistics.favourite = [NSNumber numberWithBool:YES];
+        story.statistics.favourite = YES;
     }
     [Activity createActivity:activity];
 }
 
 - (void) updateStoryStats
 {
+    if (!self.statistics)
+        self.statistics = [[Statistics alloc] init];
     [self updateViews];
     [self updateLikes];
     [self updateFavourites];
@@ -155,7 +157,7 @@
                                              NSDictionary *numViewFields = responseObject;
                                              NSNumber *views = [numViewFields objectForKey:@"count"];
                                              if ([views integerValue] > 0) {
-                                                 self.statistics.viewed = [NSNumber numberWithBool:YES];
+                                                 self.statistics.viewed = YES;
                                              }
                                          }
                                          failure:AF_PARSE_ERROR_BLOCK()];
@@ -192,7 +194,7 @@
                                          PFUser *currentUser = [PFUser currentUser];
                                          if (currentUser) {
                                              if ([self.statistics.likers containsObject:currentUser.objectId]) {
-                                                 self.statistics.liked = [NSNumber numberWithBool:YES];
+                                                 self.statistics.liked = YES;
                                              }
                                          }
                                      }
@@ -227,7 +229,7 @@
                                          NSDictionary *numFavFields = responseObject;
                                          NSNumber *favs = [numFavFields objectForKey:@"count"];
                                          if ([favs integerValue] > 0) {
-                                             self.statistics.favourite = [NSNumber numberWithBool:YES];
+                                             self.statistics.favourite = YES;
                                          }
                                      }
                                      failure:AF_PARSE_ERROR_BLOCK()];

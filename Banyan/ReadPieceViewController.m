@@ -23,15 +23,18 @@
 @interface ReadPieceViewController ()
 
 @property (strong, nonatomic) IBOutlet UIScrollView *contentView;
+@property (strong, nonatomic) IBOutlet UIView *storyInfoView;
 @property (strong, nonatomic) IBOutlet SSLabel *pieceCaptionView;
 @property (strong, nonatomic) IBOutlet UITextView *pieceTextView;
 @property (strong, nonatomic) IBOutlet UIImageView *imageView;
 
-@property (strong, nonatomic) IBOutlet UIView *infoView;
+@property (strong, nonatomic) IBOutlet UIView *pieceInfoView;
 @property (strong, nonatomic) IBOutlet UIButton *contributorsButton;
-@property (strong, nonatomic) IBOutlet UILabel *viewsLabel;
-@property (strong, nonatomic) IBOutlet UILabel *likesLabel;
-@property (strong, nonatomic) IBOutlet UILabel *timeLabel;
+@property (strong, nonatomic) IBOutlet UIButton *viewsButton;
+@property (strong, nonatomic) IBOutlet UIButton *likesButton;
+@property (strong, nonatomic) IBOutlet UIButton *commentsButton;
+@property (strong, nonatomic) IBOutlet SSLabel *authorLabel;
+@property (strong, nonatomic) IBOutlet SSLabel *timeLabel;
 
 @property (strong, nonatomic) IBOutlet UILabel *locationLabel;
 
@@ -50,10 +53,13 @@
 @synthesize imageView = _imageView;
 @synthesize pieceCaptionView = _pieceCaptionView;
 @synthesize pieceTextView = _pieceTextView;
-@synthesize infoView = _infoView;
+@synthesize storyInfoView = _storyInfoView;
+@synthesize pieceInfoView = _pieceInfoView;
 @synthesize contributorsButton = _contributorsButton;
-@synthesize viewsLabel = _viewsLabel;
-@synthesize likesLabel = _likesLabel;
+@synthesize viewsButton = _viewsButton;
+@synthesize likesButton = _likesButton;
+@synthesize commentsButton = _commentsButton;
+@synthesize authorLabel = _authorLabel;
 @synthesize timeLabel = _timeLabel;
 @synthesize locationLabel = _locationLabel;
 @synthesize piece = _piece;
@@ -102,26 +108,38 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.view.backgroundColor = BANYAN_BLACK_COLOR;
+    self.view.backgroundColor = BANYAN_WHITE_COLOR;
     
-    self.infoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, INFOVIEW_HEIGHT)];
-    self.infoView.backgroundColor = [UIColor clearColor];
+    self.storyInfoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, INFOVIEW_HEIGHT)];
+    self.storyInfoView.backgroundColor = [UIColor clearColor];
 
-    UILabel *topStoryLabel = [[UILabel alloc] initWithFrame:self.infoView.bounds];
+    UILabel *topStoryLabel = [[UILabel alloc] initWithFrame:self.storyInfoView.bounds];
     topStoryLabel.backgroundColor = [UIColor clearColor];
     topStoryLabel.text = self.piece.story.title;
     topStoryLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:18];
     topStoryLabel.textColor = [UIColor grayColor];
     topStoryLabel.minimumFontSize = 14;
     topStoryLabel.textAlignment = NSTextAlignmentCenter;
-    [self.infoView addSubview:topStoryLabel];
-    [self.view addSubview:self.infoView];
+    [self.storyInfoView addSubview:topStoryLabel];
+    [self.view addSubview:self.storyInfoView];
 
-    CGRect frame = self.view.bounds;
-    frame.size.height -= CGRectGetHeight(self.infoView.bounds);
-    frame.origin.y += CGRectGetHeight(self.infoView.bounds);
+    CGRect frame = [UIScreen mainScreen].bounds;
+    frame.size.height -= CGRectGetHeight(self.storyInfoView.bounds);
+    frame.origin.y = CGRectGetMaxY(self.storyInfoView.bounds);
     self.contentView = [[UIScrollView alloc] initWithFrame:frame];
-    self.contentView.backgroundColor = BANYAN_BLACK_COLOR;
+    self.contentView.backgroundColor = BANYAN_WHITE_COLOR;
+    
+    self.pieceInfoView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.authorLabel = [[SSLabel alloc] initWithFrame:CGRectZero];
+    self.timeLabel = [[SSLabel alloc] initWithFrame:CGRectZero];
+    self.commentsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.likesButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.likesButton addTarget:self action:@selector(likeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self.pieceInfoView addSubview:self.authorLabel];
+    [self.pieceInfoView addSubview:self.timeLabel];
+    [self.pieceInfoView addSubview:self.commentsButton];
+    [self.pieceInfoView addSubview:self.likesButton];
+    [self.contentView addSubview:self.pieceInfoView];
     
     self.pageControl = [[SMPageControl alloc] initWithFrame:CGRectMake(100, 100, CGRectGetWidth(self.view.frame), 40)];
     self.pageControl.center = CGPointMake(CGRectGetMidX(self.view.frame), CGRectGetMaxY(self.view.frame) - 20.0f);
@@ -158,12 +176,15 @@
     // e.g. self.myOutlet = nil;
     
     [self setContentView:nil];
-    [self setInfoView:nil];
+    [self setStoryInfoView:nil];
+    [self setPieceInfoView:nil];
     [self setImageView:nil];
     [self setPieceTextView:nil];
     [self setPieceCaptionView:nil];
-    [self setViewsLabel:nil];
-    [self setLikesLabel:nil];
+    [self setViewsButton:nil];
+    [self setLikesButton:nil];
+    [self setCommentsButton:nil];
+    [self setAuthorLabel:nil];
     [self setTimeLabel:nil];
     [self setContributorsButton:nil];
     [self setPageControl:nil];
@@ -200,8 +221,8 @@
     BOOL hasDescription = [self.piece.longText length];
     
     // If there is no long text full screen image, else image size of half size
-    // If there is an image and no long text, caption is at the bottom
-    // If there is no image or long text, caption in the middle
+    // If there is an image and no long text, pieceInfo/caption is at the bottom
+    // If there is no image or long text, pieceInfo/caption in the middle
     // Long text always below caption
     CGRect frame;
     CGSize csize = self.contentView.contentSize;
@@ -210,34 +231,74 @@
     if (hasImage) {
         frame = [UIScreen mainScreen].bounds;
         if (hasDescription) {
-            frame.origin.y += 20.0f;
             frame.size.height = frame.size.height/2;
-            frame.origin.x = 20.0f; // 20f offset
-            frame.size.width -= 2*20.0f;
         }
         self.imageView = [[UIImageView alloc] initWithFrame:frame];
         self.imageView.contentMode = hasDescription ? UIViewContentModeScaleAspectFit : UIViewContentModeScaleAspectFill;
         self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        self.imageView.backgroundColor = [UIColor clearColor];
-        [self.contentView addSubview:self.imageView];
+        self.imageView.backgroundColor = BANYAN_BLACK_COLOR;
+        [self.contentView insertSubview:self.imageView belowSubview:self.pieceInfoView];
         csize.height = CGRectGetMaxY(self.imageView.frame);
+    }
+    // Add author/date/stats here
+    {
+        frame = [UIScreen mainScreen].bounds;
+        if (hasImage && !hasDescription) {
+            frame = CGRectMake(0, 0.5*frame.size.height, frame.size.width, 40);
+        } else {
+            frame = CGRectMake(0, CGRectGetMaxY(self.imageView.frame), frame.size.width, 40);
+        }
+        self.pieceInfoView.frame = frame;
+        
+        // author label
+        CGSize maximumLabelSize = CGSizeMake(130, CGRectGetHeight(frame));
+        CGSize expectedLabelSize = [self.piece.author.name sizeWithFont:[UIFont fontWithName:@"Roboto" size:16]
+                                                    constrainedToSize:maximumLabelSize lineBreakMode:NSLineBreakByTruncatingTail];
+        self.authorLabel.frame = CGRectMake(0, 0, expectedLabelSize.width+22/*for inset adjustment*/, CGRectGetHeight(frame));
+        self.authorLabel.textEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 2);
+        self.authorLabel.text = self.piece.author.name;
+        self.authorLabel.font = [UIFont fontWithName:@"Roboto" size:16];
+        self.authorLabel.minimumFontSize = 12;
+        self.authorLabel.backgroundColor= [UIColor clearColor];
+        self.authorLabel.textAlignment = NSTextAlignmentLeft;
+
+        // date label
+        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+        [dateFormat setDateStyle:NSDateFormatterShortStyle];
+        self.timeLabel.frame = CGRectMake(CGRectGetMaxX(self.authorLabel.frame), 0, 75, CGRectGetHeight(frame));
+        self.timeLabel.text = [NSString stringWithFormat:@"(%@)",[dateFormat stringFromDate:self.piece.createdAt]];
+        self.timeLabel.textEdgeInsets = UIEdgeInsetsMake(0, 2, 0, 0);
+        self.timeLabel.font = [UIFont fontWithName:@"Roboto" size:16];
+        self.timeLabel.minimumFontSize = 16;
+        self.timeLabel.backgroundColor = [UIColor clearColor];
+        self.timeLabel.textAlignment = NSTextAlignmentLeft;
+        
+        if ([BanyanAppDelegate loggedIn])
+        {
+            // comments button
+            UIImage *commentImage = nil;
+            if (hasDescription)
+                commentImage = [UIImage imageNamed:@"commentSymbolGray"];
+            else
+                commentImage = [UIImage imageNamed:@"commentSymbolWhite"];
+            self.commentsButton.frame = CGRectMake(231/*152 for author + 77 for time + 2 buffer*/, 0, 35, CGRectGetHeight(frame));
+            [self.commentsButton setImage:commentImage forState:UIControlStateNormal];
+            self.commentsButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
+            [self.commentsButton setTitle:[NSString stringWithFormat:@"%d", [self.piece.comments count]] forState:UIControlStateNormal];
+            [self.commentsButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
+            
+            // like button
+            self.likesButton.frame = CGRectMake(CGRectGetMaxX(self.commentsButton.frame)+2, 0, 35, CGRectGetHeight(frame));
+            self.likesButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
+            [self.likesButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
+            [self.likesButton setTitleColor:BANYAN_PINK_COLOR forState:UIControlStateNormal];
+            [self togglePieceLikeButtonLabel];
+        }
     }
     if (hasCaption) {
         frame = [UIScreen mainScreen].bounds;
-        if (hasImage) {
-            if (hasDescription) {
-                
-            } else {
-                
-            }
-        } else {
-            CGRectMake(0, 0, frame.size.width, 0.5*frame.size.height);
-        }
-        if (hasImage && !hasDescription) {
-            frame = CGRectMake(0, 0.5*frame.size.height, frame.size.width, 0.5*frame.size.height);
-        } else {
-            frame = CGRectMake(0, CGRectGetMaxY(self.imageView.frame), frame.size.width, 0.5*frame.size.height);
-        }
+        frame = CGRectMake(0, CGRectGetMaxY(self.pieceInfoView.frame), frame.size.width, 0);
+
         CGSize maximumLabelSize = frame.size;
         CGSize expectedLabelSize = [self.piece.shortText sizeWithFont:[UIFont fontWithName:@"Roboto-BoldCondensed" size:26]
                                                     constrainedToSize:maximumLabelSize lineBreakMode:NSLineBreakByTruncatingTail];
@@ -269,10 +330,10 @@
         self.pieceTextView.frame = frame;
         csize.height += CGRectGetHeight(self.pieceTextView.frame);
     }
-    [self.contentView sizeToFit];
     [self.view addSubview:self.contentView];
     self.contentView.contentSize = csize;
     [self.contentView setContentOffset:CGPointMake(0,0)];
+//    [self.contentView sizeToFit];
     
     if (hasImage) {        
         if ([self.piece.media.remoteURL length]) {
@@ -294,29 +355,26 @@
         [self.imageView cancelImageRequestOperation];
         [self.imageView setImageWithURL:nil];
     }
-    
-    self.pieceCaptionView.textColor =
-    self.pieceTextView.textColor =
-    self.contributorsButton.titleLabel.textColor =
-    self.viewsLabel.textColor =
-    self.likesLabel.textColor =
-    self.timeLabel.textColor = BANYAN_WHITE_COLOR;
-    
+    if (hasDescription) {
+        self.pieceCaptionView.textColor = BANYAN_BLACK_COLOR;
+        self.pieceTextView.textColor =
+        self.authorLabel.textColor =
+        self.commentsButton.titleLabel.textColor =
+        self.timeLabel.textColor = BANYAN_DARKGRAY_COLOR;
+        [self.commentsButton setTitleColor:BANYAN_DARKGRAY_COLOR forState:UIControlStateNormal];
+    } else {
+        self.pieceCaptionView.textColor = BANYAN_WHITE_COLOR;
+        self.pieceTextView.textColor =
+        self.authorLabel.textColor =
+        self.timeLabel.textColor = BANYAN_WHITE_COLOR;
+        [self.commentsButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
+    }
+
     if ([self.piece.location.name length])
         self.locationLabel.text = self.piece.location.name;
     
-    self.viewsLabel.text = [NSString stringWithFormat:@"%u views", [self.piece.statistics.numberOfViews unsignedIntValue]];
-    self.likesLabel.text = [NSString stringWithFormat:@"%u likes", [self.piece.statistics.numberOfLikes unsignedIntValue]];
-    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateStyle:NSDateFormatterMediumStyle];
-    
-    self.timeLabel.text = [dateFormat stringFromDate:self.piece.createdAt];
-    
     self.pageControl.numberOfPages = [self.piece.story.length integerValue];
     self.pageControl.currentPage = [self.piece.pieceNumber integerValue]-1;
-
-    [self toggleSceneLikeButtonLabel];
-    [self toggleSceneFollowButtonLabel];
     
     [self.contributorsButton setTitle:@"Contributors" forState:UIControlStateNormal];
     [self.contributorsButton setEnabled:NO];
@@ -367,44 +425,27 @@
     [self presentViewController:[[UINavigationController alloc] initWithRootViewController:invitedTableViewController] animated:YES completion:nil];
 }
 
-- (void)toggleSceneLikeButtonLabel
+- (void)togglePieceLikeButtonLabel
 {
-    UIBarButtonItem *likeButton = (UIBarButtonItem *)[self.navigationController.toolbar.items objectAtIndex:0];
+    UIImage *heartImage = nil;
     if (self.piece.statistics.liked) {
-        [likeButton setTitle:@"Unlike"];
+        heartImage = [UIImage imageNamed:@"heartSymbolPink"];
     }
     else {
-        [likeButton setTitle:@"Like"];
+        heartImage = [UIImage imageNamed:@"heartSymbolHollow"];
     }
-    self.likesLabel.text = [NSString stringWithFormat:@"%u likes", [self.piece.statistics.numberOfLikes unsignedIntValue]];
+    [self.likesButton setImage:heartImage forState:UIControlStateNormal];
+    [self.likesButton setTitle:[NSString stringWithFormat:@"%d", [self.piece.statistics.likers count]] forState:UIControlStateNormal];
 }
 
-- (void)toggleSceneFollowButtonLabel
-{
-//    if (self.scene.favourite)
-//        [self.followButton setTitle:@"Following" forState:UIControlStateNormal];
-//    else {
-//        [self.followButton setTitle:@"Follow" forState:UIControlStateNormal];
-//    }
-}
-
-- (IBAction)like:(UIBarButtonItem *)sender
+- (IBAction)likeButtonPressed:(UIButton *)sender
 {
     NSLog(@"Liked!");
     [Piece toggleLikedPiece:self.piece];
-    [self toggleSceneLikeButtonLabel];
-    [TestFlight passCheckpoint:@"Like scene"];
+    [self togglePieceLikeButtonLabel];
+    [TestFlight passCheckpoint:@"Like piece"];
 }
 
-
-- (IBAction)follow:(UIBarButtonItem *)sender
-{
-    NSLog(@"Following!");
-    [Piece toggleFavouritedPiece:self.piece];
-    [self toggleSceneFollowButtonLabel];
-    
-    [TestFlight passCheckpoint:@"Follow scene"];
-}
 
 - (IBAction)share:(UIBarButtonItem *)sender 
 {    

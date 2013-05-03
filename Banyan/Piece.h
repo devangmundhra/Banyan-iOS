@@ -18,6 +18,7 @@
 @property (nonatomic, retain) NSNumber * numberOfContributors;
 @property (nonatomic, retain) NSNumber * pieceNumber;
 @property (nonatomic, retain) NSString * shortText;
+@property (nonatomic, retain) NSString * tags;
 @property (nonatomic, retain) Story *story;
 
 + (NSArray *)syncedPiecesInStory:(Story *)story;

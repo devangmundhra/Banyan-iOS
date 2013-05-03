@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "Statistics.h"
+#import "User.h"
 #import <FacebookSDK/FacebookSDK.h>
 
 typedef enum {
@@ -22,7 +23,7 @@ typedef enum {
 
 @interface RemoteObject : NSManagedObject
 
-@property (nonatomic, retain) NSString * authorId;
+@property (nonatomic, retain) User * author;
 @property (nonatomic, retain) NSString * bnObjectId;
 @property (nonatomic, retain) NSDate * createdAt;
 @property (nonatomic, retain) NSDate * lastSynced;

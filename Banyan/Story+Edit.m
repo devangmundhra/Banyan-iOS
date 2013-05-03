@@ -7,7 +7,7 @@
 //
 
 #import "Story+Edit.h"
-#import "AFParseAPIClient.h"
+#import "AFBanyanAPIClient.h"
 #import "Media.h"
 #import "BanyanDataSource.h"
 #import "Story+Create.h"
@@ -23,7 +23,7 @@
     
     // Block to upload the story
     void (^updateStory)(Story *) = ^(Story *story) {
-        RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFParseAPIClient sharedClient]];
+        RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
         // For serializing
         RKObjectMapping *storyRequestMapping = [RKObjectMapping requestMapping];
         [storyRequestMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_WRITE_ACCESS, STORY_READ_ACCESS, STORY_TAGS, @"isLocationEnabled"]];
@@ -57,7 +57,7 @@
         [objectManager addResponseDescriptor:responseDescriptor];
         
         [objectManager postObject:story
-                             path:PARSE_API_OBJECT_URL(@"Story", story.bnObjectId)
+                             path:BANYAN_API_OBJECT_URL(@"Story", story.bnObjectId)
                        parameters:nil
                           success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                               NSLog(@"Update story successful %@", story);

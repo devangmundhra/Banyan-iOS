@@ -15,6 +15,7 @@
 #import "StoryListCellMiddleViewController.h"
 #import "BNImageLabel.h"
 #import "BanyanAppDelegate.h"
+#import "SSLineView.h"
 
 @implementation UIViewWithTopLine
 - (void)drawRect:(CGRect)rect
@@ -48,12 +49,12 @@
 @property (nonatomic, strong) IBOutlet BNImageLabel *locationLabel;
 
 // Middle View Properties
-@property (weak, nonatomic) IBOutlet UIViewWithTopLine *middleView;
+@property (weak, nonatomic) IBOutlet UIView *middleView;
 @property (strong, nonatomic) IBOutlet StoryListCellMiddleViewController *middleVC;
 @property (strong, nonatomic) UIGestureRecognizer *tapRecognizer;
 
 // Bottom View Properties
-@property (weak, nonatomic) IBOutlet UIViewWithTopLine *bottomView;
+@property (weak, nonatomic) IBOutlet UIView *bottomView;
 @property (nonatomic, strong) IBOutlet UILabel *storyTags;
 
 @property (strong, nonatomic) NSDateFormatter *dateFormatter;
@@ -229,6 +230,10 @@
     self.storyTags.font = [UIFont fontWithName:@"Roboto-Medium" size:12];
     self.storyTags.textColor = [UIColor grayColor];
     [self.bottomView addSubview:self.storyTags];
+    SSLineView *bottomLineView = [[SSLineView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.bottomView.frame), 2)];
+    bottomLineView.lineColor = BANYAN_LIGHTGRAY_COLOR;
+    bottomLineView.insetColor = BANYAN_LIGHTGRAY_COLOR;
+    [self.bottomView addSubview:bottomLineView];
 }
 
 # pragma mark methods for Middle View
@@ -236,6 +241,10 @@
 {
     [self.middleView setBackgroundColor:BANYAN_WHITE_COLOR];
     [self.middleView addSubview:self.middleVC.view];
+    SSLineView *middleLineView = [[SSLineView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.middleView.frame), 2)];
+    middleLineView.lineColor = BANYAN_LIGHTGRAY_COLOR;
+    middleLineView.insetColor = BANYAN_LIGHTGRAY_COLOR;
+    [self.middleView addSubview:middleLineView];
     [self.middleView addGestureRecognizer:self.tapRecognizer];
 }
 

@@ -12,7 +12,7 @@
 
 @implementation RemoteObject
 
-@dynamic authorId;
+@dynamic author;
 @dynamic bnObjectId;
 @dynamic createdAt;
 @dynamic lastSynced;

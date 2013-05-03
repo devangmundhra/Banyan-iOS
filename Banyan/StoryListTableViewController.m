@@ -214,7 +214,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                 }
             }
             // Create a predicate where author in arrayOfUserIdsBeingFollowed
-            predicate = [NSPredicate predicateWithFormat:@"((canView == YES) OR (canContribute == YES)) AND ((authorId IN %@))", arrayOfUserIdsBeingFollowed];
+            predicate = [NSPredicate predicateWithFormat:@"((canView == YES) OR (canContribute == YES)) AND ((author.userId IN %@))", arrayOfUserIdsBeingFollowed];
             break;
         default:
             break;
@@ -305,6 +305,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(void) addPieceToStory:(Story *)story
 {
+    if (![BanyanAppDelegate loggedIn])
+        return;
     Piece *piece = [Piece newPieceDraftForStory:story];
     ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
     [addPieceViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];

@@ -76,3 +76,4 @@ extern NSString *const kBNMediaClassKey;
 #define BANYAN_LIGHTGRAY_COLOR [UIColor colorWithRed:223/255.0 green:223/255.0 blue:223/255.0 alpha:1]
 #define BANYAN_WHITE_COLOR [UIColor whiteColor]
 #define BANYAN_BLACK_COLOR [UIColor blackColor]
+#define BANYAN_PINK_COLOR [UIColor colorWithRed:229/255.0 green:56/255.0 blue:68/255.0 alpha:1]

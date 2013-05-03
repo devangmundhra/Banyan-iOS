@@ -24,7 +24,7 @@ static CLLocationManager *_sharedLocationManager;
 @synthesize bestEffortAtLocation = _bestEffortAtLocation;
 @synthesize placePickerViewController = _placePickerViewController;
 
-- (void)setLocation:(id<FBGraphPlace>)location
+- (void)setLocation:(NSDictionary<FBGraphPlace> *)location
 {
     _location = location;
     // Also let the delegate know that we have a new string so that it can use it
@@ -173,7 +173,7 @@ static CLLocationManager *_sharedLocationManager;
 
 - (void)placePickerViewControllerSelectionDidChange:(FBPlacePickerViewController *)placePicker
 {
-    self.location = placePicker.selection;
+    self.location = (NSDictionary<FBGraphPlace> *)placePicker.selection;
     self.locationStatus = self.location.name;
 //    [self stopUpdatingLocation:self.locationStatus];
     if ([self.delegate isKindOfClass:[UIViewController class]]) {

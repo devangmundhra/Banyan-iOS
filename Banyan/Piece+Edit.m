@@ -9,7 +9,7 @@
 #import "Story.h"
 #import "Piece+Edit.h"
 #import "Story_Defines.h"
-#import "AFParseAPIClient.h"
+#import "AFBanyanAPIClient.h"
 #import "Media.h"
 
 @implementation Piece (Edit)
@@ -23,7 +23,7 @@
     
     // Block to upload the piece
     void (^updatePiece)(Piece *) = ^(Piece *piece) {
-        RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFParseAPIClient sharedClient]];
+        RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
         // For serializing
         RKObjectMapping *pieceRequestMapping = [RKObjectMapping requestMapping];
         [pieceRequestMapping addAttributeMappingsFromArray:@[PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled"]];
@@ -57,13 +57,13 @@
         [objectManager addResponseDescriptor:responseDescriptor];
         
         [objectManager putObject:piece
-                             path:PARSE_API_OBJECT_URL(@"Piece", piece.bnObjectId)
+                             path:BANYAN_API_OBJECT_URL(@"Piece", piece.bnObjectId)
                        parameters:nil
                           success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                               NSLog(@"Update piece successful %@", piece);
                           }
                           failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                              NSLog(@"Error in create piece");
+                              NSLog(@"Error in updating piece");
                           }];
     };
     

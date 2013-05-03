@@ -81,6 +81,17 @@
         label.numberOfLines = 2;
         label.backgroundColor = BANYAN_WHITE_COLOR;
         [self.scrollView addSubview:label];
+    } else {
+        CGRect frame = self.scrollView.bounds;
+        frame.origin.y += 2.0f;
+        UILabel *label = [[UILabel alloc] initWithFrame:frame];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.text = @"No pieces in the story yet.\nLog in to contribute.";
+        label.font = [UIFont fontWithName:@"Roboto-Bold" size:20];
+        label.textColor = BANYAN_GREEN_COLOR;
+        label.numberOfLines = 2;
+        label.backgroundColor = BANYAN_WHITE_COLOR;
+        [self.scrollView addSubview:label];
     }
 }
 

@@ -8,12 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+#import "User.h"
 
 @class RemoteObject;
 
 @interface Comment : NSManagedObject
 
-@property (nonatomic, retain) NSString * author;
+@property (nonatomic, retain) User * author;
 @property (nonatomic, retain) NSString * content;
 @property (nonatomic, retain) NSDate * createdAt;
 @property (nonatomic, retain) NSString * commentID;

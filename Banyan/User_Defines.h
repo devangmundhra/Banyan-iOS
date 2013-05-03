@@ -11,7 +11,7 @@
 #define USER_NAME @"name"
 #define USER_FIRSTNAME @"firstName"
 #define USER_LASTNAME @"lastName"
-#define USER_EMAIL @"emailAddress"
+#define USER_EMAIL @"email"
 #define USER_DATE_CREATED @"dateCreated"
 #define USER_USERNAME @"username"
 #define USER_PROFILEPIC @"profilePic"

@@ -17,6 +17,7 @@
 @dynamic pieceNumber;
 @dynamic shortText;
 @dynamic story;
+@dynamic tags;
 
 + (NSArray *)syncedPiecesInStory:(Story *)story
 {
