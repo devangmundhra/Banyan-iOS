@@ -32,6 +32,29 @@
 @synthesize settingsButton = _settingsButton;
 @synthesize titleLabel = _titleLabel;
 
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        // Custom initialization
+        // this should never be called directly.
+        // initWithPiece should be called
+        if (HAVE_ASSERTS)
+            assert(false);
+    }
+    return self;
+}
+
+- (id)initWithPiece:(Piece *)piece
+{
+    self = [super init];
+    if (self) {
+        // Custom initialization
+        self.currentPiece = piece;
+    }
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -46,7 +69,7 @@
                                                                             options:nil];
     self.pageViewController.delegate = self;
     
-    NSArray *viewControllers = [NSArray arrayWithObject:[self startStoryTelling]];
+    NSArray *viewControllers = [NSArray arrayWithObject:[self viewControllerWithPiece:self.currentPiece]];
     [self.pageViewController setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:NULL];
     
     self.pageViewController.dataSource = self;
@@ -55,9 +78,6 @@
     [self.view addSubview:self.pageViewController.view];
     self.pageViewController.view.frame = self.view.frame;
     [self.pageViewController didMoveToParentViewController:self];
-    [self.pageViewController.gestureRecognizers enumerateObjectsUsingBlock:^(UIGestureRecognizer *gestureRecognizer, NSUInteger idx, BOOL *stop) {
-        gestureRecognizer.delegate = self;
-    }];
     
     [self setupToolbar];
     
@@ -85,13 +105,6 @@
     self.settingsButton = nil;
     self.titleLabel = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-// First page of the view controller
-- (UIViewController *)startStoryTelling
-{
-    ReadPieceViewController *startVC = [self viewControllerAtIndex:0];
-    return startVC;
 }
 
 - (void) userLoginStatusChanged
@@ -322,7 +335,7 @@
       viewControllerBeforeViewController:(UIViewController *)viewController
 {
     NSUInteger index = [self indexOfViewController:(ReadPieceViewController *)viewController];
-    NSLog(@"index: %d notfound: %d", index, NSNotFound);
+    NSLog(@"index: %d notfound", index);
     
     if (index == 0 || index == NSNotFound) {
         NSLog(@"Beginning of story reached for story %@", self.story.title);
@@ -347,32 +360,27 @@
 
 - (ReadPieceViewController *)viewControllerAtIndex:(NSUInteger)index
 {
-    @try {
-        ReadPieceViewController *readSceneViewController = [[ReadPieceViewController alloc] initWithPiece:[self.story.pieces objectAtIndex:index]];
-        readSceneViewController.delegate = self;
-        // Prevent the controls in the readSceneViewController to trigger page changes
-        UIGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
-        gestureRecognizer.delegate = self;
-        [readSceneViewController.view addGestureRecognizer:gestureRecognizer];
-        
-        return readSceneViewController;
+    if ([self.story.pieces count] > index)
+    {        
+        return [self viewControllerWithPiece:[self.story.pieces objectAtIndex:index]];
     }
-    @catch (NSException *exception) {
-        NSLog(@"%s An exception %@", __PRETTY_FUNCTION__, exception);
+    else {
         return nil;
     }
 }
 
-- (Piece *)pieceAtPieceNumber:(NSUInteger)pieceNumber
+- (ReadPieceViewController *)viewControllerWithPiece:(Piece *)piece
 {
-    // Pieces are already sorted on pieceNumber    
-    return [self.story.pieces objectAtIndex:pieceNumber-1];
-}
-
-- (ReadPieceViewController *)viewControllerForPieceNumberInStory:(NSUInteger)pieceNumber
-{
-    ReadPieceViewController *readSceneViewController = [[ReadPieceViewController alloc] initWithPiece:[self pieceAtPieceNumber:pieceNumber]];
+    if (!piece)
+        return nil;
+    
+    ReadPieceViewController *readSceneViewController = [[ReadPieceViewController alloc] initWithPiece:piece];
     readSceneViewController.delegate = self;
+    // Prevent the controls in the readSceneViewController to trigger page changes
+    UIGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
+    gestureRecognizer.delegate = self;
+    [readSceneViewController.view addGestureRecognizer:gestureRecognizer];
+    
     return readSceneViewController;
 }
 
@@ -395,7 +403,8 @@
     else
         return true; // Same piece as now, so not turning
     
-    UIViewController *viewController = [self viewControllerForPieceNumberInStory:newPieceNum];
+    Piece *piece = [self.story.pieces objectAtIndex:newPieceNum-1];
+    UIViewController *viewController = [self viewControllerWithPiece:piece];
     if (viewController) {
         // Get the previous piece
         NSArray *vc = [NSArray arrayWithObject:viewController];

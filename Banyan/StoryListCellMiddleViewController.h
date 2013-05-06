@@ -14,4 +14,6 @@
 
 @property (nonatomic, strong) IBOutlet Story* story;
 
+- (Piece *)currentlyVisiblePiece;
+
 @end

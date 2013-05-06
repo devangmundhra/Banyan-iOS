@@ -77,8 +77,6 @@
 @synthesize containingView;
 @synthesize storyTags = _storyTags;
 
-#pragma mark setter/getters
-
 - (StoryListCellMiddleViewController *)middleVC
 {
     if (!_middleVC)
@@ -210,11 +208,17 @@
         frontViewControlButtonFrame.size = frontViewControlImage.size;
         frontViewControlButtonFrame.size.height = self.topSwipeableView.frontView.bounds.size.height;
         self.storyFrontViewControl.frame = frontViewControlButtonFrame;
-
-        [self.topSwipeableView.frontView addSubview:self.storyFrontViewControl];
+        if (![self.storyFrontViewControl superview])
+            [self.topSwipeableView.frontView addSubview:self.storyFrontViewControl];
     }
     // Middle View Setup
     self.middleVC.story = story;
+}
+
+# pragma mark Instance methods
+- (Piece *)currentlyVisiblePiece
+{
+    return [self.middleVC currentlyVisiblePiece];
 }
 
 # pragma mark methods for Bottom View

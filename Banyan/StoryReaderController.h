@@ -21,7 +21,7 @@
 @property (nonatomic, strong) Story *story;
 @property (nonatomic, strong) UIPageViewController *pageViewController;
 
-- (NSUInteger)indexOfViewController:(ReadPieceViewController *)viewController;
-- (ReadPieceViewController *)viewControllerAtIndex:(NSUInteger)index;
+- (id)initWithPiece:(Piece *)piece;
+
 
 @end

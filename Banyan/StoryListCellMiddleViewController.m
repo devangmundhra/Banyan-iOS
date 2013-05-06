@@ -16,7 +16,7 @@
 
 @interface StoryListCellMiddleViewController ()
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (strong, nonatomic) IBOutlet SMPageControl *pageControl;
+@property (strong, nonatomic) IBOutlet UIPageControl *pageControl;
 @property (nonatomic, strong) NSMutableArray *viewControllers;
 
 @end
@@ -33,6 +33,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        self.viewControllers = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -41,8 +42,6 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    self.viewControllers = [[NSMutableArray alloc] init];
-
     // a page is the width of the scroll view
     self.scrollView.pagingEnabled = YES;
     self.scrollView.contentSize = CGSizeZero;
@@ -54,22 +53,30 @@
     self.pageControl.numberOfPages = 0;
     self.pageControl.currentPage = 0;
     self.pageControl.hidesForSinglePage = YES;
-    self.pageControl.currentPageIndicatorTintColor = BANYAN_BROWN_COLOR;
-    self.pageControl.pageIndicatorTintColor = [BANYAN_BROWN_COLOR colorWithAlphaComponent:0.5];
     [self.scrollView setBackgroundColor:[UIColor clearColor]];
 }
 
 - (void)setStory:(Story *)story
 {
+    // When a piece is added, the story context changes and hence the StoryList FRC updates. This causes all
+    // the cells to be reloaded and this function is called due to StoryListCell::setStory().
+    // Therefore this function should do those things that does not unnecessarily update things everytime the
+    // managed context is changed.
+    
+    // Don't do anything here if the story or number of pieces in the story hasn't changed.
+    if ([_story isEqual:story] && [self.viewControllers count] == [story.length unsignedIntegerValue]) {
+        return;
+    }
+    
     _story = story;
-    
+
     [self refreshView];
-    self.pageControl.numberOfPages = [_story.length unsignedIntegerValue];
     self.pageControl.currentPage = 0;
-    
+    self.pageControl.numberOfPages = [_story.length unsignedIntegerValue];
+
     if ([_story.length unsignedIntegerValue]) {
         [self loadScrollViewWithPage:0];
-//        [self loadScrollViewWithPage:1]; // TODO: Uncommenting this creates a problem during loading with more than 1 pieces
+        [self loadScrollViewWithPage:1];
     } else if ([BanyanAppDelegate loggedIn]) {
         CGRect frame = self.scrollView.bounds;
         frame.origin.y += 2.0f;
@@ -128,7 +135,7 @@
     // adjust the contentSize (larger or smaller) depending on the orientation
     self.scrollView.contentSize =
     CGSizeMake(CGRectGetWidth(self.scrollView.frame) * numPages, CGRectGetHeight(self.scrollView.frame));
-    
+
     // clear out and reload our pages
     self.viewControllers = nil;
     NSMutableArray *controllers = [[NSMutableArray alloc] init];
@@ -143,67 +150,52 @@
 {
     NSUInteger pieceNum = page+1;
     
-    if (pieceNum > [self.story.length unsignedIntegerValue])
+    if (!pieceNum || pieceNum > [self.story.length unsignedIntegerValue])
         return;
+    
+    // replace the placeholder if necessary
+    StoryListCellReadSceneViewController *controller = [self.viewControllers objectAtIndex:page];
+    if ((NSNull *)controller == [NSNull null])
+    {
+        controller = [[StoryListCellReadSceneViewController alloc] init];
+        [self.viewControllers replaceObjectAtIndex:page withObject:controller];
+    }
+    
+    if (controller.view.superview != nil)
+        return;
+    
+    // add the controller's view to the scroll view
+    CGRect frame = self.scrollView.frame;
+    frame.origin.x = CGRectGetWidth(frame) * page;
+    frame.origin.y = 0;
+    controller.view.frame = frame;
+    
+    [self addChildViewController:controller];
+    [self.scrollView addSubview:controller.view];
+    [controller didMoveToParentViewController:self];
     
     Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:pieceNum]];
     
     if (piece)
-    {
-        // replace the placeholder if necessary
-        StoryListCellReadSceneViewController *controller = [self.viewControllers objectAtIndex:page];
-        if ((NSNull *)controller == [NSNull null])
-        {
-            controller = [[StoryListCellReadSceneViewController alloc] init];
-            [self.viewControllers replaceObjectAtIndex:page withObject:controller];
-        }
-        
-        if (controller.view.superview != nil)
-            return;
-        
-        // add the controller's view to the scroll view
-        CGRect frame = self.scrollView.frame;
-        frame.origin.x = CGRectGetWidth(frame) * page;
-        frame.origin.y = 0;
-        controller.view.frame = frame;
-        
-        [self addChildViewController:controller];
-        [self.scrollView addSubview:controller.view];
-        [controller didMoveToParentViewController:self];
-        
+    {        
         [controller setPiece:piece];
         return;
     }
-    
+
+    [controller setStatus:@"Fetching this piece..."];
+
     [BanyanConnection loadPiecesForStory:self.story atPieceNumbers:@[[NSNumber numberWithUnsignedInteger:pieceNum]]
                          completionBlock:^{
-                             Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSString stringWithFormat:@"%u", pieceNum]];
-                             
-                             if (piece) {
-                                 // replace the placeholder if necessary
-                                 StoryListCellReadSceneViewController *controller = [self.viewControllers objectAtIndex:page];
-                                 if ((NSNull *)controller == [NSNull null])
-                                 {
-                                     controller = [[StoryListCellReadSceneViewController alloc] init];
-                                     [self.viewControllers replaceObjectAtIndex:page withObject:controller];
-                                 }
-                                 
-                                 if (controller.view.superview != nil)
-                                     return;
-                                 
-                                 // add the controller's view to the scroll view
-                                 CGRect frame = self.scrollView.frame;
-                                 frame.origin.x = CGRectGetWidth(frame) * page;
-                                 frame.origin.y = 0;
-                                 controller.view.frame = frame;
-                                 
-                                 [self addChildViewController:controller];
-                                 [self.scrollView addSubview:controller.view];
-                                 [controller didMoveToParentViewController:self];
-                                 [controller setPiece:piece];
+                             Piece *updatedPiece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:pieceNum]];
+                             if (updatedPiece) {
+                                 [controller setPiece:updatedPiece];
                              }
                          }
-                              errorBlock:nil];
+                              errorBlock:^(NSError *error){
+                                  NSLog(@"Error in StoryListCellMiddleViewController:loadScrollViewWithPage Could not load piece");
+                                  [controller setStatus:[NSString stringWithFormat:@"Error: %@ in fetching this piece", error.localizedDescription]];
+
+                              }];
 }
 
 // at the end of scroll animation, reset the boolean used when scrolls originate from the UIPageControl
@@ -219,7 +211,7 @@
     [self loadScrollViewWithPage:page];
     [self loadScrollViewWithPage:page + 1];
     
-    // a possible optimization would be to unload the views+controllers which are no longer visible
+    // TODO a possible optimization would be to unload the views+controllers which are no longer visible
 }
 
 - (void)gotoPage:(BOOL)animated
@@ -241,6 +233,16 @@
 - (IBAction)changePage:(id)sender
 {
     [self gotoPage:YES];    // YES = animate
+}
+
+#pragma mark instance methods
+- (Piece *)currentlyVisiblePiece
+{
+    if (!self.story || ![self.story.pieces count])
+        return nil;
+    NSUInteger pieceNum = self.pageControl.currentPage + 1;
+    Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:pieceNum]];
+    return piece;
 }
 
 - (void)didReceiveMemoryWarning

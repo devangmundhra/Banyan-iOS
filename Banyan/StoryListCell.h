@@ -20,6 +20,7 @@
 
 - (void) hideSwipedViewAnimated:(BOOL)animated;
 - (void) revealSwipedViewAnimated:(BOOL)animated;
+- (Piece *)currentlyVisiblePiece;
 
 @end
 

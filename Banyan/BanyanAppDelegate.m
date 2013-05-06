@@ -129,6 +129,9 @@ void uncaughtExceptionHandler(NSException *exception)
     [[UISlider appearance] setMinimumTrackTintColor:BANYAN_BROWN_COLOR];
     
     [[UITabBar appearance] setSelectedImageTintColor:BANYAN_BROWN_COLOR];
+    
+    [[UIPageControl appearance] setCurrentPageIndicatorTintColor:BANYAN_BROWN_COLOR];
+    [[UIPageControl appearance] setPageIndicatorTintColor:[BANYAN_BROWN_COLOR colorWithAlphaComponent:0.5]];
 }
 
 #pragma mark Application's documents directory

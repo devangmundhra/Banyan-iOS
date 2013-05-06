@@ -36,7 +36,6 @@ typedef enum {
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
-    
     [self.view setBackgroundColor:BANYAN_LIGHTGRAY_COLOR];
     CGRect tvFrame = self.view.bounds;
     CGFloat margin = 10.0f;
@@ -109,6 +108,18 @@ typedef enum {
 {
     [super viewWillAppear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+    // Disable tracking in this managed object context while this view is alive. This is because on
+    // scrolling the StoryListCell, different pieces are added lazily which causes the context to
+    // change and the cells to be reloaded causing flashing while scrolling.
+    self.suspendAutomaticTrackingOfChangesInManagedObjectContext = YES;
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    // Enable automatic tracking again so that if objects are inserted deleted, it can get updated
+    // here
+    self.suspendAutomaticTrackingOfChangesInManagedObjectContext = NO;
 }
 
 #pragma mark - Table view data source
@@ -147,10 +158,7 @@ typedef enum {
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    Story *selectedStory = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    [self readStory:selectedStory];
-    
-    [self hideVisibleSwipedView:YES];
+    [self readStoryForIndexPath:indexPath];
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -242,9 +250,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 #pragma mark Story Manipulations
 - (void) updateStoyInBackgroud:(Story *)story
 {
+    self.suspendAutomaticTrackingOfChangesInManagedObjectContext = NO;
     [BanyanConnection loadPiecesForStory:story completionBlock:^{
+        self.suspendAutomaticTrackingOfChangesInManagedObjectContext = YES;
         NSLog(@"Pieces updated for story: %@ with title %@", story.bnObjectId, story.title);
     } errorBlock:^(NSError *error){
+        self.suspendAutomaticTrackingOfChangesInManagedObjectContext = YES;
         NSLog(@"Error when fetching pieces for story: %@ with title %@", story.bnObjectId, story.title);
     }];
 }
@@ -260,9 +271,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     hud.detailsLabelText = story.title;
     NSLog(@"Loading story pieces");
     [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+    self.suspendAutomaticTrackingOfChangesInManagedObjectContext = NO;
     [BanyanConnection loadPiecesForStory:story completionBlock:^{
         doneRun = YES;
         success = YES;
+        self.suspendAutomaticTrackingOfChangesInManagedObjectContext = YES;
     } errorBlock:^(NSError *error){
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unable to load the pieces for this story."
                                                         message:[error localizedDescription]
@@ -271,6 +284,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                                               otherButtonTitles:nil];
         [alert show];
         doneRun = YES;
+        self.suspendAutomaticTrackingOfChangesInManagedObjectContext = YES;
         NSLog(@"Hit error: %@", error);
     }];
     
@@ -293,10 +307,18 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     return success;
 }
 
--(void) readStory:(Story *)story
+-(void) readStoryForIndexPath:(NSIndexPath *)indexPath
 {
+    Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    StoryListCell *storyListCell = (StoryListCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+    Piece *pieceToShow = [storyListCell currentlyVisiblePiece];
+    
+    if (!pieceToShow) {
+        [self.tableView reloadData];
+        return;
+    }
     story.storyBeingRead = [NSNumber numberWithBool:YES];
-    StoryReaderController *storyReaderController = [[StoryReaderController alloc] init];
+    StoryReaderController *storyReaderController = [[StoryReaderController alloc] initWithPiece:pieceToShow];
     storyReaderController.story = story;
     storyReaderController.wantsFullScreenLayout = YES;
     storyReaderController.hidesBottomBarWhenPushed = YES;

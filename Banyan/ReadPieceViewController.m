@@ -277,7 +277,7 @@
         {
             // comments button
             UIImage *commentImage = nil;
-            if (hasDescription)
+            if (hasDescription || !hasImage)
                 commentImage = [UIImage imageNamed:@"commentSymbolGray"];
             else
                 commentImage = [UIImage imageNamed:@"commentSymbolWhite"];
@@ -297,14 +297,16 @@
     }
     if (hasCaption) {
         frame = [UIScreen mainScreen].bounds;
-        frame = CGRectMake(0, CGRectGetMaxY(self.pieceInfoView.frame), frame.size.width, 0);
+        frame = CGRectMake(0, CGRectGetMaxY(self.pieceInfoView.frame), frame.size.width, 100);
 
         CGSize maximumLabelSize = frame.size;
+        maximumLabelSize.width -= 40; // adjust for the textInsets
         CGSize expectedLabelSize = [self.piece.shortText sizeWithFont:[UIFont fontWithName:@"Roboto-BoldCondensed" size:26]
-                                                    constrainedToSize:maximumLabelSize lineBreakMode:NSLineBreakByTruncatingTail];
+                                                    constrainedToSize:maximumLabelSize];
         frame.size.height = expectedLabelSize.height;
         
         self.pieceCaptionView = [[SSLabel alloc] initWithFrame:frame];
+        self.pieceCaptionView.lineBreakMode = NSLineBreakByWordWrapping;
         self.pieceCaptionView.backgroundColor = [UIColor clearColor];
         self.pieceCaptionView.font = [UIFont fontWithName:@"Roboto-BoldCondensed" size:26];
         self.pieceCaptionView.minimumFontSize = 20;
@@ -333,7 +335,6 @@
     [self.view addSubview:self.contentView];
     self.contentView.contentSize = csize;
     [self.contentView setContentOffset:CGPointMake(0,0)];
-//    [self.contentView sizeToFit];
     
     if (hasImage) {        
         if ([self.piece.media.remoteURL length]) {
@@ -355,7 +356,7 @@
         [self.imageView cancelImageRequestOperation];
         [self.imageView setImageWithURL:nil];
     }
-    if (hasDescription) {
+    if (hasDescription || !hasImage) {
         self.pieceCaptionView.textColor = BANYAN_BLACK_COLOR;
         self.pieceTextView.textColor =
         self.authorLabel.textColor =

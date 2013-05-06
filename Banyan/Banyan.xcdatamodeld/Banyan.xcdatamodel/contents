@@ -39,7 +39,7 @@
         <attribute name="lastSynced" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="location" optional="YES" attributeType="Transformable" valueTransformerName="FBGraphObjectToDataTransformer" syncable="YES"/>
         <attribute name="remoteStatusNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="statistics" optional="YES" attributeType="Transformable" valueTransformerName="NSCodingToDataTransformer" syncable="YES"/>
+        <attribute name="statistics" optional="YES" attributeType="Transformable" valueTransformerName="" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="comments" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Comment" inverseName="remoteObject" inverseEntity="Comment" syncable="YES"/>
         <relationship name="media" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="Media" inverseName="remoteObject" inverseEntity="Media" syncable="YES"/>

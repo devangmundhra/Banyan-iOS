@@ -14,5 +14,5 @@
 @property (weak, nonatomic) IBOutlet UITextView *textView;
 
 - (void) setPiece:(Piece *)piece;
-
+- (void) setStatus:(NSString *)status;
 @end

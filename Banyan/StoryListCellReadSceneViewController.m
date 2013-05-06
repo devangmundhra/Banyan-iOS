@@ -20,8 +20,22 @@
 @synthesize imageView = _imageView;
 @synthesize textView = _textView;
 
+- (void) setStatus:(NSString *)status
+{
+    self.textView.font = [UIFont fontWithName:@"Roboto-Regular" size:16];
+    self.textView.textColor = [UIColor brownColor];
+    self.textView.textAlignment = NSTextAlignmentCenter;
+    self.textView.text = status;
+    return;
+}
+
 - (void)setPiece:(Piece *)piece
 {
+    if (!piece) {
+        [self setStatus:@"Error in loading piece."];
+        return;
+    }
+    
     if ([piece.media.remoteURL length]) {
         [self.imageView setImageWithURL:[NSURL URLWithString:piece.media.remoteURL] placeholderImage:nil];
     } else if ([piece.media.localURL length]) {
@@ -43,9 +57,13 @@
     if (piece.shortText) {
         self.textView.font = [UIFont fontWithName:@"Roboto-BoldCondensed" size:16];
         self.textView.text = piece.shortText;
+        self.textView.textColor = BANYAN_BLACK_COLOR;
+        self.textView.textAlignment = NSTextAlignmentLeft;
     } else if (piece.longText) {
         self.textView.font = [UIFont fontWithName:@"Roboto-Regular" size:12];
         self.textView.text = piece.longText;
+        self.textView.textColor = BANYAN_BLACK_COLOR;
+        self.textView.textAlignment = NSTextAlignmentLeft;
         // Add gradient
     }
 }
