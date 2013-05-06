@@ -477,7 +477,7 @@
     if (self.isLocationEnabled) {
         [self locationPickerButtonTapped:sender];
     } else {
-        [self.locationManager stopUpdatingLocation:@"Add Location"];
+        [self.locationManager stopUpdatingLocation:nil];
     }
 }
 

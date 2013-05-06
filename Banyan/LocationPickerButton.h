@@ -25,4 +25,5 @@
 - (void)locationPickerLocationEnabled:(BOOL)enable;
 - (void)setLocationPickerTitle:(NSString *)locationString;
 - (void)setEnabled:(BOOL)enable;
+- (BOOL)getEnabledState;
 @end

@@ -118,7 +118,7 @@
 {
     // So that the cell does not show any image from before
     [super prepareForReuse];
-    [self.topSwipeableView.backView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [self hideSwipedViewAnimated:YES];
     [self.storyFrontViewControl removeFromSuperview];
     [self.storyFrontViewControl removeTarget:nil
                        action:NULL

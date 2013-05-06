@@ -369,11 +369,13 @@
 
 - (void)locationPickerButtonToggleLocationEnable:(LocationPickerButton *)sender
 {
-    [self.addLocationButton locationPickerLocationEnabled:[self.piece.story.isLocationEnabled boolValue]];
-    if (self.piece.story.isLocationEnabled) {
-        [self.locationManager showPlacePickerViewController];
+    BOOL isLocationEnabled = sender.getEnabledState;
+    isLocationEnabled = !isLocationEnabled;
+    [self.addLocationButton locationPickerLocationEnabled:isLocationEnabled];
+    if (isLocationEnabled) {
+        [self locationPickerButtonTapped:sender];
     } else {
-        [self.locationManager stopUpdatingLocation:@"Add Location"];
+        [self.locationManager stopUpdatingLocation:nil];
     }
 }
 
@@ -381,6 +383,7 @@
 - (void) locationUpdated
 {
     [self.addLocationButton locationPickerLocationUpdatedWithLocation:self.locationManager.location];
+    [self.addLocationButton locationPickerLocationEnabled:YES];
 }
 
 # pragma mark - Keyboard notifications

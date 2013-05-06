@@ -100,8 +100,9 @@ static CLLocationManager *_sharedLocationManager;
         //
         if (newLocation.horizontalAccuracy <= 10) {
             // IMPORTANT!!! Minimize power usage by stopping the location manager as soon as possible.
+            [self getNearbyLocations:newLocation];
             self.placePickerViewController.locationCoordinate = newLocation.coordinate;
-//            [self stopUpdatingLocation:self.locationStatus];
+            [self stopUpdatingLocation:nil];
         }
     }
 }
@@ -130,7 +131,6 @@ static CLLocationManager *_sharedLocationManager;
 - (void)beginUpdatingLocation
 {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(stopUpdatingLocation:) object:nil];
-    [self.delegate locationUpdated];
     _sharedLocationManager.delegate = self;
     [_sharedLocationManager startUpdatingLocation];
     
@@ -138,9 +138,25 @@ static CLLocationManager *_sharedLocationManager;
 
 - (void)stopUpdatingLocation:(NSString *)state
 {
-    self.locationStatus = state;
+    if (state) {
+        self.locationStatus = state;
+    }
     [_sharedLocationManager stopUpdatingLocation];
     _sharedLocationManager.delegate = nil;
+}
+
+- (void) getNearbyLocations:(CLLocation *)location
+{
+    [FBRequestConnection startForPlacesSearchAtCoordinate:location.coordinate radiusInMeters:50000 resultsLimit:1 searchText:nil completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        NSLog(@"result: %@", result);
+        
+        NSArray *data = [result objectForKey:@"data"];
+        
+        if (data && [data count]) {
+            // We have the places data
+            self.location = [data objectAtIndex:0];
+        }
+    }];
 }
 
 - (void) showPlacePickerViewController
@@ -175,7 +191,7 @@ static CLLocationManager *_sharedLocationManager;
 {
     self.location = (NSDictionary<FBGraphPlace> *)placePicker.selection;
     self.locationStatus = self.location.name;
-//    [self stopUpdatingLocation:self.locationStatus];
+    [self stopUpdatingLocation:self.locationStatus];
     if ([self.delegate isKindOfClass:[UIViewController class]]) {
         [(UIViewController *)self.delegate dismissViewControllerAnimated:YES completion:nil];
     }
