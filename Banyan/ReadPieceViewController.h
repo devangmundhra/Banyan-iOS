@@ -15,6 +15,7 @@
 #import <Parse/Parse.h>
 #import "User_Defines.h"
 #import "InvitedTableViewController.h"
+#import "ASMediaFocusManager.h"
 
 @class ReadPieceViewController;
 
@@ -24,10 +25,10 @@
 
 @end
 
-@interface ReadPieceViewController : UIViewController <InvitedTableViewControllerDelegate>
+@interface ReadPieceViewController : UIViewController <InvitedTableViewControllerDelegate, ASMediasFocusDelegate>
 
 @property (strong, nonatomic) Piece *piece;
-@property (weak, nonatomic) IBOutlet id <ReadPieceViewControllerDelegate> delegate;
+@property (weak, nonatomic) IBOutlet UIViewController<ReadPieceViewControllerDelegate> *delegate;
 
 - (id) initWithPiece:(Piece *)piece;
 

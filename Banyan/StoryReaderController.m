@@ -62,6 +62,10 @@
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
     self.view.frame = [UIScreen mainScreen].bounds;
 
+//    UIGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
+//    gestureRecognizer.delegate = self;
+//    [self.view addGestureRecognizer:gestureRecognizer];
+    
     [Story viewedStory:self.story];
     
     self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStylePageCurl
@@ -112,14 +116,13 @@
     [self.story resetPermission];
 }
 
-
 - (void)setupToolbar
 {
     if (self.toolbar == nil) {
         self.toolbar = [[UIToolbar alloc] init];
         self.toolbar.barStyle = UIBarStyleDefault;
         
-        [self.toolbar setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+//        [self.toolbar setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
         
         [self.view addSubview:self.toolbar];
     }
@@ -177,9 +180,9 @@
     bounds = CGRectMake(0, 0, self.view.bounds.size.width, bounds.size.height);
     self.toolbar.bounds = bounds;
     
-    CGRect frame = self.toolbar.frame;
-    frame.origin.y += [UIApplication sharedApplication].statusBarFrame.size.height;
-    self.toolbar.frame = frame;
+//    CGRect frame = self.toolbar.frame;
+//    frame.origin.y += [UIApplication sharedApplication].statusBarFrame.size.height;
+//    self.toolbar.frame = frame;
     
     self.toolbar.items = buttons;
 }
@@ -311,10 +314,9 @@
        viewControllerAfterViewController:(UIViewController *)viewController
 {
     
-    NSUInteger index = [self indexOfViewController:(ReadPieceViewController *)viewController];
-    index++;
+    NSUInteger pieceNum = [self pieceNumberForViewController:(ReadPieceViewController *)viewController];
     
-    if (index >= [self.story.length unsignedIntegerValue]  || index == NSNotFound) {
+    if (pieceNum >= [self.story.length unsignedIntegerValue]) {
         NSLog(@"End of story reached for story %@", self.story.title);
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.mode = MBProgressHUDModeText;
@@ -325,7 +327,8 @@
         return nil;
     }
     else {
-        ReadPieceViewController *nextVC = [self viewControllerAtIndex:index];
+        pieceNum++;
+        ReadPieceViewController *nextVC = [self viewControllerAtPieceNumber:pieceNum];
         return nextVC;
     }
 }
@@ -334,10 +337,10 @@
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController 
       viewControllerBeforeViewController:(UIViewController *)viewController
 {
-    NSUInteger index = [self indexOfViewController:(ReadPieceViewController *)viewController];
-    NSLog(@"index: %d notfound", index);
+    NSUInteger pieceNum = [self pieceNumberForViewController:(ReadPieceViewController *)viewController];
     
-    if (index == 0 || index == NSNotFound) {
+    if (pieceNum <= 1) {
+        NSLog(@"index: %d NOT FOUND", index);
         NSLog(@"Beginning of story reached for story %@", self.story.title);
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.mode = MBProgressHUDModeText;
@@ -347,22 +350,26 @@
         return nil;
     }
     else {
-        index--;
-        ReadPieceViewController *previousVC = [self viewControllerAtIndex:index];
+        pieceNum--;
+        ReadPieceViewController *previousVC = [self viewControllerAtPieceNumber:pieceNum];
         return previousVC;
     }
 }
 
-- (NSUInteger)indexOfViewController:(ReadPieceViewController *)viewController
+- (NSUInteger)pieceNumberForViewController:(ReadPieceViewController *)viewController
 {
-    return [self.story.pieces indexOfObject:viewController.piece];
+    Piece *piece = viewController.piece;
+    return [piece.pieceNumber unsignedIntegerValue];
 }
 
-- (ReadPieceViewController *)viewControllerAtIndex:(NSUInteger)index
+- (ReadPieceViewController *)viewControllerAtPieceNumber:(NSUInteger)pieceNum
 {
-    if ([self.story.pieces count] > index)
-    {        
-        return [self viewControllerWithPiece:[self.story.pieces objectAtIndex:index]];
+    if ([self.story.pieces count] >= pieceNum)
+    {
+        Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:pieceNum]];
+        if (!piece)
+            return nil;
+        return [self viewControllerWithPiece:piece];
     }
     else {
         return nil;
@@ -376,10 +383,7 @@
     
     ReadPieceViewController *readSceneViewController = [[ReadPieceViewController alloc] initWithPiece:piece];
     readSceneViewController.delegate = self;
-    // Prevent the controls in the readSceneViewController to trigger page changes
-    UIGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
-    gestureRecognizer.delegate = self;
-    [readSceneViewController.view addGestureRecognizer:gestureRecognizer];
+    readSceneViewController.wantsFullScreenLayout = YES;
     
     return readSceneViewController;
 }

@@ -320,7 +320,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     story.storyBeingRead = [NSNumber numberWithBool:YES];
     StoryReaderController *storyReaderController = [[StoryReaderController alloc] initWithPiece:pieceToShow];
     storyReaderController.story = story;
-    storyReaderController.wantsFullScreenLayout = YES;
+//    storyReaderController.wantsFullScreenLayout = YES;
     storyReaderController.hidesBottomBarWhenPushed = YES;
     [self presentViewController:storyReaderController animated:YES completion:nil];
 }

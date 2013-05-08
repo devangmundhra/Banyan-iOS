@@ -45,6 +45,7 @@
 @property (strong, nonatomic) AMBlockToken *pieceObserverToken3;
 @property (strong, nonatomic) AMBlockToken *pieceObserverToken4;
 
+@property (strong, nonatomic) ASMediaFocusManager *mediaFocusManager;
 
 @end
 
@@ -66,6 +67,7 @@
 @synthesize delegate = _delegate;
 @synthesize pageControl = _pageControl;
 @synthesize pieceObserverToken1, pieceObserverToken2, pieceObserverToken3, pieceObserverToken4;
+@synthesize mediaFocusManager = _mediaFocusManager;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -89,7 +91,7 @@
     return self;
 }
 
-#define INFOVIEW_HEIGHT 64.0f // Status bar + tool bar. TODO: Find a way to do this programmatically
+#define INFOVIEW_HEIGHT 44.0f // tool bar. TODO: Find a way to do this programmatically
 - (id) initWithPiece:(Piece *)piece
 {
     self = [super init];
@@ -111,13 +113,13 @@
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
     
     self.storyInfoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, INFOVIEW_HEIGHT)];
-    self.storyInfoView.backgroundColor = [UIColor clearColor];
+    self.storyInfoView.backgroundColor = BANYAN_BLACK_COLOR;
 
     UILabel *topStoryLabel = [[UILabel alloc] initWithFrame:self.storyInfoView.bounds];
     topStoryLabel.backgroundColor = [UIColor clearColor];
     topStoryLabel.text = self.piece.story.title;
     topStoryLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:18];
-    topStoryLabel.textColor = [UIColor grayColor];
+    topStoryLabel.textColor = BANYAN_WHITE_COLOR;
     topStoryLabel.minimumFontSize = 14;
     topStoryLabel.textAlignment = NSTextAlignmentCenter;
     [self.storyInfoView addSubview:topStoryLabel];
@@ -140,6 +142,10 @@
     [self.pieceInfoView addSubview:self.commentsButton];
     [self.pieceInfoView addSubview:self.likesButton];
     [self.contentView addSubview:self.pieceInfoView];
+    
+    self.mediaFocusManager = [[ASMediaFocusManager alloc] init];
+    self.mediaFocusManager.delegate = self;
+    self.mediaFocusManager.backgroundColor = BANYAN_BLACK_COLOR;
     
     self.pageControl = [[SMPageControl alloc] initWithFrame:CGRectMake(100, 100, CGRectGetWidth(self.view.frame), 40)];
     self.pageControl.center = CGPointMake(CGRectGetMidX(self.view.frame), CGRectGetMaxY(self.view.frame) - 20.0f);
@@ -189,6 +195,7 @@
     [self setContributorsButton:nil];
     [self setPageControl:nil];
     [self removePieceObserver];
+    [self setMediaFocusManager:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -234,10 +241,12 @@
             frame.size.height = frame.size.height/2;
         }
         self.imageView = [[UIImageView alloc] initWithFrame:frame];
+        [self.mediaFocusManager installOnView:self.imageView];
+        
         self.imageView.contentMode = hasDescription ? UIViewContentModeScaleAspectFit : UIViewContentModeScaleAspectFill;
         self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         self.imageView.backgroundColor = BANYAN_BLACK_COLOR;
-        [self.contentView insertSubview:self.imageView belowSubview:self.pieceInfoView];
+        [self.contentView addSubview:self.imageView];
         csize.height = CGRectGetMaxY(self.imageView.frame);
     }
     // Add author/date/stats here
@@ -416,7 +425,7 @@
     }
 }
 
-#pragma mark target actions for read piece buttons
+#pragma mark target actions for read piece buttons/gestures
 - (IBAction)storyContributors
 {
     InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] initWithViewerPermissions:self.piece.story.readAccess
@@ -490,6 +499,7 @@
                                       failure:AF_BANYAN_ERROR_BLOCK()];
 }
 
+#pragma mark UIPageControl
 - (IBAction)changePage:(id)sender
 {
     NSInteger page = self.pageControl.currentPage;
@@ -538,6 +548,46 @@
     
     [Story editStory:self.piece.story];
     [self refreshUI];
+}
+
+#pragma mark - ASMediaFocusDelegate
+// Returns an image that represents the media view. This image is used in the focusing animation view.
+// It is usually a small image.
+- (UIImage *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager imageForView:(UIView *)view
+{
+    return ((UIImageView *)view).image;
+}
+
+// Returns the final focused frame for this media view. This frame is usually a full screen frame.
+- (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager finalFrameforView:(UIView *)view
+{
+    return self.delegate.view.bounds;
+}
+
+// Returns the view controller in which the focus controller is going to be added.
+// This can be any view controller, full screen or not.
+- (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager
+{
+    return self.delegate;
+}
+
+// Returns an URL where the image is stored. This URL is used to create an image at full screen. The URL may be local (file://) or distant (http://).
+- (NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view
+{
+    NSURL *url = nil;
+    
+    if ([self.piece.media.remoteURL length])
+        url = [NSURL URLWithString:self.piece.media.remoteURL];
+    else if ([self.piece.media.localURL length])
+        url = [NSURL URLWithString:self.piece.media.localURL];
+    
+    return url;
+}
+
+// Returns the title for this media view. Return nil if you don't want any title to appear.
+- (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager titleForView:(UIView *)view
+{
+    return nil;
 }
 
 #pragma Memory Management

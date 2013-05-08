@@ -23,6 +23,10 @@
 		510F4931172A5F94005BC5ED /* Media.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F4930172A5F94005BC5ED /* Media.m */; };
 		511E708B161A9756009AAD25 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708A161A9756009AAD25 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		511E708E161A977F009AAD25 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
+		5133927C1738EA9500C2B706 /* ASImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 513392761738EA9500C2B706 /* ASImageScrollView.m */; };
+		5133927D1738EA9500C2B706 /* ASMediaFocusController.m in Sources */ = {isa = PBXBuildFile; fileRef = 513392781738EA9500C2B706 /* ASMediaFocusController.m */; };
+		5133927E1738EA9500C2B706 /* ASMediaFocusController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 513392791738EA9500C2B706 /* ASMediaFocusController.xib */; };
+		5133927F1738EA9500C2B706 /* ASMediaFocusManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5133927B1738EA9500C2B706 /* ASMediaFocusManager.m */; };
 		5144EC6A1712277600F0B265 /* cameraSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC601712277600F0B265 /* cameraSymbol.png */; };
 		5144EC6B1712277600F0B265 /* cameraSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC611712277600F0B265 /* cameraSymbol@2x.png */; };
 		5144EC6C1712277600F0B265 /* locationSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC621712277600F0B265 /* locationSymbol.png */; };
@@ -227,6 +231,13 @@
 		510F4930172A5F94005BC5ED /* Media.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Media.m; path = Banyan/Media.m; sourceTree = "<group>"; };
 		511E708A161A9756009AAD25 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		513392751738EA9500C2B706 /* ASImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASImageScrollView.h; sourceTree = "<group>"; };
+		513392761738EA9500C2B706 /* ASImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASImageScrollView.m; sourceTree = "<group>"; };
+		513392771738EA9500C2B706 /* ASMediaFocusController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASMediaFocusController.h; sourceTree = "<group>"; };
+		513392781738EA9500C2B706 /* ASMediaFocusController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASMediaFocusController.m; sourceTree = "<group>"; };
+		513392791738EA9500C2B706 /* ASMediaFocusController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ASMediaFocusController.xib; sourceTree = "<group>"; };
+		5133927A1738EA9500C2B706 /* ASMediaFocusManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASMediaFocusManager.h; sourceTree = "<group>"; };
+		5133927B1738EA9500C2B706 /* ASMediaFocusManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASMediaFocusManager.m; sourceTree = "<group>"; };
 		5144EC601712277600F0B265 /* cameraSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cameraSymbol.png; sourceTree = "<group>"; };
 		5144EC611712277600F0B265 /* cameraSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cameraSymbol@2x.png"; sourceTree = "<group>"; };
 		5144EC621712277600F0B265 /* locationSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = locationSymbol.png; sourceTree = "<group>"; };
@@ -537,6 +548,20 @@
 			name = Media;
 			sourceTree = "<group>";
 		};
+		513392741738EA9500C2B706 /* ASMediaFocusManager */ = {
+			isa = PBXGroup;
+			children = (
+				513392751738EA9500C2B706 /* ASImageScrollView.h */,
+				513392761738EA9500C2B706 /* ASImageScrollView.m */,
+				513392771738EA9500C2B706 /* ASMediaFocusController.h */,
+				513392781738EA9500C2B706 /* ASMediaFocusController.m */,
+				513392791738EA9500C2B706 /* ASMediaFocusController.xib */,
+				5133927A1738EA9500C2B706 /* ASMediaFocusManager.h */,
+				5133927B1738EA9500C2B706 /* ASMediaFocusManager.m */,
+			);
+			path = ASMediaFocusManager;
+			sourceTree = "<group>";
+		};
 		5158AE2D16F56F850089193E /* Tab Bar Controller */ = {
 			isa = PBXGroup;
 			children = (
@@ -607,6 +632,7 @@
 		517A01AA1709539800665F0F /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
+				513392741738EA9500C2B706 /* ASMediaFocusManager */,
 				517A01AB170953BD00665F0F /* AviarySDK */,
 			);
 			name = Vendors;
@@ -1279,6 +1305,7 @@
 				51CCA15717324998007616EA /* heartSymbolWhite@2x.png in Resources */,
 				51CCA15A17324B7E007616EA /* heartSymbolHollow.png in Resources */,
 				51CCA15B17324B7E007616EA /* heartSymbolHollow@2x.png in Resources */,
+				5133927E1738EA9500C2B706 /* ASMediaFocusController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1368,6 +1395,9 @@
 				51FAC0B8172C829E0046C2D6 /* Comment.m in Sources */,
 				51FAC0BC172F8C500046C2D6 /* FBGraphObjectToDataTransformer.m in Sources */,
 				51CCA16117338464007616EA /* User.m in Sources */,
+				5133927C1738EA9500C2B706 /* ASImageScrollView.m in Sources */,
+				5133927D1738EA9500C2B706 /* ASMediaFocusController.m in Sources */,
+				5133927F1738EA9500C2B706 /* ASMediaFocusManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
