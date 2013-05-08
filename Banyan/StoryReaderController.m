@@ -340,7 +340,7 @@
     NSUInteger pieceNum = [self pieceNumberForViewController:(ReadPieceViewController *)viewController];
     
     if (pieceNum <= 1) {
-        NSLog(@"index: %d NOT FOUND", index);
+        NSLog(@"index: %u NOT FOUND", pieceNum);
         NSLog(@"Beginning of story reached for story %@", self.story.title);
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.mode = MBProgressHUDModeText;

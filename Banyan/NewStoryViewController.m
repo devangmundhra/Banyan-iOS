@@ -154,7 +154,7 @@
     self.invitedToViewList = [NSMutableArray array];
     
     CGRect aRect = self.contributorPrivacySegmentedControl.thumb.frame;
-    self.contributorPrivacySegmentedControl.selectedIndex = ContributorPrivacySegmentedControlInvited;
+    [self.contributorPrivacySegmentedControl setSelectedSegmentIndex:ContributorPrivacySegmentedControlInvited animated:NO];
     self.contributorPrivacySegmentedControl.crossFadeLabelsOnDrag = YES;
     self.contributorPrivacySegmentedControl.height = 25;
     self.contributorPrivacySegmentedControl.font = [UIFont fontWithName:STORY_FONT size:12];;
@@ -163,12 +163,12 @@
     self.contributorPrivacySegmentedControl.sectionImages = [NSArray arrayWithObjects:[UIImage imageWithColor:BANYAN_WHITE_COLOR forRect:aRect],
                                                              [UIImage imageWithColor:BANYAN_BROWN_COLOR forRect:aRect], nil];
     
-    self.viewerPrivacySegmentedControl.selectedIndex = ViewerPrivacySegmentedControlPublic;
+    [self.viewerPrivacySegmentedControl setSelectedSegmentIndex:ViewerPrivacySegmentedControlPublic animated:NO];
     self.viewerPrivacySegmentedControl.crossFadeLabelsOnDrag = YES;
     self.viewerPrivacySegmentedControl.height = 25;
     self.viewerPrivacySegmentedControl.font = [UIFont fontWithName:STORY_FONT size:12];
     self.viewerPrivacySegmentedControl.thumb.tintColor = BANYAN_GREEN_COLOR;
-    self.viewerPrivacySegmentedControl.tintColor = BANYAN_BROWN_COLOR;
+    self.viewerPrivacySegmentedControl.backgroundTintColor = BANYAN_BROWN_COLOR;
     self.viewerPrivacySegmentedControl.titleEdgeInsets = UIEdgeInsetsMake(0, 3, 0, 3);
     self.viewerPrivacySegmentedControl.textColor = BANYAN_WHITE_COLOR;
     
@@ -288,24 +288,24 @@
 - (void) storyPrivacySegmentedControlChangedValue:(SVSegmentedControl *)segmentedControl
 {
     if (segmentedControl == self.contributorPrivacySegmentedControl) {
-        if (segmentedControl.selectedIndex == ContributorPrivacySegmentedControlInvited){
+        if (segmentedControl.selectedSegmentIndex == ContributorPrivacySegmentedControlInvited){
             self.viewerPrivacySegmentedControl.enabled = YES;
             self.viewerPrivacySegmentedControl.alpha = 1;
         } else {
-            if (self.viewerPrivacySegmentedControl.selectedIndex != ViewerPrivacySegmentedControlPublic) {
-                [self.viewerPrivacySegmentedControl setSelectedIndex:ViewerPrivacySegmentedControlPublic animated:YES];
+            if (self.viewerPrivacySegmentedControl.selectedSegmentIndex != ViewerPrivacySegmentedControlPublic) {
+                [self.viewerPrivacySegmentedControl setSelectedSegmentIndex:ViewerPrivacySegmentedControlPublic animated:YES];
             }
             self.viewerPrivacySegmentedControl.enabled = NO;
             self.viewerPrivacySegmentedControl.alpha = 0.5;
         }
     }
     
-    self.inviteContactsButton.enabled = (self.contributorPrivacySegmentedControl.selectedIndex == ContributorPrivacySegmentedControlInvited) || (self.viewerPrivacySegmentedControl.selectedIndex == ViewerPrivacySegmentedControlInvited);
+    self.inviteContactsButton.enabled = (self.contributorPrivacySegmentedControl.selectedSegmentIndex == ContributorPrivacySegmentedControlInvited) || (self.viewerPrivacySegmentedControl.selectedSegmentIndex == ViewerPrivacySegmentedControlInvited);
 }
 
 - (NSString *)contributorScope
 {
-    if (self.contributorPrivacySegmentedControl.selectedIndex == ContributorPrivacySegmentedControlInvited) {
+    if (self.contributorPrivacySegmentedControl.selectedSegmentIndex == ContributorPrivacySegmentedControlInvited) {
         return kBNStoryPrivacyScopeInvited;
     } else {
         return kBNStoryPrivacyScopePublic;
@@ -340,7 +340,7 @@
 
 - (NSString *)viewerScope
 {
-    switch (self.viewerPrivacySegmentedControl.selectedIndex) {
+    switch (self.viewerPrivacySegmentedControl.selectedSegmentIndex) {
         case ViewerPrivacySegmentedControlInvited:
             return kBNStoryPrivacyScopeInvited;
             break;

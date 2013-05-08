@@ -159,7 +159,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
                  NSLog(@"%s Image saved to photo albums %@", __PRETTY_FUNCTION__, assetURL);
                  self.imageURL = assetURL;
              } else {
-                 NSLog(@"%s Error saving image: %@",error);
+                 NSLog(@"%s Error saving image: %@", __PRETTY_FUNCTION__, error);
              }
              [MBProgressHUD hideHUDForView:self.view animated:YES];
              NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:self.imageURL, MediaPickerViewControllerInfoURL, self.image, MediaPickerViewControllerInfoImage, nil];

@@ -6,14 +6,14 @@
 #import <SystemConfiguration/SystemConfiguration.h>
 #import "BanyanConstants.h"
 
-#ifndef __IPHONE_5_0
-#warning "This project uses features only available in iOS SDK 5.0 and later."
+#ifndef __IPHONE_6_0
+#warning "This project uses features only available in iOS SDK 6.0 and later."
 #endif
 
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
-    #import <MobileCoreServices/UTCoreTypes.h>
+    #import <MobileCoreServices/MobileCoreServices.h>
     #import <RestKit/RestKit.h>
     #import <RestKit/CoreData.h>
     #import "TestFlight.h"
