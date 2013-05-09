@@ -443,6 +443,7 @@
 {
     if (!self.story.media)
         self.story.media = [Media newMediaForObject:self.story];
+    self.story.media.mediaType = @"image";
     UIImage *image = [info objectForKey:MediaPickerViewControllerInfoImage];
     self.story.media.localURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
     

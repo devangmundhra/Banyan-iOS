@@ -120,7 +120,7 @@
     topStoryLabel.text = self.piece.story.title;
     topStoryLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:18];
     topStoryLabel.textColor = BANYAN_WHITE_COLOR;
-    topStoryLabel.minimumFontSize = 14;
+    topStoryLabel.minimumScaleFactor = 0.8;
     topStoryLabel.textAlignment = NSTextAlignmentCenter;
     [self.storyInfoView addSubview:topStoryLabel];
     [self.view addSubview:self.storyInfoView];
@@ -267,7 +267,7 @@
         self.authorLabel.textEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 2);
         self.authorLabel.text = self.piece.author.name;
         self.authorLabel.font = [UIFont fontWithName:@"Roboto" size:16];
-        self.authorLabel.minimumFontSize = 12;
+        self.authorLabel.minimumScaleFactor = 0.8;
         self.authorLabel.backgroundColor= [UIColor clearColor];
         self.authorLabel.textAlignment = NSTextAlignmentLeft;
 
@@ -278,7 +278,7 @@
         self.timeLabel.text = [NSString stringWithFormat:@"(%@)",[dateFormat stringFromDate:self.piece.createdAt]];
         self.timeLabel.textEdgeInsets = UIEdgeInsetsMake(0, 2, 0, 0);
         self.timeLabel.font = [UIFont fontWithName:@"Roboto" size:16];
-        self.timeLabel.minimumFontSize = 16;
+        self.timeLabel.minimumScaleFactor = 0.8;
         self.timeLabel.backgroundColor = [UIColor clearColor];
         self.timeLabel.textAlignment = NSTextAlignmentLeft;
         
@@ -318,7 +318,7 @@
         self.pieceCaptionView.lineBreakMode = NSLineBreakByWordWrapping;
         self.pieceCaptionView.backgroundColor = [UIColor clearColor];
         self.pieceCaptionView.font = [UIFont fontWithName:@"Roboto-BoldCondensed" size:26];
-        self.pieceCaptionView.minimumFontSize = 20;
+        self.pieceCaptionView.minimumScaleFactor = 0.7;
         self.pieceCaptionView.textAlignment = NSTextAlignmentLeft;
         self.pieceCaptionView.textEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 20);
         self.pieceCaptionView.numberOfLines = 4;

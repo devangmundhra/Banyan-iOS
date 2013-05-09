@@ -21,6 +21,9 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
 
 @interface Media : NSManagedObject
 
+@property (nonatomic, strong) NSNumber * mediaID;
+@property (nonatomic, strong) NSString * mediaType;
+@property (weak, nonatomic, readonly) NSString * mediaTypeName;
 @property (nonatomic, retain) NSDate * createdAt;
 @property (nonatomic, retain) NSNumber * remoteStatusNumber;
 @property (nonatomic, retain) NSString * filename;
@@ -29,7 +32,7 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
 @property (nonatomic, retain) NSNumber * length;
 @property (nonatomic, retain) NSString * localURL;
 @property (nonatomic, retain) NSString * orientation;
-@property (nonatomic, retain) NSNumber * progress;
+@property (nonatomic) float progress;
 @property (nonatomic, retain) NSString * remoteURL;
 @property (nonatomic, retain) NSData * thumbnail;
 @property (nonatomic, retain) NSString * title;

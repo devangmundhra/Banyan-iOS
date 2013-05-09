@@ -45,7 +45,7 @@
         self.nameButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [self.nameButton setBackgroundColor:[UIColor clearColor]];
         [self.nameButton.titleLabel setFont:[UIFont boldSystemFontOfSize:16.0f]];
-        [self.nameButton.titleLabel setLineBreakMode:UILineBreakModeTailTruncation];
+        [self.nameButton.titleLabel setLineBreakMode:NSLineBreakByTruncatingTail];
         [self.nameButton setTitleColor:[UIColor colorWithRed:87.0f/255.0f green:72.0f/255.0f blue:49.0f/255.0f alpha:1.0f] forState:UIControlStateNormal];
         [self.nameButton setTitleColor:[UIColor colorWithRed:134.0f/255.0f green:100.0f/255.0f blue:65.0f/255.0f alpha:1.0f] forState:UIControlStateHighlighted];
         [self.nameButton setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -98,14 +98,14 @@
     
     // Set name
     NSString *nameString = [_user objectForKey:USER_NAME];
-    CGSize nameSize = [nameString sizeWithFont:[UIFont boldSystemFontOfSize:16.0f] forWidth:144.0f lineBreakMode:UILineBreakModeTailTruncation];
+    CGSize nameSize = [nameString sizeWithFont:[UIFont boldSystemFontOfSize:16.0f] forWidth:144.0f lineBreakMode:NSLineBreakByTruncatingTail];
     [_nameButton setTitle:[_user objectForKey:USER_NAME] forState:UIControlStateNormal];
     [_nameButton setTitle:[_user objectForKey:USER_NAME] forState:UIControlStateHighlighted];
     
     [_nameButton setFrame:CGRectMake( /*60.0f*/6.0f, 17.0f, nameSize.width, nameSize.height)];
     
     // Set photo number label
-    CGSize photoLabelSize = [@"photos" sizeWithFont:[UIFont systemFontOfSize:11.0f] forWidth:144.0f lineBreakMode:UILineBreakModeTailTruncation];
+    CGSize photoLabelSize = [@"photos" sizeWithFont:[UIFont systemFontOfSize:11.0f] forWidth:144.0f lineBreakMode:NSLineBreakByTruncatingTail];
     [_photoLabel setFrame:CGRectMake( /*60.0f*/6.0f, 17.0f + nameSize.height, 140.0f, photoLabelSize.height)];
     
     // Set follow button

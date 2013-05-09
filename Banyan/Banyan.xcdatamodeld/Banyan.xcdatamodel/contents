@@ -14,6 +14,8 @@
         <attribute name="height" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="length" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="localURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mediaID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="mediaType" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="orientation" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="progress" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="remoteStatusNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -60,7 +62,7 @@
     </entity>
     <elements>
         <element name="Comment" positionX="160" positionY="192" width="128" height="120"/>
-        <element name="Media" positionX="160" positionY="192" width="128" height="255"/>
+        <element name="Media" positionX="160" positionY="192" width="128" height="285"/>
         <element name="Piece" positionX="-306" positionY="-243" width="128" height="135"/>
         <element name="RemoteObject" positionX="-729" positionY="0" width="128" height="210"/>
         <element name="Story" positionX="-72" positionY="-454" width="128" height="225"/>

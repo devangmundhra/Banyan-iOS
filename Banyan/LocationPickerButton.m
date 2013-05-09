@@ -67,7 +67,7 @@
     self.nameButton = [UIButton buttonWithType:UIButtonTypeCustom];
     nameButton.frame = CGRectMake(bounds.origin.x + 35.0f, bounds.origin.y, bounds.size.width - self.onOffButton.frame.size.width, bounds.size.height);
     [nameButton.titleLabel setFont:[UIFont fontWithName:@"Roboto-Condensed" size:15]];
-    nameButton.titleLabel.minimumFontSize = 10;
+    nameButton.titleLabel.minimumScaleFactor = 0.8;
 //    [nameButton setBackgroundImage:[[UIImage imageNamed:@"SidebarToolbarButton"] stretchableImageWithLeftCapWidth:5.0 topCapHeight:0.0] forState:UIControlStateNormal];
 //    [nameButton setBackgroundImage:[[UIImage imageNamed:@"SidebarToolbarButtonHighlighted"] stretchableImageWithLeftCapWidth:5.0 topCapHeight:0.0] forState:UIControlStateHighlighted];
     [nameButton setTitle:@"Add Location" forState:UIControlStateNormal];

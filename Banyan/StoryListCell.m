@@ -281,7 +281,7 @@
     self.storyTitleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:20];
     self.storyTitleLabel.textColor = [UIColor blackColor];
     self.storyTitleLabel.textAlignment = NSTextAlignmentLeft;
-    self.storyTitleLabel.minimumFontSize = 15;
+    self.storyTitleLabel.minimumScaleFactor = 0.8;
     [self.topSwipeableView.frontView addSubview:self.storyTitleLabel];
     
     UIImage *timeImage = [UIImage imageNamed:@"clockSymbol"];
@@ -292,7 +292,7 @@
     [self.timeLabel.imageView setImage:timeImage];
     self.timeLabel.label.font = [UIFont fontWithName:@"Roboto-Medium" size:12];
     self.timeLabel.label.textColor = [UIColor grayColor];
-    self.timeLabel.label.minimumFontSize = 10;
+    self.timeLabel.label.minimumScaleFactor = 0.9;
     self.timeLabel.label.textAlignment = NSTextAlignmentLeft;
     [self.topSwipeableView.frontView addSubview:self.timeLabel];
     
@@ -304,7 +304,7 @@
     [self.locationLabel.imageView setImage:locationImage];
     self.locationLabel.label.font = [UIFont fontWithName:@"Roboto-Medium" size:12];
     self.locationLabel.label.textColor = [UIColor grayColor];
-    self.locationLabel.label.minimumFontSize = 10;
+    self.locationLabel.label.minimumScaleFactor = 0.9;
     self.locationLabel.label.textAlignment = NSTextAlignmentLeft;
     [self.topSwipeableView.frontView addSubview:self.locationLabel];
     

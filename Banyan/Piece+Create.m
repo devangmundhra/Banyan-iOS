@@ -64,7 +64,7 @@
         
         RKObjectMapping *mediaMapping = [RKObjectMapping requestMapping];
         [mediaMapping addAttributeMappingsFromDictionary:@{@"remoteURL": @"url"}];
-        [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width"]];
+        [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType"]];
         [pieceRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:mediaMapping]];
         
         RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor

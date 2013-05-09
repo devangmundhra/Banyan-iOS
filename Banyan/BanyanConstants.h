@@ -67,6 +67,22 @@ extern NSString *const kBNActivityTypeJoined;
 #pragma mark - ManagedObject Media Class
 // Class key
 extern NSString *const kBNMediaClassKey;
+typedef NS_ENUM(NSUInteger, MediaType) {
+	kImage,
+	kVideo
+};
+
+typedef NS_ENUM(NSUInteger, MediaResize) {
+	kResizeSmall,
+	kResizeMedium,
+	kResizeLarge,
+	kResizeOriginal
+};
+
+typedef NS_ENUM(NSUInteger, MediaOrientation) {
+	kPortrait,
+	kLandscape
+};
 
 #pragma mark - Colors
 #define BANYAN_ORIG_GREEN_COLOR [UIColor colorWithRed:44/255.0 green:127/255.0 blue:84/255.0 alpha:1]

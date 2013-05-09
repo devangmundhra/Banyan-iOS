@@ -105,11 +105,11 @@
     cell.textLabel.text                         = place.name;
     cell.textLabel.adjustsFontSizeToFitWidth    = YES;
 	cell.textLabel.font                         = [UIFont systemFontOfSize:12.0];
-	cell.textLabel.minimumFontSize              = 10;
+	cell.textLabel.minimumScaleFactor           = 0.9;
 	cell.textLabel.numberOfLines                = 4;
-	cell.textLabel.lineBreakMode                = UILineBreakModeWordWrap;
+	cell.textLabel.lineBreakMode                = NSLineBreakByWordWrapping;
     cell.textLabel.textColor                    = [UIColor blackColor];
-    cell.textLabel.textAlignment                = UITextAlignmentLeft;
+    cell.textLabel.textAlignment                = NSTextAlignmentLeft;
     
     //You can use place.distanceInMilesString or place.distanceInFeetString.
     //You can add logic that if distanceInMilesString starts with a 0. then use Feet otherwise use Miles.

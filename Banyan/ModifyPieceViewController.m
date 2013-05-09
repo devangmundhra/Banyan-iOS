@@ -338,6 +338,7 @@
 {
     if (!self.piece.media)
         self.piece.media = [Media newMediaForObject:self.piece];
+    self.piece.media.mediaType = @"image";
     UIImage *image = [info objectForKey:MediaPickerViewControllerInfoImage];
     self.piece.media.localURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
     

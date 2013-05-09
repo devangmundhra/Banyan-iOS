@@ -14,6 +14,8 @@
 
 @implementation Media
 
+@dynamic mediaID;
+@dynamic mediaType;
 @dynamic createdAt;
 @dynamic remoteStatusNumber;
 @dynamic filename;
@@ -59,12 +61,41 @@
     }
 }
 
+- (void)awakeFromFetch {
+    if ((self.remoteStatus == MediaRemoteStatusPushing /*&& _uploadOperation == nil*/) || (self.remoteStatus == MediaRemoteStatusProcessing)) {
+        self.remoteStatus = MediaRemoteStatusFailed;
+    }
+}
+
 - (MediaRemoteStatus)remoteStatus {
     return (MediaRemoteStatus)[[self remoteStatusNumber] intValue];
 }
 
 - (void)setRemoteStatus:(MediaRemoteStatus)aStatus {
     [self setRemoteStatusNumber:[NSNumber numberWithInt:aStatus]];
+}
+
+- (float)progress {
+    [self willAccessValueForKey:@"progress"];
+    NSNumber *result = [self primitiveValueForKey:@"progress"];
+    [self didAccessValueForKey:@"progress"];
+    return [result floatValue];
+}
+
+- (void)setProgress:(float)progress {
+    [self willChangeValueForKey:@"progress"];
+    [self setPrimitiveValue:[NSNumber numberWithFloat:progress] forKey:@"progress"];
+    [self didChangeValueForKey:@"progress"];
+}
+
+- (NSString *)mediaTypeName {
+    if ([self.mediaType isEqualToString:@"image"]) {
+        return NSLocalizedString(@"Image", @"");
+    } else if ([self.mediaType isEqualToString:@"video"]) {
+        return NSLocalizedString(@"Video", @"");
+    } else {
+        return self.mediaType;
+    }
 }
 
 + (NSString *)titleForRemoteStatus:(NSNumber *)remoteStatus {
@@ -144,6 +175,7 @@
                                             if (errorBlock)
                                                 errorBlock(error);
                                         }];
+    
     [[AFParseAPIClient sharedClient] setDefaultHeader:@"X-Parse-Master-Key" value:nil];
 }
 
