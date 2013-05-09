@@ -9,6 +9,7 @@
 #import "FollowingFriendsViewController.h"
 #import "AFParseAPIClient.h"
 #import "Activity+Create.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface FollowingFriendsViewController ()
 
@@ -45,6 +46,30 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    // Add the find friends button
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), 45)];
+    UIButton *actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [actionButton.titleLabel setFont:[UIFont fontWithName:@"Roboto-Bold" size:18]];
+    actionButton.userInteractionEnabled = YES;
+    CGRect frame = view.frame;
+    CALayer *layer = actionButton.layer;
+    [layer setCornerRadius:5.0f];
+    [layer setMasksToBounds:YES];
+    [layer setBorderWidth: 1.0f];
+    [actionButton setTitle:@"Find Friends" forState:UIControlStateNormal];
+    [actionButton setBackgroundColor:BANYAN_GREEN_COLOR];
+    [actionButton addTarget:self action:@selector(findFriends) forControlEvents:UIControlEventTouchUpInside];
+    layer.borderColor = BANYAN_DARK_GREEN_COLOR.CGColor;
+    frame.origin.x += 20;
+    frame.origin.y += 10;
+    frame.size.width -= 40;
+    frame.size.height = 30;
+    actionButton.frame = frame;
+    self.tableView.tableHeaderView = view;
+    
+    [view addSubview:actionButton];
+    
     
 }
 

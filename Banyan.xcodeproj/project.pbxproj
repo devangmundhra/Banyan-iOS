@@ -169,7 +169,6 @@
 		51CFD94915F58337002926F9 /* buttonFollowingSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94115F58337002926F9 /* buttonFollowingSelected@2x.png */; };
 		51CFD94A15F58337002926F9 /* buttonFollowSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94215F58337002926F9 /* buttonFollowSelected.png */; };
 		51CFD94B15F58337002926F9 /* buttonFollowSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */; };
-		51CFD94E15F59A13002926F9 /* FindFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD94D15F59A13002926F9 /* FindFriendsViewController.m */; };
 		51F095681702A6DE009D5A28 /* NewStoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51F095671702A6DE009D5A28 /* NewStoryViewController.xib */; };
 		51F095731702A6FB009D5A28 /* StoryListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51F0956B1702A6FB009D5A28 /* StoryListCell.xib */; };
 		51F095741702A6FB009D5A28 /* StoryListCellMiddleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F0956D1702A6FB009D5A28 /* StoryListCellMiddleViewController.m */; };
@@ -426,8 +425,6 @@
 		51CFD94115F58337002926F9 /* buttonFollowingSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFollowingSelected@2x.png"; sourceTree = "<group>"; };
 		51CFD94215F58337002926F9 /* buttonFollowSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFollowSelected.png; sourceTree = "<group>"; };
 		51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFollowSelected@2x.png"; sourceTree = "<group>"; };
-		51CFD94C15F59A13002926F9 /* FindFriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindFriendsViewController.h; sourceTree = "<group>"; };
-		51CFD94D15F59A13002926F9 /* FindFriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindFriendsViewController.m; sourceTree = "<group>"; };
 		51F095671702A6DE009D5A28 /* NewStoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = NewStoryViewController.xib; path = Banyan/NewStoryViewController.xib; sourceTree = "<group>"; };
 		51F095691702A6FB009D5A28 /* StoryListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryListCell.h; path = Banyan/StoryListCell.h; sourceTree = "<group>"; };
 		51F0956B1702A6FB009D5A28 /* StoryListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = StoryListCell.xib; path = Banyan/StoryListCell.xib; sourceTree = "<group>"; };
@@ -543,6 +540,7 @@
 				5158AE2816F56F7E0089193E /* BNTabBarController.h */,
 				5158AE2916F56F7E0089193E /* BNTabBarController.m */,
 				5189B35B15B3976700562DD0 /* Story List */,
+				51CFD93015F3121C002926F9 /* Settings */,
 			);
 			name = "Tab Bar Controller";
 			sourceTree = "<group>";
@@ -779,7 +777,6 @@
 				5192332416743EB7009686E4 /* Location */,
 				5189B35115B3964000562DD0 /* Networking Extensions */,
 				5189B35815B396FA00562DD0 /* Data handling */,
-				51CFD93015F3121C002926F9 /* Settings */,
 				5189B35C15B397BD00562DD0 /* Helpful Categories */,
 				51B5989C15EB31B300DF4D9D /* BanyanConstants.h */,
 				51B5989D15EB31B300DF4D9D /* BanyanConstants.m */,
@@ -1072,8 +1069,6 @@
 				51CFD92715F1F260002926F9 /* SettingsTableViewController.m */,
 				51CFD93415F3E80B002926F9 /* FollowingFriendsViewController.h */,
 				51CFD93515F3E80B002926F9 /* FollowingFriendsViewController.m */,
-				51CFD94C15F59A13002926F9 /* FindFriendsViewController.h */,
-				51CFD94D15F59A13002926F9 /* FindFriendsViewController.m */,
 				51CFD93B15F57F75002926F9 /* UITableViewCell */,
 			);
 			name = Settings;
@@ -1330,7 +1325,6 @@
 				51CFD92915F1F260002926F9 /* SettingsTableViewController.m in Sources */,
 				51CFD93615F3E80B002926F9 /* FollowingFriendsViewController.m in Sources */,
 				51CFD93A15F57F70002926F9 /* FollowingUsersCell.m in Sources */,
-				51CFD94E15F59A13002926F9 /* FindFriendsViewController.m in Sources */,
 				510787C6163A36A90042B436 /* UIImage+AlphaAdditions.m in Sources */,
 				510787C7163A36A90042B436 /* UIImage+ResizeAdditions.m in Sources */,
 				510787C8163A36A90042B436 /* UIImage+RoundedCornerAdditions.m in Sources */,

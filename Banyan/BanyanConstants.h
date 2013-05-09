@@ -71,9 +71,12 @@ extern NSString *const kBNMediaClassKey;
 #pragma mark - Colors
 #define BANYAN_ORIG_GREEN_COLOR [UIColor colorWithRed:44/255.0 green:127/255.0 blue:84/255.0 alpha:1]
 #define BANYAN_GREEN_COLOR [UIColor colorWithRed:71/255.0 green:114/255.0 blue:4/255.0 alpha:1]
+#define BANYAN_DARK_GREEN_COLOR [UIColor colorWithRed:49/255.0 green:81/255.0 blue:3/255.0 alpha:1]
+#define BANYAN_LIGHT_GREEN_COLOR [UIColor colorWithRed:113/255.0 green:154/255.0 blue:35/255.0 alpha:1]
 #define BANYAN_BROWN_COLOR [UIColor colorWithRed:136/255.0 green:103/255.0 blue:68/255.0 alpha:1]
 #define BANYAN_DARKGRAY_COLOR [UIColor colorWithRed:52/255.0 green:52/255.0 blue:52/255.0 alpha:1]
 #define BANYAN_LIGHTGRAY_COLOR [UIColor colorWithRed:223/255.0 green:223/255.0 blue:223/255.0 alpha:1]
 #define BANYAN_WHITE_COLOR [UIColor whiteColor]
 #define BANYAN_BLACK_COLOR [UIColor blackColor]
 #define BANYAN_PINK_COLOR [UIColor colorWithRed:229/255.0 green:56/255.0 blue:68/255.0 alpha:1]
+#define BANYAN_RED_COLOR [UIColor colorWithRed:114/255.0 green:28/255.0 blue:16/255.0 alpha:1]
