@@ -32,6 +32,12 @@
 @synthesize settingsButton = _settingsButton;
 @synthesize titleLabel = _titleLabel;
 
+- (void)setCurrentPiece:(Piece *)currentPiece
+{
+    _currentPiece = currentPiece;
+    currentPiece.story.currentPieceNum = [currentPiece.pieceNumber unsignedIntegerValue];
+}
+
 - (id)init
 {
     self = [super init];
@@ -420,9 +426,7 @@
 
 - (void) dismissReadView
 {
-    [self dismissViewControllerAnimated:YES completion:^{
-        self.story.storyBeingRead = NO;
-    }];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark UIGestureRecognizerDelegate

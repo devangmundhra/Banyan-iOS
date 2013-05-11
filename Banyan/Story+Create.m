@@ -39,7 +39,6 @@
 + (Story *)createNewStory:(Story *)story
 {    
     story.canContribute = story.canView = [NSNumber numberWithBool:YES];
-    story.storyBeingRead = [NSNumber numberWithBool:YES];
     
     // Persist again
     [story save];

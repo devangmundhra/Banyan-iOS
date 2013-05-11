@@ -17,6 +17,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "SSTextField.h"
 #import "Media.h"
+#import "SDWebImage/UIImageView+WebCache.h"
 
 @interface NewStoryViewController ()
 {
@@ -418,7 +419,6 @@
             [self.story.media deleteWitSuccess:nil failure:nil];
         }
         [self.story.media remove];
-        [self.addPhotoButton.imageView cancelImageRequestOperation];
         [self.addPhotoButton.imageView setImageWithURL:nil];
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:MediaPickerControllerSourceTypeCamera]) {

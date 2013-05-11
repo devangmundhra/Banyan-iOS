@@ -19,7 +19,7 @@
 @dynamic length;
 @dynamic numberOfContributors;
 @dynamic readAccess;
-@dynamic storyBeingRead;
+@dynamic currentPieceNum;
 @dynamic tags;
 @dynamic title;
 @dynamic writeAccess;

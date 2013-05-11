@@ -21,7 +21,7 @@
 @property (nonatomic, retain) NSNumber * length;
 @property (nonatomic, retain) NSNumber * numberOfContributors;
 @property (nonatomic, retain) id readAccess;
-@property (nonatomic, retain) NSNumber * storyBeingRead;
+@property (nonatomic) NSUInteger currentPieceNum;
 @property (nonatomic, retain) NSString * tags;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) id writeAccess;

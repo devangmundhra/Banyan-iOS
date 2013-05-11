@@ -24,12 +24,7 @@
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
-        self.title = @"Following";
-        
-        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Find Friends"
-                                                                                    style:UIBarButtonItemStyleBordered
-                                                                                   target:self
-                                                                                   action:@selector(findFriends)]];
+        self.title = @"Follow/Find Friends";
         
         // Get friends being followed
         NSMutableArray *facebookFriendsOnBanyan = [[NSUserDefaults standardUserDefaults] objectForKey:BNUserDefaultsBanyanUsersFacebookFriends];

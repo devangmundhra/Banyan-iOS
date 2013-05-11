@@ -17,6 +17,7 @@
 #import "SSTextView.h"
 #import "SSTextField.h"
 #import "Media.h"
+#import "SDWebImage/UIImageView+WebCache.h"
 
 @interface ModifyPieceViewController ()
 
@@ -116,7 +117,7 @@
     if (self.editMode == ModifyPieceViewControllerEditModeEditPiece)
     {
         if ([self.piece.media.remoteURL length]) {
-            [self.addPhotoButton.imageView setImageWithURL:[NSURL URLWithString:self.piece.media.remoteURL] placeholderImage:nil];
+            [self.addPhotoButton.imageView setImageWithURL:[NSURL URLWithString:self.piece.media.remoteURL] placeholderImage:nil options:SDWebImageProgressiveDownload];
         } else if ([self.piece.media.localURL length]) {
             ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
             [library assetForURL:[NSURL URLWithString:self.piece.media.localURL] resultBlock:^(ALAsset *asset) {
@@ -130,7 +131,6 @@
                     }
              ];
         } else {
-            [self.addPhotoButton.imageView  cancelImageRequestOperation];
             [self.addPhotoButton.imageView  setImageWithURL:nil];
         }
         self.pieceCaptionView.text = self.piece.shortText;
@@ -312,7 +312,6 @@
             [self.piece.media deleteWitSuccess:nil failure:nil];
         }
         [self.piece.media remove];
-        [self.addPhotoButton.imageView cancelImageRequestOperation];
         [self.addPhotoButton.imageView setImageWithURL:nil];
         self.doneButton.enabled = YES;
     }

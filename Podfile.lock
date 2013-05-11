@@ -1,6 +1,6 @@
 PODS:
   - AFNetworking (1.2.1)
-  - ASMediaFocusManager (0.1)
+  - ASMediaFocusManager (0.2)
   - MBProgressHUD (0.6)
   - RestKit (0.20.1dev):
     - RestKit/Core
@@ -17,6 +17,9 @@ PODS:
   - RestKit/ObjectMapping (0.20.1dev)
   - RestKit/Support (0.20.1dev):
     - TransitionKit (= 1.1.0)
+  - SDWebImage (3.2):
+    - SDWebImage/MapKit
+  - SDWebImage/MapKit (3.2)
   - SMPageControl (1.0)
   - SOCKit (1.1)
   - SSToolkit (1.0.4)
@@ -31,6 +34,7 @@ DEPENDENCIES:
   - ASMediaFocusManager (from `https://github.com/devangmundhra/ASMediaFocusManager.git`)
   - MBProgressHUD (>= 0.5)
   - RestKit (from `https://github.com/RestKit/RestKit.git`, branch `development`)
+  - SDWebImage (from `https://github.com/rs/SDWebImage.git`, commit `b8ab9d77b5dc18203d8a75990133b72cd3556cc1`)
   - SMPageControl (~> 1.0)
   - SSToolkit
   - SVPullToRefresh
@@ -45,6 +49,9 @@ EXTERNAL SOURCES:
   RestKit:
     :branch: development
     :git: https://github.com/RestKit/RestKit.git
+  SDWebImage:
+    :commit: b8ab9d77b5dc18203d8a75990133b72cd3556cc1
+    :git: https://github.com/rs/SDWebImage.git
   TISwipeableTableView:
     :git: https://github.com/devangmundhra/TISwipeableTableView.git
   TITokenField:
@@ -52,9 +59,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AFNetworking: 616da0028916ce296f5c3cef74e5552eb4e10e13
-  ASMediaFocusManager: e83ad9bf5e1927ce267c1ff2cc4caa6d3809508a
+  ASMediaFocusManager: 8be8e44556d78d18ed1e1eb14b5362d1847c16f2
   MBProgressHUD: 9b55a90566fb5d07df0602f6fd9fa04510ad5d52
   RestKit: 1ecd173c7cc8ea2b37c22b9909d5dde225331378
+  SDWebImage: 4e2b2287a54c052cb0d717bcdf37387b9c4751ae
   SMPageControl: 9d100f9aa8ca0cf10222666ff31d4d1cbfdac674
   SOCKit: ed67aeeca4a697b63a933229e53f4670d5b9300f
   SSToolkit: 689acaedac79c2079e492e528a55bcb5db9d98c4
@@ -62,7 +70,7 @@ SPEC CHECKSUMS:
   SVSegmentedControl: e874fc56c2a1efb9f597ddf0908101393f53fe96
   TestFlightSDK: 868307d9f94d3e978df579d15cc0a978ffe09958
   TISwipeableTableView: 7e848c68e1c1e0e9c284ce0a49ee8db35f2cf3af
-  TITokenField: fc0ad1457d0c4d513dbf201322423ccf93c179db
+  TITokenField: db7c28576a8f78ecae7ac2ee80ef72912c7cb940
   TransitionKit: 1624e84f252d5cd26900be28ccb73c69fbe63f8a
 
 COCOAPODS: 0.19.1

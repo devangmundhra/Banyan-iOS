@@ -317,7 +317,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         [self.tableView reloadData];
         return;
     }
-    story.storyBeingRead = [NSNumber numberWithBool:YES];
     StoryReaderController *storyReaderController = [[StoryReaderController alloc] initWithPiece:pieceToShow];
     storyReaderController.story = story;
 //    storyReaderController.wantsFullScreenLayout = YES;

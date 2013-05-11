@@ -85,29 +85,21 @@ typedef enum {
     [view addSubview:actionButton];
     
     CGRect frame = view.frame;
-    
+    frame.origin.x += 20;
+    frame.size.width -= 40;
+    frame.size.height = 40;
+    actionButton.frame = frame;
+    self.tableView.tableFooterView = view;
+
     if (![BanyanAppDelegate loggedIn]) {
         [actionButton setTitle:@"Sign in" forState:UIControlStateNormal];
         [actionButton setBackgroundColor:BANYAN_GREEN_COLOR];
         [actionButton addTarget:delegate action:@selector(login) forControlEvents:UIControlEventTouchUpInside];
         layer.borderColor = BANYAN_DARK_GREEN_COLOR.CGColor;
-        frame.origin.x += 20;
-        frame.origin.y += 10;
-        frame.size.width -= 40;
-        frame.size.height = 40;
-        actionButton.frame = frame;
-        self.tableView.tableHeaderView = view;
-        self.tableView.tableFooterView = nil;
     } else {
         [actionButton setTitle:@"Sign out" forState:UIControlStateNormal];
         [actionButton setBackgroundColor:BANYAN_RED_COLOR];
         [actionButton addTarget:delegate action:@selector(logout) forControlEvents:UIControlEventTouchUpInside];
-        frame.origin.x += 20;
-        frame.size.width -= 40;
-        frame.size.height = 40;
-        actionButton.frame = frame;
-        self.tableView.tableFooterView = view;
-        self.tableView.tableHeaderView = nil;
     }
 }
 

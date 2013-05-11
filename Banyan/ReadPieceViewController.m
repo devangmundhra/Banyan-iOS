@@ -7,7 +7,6 @@
 //
 
 #import "ReadPieceViewController.h"
-#import "UIImageView+AFNetworking.h"
 #import "Piece+Stats.h"
 #import "Story+Stats.h"
 #import <QuartzCore/QuartzCore.h>
@@ -19,6 +18,7 @@
 #import "NSObject+BlockObservation.h"
 #import "SSLabel.h"
 #import "Media.h"
+#import "SDWebImage/UIImageView+WebCache.h"
 
 @interface ReadPieceViewController ()
 
@@ -146,6 +146,7 @@
     self.mediaFocusManager = [[ASMediaFocusManager alloc] init];
     self.mediaFocusManager.delegate = self;
     self.mediaFocusManager.backgroundColor = BANYAN_BLACK_COLOR;
+    self.mediaFocusManager.doneButtonFont = [UIFont fontWithName:@"Roboto" size:18];
     
     self.pageControl = [[SMPageControl alloc] initWithFrame:CGRectMake(100, 100, CGRectGetWidth(self.view.frame), 40)];
     self.pageControl.center = CGPointMake(CGRectGetMidX(self.view.frame), CGRectGetMaxY(self.view.frame) - 20.0f);
@@ -258,7 +259,7 @@
             frame = CGRectMake(0, CGRectGetMaxY(self.imageView.frame), frame.size.width, 40);
         }
         self.pieceInfoView.frame = frame;
-        
+        [self.contentView bringSubviewToFront:self.pieceInfoView];
         // author label
         CGSize maximumLabelSize = CGSizeMake(130, CGRectGetHeight(frame));
         CGSize expectedLabelSize = [self.piece.author.name sizeWithFont:[UIFont fontWithName:@"Roboto" size:16]
@@ -347,7 +348,7 @@
     
     if (hasImage) {        
         if ([self.piece.media.remoteURL length]) {
-            [self.imageView setImageWithURL:[NSURL URLWithString:self.piece.media.remoteURL] placeholderImage:nil];
+            [self.imageView setImageWithURL:[NSURL URLWithString:self.piece.media.remoteURL] placeholderImage:nil options:SDWebImageProgressiveDownload];
         } else {
             ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
             [library assetForURL:[NSURL URLWithString:self.piece.media.localURL] resultBlock:^(ALAsset *asset) {
@@ -362,19 +363,17 @@
              ];
         }
     } else {
-        [self.imageView cancelImageRequestOperation];
         [self.imageView setImageWithURL:nil];
     }
     if (hasDescription || !hasImage) {
-        self.pieceCaptionView.textColor = BANYAN_BLACK_COLOR;
-        self.pieceTextView.textColor =
+        self.pieceCaptionView.textColor =
+        self.pieceTextView.textColor = BANYAN_BLACK_COLOR;
         self.authorLabel.textColor =
-        self.commentsButton.titleLabel.textColor =
         self.timeLabel.textColor = BANYAN_DARKGRAY_COLOR;
         [self.commentsButton setTitleColor:BANYAN_DARKGRAY_COLOR forState:UIControlStateNormal];
     } else {
-        self.pieceCaptionView.textColor = BANYAN_WHITE_COLOR;
-        self.pieceTextView.textColor =
+        self.pieceCaptionView.textColor =
+        self.pieceTextView.textColor = BANYAN_WHITE_COLOR;
         self.authorLabel.textColor =
         self.timeLabel.textColor = BANYAN_WHITE_COLOR;
         [self.commentsButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];

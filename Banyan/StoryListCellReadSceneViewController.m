@@ -9,8 +9,8 @@
 #import "StoryListCellReadSceneViewController.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <QuartzCore/QuartzCore.h>
-#import "UIImageView+AFNetworking.h"
 #import "Media.h"
+#import "SDWebImage/UIImageView+WebCache.h"
 
 @interface StoryListCellReadSceneViewController ()
 
@@ -37,7 +37,7 @@
     }
     
     if ([piece.media.remoteURL length]) {
-        [self.imageView setImageWithURL:[NSURL URLWithString:piece.media.remoteURL] placeholderImage:nil];
+        [self.imageView setImageWithURL:[NSURL URLWithString:piece.media.remoteURL] placeholderImage:nil options:SDWebImageProgressiveDownload];
     } else if ([piece.media.localURL length]) {
         ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
         [library assetForURL:[NSURL URLWithString:piece.media.localURL] resultBlock:^(ALAsset *asset) {
@@ -51,7 +51,6 @@
                 }
          ];
     } else {
-        [self.imageView cancelImageRequestOperation];
         [self.imageView setImageWithURL:nil];
     }
     if (piece.shortText) {

@@ -10,6 +10,7 @@ pod 'SVSegmentedControl'
 pod 'SMPageControl', '~> 1.0'
 pod 'SSToolkit'
 pod 'ASMediaFocusManager', :git => 'https://github.com/devangmundhra/ASMediaFocusManager.git'
+pod 'SDWebImage', :git => 'https://github.com/rs/SDWebImage.git', :commit => 'b8ab9d77b5dc18203d8a75990133b72cd3556cc1'
 
 # Testing and Search are optional components
 # pod 'RestKit/Testing',  :git => 'https://github.com/RestKit/RestKit.git'
