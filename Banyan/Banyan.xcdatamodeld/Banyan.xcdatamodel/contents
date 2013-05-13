@@ -40,6 +40,7 @@
         <attribute name="isLocationEnabled" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="lastSynced" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="location" optional="YES" attributeType="Transformable" valueTransformerName="FBGraphObjectToDataTransformer" syncable="YES"/>
+        <attribute name="permaLink" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="remoteStatusNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="statistics" optional="YES" attributeType="Transformable" valueTransformerName="" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
@@ -64,7 +65,7 @@
         <element name="Comment" positionX="160" positionY="192" width="128" height="120"/>
         <element name="Media" positionX="160" positionY="192" width="128" height="285"/>
         <element name="Piece" positionX="-306" positionY="-243" width="128" height="135"/>
-        <element name="RemoteObject" positionX="-729" positionY="0" width="128" height="210"/>
+        <element name="RemoteObject" positionX="-729" positionY="0" width="128" height="225"/>
         <element name="Story" positionX="-72" positionY="-454" width="128" height="225"/>
     </elements>
 </model>

@@ -57,18 +57,21 @@
             return;
         
         // send request to facebook
-        /*
-         NSString *selectIDsStr = [fbIds componentsJoinedByString:@","];
-         NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Check this story", @"message", selectIDsStr, @"to", nil];
-         [[PFFacebookUtils facebook] dialog:@"apprequests"
-         andParams:params
-         andDelegate:story];
-         */
+        
+        FBShareDialogParams *params = [[FBShareDialogParams alloc] init];
+        params.dataFailuresFatal = NO;
+        params.caption = story.title;
+        params.description = @"Check this new story out!";
+        params.friends = fbIds;
+        params.picture = [NSURL URLWithString:story.media.remoteURL];
+        params.ref = @"Story";
+        [FBDialogs presentShareDialogWithParams:params clientState:nil handler:nil];
+         
         // send push notifications
         
-        //        UIRemoteNotificationType types = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
-        //        if (types == UIRemoteNotificationTypeNone)
-        //            return;
+        UIRemoteNotificationType types = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
+        if (types == UIRemoteNotificationTypeNone)
+            return;
         
         for (NSString *fbId in fbIds)
         {

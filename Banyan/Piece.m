@@ -19,12 +19,12 @@
 @dynamic story;
 @dynamic tags;
 
-+ (NSArray *)syncedPiecesInStory:(Story *)story
++ (NSArray *)oldPiecesInStory:(Story *)story
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:[NSEntityDescription entityForName:kBNPieceClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@) AND (bnObjectId != NULL) AND (story = %@)",
-							  [NSNumber numberWithInt:RemoteObjectStatusSync], story];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@) AND (bnObjectId != NULL) AND (story = %@) AND (lastSynced <= %@)",
+							  [NSNumber numberWithInt:RemoteObjectStatusSync], story, [NSDate dateWithTimeIntervalSinceNow:-60*2]];
     [request setPredicate:predicate];
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
     [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];

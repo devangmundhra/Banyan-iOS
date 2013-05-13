@@ -59,6 +59,10 @@ typedef enum {
                                  forControlEvents:UIControlEventValueChanged];
     self.filterStoriesSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
     self.filterStoriesSegmentedControl.selectedSegmentIndex = FilterStoriesSegmentIndexPopular;
+    [self.filterStoriesSegmentedControl setWidth:100 forSegmentAtIndex:FilterStoriesSegmentIndexFollowing];
+    [self.filterStoriesSegmentedControl setWidth:100 forSegmentAtIndex:FilterStoriesSegmentIndexPopular];
+    [self.filterStoriesSegmentedControl setContentOffset:CGSizeMake(5, 0) forSegmentAtIndex:FilterStoriesSegmentIndexFollowing];
+    [self.filterStoriesSegmentedControl setContentOffset:CGSizeMake(5, 0) forSegmentAtIndex:FilterStoriesSegmentIndexPopular];
     self.filterStoriesSegmentedControl.apportionsSegmentWidthsByContent = YES;
 
     [self.navigationItem setTitleView:self.filterStoriesSegmentedControl];

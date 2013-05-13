@@ -463,39 +463,20 @@
         return;
     }
     
-    if (![[AFBanyanAPIClient sharedClient] isReachable]) {
-        NSLog(@"%s Can't connect to internet", __PRETTY_FUNCTION__);
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Network unavailable"
-                                                            message:@"Cannot share the story since network is unavailable."
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
-        [alertView show];
-        return;
-    }
+    [[FBSession activeSession] requestNewPublishPermissions:[NSArray arrayWithObject:@"publish_stream"]
+                                            defaultAudience:FBSessionDefaultAudienceFriends
+                                          completionHandler:^(FBSession *session, NSError *error) {
+                                              if (error) {
+                                                  NSLog(@"Error %@ in getting permissions to publish", [error localizedDescription]);
+                                              }
+                                          }];
+    [FBDialogs presentOSIntegratedShareDialogModallyFrom:self
+                                             initialText:self.piece.story.title
+                                                   image:self.imageView.image
+                                                     url:[NSURL URLWithString:self.piece.permaLink]
+                                                 handler:nil];
     
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:self.piece.story.bnObjectId forKey:@"object_id"];
-    [[AFBanyanAPIClient sharedClient] getPath:BANYAN_API_GET_OBJECT_LINK_URL()
-                                   parameters:params
-                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                          NSDictionary *response = (NSDictionary *)responseObject;
-                                          [PFFacebookUtils reauthorizeUser:[PFUser currentUser]
-                                                    withPublishPermissions:[NSArray arrayWithObject:@"publish_stream"]
-                                                                  audience:FBSessionDefaultAudienceFriends
-                                                                     block:^(BOOL succeeded, NSError *error) {
-                                                                         if (!succeeded) {
-                                                                             NSLog(@"Error in getting permissions to publish");
-                                                                         }
-                                                                     }];
-                                          [FBNativeDialogs presentShareDialogModallyFrom:self
-                                                                                initialText:self.piece.story.title
-                                                                                      image:self.imageView.image
-                                                                                        url:[NSURL URLWithString:[response objectForKey:@"link"]]
-                                                                                    handler:nil];
-                                          
-                                          [TestFlight passCheckpoint:@"Story shared"];
-                                      }
-                                      failure:AF_BANYAN_ERROR_BLOCK()];
+    [TestFlight passCheckpoint:@"Piece shared"];
 }
 
 #pragma mark UIPageControl

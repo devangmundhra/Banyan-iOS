@@ -9,12 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "Story.h"
 #import "Story_Defines.h"
-#import "UISwipeableView.h"
+#import "BNSwipeableView.h"
 
 #define TABLE_CELL_MARGIN 10.0
 #define TABLE_ROW_HEIGHT 220.0 // from nib file
 
-@interface StoryListCell : UITableViewCell <UISwipeableViewDelegate, UIAlertViewDelegate>
+@interface StoryListCell : UITableViewCell <BNSwipeableViewDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) IBOutlet Story* story;
 

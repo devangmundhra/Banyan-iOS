@@ -23,6 +23,7 @@
 @dynamic statistics;
 @dynamic isLocationEnabled;
 @dynamic comments;
+@dynamic permaLink;
 
 #pragma mark -
 #pragma mark Revision management
@@ -101,6 +102,10 @@
 {
     *ioValue = [FBGraphObject graphObjectWrappingDictionary:*ioValue];
     return YES;
+}
+
+# pragma mark sharing
+- (void)share {
 }
 
 @end

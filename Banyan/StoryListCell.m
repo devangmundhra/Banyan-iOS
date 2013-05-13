@@ -42,7 +42,7 @@
 }
 @property (weak, nonatomic) IBOutlet UIView *containingView;
 // Content View Properties
-@property (weak, nonatomic) IBOutlet UISwipeableView *topSwipeableView;
+@property (weak, nonatomic) IBOutlet BNSwipeableView *topSwipeableView;
 @property (nonatomic, strong) IBOutlet UILabel *storyTitleLabel;
 @property (nonatomic, strong) IBOutlet UIButton *storyFrontViewControl;
 @property (nonatomic, strong) IBOutlet BNImageLabel *timeLabel;
@@ -395,7 +395,7 @@
     }
 }
 
-#pragma mark UISwipeableViewDelegate methods
+#pragma mark BNSwipeableViewDelegate methods
 
 - (BOOL)shouldSwipe
 {

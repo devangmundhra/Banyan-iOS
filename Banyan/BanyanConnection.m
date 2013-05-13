@@ -111,7 +111,7 @@
      }];
     storyMapping.identificationAttributes = @[@"bnObjectId"];
     
-    [storyMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_READ_ACCESS, STORY_WRITE_ACCESS, STORY_TAGS, STORY_LENGTH,
+    [storyMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_READ_ACCESS, STORY_WRITE_ACCESS, STORY_TAGS, STORY_LENGTH, @"permaLink",
                                                     PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT, @"isLocationEnabled", @"location"]];
     // Media
     RKEntityMapping *mediaMapping = [RKEntityMapping mappingForEntityForName:kBNMediaClassKey
@@ -167,7 +167,7 @@
                             }];
 }
 
-+ (void) loadPiecesForStory:(Story *)story completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *error))errorBlock
++ (void)loadPiecesForStory:(Story *)story withParams:(NSDictionary *)params completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *))errorBlock
 {
     // Initialize RestKit
     RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
@@ -177,7 +177,7 @@
     RKEntityMapping *pieceMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
     [pieceMapping addAttributeMappingsFromArray:@[PIECE_NUMBER, PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled", @"location",
-                                                    PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT]];
+     PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT, @"permaLink"]];
     [pieceMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"bnObjectId"}];
     pieceMapping.identificationAttributes = @[@"bnObjectId"];
     
@@ -194,7 +194,7 @@
     [userMapping addAttributeMappingsFromDictionary:@{@"objectId": @"userId"}];
     [userMapping addAttributeMappingsFromArray:@[@"username", @"name", @"firstName", @"lastName", @"facebookId", @"email"]];
     [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:userMapping]];
-
+    
     // Response
     RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceMapping
                                                                                        pathPattern:nil
@@ -203,19 +203,12 @@
     [objectManager addResponseDescriptor:responseDescriptor];
     
     [objectManager getObjectsAtPath:BANYAN_API_OBJECT_URL(kBNStoryClassKey, story.bnObjectId)
-                         parameters:@{@"attributes" : @[@"pieces"]}
+                         parameters:params
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                // Delete all unsaved pieces                                
+                                // Delete all unsaved pieces
                                 NSArray *pieces = [mappingResult array];
-                                // Delete pieces that have been deleted on the server
-                                NSArray *syncedPieces =[Piece syncedPiecesInStory:story];
-                                for (Piece *piece in syncedPieces) {
-                                    if (![pieces containsObject:piece])
-                                        [piece remove];
-                                }
                                 if ([story isDeleted] || story.managedObjectContext == nil ) // Don't bother doing anything if story was deleted while fetching pieces
                                     return;
-                                
                                 [pieces enumerateObjectsUsingBlock:^(Piece *piece, NSUInteger idx, BOOL *stop) {
                                     [story addPiecesObject:piece];
                                     piece.remoteStatus = RemoteObjectStatusSync;
@@ -231,60 +224,25 @@
                             }];
 }
 
++ (void) loadPiecesForStory:(Story *)story completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *error))errorBlock
+{
+    [self loadPiecesForStory:story
+                  withParams:@{@"attributes" : @[@"pieces"]}
+             completionBlock:^{
+                 // By now we have got all the pieces for the story.
+                 // Remove pieces which did not come as a part of this story (meaning they were deleted from the server)
+                 NSArray *oldPieces =[Piece oldPiecesInStory:story];
+                 for (Piece *piece in oldPieces) {
+                     [piece remove];
+                 }
+                 completionBlock();
+             }
+                  errorBlock:errorBlock];
+}
+
 + (void) loadPiecesForStory:(Story *)story atPieceNumbers:(NSArray *)pieceNumbers completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *error))errorBlock
 {
-    // Initialize RestKit
-    RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
-    objectManager.managedObjectStore = [RKManagedObjectStore defaultStore];
-    
-    // Piece attributes
-    RKEntityMapping *pieceMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
-                                                        inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-    [pieceMapping addAttributeMappingsFromArray:@[PIECE_NUMBER, PIECE_LONGTEXT, PIECE_SHORTTEXT, PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT, @"isLocationEnabled", @"location"]];
-    [pieceMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"bnObjectId"}];
-    pieceMapping.identificationAttributes = @[@"bnObjectId"];
-    
-    // Media
-    RKEntityMapping *mediaMapping = [RKEntityMapping mappingForEntityForName:kBNMediaClassKey
-                                                        inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-    [mediaMapping addAttributeMappingsFromDictionary:@{@"url": @"remoteURL"}];
-    [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType"]];
-    mediaMapping.identificationAttributes = @[@"filename", @"remoteURL"];
-    [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:mediaMapping]];
-    
-    // Author
-    RKObjectMapping *userMapping = [RKObjectMapping mappingForClass:[User class]];
-    [userMapping addAttributeMappingsFromDictionary:@{@"objectId": @"userId"}];
-    [userMapping addAttributeMappingsFromArray:@[@"username", @"name", @"firstName", @"lastName", @"facebookId", @"email"]];
-    [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:userMapping]];
-    
-    // Response
-    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceMapping
-                                                                                       pathPattern:nil
-                                                                                           keyPath:@"result.pieces"
-                                                                                       statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
-    [objectManager addResponseDescriptor:responseDescriptor];
-    
-    [objectManager getObjectsAtPath:BANYAN_API_OBJECT_URL(kBNStoryClassKey, story.bnObjectId)
-                         parameters:@{@"pieces" : pieceNumbers}
-                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                NSArray *pieces = [mappingResult array];
-                                if ([story isDeleted] || story.managedObjectContext == nil ) // Don't bother doing anything if story was deleted while fetching pieces
-                                    return;
-                                
-                                [pieces enumerateObjectsUsingBlock:^(Piece *piece, NSUInteger idx, BOOL *stop) {
-                                    [story addPiecesObject:piece];
-                                    piece.remoteStatus = RemoteObjectStatusSync;
-                                    [piece updatePieceStats];
-                                    piece.lastSynced = [NSDate date];
-                                }];
-                                if (completionBlock)
-                                    completionBlock();
-                            }
-                            failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                if (errorBlock)
-                                    errorBlock(error);
-                            }];
+    [self loadPiecesForStory:story withParams:@{@"pieces" : pieceNumbers} completionBlock:completionBlock errorBlock:errorBlock];
 }
 
 + (void) resetPermissionsForStories:(NSArray *)stories

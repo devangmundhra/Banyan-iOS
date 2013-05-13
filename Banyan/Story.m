@@ -61,4 +61,31 @@
     return array;
 }
 
+- (void) share
+{
+    if (self.remoteStatus != RemoteObjectStatusSync) {
+        NSLog(@"%s Can't share yet as story with title %@ is not sync'ed", __PRETTY_FUNCTION__, self.title);
+        return;
+    }
+    
+    [[FBSession activeSession] requestNewPublishPermissions:[NSArray arrayWithObject:@"publish_stream"]
+                                            defaultAudience:FBSessionDefaultAudienceFriends
+                                          completionHandler:^(FBSession *session, NSError *error) {
+                                              if (error) {
+                                                  NSLog(@"Error %@ in getting permissions to publish", [error localizedDescription]);
+                                              }
+                                          }];
+    
+    UIImage *image = nil;
+    // TO DO: Add image
+    
+    [FBDialogs presentOSIntegratedShareDialogModallyFrom:[UIApplication sharedApplication].keyWindow.rootViewController
+                                             initialText:self.title
+                                                   image:image
+                                                     url:[NSURL URLWithString:self.permaLink]
+                                                 handler:nil];
+    
+    [TestFlight passCheckpoint:@"Piece shared"];
+}
+
 @end

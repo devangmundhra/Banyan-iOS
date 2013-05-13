@@ -33,6 +33,7 @@ typedef enum {
 @property (nonatomic, retain) NSNumber * isLocationEnabled;
 @property (nonatomic, strong) FBGraphObject<FBGraphPlace> * location;
 @property (nonatomic) RemoteObjectStatus remoteStatus;
+@property (nonatomic, retain) NSString * permaLink;
 
 // Relationships
 @property (nonatomic, strong) NSMutableSet * comments;
@@ -45,4 +46,6 @@ typedef enum {
 #pragma mark Data management
 - (void) remove;
 
+# pragma mark sharing
+- (void)share;
 @end

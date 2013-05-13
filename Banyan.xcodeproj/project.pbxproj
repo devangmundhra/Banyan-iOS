@@ -33,7 +33,6 @@
 		5144EC711712277600F0B265 /* writeButtonSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC671712277600F0B265 /* writeButtonSelected@2x.png */; };
 		5157CD031650902900C22CCE /* BanyanConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD021650902900C22CCE /* BanyanConnection.m */; };
 		5158AE2B16F56F7F0089193E /* BNTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5158AE2916F56F7E0089193E /* BNTabBarController.m */; };
-		5166957816F98ABB0014E65D /* UISwipeableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5166957716F98ABA0014E65D /* UISwipeableView.m */; };
 		5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B615E75B420072749C /* buttonFacebook.png */; };
 		5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B715E75B420072749C /* buttonFacebook@2x.png */; };
 		5166B1BC15E75B420072749C /* buttonFacebookSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B815E75B420072749C /* buttonFacebookSelected.png */; };
@@ -113,7 +112,6 @@
 		519233331675305F009686E4 /* LocationPickerTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 519233311675305F009686E4 /* LocationPickerTableViewController.m */; };
 		519AFA7215C26F5D00F68F3C /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */; };
 		51A84945171BD95600367039 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51A84944171BD95600367039 /* Parse.framework */; };
-		51A84947171BEC6200367039 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51A84946171BEC6200367039 /* FacebookSDK.framework */; };
 		51A8494A171CF4A500367039 /* BNPlacePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A84949171CF4A500367039 /* BNPlacePickerViewController.m */; };
 		51A8494D171D24E900367039 /* BNFBLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8494C171D24E900367039 /* BNFBLocationManager.m */; };
 		51A8DC9116928A240017E86F /* Activity+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC9016928A240017E86F /* Activity+Create.m */; };
@@ -154,6 +152,7 @@
 		51BDA1E1173B788F00BD2C19 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 51BDA1E0173B788F00BD2C19 /* Default.png */; };
 		51BDA1E3173B789600BD2C19 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51BDA1E2173B789600BD2C19 /* Default@2x.png */; };
 		51BDA25F173EEC1500BD2C19 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51BDA25E173EEC1500BD2C19 /* ImageIO.framework */; };
+		51BDA265174050A300BD2C19 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51BDA264174050A300BD2C19 /* FacebookSDK.framework */; };
 		51CCA1521732498D007616EA /* commentSymbolWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CCA1501732498D007616EA /* commentSymbolWhite.png */; };
 		51CCA1531732498D007616EA /* commentSymbolWhite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CCA1511732498D007616EA /* commentSymbolWhite@2x.png */; };
 		51CCA15617324998007616EA /* heartSymbolWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CCA15417324998007616EA /* heartSymbolWhite.png */; };
@@ -241,8 +240,6 @@
 		5157CD021650902900C22CCE /* BanyanConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BanyanConnection.m; path = Banyan/BanyanConnection.m; sourceTree = "<group>"; };
 		5158AE2816F56F7E0089193E /* BNTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNTabBarController.h; sourceTree = "<group>"; };
 		5158AE2916F56F7E0089193E /* BNTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNTabBarController.m; sourceTree = "<group>"; };
-		5166957616F98AB90014E65D /* UISwipeableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UISwipeableView.h; sourceTree = "<group>"; };
-		5166957716F98ABA0014E65D /* UISwipeableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UISwipeableView.m; sourceTree = "<group>"; };
 		5166B1B615E75B420072749C /* buttonFacebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebook.png; sourceTree = "<group>"; };
 		5166B1B715E75B420072749C /* buttonFacebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFacebook@2x.png"; sourceTree = "<group>"; };
 		5166B1B815E75B420072749C /* buttonFacebookSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebookSelected.png; sourceTree = "<group>"; };
@@ -359,7 +356,6 @@
 		519233311675305F009686E4 /* LocationPickerTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationPickerTableViewController.m; path = Banyan/LocationPickerTableViewController.m; sourceTree = "<group>"; };
 		519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		51A84944171BD95600367039 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
-		51A84946171BEC6200367039 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		51A84948171CF4A500367039 /* BNPlacePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNPlacePickerViewController.h; path = Banyan/BNPlacePickerViewController.h; sourceTree = "<group>"; };
 		51A84949171CF4A500367039 /* BNPlacePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNPlacePickerViewController.m; path = Banyan/BNPlacePickerViewController.m; sourceTree = "<group>"; };
 		51A8494B171D24E900367039 /* BNFBLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNFBLocationManager.h; path = Banyan/BNFBLocationManager.h; sourceTree = "<group>"; };
@@ -409,6 +405,7 @@
 		51BDA1E0173B788F00BD2C19 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = ../../Default.png; sourceTree = "<group>"; };
 		51BDA1E2173B789600BD2C19 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "../../Default@2x.png"; sourceTree = "<group>"; };
 		51BDA25E173EEC1500BD2C19 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		51BDA264174050A300BD2C19 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		51CCA1501732498D007616EA /* commentSymbolWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = commentSymbolWhite.png; sourceTree = "<group>"; };
 		51CCA1511732498D007616EA /* commentSymbolWhite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "commentSymbolWhite@2x.png"; sourceTree = "<group>"; };
 		51CCA15417324998007616EA /* heartSymbolWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = heartSymbolWhite.png; sourceTree = "<group>"; };
@@ -498,7 +495,7 @@
 				0B8D601560334B81AE48FCCD /* libPods.a in Frameworks */,
 				517A01B81709591B00665F0F /* libAviarySDK.a in Frameworks */,
 				51A84945171BD95600367039 /* Parse.framework in Frameworks */,
-				51A84947171BEC6200367039 /* FacebookSDK.framework in Frameworks */,
+				51BDA265174050A300BD2C19 /* FacebookSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -744,9 +741,9 @@
 		5189B2B615B387E200562DD0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				51BDA264174050A300BD2C19 /* FacebookSDK.framework */,
 				51BDA25E173EEC1500BD2C19 /* ImageIO.framework */,
 				51F57C531721141D00A76FA5 /* MessageUI.framework */,
-				51A84946171BEC6200367039 /* FacebookSDK.framework */,
 				51A84944171BD95600367039 /* Parse.framework */,
 				517A01BD17095F2100665F0F /* Accelerate.framework */,
 				517A01BB17095F0E00665F0F /* OpenGLES.framework */,
@@ -792,8 +789,6 @@
 				51B5989D15EB31B300DF4D9D /* BanyanConstants.m */,
 				5189B2C615B387E200562DD0 /* BanyanAppDelegate.h */,
 				5189B2C715B387E200562DD0 /* BanyanAppDelegate.m */,
-				5166957616F98AB90014E65D /* UISwipeableView.h */,
-				5166957716F98ABA0014E65D /* UISwipeableView.m */,
 				5158AE2D16F56F850089193E /* Tab Bar Controller */,
 				51B2351B17168C6D004241C1 /* Views */,
 				5189B2BE15B387E200562DD0 /* Supporting Files */,
@@ -1353,7 +1348,6 @@
 				51A8DC981692C4490017E86F /* Story+Permissions.m in Sources */,
 				51A8DCC41692DA900017E86F /* CoreDataTableViewController.m in Sources */,
 				5158AE2B16F56F7F0089193E /* BNTabBarController.m in Sources */,
-				5166957816F98ABB0014E65D /* UISwipeableView.m in Sources */,
 				51F095741702A6FB009D5A28 /* StoryListCellMiddleViewController.m in Sources */,
 				51F095761702A6FB009D5A28 /* StoryListCellReadSceneViewController.m in Sources */,
 				517A018C1706D92E00665F0F /* LocationPickerButton.m in Sources */,

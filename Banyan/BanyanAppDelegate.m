@@ -94,6 +94,9 @@
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
      UIRemoteNotificationTypeAlert];
     
+    [FBSettings enableBetaFeature:FBBetaFeaturesOpenGraphShareDialog];
+    [FBSettings enableBetaFeature:FBBetaFeaturesShareDialog];
+    
     [self setupTabBarController];
     self.navController = [[UINavigationController alloc] initWithRootViewController:self.tabBarController];
     self.navController.navigationBarHidden = YES;
@@ -146,14 +149,23 @@ void uncaughtExceptionHandler(NSException *exception)
 
 // For iOS 4.2+ support
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
-  sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+  sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    BOOL wasHandled = [FBAppCall handleOpenURL:url
+                             sourceApplication:sourceApplication];
+    
+    // add app-specific handling code here
     return [PFFacebookUtils handleOpenURL:url];
-}
+    return wasHandled;}
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
 {
+    BOOL wasHandled = [FBAppCall handleOpenURL:url
+                             sourceApplication:nil];
+    
+    // add app-specific handling code here
     return [PFFacebookUtils handleOpenURL:url];
-}
+    return wasHandled;}
 
 #pragma mark application methods
 
