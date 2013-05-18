@@ -45,5 +45,6 @@
 - (void) logout;
 + (BOOL)loggedIn;
 + (UIViewController*) topMostController;
++ (NSString *)applicationDocumentsDirectory;
 
 @end

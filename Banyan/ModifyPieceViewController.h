@@ -15,6 +15,7 @@
 #import "MediaPickerViewController.h"
 #import "MediaPickerButton.h"
 #import "TITokenField.h"
+#import "BNAudioRecorderView.h"
 
 @class  ModifyPieceViewController;
 

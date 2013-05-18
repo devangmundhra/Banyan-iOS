@@ -68,22 +68,33 @@
                           }];
     };
     
-    if ([story.media.localURL length]) {
-        // Upload the image then update the piece
-        [story.media
-         uploadWithSuccess:^{
-             updateStory(story);
-         }
-         failure:^(NSError *error) {
-             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
-                                                             message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
-                                                            delegate:nil
-                                                   cancelButtonTitle:@"OK"
-                                                   otherButtonTitles:nil];
-             [alert show];
-         }];
+    // Upload the file and then upload the story
+    if ([story.media count]) {
+        BOOL mediaBeingUploaded = NO;
+        for (Media *media in story.media) {
+            if ([media.localURL length]) {
+                // Upload the media then update the story
+                [media
+                 uploadWithSuccess:^{
+                     updateStory(story);
+                 }
+                 failure:^(NSError *error) {
+                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
+                                                                     message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
+                                                                    delegate:nil
+                                                           cancelButtonTitle:@"OK"
+                                                           otherButtonTitles:nil];
+                     [alert show];
+                 }];
+                mediaBeingUploaded = YES;
+            }
+        }
+        // Media wasn't changed.
+        if (!mediaBeingUploaded) {
+            updateStory(story);
+        }
     }
-    // Image wasn't changed.
+    // No media
     else {
         updateStory(story);
     }

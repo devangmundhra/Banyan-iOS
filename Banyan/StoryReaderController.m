@@ -88,7 +88,10 @@
     [self.view addSubview:self.pageViewController.view];
     self.pageViewController.view.frame = self.view.frame;
     [self.pageViewController didMoveToParentViewController:self];
-    
+    self.view.gestureRecognizers = self.pageViewController.gestureRecognizers;
+    [self.view.gestureRecognizers enumerateObjectsUsingBlock:^(UIGestureRecognizer *gR, NSUInteger idx, BOOL *stop){
+        gR.delegate = self;
+    }];
     [self setupToolbar];
     
     [[NSNotificationCenter defaultCenter] addObserver:self 
@@ -323,14 +326,15 @@
     NSUInteger pieceNum = [self pieceNumberForViewController:(ReadPieceViewController *)viewController];
     
     if (pieceNum >= [self.story.length unsignedIntegerValue]) {
-        NSLog(@"End of story reached for story %@", self.story.title);
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        hud.mode = MBProgressHUDModeText;
-        hud.labelText = @"End of story";
-        hud.detailsLabelText = self.story.title;
-        [self prepareToGoToStoryList];
-        self.currentPiece = nil;
-        return nil;
+        return [self viewControllerAtPieceNumber:1];
+//        NSLog(@"End of story reached for story %@", self.story.title);
+//        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//        hud.mode = MBProgressHUDModeText;
+//        hud.labelText = @"End of story";
+//        hud.detailsLabelText = self.story.title;
+//        [self prepareToGoToStoryList];
+//        self.currentPiece = nil;
+//        return nil;
     }
     else {
         pieceNum++;
@@ -346,14 +350,15 @@
     NSUInteger pieceNum = [self pieceNumberForViewController:(ReadPieceViewController *)viewController];
     
     if (pieceNum <= 1) {
-        NSLog(@"index: %u NOT FOUND", pieceNum);
-        NSLog(@"Beginning of story reached for story %@", self.story.title);
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        hud.mode = MBProgressHUDModeText;
-        hud.labelText = @"Beginning of story";
-        hud.detailsLabelText = @"Going back to story list";
-        [self prepareToGoToStoryList];
-        return nil;
+        return viewController;
+//        NSLog(@"index: %u NOT FOUND", pieceNum);
+//        NSLog(@"Beginning of story reached for story %@", self.story.title);
+//        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//        hud.mode = MBProgressHUDModeText;
+//        hud.labelText = @"Beginning of story";
+//        hud.detailsLabelText = @"Going back to story list";
+//        [self prepareToGoToStoryList];
+//        return nil;
     }
     else {
         pieceNum--;

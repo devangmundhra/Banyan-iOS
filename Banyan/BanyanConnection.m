@@ -187,13 +187,16 @@
     [mediaMapping addAttributeMappingsFromDictionary:@{@"url": @"remoteURL"}];
     [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType"]];
     mediaMapping.identificationAttributes = @[@"filename", @"remoteURL"];
-    [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:mediaMapping]];
+    [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media"
+                                                                                 toKeyPath:@"media"
+                                                                               withMapping:mediaMapping]];
     
     // Author
     RKObjectMapping *userMapping = [RKObjectMapping mappingForClass:[User class]];
     [userMapping addAttributeMappingsFromDictionary:@{@"objectId": @"userId"}];
     [userMapping addAttributeMappingsFromArray:@[@"username", @"name", @"firstName", @"lastName", @"facebookId", @"email"]];
     [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:userMapping]];
+    
     
     // Response
     RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceMapping

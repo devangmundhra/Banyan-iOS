@@ -36,7 +36,7 @@
 }
 
 // Upload the given story using RestKit
-+ (Story *)createNewStory:(Story *)story
++ (void)createNewStory:(Story *)story
 {    
     story.canContribute = story.canView = [NSNumber numberWithBool:YES];
     
@@ -63,7 +63,8 @@
         params.caption = story.title;
         params.description = @"Check this new story out!";
         params.friends = fbIds;
-        params.picture = [NSURL URLWithString:story.media.remoteURL];
+        Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:story.media];
+        params.picture = [NSURL URLWithString:imageMedia.remoteURL];
         params.ref = @"Story";
         [FBDialogs presentShareDialogWithParams:params clientState:nil handler:nil];
          
@@ -181,24 +182,35 @@
     };
     
     // Upload the file and then upload the story
-    if ([story.media.localURL length]) {
-        [story.media uploadWithSuccess:^{
-            uploadStory(story);
-            NSLog(@"Image saved on server");
+    if ([story.media count]) {
+        BOOL mediaBeingUploaded = NO;
+        for (Media *media in story.media) {
+            if ([media.localURL length]) {
+                // Upload the media then update the story
+                [media
+                 uploadWithSuccess:^{
+                     uploadStory(story);
+                 }
+                 failure:^(NSError *error) {
+                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
+                                                                     message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
+                                                                    delegate:nil
+                                                           cancelButtonTitle:@"OK"
+                                                           otherButtonTitles:nil];
+                     [alert show];
+                 }];
+                mediaBeingUploaded = YES;
+            }
         }
-                               failure:^(NSError *error) {
-                                   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
-                                                                                   message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
-                                                                                  delegate:nil
-                                                                         cancelButtonTitle:@"OK"
-                                                                         otherButtonTitles:nil];
-                                   [alert show];
-        }];
-    } else {
-        uploadStory(story);
+        // Media wasn't changed.
+        if (!mediaBeingUploaded) {
+            uploadStory(story);
+        }
     }
-    
-    return story;
+    // No media
+    else {
+        uploadStory(story);
+    }    
 }
 
 @end

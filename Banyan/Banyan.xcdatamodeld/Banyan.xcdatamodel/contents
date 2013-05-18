@@ -5,7 +5,7 @@
         <attribute name="commentID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
-        <relationship name="remoteObject" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="RemoteObject" inverseName="comments" inverseEntity="RemoteObject" syncable="YES"/>
+        <relationship name="remoteObject" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="RemoteObject" inverseName="comments" inverseEntity="RemoteObject" syncable="YES"/>
     </entity>
     <entity name="Media" representedClassName="Media" syncable="YES">
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
@@ -13,7 +13,7 @@
         <attribute name="filesize" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="height" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="length" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="localURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="localURL" optional="YES" transient="YES" attributeType="String" syncable="YES"/>
         <attribute name="mediaID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="mediaType" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="orientation" optional="YES" attributeType="String" syncable="YES"/>
@@ -23,7 +23,7 @@
         <attribute name="thumbnail" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="width" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <relationship name="remoteObject" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="RemoteObject" inverseName="media" inverseEntity="RemoteObject" syncable="YES"/>
+        <relationship name="remoteObject" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="RemoteObject" inverseName="media" inverseEntity="RemoteObject" syncable="YES"/>
     </entity>
     <entity name="Piece" representedClassName="Piece" parentEntity="RemoteObject" syncable="YES">
         <attribute name="longText" optional="YES" attributeType="String" syncable="YES"/>
@@ -36,7 +36,7 @@
     <entity name="RemoteObject" representedClassName="RemoteObject" isAbstract="YES" syncable="YES">
         <attribute name="author" attributeType="Transformable" syncable="YES"/>
         <attribute name="bnObjectId" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="createdAt" attributeType="Date" syncable="YES"/>
         <attribute name="isLocationEnabled" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="lastSynced" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="location" optional="YES" attributeType="Transformable" valueTransformerName="FBGraphObjectToDataTransformer" syncable="YES"/>
@@ -44,8 +44,8 @@
         <attribute name="remoteStatusNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="statistics" optional="YES" attributeType="Transformable" valueTransformerName="" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
-        <relationship name="comments" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Comment" inverseName="remoteObject" inverseEntity="Comment" syncable="YES"/>
-        <relationship name="media" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="Media" inverseName="remoteObject" inverseEntity="Media" syncable="YES"/>
+        <relationship name="comments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Comment" inverseName="remoteObject" inverseEntity="Comment" syncable="YES"/>
+        <relationship name="media" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Media" inverseName="remoteObject" inverseEntity="Media" syncable="YES"/>
     </entity>
     <entity name="Story" representedClassName="Story" parentEntity="RemoteObject" syncable="YES">
         <attribute name="canContribute" optional="YES" attributeType="Boolean" syncable="YES"/>
@@ -62,10 +62,10 @@
         <relationship name="pieces" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Piece" inverseName="story" inverseEntity="Piece" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Comment" positionX="160" positionY="192" width="128" height="120"/>
-        <element name="Media" positionX="160" positionY="192" width="128" height="285"/>
-        <element name="Piece" positionX="-306" positionY="-243" width="128" height="135"/>
-        <element name="RemoteObject" positionX="-729" positionY="0" width="128" height="225"/>
-        <element name="Story" positionX="-72" positionY="-454" width="128" height="225"/>
+        <element name="Comment" positionX="-407" positionY="-228" width="128" height="118"/>
+        <element name="Media" positionX="-587" positionY="-234" width="128" height="285"/>
+        <element name="Piece" positionX="-819" positionY="-441" width="128" height="135"/>
+        <element name="RemoteObject" positionX="-1091" positionY="-324" width="128" height="225"/>
+        <element name="Story" positionX="-578" positionY="-486" width="128" height="225"/>
     </elements>
 </model>

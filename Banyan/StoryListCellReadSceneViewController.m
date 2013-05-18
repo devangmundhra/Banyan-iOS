@@ -36,23 +36,28 @@
         return;
     }
     
-    if ([piece.media.remoteURL length]) {
-        [self.imageView setImageWithURL:[NSURL URLWithString:piece.media.remoteURL] placeholderImage:nil options:SDWebImageProgressiveDownload];
-    } else if ([piece.media.localURL length]) {
-        ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
-        [library assetForURL:[NSURL URLWithString:piece.media.localURL] resultBlock:^(ALAsset *asset) {
-            ALAssetRepresentation *rep = [asset defaultRepresentation];
-            CGImageRef imageRef = [rep fullScreenImage];
-            UIImage *image = [UIImage imageWithCGImage:imageRef];
-            [self.imageView setImage:image];
+    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:piece.media];
+    
+    if (imageMedia) {
+        if ([imageMedia.remoteURL length]) {
+            [self.imageView setImageWithURL:[NSURL URLWithString:imageMedia.remoteURL] placeholderImage:nil options:SDWebImageProgressiveDownload];
+        } else if ([imageMedia.localURL length]) {
+            ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
+            [library assetForURL:[NSURL URLWithString:imageMedia.localURL] resultBlock:^(ALAsset *asset) {
+                ALAssetRepresentation *rep = [asset defaultRepresentation];
+                CGImageRef imageRef = [rep fullScreenImage];
+                UIImage *image = [UIImage imageWithCGImage:imageRef];
+                [self.imageView setImage:image];
+            }
+                    failureBlock:^(NSError *error) {
+                        NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
+                    }
+             ];
+        } else {
+            [self.imageView setImageWithURL:nil];
         }
-                failureBlock:^(NSError *error) {
-                    NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
-                }
-         ];
-    } else {
-        [self.imageView setImageWithURL:nil];
     }
+
     if (piece.shortText) {
         self.textView.font = [UIFont fontWithName:@"Roboto-BoldCondensed" size:16];
         self.textView.text = piece.shortText;

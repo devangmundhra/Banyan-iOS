@@ -15,6 +15,7 @@
 #import "User_Defines.h"
 #import "InvitedTableViewController.h"
 #import "ASMediaFocusManager.h"
+#import "BNAudioStreamingPlayerView.h"
 
 @class ReadPieceViewController;
 

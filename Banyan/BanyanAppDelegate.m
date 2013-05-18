@@ -142,7 +142,7 @@ void uncaughtExceptionHandler(NSException *exception)
 /**
  Returns the path to the application's documents directory.
  */
-- (NSString *)applicationDocumentsDirectory
++ (NSString *)applicationDocumentsDirectory
 {
 	return [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
 }

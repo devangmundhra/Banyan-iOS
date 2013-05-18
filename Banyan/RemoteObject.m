@@ -2,28 +2,30 @@
 //  RemoteObject.m
 //  Banyan
 //
-//  Created by Devang Mundhra on 4/26/13.
+//  Created by Devang Mundhra on 5/15/13.
 //
 //
 
 #import "RemoteObject.h"
-#import "Statistics.h"
+#import "Comment.h"
 #import "Media.h"
+
 
 @implementation RemoteObject
 
 @dynamic author;
 @dynamic bnObjectId;
 @dynamic createdAt;
-@dynamic lastSynced;
-@dynamic remoteStatusNumber;
-@dynamic updatedAt;
-@dynamic media;
-@dynamic location;
-@dynamic statistics;
 @dynamic isLocationEnabled;
-@dynamic comments;
+@dynamic lastSynced;
+@dynamic location;
+@dynamic remoteStatusNumber;
+@dynamic statistics;
+@dynamic updatedAt;
 @dynamic permaLink;
+@dynamic comments;
+@dynamic media;
+
 
 #pragma mark -
 #pragma mark Revision management
@@ -38,13 +40,14 @@
         } else if ([key isEqualToString:@"comments"]) {
             NSLog(@"Copying relationship %@", key);
             [self setComments:[source comments]];
-        } else if ([key isEqualToString:@"media"]) { // TODO find a way to not have to do this
+        } else if ([key isEqualToString:@"media"]) {
             NSLog(@"Copying relationship %@", key);
-            self.media = [Media newMediaForObject:self];
-            for (NSString *key in [[[source.media entity] attributesByName] allKeys]) {
-                NSLog(@"Copying media attribute %@", key);
-                [self.media setValue:[source.media valueForKey:key] forKey:key];
-            }
+            [self setMedia:[source media]];
+//            self.media = [Media newMediaForObject:self];
+//            for (NSString *key in [[[source.media entity] attributesByName] allKeys]) {
+//                NSLog(@"Copying media attribute %@", key);
+//                [self.media setValue:[source.media valueForKey:key] forKey:key];
+//            }
         } else {
             NSLog(@"Copying relationship %@", key);
             [self setValue: [source valueForKey:key] forKey: key];

@@ -2,7 +2,7 @@
 //  Media.h
 //  Banyan
 //
-//  Created by Devang Mundhra on 4/26/13.
+//  Created by Devang Mundhra on 5/15/13.
 //
 //
 
@@ -17,22 +17,23 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
     MediaRemoteStatusProcessing, // Intermediate status before uploading
 };
 
+
 @class RemoteObject;
 
 @interface Media : NSManagedObject
 
-@property (nonatomic, strong) NSNumber * mediaID;
-@property (nonatomic, strong) NSString * mediaType;
-@property (weak, nonatomic, readonly) NSString * mediaTypeName;
 @property (nonatomic, retain) NSDate * createdAt;
-@property (nonatomic, retain) NSNumber * remoteStatusNumber;
 @property (nonatomic, retain) NSString * filename;
 @property (nonatomic, retain) NSNumber * filesize;
 @property (nonatomic, retain) NSNumber * height;
 @property (nonatomic, retain) NSNumber * length;
 @property (nonatomic, retain) NSString * localURL;
+@property (nonatomic, retain) NSNumber * mediaID;
+@property (nonatomic, retain) NSString * mediaType;
+@property (weak, nonatomic, readonly) NSString * mediaTypeName;
 @property (nonatomic, retain) NSString * orientation;
 @property (nonatomic) float progress;
+@property (nonatomic, retain) NSNumber * remoteStatusNumber;
 @property (nonatomic, retain) NSString * remoteURL;
 @property (nonatomic, retain) NSData * thumbnail;
 @property (nonatomic, retain) NSString * title;
@@ -49,4 +50,5 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
 - (void)remove;
 - (void)save;
 
++ (Media *)getMediaOfType:(NSString *)type inMediaSet:(NSSet *)mediaSet;
 @end

@@ -12,6 +12,6 @@
 
 @interface Story (Create)
 
-+ (Story *) createNewStory:(Story *)story;
++ (void) createNewStory:(Story *)story;
 + (Story *) newDraftStory;
 @end

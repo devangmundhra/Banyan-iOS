@@ -27,6 +27,7 @@
 @property (strong, nonatomic) IBOutlet SSLabel *pieceCaptionView;
 @property (strong, nonatomic) IBOutlet UITextView *pieceTextView;
 @property (strong, nonatomic) IBOutlet UIImageView *imageView;
+@property (strong, nonatomic) IBOutlet BNAudioStreamingPlayerView *audioPlayer;
 
 @property (strong, nonatomic) IBOutlet UIView *pieceInfoView;
 @property (strong, nonatomic) IBOutlet UIButton *contributorsButton;
@@ -46,7 +47,6 @@
 @property (strong, nonatomic) AMBlockToken *pieceObserverToken4;
 
 @property (strong, nonatomic) ASMediaFocusManager *mediaFocusManager;
-
 @end
 
 @implementation ReadPieceViewController
@@ -68,6 +68,7 @@
 @synthesize pageControl = _pageControl;
 @synthesize pieceObserverToken1, pieceObserverToken2, pieceObserverToken3, pieceObserverToken4;
 @synthesize mediaFocusManager = _mediaFocusManager;
+@synthesize audioPlayer = _audioPlayer;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -197,6 +198,7 @@
     [self setPageControl:nil];
     [self removePieceObserver];
     [self setMediaFocusManager:nil];
+    [self setAudioPlayer:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -223,18 +225,30 @@
     }
     self.imageView = nil;
     
+    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
+    Media *audioMedia = [Media getMediaOfType:@"audio" inMediaSet:self.piece.media];
+    
     // Allocate custom parts of the view depending on what the piece contains
-    BOOL hasImage = [self.piece.media.localURL length] || [self.piece.media.remoteURL length];
+    BOOL hasAudio = [audioMedia.localURL length] || [audioMedia.remoteURL length];
+    BOOL hasImage = [imageMedia.localURL length] || [imageMedia.remoteURL length];
     BOOL hasCaption = [self.piece.shortText length];
     BOOL hasDescription = [self.piece.longText length];
     
+    // If there is audio, its always at the top of the content.
     // If there is no long text full screen image, else image size of half size
     // If there is an image and no long text, pieceInfo/caption is at the bottom
     // If there is no image or long text, pieceInfo/caption in the middle
     // Long text always below caption
-    CGRect frame;
+    CGRect frame = [UIScreen mainScreen].bounds;
     CGSize csize = self.contentView.contentSize;
     csize.height = 0;
+    
+    if (hasAudio) {
+        frame = CGRectMake(0, 0, CGRectGetWidth(frame), 50);
+        self.audioPlayer = [[BNAudioStreamingPlayerView alloc] initWithFrame:frame];
+        [self.contentView addSubview:self.audioPlayer];
+        csize.height = CGRectGetMaxY(self.audioPlayer.frame);
+    }
     
     if (hasImage) {
         frame = [UIScreen mainScreen].bounds;
@@ -256,7 +270,7 @@
         if (hasImage && !hasDescription) {
             frame = CGRectMake(0, 0.5*frame.size.height, frame.size.width, 40);
         } else {
-            frame = CGRectMake(0, CGRectGetMaxY(self.imageView.frame), frame.size.width, 40);
+            frame = CGRectMake(0, MAX(CGRectGetMaxY(self.imageView.frame), CGRectGetMaxY(self.audioPlayer.frame)), frame.size.width, 40);
         }
         self.pieceInfoView.frame = frame;
         [self.contentView bringSubviewToFront:self.pieceInfoView];
@@ -346,12 +360,20 @@
     self.contentView.contentSize = csize;
     [self.contentView setContentOffset:CGPointMake(0,0)];
     
-    if (hasImage) {        
-        if ([self.piece.media.remoteURL length]) {
-            [self.imageView setImageWithURL:[NSURL URLWithString:self.piece.media.remoteURL] placeholderImage:nil options:SDWebImageProgressiveDownload];
+    if (hasAudio) {
+        if ([audioMedia.remoteURL length]) {
+            [self.audioPlayer loadWithURL:audioMedia.remoteURL];
+        } else {
+            [self.audioPlayer loadWithURL:audioMedia.localURL];
+        }
+    }
+    
+    if (hasImage) {
+        if ([imageMedia.remoteURL length]) {
+            [self.imageView setImageWithURL:[NSURL URLWithString:imageMedia.remoteURL] placeholderImage:nil options:SDWebImageProgressiveDownload];
         } else {
             ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
-            [library assetForURL:[NSURL URLWithString:self.piece.media.localURL] resultBlock:^(ALAsset *asset) {
+            [library assetForURL:[NSURL URLWithString:imageMedia.localURL] resultBlock:^(ALAsset *asset) {
                 ALAssetRepresentation *rep = [asset defaultRepresentation];
                 CGImageRef imageRef = [rep fullScreenImage];
                 UIImage *image = [UIImage imageWithCGImage:imageRef];
@@ -555,11 +577,12 @@
 - (NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view
 {
     NSURL *url = nil;
-    
-    if ([self.piece.media.remoteURL length])
-        url = [NSURL URLWithString:self.piece.media.remoteURL];
-    else if ([self.piece.media.localURL length])
-        url = [NSURL URLWithString:self.piece.media.localURL];
+    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
+
+    if ([imageMedia.remoteURL length])
+        url = [NSURL URLWithString:imageMedia.remoteURL];
+    else if ([imageMedia.localURL length])
+        url = [NSURL URLWithString:imageMedia.localURL];
     
     return url;
 }

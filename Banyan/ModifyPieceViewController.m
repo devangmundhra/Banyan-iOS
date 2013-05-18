@@ -31,6 +31,8 @@
 @property (weak, nonatomic) IBOutlet MediaPickerButton *addPhotoButton;
 @property (weak, nonatomic) IBOutlet TITokenFieldView *tagsFieldView;
 
+@property (weak, nonatomic) IBOutlet BNAudioRecorderView *audioPicker;
+
 @property (weak, nonatomic) UITextField *activeField;
 
 @property (strong, nonatomic) BNFBLocationManager *locationManager;
@@ -53,6 +55,7 @@
 @synthesize pieceCaptionView, addLocationButton, addPhotoButton;
 @synthesize backupPiece_ = _backupPiece_;
 @synthesize activeField = _activeField;
+@synthesize audioPicker = _audioPicker;
 
 #define kTokenisingCharacter @","
 
@@ -116,23 +119,33 @@
     
     if (self.editMode == ModifyPieceViewControllerEditModeEditPiece)
     {
-        if ([self.piece.media.remoteURL length]) {
-            [self.addPhotoButton.imageView setImageWithURL:[NSURL URLWithString:self.piece.media.remoteURL] placeholderImage:nil options:SDWebImageProgressiveDownload];
-        } else if ([self.piece.media.localURL length]) {
-            ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
-            [library assetForURL:[NSURL URLWithString:self.piece.media.localURL] resultBlock:^(ALAsset *asset) {
-                ALAssetRepresentation *rep = [asset defaultRepresentation];
-                CGImageRef imageRef = [rep fullScreenImage];
-                UIImage *image = [UIImage imageWithCGImage:imageRef];
-                [self.addPhotoButton.imageView setImage:image];
+        Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
+        
+        if (imageMedia) {
+            if ([imageMedia.remoteURL length]) {
+                [self.addPhotoButton.imageView setImageWithURL:[NSURL URLWithString:imageMedia.remoteURL] placeholderImage:nil options:SDWebImageProgressiveDownload];
+            } else if ([imageMedia.localURL length]) {
+                ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
+                [library assetForURL:[NSURL URLWithString:imageMedia.localURL] resultBlock:^(ALAsset *asset) {
+                    ALAssetRepresentation *rep = [asset defaultRepresentation];
+                    CGImageRef imageRef = [rep fullScreenImage];
+                    UIImage *image = [UIImage imageWithCGImage:imageRef];
+                    [self.addPhotoButton.imageView setImage:image];
+                }
+                        failureBlock:^(NSError *error) {
+                            NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
+                        }
+                 ];
+            } else {
+                [self.addPhotoButton.imageView  setImageWithURL:nil];
             }
-                    failureBlock:^(NSError *error) {
-                        NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
-                    }
-             ];
-        } else {
-            [self.addPhotoButton.imageView  setImageWithURL:nil];
         }
+        
+        Media *audioMedia = [Media getMediaOfType:@"audio" inMediaSet:self.piece.media];
+        if (audioMedia ) {
+            
+        }
+        
         self.pieceCaptionView.text = self.piece.shortText;
         self.pieceTextView.text = self.piece.longText;
         self.navigationBar.topItem.title = @"Edit Piece";
@@ -181,6 +194,7 @@
     [self setScrollView:nil];
     [self setPieceCaptionView:nil];
     [self setTagsFieldView:nil];
+    [self setAudioPicker:nil];
     [super viewDidUnload]; 
     [self unregisterForKeyboardNotifications];
 }
@@ -233,6 +247,13 @@
         self.piece.location = (FBGraphObject<FBGraphPlace> *)self.locationManager.location;
     }
     
+    NSURL *audioRecording = [self.audioPicker getRecording];
+    if (audioRecording) {
+        Media *media = [Media newMediaForObject:self.piece];
+        media.mediaType = @"audio";
+        media.localURL = [audioRecording absoluteString];
+    }
+    
     if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
     {        
         [Piece createNewPiece:self.piece afterPiece:nil];
@@ -283,11 +304,12 @@
 - (void) mediaPickerButtonTapped:(MediaPickerButton *)sender
 {
     [self dismissKeyboard:sender];
+    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
     
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Modify Photo"
                                                              delegate:self
                                                     cancelButtonTitle:@"Cancel"
-                                               destructiveButtonTitle:self.piece.media ? @"Delete Photo" : nil
+                                               destructiveButtonTitle:imageMedia ? @"Delete Photo" : nil
                                                     otherButtonTitles:nil];
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
         [actionSheet addButtonWithTitle:MediaPickerControllerSourceTypeCamera];
@@ -305,13 +327,14 @@
         // DO NOTHING ON CANCEL
     }
     else if (buttonIndex == actionSheet.destructiveButtonIndex) {
+        Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
         // If its a local image, don't delete it
-        if ([self.piece.media.localURL length])
-            self.piece.media.localURL = nil;
-        if ([self.piece.media.remoteURL length]) {
-            [self.piece.media deleteWitSuccess:nil failure:nil];
+        if ([imageMedia.localURL length])
+            imageMedia.localURL = nil;
+        if ([imageMedia.remoteURL length]) {
+            [imageMedia deleteWitSuccess:nil failure:nil];
         }
-        [self.piece.media remove];
+        [imageMedia remove];
         [self.addPhotoButton.imageView setImageWithURL:nil];
         self.doneButton.enabled = YES;
     }
@@ -335,11 +358,10 @@
 #pragma mark MediaPickerViewControllerDelegate methods
 - (void) mediaPicker:(MediaPickerViewController *)mediaPicker finishedPickingMediaWithInfo:(NSDictionary *)info
 {
-    if (!self.piece.media)
-        self.piece.media = [Media newMediaForObject:self.piece];
-    self.piece.media.mediaType = @"image";
+    Media *media = [Media newMediaForObject:self.piece];
+    media.mediaType = @"image";
     UIImage *image = [info objectForKey:MediaPickerViewControllerInfoImage];
-    self.piece.media.localURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
+    media.localURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
     
     [self.addPhotoButton.imageView  cancelImageRequestOperation];
     [NSThread detachNewThreadSelector:@selector(useImage:) toTarget:self withObject:image];

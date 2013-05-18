@@ -2,7 +2,7 @@
 //  Media.m
 //  Banyan
 //
-//  Created by Devang Mundhra on 4/26/13.
+//  Created by Devang Mundhra on 5/15/13.
 //
 //
 
@@ -11,20 +11,21 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "UIImage+ResizeAdditions.h"
 #import "AFParseAPIClient.h"
+#import "BNMisc.h"
 
 @implementation Media
 
-@dynamic mediaID;
-@dynamic mediaType;
 @dynamic createdAt;
-@dynamic remoteStatusNumber;
 @dynamic filename;
 @dynamic filesize;
 @dynamic height;
 @dynamic length;
 @dynamic localURL;
+@dynamic mediaID;
+@dynamic mediaType;
 @dynamic orientation;
 @dynamic progress;
+@dynamic remoteStatusNumber;
 @dynamic remoteURL;
 @dynamic thumbnail;
 @dynamic title;
@@ -37,7 +38,7 @@
                                                              inManagedObjectContext:[remoteObject managedObjectContext]]
                   insertIntoManagedObjectContext:[remoteObject managedObjectContext]];
     
-    media.remoteObject = remoteObject;    
+    media.remoteObject = remoteObject;
     return media;
 }
 
@@ -93,6 +94,8 @@
         return NSLocalizedString(@"Image", @"");
     } else if ([self.mediaType isEqualToString:@"video"]) {
         return NSLocalizedString(@"Video", @"");
+    } else if ([self.mediaType isEqualToString:@"audio"]) {
+        return NSLocalizedString(@"Audio", @"");
     } else {
         return self.mediaType;
     }
@@ -122,39 +125,17 @@
 - (void) uploadWithSuccess:(void (^)())successBlock failure:(void (^)(NSError *error))errorBlock
 {
     [self save];
-    self.remoteStatus = MediaRemoteStatusProcessing;
-    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-    
-    [library assetForURL:[NSURL URLWithString:self.localURL] resultBlock:^(ALAsset *asset) {
-        NSData *imageData;
-        PFFile *imageFile = nil;
-        
-        ALAssetRepresentation *rep = [asset defaultRepresentation];
-        CGImageRef imageRef = [rep fullScreenImage]; // not fullResolutionImage
-        UIImage *image = [UIImage imageWithCGImage:imageRef];
-        
-        // For now, compress the image before sending.
-        // When PUT API is done, compress on the server
-        // TODO
-        UIImage *resizedImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:[[UIScreen mainScreen] bounds].size interpolationQuality:kCGInterpolationLow];
-        
-        imageData = UIImageJPEGRepresentation(resizedImage, 1);
-        imageFile = [PFFile fileWithData:imageData];
-        self.remoteStatus = MediaRemoteStatusPushing;
-
-        [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            self.remoteURL = imageFile.url;
-            self.filename = imageFile.name;
-            self.remoteStatus = MediaRemoteStatusSync;
-            successBlock();
-        }];
+    if (self.remoteStatus == MediaRemoteStatusSync) {
+        return;
     }
-            failureBlock:^(NSError *error) {
-                self.remoteStatus = MediaRemoteStatusFailed;
-                errorBlock(error);
-            }
-     ];
+    
+    if ([self.mediaType isEqualToString:@"image"]) {
+        [self uploadImageWithSuccess:successBlock failure:errorBlock];
+    } else if ([self.mediaType isEqualToString:@"audio"]) {
+        [self uploadAudioWithSuccess:successBlock failure:errorBlock];
+    }
 }
+
 
 - (void) deleteWitSuccess:(void (^)(void))successBlock failure:(void (^)(NSError *error))errorBlock
 {
@@ -177,6 +158,84 @@
                                         }];
     
     [[AFParseAPIClient sharedClient] setDefaultHeader:@"X-Parse-Master-Key" value:nil];
+}
+
++ (Media *)getMediaOfType:(NSString *)type inMediaSet:(NSSet *)mediaSet
+{
+    Media *mediaToReturn = nil;
+    for (Media *media in mediaSet) {
+        if ([media.mediaType isEqualToString:type]) {
+            mediaToReturn = media;
+            break;
+        }
+    }
+    return mediaToReturn;
+}
+
+# pragma mark Private methods
+- (void) uploadAudioWithSuccess:(void (^)())successBlock failure:(void (^)(NSError *error))errorBlock
+{
+    self.remoteStatus = MediaRemoteStatusProcessing;
+    NSData *audioData = nil;
+    PFFile *audioFile = nil;
+    audioData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.localURL]];
+    audioFile = [PFFile fileWithName:[NSString stringWithFormat:@"%@.caf", [BNMisc genRandStringLength:10]]
+                                data:audioData];
+    self.remoteStatus = MediaRemoteStatusPushing;
+    
+    [audioFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            self.remoteURL = audioFile.url;
+            self.filename = audioFile.name;
+            self.remoteStatus = MediaRemoteStatusSync;
+            self.localURL = nil;
+            successBlock();
+        } else {
+            errorBlock(error);
+        }
+    }];
+}
+
+- (void) uploadImageWithSuccess:(void (^)())successBlock failure:(void (^)(NSError *error))errorBlock
+{
+    self.remoteStatus = MediaRemoteStatusProcessing;
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+    
+    [library assetForURL:[NSURL URLWithString:self.localURL] resultBlock:^(ALAsset *asset) {
+        NSData *imageData;
+        PFFile *imageFile = nil;
+        
+        ALAssetRepresentation *rep = [asset defaultRepresentation];
+        CGImageRef imageRef = [rep fullScreenImage]; // not fullResolutionImage
+        UIImage *image = [UIImage imageWithCGImage:imageRef];
+        
+        // For now, compress the image before sending.
+        // When PUT API is done, compress on the server
+        // TODO
+        UIImage *resizedImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:[[UIScreen mainScreen] bounds].size interpolationQuality:kCGInterpolationLow];
+        
+        imageData = UIImagePNGRepresentation(resizedImage);
+        imageFile = [PFFile fileWithName:[NSString stringWithFormat:@"%@.png", [BNMisc genRandStringLength:10]]
+                                    data:imageData];
+        self.remoteStatus = MediaRemoteStatusPushing;
+        
+        [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (succeeded) {
+                self.remoteURL = imageFile.url;
+                self.filename = imageFile.name;
+                self.remoteStatus = MediaRemoteStatusSync;
+                self.localURL = nil;
+                successBlock();
+            } else {
+                errorBlock(error);
+            }
+        }];
+    }
+            failureBlock:^(NSError *error) {
+                self.remoteStatus = MediaRemoteStatusFailed;
+                errorBlock(error);
+            }
+     ];
 }
 
 @end

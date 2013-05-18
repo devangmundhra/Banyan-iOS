@@ -67,25 +67,35 @@
                           }];
     };
     
-    if ([piece.media.localURL length]) {
-        // Upload the image then update the piece
-        [piece.media
-         uploadWithSuccess:^{
+    if ([piece.media count]) {
+        BOOL mediaBeingUploaded = NO;
+        for (Media *media in piece.media) {
+            if ([media.localURL length]) {
+                // Upload the media then update the piece
+                [media
+                 uploadWithSuccess:^{
+                     updatePiece(piece);
+                 }
+                 failure:^(NSError *error) {
+                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
+                                                                     message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
+                                                                    delegate:nil
+                                                           cancelButtonTitle:@"OK"
+                                                           otherButtonTitles:nil];
+                     [alert show];
+                 }];
+                mediaBeingUploaded = YES;
+            }
+        }
+        // Media wasn't changed
+        if (!mediaBeingUploaded) {
             updatePiece(piece);
         }
-         failure:^(NSError *error) {
-             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
-                                                             message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
-                                                            delegate:nil
-                                                   cancelButtonTitle:@"OK"
-                                                   otherButtonTitles:nil];
-                                   [alert show];
-                               }];
     }
-    // Image wasn't changed.
+    // No media changed.
     else {
         updatePiece(piece);
-    }
+    }    
 }
 
 @end

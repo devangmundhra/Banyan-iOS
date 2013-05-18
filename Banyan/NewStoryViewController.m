@@ -18,6 +18,7 @@
 #import "SSTextField.h"
 #import "Media.h"
 #import "SDWebImage/UIImageView+WebCache.h"
+#import "BNMisc.h"
 
 @interface NewStoryViewController ()
 {
@@ -236,20 +237,12 @@
     [self presentViewController:[[UINavigationController alloc] initWithRootViewController:invitedTableViewController] animated:YES completion:nil];
 }
 
-- (NSString *)defaultStoryTitle
-{
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setTimeStyle:NSDateFormatterShortStyle];
-    [dateFormatter setDateStyle:NSDateFormatterLongStyle];
-    return [dateFormatter stringFromDate:[NSDate date]];
-}
-
 // Save the new story added
 - (IBAction)doneNewStory:(UIBarButtonItem *)sender 
 {
     [self dismissKeyboard:nil];
     // Title
-    self.story.title = ![self.storyTitleTextField.text isEqualToString:@""] ? self.storyTitleTextField.text : [self defaultStoryTitle];
+    self.story.title = ![self.storyTitleTextField.text isEqualToString:@""] ? self.storyTitleTextField.text : [BNMisc longCurrentDate];
     
     // Story Privacy    
     self.story.writeAccess = [self contributorPrivacyDictionary];
@@ -269,7 +262,7 @@
     NSLog(@"tags are %@", tags);
     
     // Upload Story
-    self.story = [Story createNewStory:self.story];
+    [Story createNewStory:self.story];
 
     NSLog(@"New story %@ saved", self.story);
     [TestFlight passCheckpoint:@"New Story created successfully"];
@@ -388,10 +381,12 @@
 {
     [self dismissKeyboard:sender];
     
+    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.story.media];
+
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Modify Photo"
                                                              delegate:self
                                                     cancelButtonTitle:@"Cancel"
-                                               destructiveButtonTitle:self.story.media ? @"Delete Photo" : nil
+                                               destructiveButtonTitle:imageMedia ? @"Delete Photo" : nil
                                                     otherButtonTitles:nil];
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
         [actionSheet addButtonWithTitle:MediaPickerControllerSourceTypeCamera];
@@ -410,13 +405,14 @@
         // DO NOTHING ON CANCEL
     }
     else if (buttonIndex == actionSheet.destructiveButtonIndex) {
+        Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.story.media];
         // If its a local image, don't delete it
-        if ([self.story.media.localURL length])
-            self.story.media.localURL = nil;
-        if ([self.story.media.remoteURL length]) {
-            [self.story.media deleteWitSuccess:nil failure:nil];
+        if ([imageMedia.localURL length])
+            imageMedia.localURL = nil;
+        if ([imageMedia.remoteURL length]) {
+            [imageMedia deleteWitSuccess:nil failure:nil];
         }
-        [self.story.media remove];
+        [imageMedia remove];
         [self.addPhotoButton.imageView setImageWithURL:nil];
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:MediaPickerControllerSourceTypeCamera]) {
@@ -439,11 +435,10 @@
 #pragma mark MediaPickerViewControllerDelegate methods
 - (void) mediaPicker:(MediaPickerViewController *)mediaPicker finishedPickingMediaWithInfo:(NSDictionary *)info
 {
-    if (!self.story.media)
-        self.story.media = [Media newMediaForObject:self.story];
-    self.story.media.mediaType = @"image";
+    Media *media = [Media newMediaForObject:self.story];
+    media.mediaType = @"image";
     UIImage *image = [info objectForKey:MediaPickerViewControllerInfoImage];
-    self.story.media.localURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
+    media.localURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
     
     [self.addPhotoButton.imageView  cancelImageRequestOperation];
     [NSThread detachNewThreadSelector:@selector(useImage:) toTarget:self withObject:image];

@@ -7,6 +7,7 @@
 //
 
 #import "Piece+Create.h"
+#import "Piece+Edit.h"
 #import "Piece_Defines.h"
 #import "Story_Defines.h"
 #import "AFBanyanAPIClient.h"
@@ -45,7 +46,7 @@
     }];
     
     [piece save];
-    NSLog(@"Adding scene %@ for story %@", piece, piece.story);
+    NSLog(@"Adding piece %@ for story %@", piece, piece.story);
     
     // Block to upload the piece
     void (^uploadPiece)(Piece *) = ^(Piece *piece) {
@@ -94,30 +95,19 @@
                               NSLog(@"Create piece successful %@", piece);
                               piece.remoteStatus = RemoteObjectStatusSync;
                               [piece save];
+                              if ([piece.media count]) {
+                                  // Media should be uploaded asynchronously.
+                                  // So edit the piece now which will in turn upload the media.
+                                  [Piece editPiece:piece];
+                              }
                           }
                           failure:^(RKObjectRequestOperation *operation, NSError *error) {
                               piece.remoteStatus = RemoteObjectStatusFailed;
                               NSLog(@"Error in create piece");
                           }];
     };
-    
-    // Upload the file and then upload the story
-    if ([piece.media.localURL length]) {
-        [piece.media uploadWithSuccess:^{
-            uploadPiece(piece);
-            NSLog(@"Image saved on server");
-        }
-                               failure:^(NSError *error) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
-                                                            message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
-            [alert show];
-        }];
-    } else {
-        uploadPiece(piece);
-    }
+
+    uploadPiece(piece);
 }
 
 @end
