@@ -123,6 +123,7 @@
 								<array class="NSMutableArray" key="NSSubviews"/>
 								<string key="NSFrame">{{0, 346}, {320, 48}}</string>
 								<reference key="NSSuperview" ref="36202901"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<object class="NSColor" key="IBUIBackgroundColor">
 									<int key="NSColorSpace">3</int>
@@ -315,11 +316,11 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">audioPicker</string>
+						<string key="label">audioPickerView</string>
 						<reference key="source" ref="372490531"/>
 						<reference key="destination" ref="214818045"/>
 					</object>
-					<int key="connectionID">102</int>
+					<int key="connectionID">157</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
@@ -1158,7 +1159,6 @@
 					<reference ref="821637667"/>
 					<reference ref="971441042"/>
 				</array>
-				<string key="101.CustomClassName">BNAudioRecorderView</string>
 				<string key="101.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<array class="NSMutableArray" key="101.IBViewMetadataConstraints">
 					<reference ref="202815071"/>
@@ -1263,7 +1263,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">156</int>
+			<int key="maxID">157</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>

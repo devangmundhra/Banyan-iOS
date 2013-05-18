@@ -27,7 +27,7 @@
 @property (strong, nonatomic) IBOutlet SSLabel *pieceCaptionView;
 @property (strong, nonatomic) IBOutlet UITextView *pieceTextView;
 @property (strong, nonatomic) IBOutlet UIImageView *imageView;
-@property (strong, nonatomic) IBOutlet BNAudioStreamingPlayerView *audioPlayer;
+@property (strong, nonatomic) IBOutlet BNAudioStreamingPlayer *audioPlayer;
 
 @property (strong, nonatomic) IBOutlet UIView *pieceInfoView;
 @property (strong, nonatomic) IBOutlet UIButton *contributorsButton;
@@ -243,11 +243,14 @@
     CGSize csize = self.contentView.contentSize;
     csize.height = 0;
     
-    if (hasAudio) {
+    if (hasAudio) {        
         frame = CGRectMake(0, 0, CGRectGetWidth(frame), 50);
-        self.audioPlayer = [[BNAudioStreamingPlayerView alloc] initWithFrame:frame];
-        [self.contentView addSubview:self.audioPlayer];
-        csize.height = CGRectGetMaxY(self.audioPlayer.frame);
+        self.audioPlayer = [[BNAudioStreamingPlayer alloc] init];
+        [self addChildViewController:self.audioPlayer];
+        [self.contentView addSubview:self.audioPlayer.view];
+        self.audioPlayer.view.frame = frame;
+        [self.audioPlayer didMoveToParentViewController:self];
+        csize.height = CGRectGetMaxY(self.audioPlayer.view.frame);
     }
     
     if (hasImage) {
@@ -270,7 +273,7 @@
         if (hasImage && !hasDescription) {
             frame = CGRectMake(0, 0.5*frame.size.height, frame.size.width, 40);
         } else {
-            frame = CGRectMake(0, MAX(CGRectGetMaxY(self.imageView.frame), CGRectGetMaxY(self.audioPlayer.frame)), frame.size.width, 40);
+            frame = CGRectMake(0, MAX(CGRectGetMaxY(self.imageView.frame), CGRectGetMaxY(self.audioPlayer.view.frame)), frame.size.width, 40);
         }
         self.pieceInfoView.frame = frame;
         [self.contentView bringSubviewToFront:self.pieceInfoView];

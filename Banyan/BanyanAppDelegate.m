@@ -119,7 +119,7 @@ void uncaughtExceptionHandler(NSException *exception)
 {
     [[UINavigationBar appearance] setTintColor:BANYAN_GREEN_COLOR];
     
-    [[UIToolbar appearance] setTintColor:BANYAN_GREEN_COLOR];
+//    [[UIToolbar appearance] setTintColor:BANYAN_GREEN_COLOR];
     
     [[UIBarButtonItem appearance] setTintColor:BANYAN_GREEN_COLOR];
     
@@ -127,9 +127,9 @@ void uncaughtExceptionHandler(NSException *exception)
     
     [[UISegmentedControl appearance] setTintColor:BANYAN_GREEN_COLOR];
         
-    [[UISlider appearance] setThumbTintColor:BANYAN_GREEN_COLOR];
-    
-    [[UISlider appearance] setMinimumTrackTintColor:BANYAN_BROWN_COLOR];
+//    [[UISlider appearance] setThumbTintColor:BANYAN_GREEN_COLOR];
+//    
+//    [[UISlider appearance] setMinimumTrackTintColor:BANYAN_BROWN_COLOR];
     
     [[UITabBar appearance] setSelectedImageTintColor:BANYAN_BROWN_COLOR];
     

@@ -31,7 +31,8 @@
 @property (weak, nonatomic) IBOutlet MediaPickerButton *addPhotoButton;
 @property (weak, nonatomic) IBOutlet TITokenFieldView *tagsFieldView;
 
-@property (weak, nonatomic) IBOutlet BNAudioRecorderView *audioPicker;
+@property (strong, nonatomic) BNAudioRecorder *audioRecorder;
+@property (weak, nonatomic) IBOutlet UIView *audioPickerView;
 
 @property (weak, nonatomic) UITextField *activeField;
 
@@ -55,7 +56,8 @@
 @synthesize pieceCaptionView, addLocationButton, addPhotoButton;
 @synthesize backupPiece_ = _backupPiece_;
 @synthesize activeField = _activeField;
-@synthesize audioPicker = _audioPicker;
+@synthesize audioPickerView = _audioPickerView;
+@synthesize audioRecorder = _audioRecorder;
 
 #define kTokenisingCharacter @","
 
@@ -108,6 +110,12 @@
         [self.addLocationButton locationPickerLocationEnabled:YES];
         [self.addLocationButton setLocationPickerTitle:self.piece.location.name];
     }
+    
+    self.audioRecorder = [[BNAudioRecorder alloc] init];
+    [self addChildViewController:self.audioRecorder];
+    [self.audioPickerView addSubview:self.audioRecorder.view];
+    self.audioRecorder.view.frame = self.audioPickerView.bounds;
+    [self.audioRecorder didMoveToParentViewController:self];
     
     self.pieceCaptionView.delegate = self;
     self.pieceCaptionView.textEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 20);
@@ -194,7 +202,8 @@
     [self setScrollView:nil];
     [self setPieceCaptionView:nil];
     [self setTagsFieldView:nil];
-    [self setAudioPicker:nil];
+    [self setAudioPickerView:nil];
+    [self setAudioRecorder:nil];
     [super viewDidUnload]; 
     [self unregisterForKeyboardNotifications];
 }
@@ -247,7 +256,7 @@
         self.piece.location = (FBGraphObject<FBGraphPlace> *)self.locationManager.location;
     }
     
-    NSURL *audioRecording = [self.audioPicker getRecording];
+    NSURL *audioRecording = [self.audioRecorder getRecording];
     if (audioRecording) {
         Media *media = [Media newMediaForObject:self.piece];
         media.mediaType = @"audio";

@@ -25,14 +25,12 @@
 		5128EB4717472FF600393173 /* delete.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128EB3B17472FF600393173 /* delete.png */; };
 		5128EB4817472FF600393173 /* stop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128EB3C17472FF600393173 /* stop@2x.png */; };
 		5128EB4917472FF600393173 /* stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128EB3D17472FF600393173 /* stop.png */; };
-		5128EB4A17472FF600393173 /* recordRedGray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128EB3E17472FF600393173 /* recordRedGray@2x.png */; };
-		5128EB4B17472FF600393173 /* rocordRedGray.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128EB3F17472FF600393173 /* rocordRedGray.png */; };
 		5128EB4C17472FF600393173 /* play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128EB4017472FF600393173 /* play@2x.png */; };
 		5128EB4D17472FF600393173 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128EB4117472FF600393173 /* play.png */; };
 		5128EB4E17472FF600393173 /* record@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128EB4217472FF600393173 /* record@2x.png */; };
 		5128EB4F17472FF600393173 /* record.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128EB4317472FF600393173 /* record.png */; };
-		5128EB5017472FF600393173 /* microphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128EB4417472FF600393173 /* microphone.png */; };
-		5128EB5117472FF600393173 /* microphone@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128EB4517472FF600393173 /* microphone@2x.png */; };
+		5128EB5417478B3D00393173 /* BNAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 5128EB5317478B3D00393173 /* BNAudioRecorder.m */; };
+		5128EB5717478B5500393173 /* BNAudioStreamingPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5128EB5617478B5500393173 /* BNAudioStreamingPlayer.m */; };
 		5144EC6A1712277600F0B265 /* cameraSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC601712277600F0B265 /* cameraSymbol.png */; };
 		5144EC6B1712277600F0B265 /* cameraSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC611712277600F0B265 /* cameraSymbol@2x.png */; };
 		5144EC6C1712277600F0B265 /* locationSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC621712277600F0B265 /* locationSymbol.png */; };
@@ -44,7 +42,6 @@
 		5157CD031650902900C22CCE /* BanyanConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD021650902900C22CCE /* BanyanConnection.m */; };
 		5158AE2B16F56F7F0089193E /* BNTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5158AE2916F56F7E0089193E /* BNTabBarController.m */; };
 		51596AB11744BAF7008F5276 /* BNMisc.m in Sources */ = {isa = PBXBuildFile; fileRef = 51596AB01744BAF7008F5276 /* BNMisc.m */; };
-		51596AB51744D90C008F5276 /* BNAudioStreamingPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 51596AB41744D90C008F5276 /* BNAudioStreamingPlayerView.m */; };
 		51596AB71745E285008F5276 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51596AB61745E284008F5276 /* CoreMedia.framework */; };
 		5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B615E75B420072749C /* buttonFacebook.png */; };
 		5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B715E75B420072749C /* buttonFacebook@2x.png */; };
@@ -165,7 +162,6 @@
 		51BDA1E3173B789600BD2C19 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51BDA1E2173B789600BD2C19 /* Default@2x.png */; };
 		51BDA25F173EEC1500BD2C19 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51BDA25E173EEC1500BD2C19 /* ImageIO.framework */; };
 		51BDA265174050A300BD2C19 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51BDA264174050A300BD2C19 /* FacebookSDK.framework */; };
-		51BDA26A1740DF5200BD2C19 /* BNAudioRecorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 51BDA2691740DF5000BD2C19 /* BNAudioRecorderView.m */; };
 		51BDA2701741EB4100BD2C19 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51BDA26F1741EB4000BD2C19 /* AVFoundation.framework */; };
 		51BDA27417434F3D00BD2C19 /* emptyBar.png in Resources */ = {isa = PBXBuildFile; fileRef = 51BDA27217434F3D00BD2C19 /* emptyBar.png */; };
 		51BDA27517434F3D00BD2C19 /* emptyBar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51BDA27317434F3D00BD2C19 /* emptyBar@2x.png */; };
@@ -248,14 +244,14 @@
 		5128EB3B17472FF600393173 /* delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = delete.png; sourceTree = "<group>"; };
 		5128EB3C17472FF600393173 /* stop@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stop@2x.png"; sourceTree = "<group>"; };
 		5128EB3D17472FF600393173 /* stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stop.png; sourceTree = "<group>"; };
-		5128EB3E17472FF600393173 /* recordRedGray@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "recordRedGray@2x.png"; sourceTree = "<group>"; };
-		5128EB3F17472FF600393173 /* rocordRedGray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rocordRedGray.png; sourceTree = "<group>"; };
 		5128EB4017472FF600393173 /* play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play@2x.png"; sourceTree = "<group>"; };
 		5128EB4117472FF600393173 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
 		5128EB4217472FF600393173 /* record@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "record@2x.png"; sourceTree = "<group>"; };
 		5128EB4317472FF600393173 /* record.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = record.png; sourceTree = "<group>"; };
-		5128EB4417472FF600393173 /* microphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = microphone.png; sourceTree = "<group>"; };
-		5128EB4517472FF600393173 /* microphone@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "microphone@2x.png"; sourceTree = "<group>"; };
+		5128EB5217478B3D00393173 /* BNAudioRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNAudioRecorder.h; sourceTree = "<group>"; };
+		5128EB5317478B3D00393173 /* BNAudioRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioRecorder.m; sourceTree = "<group>"; };
+		5128EB5517478B5500393173 /* BNAudioStreamingPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNAudioStreamingPlayer.h; sourceTree = "<group>"; };
+		5128EB5617478B5500393173 /* BNAudioStreamingPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioStreamingPlayer.m; sourceTree = "<group>"; };
 		5144EC601712277600F0B265 /* cameraSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cameraSymbol.png; sourceTree = "<group>"; };
 		5144EC611712277600F0B265 /* cameraSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cameraSymbol@2x.png"; sourceTree = "<group>"; };
 		5144EC621712277600F0B265 /* locationSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = locationSymbol.png; sourceTree = "<group>"; };
@@ -270,8 +266,6 @@
 		5158AE2916F56F7E0089193E /* BNTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNTabBarController.m; sourceTree = "<group>"; };
 		51596AAF1744BAF7008F5276 /* BNMisc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNMisc.h; sourceTree = "<group>"; };
 		51596AB01744BAF7008F5276 /* BNMisc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNMisc.m; sourceTree = "<group>"; };
-		51596AB31744D90C008F5276 /* BNAudioStreamingPlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNAudioStreamingPlayerView.h; sourceTree = "<group>"; };
-		51596AB41744D90C008F5276 /* BNAudioStreamingPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioStreamingPlayerView.m; sourceTree = "<group>"; };
 		51596AB61745E284008F5276 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		5166B1B615E75B420072749C /* buttonFacebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebook.png; sourceTree = "<group>"; };
 		5166B1B715E75B420072749C /* buttonFacebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFacebook@2x.png"; sourceTree = "<group>"; };
@@ -437,8 +431,6 @@
 		51BDA1E2173B789600BD2C19 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "../../Default@2x.png"; sourceTree = "<group>"; };
 		51BDA25E173EEC1500BD2C19 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		51BDA264174050A300BD2C19 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
-		51BDA2681740DF4F00BD2C19 /* BNAudioRecorderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNAudioRecorderView.h; sourceTree = "<group>"; };
-		51BDA2691740DF5000BD2C19 /* BNAudioRecorderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioRecorderView.m; sourceTree = "<group>"; };
 		51BDA26F1741EB4000BD2C19 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		51BDA27217434F3D00BD2C19 /* emptyBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = emptyBar.png; sourceTree = "<group>"; };
 		51BDA27317434F3D00BD2C19 /* emptyBar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "emptyBar@2x.png"; sourceTree = "<group>"; };
@@ -589,14 +581,10 @@
 				5128EB3B17472FF600393173 /* delete.png */,
 				5128EB3C17472FF600393173 /* stop@2x.png */,
 				5128EB3D17472FF600393173 /* stop.png */,
-				5128EB3E17472FF600393173 /* recordRedGray@2x.png */,
-				5128EB3F17472FF600393173 /* rocordRedGray.png */,
 				5128EB4017472FF600393173 /* play@2x.png */,
 				5128EB4117472FF600393173 /* play.png */,
 				5128EB4217472FF600393173 /* record@2x.png */,
 				5128EB4317472FF600393173 /* record.png */,
-				5128EB4417472FF600393173 /* microphone.png */,
-				5128EB4517472FF600393173 /* microphone@2x.png */,
 			);
 			name = "Music player";
 			sourceTree = "<group>";
@@ -1146,10 +1134,10 @@
 		51BDA26B1741E74F00BD2C19 /* Audio Manager */ = {
 			isa = PBXGroup;
 			children = (
-				51BDA2681740DF4F00BD2C19 /* BNAudioRecorderView.h */,
-				51BDA2691740DF5000BD2C19 /* BNAudioRecorderView.m */,
-				51596AB31744D90C008F5276 /* BNAudioStreamingPlayerView.h */,
-				51596AB41744D90C008F5276 /* BNAudioStreamingPlayerView.m */,
+				5128EB5217478B3D00393173 /* BNAudioRecorder.h */,
+				5128EB5317478B3D00393173 /* BNAudioRecorder.m */,
+				5128EB5517478B5500393173 /* BNAudioStreamingPlayer.h */,
+				5128EB5617478B5500393173 /* BNAudioStreamingPlayer.m */,
 			);
 			name = "Audio Manager";
 			sourceTree = "<group>";
@@ -1387,14 +1375,10 @@
 				5128EB4717472FF600393173 /* delete.png in Resources */,
 				5128EB4817472FF600393173 /* stop@2x.png in Resources */,
 				5128EB4917472FF600393173 /* stop.png in Resources */,
-				5128EB4A17472FF600393173 /* recordRedGray@2x.png in Resources */,
-				5128EB4B17472FF600393173 /* rocordRedGray.png in Resources */,
 				5128EB4C17472FF600393173 /* play@2x.png in Resources */,
 				5128EB4D17472FF600393173 /* play.png in Resources */,
 				5128EB4E17472FF600393173 /* record@2x.png in Resources */,
 				5128EB4F17472FF600393173 /* record.png in Resources */,
-				5128EB5017472FF600393173 /* microphone.png in Resources */,
-				5128EB5117472FF600393173 /* microphone@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1479,11 +1463,11 @@
 				51FAC0B8172C829E0046C2D6 /* Comment.m in Sources */,
 				51FAC0BC172F8C500046C2D6 /* FBGraphObjectToDataTransformer.m in Sources */,
 				51CCA16117338464007616EA /* User.m in Sources */,
-				51BDA26A1740DF5200BD2C19 /* BNAudioRecorderView.m in Sources */,
 				51BDA27C17437F8100BD2C19 /* RemoteObject.m in Sources */,
 				51BDA27F1743821400BD2C19 /* Media.m in Sources */,
 				51596AB11744BAF7008F5276 /* BNMisc.m in Sources */,
-				51596AB51744D90C008F5276 /* BNAudioStreamingPlayerView.m in Sources */,
+				5128EB5417478B3D00393173 /* BNAudioRecorder.m in Sources */,
+				5128EB5717478B5500393173 /* BNAudioStreamingPlayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

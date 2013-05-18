@@ -1,12 +1,12 @@
 //
-//  BNAudioStreamingPlayerView.m
+//  BNAudioStreamingPlayer.m
 //  Banyan
 //
-//  Created by Devang Mundhra on 5/16/13.
+//  Created by Devang Mundhra on 5/18/13.
 //
 //
 
-#import "BNAudioStreamingPlayerView.h"
+#import "BNAudioStreamingPlayer.h"
 
 static void *BNAudioStreamingPlayerViewRateObservationContext = &BNAudioStreamingPlayerViewRateObservationContext;
 static void *BNAudioStreamingPlayerViewCurrentItemObservationContext = &BNAudioStreamingPlayerViewCurrentItemObservationContext;
@@ -19,14 +19,15 @@ NSString *kPlayableKey		= @"playable";
 NSString *kCurrentItemKey	= @"currentItem";
 
 #pragma mark -
-@interface BNAudioStreamingPlayerView (Player)
+@interface BNAudioStreamingPlayer (Player)
 - (CMTime)playerItemDuration;
 - (BOOL)isPlaying;
 - (void)assetFailedToPrepareForPlayback:(NSError *)error;
 - (void)prepareToPlayAsset:(AVURLAsset *)asset withKeys:(NSArray *)requestedKeys;
 @end
 
-@interface BNAudioStreamingPlayerView ()
+@interface BNAudioStreamingPlayer ()
+
 @property (strong, nonatomic) UIToolbar *toolBar;
 @property (strong, nonatomic) UISlider *audioTimeControl;
 @property (strong, nonatomic) UIBarButtonItem *playButton;
@@ -43,40 +44,43 @@ NSString *kCurrentItemKey	= @"currentItem";
 
 @end
 
-@implementation BNAudioStreamingPlayerView
+@implementation BNAudioStreamingPlayer
 
 @synthesize toolBar, audioTimeControl;
 @synthesize playButton, stopButton;
 @synthesize player, playerItem;
 @synthesize isSeeking, seekToZeroBeforePlay, restoreAfterScrubbingRate, timeObserver;
 
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    self = [super initWithFrame:frame];
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Initialization code
-        [self setup];
+        // Custom initialization
     }
     return self;
 }
 
-- (void)setFrame:(CGRect)frame
+- (void)viewDidLoad
 {
-    [super setFrame:frame];
-    [toolBar setFrame:frame];
+    [super viewDidLoad];
+	// Do any additional setup after loading the view.
+    [self setup];
 }
 
 - (void)setup
 {
-    toolBar = [[UIToolbar alloc] initWithFrame:self.frame];
+    CGRect bounds = self.view.bounds;
+    toolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds), 44)];
+    toolBar.tintColor = BANYAN_GREEN_COLOR;
     toolBar.translucent = YES;
     toolBar.backgroundColor = BANYAN_BLACK_COLOR;
-    [self addSubview:toolBar];
+    [self.view addSubview:toolBar];
     
-    audioTimeControl = [[UISlider alloc] initWithFrame:self.frame];
+    audioTimeControl = [[UISlider alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds), 44)];
     CGRect frame = audioTimeControl.frame;
     CGPoint center = audioTimeControl.center;
     frame.size.width = 266;
+    frame.size.height = 22;
     audioTimeControl.frame = frame;
     audioTimeControl.center = center;
     
@@ -214,15 +218,15 @@ NSString *kCurrentItemKey	= @"currentItem";
 	}
     
 	/* Update the scrubber during normal playback. */
-    __weak BNAudioStreamingPlayerView *weakSelf = self;
+    __weak BNAudioStreamingPlayer *weakSelf = self;
     
 	timeObserver = [player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(interval, NSEC_PER_SEC)
-                                                         queue:NULL
-                                                    usingBlock:
-                     ^(CMTime time)
-                     {
-                         [weakSelf syncScrubber];
-                     }];
+                                                        queue:NULL
+                                                   usingBlock:
+                    ^(CMTime time)
+                    {
+                        [weakSelf syncScrubber];
+                    }];
 }
 
 /* Cancels the previously registered time observer. */
@@ -262,12 +266,12 @@ NSString *kCurrentItemKey	= @"currentItem";
 			CGFloat width = CGRectGetWidth([audioTimeControl bounds]);
 			double tolerance = 0.5f * duration / width;
             
-            __weak BNAudioStreamingPlayerView *weakSelf = self;
+            __weak BNAudioStreamingPlayer *weakSelf = self;
 			timeObserver = [player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(tolerance, NSEC_PER_SEC) queue:dispatch_get_main_queue() usingBlock:
-                             ^(CMTime time)
-                             {
-                                 [weakSelf syncScrubber];
-                             }];
+                            ^(CMTime time)
+                            {
+                                [weakSelf syncScrubber];
+                            }];
 		}
 	}
     
@@ -362,7 +366,7 @@ NSString *kCurrentItemKey	= @"currentItem";
 
 @end
 
-@implementation BNAudioStreamingPlayerView (Player)
+@implementation BNAudioStreamingPlayer (Player)
 
 #pragma mark -
 
@@ -618,7 +622,7 @@ NSString *kCurrentItemKey	= @"currentItem";
                 
                 [self enableScrubber];
                 [self enablePlayerButtons];
-
+                
                 [self initScrubberTimer];
             }
                 break;
@@ -660,6 +664,12 @@ NSString *kCurrentItemKey	= @"currentItem";
 	}
     
     return;
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
 }
 
 @end

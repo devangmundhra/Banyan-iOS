@@ -1,17 +1,17 @@
 //
-//  BNAudioRecorderView.m
+//  BNAudioRecorder.m
 //  Banyan
 //
-//  Created by Devang Mundhra on 5/13/13.
+//  Created by Devang Mundhra on 5/18/13.
 //
 //
 
-#import "BNAudioRecorderView.h"
+#import "BNAudioRecorder.h"
 #import "BanyanAppDelegate.h"
 #import "BNMisc.h"
 #import <QuartzCore/QuartzCore.h>
 
-@interface BNAudioRecorderView ()
+@interface BNAudioRecorder ()
 @property (strong, nonatomic) IBOutlet UIButton *controlButton;
 @property (strong, nonatomic) IBOutlet UIButton *deleteButton;
 
@@ -30,7 +30,7 @@
 @property (nonatomic) CGFloat currentProgress;
 @end
 
-@implementation BNAudioRecorderView
+@implementation BNAudioRecorder
 
 #define RECORD_DURATION 8
 
@@ -40,24 +40,20 @@
 @synthesize progressBar, sliderBar;
 @synthesize currentProgress;
 
-- (id)initWithFrame:(CGRect)frame
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    self = [super initWithFrame:frame];
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Initialization code
-        [self setup];
+        // Custom initialization
     }
     return self;
 }
 
-
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
-    if (self) {
-        // Initialization code
-        [self setup];
-    }
-    return self;
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+	// Do any additional setup after loading the view.
+    [self setup];
 }
 
 - (void)setup
@@ -95,47 +91,47 @@
         audioRecorder.delegate = self;
     }
     
-    self.backgroundColor = BANYAN_BROWN_COLOR;
+    self.view.backgroundColor = BANYAN_BROWN_COLOR;
     
     controlButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [controlButton setImage:[UIImage imageNamed:@"recordRedGray"] forState:UIControlStateNormal];
+    [controlButton setImage:[UIImage imageNamed:@"record"] forState:UIControlStateNormal];
     [controlButton addTarget:self action:@selector(recordAudio:) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:controlButton];
+    [self.view addSubview:controlButton];
     
     deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [deleteButton setImage:[UIImage imageNamed:@"delete"] forState:UIControlStateNormal];
     [deleteButton addTarget:self action:@selector(deleteRecording:) forControlEvents:UIControlEventTouchUpInside];
     deleteButton.enabled = NO; deleteButton.hidden = YES;
-    [self addSubview:deleteButton];
+    [self.view addSubview:deleteButton];
     
     timeLabel = [[UILabel alloc] init];
     timeLabel.text = [NSString stringWithFormat:@"0/%ds", RECORD_DURATION];
     timeLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
     timeLabel.textColor = BANYAN_WHITE_COLOR;
     timeLabel.backgroundColor = [UIColor clearColor];
-    [self addSubview:timeLabel];
+    [self.view addSubview:timeLabel];
     
     sliderBar = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"emptyBar"]
                                                     resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)]];
     sliderBar.backgroundColor = [UIColor clearColor];
     [sliderBar.layer setCornerRadius:4.0f];
     [sliderBar.layer setMasksToBounds:YES];
-    [self addSubview:sliderBar];
+    [self.view addSubview:sliderBar];
     progressBar = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"progressBar"]
-                                                    resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)]];
+                                                      resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)]];
     progressBar.backgroundColor = [UIColor clearColor];
     [progressBar.layer setCornerRadius:4.0f];
     [progressBar.layer setMasksToBounds:YES];
     
     currentProgress = 0;
-    [self addSubview:progressBar];
+    [self.view addSubview:progressBar];    
 }
 
-- (void)layoutSubviews
+- (void)refreshUI
 {
-    CGRect bounds = self.bounds;
+    CGRect bounds = self.view.bounds;
     controlButton.frame = CGRectMake(0, 0, 40, CGRectGetHeight(bounds));
-
+    
     sliderBar.frame = CGRectMake(40, 0, CGRectGetWidth(bounds)-125, 11);
     progressBar.frame = CGRectMake(40, 0, (CGRectGetWidth(bounds)-125)*currentProgress, 11);
     // Correct the y-position for the bar
@@ -155,7 +151,7 @@
 - (IBAction) recordAudio:(id)sender
 {
     assert([NSThread isMainThread]);
-
+    
     if (!audioRecorder.recording)
     {
         [controlButton setImage:[UIImage imageNamed:@"stop"] forState:UIControlStateNormal];
@@ -170,7 +166,7 @@
 - (IBAction) playAudio:(id)sender
 {
     assert([NSThread isMainThread]);
-
+    
     if (!audioRecorder.recording)
     {
         NSError *error = nil;
@@ -213,9 +209,13 @@
 
 - (IBAction)deleteRecording:(id)sender
 {
+    if (audioPlayer.playing) {
+        [audioPlayer stop];
+        [self invalidateTimer];
+    }
     [audioRecorder deleteRecording];
     deleteButton.enabled = NO; deleteButton.hidden = YES;
-    [controlButton setImage:[UIImage imageNamed:@"recordRedGray"] forState:UIControlStateNormal];
+    [controlButton setImage:[UIImage imageNamed:@"record"] forState:UIControlStateNormal];
     [controlButton removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
     [controlButton addTarget:self action:@selector(recordAudio:) forControlEvents:UIControlEventTouchUpInside];
     timeLabel.text = [NSString stringWithFormat:@"0/%ds", RECORD_DURATION];
@@ -223,7 +223,7 @@
 
 #pragma mark timer actions
 -(void)timerAction:(NSTimer *)theTimer
-{    
+{
     if (audioRecorder.recording) {
         timeLabel.text = [NSString stringWithFormat:@"%d/%ds", (int)floor([audioRecorder currentTime]), RECORD_DURATION];
         currentProgress = [audioRecorder currentTime]/RECORD_DURATION;
@@ -233,7 +233,7 @@
     } else {
         NSLog(@"ERROR %s Neither recording nor playing!!", __PRETTY_FUNCTION__);
     }
-    [self setNeedsLayout];
+    [self performSelectorInBackground:@selector(refreshUI) withObject:nil];
 }
 
 - (void)invalidateTimer
@@ -242,7 +242,7 @@
         [timer invalidate];
     timer = nil;
     currentProgress = 0;
-    [self setNeedsLayout];
+    [self performSelectorInBackground:@selector(refreshUI) withObject:nil];
 }
 
 #pragma mark AudioPlayer/Recorder Delegate Methods
@@ -321,6 +321,18 @@
         [audioRecorder prepareToRecord];
         audioRecorder.delegate = self;
     }
+}
+
+- (void)didMoveToParentViewController:(UIViewController *)parent
+{
+    [super didMoveToParentViewController:self];
+    [self refreshUI];
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
 }
 
 @end
