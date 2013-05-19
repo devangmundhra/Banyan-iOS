@@ -129,6 +129,7 @@
 {
     if (self.toolbar == nil) {
         self.toolbar = [[UIToolbar alloc] init];
+        self.toolbar.tintColor = BANYAN_GREEN_COLOR;
         self.toolbar.barStyle = UIBarStyleDefault;
         
 //        [self.toolbar setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
@@ -326,8 +327,12 @@
     NSUInteger pieceNum = [self pieceNumberForViewController:(ReadPieceViewController *)viewController];
     
     if (pieceNum >= [self.story.length unsignedIntegerValue]) {
+        NSLog(@"End of story reached for story %@", self.story.title);
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.mode = MBProgressHUDModeText;
+        hud.detailsLabelText = @"Looping to the beginning of the story.";
+        [hud hide:YES afterDelay:2];
         return [self viewControllerAtPieceNumber:1];
-//        NSLog(@"End of story reached for story %@", self.story.title);
 //        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 //        hud.mode = MBProgressHUDModeText;
 //        hud.labelText = @"End of story";
@@ -350,7 +355,12 @@
     NSUInteger pieceNum = [self pieceNumberForViewController:(ReadPieceViewController *)viewController];
     
     if (pieceNum <= 1) {
-        return viewController;
+        NSLog(@"Beginning of story reached for story %@", self.story.title);
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.mode = MBProgressHUDModeText;
+        hud.detailsLabelText = @"Going to the last piece in the story.";
+        [hud hide:YES afterDelay:2];
+        return [self viewControllerAtPieceNumber:[[self.story length] unsignedIntegerValue]];
 //        NSLog(@"index: %u NOT FOUND", pieceNum);
 //        NSLog(@"Beginning of story reached for story %@", self.story.title);
 //        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];

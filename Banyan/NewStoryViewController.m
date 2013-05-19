@@ -162,7 +162,9 @@
     self.contributorPrivacySegmentedControl.textColor = BANYAN_WHITE_COLOR;
     self.contributorPrivacySegmentedControl.sectionImages = [NSArray arrayWithObjects:[UIImage imageWithColor:BANYAN_WHITE_COLOR forRect:aRect],
                                                              [UIImage imageWithColor:BANYAN_BROWN_COLOR forRect:aRect], nil];
-    
+    [self.scrollView addSubview:self.contributorPrivacySegmentedControl];
+    self.contributorPrivacySegmentedControl.center = CGPointMake(160, 78);
+
     [self.viewerPrivacySegmentedControl setSelectedSegmentIndex:ViewerPrivacySegmentedControlPublic animated:NO];
     self.viewerPrivacySegmentedControl.crossFadeLabelsOnDrag = YES;
     self.viewerPrivacySegmentedControl.height = 25;
@@ -171,14 +173,11 @@
     self.viewerPrivacySegmentedControl.backgroundTintColor = BANYAN_BROWN_COLOR;
     self.viewerPrivacySegmentedControl.titleEdgeInsets = UIEdgeInsetsMake(0, 3, 0, 3);
     self.viewerPrivacySegmentedControl.textColor = BANYAN_WHITE_COLOR;
-    
-    [self updateScrollViewContentSize];
+    [self.scrollView addSubview:self.viewerPrivacySegmentedControl];
+    self.viewerPrivacySegmentedControl.center = CGPointMake(160, 132);
     
     self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [self.scrollView addSubview:self.contributorPrivacySegmentedControl];
-    [self.scrollView addSubview:self.viewerPrivacySegmentedControl];
-    self.contributorPrivacySegmentedControl.center = CGPointMake(160, 78);
-    self.viewerPrivacySegmentedControl.center = CGPointMake(160, 132);
+
     
     // Tags
     self.tagsFieldView.scrollEnabled = NO;
@@ -198,6 +197,8 @@
         [self.tagsFieldView.tokenField setPromptText:@"Tags: "];
     }
     
+    [self updateScrollViewContentSize];
+
     [self.inviteContactsButton addTarget:self action:@selector(inviteContacts:) forControlEvents:UIControlEventTouchUpInside];
 }
 

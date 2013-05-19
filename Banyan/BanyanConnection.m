@@ -61,7 +61,7 @@
 }
 
 + (void) loadDataSource
-{
+{    
     NSLog(@"%s loadDataSource begin", __PRETTY_FUNCTION__);
     
     [BanyanConnection
@@ -196,7 +196,6 @@
     [userMapping addAttributeMappingsFromDictionary:@{@"objectId": @"userId"}];
     [userMapping addAttributeMappingsFromArray:@[@"username", @"name", @"firstName", @"lastName", @"facebookId", @"email"]];
     [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:userMapping]];
-    
     
     // Response
     RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceMapping

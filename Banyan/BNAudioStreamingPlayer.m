@@ -24,6 +24,7 @@ NSString *kCurrentItemKey	= @"currentItem";
 - (BOOL)isPlaying;
 - (void)assetFailedToPrepareForPlayback:(NSError *)error;
 - (void)prepareToPlayAsset:(AVURLAsset *)asset withKeys:(NSArray *)requestedKeys;
+- (void)setupApplicationAudio;
 @end
 
 @interface BNAudioStreamingPlayer ()
@@ -43,6 +44,80 @@ NSString *kCurrentItemKey	= @"currentItem";
 @property (nonatomic, strong) id timeObserver;
 
 @end
+
+#pragma mark Audio session callbacks_______________________
+
+// Audio session callback function for responding to audio route changes. If playing
+//		back application audio when the headset is unplugged, this callback pauses
+//		playback and displays an alert that allows the user to resume or stop playback.
+//
+//		The system takes care of iPod audio pausing during route changes--this callback
+//		is not involved with pausing playback of iPod audio.
+void audioRouteChangeListenerCallback (
+                                       void                      *inUserData,
+                                       AudioSessionPropertyID    inPropertyID,
+                                       UInt32                    inPropertyValueSize,
+                                       const void                *inPropertyValue
+                                       ) {
+	
+	// ensure that this callback was invoked for a route change
+	if (inPropertyID != kAudioSessionProperty_AudioRouteChange) return;
+    
+	// This callback, being outside the implementation block, needs a reference to the
+	//		MainViewController object, which it receives in the inUserData parameter.
+	//		You provide this reference when registering this callback (see the call to
+	//		AudioSessionAddPropertyListener).
+	BNAudioStreamingPlayer *controller = (__bridge BNAudioStreamingPlayer *) inUserData;
+	
+	// if application sound is not playing, there's nothing to do, so return.
+	if (![controller isPlaying]) {
+        
+		NSLog (@"Audio route change while application audio is stopped.");
+		return;
+		
+	} else {
+        
+		// Determines the reason for the route change, to ensure that it is not
+		//		because of a category change.
+		CFDictionaryRef	routeChangeDictionary = inPropertyValue;
+		
+		CFNumberRef routeChangeReasonRef =
+        CFDictionaryGetValue (
+                              routeChangeDictionary,
+                              CFSTR (kAudioSession_AudioRouteChangeKey_Reason)
+                              );
+        
+		SInt32 routeChangeReason;
+		
+		CFNumberGetValue (
+                          routeChangeReasonRef,
+                          kCFNumberSInt32Type,
+                          &routeChangeReason
+                          );
+		
+		// "Old device unavailable" indicates that a headset was unplugged, or that the
+		//	device was removed from a dock connector that supports audio output. This is
+		//	the recommended test for when to pause audio.
+		if (routeChangeReason == kAudioSessionRouteChangeReason_OldDeviceUnavailable) {
+            
+			[controller.player pause];
+			NSLog (@"Output device removed, so application audio was paused.");
+            
+			UIAlertView *routeChangeAlertView =
+            [[UIAlertView alloc]	initWithTitle: NSLocalizedString (@"Playback Paused", @"Title for audio hardware route-changed alert view")
+                                       message: NSLocalizedString (@"Audio output was changed", @"Explanation for route-changed alert view")
+                                      delegate: controller
+                             cancelButtonTitle: NSLocalizedString (@"StopPlaybackAfterRouteChange", @"Stop button title")
+                             otherButtonTitles: NSLocalizedString (@"ResumePlaybackAfterRouteChange", @"Play button title"), nil];
+			[routeChangeAlertView show];
+			// release takes place in alertView:clickedButtonAtIndex: method
+            
+		} else {
+            
+			NSLog (@"A route change occurred that does not require pausing of application audio.");
+		}
+	}
+}
 
 @implementation BNAudioStreamingPlayer
 
@@ -71,7 +146,6 @@ NSString *kCurrentItemKey	= @"currentItem";
 {
     CGRect bounds = self.view.bounds;
     toolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds), 44)];
-    toolBar.tintColor = BANYAN_GREEN_COLOR;
     toolBar.translucent = YES;
     toolBar.backgroundColor = BANYAN_BLACK_COLOR;
     [self.view addSubview:toolBar];
@@ -97,6 +171,14 @@ NSString *kCurrentItemKey	= @"currentItem";
     UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
     toolBar.items = [NSArray arrayWithObjects:playButton, flexItem, scrubberItem, nil];
+    
+    [self setupApplicationAudio];
+}
+
+- (void)dealloc
+{
+    if ([self isPlaying])
+        [player pause];
 }
 
 - (void) loadWithURL:(NSString *)urlString
@@ -127,16 +209,16 @@ NSString *kCurrentItemKey	= @"currentItem";
 	}
 }
 #pragma mark -
-#pragma mark Movie controller methods
+#pragma mark Audio controller methods
 #pragma mark -
 
 /* ---------------------------------------------------------
- **  Methods to handle manipulation of the movie scrubber control
+ **  Methods to handle manipulation of the audio scrubber control
  ** ------------------------------------------------------- */
 
 #pragma mark Play, Stop Buttons
 
-/* Show the stop button in the movie player controller. */
+/* Show the stop button in the audio player controller. */
 -(void)showStopButton
 {
     NSMutableArray *toolbarItems = [NSMutableArray arrayWithArray:[toolBar items]];
@@ -144,7 +226,7 @@ NSString *kCurrentItemKey	= @"currentItem";
     toolBar.items = toolbarItems;
 }
 
-/* Show the play button in the movie player controller. */
+/* Show the play button in the audio player controller. */
 -(void)showPlayButton
 {
     NSMutableArray *toolbarItems = [NSMutableArray arrayWithArray:[toolBar items]];
@@ -200,7 +282,7 @@ NSString *kCurrentItemKey	= @"currentItem";
 }
 
 /* Requests invocation of a given block during media playback to update the
- movie scrubber control. */
+ audio scrubber control. */
 -(void)initScrubberTimer
 {
 	double interval = .1f;
@@ -239,7 +321,7 @@ NSString *kCurrentItemKey	= @"currentItem";
 	}
 }
 
-/* The user is dragging the movie controller thumb to scrub through the movie. */
+/* The user is dragging the audio controller thumb to scrub through the audio. */
 - (IBAction)beginScrubbing:(id)sender
 {
 	restoreAfterScrubbingRate = [player rate];
@@ -249,7 +331,7 @@ NSString *kCurrentItemKey	= @"currentItem";
 	[self removePlayerTimeObserver];
 }
 
-/* The user has released the movie thumb control to stop scrubbing through the movie. */
+/* The user has released the audio thumb control to stop scrubbing through the audio. */
 - (IBAction)endScrubbing:(id)sender
 {
 	if (!timeObserver)
@@ -344,7 +426,7 @@ NSString *kCurrentItemKey	= @"currentItem";
 #pragma mark Button Action Methods
 - (IBAction)play:(id)sender
 {
-	/* If we are at the end of the movie, we must seek to the beginning first
+	/* If we are at the end of the audio, we must seek to the beginning first
      before starting playback. */
 	if (seekToZeroBeforePlay == YES)
 	{
@@ -414,7 +496,7 @@ NSString *kCurrentItemKey	= @"currentItem";
 	/* Hide the 'Pause' button, show the 'Play' button in the slider control */
     [self showPlayButton];
     
-	/* After the movie has played to its end time, seek back to time zero
+	/* After the audio has played to its end time, seek back to time zero
      to play it again */
 	seekToZeroBeforePlay = YES;
 }
@@ -522,7 +604,7 @@ NSString *kCurrentItemKey	= @"currentItem";
                          context:BNAudioStreamingPlayerViewPlayerItemStatusObserverContext];
 	
     /* When the player item has played to its end time we'll toggle
-     the movie controller Pause button to be the Play button */
+     the audio controller Pause button to be the Play button */
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(playerItemDidReachEnd:)
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
@@ -574,10 +656,10 @@ NSString *kCurrentItemKey	= @"currentItem";
 /* ---------------------------------------------------------
  **  Called when the value at the specified key path relative
  **  to the given object has changed.
- **  Adjust the movie play and pause button controls when the
- **  player item "status" value changes. Update the movie
+ **  Adjust the audio play and pause button controls when the
+ **  player item "status" value changes. Update the audio
  **  scrubber control when the player item is ready to play.
- **  Adjust the movie scrubber control when the player item
+ **  Adjust the audio scrubber control when the player item
  **  "rate" value changes. For updates of the player
  **  "currentItem" property, set the AVPlayer for which the
  **  player layer displays visual output.
@@ -617,7 +699,7 @@ NSString *kCurrentItemKey	= @"currentItem";
                 
                 [toolBar setHidden:NO];
                 
-                /* Show the movie slider control since the movie is now ready to play. */
+                /* Show the audio slider control since the audio is now ready to play. */
                 audioTimeControl.hidden = NO;
                 
                 [self enableScrubber];
@@ -664,6 +746,41 @@ NSString *kCurrentItemKey	= @"currentItem";
 	}
     
     return;
+}
+
+# pragma mark Audio Session delegates
+- (void) setupApplicationAudio
+{
+	// Registers this class as the delegate of the audio session.
+	[[AVAudioSession sharedInstance] setDelegate: self];
+	
+	// The AmbientSound category allows application audio to mix with Media Player
+	// audio. The category also indicates that application audio should stop playing
+	// if the Ring/Siilent switch is set to "silent" or the screen locks.
+	[[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryAmbient error: nil];
+    /*
+     // Use this code instead to allow the app sound to continue to play when the screen is locked.
+     [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error: nil];
+     
+     UInt32 doSetProperty = 0;
+     AudioSessionSetProperty (
+     kAudioSessionProperty_OverrideCategoryMixWithOthers,
+     sizeof (doSetProperty),
+     &doSetProperty
+     );
+     */
+    
+	// Registers the audio route change listener callback function
+	AudioSessionAddPropertyListener (
+                                     kAudioSessionProperty_AudioRouteChange,
+                                     audioRouteChangeListenerCallback,
+                                     (__bridge void *)(self)
+                                     );
+    
+	// Activates the audio session.
+	
+	NSError *activationError = nil;
+	[[AVAudioSession sharedInstance] setActive: YES error: &activationError];
 }
 
 - (void)didReceiveMemoryWarning

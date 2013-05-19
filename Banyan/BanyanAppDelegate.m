@@ -94,8 +94,8 @@
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
      UIRemoteNotificationTypeAlert];
     
-    [FBSettings enableBetaFeature:FBBetaFeaturesOpenGraphShareDialog];
-    [FBSettings enableBetaFeature:FBBetaFeaturesShareDialog];
+//    [FBSettings enableBetaFeature:FBBetaFeaturesOpenGraphShareDialog];
+//    [FBSettings enableBetaFeature:FBBetaFeaturesShareDialog];
     
     [self setupTabBarController];
     self.navController = [[UINavigationController alloc] initWithRootViewController:self.tabBarController];
@@ -454,7 +454,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     NSError *error;
     NSPersistentStore *persistentStore = [managedObjectStore addSQLitePersistentStoreAtPath:storePath
                                                                      fromSeedDatabaseAtPath:nil
-                                                                          withConfiguration:nil options:nil
+                                                                          withConfiguration:nil
+                                                                                    options:nil
                                                                                       error:&error];
     NSAssert(persistentStore, @"Failed to add persistent store with error: %@", error);
     
