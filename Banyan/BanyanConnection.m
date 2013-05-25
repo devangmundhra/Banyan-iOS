@@ -157,6 +157,7 @@
                                     }
                                     story.remoteStatus = RemoteObjectStatusSync;
                                     story.lastSynced = [NSDate date];
+                                    story.currentPieceNum = 1;
                                     [story updateStoryStats];
                                 }];
                                 if (successBlock)
@@ -212,7 +213,8 @@
                                 if ([story isDeleted] || story.managedObjectContext == nil ) // Don't bother doing anything if story was deleted while fetching pieces
                                     return;
                                 [pieces enumerateObjectsUsingBlock:^(Piece *piece, NSUInteger idx, BOOL *stop) {
-                                    [story addPiecesObject:piece];
+                                    piece.story = story;
+//                                    [story addPiecesObject:piece];
                                     piece.remoteStatus = RemoteObjectStatusSync;
                                     [piece updatePieceStats];
                                     piece.lastSynced = [NSDate date];
@@ -244,7 +246,9 @@
 
 + (void) loadPiecesForStory:(Story *)story atPieceNumbers:(NSArray *)pieceNumbers completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *error))errorBlock
 {
-    [self loadPiecesForStory:story withParams:@{@"pieces" : pieceNumbers} completionBlock:completionBlock errorBlock:errorBlock];
+    [self loadPiecesForStory:story withParams:@{@"pieces" : pieceNumbers}
+             completionBlock:completionBlock
+                  errorBlock:errorBlock];
 }
 
 + (void) resetPermissionsForStories:(NSArray *)stories

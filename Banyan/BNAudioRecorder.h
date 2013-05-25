@@ -12,6 +12,5 @@
 @interface BNAudioRecorder : UIViewController <AVAudioRecorderDelegate, AVAudioPlayerDelegate, AVAudioSessionDelegate>
 
 - (NSURL *)getRecording;
-- (void) loadWithURL:(NSString *)url;
 
 @end

@@ -65,6 +65,7 @@
     
     NSURL *soundFileURL = [NSURL fileURLWithPath:soundFilePath];
     
+    
     NSDictionary *recordSettings = [NSDictionary
                                     dictionaryWithObjectsAndKeys:
                                     [NSNumber numberWithInt:AVAudioQualityMax],
@@ -285,42 +286,6 @@
         return audioRecorder.url;
     }
     return nil;
-}
-
-- (void)loadWithURL:(NSString *)url
-{
-    NSString *docsDir = [BanyanAppDelegate applicationDocumentsDirectory];
-    NSString *fileName = [NSString stringWithFormat:@"%@.caf", [BNMisc genRandStringLength:5]];
-    NSString *soundFilePath = [docsDir
-                               stringByAppendingPathComponent:fileName];
-    
-    NSURL *soundFileURL = [NSURL fileURLWithPath:soundFilePath];
-    
-    NSDictionary *recordSettings = [NSDictionary
-                                    dictionaryWithObjectsAndKeys:
-                                    [NSNumber numberWithInt:AVAudioQualityMax],
-                                    AVEncoderAudioQualityKey,
-                                    [NSNumber numberWithInt:16],
-                                    AVEncoderBitRateKey,
-                                    [NSNumber numberWithInt: 2],
-                                    AVNumberOfChannelsKey,
-                                    [NSNumber numberWithFloat:44100.0],
-                                    AVSampleRateKey,
-                                    nil];
-    
-    NSError *error = nil;
-    
-    audioRecorder = [[AVAudioRecorder alloc]
-                     initWithURL:soundFileURL
-                     settings:recordSettings
-                     error:&error];
-    
-    if (error) {
-        NSLog(@"error: %@", [error localizedDescription]);
-    } else {
-        [audioRecorder prepareToRecord];
-        audioRecorder.delegate = self;
-    }
 }
 
 - (void)didMoveToParentViewController:(UIViewController *)parent

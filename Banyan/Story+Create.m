@@ -210,7 +210,7 @@
     // No media
     else {
         uploadStory(story);
-    }    
+    }
 }
 
 @end

@@ -40,6 +40,7 @@
 
 @property (nonatomic) ModifyPieceViewControllerEditMode editMode;
 @property (strong, nonatomic) Piece *backupPiece_;
+@property (strong, nonatomic) NSMutableSet *mediaToDelete;
 
 @end
 
@@ -58,6 +59,7 @@
 @synthesize activeField = _activeField;
 @synthesize audioPickerView = _audioPickerView;
 @synthesize audioRecorder = _audioRecorder;
+@synthesize mediaToDelete;
 
 #define kTokenisingCharacter @","
 
@@ -96,6 +98,8 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    
+    mediaToDelete = [NSMutableSet set];
     
     if (/*self.editMode == ModifyPieceViewControllerEditModeAddPiece && */[self.piece.story.isLocationEnabled boolValue]) {
         self.locationManager = [[BNFBLocationManager alloc] init];
@@ -151,7 +155,12 @@
         
         Media *audioMedia = [Media getMediaOfType:@"audio" inMediaSet:self.piece.media];
         if (audioMedia ) {
-            
+            UIButton *deleteAudioButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            deleteAudioButton.frame = self.audioPickerView.bounds;
+            [deleteAudioButton setTitle:@"Delete audio clip" forState:UIControlStateNormal];
+            [deleteAudioButton setBackgroundColor:BANYAN_RED_COLOR];
+            [deleteAudioButton addTarget:self action:@selector(deleteAudioAlert:) forControlEvents:UIControlEventTouchUpInside];
+            [self.audioPickerView addSubview:deleteAudioButton];
         }
         
         self.pieceCaptionView.text = self.piece.shortText;
@@ -204,6 +213,7 @@
     [self setTagsFieldView:nil];
     [self setAudioPickerView:nil];
     [self setAudioRecorder:nil];
+    [self setMediaToDelete:nil];
     [super viewDidUnload]; 
     [self unregisterForKeyboardNotifications];
 }
@@ -249,18 +259,34 @@
 // Done modifying piece. Now save all the changes.
 - (IBAction)done:(UIBarButtonItem *)sender 
 {
-    self.piece.longText = self.pieceTextView.text;
-    self.piece.shortText = self.pieceCaptionView.text;
+    // So that ReadPieceVC's KVO are not fired unnecessarily
+    if (![self.piece.longText isEqualToString:self.pieceTextView.text])
+        self.piece.longText = self.pieceTextView.text;
+    if (![self.piece.shortText isEqualToString:self.pieceCaptionView.text])
+        self.piece.shortText = self.pieceCaptionView.text;
     
     if ([self.piece.story.isLocationEnabled boolValue] == YES ) {
         self.piece.location = (FBGraphObject<FBGraphPlace> *)self.locationManager.location;
     }
     
+    // Get the recording from audioRecorder
     NSURL *audioRecording = [self.audioRecorder getRecording];
     if (audioRecording) {
         Media *media = [Media newMediaForObject:self.piece];
         media.mediaType = @"audio";
         media.localURL = [audioRecording absoluteString];
+    }
+    
+    // Delete any media that were indicated to be deleted
+    for (Media *media in mediaToDelete) {
+        // If its a local image, don't delete it
+        if ([media.localURL length])
+            media.localURL = nil;
+        if ([media.remoteURL length]) {
+            [media deleteWitSuccess:nil failure:nil];
+        }
+        media.remoteObject = nil;
+        [media remove];
     }
     
     if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
@@ -281,6 +307,16 @@
         [self.delegate modifyPieceViewController:self didFinishAddingPiece:self.piece];
     
     [self dismissEditView];
+}
+
+- (IBAction)deleteAudioAlert:(UIButton *)sender
+{
+    UIAlertView *alertView = nil;
+    alertView = [[UIAlertView alloc] initWithTitle:@"Delete Audio"
+                                           message:@"Do you want to delete this audio piece?"
+                                          delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+    
+    [alertView show];
 }
 
 - (IBAction)deletePieceAlert:(UIBarButtonItem *)sender
@@ -304,8 +340,17 @@
 #pragma mark UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if (buttonIndex==1) {
+    if ([alertView.title isEqualToString:@"Delete Piece"] && buttonIndex==1) {
         [self deletePiece:nil];
+        return;
+    }
+    if ([alertView.title isEqualToString:@"Delete Audio"] && buttonIndex==1) {
+        Media *audioMedia = [Media getMediaOfType:@"audio" inMediaSet:self.piece.media];
+        [mediaToDelete addObject:audioMedia];
+        // Remove the delete button
+        [[[self.audioPickerView subviews] lastObject] removeFromSuperview];
+        self.doneButton.enabled = YES;
+        return;
     }
 }
 
@@ -337,13 +382,7 @@
     }
     else if (buttonIndex == actionSheet.destructiveButtonIndex) {
         Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
-        // If its a local image, don't delete it
-        if ([imageMedia.localURL length])
-            imageMedia.localURL = nil;
-        if ([imageMedia.remoteURL length]) {
-            [imageMedia deleteWitSuccess:nil failure:nil];
-        }
-        [imageMedia remove];
+        [mediaToDelete addObject:imageMedia];
         [self.addPhotoButton.imageView setImageWithURL:nil];
         self.doneButton.enabled = YES;
     }

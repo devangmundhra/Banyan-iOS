@@ -17,6 +17,9 @@
 
 + (void) viewedPiece:(Piece *)piece
 {
+    if (piece.statistics.viewed)
+        return;
+    
     if (!piece) {
         NSLog(@"%s --ERROR-- No piece available!!", __PRETTY_FUNCTION__);
         return;
@@ -106,8 +109,6 @@
 
 - (void) updatePieceStats
 {
-    if (!self.statistics)
-        self.statistics = [[Statistics alloc] init];
     [self updateViews];
     [self updateLikes];
     [self updateFavourites];

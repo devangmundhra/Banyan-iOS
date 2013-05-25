@@ -131,7 +131,8 @@
     frame.origin.y = CGRectGetMaxY(self.storyInfoView.bounds);
     self.contentView = [[UIScrollView alloc] initWithFrame:frame];
     self.contentView.backgroundColor = BANYAN_WHITE_COLOR;
-    
+    [self.view addSubview:self.contentView];
+
     self.pieceInfoView = [[UIView alloc] initWithFrame:CGRectZero];
     self.authorLabel = [[SSLabel alloc] initWithFrame:CGRectZero];
     self.timeLabel = [[SSLabel alloc] initWithFrame:CGRectZero];
@@ -144,13 +145,48 @@
     [self.pieceInfoView addSubview:self.likesButton];
     [self.contentView addSubview:self.pieceInfoView];
     
+    // Media focus manager
     self.mediaFocusManager = [[ASMediaFocusManager alloc] init];
     self.mediaFocusManager.delegate = self;
     self.mediaFocusManager.backgroundColor = BANYAN_BLACK_COLOR;
     self.mediaFocusManager.doneButtonFont = [UIFont fontWithName:@"Roboto" size:18];
     
+    // Audip player
+    self.audioPlayer = [[BNAudioStreamingPlayer alloc] init];
+    [self addChildViewController:self.audioPlayer];
+    [self.contentView addSubview:self.audioPlayer.view];
+    [self.audioPlayer didMoveToParentViewController:self];
+    
+    // Image view
+    self.imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+    [self.mediaFocusManager installOnView:self.imageView];
+    self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    self.imageView.backgroundColor = BANYAN_BLACK_COLOR;
+    [self.contentView insertSubview:self.imageView belowSubview:self.audioPlayer.view];
+    
+    // Caption
+    self.pieceCaptionView = [[SSLabel alloc] initWithFrame:CGRectZero];
+    self.pieceCaptionView.lineBreakMode = NSLineBreakByWordWrapping;
+    self.pieceCaptionView.backgroundColor = [UIColor clearColor];
+    self.pieceCaptionView.font = [UIFont fontWithName:@"Roboto-BoldCondensed" size:26];
+    self.pieceCaptionView.minimumScaleFactor = 0.7;
+    self.pieceCaptionView.textAlignment = NSTextAlignmentLeft;
+    self.pieceCaptionView.textEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 20);
+    self.pieceCaptionView.numberOfLines = 4;
+    [self.contentView addSubview:self.pieceCaptionView];
+    
+    // Description
+    self.pieceTextView = [[UITextView alloc] initWithFrame:CGRectZero];
+    self.pieceTextView.editable = NO;
+    self.pieceTextView.backgroundColor = [UIColor clearColor];
+    self.pieceTextView.font = [UIFont fontWithName:@"Roboto" size:18];
+    self.pieceTextView.textAlignment = NSTextAlignmentLeft;
+    self.pieceTextView.scrollEnabled = NO;
+    [self.contentView addSubview:self.pieceTextView];
+    
+    // Page control
     self.pageControl = [[SMPageControl alloc] initWithFrame:CGRectMake(100, 100, CGRectGetWidth(self.view.frame), 40)];
-    self.pageControl.center = CGPointMake(CGRectGetMidX(self.view.frame), CGRectGetMaxY(self.view.frame) - 20.0f);
+    self.pageControl.center = CGPointMake(CGRectGetMidX(self.view.frame), CGRectGetMaxY(self.view.frame) - 40.0f);
     self.pageControl.hidesForSinglePage = YES;
     self.pageControl.currentPageIndicatorTintColor = BANYAN_BROWN_COLOR;
     self.pageControl.pageIndicatorTintColor = [BANYAN_BROWN_COLOR colorWithAlphaComponent:0.5];
@@ -212,18 +248,10 @@
 
 - (void)refreshUI
 {
-    if ([self.pieceCaptionView superview]) {
-        [self.pieceCaptionView removeFromSuperview];
-    }
-    self.pieceCaptionView = nil;
-    if ([self.pieceTextView superview]) {
-        [self.pieceTextView removeFromSuperview];
-    }
-    self.pieceTextView = nil;
-    if ([self.imageView superview]) {
-        [self.imageView removeFromSuperview];
-    }
-    self.imageView = nil;
+    self.pieceCaptionView.frame = CGRectZero;
+    self.pieceTextView.frame = CGRectZero;
+    self.imageView.frame = CGRectZero;
+    self.audioPlayer.view.frame = CGRectZero; self.audioPlayer.view.hidden = YES;
     
     Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
     Media *audioMedia = [Media getMediaOfType:@"audio" inMediaSet:self.piece.media];
@@ -243,14 +271,11 @@
     CGSize csize = self.contentView.contentSize;
     csize.height = 0;
     
-    if (hasAudio) {        
+    if (hasAudio) {
         frame = CGRectMake(0, 0, CGRectGetWidth(frame), 50);
-        self.audioPlayer = [[BNAudioStreamingPlayer alloc] init];
-        [self addChildViewController:self.audioPlayer];
-        [self.contentView addSubview:self.audioPlayer.view];
-        self.audioPlayer.view.frame = frame;
-        [self.audioPlayer didMoveToParentViewController:self];
+        self.audioPlayer.view.frame = frame; self.audioPlayer.view.hidden = NO;
         csize.height = CGRectGetMaxY(self.audioPlayer.view.frame);
+        [self.contentView bringSubviewToFront:self.audioPlayer.view];
     }
     
     if (hasImage) {
@@ -258,13 +283,8 @@
         if (hasDescription) {
             frame.size.height = frame.size.height/2;
         }
-        self.imageView = [[UIImageView alloc] initWithFrame:frame];
-        [self.mediaFocusManager installOnView:self.imageView];
-        
+        self.imageView.frame = frame;
         self.imageView.contentMode = hasDescription ? UIViewContentModeScaleAspectFit : UIViewContentModeScaleAspectFill;
-        self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        self.imageView.backgroundColor = BANYAN_BLACK_COLOR;
-        [self.contentView addSubview:self.imageView];
         csize.height = CGRectGetMaxY(self.imageView.frame);
     }
     // Add author/date/stats here
@@ -331,35 +351,20 @@
         CGSize expectedLabelSize = [self.piece.shortText sizeWithFont:[UIFont fontWithName:@"Roboto-BoldCondensed" size:26]
                                                     constrainedToSize:maximumLabelSize];
         frame.size.height = expectedLabelSize.height;
-        
-        self.pieceCaptionView = [[SSLabel alloc] initWithFrame:frame];
-        self.pieceCaptionView.lineBreakMode = NSLineBreakByWordWrapping;
-        self.pieceCaptionView.backgroundColor = [UIColor clearColor];
-        self.pieceCaptionView.font = [UIFont fontWithName:@"Roboto-BoldCondensed" size:26];
-        self.pieceCaptionView.minimumScaleFactor = 0.7;
-        self.pieceCaptionView.textAlignment = NSTextAlignmentLeft;
-        self.pieceCaptionView.textEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 20);
-        self.pieceCaptionView.numberOfLines = 4;
-        [self.contentView addSubview:self.pieceCaptionView];
+        self.pieceCaptionView.frame = frame;
+
         self.pieceCaptionView.text = self.piece.shortText;
         csize.height = CGRectGetMaxY(self.pieceCaptionView.frame); // overwrite because caption will always be lower than image.
     }
     if (hasDescription) {
         frame = CGRectMake(20, CGRectGetMaxY(frame), frame.size.width-2*20, [UIScreen mainScreen].applicationFrame.size.height - CGRectGetMaxY(frame));
-        self.pieceTextView = [[UITextView alloc] initWithFrame:frame];
-        self.pieceTextView.editable = NO;
-        self.pieceTextView.backgroundColor = [UIColor clearColor];
-        self.pieceTextView.font = [UIFont fontWithName:@"Roboto" size:18];
-        self.pieceTextView.textAlignment = NSTextAlignmentLeft;
-        self.pieceTextView.scrollEnabled = NO;
-        [self.contentView addSubview:self.pieceTextView];
+        self.pieceTextView.frame = frame;
         self.pieceTextView.text = self.piece.longText;
         frame = self.pieceTextView.frame;
         frame.size.height = self.pieceTextView.contentSize.height;
         self.pieceTextView.frame = frame;
         csize.height += CGRectGetHeight(self.pieceTextView.frame);
     }
-    [self.view addSubview:self.contentView];
     self.contentView.contentSize = csize;
     [self.contentView setContentOffset:CGPointMake(0,0)];
     
@@ -390,6 +395,7 @@
     } else {
         [self.imageView setImageWithURL:nil];
     }
+    
     if (hasDescription || !hasImage) {
         self.pieceCaptionView.textColor =
         self.pieceTextView.textColor = BANYAN_BLACK_COLOR;

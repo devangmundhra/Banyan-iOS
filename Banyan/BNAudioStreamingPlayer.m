@@ -179,6 +179,14 @@ void audioRouteChangeListenerCallback (
 {
     if ([self isPlaying])
         [player pause];
+    
+    [self.player removeObserver:self forKeyPath:kRateKey];
+    [self.player removeObserver:self forKeyPath:kCurrentItemKey];
+    if (self.playerItem)
+        [self.playerItem removeObserver:self forKeyPath:kStatusKey];
+    [self removePlayerTimeObserver];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void) loadWithURL:(NSString *)urlString
@@ -196,13 +204,14 @@ void audioRouteChangeListenerCallback (
             
 			NSArray *requestedKeys = [NSArray arrayWithObjects:kTracksKey, kPlayableKey, nil];
 			
+            __weak BNAudioStreamingPlayer *wself = self;
 			/* Tells the asset to load the values of any of the specified keys that are not already loaded. */
 			[asset loadValuesAsynchronouslyForKeys:requestedKeys completionHandler:
 			 ^{
 				 dispatch_async( dispatch_get_main_queue(),
 								^{
 									/* IMPORTANT: Must dispatch to main queue in order to operate on the AVPlayer and AVPlayerItem. */
-									[self prepareToPlayAsset:asset withKeys:requestedKeys];
+									[wself prepareToPlayAsset:asset withKeys:requestedKeys];
 								});
 			 }];
 		}

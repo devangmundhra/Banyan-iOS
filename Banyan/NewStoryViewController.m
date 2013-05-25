@@ -128,6 +128,8 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
+    self.addPhotoButton.hidden = YES; // Stories don't have photos
+    
     self.story = [Story newDraftStory];
 
     self.inviteContactsButton.enabled = 1;
@@ -177,7 +179,6 @@
     self.viewerPrivacySegmentedControl.center = CGPointMake(160, 132);
     
     self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-
     
     // Tags
     self.tagsFieldView.scrollEnabled = NO;

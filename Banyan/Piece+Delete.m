@@ -25,7 +25,7 @@
     [[AFBanyanAPIClient sharedClient] deletePath:BANYAN_API_OBJECT_URL(@"Piece", piece.bnObjectId)
                                      parameters:nil
                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                            NSLog(@"Piece with id %@ deleted", piece.bnObjectId);
+                                            NSLog(@"Piece deleted with response %@", responseObject);
                                         }
                                         failure:nil];
     

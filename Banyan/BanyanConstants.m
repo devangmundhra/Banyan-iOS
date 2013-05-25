@@ -14,6 +14,7 @@ NSString *const BNUserLogInNotification = @"io.banyan.Banyan:UserLoginNotificati
 NSString *const BNUserLogOutNotification = @"io.banyan.Banyan:UserLogoutNotification";
 NSString *const BNFBSessionStateChangedNotification = @"io.banyan.Banyan:FBSessionStateChangedNotification";
 NSString *const BNStoryListRefreshedNotification = @"io.banyan.Banyan:StoryListRefreshed";
+NSString *const BNRefreshCurrentStoryListNotification = @"io.banyan.Banyan:RefreshCurrentStoryListNotification";
 
 #pragma mark - NSUserDefaults
 NSString *const BNUserDefaultsFacebookFriends = @"io.banyan.Banyan.userDefaults.facebookFriends";

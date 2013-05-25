@@ -42,7 +42,7 @@
         <attribute name="location" optional="YES" attributeType="Transformable" valueTransformerName="FBGraphObjectToDataTransformer" syncable="YES"/>
         <attribute name="permaLink" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="remoteStatusNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="statistics" optional="YES" attributeType="Transformable" valueTransformerName="" syncable="YES"/>
+        <attribute name="statistics" attributeType="Transformable" valueTransformerName="" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="comments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Comment" inverseName="remoteObject" inverseEntity="Comment" syncable="YES"/>
         <relationship name="media" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Media" inverseName="remoteObject" inverseEntity="Media" syncable="YES"/>
@@ -51,7 +51,7 @@
         <attribute name="canContribute" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="canView" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="contributors" optional="YES" attributeType="Transformable" syncable="YES"/>
-        <attribute name="currentPieceNum" optional="YES" transient="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="currentPieceNum" optional="YES" transient="YES" attributeType="Integer 32" minValueString="1" defaultValueString="1" syncable="YES"/>
         <attribute name="isInvited" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="length" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="numberOfContributors" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -66,6 +66,6 @@
         <element name="Media" positionX="-587" positionY="-234" width="128" height="285"/>
         <element name="Piece" positionX="-819" positionY="-441" width="128" height="135"/>
         <element name="RemoteObject" positionX="-1091" positionY="-324" width="128" height="225"/>
-        <element name="Story" positionX="-578" positionY="-486" width="128" height="225"/>
+        <element name="Story" positionX="-578" positionY="-486" width="128" height="210"/>
     </elements>
 </model>

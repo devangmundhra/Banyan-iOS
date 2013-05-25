@@ -13,8 +13,12 @@ extern NSString *const BNUserFollowingChangedNotification;
 extern NSString *const BNUserLogInNotification;
 extern NSString *const BNUserLogOutNotification;
 extern NSString *const BNFBSessionStateChangedNotification;
+// Notification called when new stories arrive or user permissions change
 extern NSString *const BNStoryListRefreshedNotification;
+// Notification called when some edit was done to the current list of stories (like delete/add piece)
+extern NSString *const BNRefreshCurrentStoryListNotification;
 
+#define UPDATE_STORY_LIST() [[NSNotificationCenter defaultCenter] postNotificationName:BNRefreshCurrentStoryListNotification object:nil]
 
 #pragma mark - NSUserDefaults
 extern NSString *const BNUserDefaultsFacebookFriends;

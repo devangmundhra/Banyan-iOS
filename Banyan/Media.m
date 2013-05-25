@@ -52,12 +52,14 @@
     NSError *error = nil;
     [[NSFileManager defaultManager] removeItemAtPath:self.localURL error:&error];
     [[self managedObjectContext] deleteObject:self];
+    [self save];
 }
 
-- (void)save {
-    NSError *error;
-    if (![[self managedObjectContext] save:&error]) {
-        NSLog(@"Unresolved Core Data Save error %@, %@", error, [error userInfo]);
+- (void)save
+{
+    NSError *error = nil;
+    if (![self.managedObjectContext saveToPersistentStore:&error]) {
+        NSLog(@"Unresolved Core Data Save error %@, %@ in saving media", error, [error userInfo]);
         exit(-1);
     }
 }
@@ -214,8 +216,8 @@
         // TODO
         UIImage *resizedImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:[[UIScreen mainScreen] bounds].size interpolationQuality:kCGInterpolationLow];
         
-        imageData = UIImagePNGRepresentation(resizedImage);
-        imageFile = [PFFile fileWithName:[NSString stringWithFormat:@"%@.png", [BNMisc genRandStringLength:10]]
+        imageData = UIImageJPEGRepresentation(resizedImage, 1);
+        imageFile = [PFFile fileWithName:[NSString stringWithFormat:@"%@.jpg", [BNMisc genRandStringLength:10]]
                                     data:imageData];
         self.remoteStatus = MediaRemoteStatusPushing;
         

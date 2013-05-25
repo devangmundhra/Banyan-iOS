@@ -64,25 +64,25 @@
     // managed context is changed.
     
     // Don't do anything here if the story or number of pieces in the story hasn't changed.
-    if ([_story isEqual:story] && [self.viewControllers count] == [story.length unsignedIntegerValue]) {
+    if (!story || ([_story isEqual:story] && [self.viewControllers count] == [story.length unsignedIntegerValue])) {
         return;
     }
     
     _story = story;
 
     [self refreshView];
-    self.pageControl.currentPage = 0;
+    self.pageControl.currentPage = story.currentPieceNum-1;
     self.pageControl.numberOfPages = [_story.length unsignedIntegerValue];
 
-    if ([_story.length unsignedIntegerValue]) {
-        [self loadScrollViewWithPage:0];
-        [self loadScrollViewWithPage:1];
+    if ([_story.length unsignedIntegerValue]) {        
+        [self loadScrollViewWithPage:story.currentPieceNum-1];
+        [self loadScrollViewWithPage:story.currentPieceNum];
     } else if ([BanyanAppDelegate loggedIn]) {
         CGRect frame = self.scrollView.bounds;
         frame.origin.y += 2.0f;
         UILabel *label = [[UILabel alloc] initWithFrame:frame];
         label.textAlignment = NSTextAlignmentCenter;
-        label.text = @"No pieces in the story. Click to add a piece!";
+        label.text = @"No pieces in the story.\nClick to add a piece!";
         label.font = [UIFont fontWithName:@"Roboto-Bold" size:20];
         label.textColor = BANYAN_GREEN_COLOR;
         label.numberOfLines = 2;
@@ -205,7 +205,8 @@
     CGFloat pageWidth = CGRectGetWidth(self.scrollView.frame);
     NSUInteger page = floor((self.scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
     self.pageControl.currentPage = page;
-    
+    self.story.currentPieceNum = page + 1;
+
     // load the visible page and the page on either side of it (to avoid flashes when the user starts scrolling)
     [self loadScrollViewWithPage:page - 1];
     [self loadScrollViewWithPage:page];
@@ -241,6 +242,7 @@
     if (!self.story || ![self.story.pieces count])
         return nil;
     NSUInteger pieceNum = self.pageControl.currentPage + 1;
+    pieceNum = self.story.currentPieceNum;
     Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:pieceNum]];
     return piece;
 }

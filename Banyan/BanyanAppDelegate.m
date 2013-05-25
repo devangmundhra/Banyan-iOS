@@ -118,9 +118,7 @@ void uncaughtExceptionHandler(NSException *exception)
 - (void) appearances
 {
     [[UINavigationBar appearance] setTintColor:BANYAN_GREEN_COLOR];
-    
-//    [[UIToolbar appearance] setTintColor:BANYAN_GREEN_COLOR];
-    
+        
     [[UIBarButtonItem appearance] setTintColor:BANYAN_GREEN_COLOR];
     
     [[UISwitch appearance] setOnTintColor:BANYAN_GREEN_COLOR];
@@ -133,8 +131,8 @@ void uncaughtExceptionHandler(NSException *exception)
     
     [[UITabBar appearance] setSelectedImageTintColor:BANYAN_BROWN_COLOR];
     
-    [[UIPageControl appearance] setCurrentPageIndicatorTintColor:BANYAN_BROWN_COLOR];
-    [[UIPageControl appearance] setPageIndicatorTintColor:[BANYAN_BROWN_COLOR colorWithAlphaComponent:0.5]];
+//    [[UIPageControl appearance] setCurrentPageIndicatorTintColor:BANYAN_BROWN_COLOR];
+//    [[UIPageControl appearance] setPageIndicatorTintColor:[BANYAN_BROWN_COLOR colorWithAlphaComponent:0.5]];
 }
 
 #pragma mark Application's documents directory

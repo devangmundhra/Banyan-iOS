@@ -106,8 +106,6 @@
 
 - (void) updateStoryStats
 {
-    if (!self.statistics)
-        self.statistics = [[Statistics alloc] init];
     [self updateViews];
     [self updateLikes];
     [self updateFavourites];

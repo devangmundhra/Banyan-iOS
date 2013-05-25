@@ -26,6 +26,11 @@
 @dynamic comments;
 @dynamic media;
 
+- (void)awakeFromInsert
+{
+    [super awakeFromInsert];
+    self.statistics = [[Statistics alloc] init];
+}
 
 #pragma mark -
 #pragma mark Revision management
@@ -41,8 +46,9 @@
             NSLog(@"Copying relationship %@", key);
             [self setComments:[source comments]];
         } else if ([key isEqualToString:@"media"]) {
-            NSLog(@"Copying relationship %@", key);
-            [self setMedia:[source media]];
+            NSLog(@"Skipping relationship %@", key);
+            // Media if changed during editing will be persisted.
+//            [self setMedia:[source media]];
 //            self.media = [Media newMediaForObject:self];
 //            for (NSString *key in [[[source.media entity] attributesByName] allKeys]) {
 //                NSLog(@"Copying media attribute %@", key);
@@ -84,9 +90,10 @@
 {
     NSError *error = nil;
     if (![self.managedObjectContext saveToPersistentStore:&error]) {
-        NSLog(@"Unresolved Core Data Save error %@, %@", error, [error userInfo]);
+        NSLog(@"Unresolved Core Data Save error %@, %@ in saving remote object", error, [error userInfo]);
         exit(-1);
     }
+    UPDATE_STORY_LIST();
 }
 
 - (void) remove
@@ -112,3 +119,68 @@
 }
 
 @end
+
+@implementation RemoteObject (CoreDataGeneratedAccessors)
+
+- (void)addCommentsObject:(Comment *)value
+{
+    NSSet *changedObjects = [[NSSet alloc] initWithObjects:&value count:1];
+    [self willChangeValueForKey:@"comments" withSetMutation:NSKeyValueUnionSetMutation usingObjects:changedObjects];
+    [[self primitiveValueForKey:@"comments"] addObject:value];
+    [self didChangeValueForKey:@"comments" withSetMutation:NSKeyValueUnionSetMutation usingObjects:changedObjects];
+}
+
+- (void)removeCommentsObject:(Comment *)value
+{
+    NSSet *changedObjects = [[NSSet alloc] initWithObjects:&value count:1];
+    [self willChangeValueForKey:@"comments" withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
+    [[self primitiveValueForKey:@"comments"] removeObject:value];
+    [self didChangeValueForKey:@"comments" withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
+}
+
+- (void)addComments:(NSSet *)value
+{
+    [self willChangeValueForKey:@"comments" withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];
+    [[self primitiveValueForKey:@"comments"] unionSet:value];
+    [self didChangeValueForKey:@"comments" withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];
+}
+
+- (void)removeComments:(NSSet *)value
+{
+    [self willChangeValueForKey:@"comments" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
+    [[self primitiveValueForKey:@"comments"] minusSet:value];
+    [self didChangeValueForKey:@"comments" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
+}
+
+- (void)addMediaObject:(Media *)value
+{
+    NSSet *changedObjects = [[NSSet alloc] initWithObjects:&value count:1];
+    [self willChangeValueForKey:@"media" withSetMutation:NSKeyValueUnionSetMutation usingObjects:changedObjects];
+    [[self primitiveValueForKey:@"media"] addObject:value];
+    [self didChangeValueForKey:@"media" withSetMutation:NSKeyValueUnionSetMutation usingObjects:changedObjects];
+}
+
+- (void)removeMediaObject:(Media *)value
+{
+    NSSet *changedObjects = [[NSSet alloc] initWithObjects:&value count:1];
+    [self willChangeValueForKey:@"media" withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
+    [[self primitiveValueForKey:@"media"] removeObject:value];
+    [self didChangeValueForKey:@"media" withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
+}
+
+- (void)addMedia:(NSSet *)value
+{
+    [self willChangeValueForKey:@"media" withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];
+    [[self primitiveValueForKey:@"media"] unionSet:value];
+    [self didChangeValueForKey:@"media" withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];
+}
+
+- (void)removeMedia:(NSSet *)value
+{
+    [self willChangeValueForKey:@"media" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
+    [[self primitiveValueForKey:@"media"] minusSet:value];
+    [self didChangeValueForKey:@"media" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
+}
+
+@end
+
