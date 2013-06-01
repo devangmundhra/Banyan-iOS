@@ -37,6 +37,7 @@ extern NSString *const kBNStoryPrivacyScopeLimited;
 extern NSString *const kBNStoryPrivacyScopePublic;
 extern NSString *const kBNStoryPrivacyInviteeList;
 extern NSString *const kBNStoryPrivacyInvitedFacebookFriends;
+extern NSString *const kBNStoryPrivacyInvitedBanyanFriends;
 
 #pragma mark - ManagedObject Piece Class
 // Class key

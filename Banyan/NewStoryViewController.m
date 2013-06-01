@@ -45,10 +45,10 @@
 @property (weak, nonatomic) UITextField *activeField;
 
 
-@property (weak, nonatomic) IBOutlet UILabel *numberOfSpectators;
+@property (weak, nonatomic) IBOutlet UILabel *numSpectatorsLabel;
 @property (strong, nonatomic) NSMutableArray *invitedToViewList;
 
-@property (weak, nonatomic) IBOutlet UILabel *numberOfPlayers;
+@property (weak, nonatomic) IBOutlet UILabel *numPlayersLabel;
 @property (strong, nonatomic) NSMutableArray *invitedToContributeList;
 
 @property (strong, nonatomic) UITapGestureRecognizer *tapRecognizer;
@@ -78,7 +78,7 @@
 @synthesize viewerPrivacySegmentedControl = _viewerPrivacySegmentedControl;
 @synthesize addLocationButton = _addLocationButton;
 @synthesize addPhotoButton = _addPhotoButton;
-@synthesize numberOfPlayers, numberOfSpectators;
+@synthesize numPlayersLabel, numSpectatorsLabel;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -162,6 +162,7 @@
     
     CGRect aRect = self.contributorPrivacySegmentedControl.thumb.frame;
     [self.contributorPrivacySegmentedControl setSelectedSegmentIndex:ContributorPrivacySegmentedControlInvited animated:NO];
+    numPlayersLabel.hidden = NO;
     self.contributorPrivacySegmentedControl.crossFadeLabelsOnDrag = YES;
     self.contributorPrivacySegmentedControl.height = 25;
     self.contributorPrivacySegmentedControl.font = [UIFont fontWithName:STORY_FONT size:12];;
@@ -173,6 +174,7 @@
     self.contributorPrivacySegmentedControl.center = CGPointMake(160, 78);
 
     [self.viewerPrivacySegmentedControl setSelectedSegmentIndex:ViewerPrivacySegmentedControlPublic animated:NO];
+    numSpectatorsLabel.hidden = YES;
     self.viewerPrivacySegmentedControl.crossFadeLabelsOnDrag = YES;
     self.viewerPrivacySegmentedControl.height = 25;
     self.viewerPrivacySegmentedControl.font = [UIFont fontWithName:STORY_FONT size:12];
@@ -226,8 +228,8 @@
     [self setDoneButton:nil];
     [self setCancelButton:nil];
     [self setNavigationBar:nil];
-    [self setNumberOfPlayers:nil];
-    [self setNumberOfSpectators:nil];
+    [self setNumPlayersLabel:nil];
+    [self setNumSpectatorsLabel:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -292,18 +294,18 @@
         if (segmentedControl.selectedSegmentIndex == ContributorPrivacySegmentedControlInvited) {
             self.viewerPrivacySegmentedControl.enabled = YES;
             self.viewerPrivacySegmentedControl.alpha = 1;
-            numberOfPlayers.hidden = NO;
+            numPlayersLabel.hidden = NO;
         } else {
             if (self.viewerPrivacySegmentedControl.selectedSegmentIndex != ViewerPrivacySegmentedControlPublic) {
                 [self.viewerPrivacySegmentedControl setSelectedSegmentIndex:ViewerPrivacySegmentedControlPublic animated:YES];
             }
             self.viewerPrivacySegmentedControl.enabled = NO;
             self.viewerPrivacySegmentedControl.alpha = 0.5;
-            numberOfPlayers.hidden = YES;
+            numPlayersLabel.hidden = YES;
         }
     }
     
-    numberOfSpectators.hidden = self.viewerPrivacySegmentedControl.selectedSegmentIndex != ViewerPrivacySegmentedControlInvited;
+    numSpectatorsLabel.hidden = self.viewerPrivacySegmentedControl.selectedSegmentIndex != ViewerPrivacySegmentedControlInvited;
     self.inviteContactsButton.enabled = (self.contributorPrivacySegmentedControl.selectedSegmentIndex == ContributorPrivacySegmentedControlInvited) || (self.viewerPrivacySegmentedControl.selectedSegmentIndex == ViewerPrivacySegmentedControlInvited);
 }
 
@@ -318,17 +320,6 @@
 
 - (NSDictionary *)contributorsInvited
 {
-    PFUser *currentUser = [PFUser currentUser];
-    if (currentUser) {
-        NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
-                                        [currentUser objectForKey:USER_NAME], @"name",
-                                        [currentUser objectForKey:USER_FACEBOOK_ID], @"id", nil];
-        [self.invitedToContributeList addObject:selfInvitation];
-    } else {
-        if (HAVE_ASSERTS)
-            assert(false);
-        return nil;
-    }
     NSDictionary *dictToReturn = [NSDictionary dictionaryWithObject:self.invitedToContributeList forKey:kBNStoryPrivacyInvitedFacebookFriends];
     return dictToReturn;
 }
@@ -365,17 +356,6 @@
 
 - (NSDictionary *)viewersInvited
 {
-    PFUser *currentUser = [PFUser currentUser];
-    if (currentUser) {
-        NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
-                                        [currentUser objectForKey:USER_NAME], @"name",
-                                        [currentUser objectForKey:USER_FACEBOOK_ID], @"id", nil];
-        [self.invitedToViewList addObject:selfInvitation];
-    } else {
-        if (HAVE_ASSERTS)
-            assert(false);
-        return nil;
-    }
     return [NSDictionary dictionaryWithObject:self.invitedToViewList forKey:kBNStoryPrivacyInvitedFacebookFriends];
 }
 
@@ -574,13 +554,13 @@
 {
     if (selectedViewers) {
         [self.invitedToViewList setArray:selectedViewers];
-        numberOfSpectators.text = [NSString stringWithFormat:@"%u", selectedViewers.count];
     }
     if (selectedContributors) {
-        [self.invitedToViewList addObjectsFromArray:selectedContributors];
+//        [self.invitedToViewList addObjectsFromArray:selectedContributors];
         [self.invitedToContributeList setArray:selectedContributors];
-        numberOfPlayers.text = [NSString stringWithFormat:@"%u", selectedContributors.count];
     }
+    numSpectatorsLabel.text = [NSString stringWithFormat:@"%u", self.invitedToViewList.count];
+    numPlayersLabel.text = [NSString stringWithFormat:@"%u", self.invitedToContributeList.count];
 }
 
 #pragma mark UITextFieldDelegate

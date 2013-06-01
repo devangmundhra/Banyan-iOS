@@ -32,7 +32,7 @@
 
 @implementation BNAudioRecorder
 
-#define RECORD_DURATION 8
+#define RECORD_DURATION 15
 
 @synthesize controlButton, deleteButton;
 @synthesize audioPlayer, audioRecorder;

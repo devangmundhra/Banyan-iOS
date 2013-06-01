@@ -80,7 +80,7 @@
             self.selectedViewerContacts = nil;
         } else {
             self.allViewers = NO;
-            self.selectedViewerContacts = [NSMutableArray arrayWithArray:[[viewerPermission objectForKey:kBNStoryPrivacyScopeInvited]
+            self.selectedViewerContacts = [NSMutableArray arrayWithArray:[[viewerPermission objectForKey:kBNStoryPrivacyInviteeList]
                                                                           objectForKey:kBNStoryPrivacyInvitedFacebookFriends]];
         }
         if (![[contributorPermission objectForKey:kBNStoryPrivacyScope] isEqualToString:kBNStoryPrivacyScopeInvited]) {
@@ -88,7 +88,7 @@
             self.selectedContributorContacts = nil;
         } else {
             self.allContributors = NO;
-            self.selectedContributorContacts = [NSMutableArray arrayWithArray:[[contributorPermission objectForKey:kBNStoryPrivacyScopeInvited]
+            self.selectedContributorContacts = [NSMutableArray arrayWithArray:[[contributorPermission objectForKey:kBNStoryPrivacyInviteeList]
                                                                           objectForKey:kBNStoryPrivacyInvitedFacebookFriends]];
         }        
     }
@@ -160,9 +160,7 @@
     if (tableView == self.searchDisplayController.searchResultsTableView)
         return nil;
     else
-        return self.contactIndex;
-//    TO BE ADDED WHEN ADDING SEARCH BAR
-//        return [[NSArray arrayWithObject:UITableViewIndexSearch] arrayByAddingObjectsFromArray:self.contactIndex];
+        return [[NSArray arrayWithObject:UITableViewIndexSearch] arrayByAddingObjectsFromArray:self.contactIndex];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
@@ -253,7 +251,7 @@
     if (HAVE_ASSERTS)
         assert(self.selectedViewerContacts);
     
-    return [self.selectedViewerContacts containsObject:friend];
+    return [self.selectedViewerContacts containsObject:friend] || [self.selectedContributorContacts containsObject:friend];
 }
 
 - (BOOL) hasWritePermission:(NSDictionary *)friend
@@ -273,7 +271,7 @@
     NSIndexPath * myIndexPath = [self.tableView indexPathForCell:cell];
     NSDictionary *friend = nil;
     
-    if (self.tableView == self.searchDisplayController.searchResultsTableView) {
+    if ([cell superview] == self.searchDisplayController.searchResultsTableView) {
         friend = [self.filteredListContacts objectAtIndex:myIndexPath.row];
     } else {
         NSArray *contacts = [self getContactsForSection:myIndexPath.section];
@@ -295,7 +293,7 @@
     NSIndexPath * myIndexPath = [self.tableView indexPathForCell:cell];
     NSDictionary *friend = nil;
     
-    if (self.tableView == self.searchDisplayController.searchResultsTableView) {
+    if ([cell superview] == self.searchDisplayController.searchResultsTableView) {
         friend = [self.filteredListContacts objectAtIndex:myIndexPath.row];
     } else {
         NSArray *contacts = [self getContactsForSection:myIndexPath.section];

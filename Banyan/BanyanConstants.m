@@ -33,6 +33,7 @@ NSString *const kBNStoryPrivacyScopeLimited = @"Limited";
 NSString *const kBNStoryPrivacyScopePublic = @"Public";
 NSString *const kBNStoryPrivacyInviteeList = @"InviteeList";
 NSString *const kBNStoryPrivacyInvitedFacebookFriends = @"InvitedFacebookFriends";
+NSString *const kBNStoryPrivacyInvitedBanyanFriends = @"InvitedBanyanFriends";
 
 #pragma mark - ManagedObject Piece Class
 // Class key
