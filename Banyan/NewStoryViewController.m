@@ -44,7 +44,11 @@
 
 @property (weak, nonatomic) UITextField *activeField;
 
+
+@property (weak, nonatomic) IBOutlet UILabel *numberOfSpectators;
 @property (strong, nonatomic) NSMutableArray *invitedToViewList;
+
+@property (weak, nonatomic) IBOutlet UILabel *numberOfPlayers;
 @property (strong, nonatomic) NSMutableArray *invitedToContributeList;
 
 @property (strong, nonatomic) UITapGestureRecognizer *tapRecognizer;
@@ -74,6 +78,7 @@
 @synthesize viewerPrivacySegmentedControl = _viewerPrivacySegmentedControl;
 @synthesize addLocationButton = _addLocationButton;
 @synthesize addPhotoButton = _addPhotoButton;
+@synthesize numberOfPlayers, numberOfSpectators;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -221,6 +226,8 @@
     [self setDoneButton:nil];
     [self setCancelButton:nil];
     [self setNavigationBar:nil];
+    [self setNumberOfPlayers:nil];
+    [self setNumberOfSpectators:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -282,18 +289,21 @@
 - (void) storyPrivacySegmentedControlChangedValue:(SVSegmentedControl *)segmentedControl
 {
     if (segmentedControl == self.contributorPrivacySegmentedControl) {
-        if (segmentedControl.selectedSegmentIndex == ContributorPrivacySegmentedControlInvited){
+        if (segmentedControl.selectedSegmentIndex == ContributorPrivacySegmentedControlInvited) {
             self.viewerPrivacySegmentedControl.enabled = YES;
             self.viewerPrivacySegmentedControl.alpha = 1;
+            numberOfPlayers.hidden = NO;
         } else {
             if (self.viewerPrivacySegmentedControl.selectedSegmentIndex != ViewerPrivacySegmentedControlPublic) {
                 [self.viewerPrivacySegmentedControl setSelectedSegmentIndex:ViewerPrivacySegmentedControlPublic animated:YES];
             }
             self.viewerPrivacySegmentedControl.enabled = NO;
             self.viewerPrivacySegmentedControl.alpha = 0.5;
+            numberOfPlayers.hidden = YES;
         }
     }
     
+    numberOfSpectators.hidden = self.viewerPrivacySegmentedControl.selectedSegmentIndex != ViewerPrivacySegmentedControlInvited;
     self.inviteContactsButton.enabled = (self.contributorPrivacySegmentedControl.selectedSegmentIndex == ContributorPrivacySegmentedControlInvited) || (self.viewerPrivacySegmentedControl.selectedSegmentIndex == ViewerPrivacySegmentedControlInvited);
 }
 
@@ -562,11 +572,14 @@
         finishedInvitingForViewers:(NSArray *)selectedViewers
                       contributors:(NSArray *)selectedContributors
 {
-    if (selectedViewers)
+    if (selectedViewers) {
         [self.invitedToViewList setArray:selectedViewers];
+        numberOfSpectators.text = [NSString stringWithFormat:@"%u", selectedViewers.count];
+    }
     if (selectedContributors) {
         [self.invitedToViewList addObjectsFromArray:selectedContributors];
         [self.invitedToContributeList setArray:selectedContributors];
+        numberOfPlayers.text = [NSString stringWithFormat:@"%u", selectedContributors.count];
     }
 }
 

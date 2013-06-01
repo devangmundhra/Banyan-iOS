@@ -177,14 +177,13 @@ void audioRouteChangeListenerCallback (
 
 - (void)dealloc
 {
-    if ([self isPlaying])
-        [player pause];
+    [self removePlayerTimeObserver];
+    
+    [player pause];
     
     [self.player removeObserver:self forKeyPath:kRateKey];
     [self.player removeObserver:self forKeyPath:kCurrentItemKey];
-    if (self.playerItem)
-        [self.playerItem removeObserver:self forKeyPath:kStatusKey];
-    [self removePlayerTimeObserver];
+    [self.playerItem removeObserver:self forKeyPath:kStatusKey];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -761,7 +760,7 @@ void audioRouteChangeListenerCallback (
 - (void) setupApplicationAudio
 {
 	// Registers this class as the delegate of the audio session.
-	[[AVAudioSession sharedInstance] setDelegate: self];
+//	[[AVAudioSession sharedInstance] setDelegate: self];
 	
 	// The AmbientSound category allows application audio to mix with Media Player
 	// audio. The category also indicates that application audio should stop playing

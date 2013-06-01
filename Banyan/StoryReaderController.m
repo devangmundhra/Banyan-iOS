@@ -92,6 +92,7 @@
     [self.view.gestureRecognizers enumerateObjectsUsingBlock:^(UIGestureRecognizer *gR, NSUInteger idx, BOOL *stop){
         gR.delegate = self;
     }];
+    
     [self setupToolbar];
     
     [[NSNotificationCenter defaultCenter] addObserver:self 
@@ -445,6 +446,49 @@
 }
 
 #pragma mark UIGestureRecognizerDelegate
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    NSUInteger currentPieceNum = [self.currentPiece.pieceNumber unsignedIntegerValue];
+
+    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+        if ([(UIPanGestureRecognizer*)gestureRecognizer velocityInView:gestureRecognizer.view].x > 0.0f) {
+            // Going left
+            Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum-1]];
+            if (!piece)
+                return NO;
+            else
+                return YES;
+        } else {
+            // Going right
+            Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum+1]];
+            if (!piece)
+                return NO;
+            else
+                return YES;
+        }
+    }
+    
+    if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+        if ([(UITapGestureRecognizer*)gestureRecognizer locationInView:gestureRecognizer.view].x > self.view.frame.size.width/2) {
+            // Tapped on left side
+            Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum-1]];
+            if (!piece)
+                return NO;
+            else
+                return YES;
+        } else {
+            // Tapped on right side
+            Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum+1]];
+            if (!piece)
+                return NO;
+            else
+                return YES;
+        }
+    }
+    
+    return YES;
+}
+
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
     if ([touch.view isKindOfClass:[UIControl class]]
