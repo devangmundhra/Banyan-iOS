@@ -56,16 +56,16 @@
         [objectManager addRequestDescriptor:requestDescriptor];
         [objectManager addResponseDescriptor:responseDescriptor];
         
-        [objectManager postObject:story
-                             path:BANYAN_API_OBJECT_URL(@"Story", story.bnObjectId)
-                       parameters:nil
-                          success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                              NSLog(@"Update story successful %@", story);
-                              [story save];
-                          }
-                          failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                              NSLog(@"Error in create story");
-                          }];
+        [objectManager putObject:story
+                            path:BANYAN_API_OBJECT_URL(@"Story", story.bnObjectId)
+                      parameters:nil
+                         success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                             NSLog(@"Update story successful %@", story);
+                             [story save];
+                         }
+                         failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                             NSLog(@"Error in updating story");
+                         }];
     };
     
     // Upload the file and then upload the story

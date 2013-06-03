@@ -11,5 +11,12 @@
 @interface Story (Permissions)
 
 - (void) resetPermission;
+- (NSString *)viewerPrivacyScope;
+- (NSUInteger) numberOfViewers;
+- (NSArray *) storyViewers;
+
+- (NSString *)contributorPrivacyScope;
+- (NSUInteger) numberOfContributors;
+- (NSArray *)storyContributors;
 
 @end

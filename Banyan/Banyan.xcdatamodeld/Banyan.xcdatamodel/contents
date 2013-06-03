@@ -27,7 +27,6 @@
     </entity>
     <entity name="Piece" representedClassName="Piece" parentEntity="RemoteObject" syncable="YES">
         <attribute name="longText" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="numberOfContributors" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="pieceNumber" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="shortText" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tags" optional="YES" attributeType="String" syncable="YES"/>
@@ -54,7 +53,6 @@
         <attribute name="currentPieceNum" optional="YES" transient="YES" attributeType="Integer 32" minValueString="1" defaultValueString="1" syncable="YES"/>
         <attribute name="isInvited" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="length" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <attribute name="numberOfContributors" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="readAccess" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="tags" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
@@ -64,7 +62,7 @@
     <elements>
         <element name="Comment" positionX="-407" positionY="-228" width="128" height="118"/>
         <element name="Media" positionX="-587" positionY="-234" width="128" height="285"/>
-        <element name="Piece" positionX="-819" positionY="-441" width="128" height="135"/>
+        <element name="Piece" positionX="-819" positionY="-441" width="128" height="120"/>
         <element name="RemoteObject" positionX="-1091" positionY="-324" width="128" height="225"/>
         <element name="Story" positionX="-578" positionY="-486" width="128" height="210"/>
     </elements>

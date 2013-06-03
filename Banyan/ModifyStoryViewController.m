@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "NewStoryViewController.h"
+#import "ModifyStoryViewController.h"
 #import "Story_Defines.h"
 #import "BanyanAppDelegate.h"
 #import "SVSegmentedControl.h"
@@ -19,8 +19,9 @@
 #import "Media.h"
 #import "SDWebImage/UIImageView+WebCache.h"
 #import "BNMisc.h"
+#import "Story+Permissions.h"
 
-@interface NewStoryViewController ()
+@interface ModifyStoryViewController ()
 {
     NSInteger contributors;
     NSInteger viewers;
@@ -53,14 +54,15 @@
 
 @property (strong, nonatomic) UITapGestureRecognizer *tapRecognizer;
 
-@property (strong, nonatomic) Story *story;
-
 @property (nonatomic) BOOL isLocationEnabled;
 @property (strong, nonatomic) BNFBLocationManager *locationManager;
 
+@property (nonatomic) ModifyStoryViewControllerEditMode editMode;
+@property (strong, nonatomic) Story *backupStory_;
+
 @end
 
-@implementation NewStoryViewController
+@implementation ModifyStoryViewController
 
 // Timeout for finding location
 #define kFindLocationTimeOut 0.5*60 // half a minute
@@ -79,18 +81,22 @@
 @synthesize addLocationButton = _addLocationButton;
 @synthesize addPhotoButton = _addPhotoButton;
 @synthesize numPlayersLabel, numSpectatorsLabel;
+@synthesize backupStory_ = _backupStory_;
+@synthesize editMode = _editMode;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (id) initWithStory:(Story *)story
 {
-    if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
+    if (self = [super initWithNibName:@"ModifyStoryViewController" bundle:nil]) {
         self.hidesBottomBarWhenPushed = YES;
-        
-        self.title = @"Create New Story";
-        self.contributorPrivacySegmentedControl = [[SVSegmentedControl alloc] initWithSectionTitles:@[@"Everyone", @"Selected"]];
-        [self.contributorPrivacySegmentedControl addTarget:self action:@selector(storyPrivacySegmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
-        
-        self.viewerPrivacySegmentedControl = [[SVSegmentedControl alloc] initWithSectionTitles:@[@"Everyone", @"Limited", @"Selected"]];
-        [self.viewerPrivacySegmentedControl addTarget:self action:@selector(storyPrivacySegmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
+        self.story = story;
+        if (self.story.remoteStatus == RemoteObjectStatusLocal) {
+            self.editMode = ModifyStoryViewControllerEditModeAdd;
+        } else {
+            self.editMode = ModifyStoryViewControllerEditModeEdit;
+            self.backupStory_ = [NSEntityDescription insertNewObjectForEntityForName:[[story entity] name] inManagedObjectContext:[story managedObjectContext]];
+            [self.backupStory_ cloneFrom:story];
+        }
+
     }
     return self;
 }
@@ -107,35 +113,13 @@
     [self unregisterForKeyboardNotifications];
 }
 
-/*
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    if (![BanyanAppDelegate loggedIn]) {
-        [self.view setUserInteractionEnabled:NO];
-        CALayer *layer = [self.view layer];
-        [layer setRasterizationScale:0.3];
-        [layer setShouldRasterize:YES];
-        layer.opacity = 0.3;
-        [self.navigationItem setRightBarButtonItem:nil];
-    } else {
-        [self.view setUserInteractionEnabled:YES];
-        CALayer *layer = [self.view layer];
-        [layer setRasterizationScale:1.0];
-        [layer setShouldRasterize:NO];
-        layer.opacity = 1;
-    }
-}
- */
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
     self.addPhotoButton.hidden = YES; // Stories don't have photos
-    
-    self.story = [Story newDraftStory];
+//    self.addPhotoButton.delegate = self;
 
     self.inviteContactsButton.enabled = 1;
     [self.inviteContactsButton setBackgroundColor:BANYAN_GREEN_COLOR];
@@ -148,21 +132,26 @@
     if (!self.locationManager) {
         self.locationManager = [[BNFBLocationManager alloc] initWithDelegate:self];
     }
-    self.isLocationEnabled = NO;
+    self.isLocationEnabled = [self.story.isLocationEnabled boolValue];
     self.addLocationButton.delegate = self;
     [self.addLocationButton locationPickerLocationEnabled:self.isLocationEnabled];
-    if (self.isLocationEnabled)
-        [self.locationManager beginUpdatingLocation];
-    
-    self.addPhotoButton.delegate = self;
+    if (self.isLocationEnabled) {
+        self.locationManager.location = self.story.location;
+        if ([self.story.location.name length]) {
+            [self.addLocationButton setLocationPickerTitle:self.story.location.name];
+        }
+    }
     
     self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapAnywhere:)];
-    self.invitedToContributeList = [NSMutableArray array];
-    self.invitedToViewList = [NSMutableArray array];
+    
+    self.contributorPrivacySegmentedControl = [[SVSegmentedControl alloc] initWithSectionTitles:@[@"Everyone", @"Selected"]];
+    [self.contributorPrivacySegmentedControl addTarget:self action:@selector(storyPrivacySegmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
+    
+    self.viewerPrivacySegmentedControl = [[SVSegmentedControl alloc] initWithSectionTitles:@[@"Everyone", @"Limited", @"Selected"]];
+    [self.viewerPrivacySegmentedControl addTarget:self action:@selector(storyPrivacySegmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
     
     CGRect aRect = self.contributorPrivacySegmentedControl.thumb.frame;
-    [self.contributorPrivacySegmentedControl setSelectedSegmentIndex:ContributorPrivacySegmentedControlInvited animated:NO];
-    numPlayersLabel.hidden = NO;
+
     self.contributorPrivacySegmentedControl.crossFadeLabelsOnDrag = YES;
     self.contributorPrivacySegmentedControl.height = 25;
     self.contributorPrivacySegmentedControl.font = [UIFont fontWithName:STORY_FONT size:12];;
@@ -173,8 +162,7 @@
     [self.scrollView addSubview:self.contributorPrivacySegmentedControl];
     self.contributorPrivacySegmentedControl.center = CGPointMake(160, 78);
 
-    [self.viewerPrivacySegmentedControl setSelectedSegmentIndex:ViewerPrivacySegmentedControlPublic animated:NO];
-    numSpectatorsLabel.hidden = YES;
+
     self.viewerPrivacySegmentedControl.crossFadeLabelsOnDrag = YES;
     self.viewerPrivacySegmentedControl.height = 25;
     self.viewerPrivacySegmentedControl.font = [UIFont fontWithName:STORY_FONT size:12];
@@ -186,6 +174,44 @@
     self.viewerPrivacySegmentedControl.center = CGPointMake(160, 132);
     
     self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    
+    self.invitedToContributeList = [NSMutableArray array];
+    self.invitedToViewList = [NSMutableArray array];
+    
+    if (self.editMode == ModifyStoryViewControllerEditModeEdit) {
+        // Set the title and permissions
+        self.storyTitleTextField.text = self.story.title;
+        // Players
+        if ([[self.story contributorPrivacyScope] isEqualToString:kBNStoryPrivacyScopeInvited]) {
+            [self.contributorPrivacySegmentedControl setSelectedSegmentIndex:ContributorPrivacySegmentedControlInvited animated:NO];
+            numPlayersLabel.hidden = NO;
+            numPlayersLabel.text = [NSString stringWithFormat:@"%u", [self.story numberOfContributors]];
+            self.invitedToContributeList = [NSMutableArray arrayWithArray:[self.story storyContributors]];
+        } else {
+            [self.contributorPrivacySegmentedControl setSelectedSegmentIndex:ContributorPrivacySegmentedControlPublic animated:NO];
+            numPlayersLabel.hidden = YES;
+        }
+        // Spectators
+        if ([[self.story viewerPrivacyScope] isEqualToString:kBNStoryPrivacyScopeInvited]) {
+            [self.viewerPrivacySegmentedControl setSelectedSegmentIndex:ViewerPrivacySegmentedControlInvited animated:NO];
+            numSpectatorsLabel.hidden = NO;
+            numSpectatorsLabel.text = [NSString stringWithFormat:@"%u", [self.story numberOfViewers]];
+            self.invitedToViewList = [NSMutableArray arrayWithArray:[self.story storyViewers]];
+        } else if ([[self.story viewerPrivacyScope] isEqualToString:kBNStoryPrivacyScopeLimited]) {
+            [self.viewerPrivacySegmentedControl setSelectedSegmentIndex:ViewerPrivacySegmentedControlLimited animated:NO];
+            numSpectatorsLabel.hidden = YES;
+        } else {
+            [self.viewerPrivacySegmentedControl setSelectedSegmentIndex:ViewerPrivacySegmentedControlPublic animated:NO];
+            numSpectatorsLabel.hidden = YES;
+        }
+        self.navigationBar.topItem.title = @"Edit Story";
+    } else {
+        [self.contributorPrivacySegmentedControl setSelectedSegmentIndex:ContributorPrivacySegmentedControlInvited animated:NO];
+        numPlayersLabel.hidden = NO;
+        [self.viewerPrivacySegmentedControl setSelectedSegmentIndex:ViewerPrivacySegmentedControlPublic animated:NO];
+        numSpectatorsLabel.hidden = YES;
+        self.navigationBar.topItem.title = @"Add Story";
+    }
     
     // Tags
     self.tagsFieldView.scrollEnabled = NO;
@@ -208,6 +234,7 @@
     [self updateScrollViewContentSize];
 
     [self.inviteContactsButton addTarget:self action:@selector(inviteContacts:) forControlEvents:UIControlEventTouchUpInside];
+    self.inviteContactsButton.enabled = (self.contributorPrivacySegmentedControl.selectedSegmentIndex == ContributorPrivacySegmentedControlInvited) || (self.viewerPrivacySegmentedControl.selectedSegmentIndex == ViewerPrivacySegmentedControlInvited);
 }
 
 - (void)viewDidUnload
@@ -239,7 +266,7 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-# pragma mark- Target Actions for new story
+# pragma mark- Target Actions for story
 - (void) inviteContacts:(id)sender
 {
     InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] initWithViewerPermissions:[self viewerPrivacyDictionary]
@@ -248,7 +275,25 @@
     [self presentViewController:[[UINavigationController alloc] initWithRootViewController:invitedTableViewController] animated:YES completion:nil];
 }
 
-// Save the new story added
+// Update the story
+- (void)deleteBackupStory
+{
+    if (self.backupStory_) {
+        NSManagedObjectContext *moc = self.backupStory_.managedObjectContext;
+        [moc deleteObject:self.backupStory_];
+        NSError *error;
+        [moc save:&error];
+        self.backupStory_ = nil;
+    }
+}
+
+- (void)restoreBackupStory:(BOOL)upload
+{
+    if (self.backupStory_) {
+        [self.story cloneFrom:self.backupStory_];
+    }
+}
+
 - (IBAction)doneNewStory:(UIBarButtonItem *)sender 
 {
     [self dismissKeyboard:nil];
@@ -273,16 +318,32 @@
     NSLog(@"tags are %@", tags);
     
     // Upload Story
-    [Story createNewStory:self.story];
-
-    NSLog(@"New story %@ saved", self.story);
-    [TestFlight passCheckpoint:@"New Story created successfully"];
+    if (self.editMode == ModifyStoryViewControllerEditModeAdd) {
+        [Story createNewStory:self.story];
+        
+        NSLog(@"New story %@ saved", self.story);
+        [TestFlight passCheckpoint:@"New Story created successfully"];
+    } else if (self.editMode == ModifyStoryViewControllerEditModeEdit) {
+        [Story editStory:self.story];
+    } else {
+        assert(false);
+        NSLog(@"ModifyStoryViewController_No valid edit mode");
+    }
     
     [self dismissEditView];
 }
 
 - (IBAction)cancel:(id)sender
 {
+    if (self.editMode == ModifyStoryViewControllerEditModeEdit) {
+        [self restoreBackupStory:NO];
+    }
+    
+	//remove the original piece in case of local draft unsaved
+	if (self.editMode == ModifyStoryViewControllerEditModeAdd)
+		[self.story remove];
+    
+	self.story = nil; // Just in case
     [self dismissEditView];
 }
 
@@ -603,7 +664,7 @@
 #pragma mark Methods to interface between views
 - (void) dismissEditView
 {
-//    [self deleteBackupStory];
+    [self deleteBackupStory];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

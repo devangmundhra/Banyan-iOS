@@ -17,7 +17,6 @@
 @dynamic contributors;
 @dynamic isInvited;
 @dynamic length;
-@dynamic numberOfContributors;
 @dynamic readAccess;
 @dynamic currentPieceNum;
 @dynamic tags;

@@ -13,7 +13,6 @@
 @implementation Piece
 
 @dynamic longText;
-@dynamic numberOfContributors;
 @dynamic pieceNumber;
 @dynamic shortText;
 @dynamic story;

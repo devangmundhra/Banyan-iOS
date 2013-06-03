@@ -101,7 +101,8 @@
     
     mediaToDelete = [NSMutableSet set];
     
-    if (/*self.editMode == ModifyPieceViewControllerEditModeAddPiece && */[self.piece.story.isLocationEnabled boolValue]) {
+    // If story has location enabled, only then try to get the location
+    if ([self.piece.story.isLocationEnabled boolValue]) {
         self.locationManager = [[BNFBLocationManager alloc] init];
         self.locationManager.delegate = self;
         [self.locationManager beginUpdatingLocation];

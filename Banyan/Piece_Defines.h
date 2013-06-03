@@ -17,8 +17,6 @@
 #define PIECE_STORY @"story"
 #define PIECE_FONT @"HelveticaNeue-CondensedBold"
 
-#define PIECE_NUM_CONTRIBUTORS @"numberOfContributors"
-
 #define MAX_CHAR_IN_PIECE 140
 
 @end

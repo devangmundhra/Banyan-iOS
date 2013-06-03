@@ -12,7 +12,7 @@
 #import "AFBanyanAPIClient.h"
 #import "StoryListTableViewController.h"
 #import "SettingsTableViewController.h"
-#import "NewStoryViewController.h"
+#import "ModifyStoryViewController.h"
 
 @implementation BanyanAppDelegate
 
@@ -492,8 +492,9 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     UITableViewController *searchVC = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
     UITabBarItem *searchTabBarItem = [[UITabBarItem alloc] initWithTitle:@"Search" image:[UIImage imageNamed:@"searchTabSymbol"] tag:0];
     
-    NewStoryViewController *newStoryViewController = [[NewStoryViewController alloc] initWithNibName:@"NewStoryViewController" bundle:nil];
-    UITabBarItem *addTabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:[UIImage imageNamed:@"addTabSymbol"] tag:0];
+//    Story *story = [Story newDraftStory];
+//    ModifyStoryViewController *newStoryViewController = [[ModifyStoryViewController alloc] initWithStory:story];
+//    UITabBarItem *addTabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:[UIImage imageNamed:@"addTabSymbol"] tag:0];
     
     UIImage *buttonImage = [UIImage imageNamed:@"addWithGreen"];
     [self.tabBarController addCenterButtonWithImage:buttonImage andTarget:self withAction:@selector(addTabButtonPressed:)];
@@ -502,13 +503,13 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     UITabBarItem *settingsTabBar = [[UITabBarItem alloc] initWithTitle:nil image:[UIImage imageNamed:@"userProfileTabSymbol"] tag:0];
     
     UINavigationController *storyListNavigationController = [[UINavigationController alloc] initWithRootViewController:storyListVC];
-    UINavigationController *addNavigationController = [[UINavigationController alloc] initWithRootViewController:newStoryViewController];
+//    UINavigationController *addNavigationController = [[UINavigationController alloc] initWithRootViewController:newStoryViewController];
     UINavigationController *searchNavigationController = [[UINavigationController alloc] initWithRootViewController:searchVC];
     UINavigationController *profileNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsVC];
 
     [storyListNavigationController setTabBarItem:storyListTabBarItem];
     [searchNavigationController setTabBarItem:searchTabBarItem];
-    [addNavigationController setTabBarItem:addTabBarItem];
+//    [addNavigationController setTabBarItem:addTabBarItem];
     [profileNavigationController setTabBarItem:settingsTabBar];
 
     self.tabBarController.delegate = self;
@@ -520,7 +521,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     if (![BanyanAppDelegate loggedIn]) {
         [self login];
     } else {
-        NewStoryViewController *newStoryViewController = [[NewStoryViewController alloc] initWithNibName:@"NewStoryViewController" bundle:nil];
+        Story *story = [Story newDraftStory];
+        ModifyStoryViewController *newStoryViewController = [[ModifyStoryViewController alloc] initWithStory:story];
         [self.navController presentViewController:newStoryViewController animated:YES completion:nil];
     }
 

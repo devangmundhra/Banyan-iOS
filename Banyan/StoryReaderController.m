@@ -12,6 +12,7 @@
 #import "MBProgressHUD.h"
 #import "Piece+Create.h"
 #import "Piece+Delete.h"
+#import "ModifyStoryViewController.h"
 
 @interface StoryReaderController ()
 @property (strong, nonatomic) Piece *currentPiece;
@@ -154,21 +155,23 @@
         [buttons addObject:space];
         
         if (self.titleLabel == nil) {
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0.0 , 0.0f, self.view.frame.size.width, 21.0f)];
-            label.center = self.toolbar.center;
-            CGRect lbFrame = label.frame;
-            lbFrame.size.width -= 100.0f;
-            label.frame = lbFrame;
-            
-            label.font = [UIFont fontWithName:@"Roboto-Bold" size:20];
-            label.minimumScaleFactor = 0.7;
-            label.backgroundColor = [UIColor clearColor];
-            label.textColor = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0];
-            label.textAlignment = NSTextAlignmentCenter;
-            label.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.5];
-            self.titleLabel = [[UIBarButtonItem alloc] initWithCustomView:label];
+            UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            titleButton.center = self.toolbar.center;
+            CGRect btnFrame = titleButton.frame;
+            btnFrame.size.width = self.view.frame.size.width - 100;
+            btnFrame.size.height = 21;
+            titleButton.frame = btnFrame;
+            [titleButton addTarget:self action:@selector(editStoryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            titleButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:20];
+            titleButton.titleLabel.minimumScaleFactor = 0.7;
+            titleButton.backgroundColor = [UIColor clearColor];
+            [titleButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
+            titleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+            [titleButton setTitleShadowColor:[UIColor colorWithWhite:0.0 alpha:0.5] forState:UIControlStateNormal];
+            titleButton.showsTouchWhenHighlighted = YES;
+            self.titleLabel = [[UIBarButtonItem alloc] initWithCustomView:titleButton];
         }
-        [(UILabel*)self.titleLabel.customView setText:self.title];
+        [(UIButton *)self.titleLabel.customView setTitle:self.title forState:UIControlStateNormal];
         
         [buttons addObject:self.titleLabel];
         
@@ -196,6 +199,7 @@
 //    self.toolbar.frame = frame;
     
     self.toolbar.items = buttons;
+    self.toolbar.userInteractionEnabled = YES;
 }
 
 - (void) hideToolbar:(BOOL)hide
@@ -232,7 +236,7 @@
 
 # pragma mark
 # pragma mark target actions
-- (void)settingsPopup:(UIBarButtonItem *)sender
+- (IBAction)settingsPopup:(UIBarButtonItem *)sender
 {
     UIActionSheet *actionSheet = nil;
     if ([self.story.canContribute boolValue] && [BanyanAppDelegate loggedIn]) {
@@ -253,11 +257,19 @@
     [actionSheet showInView:self.view];
 }
 
-- (void)cancelButtonPressed:(UIBarButtonItem *)sender
+- (IBAction)cancelButtonPressed:(UIBarButtonItem *)sender
 {
     [self dismissReadView];
 }
-// Action sheet delegate method.
+
+- (IBAction)editStoryButtonPressed:(id)sender
+{
+    self.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    ModifyStoryViewController *newStoryViewController = [[ModifyStoryViewController alloc] initWithStory:self.story];
+    [self presentViewController:newStoryViewController animated:YES completion:nil];
+}
+
+#pragma mark Action sheet delegate method.
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     // the user clicked one of the OK/Cancel buttons
@@ -492,7 +504,9 @@
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
     if ([touch.view isKindOfClass:[UIControl class]]
-        || [touch.view isKindOfClass:[UIButton class]]) {
+        || [touch.view isKindOfClass:[UIButton class]]
+        || [touch.view isKindOfClass:[UIBarButtonItem class]]
+        || [touch.view isKindOfClass:[UIToolbar class]]) {
         return NO;
     }
     else {

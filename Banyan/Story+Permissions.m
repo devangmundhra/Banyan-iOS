@@ -37,4 +37,53 @@
     return;
 }
 
+- (NSString *)contributorPrivacyScope
+{
+    NSDictionary *scopeDict = self.writeAccess;
+    NSString *privacyScope = [scopeDict objectForKey:kBNStoryPrivacyScope];
+    return privacyScope;
+}
+
+- (NSUInteger) numberOfContributors
+{
+    return [self storyContributors].count;
+}
+
+- (NSArray *)storyContributors
+{
+    if ([[self contributorPrivacyScope] isEqualToString:kBNStoryPrivacyScopeInvited]) {
+        NSDictionary *scopeDict = self.writeAccess;
+        NSDictionary *contributorsInvited = [scopeDict objectForKey:kBNStoryPrivacyInviteeList];
+        NSArray *invitedToContFBList = [contributorsInvited objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
+        NSArray *invitedToContBNList = [contributorsInvited objectForKey:kBNStoryPrivacyInvitedBanyanFriends];
+        return [invitedToContFBList arrayByAddingObjectsFromArray:invitedToContBNList];
+    }
+    return nil;
+}
+
+- (NSString *)viewerPrivacyScope
+{
+    NSDictionary *scopeDict = self.readAccess;
+    NSString *privacyScope = [scopeDict objectForKey:kBNStoryPrivacyScope];
+    return privacyScope;
+}
+
+- (NSUInteger) numberOfViewers
+{
+
+    return [self storyViewers].count;
+}
+
+- (NSArray *) storyViewers
+{
+    if ([[self viewerPrivacyScope] isEqualToString:kBNStoryPrivacyScopeInvited]) {
+        NSDictionary *scopeDict = self.readAccess;
+        NSDictionary *viewersInvited = [scopeDict objectForKey:kBNStoryPrivacyInviteeList];
+        NSArray *invitedToViewFBList = [viewersInvited objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
+        NSArray *invitedToViewBNList = [viewersInvited objectForKey:kBNStoryPrivacyInvitedBanyanFriends];
+        return [invitedToViewFBList arrayByAddingObjectsFromArray:invitedToViewBNList];
+    }
+    return nil;
+}
+
 @end
