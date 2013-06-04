@@ -161,14 +161,16 @@
             btnFrame.size.width = self.view.frame.size.width - 100;
             btnFrame.size.height = 21;
             titleButton.frame = btnFrame;
-            [titleButton addTarget:self action:@selector(editStoryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            if ([self.story.canContribute boolValue]) {
+                titleButton.showsTouchWhenHighlighted = YES;
+                [titleButton addTarget:self action:@selector(editStoryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            }
             titleButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:20];
             titleButton.titleLabel.minimumScaleFactor = 0.7;
             titleButton.backgroundColor = [UIColor clearColor];
             [titleButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
             titleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
             [titleButton setTitleShadowColor:[UIColor colorWithWhite:0.0 alpha:0.5] forState:UIControlStateNormal];
-            titleButton.showsTouchWhenHighlighted = YES;
             self.titleLabel = [[UIBarButtonItem alloc] initWithCustomView:titleButton];
         }
         [(UIButton *)self.titleLabel.customView setTitle:self.title forState:UIControlStateNormal];

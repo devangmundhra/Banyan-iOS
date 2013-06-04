@@ -36,7 +36,8 @@ typedef enum {
 {
     [super viewDidLoad];
     [self.tableView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    
+    self.clearsSelectionOnViewWillAppear = YES;
+
     // Notifications to handle permission controls
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(userLoginStatusChanged:)
@@ -47,7 +48,7 @@ typedef enum {
                                                  name:BNUserLogOutNotification
                                                object:nil];
     
-    [self updateSignInOutButtons];
+    [self updateSignInOutButtons];    
 }
 
 - (void)viewDidUnload
@@ -119,7 +120,7 @@ typedef enum {
     // Return the number of rows in the section.
     
     if (![BanyanAppDelegate loggedIn])
-        return 1;
+        return 2;
     
     switch (section) {
         case SettingsTableViewProfileSection:
@@ -135,7 +136,7 @@ typedef enum {
             break;
             
         case SettingsTableViewAboutSection:
-            return 1;
+            return 2;
             break;
             
         default:
@@ -207,7 +208,8 @@ typedef enum {
         }
     }
 
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    if (!(indexPath.section == SettingsAboutSectionAbout && indexPath.row == SettingsAboutSectionFeedback))
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.textLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:18];
     return cell;
 }
@@ -348,6 +350,7 @@ typedef enum {
 # pragma mark About Section
 typedef enum {
     SettingsAboutSectionAbout = 0,
+    SettingsAboutSectionFeedback,
     SettingsAboutSectionLegal
 } SettingsAboutSection;
 
@@ -356,6 +359,9 @@ typedef enum {
     switch (row) {
         case SettingsAboutSectionAbout:
             return @"About";
+            break;
+        case SettingsAboutSectionFeedback:
+            return @"Feedback";
             break;
         case SettingsAboutSectionLegal:
             return @"Legal";
@@ -370,6 +376,13 @@ typedef enum {
 - (void) actionForAboutSectionAtRow:(NSInteger) row
 {
     switch (row) {
+        case SettingsAboutSectionAbout:
+            break;
+        case SettingsAboutSectionFeedback:
+            [TestFlight openFeedbackView];
+            break;
+        case SettingsAboutSectionLegal:
+            break;
             
         default:
             break;

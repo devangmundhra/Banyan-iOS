@@ -26,7 +26,7 @@ PODS:
   - SSToolkit (1.0.4)
   - SVPullToRefresh (0.4.1)
   - SVSegmentedControl (0.2)
-  - TestFlightSDK (1.3.0-beta.5)
+  - TestFlightSDK (1.2.5)
   - TITokenField (0.9.1)
   - TransitionKit (1.1.0)
 
@@ -40,7 +40,7 @@ DEPENDENCIES:
   - SSToolkit
   - SVPullToRefresh
   - SVSegmentedControl
-  - TestFlightSDK (>= 1.2.5)
+  - TestFlightSDK (~> 1.2.5)
   - TITokenField (from `https://github.com/devangmundhra/TITokenField.git`)
 
 EXTERNAL SOURCES:
@@ -69,7 +69,7 @@ SPEC CHECKSUMS:
   SSToolkit: 689acaedac79c2079e492e528a55bcb5db9d98c4
   SVPullToRefresh: 61a0e4bd12bd6f8e3465909810b0fbeb1a28d5f2
   SVSegmentedControl: e874fc56c2a1efb9f597ddf0908101393f53fe96
-  TestFlightSDK: 6c97c15d0fb4735bac761ec563ba7dfe11541cbf
+  TestFlightSDK: 129bae52de93333572e6e5aa6c88ec872d902094
   TITokenField: db7c28576a8f78ecae7ac2ee80ef72912c7cb940
   TransitionKit: 1624e84f252d5cd26900be28ccb73c69fbe63f8a
 

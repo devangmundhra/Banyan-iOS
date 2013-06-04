@@ -35,6 +35,7 @@
 @property (weak, nonatomic) IBOutlet UIView *audioPickerView;
 
 @property (weak, nonatomic) UITextField *activeField;
+@property (nonatomic) CGSize kbSize;
 
 @property (strong, nonatomic) BNFBLocationManager *locationManager;
 
@@ -84,6 +85,12 @@
     [super viewWillAppear:animated];
     self.pieceTextView.delegate = self;
     self.pieceTextView.backgroundColor = [UIColor clearColor];    
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self.view endEditing:YES];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -486,6 +493,7 @@
 {
     NSDictionary* info = [aNotification userInfo];
     CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    self.kbSize = kbSize;
     
     UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
     self.scrollView.contentInset = contentInsets;
@@ -493,8 +501,15 @@
     
     // If active text field is hidden by keyboard, scroll it so it's visible
     if (self.activeField == self.tagsFieldView.tokenField) {
-        CGPoint scrollPoint = CGPointMake(0, self.tagsFieldView.frame.origin.y + self.tagsFieldView.separator.frame.origin.y - self.navigationBar.frame.size.height);
-        [self.scrollView setContentOffset:scrollPoint animated:YES];
+        CGRect aRect = self.view.frame;
+        aRect.size.height -= self.kbSize.height;
+        
+        CGRect translatedFrame = [self.scrollView convertRect:self.tagsFieldView.separator.frame fromView:self.tagsFieldView];
+        
+        if (!CGRectContainsPoint(aRect, translatedFrame.origin)) {
+            CGPoint scrollPoint = CGPointMake(0.0, CGRectGetMaxY(translatedFrame) - self.kbSize.height + 10);
+            [self.scrollView setContentOffset:scrollPoint animated:YES];
+        }
     }
 }
 
@@ -550,11 +565,13 @@
 }
 
 #pragma mark TITokenField Delegate
-- (BOOL)tokenField:(TITokenField *)tokenField willRemoveToken:(TIToken *)token {
+- (BOOL)tokenField:(TITokenField *)tokenField willRemoveToken:(TIToken *)token
+{
 	return YES;
 }
 
-- (void)tokenFieldChangedEditing:(TITokenField *)tokenField {
+- (void)tokenFieldChangedEditing:(TITokenField *)tokenField
+{
 	// There's some kind of annoying bug where UITextFieldViewModeWhile/UnlessEditing doesn't do anything.
 	[tokenField setRightViewMode:(tokenField.editing ? UITextFieldViewModeAlways : UITextFieldViewModeNever)];
 }
@@ -562,8 +579,17 @@
 - (void)tokenFieldFrameDidChange:(TITokenField *)tokenField
 {
     if (self.activeField == self.tagsFieldView.tokenField) {
-        CGPoint scrollPoint = CGPointMake(0, self.tagsFieldView.frame.origin.y + self.tagsFieldView.separator.frame.origin.y - self.navigationController.navigationBar.frame.size.height);
-        [self.scrollView setContentOffset:scrollPoint animated:YES];
+        if (self.activeField == self.tagsFieldView.tokenField) {
+            CGRect aRect = self.view.frame;
+            aRect.size.height -= self.kbSize.height;
+            
+            CGRect translatedFrame = [self.scrollView convertRect:self.tagsFieldView.separator.frame fromView:self.tagsFieldView];
+            
+            if (!CGRectContainsPoint(aRect, translatedFrame.origin)) {
+                CGPoint scrollPoint = CGPointMake(0.0, CGRectGetMaxY(translatedFrame) - self.kbSize.height + 10);
+                [self.scrollView setContentOffset:scrollPoint animated:YES];
+            }
+        }
     }
 }
 
