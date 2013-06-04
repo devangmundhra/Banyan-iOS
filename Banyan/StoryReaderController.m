@@ -331,7 +331,8 @@
     // Dismiss the read scenes page view controller
     [self dismissViewControllerAnimated:YES completion:^{
         [self dismissReadView];
-    }];}
+    }];
+}
 
 # pragma mark - UIPageViewControllerDataSource
 // View controller to display after the current view controller has been turned ahead

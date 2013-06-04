@@ -45,7 +45,7 @@
         } else if ([key isEqualToString:@"comments"]) {
             NSLog(@"Copying relationship %@", key);
             [self setComments:[source comments]];
-        } else if ([key isEqualToString:@"media"]) {
+        } else if ([key isEqualToString:@"media"] || [key isEqualToString:@"pieces"]) {
             NSLog(@"Skipping relationship %@", key);
             // Media if changed during editing will be persisted.
 //            [self setMedia:[source media]];

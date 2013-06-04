@@ -182,8 +182,14 @@ typedef enum {
     }
     
     // Configure the cell...
-    if (![BanyanAppDelegate loggedIn])
+    if (![BanyanAppDelegate loggedIn]) {
         cell.textLabel.text = [self textForAboutSectionAtRow:indexPath.row];
+        
+        if (!(indexPath.row == SettingsAboutSectionFeedback))
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        else
+            cell.accessoryType = UITableViewCellAccessoryNone;
+    }
     else {
         switch (indexPath.section) {
             case SettingsTableViewProfileSection:
@@ -206,10 +212,12 @@ typedef enum {
                 cell.textLabel.text = @"Undefined";
                 break;
         }
+        if (!(indexPath.section == SettingsAboutSectionAbout && indexPath.row == SettingsAboutSectionFeedback))
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        else
+            cell.accessoryType = UITableViewCellAccessoryNone;
     }
 
-    if (!(indexPath.section == SettingsAboutSectionAbout && indexPath.row == SettingsAboutSectionFeedback))
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.textLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:18];
     return cell;
 }

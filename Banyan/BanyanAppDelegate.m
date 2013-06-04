@@ -55,9 +55,9 @@
     [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     
     // RestKit initialization
-    RKLogConfigureByName("RestKit/Network*", RKLogLevelTrace);
-    RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelTrace);
-    RKLogConfigureByName("RestKit/CoreData", RKLogLevelTrace);
+    RKLogConfigureByName("RestKit/Network*", RKLogLevelWarning);
+    RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelWarning);
+    RKLogConfigureByName("RestKit/CoreData", RKLogLevelWarning);
     
     [self restKitCoreDataInitialization];
     
