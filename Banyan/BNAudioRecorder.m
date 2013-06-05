@@ -233,6 +233,7 @@
         currentProgress = [audioPlayer currentTime]/[audioPlayer duration];
     } else {
         NSLog(@"ERROR %s Neither recording nor playing!!", __PRETTY_FUNCTION__);
+        assert(false);
     }
     [self performSelectorInBackground:@selector(refreshUI) withObject:nil];
 }

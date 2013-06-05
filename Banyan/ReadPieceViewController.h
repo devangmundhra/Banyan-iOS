@@ -21,8 +21,10 @@
 
 @protocol ReadPieceViewControllerDelegate <NSObject>
 
-- (BOOL)readPieceViewControllerFlipToPiece:(NSNumber *)pieceNumber;
-
+- (BOOL) readPieceViewControllerFlipToPiece:(NSNumber *)pieceNumber;
+- (void) editStoryButtonPressed:(id)sender;
+- (void) cancelButtonPressed:(id)sender;
+- (void) settingsPopup:(id)sender;
 @end
 
 @interface ReadPieceViewController : UIViewController <InvitedTableViewControllerDelegate, ASMediasFocusDelegate>

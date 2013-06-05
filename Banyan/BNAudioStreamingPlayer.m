@@ -185,6 +185,17 @@ void audioRouteChangeListenerCallback (
     [self.player removeObserver:self forKeyPath:kCurrentItemKey];
     [self.playerItem removeObserver:self forKeyPath:kStatusKey];
     
+    // Unregister the audio route change listener callback function
+	AudioSessionRemovePropertyListenerWithUserData (kAudioSessionProperty_AudioRouteChange,
+                                                    audioRouteChangeListenerCallback,
+                                                    (__bridge void *)(self)
+                                                    );
+    
+	// Activates the audio session.
+	
+	NSError *activationError = nil;
+	[[AVAudioSession sharedInstance] setActive:NO error: &activationError];
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

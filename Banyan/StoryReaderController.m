@@ -94,7 +94,7 @@
         gR.delegate = self;
     }];
     
-    [self setupToolbar];
+//    [self setupToolbar];
     
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(userLoginStatusChanged) 
@@ -238,7 +238,7 @@
 
 # pragma mark
 # pragma mark target actions
-- (IBAction)settingsPopup:(UIBarButtonItem *)sender
+- (void)settingsPopup:(id)sender
 {
     UIActionSheet *actionSheet = nil;
     if ([self.story.canContribute boolValue] && [BanyanAppDelegate loggedIn]) {
@@ -259,12 +259,12 @@
     [actionSheet showInView:self.view];
 }
 
-- (IBAction)cancelButtonPressed:(UIBarButtonItem *)sender
+- (void)cancelButtonPressed:(id)sender
 {
     [self dismissReadView];
 }
 
-- (IBAction)editStoryButtonPressed:(id)sender
+- (void)editStoryButtonPressed:(id)sender
 {
     self.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     ModifyStoryViewController *newStoryViewController = [[ModifyStoryViewController alloc] initWithStory:self.story];
@@ -418,11 +418,11 @@
     if (!piece)
         return nil;
     
-    ReadPieceViewController *readSceneViewController = [[ReadPieceViewController alloc] initWithPiece:piece];
-    readSceneViewController.delegate = self;
-    readSceneViewController.wantsFullScreenLayout = YES;
+    ReadPieceViewController *readPieceViewController = [[ReadPieceViewController alloc] initWithPiece:piece];
+    readPieceViewController.delegate = self;
+    readPieceViewController.wantsFullScreenLayout = YES;
     
-    return readSceneViewController;
+    return readPieceViewController;
 }
 
 #pragma mark ModifyPieceViewControllerDelegate

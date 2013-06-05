@@ -92,7 +92,10 @@
     return self;
 }
 
-#define INFOVIEW_HEIGHT 44.0f // tool bar. TODO: Find a way to do this programmatically
+#define TOOLBAR_HEIGHT 44.0f // tool bar. TODO: Find a way to do this programmatically
+#define INFOVIEW_HEIGHT 38.0f
+#define BUTTON_SPACING 5.0f
+
 - (id) initWithPiece:(Piece *)piece
 {
     self = [super init];
@@ -116,14 +119,54 @@
     self.storyInfoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, INFOVIEW_HEIGHT)];
     self.storyInfoView.backgroundColor = BANYAN_BLACK_COLOR;
 
-    UILabel *topStoryLabel = [[UILabel alloc] initWithFrame:self.storyInfoView.bounds];
-    topStoryLabel.backgroundColor = [UIColor clearColor];
-    topStoryLabel.text = self.piece.story.title;
-    topStoryLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:18];
-    topStoryLabel.textColor = BANYAN_WHITE_COLOR;
-    topStoryLabel.minimumScaleFactor = 0.8;
-    topStoryLabel.textAlignment = NSTextAlignmentCenter;
-    [self.storyInfoView addSubview:topStoryLabel];
+    UIImage *backArrowImage = [UIImage imageNamed:@"backArrow"];
+    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    backButton.frame = CGRectMake(BUTTON_SPACING, 0, backArrowImage.size.width, CGRectGetHeight(self.storyInfoView.bounds));
+    [backButton setImage:backArrowImage forState:UIControlStateNormal];
+    [backButton addTarget:self.delegate action:@selector(cancelButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    backButton.showsTouchWhenHighlighted = YES;
+    [self.storyInfoView addSubview:backButton];
+    
+    UIImage *settingsImage = [UIImage imageNamed:@"settingsButton"];
+    UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    settingsButton.frame = CGRectMake(self.view.frame.size.width - settingsImage.size.width - BUTTON_SPACING, 0,
+                                      settingsImage.size.width, CGRectGetHeight(self.storyInfoView.bounds));
+    [settingsButton setImage:settingsImage forState:UIControlStateNormal];
+    [settingsButton addTarget:self.delegate action:@selector(settingsPopup:) forControlEvents:UIControlEventTouchUpInside];
+    settingsButton.showsTouchWhenHighlighted = YES;
+    [self.storyInfoView addSubview:settingsButton];
+    
+    UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    titleButton.frame = CGRectMake(CGRectGetMaxX(backButton.frame) + 2*BUTTON_SPACING, 0,
+                                   CGRectGetMinX(settingsButton.frame) - CGRectGetMaxX(backButton.frame) - 2*BUTTON_SPACING,
+                                   CGRectGetHeight(self.storyInfoView.bounds));
+    titleButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:20];
+    titleButton.titleLabel.minimumScaleFactor = 0.7;
+    titleButton.backgroundColor = [UIColor clearColor];
+    [titleButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
+    titleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    [titleButton setTitleShadowColor:[UIColor colorWithWhite:0.0 alpha:0.5] forState:UIControlStateNormal];
+    [titleButton setTitle:self.delegate.title forState:UIControlStateNormal];
+    if ([self.piece.story.canContribute boolValue]) {
+        titleButton.showsTouchWhenHighlighted = YES;
+        [titleButton addTarget:self.delegate action:@selector(editStoryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        titleButton.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:self.delegate.title
+                                                                                attributes:@{NSUnderlineStyleAttributeName: @1}];;
+    }
+    [self.storyInfoView insertSubview:titleButton atIndex:0];
+
+//    UILabel *topStoryLabel = [[UILabel alloc] initWithFrame:self.storyInfoView.bounds];
+//    topStoryLabel.frame = CGRectMake(CGRectGetMaxX(backButton.frame) + BUTTON_SPACING, 0,
+//                                     CGRectGetMinX(settingsButton.frame) - CGRectGetMaxX(backButton.frame) - BUTTON_SPACING,
+//                                     CGRectGetHeight(self.storyInfoView.bounds));
+//    topStoryLabel.backgroundColor = [UIColor clearColor];
+//    topStoryLabel.text = self.piece.story.title;
+//    topStoryLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:18];
+//    topStoryLabel.textColor = BANYAN_WHITE_COLOR;
+//    topStoryLabel.minimumScaleFactor = 0.8;
+//    topStoryLabel.textAlignment = NSTextAlignmentCenter;
+//    [self.storyInfoView insertSubview:topStoryLabel atIndex:0];
+    
     [self.view addSubview:self.storyInfoView];
 
     CGRect frame = [UIScreen mainScreen].bounds;
@@ -571,14 +614,14 @@
 // Returns the final focused frame for this media view. This frame is usually a full screen frame.
 - (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager finalFrameforView:(UIView *)view
 {
-    return self.delegate.view.bounds;
+    return self.view.bounds;
 }
 
 // Returns the view controller in which the focus controller is going to be added.
 // This can be any view controller, full screen or not.
 - (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager
 {
-    return self.delegate;
+    return self;
 }
 
 // Returns an URL where the image is stored. This URL is used to create an image at full screen. The URL may be local (file://) or distant (http://).
