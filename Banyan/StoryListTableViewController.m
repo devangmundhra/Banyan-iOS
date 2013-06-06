@@ -100,11 +100,12 @@ typedef enum {
 
 - (void)viewDidUnload
 {
+    [super viewDidUnload];
+
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self setFilterStoriesSegmentedControl:nil];
     self.fetchedResultsController = nil;
     self.indexOfVisibleBackView = nil;
-    [super viewDidUnload];
     NSLog(@"Root View Controller Unloaded");
 }
 

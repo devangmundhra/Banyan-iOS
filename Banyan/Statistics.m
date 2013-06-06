@@ -40,4 +40,8 @@
     [encoder encodeBool:favourite forKey:@"favourite"];
 }
 
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"Statistics\nViewed: %d Liked: %d\n#Likes: %@ #Views: %@ likers: %@ viewers: %@", self.viewed, self.liked, self.numberOfLikes, self.numberOfViews, self.likers, self.viewers];
+}
 @end

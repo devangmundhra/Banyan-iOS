@@ -18,6 +18,7 @@
 #import "NSObject+BlockObservation.h"
 #import "SSLabel.h"
 #import "Media.h"
+#import "User.h"
 #import "SDWebImage/UIImageView+WebCache.h"
 
 @interface ReadPieceViewController ()

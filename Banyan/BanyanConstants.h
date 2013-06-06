@@ -89,6 +89,10 @@ typedef NS_ENUM(NSUInteger, MediaOrientation) {
 	kLandscape
 };
 
+#pragma mark - ManagedObject User Class
+// Class key
+extern NSString *const kBNUserClassKey;
+
 #pragma mark - Colors
 #define BANYAN_ORIG_GREEN_COLOR [UIColor colorWithRed:44/255.0 green:127/255.0 blue:84/255.0 alpha:1]
 #define BANYAN_GREEN_COLOR [UIColor colorWithRed:71/255.0 green:114/255.0 blue:4/255.0 alpha:1]

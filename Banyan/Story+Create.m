@@ -13,6 +13,7 @@
 #import "AFBanyanAPIClient.h"
 #import "UIImage+ResizeAdditions.h"
 #import "Media.h"
+#import "User.h"
 
 @implementation Story (Create)
 
@@ -27,7 +28,7 @@
 {
     Story *story = [Story newStory];
     story.remoteStatus = RemoteObjectStatusLocal;
-    story.author = [User userForPfUser:[PFUser currentUser]];
+    story.author = [User currentUser];
     story.createdAt = story.updatedAt = [NSDate date];
 
     [story save];

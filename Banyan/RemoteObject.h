@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "Statistics.h"
-#import "User.h"
 #import <FacebookSDK/FacebookSDK.h>
 
 typedef enum {
@@ -19,7 +18,7 @@ typedef enum {
     RemoteObjectStatusSync,       // Post uploaded
 } RemoteObjectStatus;
 
-@class Comment, Media, Statistics;
+@class Comment, Media, Statistics, User;
 
 @interface RemoteObject : NSManagedObject
 

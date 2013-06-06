@@ -13,6 +13,8 @@
 #import "Piece+Stats.h"
 #import "Story+Permissions.h"
 #import "Story+Edit.h"
+#import "User.h"
+#import "Media.h"
 
 @implementation BanyanConnection
 
@@ -114,18 +116,10 @@
     [storyMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_READ_ACCESS, STORY_WRITE_ACCESS, STORY_TAGS, STORY_LENGTH, @"permaLink",
                                                     PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT, @"isLocationEnabled", @"location"]];
     // Media
-    RKEntityMapping *mediaMapping = [RKEntityMapping mappingForEntityForName:kBNMediaClassKey
-                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-    [mediaMapping addAttributeMappingsFromDictionary:@{@"url": @"remoteURL"}];
-    [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType"]];
-    mediaMapping.identificationAttributes = @[@"filename", @"remoteURL"];
-    [storyMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:mediaMapping]];
+    [storyMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:[Media mediaMappingForRK]]];
     
     // Author
-    RKObjectMapping *userMapping = [RKObjectMapping mappingForClass:[User class]];
-    [userMapping addAttributeMappingsFromDictionary:@{@"objectId": @"userId"}];
-    [userMapping addAttributeMappingsFromArray:@[@"username", @"name", @"firstName", @"lastName", @"facebookId", @"email"]];
-    [storyMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:userMapping]];
+    [storyMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:[User UserMappingForRK]]];
     
     // Response
     RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:storyMapping
@@ -183,20 +177,12 @@
     pieceMapping.identificationAttributes = @[@"bnObjectId"];
     
     // Media
-    RKEntityMapping *mediaMapping = [RKEntityMapping mappingForEntityForName:kBNMediaClassKey
-                                                        inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-    [mediaMapping addAttributeMappingsFromDictionary:@{@"url": @"remoteURL"}];
-    [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType"]];
-    mediaMapping.identificationAttributes = @[@"filename", @"remoteURL"];
     [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media"
                                                                                  toKeyPath:@"media"
-                                                                               withMapping:mediaMapping]];
+                                                                               withMapping:[Media mediaMappingForRK]]];
     
     // Author
-    RKObjectMapping *userMapping = [RKObjectMapping mappingForClass:[User class]];
-    [userMapping addAttributeMappingsFromDictionary:@{@"objectId": @"userId"}];
-    [userMapping addAttributeMappingsFromArray:@[@"username", @"name", @"firstName", @"lastName", @"facebookId", @"email"]];
-    [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:userMapping]];
+    [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:[User UserMappingForRK]]];
     
     // Response
     RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceMapping

@@ -240,4 +240,13 @@
      ];
 }
 
++ (RKEntityMapping *)mediaMappingForRK
+{
+    RKEntityMapping *mediaMapping = [RKEntityMapping mappingForEntityForName:kBNMediaClassKey
+                                                        inManagedObjectStore:[RKManagedObjectStore defaultStore]];
+    [mediaMapping addAttributeMappingsFromDictionary:@{@"url": @"remoteURL"}];
+    [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType"]];
+    mediaMapping.identificationAttributes = @[@"filename", @"remoteURL"];
+    return mediaMapping;
+}
 @end

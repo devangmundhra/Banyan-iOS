@@ -48,12 +48,12 @@
         } else if ([key isEqualToString:@"media"] || [key isEqualToString:@"pieces"]) {
             NSLog(@"Skipping relationship %@", key);
             // Media if changed during editing will be persisted.
-//            [self setMedia:[source media]];
-//            self.media = [Media newMediaForObject:self];
-//            for (NSString *key in [[[source.media entity] attributesByName] allKeys]) {
-//                NSLog(@"Copying media attribute %@", key);
-//                [self.media setValue:[source.media valueForKey:key] forKey:key];
-//            }
+            //            [self setMedia:[source media]];
+            //            self.media = [Media newMediaForObject:self];
+            //            for (NSString *key in [[[source.media entity] attributesByName] allKeys]) {
+            //                NSLog(@"Copying media attribute %@", key);
+            //                [self.media setValue:[source.media valueForKey:key] forKey:key];
+            //            }
         } else {
             NSLog(@"Copying relationship %@", key);
             [self setValue: [source valueForKey:key] forKey: key];

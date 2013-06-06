@@ -2,46 +2,53 @@
 //  User.m
 //  Banyan
 //
-//  Created by Devang Mundhra on 5/2/13.
+//  Created by Devang Mundhra on 6/6/13.
 //
 //
 
 #import "User.h"
+#import "RemoteObject.h"
 #import "User_Defines.h"
+
 @implementation User
 
-@synthesize email, facebookId, firstName, lastName, name, profilePic;
-@synthesize username, pieces, stories;
+@dynamic email;
+@dynamic createdAt;
+@dynamic facebookId;
+@dynamic firstName;
+@dynamic lastName;
+@dynamic name;
+@dynamic profilePic;
+@dynamic updatedAt;
+@dynamic userId;
+@dynamic username;
+@dynamic remoteObject;
 
-- (id)initWithCoder:(NSCoder *)aDecoder
++ (User *) newUser
 {
-    if(self = [super init]) // this needs to be [super initWithCoder:aDecoder] if the superclass implements NSCoding
-    {
-        email = [aDecoder decodeObjectForKey:@"email"];
-        facebookId = [aDecoder decodeObjectForKey:@"facebookId"];
-        firstName = [aDecoder decodeObjectForKey:@"firstName"];
-        lastName = [aDecoder decodeObjectForKey:@"lastName"];
-        name = [aDecoder decodeObjectForKey:@"name"];
-        profilePic = [aDecoder decodeObjectForKey:@"profilePic"];
-        username = [aDecoder decodeObjectForKey:@"username"];
-        pieces = [aDecoder decodeObjectForKey:@"pieces"];
-        stories = [aDecoder decodeObjectForKey:@"stories"];
-    }
-    return self;
+    User *user = [NSEntityDescription insertNewObjectForEntityForName:kBNUserClassKey
+                                                 inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
+    return user;
 }
 
-- (void)encodeWithCoder:(NSCoder *)encoder
++ (User *)currentUser
 {
-    // add [super encodeWithCoder:encoder] if the superclass implements NSCoding
-    [encoder encodeObject:email forKey:@"email"];
-    [encoder encodeObject:facebookId forKey:@"facebookId"];
-    [encoder encodeObject:firstName forKey:@"firstName"];
-    [encoder encodeObject:lastName forKey:@"lastName"];
-    [encoder encodeObject:name forKey:@"name"];
-    [encoder encodeObject:profilePic forKey:@"profilePic"];
-    [encoder encodeObject:username forKey:@"username"];
-    [encoder encodeObject:pieces forKey:@"pieces"];
-    [encoder encodeObject:stories forKey:@"stories"];
+    PFUser *currentUser = [PFUser currentUser];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:[NSEntityDescription entityForName:kBNUserClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(userId MATCHES %@)", currentUser.objectId];
+    [request setPredicate:predicate];
+    
+    NSError *error = nil;
+    NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+    
+    if (array == nil) {
+        return [User userForPfUser:currentUser];
+    } else if (array.count == 1) {
+        return [array objectAtIndex:0];
+    } else {
+        assert(false);
+    }
 }
 
 + (User *)userForPfUser:(PFUser *)pfUser
@@ -50,7 +57,7 @@
         return nil;
     }
     
-    User *user = [[User alloc] init];
+    User *user = [User newUser];
     user.username = REPLACE_NULL_WITH_NIL([pfUser objectForKey:USER_USERNAME]);
     user.email = REPLACE_NULL_WITH_NIL([pfUser objectForKey:USER_EMAIL]);
     user.firstName = REPLACE_NULL_WITH_NIL([pfUser objectForKey:USER_FIRSTNAME]);
@@ -58,8 +65,34 @@
     user.name = REPLACE_NULL_WITH_NIL([pfUser objectForKey:USER_NAME]);
     user.facebookId = REPLACE_NULL_WITH_NIL([pfUser objectForKey:USER_FACEBOOK_ID]);
     user.userId = pfUser.objectId;
+    [user save];
     
     return user;
 }
 
+
+- (void)remove {
+    [[self managedObjectContext] deleteObject:self];
+    [self save];
+}
+
+- (void)save
+{
+    NSError *error = nil;
+    if (![self.managedObjectContext saveToPersistentStore:&error]) {
+        NSLog(@"Unresolved Core Data Save error %@, %@ in saving media", error, [error userInfo]);
+        exit(-1);
+    }
+}
+
++ (RKEntityMapping *) UserMappingForRK
+{
+    RKEntityMapping *userMapping = [RKEntityMapping mappingForEntityForName:kBNUserClassKey
+                                                       inManagedObjectStore:[RKManagedObjectStore defaultStore]];
+    [userMapping addAttributeMappingsFromDictionary:@{@"objectId": @"userId"}];
+    [userMapping addAttributeMappingsFromArray:@[@"username", @"name", @"firstName", @"lastName", @"facebookId", @"email"]];
+    userMapping.identificationAttributes = @[@"userId"];
+    
+    return userMapping;
+}
 @end

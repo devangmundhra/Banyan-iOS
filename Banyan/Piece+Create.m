@@ -12,6 +12,7 @@
 #import "Story_Defines.h"
 #import "AFBanyanAPIClient.h"
 #import "Media.h"
+#import "User.h"
 
 @implementation Piece (Create)
 
@@ -30,7 +31,7 @@
 {
     Piece *piece = [self newPieceForStory:story];
     piece.remoteStatus = RemoteObjectStatusLocal;
-    piece.author = [User userForPfUser:[PFUser currentUser]];
+    piece.author = [User currentUser];
     piece.createdAt = piece.updatedAt = [NSDate date];
     
     [piece save];

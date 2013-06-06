@@ -67,3 +67,7 @@ NSString *const kBNActivityTypeJoined     = @"joined";
 #pragma mark - ManagedObject Media Class
 // Class key
 NSString *const kBNMediaClassKey           = @"Media";
+
+#pragma mark - ManagedObject User Class
+// Class key
+NSString *const kBNUserClassKey           = @"User";
