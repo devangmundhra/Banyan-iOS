@@ -91,6 +91,13 @@
 {
     [super viewDidAppear:animated];
     [self.view endEditing:YES];
+    [self registerForKeyboardNotifications];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [self unregisterForKeyboardNotifications];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -197,33 +204,11 @@
     }
     
     self.doneButton.enabled = [self checkForChanges];
-        
-    [self registerForKeyboardNotifications];
 
     CGSize screenSize = [UIScreen mainScreen].applicationFrame.size;
     self.scrollView.contentSize = CGSizeMake(screenSize.width,
                                              screenSize.height
                                              - self.navigationBar.frame.size.height);
-}
-
-- (void)viewDidUnload
-{
-    [self setNavigationBar:nil];
-    [self setPieceTextView:nil];
-    [self setCancelButton:nil];
-    [self setDoneButton:nil];
-    self.locationManager.delegate = nil;
-    [self setLocationManager:nil];
-    [self setAddLocationButton:nil];
-    [self setAddPhotoButton:nil];
-    [self setScrollView:nil];
-    [self setPieceCaptionView:nil];
-    [self setTagsFieldView:nil];
-    [self setAudioPickerView:nil];
-    [self setAudioRecorder:nil];
-    [self setMediaToDelete:nil];
-    [super viewDidUnload]; 
-    [self unregisterForKeyboardNotifications];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

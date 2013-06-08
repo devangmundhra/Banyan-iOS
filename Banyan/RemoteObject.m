@@ -93,7 +93,7 @@
         NSLog(@"Unresolved Core Data Save error %@, %@ in saving remote object", error, [error userInfo]);
         exit(-1);
     }
-    UPDATE_STORY_LIST();
+    UPDATE_STORY_LIST(self);
 }
 
 - (void) remove

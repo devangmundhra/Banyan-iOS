@@ -138,22 +138,6 @@
     [TestFlight passCheckpoint:@"Invitation view loaded"];
 }
 
-
-- (void)viewDidUnload
-{
-    self.listContacts = nil;
-    self.filteredListContacts = nil;
-    self.delegate = nil;
-    self.contactIndex = nil;
-    self.searchDisplayController = nil;
-    self.searchBar = nil;
-    self.selectedContributorContacts = nil;
-    self.selectedViewerContacts = nil;
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
 #pragma mark - Table view data source
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
 {

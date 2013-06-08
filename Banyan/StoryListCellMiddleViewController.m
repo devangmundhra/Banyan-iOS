@@ -253,11 +253,4 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)viewDidUnload {
-    [self setScrollView:nil];
-    [self setPageControl:nil];
-    [self setViewControllers:nil];
-    [super viewDidUnload];
-}
-
 @end

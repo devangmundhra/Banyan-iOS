@@ -23,21 +23,10 @@
 @property (nonatomic, retain) NSDate * updatedAt;
 @property (nonatomic, retain) NSString * userId;
 @property (nonatomic, retain) NSString * username;
-@property (nonatomic, retain) NSSet *remoteObject;
+@property (nonatomic, retain) RemoteObject *remoteObject;
 
 + (User *)userForPfUser:(PFUser *)pfUser;
 + (User *)currentUser;
 + (RKEntityMapping *) UserMappingForRK;
-- (void) remove;
-- (void) save;
-
-@end
-
-@interface User (CoreDataGeneratedAccessors)
-
-- (void)addRemoteObjectObject:(RemoteObject *)value;
-- (void)removeRemoteObjectObject:(RemoteObject *)value;
-- (void)addRemoteObject:(NSSet *)values;
-- (void)removeRemoteObject:(NSSet *)values;
 
 @end

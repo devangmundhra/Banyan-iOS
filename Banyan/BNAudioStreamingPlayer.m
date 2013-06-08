@@ -171,6 +171,8 @@ void audioRouteChangeListenerCallback (
     UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
     toolBar.items = [NSArray arrayWithObjects:playButton, flexItem, scrubberItem, nil];
+    [self disablePlayerButtons];
+    [self disableScrubber];
     
     [self setupApplicationAudio];
 }
@@ -424,24 +426,6 @@ void audioRouteChangeListenerCallback (
     self.audioTimeControl.enabled = NO;
 }
 
-/* Prevent the slider from seeking during Ad playback. */
-- (void)sliderSyncToPlayerSeekableTimeRanges
-{
-	NSArray *seekableTimeRanges = [[player currentItem] seekableTimeRanges];
-	if ([seekableTimeRanges count] > 0)
-	{
-		NSValue *range = [seekableTimeRanges objectAtIndex:0];
-		CMTimeRange timeRange = [range CMTimeRangeValue];
-		float startSeconds = CMTimeGetSeconds(timeRange.start);
-		float durationSeconds = CMTimeGetSeconds(timeRange.duration);
-		
-		/* Set the minimum and maximum values of the time slider to match the seekable time range. */
-		audioTimeControl.minimumValue = startSeconds;
-		audioTimeControl.maximumValue = startSeconds + durationSeconds;
-	}
-}
-
-
 #pragma mark Button Action Methods
 - (IBAction)play:(id)sender
 {
@@ -587,7 +571,7 @@ void audioRouteChangeListenerCallback (
 								   localizedDescription, NSLocalizedDescriptionKey,
 								   localizedFailureReason, NSLocalizedFailureReasonErrorKey,
 								   nil];
-		NSError *assetCannotBePlayedError = [NSError errorWithDomain:@"StitchedStreamPlayer" code:0 userInfo:errorDict];
+		NSError *assetCannotBePlayedError = [NSError errorWithDomain:@"BNAudioStreamingPlayer" code:0 userInfo:errorDict];
         
         /* Display the error to the user. */
         [self assetFailedToPrepareForPlayback:assetCannotBePlayedError];

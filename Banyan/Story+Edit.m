@@ -19,6 +19,8 @@
     if (story.remoteStatus != RemoteObjectStatusSync)
         return;
     
+    [story save];
+    
      NSLog(@"Edit Story %@", story);
     
     // Block to upload the story

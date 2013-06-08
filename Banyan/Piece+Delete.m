@@ -42,5 +42,7 @@
             localPiece.pieceNumber = [NSNumber numberWithUnsignedInteger:idx+1];
         }];
     }
+    
+    [story save];
 }
 @end

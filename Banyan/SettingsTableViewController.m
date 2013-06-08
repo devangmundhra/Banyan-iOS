@@ -32,11 +32,11 @@ typedef enum {
     return self;
 }
 
-- (void)viewDidLoad
+- (void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidLoad];
-    [self.tableView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    self.clearsSelectionOnViewWillAppear = YES;
+    [super viewDidAppear:animated];
+    
+    [self updateSignInOutButtons];
 
     // Notifications to handle permission controls
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -47,16 +47,19 @@ typedef enum {
                                              selector:@selector(userLoginStatusChanged:)
                                                  name:BNUserLogOutNotification
                                                object:nil];
-    
-    [self updateSignInOutButtons];    
 }
 
-- (void)viewDidUnload
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
+    [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    [self.tableView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    self.clearsSelectionOnViewWillAppear = YES;    
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -387,7 +390,7 @@ typedef enum {
         case SettingsAboutSectionAbout:
             break;
         case SettingsAboutSectionFeedback:
-            [TestFlight openFeedbackView];
+//            [TestFlight openFeedbackView];
             break;
         case SettingsAboutSectionLegal:
             break;

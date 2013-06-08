@@ -42,7 +42,7 @@
         <attribute name="remoteStatusNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="statistics" attributeType="Transformable" valueTransformerName="" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
-        <relationship name="author" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="remoteObject" inverseEntity="User" syncable="YES"/>
+        <relationship name="author" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="User" inverseName="remoteObject" inverseEntity="User" syncable="YES"/>
         <relationship name="comments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Comment" inverseName="remoteObject" inverseEntity="Comment" syncable="YES"/>
         <relationship name="media" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Media" inverseName="remoteObject" inverseEntity="Media" syncable="YES"/>
     </entity>
@@ -70,7 +70,7 @@
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="userId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="remoteObject" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RemoteObject" inverseName="author" inverseEntity="RemoteObject" syncable="YES"/>
+        <relationship name="remoteObject" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RemoteObject" inverseName="author" inverseEntity="RemoteObject" syncable="YES"/>
     </entity>
     <elements>
         <element name="Comment" positionX="-407" positionY="-228" width="128" height="118"/>

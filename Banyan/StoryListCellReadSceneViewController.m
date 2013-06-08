@@ -13,12 +13,13 @@
 #import "SDWebImage/UIImageView+WebCache.h"
 
 @interface StoryListCellReadSceneViewController ()
-
+@property (strong, nonatomic) Piece *piece;
 @end
 
 @implementation StoryListCellReadSceneViewController
 @synthesize imageView = _imageView;
 @synthesize textView = _textView;
+@synthesize piece = _piece;
 
 - (void) setStatus:(NSString *)status
 {
@@ -31,11 +32,27 @@
 
 - (void)setPiece:(Piece *)piece
 {
+    // Remove any previous notifications
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:BNRefreshCurrentStoryListNotification object:_piece];
+    
+    _piece = piece;
+    
     if (!piece) {
         [self setStatus:@"Error in loading piece."];
         return;
     }
     
+    [self loadPiece:piece];
+    
+    // Add a notification observer for this piece so that when this piece gets edited, the view can be refreshed
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshPiece:)
+                                                 name:BNRefreshCurrentStoryListNotification
+                                               object:piece];
+}
+
+- (void) loadPiece:(Piece *)piece
+{
     Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:piece.media];
     
     if (imageMedia) {
@@ -57,7 +74,7 @@
             [self.imageView setImageWithURL:nil];
         }
     }
-
+    
     if (piece.shortText) {
         self.textView.font = [UIFont fontWithName:@"Roboto-BoldCondensed" size:16];
         self.textView.text = piece.shortText;
@@ -95,16 +112,20 @@
     self.view.backgroundColor = [UIColor clearColor];
 }
 
+- (void) refreshPiece:(NSNotification *)notification
+{
+    [self loadPiece:self.piece];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-- (void)viewDidUnload {
-    [self setImageView:nil];
-    [self setTextView:nil];
-    [self setPiece:nil];
-    [super viewDidUnload];
-}
 @end

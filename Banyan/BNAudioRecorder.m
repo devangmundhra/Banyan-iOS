@@ -91,7 +91,8 @@
         [audioRecorder prepareToRecord];
         audioRecorder.delegate = self;
     }
-    
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
+
     self.view.backgroundColor = BANYAN_BROWN_COLOR;
     
     controlButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -128,6 +129,11 @@
     [self.view addSubview:progressBar];    
 }
 
+- (void)dealloc
+{
+    [self stop:nil];
+}
+
 - (void)refreshUI
 {
     CGRect bounds = self.view.bounds;
@@ -152,13 +158,12 @@
 - (IBAction) recordAudio:(id)sender
 {
     assert([NSThread isMainThread]);
-    
     if (!audioRecorder.recording)
     {
         [controlButton setImage:[UIImage imageNamed:@"stop"] forState:UIControlStateNormal];
         [controlButton removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
         [controlButton addTarget:self action:@selector(stop:) forControlEvents:UIControlEventTouchUpInside];
-        [audioRecorder recordForDuration:RECORD_DURATION+0.7]; // record for upto 20 seconds
+        [audioRecorder recordForDuration:RECORD_DURATION+0.7]; // record for upto RECORD_DURATION seconds
         timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timerAction:) userInfo:nil repeats:YES];
         // The RunLoop will be the Main thread runloop since this is called in response to user event
     }

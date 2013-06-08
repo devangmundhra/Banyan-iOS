@@ -32,12 +32,6 @@
     // Do any additional setup after loading the view from its nib.
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    self.centerButton = nil;
-}
-
 - (void) addCenterButtonWithImage:(UIImage *)image andTarget:(id)target withAction:(SEL)action
 {
     self.centerButton = [UIButton buttonWithType:UIButtonTypeCustom];

@@ -146,9 +146,8 @@
                                 }
                                 [stories enumerateObjectsUsingBlock:^(Story *story, NSUInteger idx, BOOL *stop) {
                                     NSArray *unsavedPieces = [Piece unsavedPiecesInStory:story];
-                                    for (Piece *piece in unsavedPieces) {
-                                        [piece remove];
-                                    }
+                                    NSLog(@"%u unsaved pieces in story :%@", unsavedPieces.count, story.title);
+                                    
                                     story.remoteStatus = RemoteObjectStatusSync;
                                     story.lastSynced = [NSDate date];
                                     story.currentPieceNum = 1;

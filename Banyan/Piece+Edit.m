@@ -19,6 +19,8 @@
     if (piece.remoteStatus != RemoteObjectStatusSync)
         return;
     
+    [piece save];
+    
     NSLog(@"Update piece %@ for story %@", piece, piece.story);
     
     // Block to upload the piece
@@ -77,8 +79,8 @@
                      updatePiece(piece);
                  }
                  failure:^(NSError *error) {
-                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
-                                                                     message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
+                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error uploading media when editing piece"
+                                                                     message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]
                                                                     delegate:nil
                                                            cancelButtonTitle:@"OK"
                                                            otherButtonTitles:nil];

@@ -105,6 +105,13 @@
 {
     [super viewDidAppear:animated];
     [self.view endEditing:YES];
+    [self registerForKeyboardNotifications];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [self unregisterForKeyboardNotifications];
 }
 
 - (void)viewDidLoad
@@ -228,35 +235,7 @@
     [self updateScrollViewContentSize];
 
     [self.inviteContactsButton addTarget:self action:@selector(inviteContacts:) forControlEvents:UIControlEventTouchUpInside];
-    self.inviteContactsButton.enabled = (self.contributorPrivacySegmentedControl.selectedSegmentIndex == ContributorPrivacySegmentedControlInvited) || (self.viewerPrivacySegmentedControl.selectedSegmentIndex == ViewerPrivacySegmentedControlInvited);
-    
-    [self registerForKeyboardNotifications];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-
-    [self setStoryTitle:nil];
-    [self setStoryTitleTextField:nil];
-    [self setTapRecognizer:nil];
-    [self setInvitedToViewList:nil];
-    [self setInvitedToContributeList:nil];
-    [self setLocationManager:nil];
-    [self setTagsFieldView:nil];
-    [self setAddLocationButton:nil];
-    [self setAddPhotoButton:nil];
-    [self setScrollView:nil];
-    [self setContributorPrivacySegmentedControl:nil];
-    [self setViewerPrivacySegmentedControl:nil];
-    [self setInviteContactsButton:nil];
-    [self setDoneButton:nil];
-    [self setCancelButton:nil];
-    [self setNavigationBar:nil];
-    [self setNumPlayersLabel:nil];
-    [self setNumSpectatorsLabel:nil];
-    [self unregisterForKeyboardNotifications];
+    self.inviteContactsButton.enabled = (self.contributorPrivacySegmentedControl.selectedSegmentIndex == ContributorPrivacySegmentedControlInvited) || (self.viewerPrivacySegmentedControl.selectedSegmentIndex == ViewerPrivacySegmentedControlInvited);    
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
