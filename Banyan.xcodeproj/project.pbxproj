@@ -129,6 +129,7 @@
 		51A8DC981692C4490017E86F /* Story+Permissions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC971692C4490017E86F /* Story+Permissions.m */; };
 		51AFD5F117607800008C7203 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 51AFD5F017607800008C7203 /* User.m */; };
 		51AFD5F417607D01008C7203 /* RemoteObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 51AFD5F317607D00008C7203 /* RemoteObject.m */; };
+		51AFD5F71765B64B008C7203 /* BNFeedbackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51AFD5F61765B64B008C7203 /* BNFeedbackViewController.m */; };
 		51B234E117154C43004241C1 /* shareButtonBlack.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B234DD17154C43004241C1 /* shareButtonBlack.png */; };
 		51B234E217154C43004241C1 /* shareButtonBlack@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B234DE17154C43004241C1 /* shareButtonBlack@2x.png */; };
 		51B234E317154C43004241C1 /* shareButtonWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B234DF17154C43004241C1 /* shareButtonWhite.png */; };
@@ -397,6 +398,8 @@
 		51AFD5F017607800008C7203 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = User.m; path = Banyan/User.m; sourceTree = "<group>"; };
 		51AFD5F217607D00008C7203 /* RemoteObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RemoteObject.h; path = Banyan/RemoteObject.h; sourceTree = "<group>"; };
 		51AFD5F317607D00008C7203 /* RemoteObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RemoteObject.m; path = Banyan/RemoteObject.m; sourceTree = "<group>"; };
+		51AFD5F51765B64B008C7203 /* BNFeedbackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNFeedbackViewController.h; sourceTree = "<group>"; };
+		51AFD5F61765B64B008C7203 /* BNFeedbackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNFeedbackViewController.m; sourceTree = "<group>"; };
 		51B234DD17154C43004241C1 /* shareButtonBlack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shareButtonBlack.png; sourceTree = "<group>"; };
 		51B234DE17154C43004241C1 /* shareButtonBlack@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shareButtonBlack@2x.png"; sourceTree = "<group>"; };
 		51B234DF17154C43004241C1 /* shareButtonWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shareButtonWhite.png; sourceTree = "<group>"; };
@@ -1160,6 +1163,8 @@
 				51CFD92715F1F260002926F9 /* SettingsTableViewController.m */,
 				51CFD93415F3E80B002926F9 /* FollowingFriendsViewController.h */,
 				51CFD93515F3E80B002926F9 /* FollowingFriendsViewController.m */,
+				51AFD5F51765B64B008C7203 /* BNFeedbackViewController.h */,
+				51AFD5F61765B64B008C7203 /* BNFeedbackViewController.m */,
 				51CFD93B15F57F75002926F9 /* UITableViewCell */,
 			);
 			name = Settings;
@@ -1468,6 +1473,7 @@
 				5128EB5717478B5500393173 /* BNAudioStreamingPlayer.m in Sources */,
 				51AFD5F117607800008C7203 /* User.m in Sources */,
 				51AFD5F417607D01008C7203 /* RemoteObject.m in Sources */,
+				51AFD5F71765B64B008C7203 /* BNFeedbackViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

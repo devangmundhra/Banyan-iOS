@@ -8,6 +8,7 @@
 
 #import "SettingsTableViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "BNFeedbackViewController.h"
 
 @interface SettingsTableViewController ()
 
@@ -229,7 +230,7 @@ typedef enum {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     // Navigation logic may go here. Create and push another view controller.
     if (![BanyanAppDelegate loggedIn]) {
         [self actionForAboutSectionAtRow:indexPath.row];
@@ -256,7 +257,6 @@ typedef enum {
         default:
             break;
     }
-    
 }
 
 # pragma mark Profile Section
@@ -386,11 +386,14 @@ typedef enum {
 
 - (void) actionForAboutSectionAtRow:(NSInteger) row
 {
+    BNFeedbackViewController *fbVC = nil;
     switch (row) {
         case SettingsAboutSectionAbout:
             break;
         case SettingsAboutSectionFeedback:
-//            [TestFlight openFeedbackView];
+            fbVC = [[BNFeedbackViewController alloc] init];
+            [self.navigationController pushViewController:fbVC animated:YES];
+//            [self presentViewController:fbVC animated:YES completion:nil];            
             break;
         case SettingsAboutSectionLegal:
             break;

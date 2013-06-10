@@ -62,7 +62,7 @@
     [self setBackgroundColor:[UIColor clearColor]];
 }
 
-- (void)disableReadButton:(BOOL)set
+- (void)enableReadButton:(BOOL)set
 {
     readButton.enabled = set;
     // If there is public/limited write permission, read button will have that scope of permission too
@@ -72,7 +72,7 @@
         [self canRead:YES];
 }
 
-- (void)disableWriteButton:(BOOL)set
+- (void)enableWriteButton:(BOOL)set
 {
     writeButton.enabled = set;
     if (!writeButton.enabled)

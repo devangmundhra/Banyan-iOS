@@ -22,8 +22,8 @@
 @property (strong, nonatomic) id<InviteFriendCellDelegate>delegate;
 
 - (void) setName:(NSString *)name;
-- (void) disableReadButton:(BOOL)set;
-- (void) disableWriteButton:(BOOL)set;
+- (void) enableReadButton:(BOOL)set;
+- (void) enableWriteButton:(BOOL)set;
 - (void) canRead:(BOOL)set;
 - (void) canWrite:(BOOL)set;
 @end

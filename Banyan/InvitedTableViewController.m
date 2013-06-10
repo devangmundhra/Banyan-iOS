@@ -218,8 +218,8 @@
     // Set/disable write button. If write is enabled, read is automatically enabled.
     
     // Set/disable read button
-    [cell disableReadButton:!self.allViewers];
-    [cell disableWriteButton:!self.allContributors];
+    [cell enableReadButton:!self.allViewers];
+    [cell enableWriteButton:!self.allContributors];
     
     [cell canRead:[self hasReadPermission:friend]];
     [cell canWrite:[self hasWritePermission:friend]];
@@ -265,11 +265,10 @@
     // Toggle read permission
     if ([self hasReadPermission:friend]) {
         [self.selectedViewerContacts removeObject:friend];
-        [cell canRead:NO];
     } else {
         [self.selectedViewerContacts addObject:friend];
-        [cell canRead:YES];
     }
+    [cell canRead:[self hasReadPermission:friend]];
 }
 
 - (void)inviteFriendCellWriteButtonTapped:(InviteFriendCell *)cell
@@ -287,11 +286,11 @@
     // Toggle write permission
     if ([self hasWritePermission:friend]) {
         [self.selectedContributorContacts removeObject:friend];
-        [cell canWrite:NO];
     } else {
         [self.selectedContributorContacts addObject:friend];
-        [cell canWrite:YES];
     }
+    [cell canWrite:[self hasWritePermission:friend]];
+    [cell enableReadButton:![self hasWritePermission:friend]&&!self.allViewers];
 }
 
 #pragma mark - Table view delegate

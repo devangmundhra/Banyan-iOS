@@ -94,8 +94,8 @@
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
      UIRemoteNotificationTypeAlert];
     
-//    [FBSettings enableBetaFeature:FBBetaFeaturesOpenGraphShareDialog];
-//    [FBSettings enableBetaFeature:FBBetaFeaturesShareDialog];
+    [FBSettings enableBetaFeature:FBBetaFeaturesOpenGraphShareDialog];
+    [FBSettings enableBetaFeature:FBBetaFeaturesShareDialog];
     
     [self setupTabBarController];
     self.navController = [[UINavigationController alloc] initWithRootViewController:self.tabBarController];

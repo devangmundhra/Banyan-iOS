@@ -150,16 +150,15 @@
     center.y = CGRectGetMidY(bounds);
     progressBar.center = center;
     
-    timeLabel.frame = CGRectMake(CGRectGetMaxX(sliderBar.frame)+5, 0, 40, CGRectGetHeight(bounds));
-    deleteButton.frame = CGRectMake(CGRectGetMaxX(timeLabel.frame), 0, 40, CGRectGetHeight(bounds));
+    timeLabel.frame = CGRectMake(CGRectGetMaxX(sliderBar.frame)+5, 0, 55, CGRectGetHeight(bounds));
+    deleteButton.frame = CGRectMake(CGRectGetMaxX(timeLabel.frame), 0, 25, CGRectGetHeight(bounds));
 }
 
 #pragma mark target actions
 - (IBAction) recordAudio:(id)sender
 {
     assert([NSThread isMainThread]);
-    if (!audioRecorder.recording)
-    {
+    if (!audioRecorder.recording) {
         [controlButton setImage:[UIImage imageNamed:@"stop"] forState:UIControlStateNormal];
         [controlButton removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
         [controlButton addTarget:self action:@selector(stop:) forControlEvents:UIControlEventTouchUpInside];

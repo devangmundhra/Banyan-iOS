@@ -7,6 +7,7 @@
 //
 
 #import "Story+Create.h"
+#import "Story+Permissions.h"
 #import "Story_Defines.h"
 #import "User_Defines.h"
 #import "BanyanDataSource.h"
@@ -46,7 +47,9 @@
     NSLog(@"Adding story %@", story);
 
     //    PARSE
-    void (^sendRequestToContributors)(NSArray *, Story *) = ^(NSArray *contributorsList, Story *story) {
+    void (^sendRequestToContributors)(Story *) = ^(Story *story) {
+        NSArray *contributorsList = [story storyContributors];
+        
         NSMutableArray *fbIds = [NSMutableArray arrayWithCapacity:1];
         for (NSDictionary *contributor in contributorsList)
         {
@@ -106,7 +109,7 @@
                                                                         [NSString stringWithFormat:@"%@ has invited you to contribute to a story titled %@",
                                                                         [[PFUser currentUser] objectForKey:USER_NAME], story.title], @"alert",
                                                                         [NSNumber numberWithInt:1], @"badge",
-                                                                        story.title, @"Story title",
+                                                                        story.bnObjectId, @"Story id",
                                                                         nil];
                                                  // send push notication to this user id
                                                  PFPush *push = [[PFPush alloc] init];
@@ -169,10 +172,8 @@
                           success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                               NSLog(@"Create story successful %@", story);
                               story.remoteStatus = RemoteObjectStatusSync;
-                              NSArray *invitedFBFriends = [[story.writeAccess objectForKey:kBNStoryPrivacyInviteeList]
-                                                           objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
-                              if (invitedFBFriends) {
-                                  sendRequestToContributors(invitedFBFriends, story);
+                              if ([story numberOfContributors]) {
+                                  sendRequestToContributors(story);
                               }
                               [story save];
                           }

@@ -505,7 +505,8 @@
     self.scrollView.contentInset = contentInsets;
     self.scrollView.scrollIndicatorInsets = contentInsets;
     
-    [self.scrollView setContentOffset:CGPointZero animated:YES];}
+    [self.scrollView setContentOffset:CGPointZero animated:YES];
+}
 
 
 - (IBAction)dismissKeyboard:(id)sender

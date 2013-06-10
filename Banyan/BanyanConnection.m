@@ -131,11 +131,11 @@
     [objectManager getObjectsAtPath:getPath
                          parameters:nil
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                // Delete all unsaved stories
-                                NSArray *unsavedStories = [Story unsavedStories];
-                                for (Story *story in unsavedStories) {
-                                    [story remove];
-                                }
+//                                // Delete all unsaved stories
+//                                NSArray *unsavedStories = [Story unsavedStories];
+//                                for (Story *story in unsavedStories) {
+//                                    [story remove];
+//                                }
                                 
                                 NSArray *stories = [mappingResult array];
                                 // Delete stories that have been deleted on the server
