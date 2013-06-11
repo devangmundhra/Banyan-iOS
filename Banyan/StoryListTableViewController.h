@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "BNTableViewController.h"
+#import "StoryListCell.h"
 
-@interface StoryListTableViewController : BNTableViewController {
+@interface StoryListTableViewController : BNTableViewController <StoryListCellDelegate> {
 	NSIndexPath * indexOfVisibleBackView;
-}
+} 
 
 @end

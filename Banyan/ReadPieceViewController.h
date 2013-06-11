@@ -25,6 +25,7 @@
 - (void) editStoryButtonPressed:(id)sender;
 - (void) cancelButtonPressed:(id)sender;
 - (void) settingsPopup:(id)sender;
+- (void) setCurrentPiece:(Piece *)piece;
 @end
 
 @interface ReadPieceViewController : UIViewController <InvitedTableViewControllerDelegate, ASMediasFocusDelegate>

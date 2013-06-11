@@ -9,7 +9,6 @@
 #import "StoryListTableViewController.h"
 #import "BanyanAppDelegate.h"
 #import "SVPullToRefresh.h"
-#import "StoryListCell.h"
 #import "Story+Delete.h"
 #import "Piece+Create.h"
 #import "StoryReaderController.h"
@@ -133,6 +132,7 @@ typedef enum {
     
     // Configure the cell...
     Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.delegate = self;
     [cell setStory:story];
     
     return cell;
@@ -191,6 +191,25 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
     NSLog(@"Sharing story: %@", story);
     assert(false);
+}
+
+#pragma mark StoryListCellDelegate
+- (void) addPieceForStoryListCell:(StoryListCell *)cell
+{
+    NSIndexPath *myIndexPath = [self.tableView indexPathForCell:cell];
+    [self addPieceForRowAtIndexPath:myIndexPath];
+}
+
+- (void) deleteStoryForStoryListCell:(StoryListCell *)cell
+{
+    NSIndexPath *myIndexPath = [self.tableView indexPathForCell:cell];
+    [self tableView:self.tableView commitEditingStyle:UITableViewCellEditingStyleDelete forRowAtIndexPath:myIndexPath];
+}
+
+- (void) shareStoryForStoryListCell:(StoryListCell *)cell
+{
+    NSIndexPath *myIndexPath = [self.tableView indexPathForCell:cell];
+    [self shareStoryAtIndexPath:myIndexPath];
 }
 
 #pragma mark Data Source Loading / Reloading Methods

@@ -16,6 +16,7 @@
 #import "BNImageLabel.h"
 #import "BanyanAppDelegate.h"
 #import "SSLineView.h"
+#import "StoryListTableViewController.h"
 
 @implementation UIViewWithTopLine
 - (void)drawRect:(CGRect)rect
@@ -76,6 +77,7 @@
 @synthesize dateFormatter;
 @synthesize containingView;
 @synthesize storyTags = _storyTags;
+@synthesize delegate = _delegate;
 
 - (StoryListCellMiddleViewController *)middleVC
 {
@@ -466,13 +468,7 @@
 #pragma mark back view methods
 - (void)addPiece:(UIButton *)button
 {
-    UITableView * tableView = (UITableView *)self.superview;
-    id delegate = tableView.superview.nextResponder; // Hopefully this is a BNTableViewController.
-    NSIndexPath * myIndexPath = [tableView indexPathForCell:self];
-    
-    if ([delegate respondsToSelector:@selector(addPieceForRowAtIndexPath:)]) {
-        [delegate performSelector:@selector(addPieceForRowAtIndexPath:) withObject:myIndexPath];
-    }
+    [self.delegate addPieceForStoryListCell:self];
 }
 
 - (void)deleteStoryAlert:(UIButton *)button
@@ -484,26 +480,10 @@
     [alertView show];
 }
 
-- (void)deleteStory
-{
-    UITableView * tableView = (UITableView *)self.superview;
-    id delegate = tableView.superview.nextResponder; // Hopefully this is a BNTableViewController.
-    NSIndexPath * myIndexPath = [tableView indexPathForCell:self];
-    
-    if ([delegate respondsToSelector:@selector(tableView:commitEditingStyle:forRowAtIndexPath:)]) {
-        [delegate tableView:tableView commitEditingStyle:UITableViewCellEditingStyleDelete forRowAtIndexPath:myIndexPath];
-    }
-}
 
 - (void) shareStory:(UIButton *)button
 {
-    UITableView * tableView = (UITableView *)self.superview;
-    id delegate = tableView.superview.nextResponder; // Hopefully this is a BNTableViewController.
-    NSIndexPath * myIndexPath = [tableView indexPathForCell:self];
-    
-    if ([delegate respondsToSelector:@selector(shareStoryAtIndexPath:)]) {
-        [delegate performSelector:@selector(shareStoryAtIndexPath:) withObject:myIndexPath];
-    }
+    [self.delegate shareStoryForStoryListCell:self];
 }
 
 - (void) hideBackView:(UIButton *)button
@@ -520,7 +500,7 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if ([alertView.title isEqualToString:@"Delete Story"] && buttonIndex==1) {
-        [self deleteStory];
+        [self.delegate deleteStoryForStoryListCell:self];
     }
 }
 
