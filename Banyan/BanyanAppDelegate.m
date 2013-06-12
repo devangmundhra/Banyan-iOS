@@ -94,14 +94,11 @@
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
      UIRemoteNotificationTypeAlert];
     
-//    [FBSettings enableBetaFeature:FBBetaFeaturesOpenGraphShareDialog];
-//    [FBSettings enableBetaFeature:FBBetaFeaturesShareDialog];
+    [FBSettings enableBetaFeature:FBBetaFeaturesOpenGraphShareDialog];
+    [FBSettings enableBetaFeature:FBBetaFeaturesShareDialog];
     
-    [self setupTabBarController];
-    self.navController = [[UINavigationController alloc] initWithRootViewController:self.tabBarController];
-    self.navController.navigationBarHidden = YES;
-    
-    self.window.rootViewController = self.navController;
+    [self setupTabBarController];    
+    self.window.rootViewController = self.tabBarController;
     [self.window makeKeyAndVisible];
     
     return YES;
@@ -116,7 +113,7 @@ void uncaughtExceptionHandler(NSException *exception)
 
 #pragma mark customize appearnaces
 - (void) appearances
-{
+{    
     [[UINavigationBar appearance] setTintColor:BANYAN_GREEN_COLOR];
         
     [[UIBarButtonItem appearance] setTintColor:BANYAN_GREEN_COLOR];
@@ -124,15 +121,8 @@ void uncaughtExceptionHandler(NSException *exception)
     [[UISwitch appearance] setOnTintColor:BANYAN_GREEN_COLOR];
     
     [[UISegmentedControl appearance] setTintColor:BANYAN_GREEN_COLOR];
-        
-//    [[UISlider appearance] setThumbTintColor:BANYAN_GREEN_COLOR];
-//    
-//    [[UISlider appearance] setMinimumTrackTintColor:BANYAN_BROWN_COLOR];
     
     [[UITabBar appearance] setSelectedImageTintColor:BANYAN_BROWN_COLOR];
-    
-//    [[UIPageControl appearance] setCurrentPageIndicatorTintColor:BANYAN_BROWN_COLOR];
-//    [[UIPageControl appearance] setPageIndicatorTintColor:[BANYAN_BROWN_COLOR colorWithAlphaComponent:0.5]];
 }
 
 #pragma mark Application's documents directory
@@ -220,7 +210,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     UserLoginViewController *userLoginViewController = [[UserLoginViewController alloc] init];
     userLoginViewController.delegate = self;
     userLoginViewController.facebookPermissions = [NSArray arrayWithObjects: @"email", @"user_about_me", nil];
-    [self.navController presentViewController:userLoginViewController animated:YES completion:nil];
+    [self.tabBarController presentViewController:userLoginViewController animated:YES completion:nil];
 }
 
 - (void)logout

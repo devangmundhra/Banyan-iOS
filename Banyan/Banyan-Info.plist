@@ -46,6 +46,8 @@
 	<string>1.0</string>
 	<key>FacebookAppID</key>
 	<string>244613942300893</string>
+	<key>FacebookDisplayName</key>
+	<string>Banyan</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIAppFonts</key>
@@ -63,10 +65,10 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIStatusBarHidden</key>
+	<false/>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleBlackOpaque</string>
-	<key>FacebookDisplayName</key>
-	<string>Banyan</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

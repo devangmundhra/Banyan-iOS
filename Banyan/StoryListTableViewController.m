@@ -29,18 +29,24 @@ typedef enum {
 @synthesize filterStoriesSegmentedControl = _filterStoriesSegmentedControl;
 @synthesize indexOfVisibleBackView = _indexOfVisibleBackView;
 
-- (void)viewDidLoad
+- (void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidLoad];
-    
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    [self.view setBackgroundColor:BANYAN_LIGHTGRAY_COLOR];
+    [super viewDidAppear:animated];
+    self.navigationController.navigationBar.translucent = NO;
+
     CGRect tvFrame = self.view.bounds;
     CGFloat margin = 10.0f;
     tvFrame.origin.x = margin;
     tvFrame.size.width -= 2*margin;
     [self.tableView setFrame:tvFrame];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    [self.view setBackgroundColor:BANYAN_LIGHTGRAY_COLOR];
+    
     [self.tableView setSeparatorColor:[UIColor clearColor]];
     
     [self.tableView registerNib:[UINib nibWithNibName:@"StoryListCell" bundle:nil] forCellReuseIdentifier:@"Story Cell"];
@@ -75,7 +81,7 @@ typedef enum {
                                                                         managedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext
                                                                           sectionNameKeyPath:nil
                                                                                    cacheName:nil];
-    self.fetchedResultsController.delegate = nil; // Explicitly call perform fetch (via Notication) to update list
+    self.fetchedResultsController.delegate = nil; // Explicitly call perform fetch (via Notification) to update list
     
     // Notifications to refresh data
     
@@ -330,7 +336,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     }
     StoryReaderController *storyReaderController = [[StoryReaderController alloc] initWithPiece:pieceToShow];
     storyReaderController.story = story;
-//    storyReaderController.wantsFullScreenLayout = YES;
     storyReaderController.hidesBottomBarWhenPushed = YES;
     [self presentViewController:storyReaderController animated:YES completion:nil];
 }

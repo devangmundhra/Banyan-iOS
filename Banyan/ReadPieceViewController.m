@@ -117,7 +117,10 @@
     [super viewDidLoad];
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
     
-    self.storyInfoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, INFOVIEW_HEIGHT)];
+    CGRect frame = self.view.bounds;
+    frame.size.height = INFOVIEW_HEIGHT;
+    
+    self.storyInfoView = [[UIView alloc] initWithFrame:frame];
     self.storyInfoView.backgroundColor = BANYAN_BLACK_COLOR;
 
     UIImage *backArrowImage = [UIImage imageNamed:@"backArrow"];
@@ -170,7 +173,7 @@
     
     [self.view addSubview:self.storyInfoView];
 
-    CGRect frame = [UIScreen mainScreen].bounds;
+    frame = [UIScreen mainScreen].bounds;
     frame.size.height -= CGRectGetHeight(self.storyInfoView.bounds);
     frame.origin.y = CGRectGetMaxY(self.storyInfoView.bounds);
     self.contentView = [[UIScrollView alloc] initWithFrame:frame];

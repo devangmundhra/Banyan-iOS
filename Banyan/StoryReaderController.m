@@ -65,13 +65,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
     self.title = self.story.title;
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
     self.view.frame = [UIScreen mainScreen].bounds;
-
-//    UIGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
-//    gestureRecognizer.delegate = self;
-//    [self.view addGestureRecognizer:gestureRecognizer];
     
     [Story viewedStory:self.story];
     
@@ -420,7 +417,6 @@
     
     ReadPieceViewController *readPieceViewController = [[ReadPieceViewController alloc] initWithPiece:piece];
     readPieceViewController.delegate = self;
-    readPieceViewController.wantsFullScreenLayout = YES;
     
     return readPieceViewController;
 }
