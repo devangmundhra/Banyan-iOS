@@ -276,15 +276,21 @@
         if ([media.localURL length])
             media.localURL = nil;
         if ([media.remoteURL length]) {
-            [media deleteWitSuccess:nil failure:nil];
+            [media deleteWitSuccess:nil
+                            failure:^(NSError *error) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error deleting %@ when editing piece %@", media.mediaTypeName, self.piece.shortText]
+                                                                message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+                [alert show];
+            }];
         }
-        media.remoteObject = nil;
-        [media remove];
     }
     
     if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
     {        
-        [Piece createNewPiece:self.piece afterPiece:nil];
+        [Piece createNewPiece:self.piece];
         NSLog(@"New piece %@ saved", self.piece);
         [TestFlight passCheckpoint:@"New piece created successfully"];
     }

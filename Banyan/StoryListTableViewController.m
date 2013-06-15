@@ -51,6 +51,20 @@ typedef enum {
     
     [self.tableView registerNib:[UINib nibWithNibName:@"StoryListCell" bundle:nil] forCellReuseIdentifier:@"Story Cell"];
     
+    // Fetched results controller
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
+    NSSortDescriptor *uploadStatusSD = [NSSortDescriptor sortDescriptorWithKey:@"uploadStatusNumber" ascending:YES];
+    NSSortDescriptor *dateSD = [NSSortDescriptor sortDescriptorWithKey:@"updatedAt"
+                                                             ascending:YES
+                                                              selector:@selector(compare:)];
+    request.sortDescriptors = [NSArray arrayWithObjects:uploadStatusSD, dateSD, nil];
+
+    self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                        managedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext
+                                                                          sectionNameKeyPath:@"uploadStatusString"
+                                                                                   cacheName:nil];
+    self.fetchedResultsController.delegate = nil; // Explicitly call perform fetch (via Notification) to update list
+    
     [self.tableView addPullToRefreshWithActionHandler:^{
         [[BanyanConnection class] performSelectorInBackground:@selector(loadDataSource) withObject:nil];
     }];
@@ -72,17 +86,6 @@ typedef enum {
 
     [self.navigationItem setTitleView:self.filterStoriesSegmentedControl];
     
-    // Fetched results controller
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
-    request.sortDescriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"updatedAt"
-                                                                                     ascending:YES
-                                                                                      selector:@selector(compare:)]];
-    self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                                        managedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext
-                                                                          sectionNameKeyPath:nil
-                                                                                   cacheName:nil];
-    self.fetchedResultsController.delegate = nil; // Explicitly call perform fetch (via Notification) to update list
-    
     // Notifications to refresh data
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -100,7 +103,7 @@ typedef enum {
                                                  name:BNRefreshCurrentStoryListNotification
                                                object:nil];
     
-    [TestFlight passCheckpoint:@"RootViewController view loaded"];
+    [TestFlight passCheckpoint:@"RootViewController loaded"];
 }
 
 - (void)viewDidUnload
@@ -337,6 +340,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     StoryReaderController *storyReaderController = [[StoryReaderController alloc] initWithPiece:pieceToShow];
     storyReaderController.story = story;
     storyReaderController.hidesBottomBarWhenPushed = YES;
+    storyReaderController.wantsFullScreenLayout = YES;
     [self presentViewController:storyReaderController animated:YES completion:nil];
 }
 

@@ -41,14 +41,30 @@
     return piece;
 }
 
-+ (void) createNewPiece:(Piece *)piece afterPiece:(Piece *)previousPiece
-{    
-    piece.story.length = [NSNumber numberWithInteger:piece.story.pieces.count];
-    [piece.story.pieces enumerateObjectsUsingBlock:^(Piece *localPiece, NSUInteger idx, BOOL *stop) {
-        localPiece.pieceNumber = [NSNumber numberWithUnsignedInteger:idx+1];
-    }];
++ (void) createNewPiece:(Piece *)piece
+{
+    assert(piece.bnObjectId.length == 0);
     
+    if (piece.remoteStatus == RemoteObjectStatusLocal) {
+        // Do this one time per piece
+        piece.story.length = [NSNumber numberWithInteger:piece.story.pieces.count];
+        [piece.story.pieces enumerateObjectsUsingBlock:^(Piece *localPiece, NSUInteger idx, BOOL *stop) {
+            localPiece.pieceNumber = [NSNumber numberWithUnsignedInteger:idx+1];
+        }];
+    }
+    
+    piece.remoteStatus = RemoteObjectStatusPushing;
+
     [piece save];
+
+    // If the story of the piece has not been updated yet, don't do anything. Just fail.
+    // Someone else will comeback later and create this
+    if (piece.story.remoteStatus != RemoteObjectStatusSync) {
+        piece.remoteStatus = RemoteObjectStatusFailed;
+        [piece save];
+        return;
+    }
+    
     NSLog(@"Adding piece %@ for story %@", piece, piece.story);
     
     //    PARSE
@@ -157,7 +173,6 @@
         [objectManager addRequestDescriptor:requestDescriptor];
         [objectManager addResponseDescriptor:responseDescriptor];
         
-        piece.remoteStatus = RemoteObjectStatusPushing;
         [objectManager postObject:piece
                              path:BANYAN_API_CLASS_URL(@"Piece")
                        parameters:nil
@@ -176,6 +191,7 @@
                           }
                           failure:^(RKObjectRequestOperation *operation, NSError *error) {
                               piece.remoteStatus = RemoteObjectStatusFailed;
+                              [piece save];
                               NSLog(@"Error in create piece");
                           }];
     };

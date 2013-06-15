@@ -33,22 +33,7 @@
 
 + (User *)currentUser
 {
-    PFUser *currentUser = [PFUser currentUser];
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    [request setEntity:[NSEntityDescription entityForName:kBNUserClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(userId MATCHES %@)", currentUser.objectId];
-    [request setPredicate:predicate];
-    
-    NSError *error = nil;
-    NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
-    
-    if (array.count == 0) {
-        return [User userForPfUser:currentUser];
-    } else {
-        // Currently one user per remote object because otherwise there will be interdependencies between different objects.
-        // This keeps it cleaner.
-        return [array lastObject];
-    }
+    return [User userForPfUser:[PFUser currentUser]];
 }
 
 + (User *)userForPfUser:(PFUser *)pfUser

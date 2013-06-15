@@ -12,7 +12,7 @@
 #import "AFParseAPIClient.h"
 
 @interface Piece (Create)
-+ (void)createNewPiece:(Piece *)piece afterPiece:(Piece *)previousPiece;
++ (void)createNewPiece:(Piece *)piece;
 
 + (Piece *) newPieceDraftForStory:(Story *)story;
 

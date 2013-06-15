@@ -16,11 +16,22 @@
 
 + (void) editPiece:(Piece *)piece
 {
-    if (piece.remoteStatus != RemoteObjectStatusSync)
-        return;
-    
     [piece save];
     
+    // If the object has not been created yet, don't ask for editing it on the server.
+    if (!piece.bnObjectId.length) {
+        // TODO: There is still a race condition here when the piece is being created
+        // and an edit comes in
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Can't synchronize the piece with the server."
+                                                        message:@"A previous synchronization is going on. Try in a bit!"
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+    piece.remoteStatus = RemoteObjectStatusPushing;
+
     NSLog(@"Update piece %@ for story %@", piece, piece.story);
     
     // Block to upload the piece
@@ -63,9 +74,13 @@
                        parameters:nil
                           success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                               NSLog(@"Update piece successful %@", piece);
+                              piece.remoteStatus = RemoteObjectStatusSync;
+                              [piece save];
                           }
                           failure:^(RKObjectRequestOperation *operation, NSError *error) {
                               NSLog(@"Error in updating piece");
+                              piece.remoteStatus = RemoteObjectStatusFailed;
+                              [piece save];
                           }];
     };
     
@@ -79,7 +94,9 @@
                      updatePiece(piece);
                  }
                  failure:^(NSError *error) {
-                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error uploading media when editing piece"
+                     piece.remoteStatus = RemoteObjectStatusFailed;
+                     [piece save];
+                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error uploading %@ when editing piece %@", media.mediaTypeName, piece.shortText]
                                                                      message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]
                                                                     delegate:nil
                                                            cancelButtonTitle:@"OK"
@@ -97,7 +114,9 @@
     // No media changed.
     else {
         updatePiece(piece);
-    }    
+    }
+    
+    [piece save];
 }
 
 @end

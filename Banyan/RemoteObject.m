@@ -9,7 +9,7 @@
 #import "RemoteObject.h"
 #import "Comment.h"
 #import "Media.h"
-
+#import "Story.h"
 
 @implementation RemoteObject
 
@@ -69,6 +69,7 @@
     [self setRemoteStatusNumber:[NSNumber numberWithInt:aStatus]];
 }
 
+
 + (NSString *)titleForRemoteStatus:(NSNumber *)remoteStatus {
     switch ([remoteStatus intValue]) {
         case RemoteObjectStatusPushing:
@@ -78,7 +79,7 @@
             return NSLocalizedString(@"Failed", @"");
             break;
         case RemoteObjectStatusSync:
-            return NSLocalizedString(@"Posts", @"");
+            return NSLocalizedString(@"Stories", @"");
             break;
         default:
             return NSLocalizedString(@"Local", @"");
@@ -104,6 +105,31 @@
     
     [[self managedObjectContext] deleteObject:self];
     [self save];
+}
+
++ (void)validateAllObjects
+{
+    // Any objects which are in the Uploading state should be marked as failed
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:[NSEntityDescription entityForName:@"RemoteObject" inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@)",
+                              [NSNumber numberWithInt:RemoteObjectStatusPushing]];
+    [request setPredicate:predicate];
+    
+    NSError *error = nil;
+    NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+    for (RemoteObject *obj in array) {
+        obj.remoteStatus = RemoteObjectStatusFailed;
+    }
+    
+    [request setEntity:[NSEntityDescription entityForName:kBNStoryClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
+    request.predicate = [NSPredicate predicateWithFormat:@"(ANY pieces.remoteStatusNumber != %@)",
+                         [NSNumber numberWithInt:RemoteObjectStatusSync]];;
+    request.predicate = nil;
+    array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+    for (Story *story in array) {
+        story.uploadStatusNumber = story.uploadStatusNumber;
+    }
 }
 
 #pragma mark-

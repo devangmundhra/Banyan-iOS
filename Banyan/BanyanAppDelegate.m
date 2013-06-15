@@ -13,12 +13,18 @@
 #import "StoryListTableViewController.h"
 #import "SettingsTableViewController.h"
 #import "ModifyStoryViewController.h"
+#import "BanyanConnection.h"
+
+@interface BanyanAppDelegate ()
+@property (strong, nonatomic) NSTimer *remoteObjectBackgroundTimer;
+
+@end
 
 @implementation BanyanAppDelegate
 
 @synthesize window = _window;
 @synthesize tabBarController = _tabBarController;
-@synthesize navController = _navController;
+@synthesize remoteObjectBackgroundTimer = _remoteObjectBackgroundTimer;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -97,6 +103,8 @@
     [FBSettings enableBetaFeature:FBBetaFeaturesOpenGraphShareDialog];
     [FBSettings enableBetaFeature:FBBetaFeaturesShareDialog];
     
+    [RemoteObject validateAllObjects];
+    
     [self setupTabBarController];    
     self.window.rootViewController = self.tabBarController;
     [self.window makeKeyAndVisible];
@@ -161,6 +169,7 @@ void uncaughtExceptionHandler(NSException *exception)
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    [self invalidateRemoteObjectTimer];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -180,6 +189,7 @@ void uncaughtExceptionHandler(NSException *exception)
     // We need to properly handle activation of the application with regards to SSO
     // (e.g., returning from iOS 6.0 authorization dialog or from fast app switching).
     [FBSession.activeSession handleDidBecomeActive];
+    [self fireRemoteObjectTimer];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -513,7 +523,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     } else {
         Story *story = [Story newDraftStory];
         ModifyStoryViewController *newStoryViewController = [[ModifyStoryViewController alloc] initWithStory:story];
-        [self.navController presentViewController:newStoryViewController animated:YES completion:nil];
+        [self.tabBarController presentViewController:newStoryViewController animated:YES completion:nil];
     }
 
 }
@@ -531,6 +541,25 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         }
     }];
     [PFPush subscribeToChannelInBackground:[[PFUser currentUser] objectId]];
+}
+
+#pragma mark Background Timer to upload unsaved objects
+- (void) fireRemoteObjectTimer
+{
+    if (!self.remoteObjectBackgroundTimer)
+        // Instantiate the background timer to process uploading of failed remote objects every minute
+        self.remoteObjectBackgroundTimer = [NSTimer scheduledTimerWithTimeInterval:5
+                                                                            target:[BanyanConnection class]
+                                                                          selector:@selector(uploadFailedObjects)
+                                                                          userInfo:nil
+                                                                           repeats:YES];
+    [self.remoteObjectBackgroundTimer fire];
+}
+
+- (void) invalidateRemoteObjectTimer
+{
+    [self.remoteObjectBackgroundTimer invalidate];
+    self.remoteObjectBackgroundTimer = nil;
 }
 
 @end

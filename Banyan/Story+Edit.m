@@ -16,10 +16,22 @@
 
 + (void) editStory:(Story *)story
 {
-    if (story.remoteStatus != RemoteObjectStatusSync)
-        return;
-    
     [story save];
+
+    // If the object has not been created yet, don't ask for editing it on the server.
+    if (!story.bnObjectId.length) {
+        // TODO: There is still a race condition here when the story is being created
+        // and an edit comes in
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Can't synchronize the story with the server."
+                                                        message:@"A previous synchronization is going on. Try in a bit!"
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+    
+    story.remoteStatus = RemoteObjectStatusPushing;
     
      NSLog(@"Edit Story %@", story);
     
@@ -63,43 +75,17 @@
                       parameters:nil
                          success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                              NSLog(@"Update story successful %@", story);
+                             story.remoteStatus = RemoteObjectStatusSync;
                              [story save];
                          }
                          failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                             story.remoteStatus = RemoteObjectStatusFailed;
                              NSLog(@"Error in updating story");
                          }];
     };
     
-    // Upload the file and then upload the story
-    if ([story.media count]) {
-        BOOL mediaBeingUploaded = NO;
-        for (Media *media in story.media) {
-            if ([media.localURL length]) {
-                // Upload the media then update the story
-                [media
-                 uploadWithSuccess:^{
-                     updateStory(story);
-                 }
-                 failure:^(NSError *error) {
-                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
-                                                                     message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
-                                                                    delegate:nil
-                                                           cancelButtonTitle:@"OK"
-                                                           otherButtonTitles:nil];
-                     [alert show];
-                 }];
-                mediaBeingUploaded = YES;
-            }
-        }
-        // Media wasn't changed.
-        if (!mediaBeingUploaded) {
-            updateStory(story);
-        }
-    }
-    // No media
-    else {
-        updateStory(story);
-    }
+    updateStory(story);
+    [story save];
 }
 @end
 
@@ -138,28 +124,18 @@
 
 - (void)addPiecesObject:(Piece *)value
 {
-    NSMutableOrderedSet* tempSet = [NSMutableOrderedSet orderedSetWithOrderedSet:self.pieces];
-    [tempSet addObject:value];
-    self.pieces = tempSet;
-    
-//    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:@"pieces"]];
-//    NSUInteger idx = [tmpOrderedSet count];
-//    NSIndexSet* indexes = [NSIndexSet indexSetWithIndex:idx];
-//    [self willChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:@"pieces"];
-//    [tmpOrderedSet addObject:value];
-//    [self setPrimitiveValue:tmpOrderedSet forKey:@"pieces"];
-//    [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:@"pieces"];
+    NSSet *changedObjects = [[NSSet alloc] initWithObjects:&value count:1];
+    [self willChangeValueForKey:@"pieces" withSetMutation:NSKeyValueUnionSetMutation usingObjects:changedObjects];
+    [[self primitiveValueForKey:@"pieces"] addObject:value];
+    [self didChangeValueForKey:@"pieces" withSetMutation:NSKeyValueUnionSetMutation usingObjects:changedObjects];
 }
 
 - (void)removePiecesObject:(Piece *)value
 {
-    NSMutableOrderedSet* tempSet = [NSMutableOrderedSet orderedSetWithOrderedSet:self.pieces];
-    [tempSet removeObject:value];
-    self.pieces = tempSet;
-//    NSOrderedSet *changedObjects = [[NSOrderedSet alloc] initWithObjects:&value count:1];
-//    [self willChangeValueForKey:@"pieces" withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
-//    [[self primitiveValueForKey:@"pieces"] removeObject:value];
-//    [self didChangeValueForKey:@"pieces" withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
+    NSSet *changedObjects = [[NSSet alloc] initWithObjects:&value count:1];
+    [self willChangeValueForKey:@"pieces" withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
+    [[self primitiveValueForKey:@"pieces"] removeObject:value];
+    [self didChangeValueForKey:@"pieces" withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
 }
 
 - (void)addPieces:(NSSet *)value

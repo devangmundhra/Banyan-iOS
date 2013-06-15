@@ -39,12 +39,18 @@
 
 // Upload the given story using RestKit
 + (void)createNewStory:(Story *)story
-{    
+{
+    assert(story.bnObjectId.length == 0);
+    assert(story.author.userId.length > 0);
     story.canContribute = story.canView = [NSNumber numberWithBool:YES];
     
+    story.remoteStatus = RemoteObjectStatusPushing;
+
     // Persist again
     [story save];
+    
     NSLog(@"Adding story %@", story);
+
 
     //    PARSE
     void (^sendRequestToContributors)(Story *) = ^(Story *story) {
@@ -165,7 +171,6 @@
         [objectManager addRequestDescriptor:requestDescriptor];
         [objectManager addResponseDescriptor:responseDescriptor];
         
-        story.remoteStatus = RemoteObjectStatusPushing;
         [objectManager postObject:story
                              path:BANYAN_API_CLASS_URL(kBNStoryClassKey)
                        parameters:nil
@@ -179,6 +184,7 @@
                           }
                           failure:^(RKObjectRequestOperation *operation, NSError *error) {
                               story.remoteStatus = RemoteObjectStatusFailed;
+                              [story save];
                               NSLog(@"Error in create story");
                           }];
     };
@@ -194,6 +200,8 @@
                      uploadStory(story);
                  }
                  failure:^(NSError *error) {
+                     story.remoteStatus = RemoteObjectStatusFailed;
+                     [story save];
                      UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
                                                                      message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
                                                                     delegate:nil

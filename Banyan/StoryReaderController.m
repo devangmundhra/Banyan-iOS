@@ -68,7 +68,7 @@
 
     self.title = self.story.title;
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
-    self.view.frame = [UIScreen mainScreen].bounds;
+    self.view.frame = [UIScreen mainScreen].applicationFrame;
     
     [Story viewedStory:self.story];
     
@@ -84,7 +84,7 @@
 
     [self addChildViewController:self.pageViewController];
     [self.view addSubview:self.pageViewController.view];
-    self.pageViewController.view.frame = self.view.frame;
+    self.pageViewController.view.frame = self.view.bounds;
     [self.pageViewController didMoveToParentViewController:self];
     self.view.gestureRecognizers = self.pageViewController.gestureRecognizers;
     [self.view.gestureRecognizers enumerateObjectsUsingBlock:^(UIGestureRecognizer *gR, NSUInteger idx, BOOL *stop){

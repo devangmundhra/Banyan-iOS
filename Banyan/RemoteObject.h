@@ -40,10 +40,11 @@ typedef enum {
 
 // Revision management
 - (void)cloneFrom:(RemoteObject *)source;
-- (void)save;
 
 #pragma mark Data management
+- (void)save;
 - (void) remove;
++ (void)validateAllObjects;
 
 # pragma mark sharing
 - (void)share;

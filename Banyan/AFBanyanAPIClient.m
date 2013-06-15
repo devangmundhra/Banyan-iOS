@@ -8,6 +8,7 @@
 
 #import "AFBanyanAPIClient.h"
 #import "AFJSONRequestOperation.h"
+#import "BanyanAppDelegate.h"
 
 static NSString * const kAFBanyanAPIBaseURLString = @"http://www.banyan.io/api/v1/";
 //static NSString * const kAFBanyanAPIBaseURLString = @"http://127.0.0.1:8000/api/v1/";
@@ -35,6 +36,15 @@ static NSString * const kAFBanyanAPIBaseURLString = @"http://www.banyan.io/api/v
     
     // Accept HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
     [self setDefaultHeader:@"Accept" value:@"application/json"];
+    
+    [self setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus isNetworkReachable) {
+        if (isNetworkReachable == AFNetworkReachabilityStatusReachableViaWiFi || isNetworkReachable == AFNetworkReachabilityStatusReachableViaWWAN) {
+            [((BanyanAppDelegate *)[UIApplication sharedApplication].delegate) fireRemoteObjectTimer];
+        } else {
+            [((BanyanAppDelegate *)[UIApplication sharedApplication].delegate) invalidateRemoteObjectTimer];
+        }
+    }];
+    
     return self;
 }
 

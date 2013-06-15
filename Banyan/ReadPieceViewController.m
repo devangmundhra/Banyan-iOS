@@ -382,7 +382,7 @@
         self.pieceTextView.frame = frame;
         self.pieceTextView.text = self.piece.longText;
         frame = self.pieceTextView.frame;
-        frame.size.height = self.pieceTextView.contentSize.height;
+        self.pieceTextView.contentSize = frame.size;
         self.pieceTextView.frame = frame;
         csize.height += CGRectGetHeight(self.pieceTextView.frame);
     }

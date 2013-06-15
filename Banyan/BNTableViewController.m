@@ -77,20 +77,44 @@
     return [[[self.fetchedResultsController sections] objectAtIndex:section] numberOfObjects];
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-	return [[[self.fetchedResultsController sections] objectAtIndex:section] name];
+    // Only if there is more than one section should we show the name
+    return [[self.fetchedResultsController sections] count] > 1 ? 20 : 0;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-	return [self.fetchedResultsController sectionForSectionIndexTitle:title atIndex:index];
+    CGRect frame = tableView.bounds;
+    frame.size.height = [self tableView:tableView heightForHeaderInSection:section];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:frame];
+    titleLabel.attributedText = [[NSAttributedString alloc] initWithString:[[[self.fetchedResultsController sections] objectAtIndex:section] name]
+                                                                attributes:@{NSUnderlineStyleAttributeName: @1}];;
+    titleLabel.font = [UIFont fontWithName:@"Roboto" size:15];
+    titleLabel.textColor = BANYAN_BLACK_COLOR;
+    titleLabel.minimumScaleFactor = 0.8;
+    titleLabel.backgroundColor = [UIColor clearColor];
+    
+    return titleLabel;
 }
 
-- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
-{
-    return [self.fetchedResultsController sectionIndexTitles];
-}
+//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+//{
+//    NSString *title = [[self.fetchedResultsController sections] count] > 1
+//    ? [[[self.fetchedResultsController sections] objectAtIndex:section] name]
+//    : nil;
+//	return title;
+//}
+
+//- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index
+//{
+//	return [self.fetchedResultsController sectionForSectionIndexTitle:title atIndex:index];
+//}
+//
+//- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
+//{
+//    return [self.fetchedResultsController sectionIndexTitles];
+//}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {

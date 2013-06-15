@@ -25,7 +25,10 @@
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) id writeAccess;
 @property (nonatomic, retain) NSOrderedSet *pieces;
+@property (nonatomic, strong) NSString *uploadStatusString;
+@property (nonatomic, retain) NSNumber * uploadStatusNumber;
 
++ (NSArray *)storiesFailedToBeUploaded;
 + (NSArray *)syncedStories;
 + (NSArray *)unsavedStories;
 

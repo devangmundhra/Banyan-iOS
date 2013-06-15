@@ -36,7 +36,9 @@
 
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, strong) BNTabBarController *tabBarController;
-@property (nonatomic, strong) UINavigationController *navController;
+
+- (void) fireRemoteObjectTimer;
+- (void) invalidateRemoteObjectTimer;
 
 - (void)facebookRequest:(FBRequestConnection *)connection didFailWithError:(NSError *)error;
 - (void)facebookRequest:(FBRequestConnection *)connection didLoad:(id)result;

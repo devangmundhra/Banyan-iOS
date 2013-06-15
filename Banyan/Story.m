@@ -23,6 +23,8 @@
 @dynamic title;
 @dynamic writeAccess;
 @dynamic pieces;
+@dynamic uploadStatusNumber;
+@synthesize uploadStatusString = _uploadStatusString;
 
 + (NSArray *)syncedStories
 {
@@ -58,6 +60,57 @@
         array = [NSArray array];
     }
     return array;
+}
+
++ (NSArray *)storiesFailedToBeUploaded
+{
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:[NSEntityDescription entityForName:kBNStoryClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@)",
+							  [NSNumber numberWithInt:RemoteObjectStatusFailed]];
+    [request setPredicate:predicate];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
+    [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+    
+    NSError *error = nil;
+    NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+    if (array == nil) {
+        array = [NSArray array];
+    }
+    return array;
+}
+
+- (NSNumber *)uploadStatusNumber
+{    
+    if (self.remoteStatus != RemoteObjectStatusSync)
+        return self.remoteStatusNumber;
+    
+    // This story is synchronized, but there could be
+    // some pieces that have not been updated yet.
+    NSPredicate *unsavedPredicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber != %@)", [NSNumber numberWithInt:RemoteObjectStatusSync]];
+    NSOrderedSet *unsavedPieces = [self.pieces filteredOrderedSetUsingPredicate:unsavedPredicate];
+    if (unsavedPieces.count)
+        return ((Piece *)[unsavedPieces firstObject]).remoteStatusNumber;
+    else
+        return self.remoteStatusNumber;
+}
+
+- (NSString *)uploadStatusString
+{    
+    switch ([self.uploadStatusNumber intValue]) {
+        case RemoteObjectStatusPushing:
+            return NSLocalizedString(@"Uploading...", @"");
+            break;
+        case RemoteObjectStatusFailed:
+            return NSLocalizedString(@"Failed to upload", @"");
+            break;
+        case RemoteObjectStatusSync:
+            return NSLocalizedString(@"Stories", @"");
+            break;
+        default:
+            return NSLocalizedString(@"Drafts", @"");
+            break;
+    }
 }
 
 - (void) share

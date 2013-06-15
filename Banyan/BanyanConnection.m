@@ -13,8 +13,11 @@
 #import "Piece+Stats.h"
 #import "Story+Permissions.h"
 #import "Story+Edit.h"
+#import "Piece+Edit.h"
 #import "User.h"
 #import "Media.h"
+#import "Story+Create.h"
+#import "Piece+Create.h"
 
 @implementation BanyanConnection
 
@@ -145,9 +148,8 @@
                                         [story remove];
                                 }
                                 [stories enumerateObjectsUsingBlock:^(Story *story, NSUInteger idx, BOOL *stop) {
-                                    NSArray *unsavedPieces = [Piece unsavedPiecesInStory:story];
-                                    NSLog(@"%u unsaved pieces in story :%@", unsavedPieces.count, story.title);
-                                    
+//                                    NSArray *unsavedPieces = [Piece unsavedPiecesInStory:story];
+//                                    NSLog(@"%u unsaved pieces in story :%@", unsavedPieces.count, story.title);
                                     story.remoteStatus = RemoteObjectStatusSync;
                                     story.lastSynced = [NSDate date];
                                     story.currentPieceNum = 1;
@@ -199,7 +201,6 @@
                                     return;
                                 [pieces enumerateObjectsUsingBlock:^(Piece *piece, NSUInteger idx, BOOL *stop) {
                                     piece.story = story;
-//                                    [story addPiecesObject:piece];
                                     piece.remoteStatus = RemoteObjectStatusSync;
                                     [piece updatePieceStats];
                                     piece.lastSynced = [NSDate date];
@@ -241,6 +242,25 @@
     for (Story *story in stories)
     {
         [story resetPermission];
+    }
+}
+
++ (void) uploadFailedObjects
+{
+    NSArray *failedStories = [Story storiesFailedToBeUploaded];
+    for (Story *story in failedStories) {
+        if (story.bnObjectId.length)
+            [Story editStory:story];
+        else
+            [Story createNewStory:story];
+    }
+    
+    NSArray *failedPieces = [Piece piecesFailedToBeUploaded];
+    for (Piece *piece in failedPieces) {
+        if (piece.bnObjectId.length)
+            [Piece editPiece:piece];
+        else
+            [Piece createNewPiece:piece];
     }
 }
 

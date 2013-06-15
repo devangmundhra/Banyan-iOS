@@ -64,7 +64,7 @@
     // managed context is changed.
     
     // Don't do anything here if the story or number of pieces in the story hasn't changed.
-    if (!story || ([_story isEqual:story] && [self.viewControllers count] == [story.length unsignedIntegerValue])) {
+    if (!story || ([_story isEqual:story] && [self.viewControllers count] == [story.pieces count])) {
         return;
     }
     

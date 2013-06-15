@@ -126,15 +126,22 @@
 
 - (void) uploadWithSuccess:(void (^)())successBlock failure:(void (^)(NSError *error))errorBlock
 {
+    assert(self.filename.length == 0);
     [self save];
     if (self.remoteStatus == MediaRemoteStatusSync) {
         return;
     }
     
     if ([self.mediaType isEqualToString:@"image"]) {
-        [self uploadImageWithSuccess:successBlock failure:errorBlock];
+        [self uploadImageWithSuccess:^{
+            successBlock();
+            [self save];
+        } failure:errorBlock];
     } else if ([self.mediaType isEqualToString:@"audio"]) {
-        [self uploadAudioWithSuccess:successBlock failure:errorBlock];
+        [self uploadAudioWithSuccess:^{
+            successBlock();
+            [self save];
+        } failure:errorBlock];
     }
 }
 
@@ -149,9 +156,10 @@
                                      parameters:nil
                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                             self.remoteStatus = MediaRemoteStatusSync;
+                                            self.remoteObject = nil;
+                                            [self remove];
                                             if (successBlock)
                                                 successBlock();
-                                            [self remove];
                                         }
                                         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                             self.remoteStatus = MediaRemoteStatusFailed;
