@@ -41,7 +41,6 @@
 
 - (void) setup
 {
-    self.backgroundColor = [UIColor clearColor];
     self.clipsToBounds = YES;
     CGRect bounds = self.bounds;
     // Location ON/OFF button

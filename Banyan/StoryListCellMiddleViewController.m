@@ -53,7 +53,6 @@
     self.pageControl.numberOfPages = 0;
     self.pageControl.currentPage = 0;
     self.pageControl.hidesForSinglePage = YES;
-    [self.scrollView setBackgroundColor:[UIColor clearColor]];
 }
 
 - (void)setStory:(Story *)story
@@ -241,8 +240,7 @@
 {
     if (!self.story || ![self.story.pieces count])
         return nil;
-    NSUInteger pieceNum = self.pageControl.currentPage + 1;
-    pieceNum = self.story.currentPieceNum;
+    NSUInteger pieceNum = self.story.currentPieceNum;
     Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:pieceNum]];
     return piece;
 }

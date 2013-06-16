@@ -125,7 +125,7 @@
 
     UIImage *backArrowImage = [UIImage imageNamed:@"backArrow"];
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    backButton.frame = CGRectMake(BUTTON_SPACING, 0, backArrowImage.size.width, CGRectGetHeight(self.storyInfoView.bounds));
+    backButton.frame = CGRectMake(BUTTON_SPACING, 0, floor(backArrowImage.size.width), floor(CGRectGetHeight(self.storyInfoView.bounds)));
     [backButton setImage:backArrowImage forState:UIControlStateNormal];
     [backButton addTarget:self.delegate action:@selector(cancelButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     backButton.showsTouchWhenHighlighted = YES;
@@ -133,8 +133,8 @@
     
     UIImage *settingsImage = [UIImage imageNamed:@"settingsButton"];
     UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    settingsButton.frame = CGRectMake(self.view.frame.size.width - settingsImage.size.width - BUTTON_SPACING, 0,
-                                      settingsImage.size.width, CGRectGetHeight(self.storyInfoView.bounds));
+    settingsButton.frame = CGRectMake(floor(self.view.frame.size.width - settingsImage.size.width - BUTTON_SPACING), 0,
+                                      floor(settingsImage.size.width), floor(CGRectGetHeight(self.storyInfoView.bounds)));
     [settingsButton setImage:settingsImage forState:UIControlStateNormal];
     [settingsButton addTarget:self.delegate action:@selector(settingsPopup:) forControlEvents:UIControlEventTouchUpInside];
     settingsButton.showsTouchWhenHighlighted = YES;
@@ -146,7 +146,7 @@
                                    CGRectGetHeight(self.storyInfoView.bounds));
     titleButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:20];
     titleButton.titleLabel.minimumScaleFactor = 0.7;
-    titleButton.backgroundColor = [UIColor clearColor];
+    titleButton.backgroundColor = BANYAN_BLACK_COLOR;
     [titleButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
     titleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     [titleButton setTitleShadowColor:[UIColor colorWithWhite:0.0 alpha:0.5] forState:UIControlStateNormal];
@@ -158,18 +158,6 @@
                                                                                 attributes:@{NSUnderlineStyleAttributeName: @1}];;
     }
     [self.storyInfoView insertSubview:titleButton atIndex:0];
-
-//    UILabel *topStoryLabel = [[UILabel alloc] initWithFrame:self.storyInfoView.bounds];
-//    topStoryLabel.frame = CGRectMake(CGRectGetMaxX(backButton.frame) + BUTTON_SPACING, 0,
-//                                     CGRectGetMinX(settingsButton.frame) - CGRectGetMaxX(backButton.frame) - BUTTON_SPACING,
-//                                     CGRectGetHeight(self.storyInfoView.bounds));
-//    topStoryLabel.backgroundColor = [UIColor clearColor];
-//    topStoryLabel.text = self.piece.story.title;
-//    topStoryLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:18];
-//    topStoryLabel.textColor = BANYAN_WHITE_COLOR;
-//    topStoryLabel.minimumScaleFactor = 0.8;
-//    topStoryLabel.textAlignment = NSTextAlignmentCenter;
-//    [self.storyInfoView insertSubview:topStoryLabel atIndex:0];
     
     [self.view addSubview:self.storyInfoView];
 
@@ -349,14 +337,14 @@
                 commentImage = [UIImage imageNamed:@"commentSymbolGray"];
             else
                 commentImage = [UIImage imageNamed:@"commentSymbolWhite"];
-            self.commentsButton.frame = CGRectMake(231/*152 for author + 77 for time + 2 buffer*/, 0, 35, CGRectGetHeight(frame));
+            self.commentsButton.frame = CGRectMake(231/*152 for author + 77 for time + 2 buffer*/, 0, 35, floor(CGRectGetHeight(frame)));
             [self.commentsButton setImage:commentImage forState:UIControlStateNormal];
             self.commentsButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
             [self.commentsButton setTitle:[NSString stringWithFormat:@"%d", [self.piece.comments count]] forState:UIControlStateNormal];
             [self.commentsButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
             self.commentsButton.hidden = YES;
             // like button
-            self.likesButton.frame = CGRectMake(CGRectGetMaxX(self.commentsButton.frame)+2, 0, 35, CGRectGetHeight(frame));
+            self.likesButton.frame = CGRectMake(floor(CGRectGetMaxX(self.commentsButton.frame)+2), 0, 35, floor(CGRectGetHeight(frame)));
             self.likesButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
             [self.likesButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
             [self.likesButton setTitleColor:BANYAN_PINK_COLOR forState:UIControlStateNormal];

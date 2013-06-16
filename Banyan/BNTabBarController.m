@@ -36,7 +36,7 @@
 {
     self.centerButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.centerButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
-    self.centerButton.frame = CGRectMake(0.0, 0.0, image.size.width, image.size.height);
+    self.centerButton.frame = CGRectMake(0.0, 0.0, floor(image.size.width), floor(image.size.height));
     [self.centerButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
     [self.centerButton setBackgroundImage:image forState:UIControlStateNormal];
     

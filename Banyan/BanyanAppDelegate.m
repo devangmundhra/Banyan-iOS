@@ -100,8 +100,8 @@
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
      UIRemoteNotificationTypeAlert];
     
-    [FBSettings enableBetaFeature:FBBetaFeaturesOpenGraphShareDialog];
-    [FBSettings enableBetaFeature:FBBetaFeaturesShareDialog];
+//    [FBSettings enableBetaFeature:FBBetaFeaturesOpenGraphShareDialog];
+//    [FBSettings enableBetaFeature:FBBetaFeaturesShareDialog];
     
     [RemoteObject validateAllObjects];
     
@@ -147,21 +147,23 @@ void uncaughtExceptionHandler(NSException *exception)
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
-    BOOL wasHandled = [FBAppCall handleOpenURL:url
-                             sourceApplication:sourceApplication];
+//    BOOL wasHandled = [FBAppCall handleOpenURL:url
+//                             sourceApplication:sourceApplication];
     
     // add app-specific handling code here
     return [PFFacebookUtils handleOpenURL:url];
-    return wasHandled;}
+//    return wasHandled;
+}
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
 {
-    BOOL wasHandled = [FBAppCall handleOpenURL:url
-                             sourceApplication:nil];
+//    BOOL wasHandled = [FBAppCall handleOpenURL:url
+//                             sourceApplication:nil];
     
     // add app-specific handling code here
     return [PFFacebookUtils handleOpenURL:url];
-    return wasHandled;}
+//    return wasHandled;
+}
 
 #pragma mark application methods
 
@@ -463,7 +465,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     // Configure a managed object cache to ensure we do not create duplicate objects
     managedObjectStore.managedObjectCache = [[RKInMemoryManagedObjectCache alloc] initWithManagedObjectContext:managedObjectStore.persistentStoreManagedObjectContext];
     
-    NSLog(@"BanyanAppDelegate MainMOC %@ PersistentMOC %@", managedObjectStore.mainQueueManagedObjectContext, managedObjectStore.persistentStoreManagedObjectContext);
+    NSLog(@"BanyanAppDelegate MainMOC %@ PersistentMOC %@ Persistent Store: %@", managedObjectStore.mainQueueManagedObjectContext, managedObjectStore.persistentStoreManagedObjectContext, persistentStore);
     
     [RKManagedObjectStore setDefaultStore:managedObjectStore];
 }

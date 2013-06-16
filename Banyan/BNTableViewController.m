@@ -93,7 +93,7 @@
     titleLabel.font = [UIFont fontWithName:@"Roboto" size:15];
     titleLabel.textColor = BANYAN_BLACK_COLOR;
     titleLabel.minimumScaleFactor = 0.8;
-    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.backgroundColor = BANYAN_LIGHTGRAY_COLOR;
     
     return titleLabel;
 }
@@ -219,7 +219,6 @@
     self.tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     [self.tableView setAutoresizesSubviews:YES];
     [self.view addSubview:self.tableView];
-    self.tableView.backgroundColor = [UIColor clearColor];
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     [self.tableView setShowsHorizontalScrollIndicator:NO];

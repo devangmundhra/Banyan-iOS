@@ -46,8 +46,8 @@ typedef enum {
     [super viewDidLoad];
     
     [self.view setBackgroundColor:BANYAN_LIGHTGRAY_COLOR];
-    
-    [self.tableView setSeparatorColor:[UIColor clearColor]];
+    self.tableView.backgroundColor = BANYAN_LIGHTGRAY_COLOR;
+    [self.tableView setSeparatorColor:BANYAN_LIGHTGRAY_COLOR];
     
     [self.tableView registerNib:[UINib nibWithNibName:@"StoryListCell" bundle:nil] forCellReuseIdentifier:@"Story Cell"];
     

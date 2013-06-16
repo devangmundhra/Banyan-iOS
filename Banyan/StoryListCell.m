@@ -162,7 +162,7 @@
     [self setupMiddleView];
     [self setupBottomView];
     self.selectionStyle = UITableViewCellSelectionStyleNone;
-    [self setBackgroundColor:[UIColor clearColor]];
+//    [self setBackgroundColor:[UIColor clearColor]];
 }
 
 #pragma mark setter/getter functions
@@ -205,10 +205,11 @@
         [self.storyFrontViewControl setImage:frontViewControlImage forState:UIControlStateNormal];
         // Set the button's frame
         CGRect frontViewControlButtonFrame = self.storyFrontViewControl.bounds;
-        frontViewControlButtonFrame.origin.x = CGRectGetMaxX(self.topSwipeableView.frontView.bounds) - frontViewControlImage.size.width - BUTTON_SPACING;
-        frontViewControlButtonFrame.origin.y = self.topSwipeableView.frontView.bounds.origin.y;
+        frontViewControlButtonFrame.origin.x = floor(CGRectGetMaxX(self.topSwipeableView.frontView.bounds) - frontViewControlImage.size.width - BUTTON_SPACING);
+        frontViewControlButtonFrame.origin.y = floor(self.topSwipeableView.frontView.bounds.origin.y);
         frontViewControlButtonFrame.size = frontViewControlImage.size;
-        frontViewControlButtonFrame.size.height = self.topSwipeableView.frontView.bounds.size.height;
+        frontViewControlButtonFrame.size.height = floor(self.topSwipeableView.frontView.bounds.size.height);
+        frontViewControlButtonFrame.size.width = floor(frontViewControlButtonFrame.size.width);
         self.storyFrontViewControl.frame = frontViewControlButtonFrame;
         if (![self.storyFrontViewControl superview])
             [self.topSwipeableView.frontView addSubview:self.storyFrontViewControl];
@@ -277,9 +278,9 @@
     [self.topSwipeableView.frontView setBackgroundColor:[UIColor whiteColor]];
     [self.topSwipeableView.backView setBackgroundColor:BANYAN_DARKGRAY_COLOR];
     
-    self.storyTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(TABLE_CELL_MARGIN, TABLE_CELL_MARGIN/2,
-                                                                     self.topSwipeableView.frame.size.width - TABLE_CELL_MARGIN - BUTTON_SPACING,
-                                                                     self.topSwipeableView.frame.size.height/2)];
+    self.storyTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(floor(TABLE_CELL_MARGIN), floor(TABLE_CELL_MARGIN/2),
+                                                                     floor(self.topSwipeableView.frame.size.width - TABLE_CELL_MARGIN - BUTTON_SPACING),
+                                                                     floor(self.topSwipeableView.frame.size.height/2))];
     self.storyTitleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:20];
     self.storyTitleLabel.textColor = [UIColor blackColor];
     self.storyTitleLabel.textAlignment = NSTextAlignmentLeft;
@@ -287,7 +288,7 @@
     [self.topSwipeableView.frontView addSubview:self.storyTitleLabel];
     
     UIImage *timeImage = [UIImage imageNamed:@"clockSymbol"];
-    self.timeLabel = [[BNImageLabel alloc] initWithFrameAtOrigin:CGPointMake(TABLE_CELL_MARGIN, self.topSwipeableView.frame.size.height/2)
+    self.timeLabel = [[BNImageLabel alloc] initWithFrameAtOrigin:CGPointMake(floor(TABLE_CELL_MARGIN), floor(self.topSwipeableView.frame.size.height/2))
                                                        imageViewSize:timeImage.size
                                                            labelSize:CGSizeMake(self.topSwipeableView.frame.size.width/2 - 3*TABLE_CELL_MARGIN - 2*BUTTON_SPACING,
                                                                                 self.topSwipeableView.frame.size.height/2)];
@@ -345,10 +346,11 @@
         [addPieceButton addTarget:self action:@selector(addPiece:) forControlEvents:UIControlEventTouchUpInside];
         // Set the button's frame
         CGRect addPieceButtonFrame = addPieceButton.bounds;
-        addPieceButtonFrame.origin.x = CGRectGetMaxX(backViewControlButton.frame) + BUTTON_SPACING;;
-        addPieceButtonFrame.origin.y = self.topSwipeableView.backView.bounds.origin.y;
+        addPieceButtonFrame.origin.x = floor(CGRectGetMaxX(backViewControlButton.frame) + BUTTON_SPACING);
+        addPieceButtonFrame.origin.y = floor(self.topSwipeableView.backView.bounds.origin.y);
         addPieceButtonFrame.size = addPieceImage.size;
-        addPieceButtonFrame.size.height = self.topSwipeableView.backView.bounds.size.height;
+        addPieceButtonFrame.size.height = floor(self.topSwipeableView.backView.bounds.size.height);
+        addPieceButtonFrame.size.width = floor(addPieceButtonFrame.size.width);
         addPieceButton.frame = addPieceButtonFrame;
         
         [self.topSwipeableView.backView addSubview:addPieceButton];
@@ -362,10 +364,11 @@
         [deleteStoryButton addTarget:self action:@selector(deleteStoryAlert:) forControlEvents:UIControlEventTouchUpInside];
 
         CGRect deleteStoryButtonFrame = deleteStoryButton.bounds;
-        deleteStoryButtonFrame.origin.x = CGRectGetMaxX(addPieceButton.frame) + BUTTON_SPACING;
-        deleteStoryButtonFrame.origin.y = self.topSwipeableView.backView.bounds.origin.y;
+        deleteStoryButtonFrame.origin.x = floor(CGRectGetMaxX(addPieceButton.frame) + BUTTON_SPACING);
+        deleteStoryButtonFrame.origin.y = floor(self.topSwipeableView.backView.bounds.origin.y);
         deleteStoryButtonFrame.size = deleteStoryImage.size;
-        deleteStoryButtonFrame.size.height = self.topSwipeableView.backView.bounds.size.height;
+        deleteStoryButtonFrame.size.height = floor(self.topSwipeableView.backView.bounds.size.height);
+        deleteStoryButtonFrame.size.width = floor(deleteStoryButtonFrame.size.width);
         deleteStoryButton.frame = deleteStoryButtonFrame;
         
         [self.topSwipeableView.backView addSubview:deleteStoryButton];
@@ -378,10 +381,11 @@
         [shareButton addTarget:self action:@selector(shareStory:) forControlEvents:UIControlEventTouchUpInside];
         
         CGRect shareButtonFrame = shareButton.bounds;
-        shareButtonFrame.origin.x = CGRectGetMaxX(deleteStoryButton.frame) + BUTTON_SPACING;
-        shareButtonFrame.origin.y = self.topSwipeableView.backView.bounds.origin.y;
+        shareButtonFrame.origin.x = floor(CGRectGetMaxX(deleteStoryButton.frame) + BUTTON_SPACING);
+        shareButtonFrame.origin.y = floor(self.topSwipeableView.backView.bounds.origin.y);
         shareButtonFrame.size = shareButtonImage.size;
-        shareButtonFrame.size.height = self.topSwipeableView.backView.bounds.size.height;
+        shareButtonFrame.size.height = floor(self.topSwipeableView.backView.bounds.size.height);
+        shareButtonFrame.size.width = floor(shareButtonFrame.size.width);
         shareButton.frame = shareButtonFrame;
         
         [self.topSwipeableView.backView addSubview:shareButton];

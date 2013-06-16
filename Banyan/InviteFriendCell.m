@@ -59,7 +59,6 @@
     // Write button
     [writeButton addTarget:self action:@selector(writeButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     self.selectionStyle = UITableViewCellSelectionStyleNone;
-    [self setBackgroundColor:[UIColor clearColor]];
 }
 
 - (void)enableReadButton:(BOOL)set

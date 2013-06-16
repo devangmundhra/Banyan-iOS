@@ -84,7 +84,6 @@
 {
     [super viewWillAppear:animated];
     self.pieceTextView.delegate = self;
-    self.pieceTextView.backgroundColor = [UIColor clearColor];    
 }
 
 - (void)viewDidAppear:(BOOL)animated

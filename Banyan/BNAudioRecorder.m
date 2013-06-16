@@ -110,18 +110,18 @@
     timeLabel.text = [NSString stringWithFormat:@"0/%ds", RECORD_DURATION];
     timeLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
     timeLabel.textColor = BANYAN_WHITE_COLOR;
-    timeLabel.backgroundColor = [UIColor clearColor];
+    timeLabel.backgroundColor = BANYAN_BROWN_COLOR;
     [self.view addSubview:timeLabel];
     
     sliderBar = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"emptyBar"]
                                                     resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)]];
-    sliderBar.backgroundColor = [UIColor clearColor];
+    sliderBar.backgroundColor = BANYAN_BROWN_COLOR;
     [sliderBar.layer setCornerRadius:4.0f];
     [sliderBar.layer setMasksToBounds:YES];
     [self.view addSubview:sliderBar];
     progressBar = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"progressBar"]
                                                       resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)]];
-    progressBar.backgroundColor = [UIColor clearColor];
+    progressBar.backgroundColor = BANYAN_BROWN_COLOR;
     [progressBar.layer setCornerRadius:4.0f];
     [progressBar.layer setMasksToBounds:YES];
     

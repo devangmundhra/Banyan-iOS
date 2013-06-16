@@ -37,13 +37,12 @@
         [self.contentView addSubview:self.avatarImageView];
         
         self.avatarImageButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [self.avatarImageButton setBackgroundColor:[UIColor clearColor]];
         [self.avatarImageButton setFrame:CGRectMake( 10.0f, 14.0f, 40.0f, 40.0f)];
         [self.avatarImageButton addTarget:self action:@selector(didTapUserButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:self.avatarImageButton];
         
         self.nameButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [self.nameButton setBackgroundColor:[UIColor clearColor]];
+        [self.nameButton setBackgroundColor:BANYAN_WHITE_COLOR];
         [self.nameButton.titleLabel setFont:[UIFont boldSystemFontOfSize:16.0f]];
         [self.nameButton.titleLabel setLineBreakMode:NSLineBreakByTruncatingTail];
         [self.nameButton setTitleColor:[UIColor colorWithRed:87.0f/255.0f green:72.0f/255.0f blue:49.0f/255.0f alpha:1.0f] forState:UIControlStateNormal];
@@ -57,7 +56,7 @@
         self.photoLabel = [[UILabel alloc] init];
         [self.photoLabel setFont:[UIFont systemFontOfSize:11.0f]];
         [self.photoLabel setTextColor:[UIColor grayColor]];
-        [self.photoLabel setBackgroundColor:[UIColor clearColor]];
+        [self.photoLabel setBackgroundColor:BANYAN_WHITE_COLOR];
         [self.photoLabel setShadowColor:[UIColor colorWithWhite:1.0f alpha:0.700f]];
         [self.photoLabel setShadowOffset:CGSizeMake( 0.0f, 1.0f)];
         [self.contentView addSubview:self.photoLabel];

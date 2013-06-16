@@ -37,7 +37,6 @@
 
 - (void) setup
 {
-    self.backgroundColor = [UIColor clearColor];
     self.clipsToBounds = YES;
     self.button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame = self.bounds;
