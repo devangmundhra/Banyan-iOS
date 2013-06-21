@@ -17,7 +17,7 @@
 typedef enum {
     SettingsTableViewProfileSection = 0,
     SettingsTableViewSocialSection,
-    SettingsTableViewSettingsSection,
+    SettingsTableViewNotificationsSection,
     SettingsTableViewAboutSection,
 } SettingsTableViewSection;
 
@@ -135,8 +135,8 @@ typedef enum {
             return 1;
             break;
             
-        case SettingsTableViewSettingsSection:
-            return 1;
+        case SettingsTableViewNotificationsSection:
+            return 3;
             break;
             
         case SettingsTableViewAboutSection:
@@ -163,8 +163,8 @@ typedef enum {
             return @"Social";
             break;
             
-        case SettingsTableViewSettingsSection:
-            return @"Settings";
+        case SettingsTableViewNotificationsSection:
+            return @"Notifications";
             break;
             
         case SettingsTableViewAboutSection:
@@ -185,6 +185,8 @@ typedef enum {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
+    cell.textLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:18];
+    
     // Configure the cell...
     if (![BanyanAppDelegate loggedIn]) {
         cell.textLabel.text = [self textForAboutSectionAtRow:indexPath.row];
@@ -195,6 +197,10 @@ typedef enum {
             cell.accessoryType = UITableViewCellAccessoryNone;
     }
     else {
+        if (!(indexPath.section == SettingsAboutSectionAbout && indexPath.row == SettingsAboutSectionFeedback))
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        else
+            cell.accessoryType = UITableViewCellAccessoryNone;
         switch (indexPath.section) {
             case SettingsTableViewProfileSection:
                 cell.textLabel.text = [self textForProfileSectionAtRow:indexPath.row];
@@ -204,8 +210,10 @@ typedef enum {
                 cell.textLabel.text = [self textForSocialSectionAtRow:indexPath.row];
                 break;
                 
-            case SettingsTableViewSettingsSection:
-                cell.textLabel.text = [self textForSettingsSectionAtRow:indexPath.row];
+            case SettingsTableViewNotificationsSection:
+                cell.textLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:12];
+                cell.textLabel.text = [self textForNotificationsSectionAtRow:indexPath.row];
+                cell.accessoryView = [self accessoryViewForNotificationsSectionAtRow:indexPath.row];
                 break;
                 
             case SettingsTableViewAboutSection:
@@ -216,13 +224,8 @@ typedef enum {
                 cell.textLabel.text = @"Undefined";
                 break;
         }
-        if (!(indexPath.section == SettingsAboutSectionAbout && indexPath.row == SettingsAboutSectionFeedback))
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        else
-            cell.accessoryType = UITableViewCellAccessoryNone;
     }
 
-    cell.textLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:18];
     return cell;
 }
 
@@ -246,8 +249,8 @@ typedef enum {
             [self actionForSocialSectionAtRow:indexPath.row];
             break;
             
-        case SettingsTableViewSettingsSection:
-            [self actionForSettingsSectionAtRow:indexPath.row];
+        case SettingsTableViewNotificationsSection:
+            [self actionForNotificationsSectionAtRow:indexPath.row];
             break;
             
         case SettingsTableViewAboutSection:
@@ -327,20 +330,32 @@ typedef enum {
     }
 }
 
-# pragma mark Settings Section
+# pragma mark Notifications Section
 typedef enum {
-    SettingsSettingsSectionNotifications = 0,
-    SettingsSettingsSectionHighResImage
+    SettingsNotificationSectionAddStoryContribute = 0,
+    SettingsNotificationSectionAddStoryView,
+    SettingsNotificationSectionAddPiece,
+    SettingsNotificationSectionPieceAction,
+    SettingsNotificationSectionUserFollowing,
 } SettingsSettingsSection;
 
-- (NSString *) textForSettingsSectionAtRow:(NSInteger)row
+- (NSString *) textForNotificationsSectionAtRow:(NSInteger)row
 {
     switch (row) {
-        case SettingsSettingsSectionNotifications:
-            return @"Notifications";
+        case SettingsNotificationSectionAddStoryContribute:
+            return @"Invited to contributor to a story";
             break;
-        case SettingsSettingsSectionHighResImage:
-            return @"High Res Images";
+        case SettingsNotificationSectionAddStoryView:
+            return @"Added as a spectator in a story";
+            break;
+        case SettingsNotificationSectionAddPiece:
+            return @"Story I follow has a piece added";
+            break;
+        case SettingsNotificationSectionPieceAction:
+            return @"Piece I added is liked";
+            break;
+        case SettingsNotificationSectionUserFollowing:
+            return @"User starts following my stories";
             break;
             
         default:
@@ -349,13 +364,120 @@ typedef enum {
     }
 }
 
-- (void) actionForSettingsSectionAtRow:(NSInteger) row
+- (void) actionForNotificationsSectionAtRow:(NSInteger) row
 {
     switch (row) {
             
         default:
             break;
     }
+}
+
+- (UIView *)accessoryViewForNotificationsSectionAtRow:(NSInteger) row
+{
+    UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    BOOL on;
+    switch (row) {
+        case SettingsNotificationSectionAddStoryContribute:
+            [switchView addTarget:self action:@selector(addStoryContribNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
+            on = [defaults boolForKey:BNUserDefaultsAddStoryInvitedContributePushNotification];
+            break;
+        case SettingsNotificationSectionAddStoryView:
+            [switchView addTarget:self action:@selector(addStoryViewNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
+            on = [defaults boolForKey:BNUserDefaultsAddStoryInvitedViewPushNotification];
+            break;
+        case SettingsNotificationSectionAddPiece:
+            [switchView addTarget:self action:@selector(addPieceNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
+            on = [defaults boolForKey:BNUserDefaultsAddPieceToContributedStoryPushNotification];
+            break;
+        case SettingsNotificationSectionPieceAction:
+            [switchView addTarget:self action:@selector(pieceActionNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
+            on = [defaults boolForKey:BNUserDefaultsPieceActionPushNotification];
+            break;
+        case SettingsNotificationSectionUserFollowing:
+            [switchView addTarget:self action:@selector(userFollowNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
+            on = [defaults boolForKey:BNUserDefaultsUserFollowingPushNotification];
+            break;
+            
+        default:
+            assert(false);
+            break;
+    }
+    [switchView setOn:on animated:NO];
+    return switchView;
+}
+
+- (IBAction)addStoryContribNotificationsSwitchChanged:(UISwitch *)switchControl
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:switchControl.on forKey:BNUserDefaultsAddStoryInvitedContributePushNotification];
+    [defaults synchronize];
+    
+    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedContributePushNotification];
+    if (switchControl.on) {
+        [PFPush subscribeToChannelInBackground:channelName];
+    } else {
+        [PFPush unsubscribeFromChannelInBackground:channelName];
+    }
+    NSLog( @"The %@: %@", BNAddStoryInvitedContributePushNotification, switchControl.on ? @"ON" : @"OFF" );
+}
+- (IBAction)addStoryViewNotificationsSwitchChanged:(UISwitch *)switchControl
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:switchControl.on forKey:BNUserDefaultsAddStoryInvitedViewPushNotification];
+    [defaults synchronize];
+    
+    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedViewPushNotification];
+    if (switchControl.on) {
+        [PFPush subscribeToChannelInBackground:channelName];
+    } else {
+        [PFPush unsubscribeFromChannelInBackground:channelName];
+    }
+    NSLog( @"The %@: %@", BNAddStoryInvitedViewPushNotification, switchControl.on ? @"ON" : @"OFF" );
+}
+- (IBAction)addPieceNotificationsSwitchChanged:(UISwitch *)switchControl
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:switchControl.on forKey:BNAddPieceToContributedStoryPushNotification];
+    [defaults synchronize];
+    
+    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNAddPieceToContributedStoryPushNotification];
+    if (switchControl.on) {
+        [PFPush subscribeToChannelInBackground:channelName];
+    } else {
+        [PFPush unsubscribeFromChannelInBackground:channelName];
+    }
+    NSLog( @"The %@: %@", BNAddPieceToContributedStoryPushNotification, switchControl.on ? @"ON" : @"OFF" );
+}
+- (IBAction)pieceActionNotificationsSwitchChanged:(UISwitch *)switchControl
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:switchControl.on forKey:BNUserDefaultsPieceActionPushNotification];
+    [defaults synchronize];
+    
+    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNPieceActionPushNotification];
+    if (switchControl.on) {
+        [PFPush subscribeToChannelInBackground:channelName];
+    } else {
+        [PFPush unsubscribeFromChannelInBackground:channelName];
+    }
+    NSLog( @"The %@: %@", BNPieceActionPushNotification, switchControl.on ? @"ON" : @"OFF" );
+}
+- (IBAction)userFollowNotificationsSwitchChanged:(UISwitch *)switchControl
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:switchControl.on forKey:BNUserDefaultsUserFollowingPushNotification];
+    [defaults synchronize];
+    
+    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNUserFollowingPushNotification];
+    if (switchControl.on) {
+        [PFPush subscribeToChannelInBackground:channelName];
+    } else {
+        [PFPush unsubscribeFromChannelInBackground:channelName];
+    }
+    NSLog( @"The %@: %@", BNUserFollowingPushNotification, switchControl.on ? @"ON" : @"OFF" );
 }
 
 # pragma mark About Section

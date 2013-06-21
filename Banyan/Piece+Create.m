@@ -110,10 +110,11 @@
                                              success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                                  NSDictionary *response = responseObject;
                                                  NSArray *users = [response objectForKey:@"results"];
-                                                 NSMutableArray *usersContributing = [NSMutableArray arrayWithCapacity:1];
+                                                 NSMutableArray *channels = [NSMutableArray arrayWithCapacity:1];
                                                  for (NSDictionary *user in users)
                                                  {
-                                                     [usersContributing addObject:[user objectForKey:@"objectId"]];
+                                                     NSString *channel = [NSString stringWithFormat:@"%@%@%@", [user objectForKey:@"objectId"], BNPushNotificationChannelTypeSeperator, BNAddPieceToContributedStoryPushNotification];
+                                                     [channels addObject:channel];
                                                  }
                                                  NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
                                                                        [NSString stringWithFormat:@"%@ has added a new piece to the story titled %@",
@@ -123,7 +124,7 @@
                                                                        nil];
                                                  // send push notication to this user id
                                                  PFPush *push = [[PFPush alloc] init];
-                                                 [push setChannels:usersContributing];
+                                                 [push setChannels:channels];
                                                  [push setPushToAndroid:false];
                                                  [push expireAfterTimeInterval:86400];
                                                  [push setData:data];

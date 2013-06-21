@@ -8,6 +8,14 @@
 
 #import "BanyanConstants.h"
 
+#pragma mark - Push Notifications
+NSString *const BNAddStoryInvitedContributePushNotification = @"addStoryInvitedContri";
+NSString *const BNAddStoryInvitedViewPushNotification = @"addStoryInvitedView";
+NSString *const BNAddPieceToContributedStoryPushNotification = @"addPieceToContriStory";
+NSString *const BNPieceActionPushNotification = @"pieceAction";
+NSString *const BNUserFollowingPushNotification = @"userFollowing";
+NSString *const BNPushNotificationChannelTypeSeperator = @"_";
+
 #pragma mark - NSNotifications
 NSString *const BNUserFollowingChangedNotification = @"io.banyan.Banyan:UserFollowingChangedNotification";
 NSString *const BNUserLogInNotification = @"io.banyan.Banyan:UserLoginNotification";
@@ -21,6 +29,12 @@ NSString *const BNUserDefaultsFacebookFriends = @"io.banyan.Banyan.userDefaults.
 NSString *const BNUserDefaultsUserInfo = @"io.banyan.Banyan.userDefaults.userInfo";
 NSString *const BNUserDefaultsBanyanUsersFacebookFriends = @"io.banyan.Banyan.userDefaults.banyanUsersFacebookFriends";
 NSString *const BNUserDefaultsLastSuccessfulStoryUpdateTime = @"io.banyan.Banyan.userDefaults.banyanLastSuccessfulUpdatedTime";
+
+NSString *const BNUserDefaultsAddStoryInvitedContributePushNotification = @"io.banyan.Banyan.userDefaults.addStoryInvitedContrPushNotification";
+NSString *const BNUserDefaultsAddStoryInvitedViewPushNotification = @"io.banyan.Banyan.userDefaults.addStoryInvitedViewPushNotification";
+NSString *const BNUserDefaultsAddPieceToContributedStoryPushNotification = @"io.banyan.Banyan.userDefaults.addPieceToContriStoryPushNotification";
+NSString *const BNUserDefaultsPieceActionPushNotification = @"io.banyan.Banyan.userDefaults.pieceActionPushNotification";
+NSString *const BNUserDefaultsUserFollowingPushNotification = @"io.banyan.Banyan.userDefaults.userFollowingPushNotification";
 
 #pragma mark - ManagedObject Story Class
 // Class key

@@ -8,6 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
+#pragma mark - Push Notifications
+extern NSString *const BNAddStoryInvitedContributePushNotification;
+extern NSString *const BNAddStoryInvitedViewPushNotification;
+extern NSString *const BNAddPieceToContributedStoryPushNotification;
+extern NSString *const BNPieceActionPushNotification;
+extern NSString *const BNUserFollowingPushNotification;
+extern NSString *const BNPushNotificationChannelTypeSeperator;
+
 #pragma mark - NSNotifications
 extern NSString *const BNUserFollowingChangedNotification;
 extern NSString *const BNUserLogInNotification;
@@ -26,6 +34,11 @@ extern NSString *const BNUserDefaultsUserInfo;
 extern NSString *const BNUserDefaultsBanyanUsersFacebookFriends;
 extern NSString *const BNUserDefaultsLastSuccessfulStoryUpdateTime;
 
+extern NSString *const BNUserDefaultsAddStoryInvitedContributePushNotification;
+extern NSString *const BNUserDefaultsAddStoryInvitedViewPushNotification;
+extern NSString *const BNUserDefaultsAddPieceToContributedStoryPushNotification;
+extern NSString *const BNUserDefaultsPieceActionPushNotification;
+extern NSString *const BNUserDefaultsUserFollowingPushNotification;
 #pragma mark - PFObject Story Class
 // Class key
 extern NSString *const kBNStoryClassKey;

@@ -31,8 +31,12 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
-    // Normal launch stuff
     
+    NSString *defaultPrefsFile = [[NSBundle mainBundle] pathForResource:@"defaultPerfs" ofType:@"plist"];
+    NSDictionary *defaultPreferences = [NSDictionary dictionaryWithContentsOfFile:defaultPrefsFile];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:defaultPreferences];
+    
+    // Normal launch stuff
     [Parse setApplicationId:PARSE_APP_ID
                   clientKey:PARSE_CLIENT_KEY];
     
@@ -231,11 +235,66 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [defaults removeObjectForKey:BNUserDefaultsUserInfo];
     [defaults removeObjectForKey:BNUserDefaultsFacebookFriends];
     [defaults synchronize];
-    [PFPush unsubscribeFromChannelInBackground:[[PFUser currentUser] objectId]];
+    [self unsubscribeFromAllPushNotifications];
     [PFUser logOut];
     [[NSNotificationCenter defaultCenter] postNotificationName:BNUserLogOutNotification
                                                         object:nil];
     return;
+}
+
+- (void) subscribeToPushNotifications
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    BOOL on;
+    
+    NSString *addStoryContriChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedContributePushNotification];
+    on = [defaults boolForKey:BNUserDefaultsAddStoryInvitedContributePushNotification];
+    if (on) {
+        [PFPush subscribeToChannelInBackground:addStoryContriChannelName];
+    }
+    
+    NSString *addStoryViewChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedViewPushNotification];
+    on = [defaults boolForKey:BNUserDefaultsAddStoryInvitedViewPushNotification];
+    if (on) {
+        [PFPush subscribeToChannelInBackground:addStoryViewChannelName];
+    }
+    
+    NSString *addPieceChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNAddPieceToContributedStoryPushNotification];
+    on = [defaults boolForKey:BNUserDefaultsAddPieceToContributedStoryPushNotification];
+    if (on) {
+        [PFPush subscribeToChannelInBackground:addPieceChannelName];
+    }
+    
+    NSString *pieceActionChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNPieceActionPushNotification];
+    on = [defaults boolForKey:BNUserDefaultsPieceActionPushNotification];
+    if (on) {
+        [PFPush subscribeToChannelInBackground:pieceActionChannelName];
+    }
+    
+    NSString *userFollowChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNUserFollowingPushNotification];
+    on = [defaults boolForKey:BNUserDefaultsUserFollowingPushNotification];
+    if (on) {
+        [PFPush subscribeToChannelInBackground:userFollowChannelName];
+    }
+}
+
+- (void) unsubscribeFromAllPushNotifications
+{
+    NSString *addStoryContriChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedContributePushNotification];
+    [PFPush unsubscribeFromChannelInBackground:addStoryContriChannelName];
+    
+    NSString *addStoryViewChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedViewPushNotification];
+    [PFPush unsubscribeFromChannelInBackground:addStoryViewChannelName];
+    
+    NSString *addPieceChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNAddPieceToContributedStoryPushNotification];
+    [PFPush unsubscribeFromChannelInBackground:addPieceChannelName];
+
+    NSString *pieceActionChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNPieceActionPushNotification];
+    [PFPush unsubscribeFromChannelInBackground:pieceActionChannelName];
+
+    NSString *userFollowChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNUserFollowingPushNotification];
+    [PFPush unsubscribeFromChannelInBackground:userFollowChannelName];
+
 }
 
 + (BOOL)loggedIn
@@ -542,7 +601,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
             [(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate] facebookRequest:connection didFailWithError:error];
         }
     }];
-    [PFPush subscribeToChannelInBackground:[[PFUser currentUser] objectId]];
+    [self subscribeToPushNotifications];
 }
 
 #pragma mark Background Timer to upload unsaved objects

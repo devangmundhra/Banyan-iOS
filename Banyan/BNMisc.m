@@ -26,6 +26,19 @@
     return [dateFormatter stringFromDate:[NSDate date]];
 }
 
++ (NSDateFormatter *) dateFormatterNoTimeMediumDateRelative
+{
+    static NSDateFormatter *_dateFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        [_dateFormatter setTimeStyle:NSDateFormatterNoStyle];
+        [_dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+        [_dateFormatter setDoesRelativeDateFormatting:YES];
+    });
+    
+    return _dateFormatter;
+}
 
 + (NSString *) genRandStringLength: (int) len
 {

@@ -33,12 +33,6 @@ typedef enum {
 {
     [super viewDidAppear:animated];
     self.navigationController.navigationBar.translucent = NO;
-
-    CGRect tvFrame = self.view.bounds;
-    CGFloat margin = 10.0f;
-    tvFrame.origin.x = margin;
-    tvFrame.size.width -= 2*margin;
-    [self.tableView setFrame:tvFrame];
 }
 
 - (void)viewDidLoad
@@ -46,11 +40,11 @@ typedef enum {
     [super viewDidLoad];
     
     [self.view setBackgroundColor:BANYAN_LIGHTGRAY_COLOR];
-    self.tableView.backgroundColor = BANYAN_LIGHTGRAY_COLOR;
     [self.tableView setSeparatorColor:BANYAN_LIGHTGRAY_COLOR];
-    
-    [self.tableView registerNib:[UINib nibWithNibName:@"StoryListCell" bundle:nil] forCellReuseIdentifier:@"Story Cell"];
-    
+    self.tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
+    [self.tableView setShowsHorizontalScrollIndicator:NO];
+    [self.tableView setShowsVerticalScrollIndicator:NO];
+        
     // Fetched results controller
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
     NSSortDescriptor *uploadStatusSD = [NSSortDescriptor sortDescriptorWithKey:@"uploadStatusNumber" ascending:YES];
@@ -62,7 +56,7 @@ typedef enum {
     self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                         managedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext
                                                                           sectionNameKeyPath:@"uploadStatusString"
-                                                                                   cacheName:nil];
+                                                                                   cacheName:@"StoryListFRCCache"];
     self.fetchedResultsController.delegate = nil; // Explicitly call perform fetch (via Notification) to update list
     
     [self.tableView addPullToRefreshWithActionHandler:^{
@@ -132,11 +126,10 @@ typedef enum {
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Story Cell";
-    StoryListCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    static NSString *CellIdentifier = @"SingleStoryCell";
+    SingleStoryCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        NSArray *nibs = [[NSBundle mainBundle] loadNibNamed:@"StoryListCell" owner:self options:nil];
-        cell = (StoryListCell *)[nibs objectAtIndex:0];
+        cell = [[SingleStoryCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
     // Configure the cell...
@@ -147,7 +140,57 @@ typedef enum {
     return cell;
 }
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return [[self.fetchedResultsController sections] count];
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [[[self.fetchedResultsController sections] objectAtIndex:section] numberOfObjects];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    // Only if there is more than one section should we show the name
+    return [[self.fetchedResultsController sections] count] > 1 ? 20 : 0;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    CGRect frame = tableView.bounds;
+    frame.size.height = [self tableView:tableView heightForHeaderInSection:section];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:frame];
+    titleLabel.attributedText = [[NSAttributedString alloc] initWithString:[[[self.fetchedResultsController sections] objectAtIndex:section] name]
+                                                                attributes:@{NSUnderlineStyleAttributeName: @1}];;
+    titleLabel.font = [UIFont fontWithName:@"Roboto" size:15];
+    titleLabel.textColor = BANYAN_BLACK_COLOR;
+    titleLabel.minimumScaleFactor = 0.8;
+    titleLabel.backgroundColor = BANYAN_LIGHTGRAY_COLOR;
+    
+    return titleLabel;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return nil;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index
+{
+	return 0;
+}
+
+- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
+{
+    return nil;
+}
+
 #pragma mark Table View Delegates
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return TABLE_ROW_HEIGHT;
+}
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -203,19 +246,19 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 #pragma mark StoryListCellDelegate
-- (void) addPieceForStoryListCell:(StoryListCell *)cell
+- (void) addPieceForSingleStoryCell:(SingleStoryCell *)cell
 {
     NSIndexPath *myIndexPath = [self.tableView indexPathForCell:cell];
     [self addPieceForRowAtIndexPath:myIndexPath];
 }
 
-- (void) deleteStoryForStoryListCell:(StoryListCell *)cell
+- (void) deleteStoryForSingleStoryCell:(SingleStoryCell *)cell
 {
     NSIndexPath *myIndexPath = [self.tableView indexPathForCell:cell];
     [self tableView:self.tableView commitEditingStyle:UITableViewCellEditingStyleDelete forRowAtIndexPath:myIndexPath];
 }
 
-- (void) shareStoryForStoryListCell:(StoryListCell *)cell
+- (void) shareStoryForSingleStoryCell:(SingleStoryCell *)cell
 {
     NSIndexPath *myIndexPath = [self.tableView indexPathForCell:cell];
     [self shareStoryAtIndexPath:myIndexPath];
@@ -330,8 +373,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 -(void) readStoryForIndexPath:(NSIndexPath *)indexPath
 {
     Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    StoryListCell *storyListCell = (StoryListCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-    Piece *pieceToShow = [storyListCell currentlyVisiblePiece];
+    SingleStoryCell *singleStoryCell = (SingleStoryCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+    Piece *pieceToShow = [singleStoryCell currentlyVisiblePiece];
     
     if (!pieceToShow) {
         [self.tableView reloadData];
@@ -364,7 +407,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 	[self hideVisibleSwipedView:animated];
 	
 	if ([cell respondsToSelector:@selector(revealSwipedViewAnimated:)]){
-		[(StoryListCell *)cell revealSwipedViewAnimated:YES];
+		[(SingleStoryCell *)cell revealSwipedViewAnimated:YES];
 	}
     self.indexOfVisibleBackView = indexPath;
 }
@@ -373,7 +416,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 	
 	UITableViewCell * cell = [self.tableView cellForRowAtIndexPath:self.indexOfVisibleBackView];
 	if ([cell respondsToSelector:@selector(hideSwipedViewAnimated:)]) {
-		[(StoryListCell *)cell hideSwipedViewAnimated:YES];
+		[(SingleStoryCell *)cell hideSwipedViewAnimated:YES];
 	}
     self.indexOfVisibleBackView = nil;
 }

@@ -125,7 +125,6 @@
     [request setEntity:[NSEntityDescription entityForName:kBNStoryClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
     request.predicate = [NSPredicate predicateWithFormat:@"(ANY pieces.remoteStatusNumber != %@)",
                          [NSNumber numberWithInt:RemoteObjectStatusSync]];;
-    request.predicate = nil;
     array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
     for (Story *story in array) {
         story.uploadStatusNumber = story.uploadStatusNumber;

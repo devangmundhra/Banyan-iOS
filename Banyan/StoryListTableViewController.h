@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BNTableViewController.h"
-#import "StoryListCell.h"
+#import "CoreDataTableViewController.h"
+#import "SingleStoryCell.h"
 
-@interface StoryListTableViewController : BNTableViewController <StoryListCellDelegate> {
+@interface StoryListTableViewController : CoreDataTableViewController <SingleStoryCellDelegate> {
 	NSIndexPath * indexOfVisibleBackView;
 } 
 

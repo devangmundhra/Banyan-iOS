@@ -13,5 +13,6 @@
 + (NSString *)longCurrentDate;
 + (NSString *)shortCurrentDate;
 + (NSString *) genRandStringLength: (int) len;
++ (NSDateFormatter *) dateFormatterNoTimeMediumDateRelative;
 
 @end

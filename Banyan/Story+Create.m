@@ -106,10 +106,11 @@
                                              success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                                  NSDictionary *response = responseObject;
                                                  NSArray *users = [response objectForKey:@"results"];
-                                                 NSMutableArray *usersContributing = [NSMutableArray arrayWithCapacity:1];
+                                                 NSMutableArray *channels = [NSMutableArray arrayWithCapacity:1];
                                                  for (NSDictionary *user in users)
                                                  {
-                                                     [usersContributing addObject:[user objectForKey:@"objectId"]];
+                                                     NSString *channel = [NSString stringWithFormat:@"%@%@%@", [user objectForKey:@"objectId"], BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedContributePushNotification];
+                                                     [channels addObject:channel];
                                                  }
                                                  NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
                                                                         [NSString stringWithFormat:@"%@ has invited you to contribute to a story titled %@",
@@ -119,12 +120,90 @@
                                                                         nil];
                                                  // send push notication to this user id
                                                  PFPush *push = [[PFPush alloc] init];
-                                                 [push setChannels:usersContributing];
+                                                 [push setChannels:channels];
                                                  [push setPushToAndroid:false];
                                                  [push expireAfterTimeInterval:86400];
                                                  [push setData:data];
                                                  [push sendPushInBackground];
                                                  [TestFlight passCheckpoint:@"Push notifications sent to contribute to a new story"];
+                                             }
+                                             failure:AF_PARSE_ERROR_BLOCK()];
+        }
+    };
+    
+    void (^sendRequestToViewers)(Story *) = ^(Story *story) {
+        NSArray *viewersList = [story storyViewers];
+        
+        NSMutableArray *fbIds = [NSMutableArray arrayWithCapacity:1];
+        for (NSDictionary *viewer in viewersList)
+        {
+            if (![[viewer objectForKey:@"id"] isEqualToString:[[PFUser currentUser] objectForKey:USER_FACEBOOK_ID]])
+                [fbIds addObject:[viewer objectForKey:@"id"]];
+        }
+        
+        if ([fbIds count] == 0)
+            return;
+        
+        // send request to facebook
+        
+        FBShareDialogParams *params = [[FBShareDialogParams alloc] init];
+        params.dataFailuresFatal = NO;
+        params.caption = story.title;
+        params.description = @"Check this new story out!";
+        params.friends = fbIds;
+        Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:story.media];
+        params.picture = [NSURL URLWithString:imageMedia.remoteURL];
+        params.ref = @"Story";
+        [FBDialogs presentShareDialogWithParams:params clientState:nil handler:nil];
+        
+        // send push notifications
+        
+        UIRemoteNotificationType types = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
+        if (types == UIRemoteNotificationTypeNone)
+            return;
+        
+        for (NSString *fbId in fbIds)
+        {
+            // get the user object id corresponding to this facebook id if it exists
+            NSDictionary *jsonDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:
+                                            fbId, USER_FACEBOOK_ID, nil];
+            
+            NSError *error = nil;
+            NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
+            
+            if (!jsonData) {
+                NSLog(@"NSJSONSerialization failed %@", error);
+            }
+            
+            NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+            
+            NSMutableDictionary *getUsersForFbId = [NSMutableDictionary dictionaryWithObject:json forKey:@"where"];
+            
+            [[AFParseAPIClient sharedClient] getPath:PARSE_API_USER_URL(@"")
+                                          parameters:getUsersForFbId
+                                             success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                                 NSDictionary *response = responseObject;
+                                                 NSArray *users = [response objectForKey:@"results"];
+                                                 NSMutableArray *channels = [NSMutableArray arrayWithCapacity:1];
+                                                 for (NSDictionary *user in users)
+                                                 {
+                                                     NSString *channel = [NSString stringWithFormat:@"%@%@%@", [user objectForKey:@"objectId"], BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedViewPushNotification];
+                                                     [channels addObject:channel];
+                                                 }
+                                                 NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                                       [NSString stringWithFormat:@"%@ has invited you to view a story titled %@",
+                                                                        [[PFUser currentUser] objectForKey:USER_NAME], story.title], @"alert",
+                                                                       [NSNumber numberWithInt:1], @"badge",
+                                                                       story.bnObjectId, @"Story id",
+                                                                       nil];
+                                                 // send push notication to this user id
+                                                 PFPush *push = [[PFPush alloc] init];
+                                                 [push setChannels:channels];
+                                                 [push setPushToAndroid:false];
+                                                 [push expireAfterTimeInterval:86400];
+                                                 [push setData:data];
+                                                 [push sendPushInBackground];
+                                                 [TestFlight passCheckpoint:@"Push notifications sent to view a new story"];
                                              }
                                              failure:AF_PARSE_ERROR_BLOCK()];
         }
@@ -179,6 +258,9 @@
                               story.remoteStatus = RemoteObjectStatusSync;
                               if ([story numberOfContributors]) {
                                   sendRequestToContributors(story);
+                              }
+                              if ([story numberOfViewers]) {
+                                  sendRequestToViewers(story);
                               }
                               [story save];
                           }

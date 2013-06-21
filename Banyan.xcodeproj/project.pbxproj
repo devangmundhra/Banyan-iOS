@@ -31,6 +31,7 @@
 		5128EB4F17472FF600393173 /* record.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128EB4317472FF600393173 /* record.png */; };
 		5128EB5417478B3D00393173 /* BNAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 5128EB5317478B3D00393173 /* BNAudioRecorder.m */; };
 		5128EB5717478B5500393173 /* BNAudioStreamingPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5128EB5617478B5500393173 /* BNAudioStreamingPlayer.m */; };
+		51444A1217737F680037570A /* defaultPerfs.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51444A1117737F680037570A /* defaultPerfs.plist */; };
 		5144EC6A1712277600F0B265 /* cameraSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC601712277600F0B265 /* cameraSymbol.png */; };
 		5144EC6B1712277600F0B265 /* cameraSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC611712277600F0B265 /* cameraSymbol@2x.png */; };
 		5144EC6C1712277600F0B265 /* locationSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC621712277600F0B265 /* locationSymbol.png */; };
@@ -118,6 +119,9 @@
 		519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 519232A01671CC57009686E4 /* AFGoogleAPIClient.m */; };
 		5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 5192332616743F02009686E4 /* GooglePlacesObject.m */; };
 		519233331675305F009686E4 /* LocationPickerTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 519233311675305F009686E4 /* LocationPickerTableViewController.m */; };
+		51984D40176EDE1000CD6C3E /* BNPiecesScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 51984D3F176EDE1000CD6C3E /* BNPiecesScrollView.m */; };
+		51984D43176EE10E00CD6C3E /* CoreDataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51984D42176EE10E00CD6C3E /* CoreDataTableViewController.m */; };
+		51984D46176EEB5600CD6C3E /* SinglePieceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 51984D45176EEB5600CD6C3E /* SinglePieceView.m */; };
 		519AFA7215C26F5D00F68F3C /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */; };
 		51A84945171BD95600367039 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51A84944171BD95600367039 /* Parse.framework */; };
 		51A8494A171CF4A500367039 /* BNPlacePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A84949171CF4A500367039 /* BNPlacePickerViewController.m */; };
@@ -132,7 +136,6 @@
 		51B234E217154C43004241C1 /* shareButtonBlack@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B234DE17154C43004241C1 /* shareButtonBlack@2x.png */; };
 		51B234E317154C43004241C1 /* shareButtonWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B234DF17154C43004241C1 /* shareButtonWhite.png */; };
 		51B234E417154C43004241C1 /* shareButtonWhite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B234E017154C43004241C1 /* shareButtonWhite@2x.png */; };
-		51B234E817154D2B004241C1 /* StoryListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B234E717154D2B004241C1 /* StoryListCell.m */; };
 		51B234FB171658BF004241C1 /* Google Android License.txt in Resources */ = {isa = PBXBuildFile; fileRef = 51B234EA171658BF004241C1 /* Google Android License.txt */; };
 		51B234FC171658BF004241C1 /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 51B234EB171658BF004241C1 /* Roboto-Black.ttf */; };
 		51B234FD171658BF004241C1 /* Roboto-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 51B234EC171658BF004241C1 /* Roboto-BlackItalic.ttf */; };
@@ -187,11 +190,6 @@
 		51CFD94A15F58337002926F9 /* buttonFollowSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94215F58337002926F9 /* buttonFollowSelected.png */; };
 		51CFD94B15F58337002926F9 /* buttonFollowSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */; };
 		51F095681702A6DE009D5A28 /* ModifyStoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51F095671702A6DE009D5A28 /* ModifyStoryViewController.xib */; };
-		51F095731702A6FB009D5A28 /* StoryListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51F0956B1702A6FB009D5A28 /* StoryListCell.xib */; };
-		51F095741702A6FB009D5A28 /* StoryListCellMiddleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F0956D1702A6FB009D5A28 /* StoryListCellMiddleViewController.m */; };
-		51F095751702A6FB009D5A28 /* StoryListCellMiddleViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51F0956E1702A6FB009D5A28 /* StoryListCellMiddleViewController.xib */; };
-		51F095761702A6FB009D5A28 /* StoryListCellReadSceneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F095701702A6FB009D5A28 /* StoryListCellReadSceneViewController.m */; };
-		51F095771702A6FB009D5A28 /* StoryListCellReadSceneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51F095711702A6FB009D5A28 /* StoryListCellReadSceneViewController.xib */; };
 		51F22885161A9DC1006B3AA7 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F22884161A9DC1006B3AA7 /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		51F22888161A9DE4006B3AA7 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F22887161A9DE4006B3AA7 /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		51F2288C161A9E22006B3AA7 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F2288B161A9E22006B3AA7 /* Default-568h@2x.png */; };
@@ -204,6 +202,8 @@
 		51F57C5C17228DC200A76FA5 /* settingsButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F57C5817228DC200A76FA5 /* settingsButton@2x.png */; };
 		51F60EF816E8423E00F9715E /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F60EF616E8423E00F9715E /* Icon.png */; };
 		51F60EF916E8423E00F9715E /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F60EF716E8423E00F9715E /* Icon@2x.png */; };
+		51F8F436176E43620056A308 /* SingleStoryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F8F435176E43620056A308 /* SingleStoryCell.m */; };
+		51F8F439176E6F640056A308 /* SingleStoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F8F438176E6F640056A308 /* SingleStoryView.m */; };
 		51FAC0B8172C829E0046C2D6 /* Comment.m in Sources */ = {isa = PBXBuildFile; fileRef = 51FAC0B7172C829E0046C2D6 /* Comment.m */; };
 		51FAC0BC172F8C500046C2D6 /* FBGraphObjectToDataTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 51FAC0BB172F8C500046C2D6 /* FBGraphObjectToDataTransformer.m */; };
 		51FAC0C41731131D0046C2D6 /* commentSymbolGray.png in Resources */ = {isa = PBXBuildFile; fileRef = 51FAC0C21731131D0046C2D6 /* commentSymbolGray.png */; };
@@ -253,6 +253,8 @@
 		5128EB5317478B3D00393173 /* BNAudioRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioRecorder.m; sourceTree = "<group>"; };
 		5128EB5517478B5500393173 /* BNAudioStreamingPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNAudioStreamingPlayer.h; sourceTree = "<group>"; };
 		5128EB5617478B5500393173 /* BNAudioStreamingPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioStreamingPlayer.m; sourceTree = "<group>"; };
+		51444A1117737F680037570A /* defaultPerfs.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = defaultPerfs.plist; sourceTree = "<group>"; };
+		51444A131773FF0D0037570A /* defaultPerfs.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = defaultPerfs.plist; path = Banyan/defaultPerfs.plist; sourceTree = "<group>"; };
 		5144EC601712277600F0B265 /* cameraSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cameraSymbol.png; sourceTree = "<group>"; };
 		5144EC611712277600F0B265 /* cameraSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cameraSymbol@2x.png"; sourceTree = "<group>"; };
 		5144EC621712277600F0B265 /* locationSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = locationSymbol.png; sourceTree = "<group>"; };
@@ -374,6 +376,12 @@
 		5192332616743F02009686E4 /* GooglePlacesObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GooglePlacesObject.m; path = Banyan/GooglePlacesObject.m; sourceTree = "<group>"; };
 		519233301675305F009686E4 /* LocationPickerTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationPickerTableViewController.h; path = Banyan/LocationPickerTableViewController.h; sourceTree = "<group>"; };
 		519233311675305F009686E4 /* LocationPickerTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationPickerTableViewController.m; path = Banyan/LocationPickerTableViewController.m; sourceTree = "<group>"; };
+		51984D3E176EDE1000CD6C3E /* BNPiecesScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNPiecesScrollView.h; path = Banyan/BNPiecesScrollView.h; sourceTree = "<group>"; };
+		51984D3F176EDE1000CD6C3E /* BNPiecesScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNPiecesScrollView.m; path = Banyan/BNPiecesScrollView.m; sourceTree = "<group>"; };
+		51984D41176EE10E00CD6C3E /* CoreDataTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreDataTableViewController.h; path = Banyan/CoreDataTableViewController.h; sourceTree = "<group>"; };
+		51984D42176EE10E00CD6C3E /* CoreDataTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CoreDataTableViewController.m; path = Banyan/CoreDataTableViewController.m; sourceTree = "<group>"; };
+		51984D44176EEB5600CD6C3E /* SinglePieceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SinglePieceView.h; path = Banyan/SinglePieceView.h; sourceTree = "<group>"; };
+		51984D45176EEB5600CD6C3E /* SinglePieceView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SinglePieceView.m; path = Banyan/SinglePieceView.m; sourceTree = "<group>"; };
 		519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		51A84944171BD95600367039 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		51A84948171CF4A500367039 /* BNPlacePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNPlacePickerViewController.h; path = Banyan/BNPlacePickerViewController.h; sourceTree = "<group>"; };
@@ -396,7 +404,6 @@
 		51B234DE17154C43004241C1 /* shareButtonBlack@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shareButtonBlack@2x.png"; sourceTree = "<group>"; };
 		51B234DF17154C43004241C1 /* shareButtonWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shareButtonWhite.png; sourceTree = "<group>"; };
 		51B234E017154C43004241C1 /* shareButtonWhite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shareButtonWhite@2x.png"; sourceTree = "<group>"; };
-		51B234E717154D2B004241C1 /* StoryListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryListCell.m; path = Banyan/StoryListCell.m; sourceTree = "<group>"; };
 		51B234EA171658BF004241C1 /* Google Android License.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Google Android License.txt"; sourceTree = "<group>"; };
 		51B234EB171658BF004241C1 /* Roboto-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Black.ttf"; sourceTree = "<group>"; };
 		51B234EC171658BF004241C1 /* Roboto-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-BlackItalic.ttf"; sourceTree = "<group>"; };
@@ -458,14 +465,6 @@
 		51CFD94215F58337002926F9 /* buttonFollowSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFollowSelected.png; sourceTree = "<group>"; };
 		51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFollowSelected@2x.png"; sourceTree = "<group>"; };
 		51F095671702A6DE009D5A28 /* ModifyStoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ModifyStoryViewController.xib; path = Banyan/ModifyStoryViewController.xib; sourceTree = "<group>"; };
-		51F095691702A6FB009D5A28 /* StoryListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryListCell.h; path = Banyan/StoryListCell.h; sourceTree = "<group>"; };
-		51F0956B1702A6FB009D5A28 /* StoryListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = StoryListCell.xib; path = Banyan/StoryListCell.xib; sourceTree = "<group>"; };
-		51F0956C1702A6FB009D5A28 /* StoryListCellMiddleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryListCellMiddleViewController.h; path = Banyan/StoryListCellMiddleViewController.h; sourceTree = "<group>"; };
-		51F0956D1702A6FB009D5A28 /* StoryListCellMiddleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryListCellMiddleViewController.m; path = Banyan/StoryListCellMiddleViewController.m; sourceTree = "<group>"; };
-		51F0956E1702A6FB009D5A28 /* StoryListCellMiddleViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = StoryListCellMiddleViewController.xib; path = Banyan/StoryListCellMiddleViewController.xib; sourceTree = "<group>"; };
-		51F0956F1702A6FB009D5A28 /* StoryListCellReadSceneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryListCellReadSceneViewController.h; path = Banyan/StoryListCellReadSceneViewController.h; sourceTree = "<group>"; };
-		51F095701702A6FB009D5A28 /* StoryListCellReadSceneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryListCellReadSceneViewController.m; path = Banyan/StoryListCellReadSceneViewController.m; sourceTree = "<group>"; };
-		51F095711702A6FB009D5A28 /* StoryListCellReadSceneViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = StoryListCellReadSceneViewController.xib; path = Banyan/StoryListCellReadSceneViewController.xib; sourceTree = "<group>"; };
 		51F22884161A9DC1006B3AA7 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		51F22887161A9DE4006B3AA7 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		51F22889161A9DF2006B3AA7 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -479,6 +478,10 @@
 		51F57C5817228DC200A76FA5 /* settingsButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settingsButton@2x.png"; sourceTree = "<group>"; };
 		51F60EF616E8423E00F9715E /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		51F60EF716E8423E00F9715E /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		51F8F434176E43620056A308 /* SingleStoryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SingleStoryCell.h; path = Banyan/SingleStoryCell.h; sourceTree = "<group>"; };
+		51F8F435176E43620056A308 /* SingleStoryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SingleStoryCell.m; path = Banyan/SingleStoryCell.m; sourceTree = "<group>"; };
+		51F8F437176E6F640056A308 /* SingleStoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SingleStoryView.h; path = Banyan/SingleStoryView.h; sourceTree = "<group>"; };
+		51F8F438176E6F640056A308 /* SingleStoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SingleStoryView.m; path = Banyan/SingleStoryView.m; sourceTree = "<group>"; };
 		51FAC0B6172C829E0046C2D6 /* Comment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Comment.h; path = Banyan/Comment.h; sourceTree = "<group>"; };
 		51FAC0B7172C829E0046C2D6 /* Comment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Comment.m; path = Banyan/Comment.m; sourceTree = "<group>"; };
 		51FAC0BA172F8C500046C2D6 /* FBGraphObjectToDataTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FBGraphObjectToDataTransformer.h; path = Banyan/FBGraphObjectToDataTransformer.h; sourceTree = "<group>"; };
@@ -590,6 +593,28 @@
 				5128EB4317472FF600393173 /* record.png */,
 			);
 			name = "Music player";
+			sourceTree = "<group>";
+		};
+		51444A0B17719B230037570A /* Edit */ = {
+			isa = PBXGroup;
+			children = (
+				5189B2E615B395F300562DD0 /* ModifyStoryViewController.h */,
+				5189B2E715B395F300562DD0 /* ModifyStoryViewController.m */,
+				51F095671702A6DE009D5A28 /* ModifyStoryViewController.xib */,
+				5189B2DD15B395F300562DD0 /* InvitedTableViewController.h */,
+				5189B2DE15B395F300562DD0 /* InvitedTableViewController.m */,
+				517A01DB170BFA3700665F0F /* InviteFriendCell */,
+			);
+			name = Edit;
+			sourceTree = "<group>";
+		};
+		51444A0D17719B5B0037570A /* Read */ = {
+			isa = PBXGroup;
+			children = (
+				5189B30015B395F300562DD0 /* StoryReaderController.h */,
+				5189B30115B395F300562DD0 /* StoryReaderController.m */,
+			);
+			name = Read;
 			sourceTree = "<group>";
 		};
 		5158AE2D16F56F850089193E /* Tab Bar Controller */ = {
@@ -759,6 +784,7 @@
 		5189B2A815B387E100562DD0 = {
 			isa = PBXGroup;
 			children = (
+				51444A131773FF0D0037570A /* defaultPerfs.plist */,
 				5189B2BD15B387E200562DD0 /* Banyan */,
 				5189B2B615B387E200562DD0 /* Frameworks */,
 				5189B2B415B387E200562DD0 /* Products */,
@@ -817,7 +843,7 @@
 				5189B35415B3968600562DD0 /* Account Management */,
 				517A01C417097A2C00665F0F /* Media Picker */,
 				51BDA26B1741E74F00BD2C19 /* Audio Manager */,
-				5189B35315B3967A00562DD0 /* New Story */,
+				5189B35315B3967A00562DD0 /* Read and Edit Story */,
 				5189B35915B3971400562DD0 /* Read and Edit Pieces */,
 				5189B35215B3965A00562DD0 /* Model */,
 				5192332416743EB7009686E4 /* Location */,
@@ -828,7 +854,7 @@
 				5189B2C615B387E200562DD0 /* BanyanAppDelegate.h */,
 				5189B2C715B387E200562DD0 /* BanyanAppDelegate.m */,
 				5158AE2D16F56F850089193E /* Tab Bar Controller */,
-				51B2351B17168C6D004241C1 /* Views */,
+				51B2351B17168C6D004241C1 /* Custom Views and View Controllers */,
 				5189B2BE15B387E200562DD0 /* Supporting Files */,
 				5166B1B515E75B420072749C /* Resources */,
 				517A01AA1709539800665F0F /* Vendors */,
@@ -840,6 +866,7 @@
 			isa = PBXGroup;
 			children = (
 				5189B2BF15B387E200562DD0 /* Banyan-Info.plist */,
+				51444A1117737F680037570A /* defaultPerfs.plist */,
 				5189B2C015B387E200562DD0 /* InfoPlist.strings */,
 				5189B2C315B387E200562DD0 /* main.m */,
 				5189B2C515B387E200562DD0 /* Banyan-Prefix.pch */,
@@ -879,17 +906,13 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
-		5189B35315B3967A00562DD0 /* New Story */ = {
+		5189B35315B3967A00562DD0 /* Read and Edit Story */ = {
 			isa = PBXGroup;
 			children = (
-				5189B2E615B395F300562DD0 /* ModifyStoryViewController.h */,
-				5189B2E715B395F300562DD0 /* ModifyStoryViewController.m */,
-				51F095671702A6DE009D5A28 /* ModifyStoryViewController.xib */,
-				5189B2DD15B395F300562DD0 /* InvitedTableViewController.h */,
-				5189B2DE15B395F300562DD0 /* InvitedTableViewController.m */,
-				517A01DB170BFA3700665F0F /* InviteFriendCell */,
+				51444A0D17719B5B0037570A /* Read */,
+				51444A0B17719B230037570A /* Edit */,
 			);
-			name = "New Story";
+			name = "Read and Edit Story";
 			path = ..;
 			sourceTree = "<group>";
 		};
@@ -954,8 +977,6 @@
 		5189B35915B3971400562DD0 /* Read and Edit Pieces */ = {
 			isa = PBXGroup;
 			children = (
-				5189B30015B395F300562DD0 /* StoryReaderController.h */,
-				5189B30115B395F300562DD0 /* StoryReaderController.m */,
 				5189B35515B3969700562DD0 /* Add or Edit Piece */,
 				5189B35615B396D600562DD0 /* Read Piece */,
 			);
@@ -987,8 +1008,8 @@
 			isa = PBXGroup;
 			children = (
 				51CFD93715F57F35002926F9 /* UITableViewCell */,
-				51B2351F1717DBA9004241C1 /* BNTableViewController.h */,
-				51B235201717DBA9004241C1 /* BNTableViewController.m */,
+				51984D41176EE10E00CD6C3E /* CoreDataTableViewController.h */,
+				51984D42176EE10E00CD6C3E /* CoreDataTableViewController.m */,
 				5189B31715B395F300562DD0 /* StoryListTableViewController.h */,
 				5189B31815B395F300562DD0 /* StoryListTableViewController.m */,
 			);
@@ -1082,13 +1103,15 @@
 			path = roboto;
 			sourceTree = "<group>";
 		};
-		51B2351B17168C6D004241C1 /* Views */ = {
+		51B2351B17168C6D004241C1 /* Custom Views and View Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				51B2351817168C68004241C1 /* BNImageLabel.h */,
 				51B2351917168C68004241C1 /* BNImageLabel.m */,
+				51B2351F1717DBA9004241C1 /* BNTableViewController.h */,
+				51B235201717DBA9004241C1 /* BNTableViewController.m */,
 			);
-			name = Views;
+			name = "Custom Views and View Controllers";
 			path = ..;
 			sourceTree = "<group>";
 		};
@@ -1142,15 +1165,14 @@
 		51CFD93715F57F35002926F9 /* UITableViewCell */ = {
 			isa = PBXGroup;
 			children = (
-				51F095691702A6FB009D5A28 /* StoryListCell.h */,
-				51B234E717154D2B004241C1 /* StoryListCell.m */,
-				51F0956B1702A6FB009D5A28 /* StoryListCell.xib */,
-				51F0956C1702A6FB009D5A28 /* StoryListCellMiddleViewController.h */,
-				51F0956D1702A6FB009D5A28 /* StoryListCellMiddleViewController.m */,
-				51F0956E1702A6FB009D5A28 /* StoryListCellMiddleViewController.xib */,
-				51F0956F1702A6FB009D5A28 /* StoryListCellReadSceneViewController.h */,
-				51F095701702A6FB009D5A28 /* StoryListCellReadSceneViewController.m */,
-				51F095711702A6FB009D5A28 /* StoryListCellReadSceneViewController.xib */,
+				51F8F434176E43620056A308 /* SingleStoryCell.h */,
+				51F8F435176E43620056A308 /* SingleStoryCell.m */,
+				51F8F437176E6F640056A308 /* SingleStoryView.h */,
+				51F8F438176E6F640056A308 /* SingleStoryView.m */,
+				51984D3E176EDE1000CD6C3E /* BNPiecesScrollView.h */,
+				51984D3F176EDE1000CD6C3E /* BNPiecesScrollView.m */,
+				51984D44176EEB5600CD6C3E /* SinglePieceView.h */,
+				51984D45176EEB5600CD6C3E /* SinglePieceView.m */,
 			);
 			name = UITableViewCell;
 			sourceTree = "<group>";
@@ -1269,6 +1291,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51444A1217737F680037570A /* defaultPerfs.plist in Resources */,
 				51F60EF816E8423E00F9715E /* Icon.png in Resources */,
 				51F60EF916E8423E00F9715E /* Icon@2x.png in Resources */,
 				5189B2C215B387E200562DD0 /* InfoPlist.strings in Resources */,
@@ -1290,9 +1313,6 @@
 				51FD96ED1665E6C7001A1709 /* dotted-pattern.png in Resources */,
 				51FD96EE1665E6C7001A1709 /* dotted-pattern@2x.png in Resources */,
 				51F095681702A6DE009D5A28 /* ModifyStoryViewController.xib in Resources */,
-				51F095731702A6FB009D5A28 /* StoryListCell.xib in Resources */,
-				51F095751702A6FB009D5A28 /* StoryListCellMiddleViewController.xib in Resources */,
-				51F095771702A6FB009D5A28 /* StoryListCellReadSceneViewController.xib in Resources */,
 				517A01DD170BFA5B00665F0F /* InviteFriendCell.xib in Resources */,
 				5144EC6A1712277600F0B265 /* cameraSymbol.png in Resources */,
 				5144EC6B1712277600F0B265 /* cameraSymbol@2x.png in Resources */,
@@ -1417,6 +1437,7 @@
 				5189B32815B395F300562DD0 /* ArrayToDataTransformer.m in Sources */,
 				5189B32A15B395F300562DD0 /* ImageToDataTransformer.m in Sources */,
 				5189B32B15B395F300562DD0 /* InvitedTableViewController.m in Sources */,
+				51984D40176EDE1000CD6C3E /* BNPiecesScrollView.m in Sources */,
 				5189B32F15B395F300562DD0 /* ModifyPieceViewController.m in Sources */,
 				5189B33115B395F300562DD0 /* ModifyStoryViewController.m in Sources */,
 				5189B33515B395F300562DD0 /* ReadPieceViewController.m in Sources */,
@@ -1437,6 +1458,7 @@
 				51CFD93A15F57F70002926F9 /* FollowingUsersCell.m in Sources */,
 				510787C6163A36A90042B436 /* UIImage+AlphaAdditions.m in Sources */,
 				510787C7163A36A90042B436 /* UIImage+ResizeAdditions.m in Sources */,
+				51984D46176EEB5600CD6C3E /* SinglePieceView.m in Sources */,
 				510787C8163A36A90042B436 /* UIImage+RoundedCornerAdditions.m in Sources */,
 				510787CF163A36D80042B436 /* AFBanyanAPIClient.m in Sources */,
 				510787D2163A36F20042B436 /* BNGoogleLocationManager.m in Sources */,
@@ -1450,14 +1472,13 @@
 				51A8DC9516928AE00017E86F /* Banyan.xcdatamodeld in Sources */,
 				51A8DC981692C4490017E86F /* Story+Permissions.m in Sources */,
 				5158AE2B16F56F7F0089193E /* BNTabBarController.m in Sources */,
-				51F095741702A6FB009D5A28 /* StoryListCellMiddleViewController.m in Sources */,
-				51F095761702A6FB009D5A28 /* StoryListCellReadSceneViewController.m in Sources */,
+				51F8F439176E6F640056A308 /* SingleStoryView.m in Sources */,
 				517A018C1706D92E00665F0F /* LocationPickerButton.m in Sources */,
 				517A01D4170983B400665F0F /* MediaPickerViewController.m in Sources */,
 				517A01D7170A7A9E00665F0F /* MediaPickerButton.m in Sources */,
 				517A01DA170BFA3000665F0F /* InviteFriendCell.m in Sources */,
-				51B234E817154D2B004241C1 /* StoryListCell.m in Sources */,
 				51B2351A17168C69004241C1 /* BNImageLabel.m in Sources */,
+				51F8F436176E43620056A308 /* SingleStoryCell.m in Sources */,
 				51B235211717DBA9004241C1 /* BNTableViewController.m in Sources */,
 				51A8494A171CF4A500367039 /* BNPlacePickerViewController.m in Sources */,
 				51A8494D171D24E900367039 /* BNFBLocationManager.m in Sources */,
@@ -1465,6 +1486,7 @@
 				510F4920172A5B86005BC5ED /* Piece.m in Sources */,
 				510F4923172A5C17005BC5ED /* Story.m in Sources */,
 				510F4929172A5C7A005BC5ED /* Statistics.m in Sources */,
+				51984D43176EE10E00CD6C3E /* CoreDataTableViewController.m in Sources */,
 				51FAC0B8172C829E0046C2D6 /* Comment.m in Sources */,
 				51FAC0BC172F8C500046C2D6 /* FBGraphObjectToDataTransformer.m in Sources */,
 				51BDA27F1743821400BD2C19 /* Media.m in Sources */,
