@@ -183,7 +183,7 @@ static BOOL _loggedIn;
     // Time label
     point = CGPointMake(TABLE_CELL_MARGIN+_clockSymbolImage.size.width+SPACER_DISTANCE, TOP_VIEW_HEIGHT/2+SPACER_DISTANCE);
     [[UIColor grayColor] set];
-    string = [_dateFormatter stringFromDate:self.story.createdAt];
+    string = [_dateFormatter stringFromDate:[self.story.createdAt dateByAddingTimeInterval:[[NSTimeZone systemTimeZone] secondsFromGMT]]];
     size = CGSizeMake(CGRectGetWidth(self.frame)/2 - TABLE_CELL_MARGIN - BUTTON_SPACING, TOP_VIEW_HEIGHT/2);
     expectedSize = [string sizeWithFont:_mediumFont constrainedToSize:size];
     clockStringSize = [string drawAtPoint:point forWidth:floor(expectedSize.width) withFont:_mediumFont fontSize:12 lineBreakMode:NSLineBreakByClipping baselineAdjustment:UIBaselineAdjustmentNone];
@@ -226,7 +226,7 @@ static BOOL _loggedIn;
     [self.storyFrontViewControl setImage:frontViewControlImage forState:UIControlStateNormal];
     // Set the button's frame
     CGRect frontViewControlButtonFrame;
-    frontViewControlButtonFrame.origin.x = floor(CGRectGetWidth(self.topSwipeView.frame) - frontViewControlImage.size.width - BUTTON_SPACING - TABLE_CELL_MARGIN);
+    frontViewControlButtonFrame.origin.x = floor(CGRectGetWidth(self.topSwipeView.frame) - frontViewControlImage.size.width - TABLE_CELL_MARGIN);
     frontViewControlButtonFrame.origin.y = floor(self.topSwipeView.frontView.frame.origin.y);
     frontViewControlButtonFrame.size.height = floor(self.topSwipeView.frontView.bounds.size.height);
     frontViewControlButtonFrame.size.width = floor(frontViewControlImage.size.width);

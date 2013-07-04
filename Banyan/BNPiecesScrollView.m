@@ -8,6 +8,7 @@
 
 #import "BNPiecesScrollView.h"
 #import "BanyanConnection.h"
+#import "BanyanAppDelegate.h"
 
 #define NUM_PIECES_WINDOW 5
 #define NUM_SINGLE_VIEW_OBJS 7
@@ -52,6 +53,9 @@
 - (void)setStory:(Story *)story
 {
     _story = story;
+    if (story && ![story.length integerValue]) {
+        [self setNeedsDisplay];
+    }
     self.contentSize = CGSizeMake([story.length intValue]*self.frame.size.width, self.frame.size.height);
     [self scrollRectToVisible:[self calculateFrameForPieceNum:story.currentPieceNum] animated:NO];
     [self scrollToPieceNumber:story.currentPieceNum];
@@ -208,6 +212,28 @@
     [tempSet enumerateObjectsUsingBlock:^(SinglePieceView *obj, BOOL *stop){
         [self removePieceSubview:obj];
     }];
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    if (self.story && ![self.story.length integerValue]) {
+        [BANYAN_GREEN_COLOR set];
+        CGRect smallRect = CGRectMake(rect.origin.x, round(rect.origin.y+rect.size.height/3), rect.size.width, round(rect.size.height*2/3));
+        
+        if ([BanyanAppDelegate loggedIn]) {
+            if ([self.story.canContribute boolValue]) {
+                NSString *addPcMsg = @"No pieces in the story.\nClick to add a piece!";
+                [addPcMsg drawInRect:smallRect withFont:[UIFont fontWithName:@"Roboto-Bold" size:20] lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
+            } else {
+                [BANYAN_BROWN_COLOR set];
+                NSString *addPcMsg = @"No pieces in the story yet!";
+                [addPcMsg drawInRect:smallRect withFont:[UIFont fontWithName:@"Roboto-Bold" size:20] lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
+            }
+        } else {
+            NSString *loginMsg = @"No pieces in the story yet.\nLog in to contribute.";
+            [loginMsg drawInRect:smallRect withFont:[UIFont fontWithName:@"Roboto-Bold" size:20] lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
+        }
+    }
 }
 
 @end

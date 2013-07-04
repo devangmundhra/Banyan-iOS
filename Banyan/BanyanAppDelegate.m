@@ -67,7 +67,7 @@
     // RestKit initialization
     RKLogConfigureByName("RestKit/Network*", RKLogLevelWarning);
     RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelWarning);
-    RKLogConfigureByName("RestKit/CoreData", RKLogLevelWarning);
+    RKLogConfigureByName("RestKit/CoreData", RKLogLevelTrace);
     
     [self restKitCoreDataInitialization];
     

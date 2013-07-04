@@ -33,8 +33,6 @@
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@) AND (bnObjectId != NULL)",
 							  [NSNumber numberWithInt:RemoteObjectStatusSync]];
     [request setPredicate:predicate];
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
-    [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
     
     NSError *error = nil;
     NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
@@ -51,8 +49,6 @@
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@) AND (bnObjectId == NULL)",
 							  [NSNumber numberWithInt:RemoteObjectStatusLocal]];
     [request setPredicate:predicate];
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
-    [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
     
     NSError *error = nil;
     NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
@@ -69,8 +65,6 @@
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@)",
 							  [NSNumber numberWithInt:RemoteObjectStatusFailed]];
     [request setPredicate:predicate];
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
-    [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
     
     NSError *error = nil;
     NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
@@ -140,7 +134,7 @@
                                                      url:[NSURL URLWithString:self.permaLink]
                                                  handler:nil];
     
-    [TestFlight passCheckpoint:@"Piece shared"];
+    [TestFlight passCheckpoint:@"Story shared"];
 }
 
 @end

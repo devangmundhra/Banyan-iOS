@@ -47,7 +47,7 @@ typedef enum {
         
     // Fetched results controller
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
-    NSSortDescriptor *uploadStatusSD = [NSSortDescriptor sortDescriptorWithKey:@"uploadStatusNumber" ascending:YES];
+    NSSortDescriptor *uploadStatusSD = [NSSortDescriptor sortDescriptorWithKey:@"uploadStatusNumber" ascending:NO];
     NSSortDescriptor *dateSD = [NSSortDescriptor sortDescriptorWithKey:@"createdAt"
                                                              ascending:NO
                                                               selector:@selector(compare:)];
@@ -397,11 +397,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(void) addPieceToStory:(Story *)story
 {
-    if (![BanyanAppDelegate loggedIn])
+    if (![BanyanAppDelegate loggedIn] || ![story.canContribute boolValue])
         return;
     Piece *piece = [Piece newPieceDraftForStory:story];
     ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
-    [addPieceViewController setModalTransitionStyle:UIModalTransitionStyleCrossDissolve];
+    [addPieceViewController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
     [addPieceViewController setModalPresentationStyle:UIModalPresentationFullScreen];
     [self presentViewController:addPieceViewController animated:YES completion:nil];
 }

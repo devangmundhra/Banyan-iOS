@@ -322,7 +322,7 @@
         NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
         [dateFormat setDateStyle:NSDateFormatterShortStyle];
         self.timeLabel.frame = CGRectMake(CGRectGetMaxX(self.authorLabel.frame), 0, 75, CGRectGetHeight(frame));
-        self.timeLabel.text = [NSString stringWithFormat:@"(%@)",[dateFormat stringFromDate:self.piece.createdAt]];
+        self.timeLabel.text = [NSString stringWithFormat:@"(%@)",[dateFormat stringFromDate:[self.piece.createdAt dateByAddingTimeInterval:[[NSTimeZone systemTimeZone] secondsFromGMT]]]];
         self.timeLabel.textEdgeInsets = UIEdgeInsetsMake(0, 2, 0, 0);
         self.timeLabel.font = [UIFont fontWithName:@"Roboto" size:16];
         self.timeLabel.minimumScaleFactor = 0.8;
