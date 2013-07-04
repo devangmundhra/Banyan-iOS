@@ -29,6 +29,7 @@
     if (self) {
         // Initialization code
         self.contentView.opaque = YES;
+        self.backgroundColor = BANYAN_LIGHTGRAY_COLOR;
         self.contentView.backgroundColor = BANYAN_LIGHTGRAY_COLOR;
         
         CGRect ssvFrame = CGRectMake(TABLE_CELL_MARGIN, TABLE_CELL_MARGIN, self.contentView.bounds.size.width - 2 * TABLE_CELL_MARGIN,
@@ -88,6 +89,7 @@
 - (void)prepareForReuse
 {
     [super prepareForReuse];
+    [self hideSwipedViewAnimated:YES];
     [self.piecesScrollView resetView];
 }
 #pragma mark UIScrollView delegate for PiecesScrollView
@@ -124,12 +126,12 @@
 
 - (void) hideSwipedViewAnimated:(BOOL)animated
 {
-    
+    [self.storyView hideSwipedViewAnimated:animated];
 }
 
 - (void) revealSwipedViewAnimated:(BOOL)animated
 {
-    
+    [self.storyView revealSwipedViewAnimated:animated];
 }
 
 - (Piece *) currentlyVisiblePiece

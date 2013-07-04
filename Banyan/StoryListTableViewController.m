@@ -48,16 +48,16 @@ typedef enum {
     // Fetched results controller
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
     NSSortDescriptor *uploadStatusSD = [NSSortDescriptor sortDescriptorWithKey:@"uploadStatusNumber" ascending:YES];
-    NSSortDescriptor *dateSD = [NSSortDescriptor sortDescriptorWithKey:@"updatedAt"
-                                                             ascending:YES
+    NSSortDescriptor *dateSD = [NSSortDescriptor sortDescriptorWithKey:@"createdAt"
+                                                             ascending:NO
                                                               selector:@selector(compare:)];
     request.sortDescriptors = [NSArray arrayWithObjects:uploadStatusSD, dateSD, nil];
 
     self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                         managedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext
                                                                           sectionNameKeyPath:@"uploadStatusString"
-                                                                                   cacheName:@"StoryListFRCCache"];
-    self.fetchedResultsController.delegate = nil; // Explicitly call perform fetch (via Notification) to update list
+                                                                                   cacheName:nil];
+    self.fetchedResultsController.delegate = nil; // If nil, explicitly call perform fetch (via Notification) to update list
     
     [self.tableView addPullToRefreshWithActionHandler:^{
         [[BanyanConnection class] performSelectorInBackground:@selector(loadDataSource) withObject:nil];
@@ -93,7 +93,7 @@ typedef enum {
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(performFetch)
+                                             selector:@selector(refreshStoryList:)
                                                  name:BNRefreshCurrentStoryListNotification
                                                object:nil];
     
@@ -265,6 +265,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 #pragma mark Data Source Loading / Reloading Methods
+- (void) refreshStoryList:(NSNotification *)notification
+{
+    if (!self.fetchedResultsController.delegate)
+        [self performFetch];
+    else
+        [self.tableView reloadData];
+}
+
 // Called by both data source updated notification and by clicking on the filter segmented control
 - (IBAction)filterStories:(id)sender
 {
@@ -419,13 +427,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 		[(SingleStoryCell *)cell hideSwipedViewAnimated:YES];
 	}
     self.indexOfVisibleBackView = nil;
-}
-
-#pragma mark UIScrollViewDelegate Methods
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    [self hideVisibleSwipedView:YES];    
 }
 
 #pragma Memory Management

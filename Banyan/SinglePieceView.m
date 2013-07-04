@@ -96,13 +96,16 @@ static UIFont *_regularFont;
         frame.size.width -= 10;
         frame.size.height = CGRectGetHeight(frame)/2;
         self.label.frame = frame;
-        if (self.piece.shortText) {
+        if ([self.piece.shortText length]) {
+            frame.origin.x += 5;
+            frame.size.width -= 10;
+            self.label.frame = frame;
             self.label.hidden = NO; // Show only if there is something to show to avoid unnecessary clearColor rendering
             self.label.font = _boldCondensedFont;
             self.label.text = self.piece.shortText;
             self.label.textColor = BANYAN_BLACK_COLOR;
             self.label.textAlignment = NSTextAlignmentLeft;
-        } else if (self.piece.longText) {
+        } else if ([self.piece.longText length]) {
             self.label.hidden = NO;
             self.label.font = _regularFont;
             self.label.text = self.piece.longText;

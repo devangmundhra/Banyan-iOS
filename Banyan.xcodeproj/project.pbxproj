@@ -254,7 +254,7 @@
 		5128EB5517478B5500393173 /* BNAudioStreamingPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNAudioStreamingPlayer.h; sourceTree = "<group>"; };
 		5128EB5617478B5500393173 /* BNAudioStreamingPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioStreamingPlayer.m; sourceTree = "<group>"; };
 		51444A1117737F680037570A /* defaultPerfs.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = defaultPerfs.plist; sourceTree = "<group>"; };
-		51444A131773FF0D0037570A /* defaultPerfs.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = defaultPerfs.plist; path = Banyan/defaultPerfs.plist; sourceTree = "<group>"; };
+		51444A131773FF0D0037570A /* defaultPerfs.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = defaultPerfs.plist; sourceTree = "<group>"; };
 		5144EC601712277600F0B265 /* cameraSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cameraSymbol.png; sourceTree = "<group>"; };
 		5144EC611712277600F0B265 /* cameraSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cameraSymbol@2x.png"; sourceTree = "<group>"; };
 		5144EC621712277600F0B265 /* locationSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = locationSymbol.png; sourceTree = "<group>"; };
@@ -784,7 +784,6 @@
 		5189B2A815B387E100562DD0 = {
 			isa = PBXGroup;
 			children = (
-				51444A131773FF0D0037570A /* defaultPerfs.plist */,
 				5189B2BD15B387E200562DD0 /* Banyan */,
 				5189B2B615B387E200562DD0 /* Frameworks */,
 				5189B2B415B387E200562DD0 /* Products */,
@@ -866,6 +865,7 @@
 			isa = PBXGroup;
 			children = (
 				5189B2BF15B387E200562DD0 /* Banyan-Info.plist */,
+				51444A131773FF0D0037570A /* defaultPerfs.plist */,
 				51444A1117737F680037570A /* defaultPerfs.plist */,
 				5189B2C015B387E200562DD0 /* InfoPlist.strings */,
 				5189B2C315B387E200562DD0 /* main.m */,

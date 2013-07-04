@@ -11,6 +11,7 @@
 #import "Media.h"
 #import "BanyanDataSource.h"
 #import "Story+Create.h"
+#import "Story+Delete.h"
 
 @implementation Story (Edit)
 
@@ -80,6 +81,11 @@
                          }
                          failure:^(RKObjectRequestOperation *operation, NSError *error) {
                              story.remoteStatus = RemoteObjectStatusFailed;
+                             if ([[error localizedDescription] rangeOfString:@"got 400"].location != NSNotFound) {
+                                 // The story is no longer available on the server. This is now a local copy
+                                 story.remoteStatus = RemoteObjectStatusLocal;
+                                 [Story deleteStory:story];
+                             }
                              NSLog(@"Error in updating story");
                          }];
     };

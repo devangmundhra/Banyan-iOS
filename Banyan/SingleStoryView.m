@@ -8,6 +8,7 @@
 
 #import "SingleStoryView.h"
 #import "BanyanAppDelegate.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface SingleStoryView ()
 
@@ -363,6 +364,7 @@ static BOOL _loggedIn;
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if ([alertView.title isEqualToString:@"Delete Story"] && buttonIndex==1) {
+        [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
         [self.delegate deleteStory:self];
     }
 }

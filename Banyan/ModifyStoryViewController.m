@@ -150,16 +150,12 @@
     
     self.viewerPrivacySegmentedControl = [[SVSegmentedControl alloc] initWithSectionTitles:@[@"Everyone", @"Limited", @"Selected"]];
     [self.viewerPrivacySegmentedControl addTarget:self action:@selector(storyPrivacySegmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
-    
-    CGRect aRect = self.contributorPrivacySegmentedControl.thumb.frame;
 
     self.contributorPrivacySegmentedControl.crossFadeLabelsOnDrag = YES;
     self.contributorPrivacySegmentedControl.height = 25;
     self.contributorPrivacySegmentedControl.font = [UIFont fontWithName:STORY_FONT size:12];;
     self.contributorPrivacySegmentedControl.thumb.tintColor = BANYAN_GREEN_COLOR;
     self.contributorPrivacySegmentedControl.textColor = BANYAN_WHITE_COLOR;
-    self.contributorPrivacySegmentedControl.sectionImages = [NSArray arrayWithObjects:[UIImage imageWithColor:BANYAN_WHITE_COLOR forRect:aRect],
-                                                             [UIImage imageWithColor:BANYAN_BROWN_COLOR forRect:aRect], nil];
     [self.scrollView addSubview:self.contributorPrivacySegmentedControl];
     self.contributorPrivacySegmentedControl.center = CGPointMake(160, 78);
 
@@ -256,10 +252,7 @@
 - (void)deleteBackupStory
 {
     if (self.backupStory_) {
-        NSManagedObjectContext *moc = self.backupStory_.managedObjectContext;
-        [moc deleteObject:self.backupStory_];
-        NSError *error;
-        [moc save:&error];
+        [self.backupStory_ remove];
         self.backupStory_ = nil;
     }
 }

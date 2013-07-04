@@ -33,4 +33,6 @@
 @property (strong, nonatomic) Story *story;
 @property (strong, nonatomic) id<SingleStoryViewDelegate> delegate;
 
+- (void) hideSwipedViewAnimated:(BOOL)animated;
+- (void) revealSwipedViewAnimated:(BOOL)animated;
 @end

@@ -220,10 +220,7 @@
 - (void)deleteBackupPiece
 {
     if (self.backupPiece_) {
-        NSManagedObjectContext *moc = self.backupPiece_.managedObjectContext;
-        [moc deleteObject:self.backupPiece_];
-        NSError *error;
-        [moc save:&error];
+        [self.backupPiece_ remove];
         self.backupPiece_ = nil;
     }
 }

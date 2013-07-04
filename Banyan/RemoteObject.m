@@ -103,7 +103,9 @@
         // Send notification to cancel this upload
     }
     
-    [[self managedObjectContext] deleteObject:self];
+    [self.managedObjectContext performBlockAndWait:^(void) {
+        [[self managedObjectContext] deleteObject:self];
+    }];
     [self save];
 }
 

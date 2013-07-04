@@ -34,7 +34,7 @@
         __block BOOL success = NO;
         
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[BanyanAppDelegate topMostController].view animated:YES];
-        hud.labelText = @"Deleting piece";
+        hud.labelText = @"Deleting story";
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
         
         [[AFBanyanAPIClient sharedClient] deletePath:BANYAN_API_OBJECT_URL(@"Story", storyId)

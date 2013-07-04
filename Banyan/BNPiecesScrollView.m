@@ -118,11 +118,11 @@
     
     // Release rest of the subviews which are outside the window
     __block NSMutableSet *tempSet = [NSMutableSet set];
-    [self.pieceSubviewsInuseList enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(SinglePieceView *obj, BOOL *stop) {
+    [self.pieceSubviewsInuseList enumerateObjectsUsingBlock:^(SinglePieceView *obj, BOOL *stop) {
         if (!(obj.pieceNum >= pieceNum - floor(NUM_PIECES_WINDOW/2) && obj.pieceNum <= pieceNum + floor(NUM_PIECES_WINDOW/2)))
             [tempSet addObject:obj];
     }];
-    [tempSet enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(SinglePieceView *obj, BOOL *stop){
+    [tempSet enumerateObjectsUsingBlock:^(SinglePieceView *obj, BOOL *stop){
         [self removePieceSubview:obj];
     }];
     
@@ -202,10 +202,10 @@
 {
     // Release all the subviews which are outside the window
     __block NSMutableSet *tempSet = [NSMutableSet set];
-    [self.pieceSubviewsInuseList enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(SinglePieceView *obj, BOOL *stop) {
+    [self.pieceSubviewsInuseList enumerateObjectsUsingBlock:^(SinglePieceView *obj, BOOL *stop) {
         [tempSet addObject:obj];
     }];
-    [tempSet enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(SinglePieceView *obj, BOOL *stop){
+    [tempSet enumerateObjectsUsingBlock:^(SinglePieceView *obj, BOOL *stop){
         [self removePieceSubview:obj];
     }];
 }

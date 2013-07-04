@@ -87,12 +87,15 @@
     
     // This story is synchronized, but there could be
     // some pieces that have not been updated yet.
-    NSPredicate *unsavedPredicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber != %@)", [NSNumber numberWithInt:RemoteObjectStatusSync]];
-    NSOrderedSet *unsavedPieces = [self.pieces filteredOrderedSetUsingPredicate:unsavedPredicate];
-    if (unsavedPieces.count)
-        return ((Piece *)[unsavedPieces firstObject]).remoteStatusNumber;
-    else
-        return self.remoteStatusNumber;
+    __block NSNumber *statusNum = self.remoteStatusNumber;
+    [self.pieces enumerateObjectsUsingBlock:^(Piece *piece, NSUInteger idx, BOOL *stop) {
+        if (piece.remoteStatus != RemoteObjectStatusSync) {
+            statusNum = [NSNumber numberWithInt:piece.remoteStatus];
+            *stop = YES;
+        }
+    }];
+    
+    return statusNum;
 }
 
 - (NSString *)uploadStatusString

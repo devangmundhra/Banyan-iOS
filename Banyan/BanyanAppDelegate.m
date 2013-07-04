@@ -532,8 +532,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 #pragma mark MISCELLANEOUS METHODS
 + (UIViewController*) topMostController
 {
-    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
-    
+    UIViewController *topController = ((BanyanAppDelegate *)[[UIApplication sharedApplication] delegate]).window.rootViewController;
+                     
     while (topController.presentedViewController) {
         topController = topController.presentedViewController;
     }

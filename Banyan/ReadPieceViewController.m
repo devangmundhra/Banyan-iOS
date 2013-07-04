@@ -234,7 +234,7 @@
     // Do any additional setup after loading the view from its nib.
     // Update Stats
     [Piece viewedPiece:self.piece];
-    
+
     [self addPieceObserver];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -279,7 +279,7 @@
     CGRect frame = [UIScreen mainScreen].bounds;
     CGSize csize = self.contentView.contentSize;
     csize.height = 0;
-    
+
     if (hasAudio) {
         frame = CGRectMake(0, 0, CGRectGetWidth(frame), 50);
         self.audioPlayer.view.frame = frame; self.audioPlayer.view.hidden = NO;
@@ -376,7 +376,7 @@
     }
     self.contentView.contentSize = csize;
     [self.contentView setContentOffset:CGPointMake(0,0)];
-    
+
     if (hasAudio) {
         if ([audioMedia.remoteURL length]) {
             [self.audioPlayer loadWithURL:audioMedia.remoteURL];
