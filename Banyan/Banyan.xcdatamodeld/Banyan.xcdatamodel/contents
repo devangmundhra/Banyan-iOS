@@ -30,6 +30,7 @@
         <attribute name="pieceNumber" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="shortText" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tags" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="timeStamp" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
         <relationship name="story" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Story" inverseName="pieces" inverseEntity="Story" syncable="YES"/>
     </entity>
     <entity name="RemoteObject" representedClassName="RemoteObject" isAbstract="YES" syncable="YES">

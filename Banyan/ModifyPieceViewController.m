@@ -358,7 +358,7 @@
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Modify Photo"
                                                              delegate:self
                                                     cancelButtonTitle:@"Cancel"
-                                               destructiveButtonTitle:imageMedia ? @"Delete Photo" : nil
+                                               destructiveButtonTitle:imageMedia && ![mediaToDelete containsObject:imageMedia] ? @"Delete Photo" : nil
                                                     otherButtonTitles:nil];
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
         [actionSheet addButtonWithTitle:MediaPickerControllerSourceTypeCamera];
@@ -401,6 +401,12 @@
 #pragma mark MediaPickerViewControllerDelegate methods
 - (void) mediaPicker:(MediaPickerViewController *)mediaPicker finishedPickingMediaWithInfo:(NSDictionary *)info
 {
+    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
+    if (imageMedia) {
+        [mediaToDelete addObject:imageMedia];
+        [self.addPhotoButton.imageView setImageWithURL:nil];
+    }
+    
     Media *media = [Media newMediaForObject:self.piece];
     media.mediaType = @"image";
     UIImage *image = [info objectForKey:MediaPickerViewControllerInfoImage];

@@ -17,6 +17,7 @@
 @dynamic shortText;
 @dynamic story;
 @dynamic tags;
+@dynamic timeStamp;
 
 + (NSArray *)oldPiecesInStory:(Story *)story
 {

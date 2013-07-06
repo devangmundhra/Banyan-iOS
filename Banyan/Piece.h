@@ -16,6 +16,7 @@
 
 @property (nonatomic, retain) NSString * longText;
 @property (nonatomic, retain) NSNumber * pieceNumber;
+@property (nonatomic, retain) NSNumber * timeStamp;
 @property (nonatomic, retain) NSString * shortText;
 @property (nonatomic, retain) NSString * tags;
 @property (nonatomic, retain) Story *story;

@@ -177,7 +177,7 @@
     RKEntityMapping *pieceMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
     [pieceMapping addAttributeMappingsFromArray:@[PIECE_NUMBER, PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled", @"location",
-     PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT, @"permaLink"]];
+                                                  PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT, @"permaLink", @"timeStamp"]];
     [pieceMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"bnObjectId"}];
     pieceMapping.identificationAttributes = @[@"bnObjectId"];
     

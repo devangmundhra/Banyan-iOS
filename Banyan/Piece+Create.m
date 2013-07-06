@@ -35,6 +35,7 @@
     piece.remoteStatus = RemoteObjectStatusLocal;
     piece.author = [User currentUser];
     piece.createdAt = piece.updatedAt = [NSDate date];
+    piece.timeStamp = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSinceReferenceDate]];
     
     [piece save];
     
@@ -141,7 +142,7 @@
         // For serializing
         RKObjectMapping *pieceRequestMapping = [RKObjectMapping requestMapping];
         [pieceRequestMapping addAttributeMappingsFromDictionary:@{@"author.userId" : @"authorId", @"story.bnObjectId" : PIECE_STORY}];
-        [pieceRequestMapping addAttributeMappingsFromArray:@[PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled"]];
+        [pieceRequestMapping addAttributeMappingsFromArray:@[PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled", @"timeStamp"]];
         
         RKObjectMapping *locationMapping = [RKObjectMapping requestMapping];
         [locationMapping addAttributeMappingsFromArray:@[@"id", @"category", @"name"]];
