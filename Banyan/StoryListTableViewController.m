@@ -44,18 +44,20 @@ typedef enum {
     self.tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     [self.tableView setShowsHorizontalScrollIndicator:NO];
     [self.tableView setShowsVerticalScrollIndicator:NO];
-        
+
     // Fetched results controller
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
-    NSSortDescriptor *uploadStatusSD = [NSSortDescriptor sortDescriptorWithKey:@"uploadStatusNumber" ascending:NO];
-    NSSortDescriptor *dateSD = [NSSortDescriptor sortDescriptorWithKey:@"createdAt"
+    NSSortDescriptor *uploadStatusSD = [NSSortDescriptor sortDescriptorWithKey:@"uploadStatusNumber" ascending:YES];
+    NSSortDescriptor *viewedSD = [NSSortDescriptor sortDescriptorWithKey:@"viewedByCurUser" ascending:YES];
+    NSSortDescriptor *unreadPiecesSD = [NSSortDescriptor sortDescriptorWithKey:@"currentPieceNum" ascending:NO];
+    NSSortDescriptor *dateSD = [NSSortDescriptor sortDescriptorWithKey:@"updatedAt"
                                                              ascending:NO
                                                               selector:@selector(compare:)];
-    request.sortDescriptors = [NSArray arrayWithObjects:uploadStatusSD, dateSD, nil];
+    request.sortDescriptors = [NSArray arrayWithObjects:uploadStatusSD, viewedSD, unreadPiecesSD, dateSD, nil];
 
     self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                         managedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext
-                                                                          sectionNameKeyPath:@"uploadStatusString"
+                                                                          sectionNameKeyPath:@"sectionIdentifier"
                                                                                    cacheName:nil];
     self.fetchedResultsController.delegate = nil; // If nil, explicitly call perform fetch (via Notification) to update list
     

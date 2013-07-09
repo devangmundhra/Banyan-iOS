@@ -18,7 +18,6 @@
 		510F49171727D191005BC5ED /* NSObject+BlockObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F49161727D191005BC5ED /* NSObject+BlockObservation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		510F4920172A5B86005BC5ED /* Piece.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F491F172A5B86005BC5ED /* Piece.m */; };
 		510F4923172A5C17005BC5ED /* Story.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F4922172A5C17005BC5ED /* Story.m */; };
-		510F4929172A5C7A005BC5ED /* Statistics.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F4928172A5C7A005BC5ED /* Statistics.m */; };
 		511E708B161A9756009AAD25 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708A161A9756009AAD25 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		511E708E161A977F009AAD25 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
 		5128EB4617472FF600393173 /* delete@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128EB3A17472FF600393173 /* delete@2x.png */; };
@@ -237,8 +236,6 @@
 		510F491F172A5B86005BC5ED /* Piece.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Piece.m; path = Banyan/Piece.m; sourceTree = "<group>"; };
 		510F4921172A5C17005BC5ED /* Story.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Story.h; path = Banyan/Story.h; sourceTree = "<group>"; };
 		510F4922172A5C17005BC5ED /* Story.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Story.m; path = Banyan/Story.m; sourceTree = "<group>"; };
-		510F4927172A5C7A005BC5ED /* Statistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Statistics.h; path = Banyan/Statistics.h; sourceTree = "<group>"; };
-		510F4928172A5C7A005BC5ED /* Statistics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Statistics.m; path = Banyan/Statistics.m; sourceTree = "<group>"; };
 		511E708A161A9756009AAD25 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		5128EB3A17472FF600393173 /* delete@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "delete@2x.png"; sourceTree = "<group>"; };
@@ -560,15 +557,6 @@
 			);
 			name = "KVO+Blocks";
 			path = "Banyan/KVO+Blocks";
-			sourceTree = "<group>";
-		};
-		510F492A172A5C82005BC5ED /* Statistics */ = {
-			isa = PBXGroup;
-			children = (
-				510F4927172A5C7A005BC5ED /* Statistics.h */,
-				510F4928172A5C7A005BC5ED /* Statistics.m */,
-			);
-			name = Statistics;
 			sourceTree = "<group>";
 		};
 		510F4932172A5F9C005BC5ED /* Media */ = {
@@ -900,7 +888,6 @@
 				517A01DF170EB02D00665F0F /* User */,
 				5189B35715B396E700562DD0 /* Piece */,
 				5189B35A15B3975100562DD0 /* Story */,
-				510F492A172A5C82005BC5ED /* Statistics */,
 			);
 			name = Model;
 			path = ..;
@@ -1485,7 +1472,6 @@
 				510F49171727D191005BC5ED /* NSObject+BlockObservation.m in Sources */,
 				510F4920172A5B86005BC5ED /* Piece.m in Sources */,
 				510F4923172A5C17005BC5ED /* Story.m in Sources */,
-				510F4929172A5C7A005BC5ED /* Statistics.m in Sources */,
 				51984D43176EE10E00CD6C3E /* CoreDataTableViewController.m in Sources */,
 				51FAC0B8172C829E0046C2D6 /* Comment.m in Sources */,
 				51FAC0BC172F8C500046C2D6 /* FBGraphObjectToDataTransformer.m in Sources */,

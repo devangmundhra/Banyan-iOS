@@ -87,4 +87,21 @@
     return array.count ? [array objectAtIndex:0] : nil;
 }
 
+-(void)setRemoteStatusNumber:(NSNumber *)remoteStatusNumber
+{
+    [self willChangeValueForKey:@"remoteStatusNumber"];
+    [self setPrimitiveRemoteStatusNumber:remoteStatusNumber];
+    [self didChangeValueForKey:@"remoteStatusNumber"];
+    
+    [self.story setUploadStatusNumber:[self.story calculateUploadStatusNumber]];
+}
+
+- (void) remove
+{
+    Story *story = self.story;
+    [super remove];
+    // This needs to be done because otherwise removing a piece does not update the story's uploadStatusNumber
+    [story setUploadStatusNumber:[story calculateUploadStatusNumber]];
+    UPDATE_STORY_LIST(nil);
+}
 @end

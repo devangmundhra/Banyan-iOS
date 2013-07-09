@@ -502,14 +502,14 @@
 - (void)togglePieceLikeButtonLabel
 {
     UIImage *heartImage = nil;
-    if (self.piece.statistics.liked) {
+    if (self.piece.likedByCurUser) {
         heartImage = [UIImage imageNamed:@"heartSymbolPink"];
     }
     else {
         heartImage = [UIImage imageNamed:@"heartSymbolHollow"];
     }
     [self.likesButton setImage:heartImage forState:UIControlStateNormal];
-    [self.likesButton setTitle:[NSString stringWithFormat:@"%d", [self.piece.statistics.likers count]] forState:UIControlStateNormal];
+    [self.likesButton setTitle:[NSString stringWithFormat:@"%d", self.piece.numberOfLikes ] forState:UIControlStateNormal];
 }
 
 - (IBAction)likeButtonPressed:(UIButton *)sender

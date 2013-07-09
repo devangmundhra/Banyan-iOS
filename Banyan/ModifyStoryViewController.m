@@ -133,7 +133,7 @@
     if (!self.locationManager) {
         self.locationManager = [[BNFBLocationManager alloc] initWithDelegate:self];
     }
-    self.isLocationEnabled = [self.story.isLocationEnabled boolValue];
+    self.isLocationEnabled = self.story.isLocationEnabled;
     self.addLocationButton.delegate = self;
     [self.addLocationButton locationPickerLocationEnabled:self.isLocationEnabled];
     if (self.isLocationEnabled) {
@@ -276,10 +276,10 @@
     
     // Story Location
     if (self.isLocationEnabled == YES) {
-        self.story.isLocationEnabled = [NSNumber numberWithBool:YES];
+        self.story.isLocationEnabled = YES;
         self.story.location = (FBGraphObject<FBGraphPlace> *)self.locationManager.location;
     } else  {
-        self.story.isLocationEnabled = [NSNumber numberWithBool:NO];
+        self.story.isLocationEnabled = NO;
     }
     
     NSArray *tagsArray = [self.tagsFieldView tokenTitles];

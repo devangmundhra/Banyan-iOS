@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
-#import "Statistics.h"
 #import <FacebookSDK/FacebookSDK.h>
 
 typedef enum {
@@ -18,22 +17,28 @@ typedef enum {
     RemoteObjectStatusSync,       // Post uploaded
 } RemoteObjectStatus;
 
-@class Comment, Media, Statistics, User;
+@class Comment, Media, Statistics1, User;
 
 @interface RemoteObject : NSManagedObject
 
 @property (nonatomic, retain) User * author;
 @property (nonatomic, retain) NSString * bnObjectId;
 @property (nonatomic, retain) NSDate * createdAt;
-@property (nonatomic, retain) NSNumber * isLocationEnabled;
+@property (nonatomic) BOOL isLocationEnabled;
 @property (nonatomic, retain) NSDate * lastSynced;
 @property (nonatomic, retain) FBGraphObject<FBGraphPlace> * location;
 @property (nonatomic, retain) NSNumber * remoteStatusNumber;
-@property (nonatomic, retain) Statistics * statistics;
+@property (nonatomic, retain) NSNumber * primitiveRemoteStatusNumber;
 @property (nonatomic, retain) NSDate * updatedAt;
 @property (nonatomic) RemoteObjectStatus remoteStatus;
 @property (nonatomic, retain) NSString * permaLink;
 
+// Stats
+@property (nonatomic) BOOL viewedByCurUser;
+@property (nonatomic) BOOL likedByCurUser;
+@property (nonatomic) BOOL favoriteByCurUser;
+@property (nonatomic) NSUInteger numberOfLikes;
+@property (nonatomic) NSUInteger numberOfViews;
 // Relationships
 @property (nonatomic, retain) NSSet * comments;
 @property (nonatomic, retain) NSSet * media;

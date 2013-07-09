@@ -19,6 +19,6 @@
 
 + (void) toggleFavouritedPiece:(Piece *)scene;
 
-- (void) updatePieceStats;
+//- (void) updatePieceStats;
 
 @end

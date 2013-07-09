@@ -113,6 +113,11 @@
      STORY_CAN_CONTRIBUTE : @"canContribute",
      STORY_IS_INVITED: @"isInvited",
      PARSE_OBJECT_ID : @"bnObjectId",
+     @"numViews" : @"numberOfViews",
+     @"numLikes" : @"numberOfLikes",
+     @"userViewed" : @"viewedByCurUser",
+     @"userLiked" : @"likedByCurUser",
+     @"firstUnviewedPieceNumByUser" : @"currentPieceNum"
      }];
     storyMapping.identificationAttributes = @[@"bnObjectId"];
     
@@ -131,8 +136,11 @@
                                                                                        statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [objectManager addResponseDescriptor:responseDescriptor];
     
+    NSDictionary *params = nil;
+    if ([PFUser currentUser]) params = @{@"user": [PFUser currentUser].objectId};
+    
     [objectManager getObjectsAtPath:getPath
-                         parameters:nil
+                         parameters:params
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
 //                                // Delete all unsaved stories
 //                                NSArray *unsavedStories = [Story unsavedStories];
@@ -156,8 +164,6 @@
                                     }
                                     story.remoteStatus = RemoteObjectStatusSync;
                                     story.lastSynced = [NSDate date];
-                                    story.currentPieceNum = 1;
-                                    [story updateStoryStats];
                                 }];
                                 if (successBlock)
                                     successBlock();                            }
@@ -178,7 +184,11 @@
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
     [pieceMapping addAttributeMappingsFromArray:@[PIECE_NUMBER, PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled", @"location",
                                                   PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT, @"permaLink", @"timeStamp"]];
-    [pieceMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"bnObjectId"}];
+    [pieceMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"bnObjectId",
+                                                       @"numViews" : @"numberOfViews",
+                                                       @"numLikes" : @"numberOfLikes",
+                                                       @"userViewed" : @"viewedByCurUser",
+                                                       @"userLiked" : @"likedByCurUser"}];
     pieceMapping.identificationAttributes = @[@"bnObjectId"];
     
     // Media
@@ -194,10 +204,14 @@
                                                                                        pathPattern:nil
                                                                                            keyPath:@"result.pieces"
                                                                                        statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    NSMutableDictionary *userParams = [NSMutableDictionary dictionaryWithDictionary:params];
+    if ([PFUser currentUser])
+        [userParams setObject:[PFUser currentUser].objectId forKey:@"user"];
+    
     [objectManager addResponseDescriptor:responseDescriptor];
     
     [objectManager getObjectsAtPath:BANYAN_API_OBJECT_URL(kBNStoryClassKey, story.bnObjectId)
-                         parameters:params
+                         parameters:userParams
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                 // Delete all unsaved pieces
                                 NSArray *pieces = [mappingResult array];
@@ -206,7 +220,6 @@
                                 [pieces enumerateObjectsUsingBlock:^(Piece *piece, NSUInteger idx, BOOL *stop) {
                                     piece.story = story;
                                     piece.remoteStatus = RemoteObjectStatusSync;
-                                    [piece updatePieceStats];
                                     piece.lastSynced = [NSDate date];
                                 }];
                                 if (completionBlock)

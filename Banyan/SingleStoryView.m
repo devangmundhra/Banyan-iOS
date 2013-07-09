@@ -192,7 +192,7 @@ static BOOL _loggedIn;
     point = CGPointMake(TABLE_CELL_MARGIN, floor(TOP_VIEW_HEIGHT/2 + (clockStringSize.height - _clockSymbolImage.size.height)/2)+SPACER_DISTANCE);
     [_clockSymbolImage drawAtPoint:point];
     
-    if ([self.story.isLocationEnabled boolValue] && [self.story.location.name length]) {
+    if (self.story.isLocationEnabled && [self.story.location.name length]) {
         // Location label
         point.x = TABLE_CELL_MARGIN+_clockSymbolImage.size.width+SPACER_DISTANCE+clockStringSize.width+2*SPACER_DISTANCE+_locationSymbolImage.size.width+SPACER_DISTANCE;
         point.y = TOP_VIEW_HEIGHT/2+SPACER_DISTANCE;

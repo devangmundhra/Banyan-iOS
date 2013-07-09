@@ -19,18 +19,12 @@
 @dynamic isLocationEnabled;
 @dynamic lastSynced;
 @dynamic location;
-@dynamic remoteStatusNumber;
-@dynamic statistics;
+@dynamic remoteStatusNumber, primitiveRemoteStatusNumber;
 @dynamic updatedAt;
 @dynamic permaLink;
 @dynamic comments;
 @dynamic media;
-
-- (void)awakeFromInsert
-{
-    [super awakeFromInsert];
-    self.statistics = [[Statistics alloc] init];
-}
+@dynamic viewedByCurUser, likedByCurUser, favoriteByCurUser, numberOfLikes, numberOfViews;
 
 #pragma mark -
 #pragma mark Revision management
@@ -124,13 +118,13 @@
         obj.remoteStatus = RemoteObjectStatusFailed;
     }
     
-    [request setEntity:[NSEntityDescription entityForName:kBNStoryClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
-    request.predicate = [NSPredicate predicateWithFormat:@"(ANY pieces.remoteStatusNumber != %@)",
-                         [NSNumber numberWithInt:RemoteObjectStatusSync]];;
-    array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
-    for (Story *story in array) {
-        story.uploadStatusNumber = story.uploadStatusNumber;
-    }
+//    [request setEntity:[NSEntityDescription entityForName:kBNStoryClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
+//    request.predicate = [NSPredicate predicateWithFormat:@"(ANY pieces.remoteStatusNumber != %@)",
+//                         [NSNumber numberWithInt:RemoteObjectStatusSync]];;
+//    array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+//    for (Story *story in array) {
+//        story.uploadStatusNumber = story.uploadStatusNumber;
+//    }
 }
 
 #pragma mark-

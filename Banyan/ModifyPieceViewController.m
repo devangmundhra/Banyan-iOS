@@ -102,7 +102,7 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && [self.piece.story.isLocationEnabled boolValue]) {
+    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && self.piece.story.isLocationEnabled) {
         [self.locationManager stopUpdatingLocation:self.piece.location.name];
     }
 }
@@ -115,7 +115,7 @@
     mediaToDelete = [NSMutableSet set];
     
     // If story has location enabled, only then try to get the location
-    if ([self.piece.story.isLocationEnabled boolValue]) {
+    if (self.piece.story.isLocationEnabled) {
         self.locationManager = [[BNFBLocationManager alloc] init];
         self.locationManager.delegate = self;
         [self.locationManager beginUpdatingLocation];
@@ -254,7 +254,7 @@
     if (![self.piece.shortText isEqualToString:self.pieceCaptionView.text])
         self.piece.shortText = self.pieceCaptionView.text;
     
-    if ([self.piece.story.isLocationEnabled boolValue] == YES ) {
+    if (self.piece.story.isLocationEnabled == YES ) {
         self.piece.location = (FBGraphObject<FBGraphPlace> *)self.locationManager.location;
     }
     

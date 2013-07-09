@@ -25,13 +25,15 @@
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) id writeAccess;
 @property (nonatomic, retain) NSOrderedSet *pieces;
-@property (nonatomic, strong) NSString *uploadStatusString;
 @property (nonatomic, retain) NSNumber * uploadStatusNumber;
+@property (nonatomic, retain) NSNumber * primitiveUploadStatusNumber;
+@property (nonatomic, retain) NSString * sectionIdentifier;
+@property (nonatomic, retain) NSString * primitiveSectionIdentifier;
 
 + (NSArray *)storiesFailedToBeUploaded;
 + (NSArray *)syncedStories;
 + (NSArray *)unsavedStories;
-
+- (NSNumber *)calculateUploadStatusNumber;
 @end
 
 @interface Story (CoreDataGeneratedAccessors)

@@ -23,8 +23,8 @@
 @dynamic title;
 @dynamic writeAccess;
 @dynamic pieces;
-@dynamic uploadStatusNumber;
-@synthesize uploadStatusString = _uploadStatusString;
+@dynamic uploadStatusNumber, primitiveUploadStatusNumber;
+@dynamic sectionIdentifier, primitiveSectionIdentifier;
 
 + (NSArray *)syncedStories
 {
@@ -74,7 +74,7 @@
     return array;
 }
 
-- (NSNumber *)uploadStatusNumber
+- (NSNumber *)calculateUploadStatusNumber
 {    
     if (self.remoteStatus != RemoteObjectStatusSync)
         return self.remoteStatusNumber;
@@ -108,6 +108,44 @@
             return NSLocalizedString(@"Drafts", @"");
             break;
     }
+}
+
+-(NSString*) sectionIdentifier
+{
+    [self willAccessValueForKey:@"sectionIdentifier"];
+    NSString *tmp = [self primitiveSectionIdentifier];
+    [self didAccessValueForKey:@"sectionIdentifier"];
+    
+    if (!tmp) {
+        tmp = [self uploadStatusString];
+        [self setPrimitiveSectionIdentifier:tmp];
+    }
+    
+    return tmp;
+}
+
++ (NSSet*) keyPathsForValuesAffectingSectionIdentifier
+{
+    return [NSSet setWithObject:@"uploadStatusNumber"];
+}
+
+-(void)setRemoteStatusNumber:(NSNumber *)remoteStatusNumber
+{
+    [self willChangeValueForKey:@"remoteStatusNumber"];
+    [self setPrimitiveRemoteStatusNumber:remoteStatusNumber];
+    [self didChangeValueForKey:@"remoteStatusNumber"];
+    
+    [self setUploadStatusNumber:[self calculateUploadStatusNumber]];
+}
+
+- (void) setUploadStatusNumber:(NSNumber *)uploadStatusNumber
+{
+    [self willChangeValueForKey:@"uploadStatusNumber"];
+    [self setPrimitiveUploadStatusNumber:uploadStatusNumber];
+    [self didChangeValueForKey:@"uploadStatusNumber"];
+    
+    [self setPrimitiveSectionIdentifier:nil];
+    [self.managedObjectContext refreshObject:self mergeChanges:YES];
 }
 
 - (void) share

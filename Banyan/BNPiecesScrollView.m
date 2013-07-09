@@ -53,12 +53,10 @@
 - (void)setStory:(Story *)story
 {
     _story = story;
-    if (story && ![story.length integerValue]) {
-        [self setNeedsDisplay];
-    }
     self.contentSize = CGSizeMake([story.length intValue]*self.frame.size.width, self.frame.size.height);
     [self scrollRectToVisible:[self calculateFrameForPieceNum:story.currentPieceNum] animated:NO];
     [self scrollToPieceNumber:story.currentPieceNum];
+    [self setNeedsDisplay];
 }
 
 - (SinglePieceView *) addPieceSubviewAtFrame:(CGRect)frame forPieceNum:(NSUInteger)pieceNum
@@ -84,7 +82,7 @@
         [self.pieceSubviewsFreeList removeObject:view];
         view.frame = frame;
     }
-    assert(![view superview]);
+
     view.pieceNum = pieceNum;
     [self.pieceSubviewsInuseList addObject:view];
     [self addSubview:view];
