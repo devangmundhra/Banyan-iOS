@@ -212,7 +212,7 @@ static BOOL _loggedIn;
 - (void) setupFrontView
 {
     UIImage *frontViewControlImage = nil;
-    if ([self.story.canContribute boolValue] && _loggedIn) {
+    if (self.story.canContribute && _loggedIn) {
         // Have the reveal Backview button on front view
         frontViewControlImage = _backViewShowImage;
         [self.storyFrontViewControl removeTarget:self.delegate action:@selector(shareStory:) forControlEvents:UIControlEventTouchUpInside];
@@ -235,7 +235,7 @@ static BOOL _loggedIn;
 
 - (void) setupBackView
 {
-    if ([self.story.canContribute boolValue])
+    if (self.story.canContribute)
     {
         // Add backview control button
         UIButton *backViewControlButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -338,7 +338,7 @@ static BOOL _loggedIn;
 
 - (BOOL)shouldSwipe
 {
-    return [self.story.canContribute boolValue];
+    return self.story.canContribute;
 }
 
 - (void) hideBackView:(UIButton *)button

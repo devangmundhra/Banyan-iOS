@@ -48,9 +48,9 @@
     
     if (piece.remoteStatus == RemoteObjectStatusLocal) {
         // Do this one time per piece
-        piece.story.length = [NSNumber numberWithInteger:piece.story.pieces.count];
+        piece.story.length = piece.story.pieces.count;
         [piece.story.pieces enumerateObjectsUsingBlock:^(Piece *localPiece, NSUInteger idx, BOOL *stop) {
-            localPiece.pieceNumber = [NSNumber numberWithUnsignedInteger:idx+1];
+            localPiece.pieceNumber = idx+1;
         }];
     }
     

@@ -53,7 +53,7 @@
 - (void)setStory:(Story *)story
 {
     _story = story;
-    self.contentSize = CGSizeMake([story.length intValue]*self.frame.size.width, self.frame.size.height);
+    self.contentSize = CGSizeMake(story.length*self.frame.size.width, self.frame.size.height);
     [self scrollRectToVisible:[self calculateFrameForPieceNum:story.currentPieceNum] animated:NO];
     [self scrollToPieceNumber:story.currentPieceNum];
     [self setNeedsDisplay];
@@ -103,7 +103,7 @@
 
 - (CGRect) calculateFrameForPieceNum:(NSUInteger)pieceNum
 {
-    if (!pieceNum || pieceNum > [self.story.length unsignedIntegerValue])
+    if (!pieceNum || pieceNum > self.story.length)
         return CGRectZero;
     
     CGRect frame = self.frame;
@@ -115,7 +115,7 @@
 
 - (void) scrollToPieceNumber:(NSUInteger)pieceNum
 {
-    if (!pieceNum || pieceNum > [self.story.length unsignedIntegerValue])
+    if (!pieceNum || pieceNum > self.story.length)
         return;
     
     // Release rest of the subviews which are outside the window
@@ -163,7 +163,7 @@
 
 - (void) loadPieceWithNumber:(NSUInteger)pieceNum atView:(SinglePieceView *)view
 {
-    if ([view.piece.pieceNumber integerValue] == pieceNum && [view.piece.story isEqual:self.story]) {
+    if (view.piece.pieceNumber == pieceNum && [view.piece.story isEqual:self.story]) {
         [view setNeedsDisplay];
         return;
     }
@@ -214,12 +214,12 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    if (self.story && ![self.story.length integerValue]) {
+    if (self.story && !self.story.length) {
         [BANYAN_GREEN_COLOR set];
         CGRect smallRect = CGRectMake(rect.origin.x, round(rect.origin.y+rect.size.height/3), rect.size.width, round(rect.size.height*2/3));
         
         if ([BanyanAppDelegate loggedIn]) {
-            if ([self.story.canContribute boolValue]) {
+            if (self.story.canContribute) {
                 NSString *addPcMsg = @"No pieces in the story.\nClick to add a piece!";
                 [addPcMsg drawInRect:smallRect withFont:[UIFont fontWithName:@"Roboto-Bold" size:20] lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
             } else {

@@ -22,13 +22,13 @@
     [super remove];
     
     // Update the length
-    story.length = [NSNumber numberWithInteger:story.pieces.count];
+    story.length = story.pieces.count;
     // Update the value for the piece numbers
-    if (![story.length integerValue])
+    if (!story.length)
         story.pieces = nil;
     else {
         [story.pieces enumerateObjectsUsingBlock:^(Piece *localPiece, NSUInteger idx, BOOL *stop) {
-            localPiece.pieceNumber = [NSNumber numberWithUnsignedInteger:idx+1];
+            localPiece.pieceNumber = idx+1;
         }];
     }
     

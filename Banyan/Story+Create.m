@@ -42,7 +42,7 @@
 {
     assert(story.bnObjectId.length == 0);
     assert(story.author.userId.length > 0);
-    story.canContribute = story.canView = [NSNumber numberWithBool:YES];
+    story.canContribute = story.canView = YES;
     
     story.remoteStatus = RemoteObjectStatusPushing;
 

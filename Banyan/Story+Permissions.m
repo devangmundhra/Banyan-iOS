@@ -28,9 +28,9 @@
                                    parameters:parameters
                                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                           NSDictionary *results = (NSDictionary *)responseObject;
-                                          self.canContribute = [results objectForKey:@"write"];
-                                          self.canView = [results objectForKey:@"read"];
-                                          self.isInvited = [results objectForKey:@"invited"];
+                                          self.canContribute = [[results objectForKey:@"write"] boolValue];
+                                          self.canView = [[results objectForKey:@"read"] boolValue];
+                                          self.isInvited = [[results objectForKey:@"invited"] boolValue];
                                       }
                                       failure:AF_BANYAN_ERROR_BLOCK()];
     

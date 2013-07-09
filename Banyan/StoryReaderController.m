@@ -36,7 +36,7 @@
 - (void)setCurrentPiece:(Piece *)currentPiece
 {
     _currentPiece = currentPiece;
-    currentPiece.story.currentPieceNum = [currentPiece.pieceNumber unsignedIntegerValue];
+    currentPiece.story.currentPieceNum = currentPiece.pieceNumber;
 }
 
 - (id)init
@@ -158,7 +158,7 @@
             btnFrame.size.width = self.view.frame.size.width - 100;
             btnFrame.size.height = 21;
             titleButton.frame = btnFrame;
-            if ([self.story.canContribute boolValue]) {
+            if (self.story.canContribute) {
                 titleButton.showsTouchWhenHighlighted = YES;
                 [titleButton addTarget:self action:@selector(editStoryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
             }
@@ -238,7 +238,7 @@
 - (void)settingsPopup:(id)sender
 {
     UIActionSheet *actionSheet = nil;
-    if ([self.story.canContribute boolValue] && [BanyanAppDelegate loggedIn]) {
+    if (self.story.canContribute && [BanyanAppDelegate loggedIn]) {
         actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                   delegate:self
                                          cancelButtonTitle:@"Cancel"
@@ -292,7 +292,7 @@
         [self presentViewController:addPieceViewController animated:YES completion:nil];
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Delete piece"]) {
-        NSUInteger curPieceNum = [self.currentPiece.pieceNumber unsignedIntegerValue];
+        NSUInteger curPieceNum = self.currentPiece.pieceNumber;
         NSNumber *turnToPage = nil;
         if (curPieceNum != [self.story.pieces count]) {
             turnToPage = [NSNumber numberWithUnsignedInteger:curPieceNum];
@@ -339,7 +339,7 @@
     
     NSUInteger pieceNum = [self pieceNumberForViewController:(ReadPieceViewController *)viewController];
     
-    if (pieceNum >= [self.story.length unsignedIntegerValue]) {
+    if (pieceNum >= self.story.length) {
         NSLog(@"End of story reached for story %@", self.story.title);
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.mode = MBProgressHUDModeText;
@@ -373,7 +373,7 @@
         hud.mode = MBProgressHUDModeText;
         hud.detailsLabelText = @"Going to the last piece in the story.";
         [hud hide:YES afterDelay:2];
-        return [self viewControllerAtPieceNumber:[[self.story length] unsignedIntegerValue]];
+        return [self viewControllerAtPieceNumber:self.story.length];
 //        NSLog(@"index: %u NOT FOUND", pieceNum);
 //        NSLog(@"Beginning of story reached for story %@", self.story.title);
 //        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
@@ -393,7 +393,7 @@
 - (NSUInteger)pieceNumberForViewController:(ReadPieceViewController *)viewController
 {
     Piece *piece = viewController.piece;
-    return [piece.pieceNumber unsignedIntegerValue];
+    return piece.pieceNumber;
 }
 
 - (ReadPieceViewController *)viewControllerAtPieceNumber:(NSUInteger)pieceNum
@@ -424,13 +424,13 @@
 #pragma mark ModifyPieceViewControllerDelegate
 - (void)modifyPieceViewController:(ModifyPieceViewController *)controller didFinishAddingPiece:(Piece *)piece
 {
-    [self readPieceViewControllerFlipToPiece:piece.pieceNumber];
+    [self readPieceViewControllerFlipToPiece:[NSNumber numberWithInt:piece.pieceNumber]];
 }
 
 #pragma mark ReadPieceViewControllerDelegate
 - (BOOL)readPieceViewControllerFlipToPiece:(NSNumber *)pieceNumber
 {
-    NSUInteger oldPieceNum = [self.currentPiece.pieceNumber unsignedIntegerValue];
+    NSUInteger oldPieceNum = self.currentPiece.pieceNumber;
     NSUInteger newPieceNum = [pieceNumber unsignedIntegerValue];
     UIPageViewControllerNavigationDirection direction;
     if (oldPieceNum < newPieceNum)
@@ -459,7 +459,7 @@
 #pragma mark UIGestureRecognizerDelegate
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
-    NSUInteger currentPieceNum = [self.currentPiece.pieceNumber unsignedIntegerValue];
+    NSUInteger currentPieceNum = self.currentPiece.pieceNumber;
 
     if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
         if ([(UIPanGestureRecognizer*)gestureRecognizer velocityInView:gestureRecognizer.view].x > 0.0f) {

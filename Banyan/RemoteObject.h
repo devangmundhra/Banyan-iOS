@@ -37,8 +37,8 @@ typedef enum {
 @property (nonatomic) BOOL viewedByCurUser;
 @property (nonatomic) BOOL likedByCurUser;
 @property (nonatomic) BOOL favoriteByCurUser;
-@property (nonatomic) NSUInteger numberOfLikes;
-@property (nonatomic) NSUInteger numberOfViews;
+@property (nonatomic) int16_t numberOfLikes;
+@property (nonatomic) int16_t numberOfViews;
 // Relationships
 @property (nonatomic, retain) NSSet * comments;
 @property (nonatomic, retain) NSSet * media;

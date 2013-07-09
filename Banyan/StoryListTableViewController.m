@@ -197,8 +197,8 @@ typedef enum {
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    if ([story.length integerValue]) {
-        [self updateStoyInBackgroud:story];
+    if (story.length) {
+        [self updateStoryInBackgroud:story];
         return indexPath;
     } else {
         [self addPieceToStory:story];
@@ -327,7 +327,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 
 #pragma mark Story Manipulations
-- (void) updateStoyInBackgroud:(Story *)story
+- (void) updateStoryInBackgroud:(Story *)story
 {
     [BanyanConnection loadPiecesForStory:story completionBlock:^{
         NSLog(@"Pieces updated for story: %@ with title %@", story.bnObjectId, story.title);
@@ -399,7 +399,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(void) addPieceToStory:(Story *)story
 {
-    if (![BanyanAppDelegate loggedIn] || ![story.canContribute boolValue])
+    if (![BanyanAppDelegate loggedIn] || !story.canContribute)
         return;
     Piece *piece = [Piece newPieceDraftForStory:story];
     ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];

@@ -14,13 +14,13 @@
 
 @interface Story : RemoteObject
 
-@property (nonatomic, retain) NSNumber * canContribute;
-@property (nonatomic, retain) NSNumber * canView;
+@property (nonatomic) BOOL canContribute;
+@property (nonatomic) BOOL canView;
 @property (nonatomic, retain) id contributors;
-@property (nonatomic, retain) NSNumber * isInvited;
-@property (nonatomic, retain) NSNumber * length;
+@property (nonatomic) BOOL isInvited;
+@property (nonatomic) int16_t length;
 @property (nonatomic, retain) id readAccess;
-@property (nonatomic) NSUInteger currentPieceNum;
+@property (nonatomic) int16_t currentPieceNum;
 @property (nonatomic, retain) NSString * tags;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) id writeAccess;

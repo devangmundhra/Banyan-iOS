@@ -151,7 +151,7 @@
     titleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     [titleButton setTitleShadowColor:[UIColor colorWithWhite:0.0 alpha:0.5] forState:UIControlStateNormal];
     [titleButton setTitle:self.delegate.title forState:UIControlStateNormal];
-    if ([self.piece.story.canContribute boolValue]) {
+    if (self.piece.story.canContribute) {
         titleButton.showsTouchWhenHighlighted = YES;
         [titleButton addTarget:self.delegate action:@selector(editStoryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
         titleButton.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:self.delegate.title
@@ -422,8 +422,8 @@
     if ([self.piece.location.name length])
         self.locationLabel.text = self.piece.location.name;
     
-    self.pageControl.numberOfPages = [self.piece.story.length integerValue];
-    self.pageControl.currentPage = [self.piece.pieceNumber integerValue]-1;
+    self.pageControl.numberOfPages = self.piece.story.length;
+    self.pageControl.currentPage = self.piece.pieceNumber-1;
     
     [self.contributorsButton setTitle:@"Contributors" forState:UIControlStateNormal];
     [self.contributorsButton setEnabled:NO];
