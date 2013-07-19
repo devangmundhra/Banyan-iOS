@@ -159,7 +159,9 @@
         RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
                                                   requestDescriptorWithMapping:pieceRequestMapping
                                                   objectClass:[Piece class]
-                                                  rootKeyPath:nil];
+                                                  rootKeyPath:nil
+                                                  method:RKRequestMethodPOST];
+        
         RKEntityMapping *pieceResponseMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
                                                                     inManagedObjectStore:[RKManagedObjectStore defaultStore]];
         [pieceResponseMapping addAttributeMappingsFromDictionary:@{
@@ -169,6 +171,7 @@
         pieceResponseMapping.identificationAttributes = @[@"bnObjectId"];
         
         RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceResponseMapping
+                                                                                                method:RKRequestMethodPOST
                                                                                            pathPattern:nil
                                                                                                keyPath:nil
                                                                                            statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];

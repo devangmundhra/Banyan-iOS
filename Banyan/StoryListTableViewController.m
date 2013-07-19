@@ -72,6 +72,7 @@ typedef enum {
     [self.filterStoriesSegmentedControl addTarget:self
                                            action:@selector(filterStories:)
                                  forControlEvents:UIControlEventValueChanged];
+    self.filterStoriesSegmentedControl.tintColor = BANYAN_GREEN_COLOR;
     self.filterStoriesSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
     self.filterStoriesSegmentedControl.selectedSegmentIndex = FilterStoriesSegmentIndexPopular;
     [self.filterStoriesSegmentedControl setWidth:100 forSegmentAtIndex:FilterStoriesSegmentIndexFollowing];

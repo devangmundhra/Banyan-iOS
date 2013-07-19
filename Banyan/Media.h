@@ -50,7 +50,15 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
 - (void)remove;
 - (void)save;
 
-+ (Media *)getMediaOfType:(NSString *)type inMediaSet:(NSSet *)mediaSet;
+- (void) getImageForMediaWithSuccess:(void (^)(UIImage *))success failure:(void (^)(NSError *error))failure;
+- (void) getImageWithContentMode:(UIViewContentMode)contentMode
+                          bounds:(CGSize)size
+            interpolationQuality:(CGInterpolationQuality)quality
+             forMediaWithSuccess:(void (^)(UIImage *))success
+                         failure:(void (^)(NSError *error))failure;
+
++ (Media *)getMediaOfType:(NSString *)type inMediaSet:(NSOrderedSet *)mediaSet;
++ (NSOrderedSet *)getAllMediaOfType:(NSString *)type inMediaSet:(NSOrderedSet *)mediaSet;
 + (RKEntityMapping *)mediaMappingForRK;
 
 @end

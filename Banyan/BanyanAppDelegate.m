@@ -126,14 +126,13 @@ void uncaughtExceptionHandler(NSException *exception)
 #pragma mark customize appearnaces
 - (void) appearances
 {    
-    [[UINavigationBar appearance] setTintColor:BANYAN_GREEN_COLOR];
-        
-    [[UIBarButtonItem appearance] setTintColor:BANYAN_GREEN_COLOR];
+    if (!DEVICE_VERSION_7PLUS) {
+        [[UINavigationBar appearance] setTintColor:BANYAN_GREEN_COLOR];
+        [[UIBarButtonItem appearance] setTintColor:BANYAN_GREEN_COLOR];
+    }
     
     [[UISwitch appearance] setOnTintColor:BANYAN_GREEN_COLOR];
-    
-    [[UISegmentedControl appearance] setTintColor:BANYAN_GREEN_COLOR];
-    
+        
     [[UITabBar appearance] setSelectedImageTintColor:BANYAN_BROWN_COLOR];
 }
 
@@ -142,9 +141,10 @@ void uncaughtExceptionHandler(NSException *exception)
 /**
  Returns the path to the application's documents directory.
  */
-+ (NSString *)applicationDocumentsDirectory
++ (NSURL *)applicationDocumentsDirectory
 {
-	return [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:nil];
+    return documentsDirectoryURL;
 }
 
 // For iOS 4.2+ support

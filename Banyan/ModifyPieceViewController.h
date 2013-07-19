@@ -14,7 +14,6 @@
 #import "LocationPickerButton.h"
 #import "MediaPickerViewController.h"
 #import "MediaPickerButton.h"
-#import "TITokenField.h"
 #import "BNAudioRecorder.h"
 
 @class  ModifyPieceViewController;
@@ -28,7 +27,7 @@ typedef enum {ModifyPieceViewControllerEditModeAddPiece, ModifyPieceViewControll
 
 @end
 
-@interface ModifyPieceViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, UIAlertViewDelegate, UIActionSheetDelegate, BNFBLocationManagerDelegate, LocationPickerButtonDelegate, MediaPickerViewControllerDelegate, MediaPickerButtonDelegate, TITokenFieldDelegate>
+@interface ModifyPieceViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, UIAlertViewDelegate, UIActionSheetDelegate, BNFBLocationManagerDelegate, LocationPickerButtonDelegate, MediaPickerViewControllerDelegate, MediaPickerButtonDelegate>
 
 @property (strong, nonatomic) Piece *piece;
 @property (weak, nonatomic) id <ModifyPieceViewControllerDelegate> delegate;

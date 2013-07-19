@@ -17,10 +17,12 @@
 #import "SSTextView.h"
 #import "SSTextField.h"
 #import "Media.h"
-#import "SDWebImage/UIImageView+WebCache.h"
+#import "MBProgressHUD.h"
+#import "BNMisc.h"
 
 @interface ModifyPieceViewController ()
 
+@property (weak, nonatomic) IBOutlet UILabel *storyTitleLabel;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet SSTextField *pieceCaptionView;
 @property (weak, nonatomic) IBOutlet SSTextView *pieceTextView;
@@ -29,18 +31,17 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 @property (weak, nonatomic) IBOutlet LocationPickerButton *addLocationButton;
 @property (weak, nonatomic) IBOutlet MediaPickerButton *addPhotoButton;
-@property (weak, nonatomic) IBOutlet TITokenFieldView *tagsFieldView;
 
 @property (strong, nonatomic) BNAudioRecorder *audioRecorder;
 @property (weak, nonatomic) IBOutlet UIView *audioPickerView;
 
-@property (weak, nonatomic) UITextField *activeField;
-@property (nonatomic) CGSize kbSize;
-
 @property (strong, nonatomic) BNFBLocationManager *locationManager;
 
 @property (nonatomic) ModifyPieceViewControllerEditMode editMode;
+
 @property (strong, nonatomic) Piece *backupPiece_;
+@property (nonatomic, strong) NSOrderedSet *backupMedia_;
+
 @property (strong, nonatomic) NSMutableSet *mediaToDelete;
 
 @end
@@ -57,12 +58,11 @@
 @synthesize locationManager = _locationManager;
 @synthesize pieceCaptionView, addLocationButton, addPhotoButton;
 @synthesize backupPiece_ = _backupPiece_;
-@synthesize activeField = _activeField;
 @synthesize audioPickerView = _audioPickerView;
 @synthesize audioRecorder = _audioRecorder;
 @synthesize mediaToDelete;
-
-#define kTokenisingCharacter @","
+@synthesize storyTitleLabel = _storyTitleLabel;
+@synthesize backupMedia_ = _backupMedia_;
 
 - (id) initWithPiece:(Piece *)piece
 {
@@ -73,6 +73,7 @@
         } else {
             self.editMode = ModifyPieceViewControllerEditModeEditPiece;
             self.backupPiece_ = [NSEntityDescription insertNewObjectForEntityForName:[[piece entity] name] inManagedObjectContext:[piece managedObjectContext]];
+            self.backupMedia_ = [NSOrderedSet orderedSetWithOrderedSet:self.piece.media];
             [self.backupPiece_ cloneFrom:piece];
         }
     }
@@ -112,22 +113,26 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
+    self.storyTitleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:16];
+    self.storyTitleLabel.attributedText = [[NSAttributedString alloc] initWithString:self.piece.story.title
+                                                                           attributes:@{NSUnderlineStyleAttributeName: @1,
+                                                                                        NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}];
+    self.storyTitleLabel.textAlignment = NSTextAlignmentCenter;
     mediaToDelete = [NSMutableSet set];
     
+    self.locationManager = [[BNFBLocationManager alloc] init];
+    self.locationManager.delegate = self;
     // If story has location enabled, only then try to get the location
     if (self.piece.story.isLocationEnabled) {
-        self.locationManager = [[BNFBLocationManager alloc] init];
-        self.locationManager.delegate = self;
         [self.locationManager beginUpdatingLocation];
         self.locationManager.location = self.piece.location;
-    } else {
-        [self.addLocationButton setEnabled:NO];
     }
     
     if ([self.piece.location.name length]) {
         [self.addLocationButton locationPickerLocationEnabled:YES];
         [self.addLocationButton setLocationPickerTitle:self.piece.location.name];
     }
+    self.addLocationButton.delegate = self;
     
     self.audioRecorder = [[BNAudioRecorder alloc] init];
     [self addChildViewController:self.audioRecorder];
@@ -136,36 +141,28 @@
     [self.audioRecorder didMoveToParentViewController:self];
     
     self.pieceCaptionView.delegate = self;
-    self.pieceCaptionView.textEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 20);
+    self.pieceCaptionView.textEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 10);
     self.pieceCaptionView.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.pieceCaptionView.font = [UIFont fontWithName:@"Roboto-BoldCondensed" size:26];
+    self.pieceCaptionView.textAlignment = NSTextAlignmentLeft;
+    
     self.pieceTextView.placeholder = @"Enter more details here";
     self.pieceTextView.textColor = BANYAN_BLACK_COLOR;
-    self.addLocationButton.delegate = self;
+    self.pieceTextView.font = [UIFont fontWithName:@"Roboto" size:18];
+    self.pieceTextView.textAlignment = NSTextAlignmentLeft;
+
     self.addPhotoButton.delegate = self;
     
     if (self.editMode == ModifyPieceViewControllerEditModeEditPiece)
     {
-        Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
-        
-        if (imageMedia) {
-            if ([imageMedia.remoteURL length]) {
-                [self.addPhotoButton.imageView setImageWithURL:[NSURL URLWithString:imageMedia.remoteURL] placeholderImage:nil options:SDWebImageProgressiveDownload];
-            } else if ([imageMedia.localURL length]) {
-                ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
-                [library assetForURL:[NSURL URLWithString:imageMedia.localURL] resultBlock:^(ALAsset *asset) {
-                    ALAssetRepresentation *rep = [asset defaultRepresentation];
-                    CGImageRef imageRef = [rep fullScreenImage];
-                    UIImage *image = [UIImage imageWithCGImage:imageRef];
-                    [self.addPhotoButton.imageView setImage:image];
-                }
-                        failureBlock:^(NSError *error) {
-                            NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
-                        }
-                 ];
-            } else {
-                [self.addPhotoButton.imageView  setImageWithURL:nil];
-            }
-        }
+//        NSOrderedSet *imageMediaSet = [Media getAllMediaOfType:@"image" inMediaSet:self.piece.media];
+//        
+//        if (imageMediaSet) {
+//            [imageMediaSet enumerateObjectsUsingBlock:^(Media *media, NSUInteger idx, BOOL *stop) {
+//                [self.addPhotoButton addImageMedia:media];
+//            }];
+//        }
+        [self.addPhotoButton reloadList];
         
         Media *audioMedia = [Media getMediaOfType:@"audio" inMediaSet:self.piece.media];
         if (audioMedia ) {
@@ -182,24 +179,6 @@
         self.navigationBar.topItem.title = @"Edit Piece";
     } else {
         self.navigationBar.topItem.title = @"Add Piece";
-    }
-    
-    // Tags
-    self.tagsFieldView.scrollEnabled = NO;
-    [self.tagsFieldView.tokenField setDelegate:self];
-	[self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldFrameDidChange:) forControlEvents:(UIControlEvents)TITokenFieldControlEventFrameDidChange];
-	[self.tagsFieldView.tokenField setTokenizingCharacters:[NSCharacterSet characterSetWithCharactersInString:@",;."]]; // Default is a comma
-    [self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldChangedEditing:) forControlEvents:UIControlEventEditingDidBegin];
-	[self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldChangedEditing:) forControlEvents:UIControlEventEditingDidEnd];
-    self.tagsFieldView.tokenField.returnKeyType = UIReturnKeyDone;
-    if (self.piece.tags) {
-        [[self.piece.tags componentsSeparatedByString:kTokenisingCharacter]
-         enumerateObjectsUsingBlock:^(NSString *token, NSUInteger idx, BOOL *stop) {
-             [self.tagsFieldView.tokenField addTokenWithTitle:token];
-         }];
-    }
-    else {
-        [self.tagsFieldView.tokenField setPromptText:@"Tags: "];
     }
     
     self.doneButton.enabled = [self checkForChanges];
@@ -228,6 +207,19 @@
 - (void)restoreBackupPiece:(BOOL)upload {
     if (self.backupPiece_) {
         [self.piece cloneFrom:self.backupPiece_];
+        
+        // Restore the media
+        if (![self.backupMedia_ isEqualToOrderedSet:self.piece.media]) {
+            // Remove any new media that might have been added
+            NSMutableOrderedSet *mediaToRemove = [NSMutableOrderedSet orderedSetWithOrderedSet:self.piece.media];
+            [mediaToRemove minusOrderedSet:self.backupMedia_];
+            for (Media *media in mediaToRemove) {
+                [media remove];
+            }
+            assert([self.piece.media intersectsOrderedSet:self.backupMedia_] && [self.backupMedia_ intersectsOrderedSet:self.piece.media]);
+            // Set the old media back again in case the ordering was changed
+            [self.piece setMedia:self.backupMedia_];
+        }
     }
 }
 
@@ -282,6 +274,94 @@
                 [alert show];
             }];
         }
+    }
+    
+    // If there are multiple image media, convert them into a gif
+    NSOrderedSet *imageMediaSet = [Media getAllMediaOfType:@"image" inMediaSet:self.piece.media];
+    NSOrderedSet *backupImageMediaSet = [Media getAllMediaOfType:@"image" inMediaSet:self.backupMedia_];
+    // Gif should be created only if number if images is greater than 2
+    // And if we are adding a new piece
+    // Or the images and order of images are not the same
+    BOOL shouldCreateNewGif = (imageMediaSet.count > 1) && (self.editMode == ModifyPieceViewControllerEditModeAddPiece || ![imageMediaSet isEqualToOrderedSet:backupImageMediaSet]);
+
+    if (shouldCreateNewGif) {        
+        NSMutableArray __block *mediaArray = [NSMutableArray array];
+        
+        // For RunLoop
+        __block BOOL doneRun = NO;
+        __block BOOL success = NO;
+        NSDate *currentDate = [NSDate date];
+        
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.labelText = @"Creating gif image";
+        hud.detailsLabelText = @"Merging the images into a single image";
+        NSLog(@"Creating gif!");
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+        
+        // Get all the images
+        for (int i = 0; i < imageMediaSet.count; i++) {
+            Media *media = [imageMediaSet objectAtIndex:i];
+            [media getImageForMediaWithSuccess:^(UIImage *image){
+                [mediaArray insertObject:image atIndex:i];
+            }
+                                       failure:nil];
+        }
+        
+        while (imageMediaSet.count > mediaArray.count) {
+            // If this has timed out (10 secs), exit
+            if (-[currentDate timeIntervalSinceNow] > 10)
+                break;
+        }
+
+        if (imageMediaSet.count == mediaArray.count)
+            success = YES;
+
+        // Create a gif
+        NSString *gifUrl = [BNMisc gifFromArray:[mediaArray copy]];
+        if (gifUrl) {
+            // If there was any previous gif file, it should be deleted
+            Media *gifMedia = [Media getMediaOfType:@"gif" inMediaSet:self.piece.media];
+            if ([gifMedia.localURL length])
+                gifMedia.localURL = nil;
+            if ([gifMedia.remoteURL length]) {
+                [gifMedia deleteWitSuccess:nil
+                                   failure:^(NSError *error) {
+                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error deleting %@ when editing piece %@", gifMedia.mediaTypeName, self.piece.shortText]
+                                                                                       message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]
+                                                                                      delegate:nil
+                                                                             cancelButtonTitle:@"OK"
+                                                                             otherButtonTitles:nil];
+                                       [alert show];
+                                   }];
+            }
+            
+            // Add the new piece
+            Media *media = [Media newMediaForObject:self.piece];
+            media.mediaType = @"gif";
+            media.localURL = gifUrl;
+        }
+        
+        do
+        {
+            // Start the run loop but return after each source is handled.
+            SInt32    result = CFRunLoopRunInMode(kCFRunLoopDefaultMode, 10, YES);
+            
+            // If a source explicitly stopped the run loop, or if there are no
+            // sources or timers, go ahead and exit.
+            if ((result == kCFRunLoopRunStopped) || (result == kCFRunLoopRunFinished))
+                doneRun = YES;
+            
+            // If this has timed out (10 secs), exit
+            if (-[currentDate timeIntervalSinceNow] > 10)
+                doneRun = YES;
+            
+            // Check for any other exit conditions here and set the
+            // done variable as needed.
+        }
+        while (!doneRun);
+        [hud hide:YES];
+    } else {
+        // Delete gif if any
     }
     
     if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
@@ -350,21 +430,39 @@
 }
 
 #pragma mark MediaPickerButtonDelegate methods
-- (void) mediaPickerButtonTapped:(MediaPickerButton *)sender
+- (void) addNewMedia:(MediaPickerButton *)sender
 {
     [self dismissKeyboard:sender];
-    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
     
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Modify Photo"
                                                              delegate:self
                                                     cancelButtonTitle:@"Cancel"
-                                               destructiveButtonTitle:imageMedia && ![mediaToDelete containsObject:imageMedia] ? @"Delete Photo" : nil
+                                               destructiveButtonTitle:nil
                                                     otherButtonTitles:nil];
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
         [actionSheet addButtonWithTitle:MediaPickerControllerSourceTypeCamera];
     [actionSheet addButtonWithTitle:MediaPickerControllerSourceTypePhotoLib];
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
     [actionSheet showInView:self.view];
+}
+
+- (void) deletePreviousMedia:(Media *)media
+{
+    [mediaToDelete addObject:media];
+    [self.addPhotoButton deleteImageMedia:media];
+    self.doneButton.enabled = YES;
+}
+
+- (NSOrderedSet *)listOfMediaForMediaPickerButton
+{
+    return [Media getAllMediaOfType:@"image" inMediaSet:self.piece.media];
+}
+
+- (void) updateMediaFromNumber:(NSUInteger)fromNumber toNumber:(NSUInteger)toNumber
+{
+    Media *media = [self.piece.media objectAtIndex:fromNumber];
+    [self.piece removeObjectFromMediaAtIndex:fromNumber];
+    [self.piece insertObject:media inMediaAtIndex:toNumber];
 }
 
 #pragma mark UIActionSheetDelegate
@@ -376,10 +474,7 @@
         // DO NOTHING ON CANCEL
     }
     else if (buttonIndex == actionSheet.destructiveButtonIndex) {
-        Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
-        [mediaToDelete addObject:imageMedia];
-        [self.addPhotoButton.imageView setImageWithURL:nil];
-        self.doneButton.enabled = YES;
+        // DO NOTHING ON DESTROY (Handled seperately)
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:MediaPickerControllerSourceTypeCamera]) {
         MediaPickerViewController *mediaPicker = [[MediaPickerViewController alloc] init];
@@ -400,35 +495,18 @@
 
 #pragma mark MediaPickerViewControllerDelegate methods
 - (void) mediaPicker:(MediaPickerViewController *)mediaPicker finishedPickingMediaWithInfo:(NSDictionary *)info
-{
-    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
-    if (imageMedia) {
-        [mediaToDelete addObject:imageMedia];
-        [self.addPhotoButton.imageView setImageWithURL:nil];
-    }
-    
+{    
     Media *media = [Media newMediaForObject:self.piece];
     media.mediaType = @"image";
-    UIImage *image = [info objectForKey:MediaPickerViewControllerInfoImage];
     media.localURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
+    [self.addPhotoButton addImageMedia:media];
     
-    [self.addPhotoButton.imageView  cancelImageRequestOperation];
-    [NSThread detachNewThreadSelector:@selector(useImage:) toTarget:self withObject:image];
     self.doneButton.enabled = [self checkForChanges];
 }
 
 - (void)mediaPickerDidCancel:(MediaPickerViewController *)mediaPicker
 {
     
-}
-
-- (void)useImage:(UIImage *)image {
-    // Create a graphics image context    
-    UIImage* newImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill
-                                                    bounds:self.addPhotoButton.frame.size
-                                      interpolationQuality:kCGInterpolationHigh];
-    
-    [self.addPhotoButton.imageView setImage:newImage];
 }
 
 # pragma mark LocationPickerButtonDelegate
@@ -486,24 +564,10 @@
 {
     NSDictionary* info = [aNotification userInfo];
     CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    self.kbSize = kbSize;
     
     UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
     self.scrollView.contentInset = contentInsets;
     self.scrollView.scrollIndicatorInsets = contentInsets;
-    
-    // If active text field is hidden by keyboard, scroll it so it's visible
-    if (self.activeField == self.tagsFieldView.tokenField) {
-        CGRect aRect = self.view.frame;
-        aRect.size.height -= self.kbSize.height;
-        
-        CGRect translatedFrame = [self.scrollView convertRect:self.tagsFieldView.separator.frame fromView:self.tagsFieldView];
-        
-        if (!CGRectContainsPoint(aRect, translatedFrame.origin)) {
-            CGPoint scrollPoint = CGPointMake(0.0, CGRectGetMaxY(translatedFrame) - self.kbSize.height + 10);
-            [self.scrollView setContentOffset:scrollPoint animated:YES];
-        }
-    }
 }
 
 // Called when the UIKeyboardWillHideNotification is sent
@@ -523,9 +587,6 @@
     
     if (self.pieceTextView.isFirstResponder)
         [self.pieceTextView resignFirstResponder];
-    
-    if (self.activeField.isFirstResponder)
-        [self.activeField resignFirstResponder];
 }
 
 - (BOOL)checkForChanges
@@ -537,12 +598,10 @@
 #pragma mark UITextFieldDelegate
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    self.activeField = textField;
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-    self.activeField = nil;
     self.doneButton.enabled = [self checkForChanges];
 }
 
@@ -556,35 +615,6 @@
 {
     [textField resignFirstResponder];
     return YES;
-}
-
-#pragma mark TITokenField Delegate
-- (BOOL)tokenField:(TITokenField *)tokenField willRemoveToken:(TIToken *)token
-{
-	return YES;
-}
-
-- (void)tokenFieldChangedEditing:(TITokenField *)tokenField
-{
-	// There's some kind of annoying bug where UITextFieldViewModeWhile/UnlessEditing doesn't do anything.
-	[tokenField setRightViewMode:(tokenField.editing ? UITextFieldViewModeAlways : UITextFieldViewModeNever)];
-}
-
-- (void)tokenFieldFrameDidChange:(TITokenField *)tokenField
-{
-    if (self.activeField == self.tagsFieldView.tokenField) {
-        if (self.activeField == self.tagsFieldView.tokenField) {
-            CGRect aRect = self.view.frame;
-            aRect.size.height -= self.kbSize.height;
-            
-            CGRect translatedFrame = [self.scrollView convertRect:self.tagsFieldView.separator.frame fromView:self.tagsFieldView];
-            
-            if (!CGRectContainsPoint(aRect, translatedFrame.origin)) {
-                CGPoint scrollPoint = CGPointMake(0.0, CGRectGetMaxY(translatedFrame) - self.kbSize.height + 10);
-                [self.scrollView setContentOffset:scrollPoint animated:YES];
-            }
-        }
-    }
 }
 
 #pragma mark Methods to interface between views

@@ -1,41 +1,53 @@
 PODS:
-  - AFNetworking (1.3.0)
+  - AFNetworking (1.3.1)
   - ASMediaFocusManager (0.2)
   - BNSwipeableView (0.0.1)
-  - MBProgressHUD (0.6)
-  - RestKit (0.20.3-dev):
+  - libwebp (0.3.0-rc7):
+    - libwebp/dec
+    - libwebp/dsp
+    - libwebp/utils
+    - libwebp/webp
+  - libwebp/dec (0.3.0-rc7)
+  - libwebp/dsp (0.3.0-rc7)
+  - libwebp/utils (0.3.0-rc7)
+  - libwebp/webp (0.3.0-rc7)
+  - MBProgressHUD (0.7)
+  - RestKit (0.20.4-dev):
     - RestKit/Core
-  - RestKit/Core (0.20.3-dev):
+  - RestKit/Core (0.20.4-dev):
     - RestKit/CoreData
     - RestKit/Network
     - RestKit/ObjectMapping
-  - RestKit/CoreData (0.20.3-dev)
-  - RestKit/Network (0.20.3-dev):
+  - RestKit/CoreData (0.20.4-dev)
+  - RestKit/Network (0.20.4-dev):
     - AFNetworking (~> 1.3.0)
     - RestKit/ObjectMapping
     - RestKit/Support
     - SOCKit
-  - RestKit/ObjectMapping (0.20.3-dev)
-  - RestKit/Support (0.20.3-dev):
+  - RestKit/ObjectMapping (0.20.4-dev):
+    - RestKit/Support
+  - RestKit/Support (0.20.4-dev):
     - TransitionKit (= 1.1.1)
-  - SDWebImage (3.2):
+  - SDWebImage (3.3):
+    - libwebp
     - SDWebImage/MapKit
-  - SDWebImage/MapKit (3.2)
+  - SDWebImage/MapKit (3.3):
+    - libwebp
   - SMPageControl (1.0)
   - SOCKit (1.1)
   - SSToolkit (1.0.4)
   - SVPullToRefresh (0.4.1)
   - SVSegmentedControl (0.2)
-  - TestFlightSDK (1.3.0-beta.5)
+  - TestFlightSDK (1.3.0-beta.7)
   - TITokenField (0.9.1)
   - TransitionKit (1.1.1)
 
 DEPENDENCIES:
-  - ASMediaFocusManager (from `https://github.com/devangmundhra/ASMediaFocusManager.git`)
+  - ASMediaFocusManager (from `https://github.com/devangmundhra/ASMediaFocusManager.git`, commit `fb8db29b198cbebb41052e5427fee44fe23c057a`)
   - BNSwipeableView (from `https://github.com/devangmundhra/BNSwipeableView.git`)
   - MBProgressHUD (>= 0.5)
   - RestKit (from `https://github.com/RestKit/RestKit.git`, branch `development`)
-  - SDWebImage (from `https://github.com/rs/SDWebImage.git`, commit `b8ab9d77b5dc18203d8a75990133b72cd3556cc1`)
+  - SDWebImage (from `https://github.com/rs/SDWebImage.git`, commit `282e8179193a49867575cd658ae64883aedbce7b`)
   - SMPageControl (~> 1.0)
   - SSToolkit
   - SVPullToRefresh
@@ -45,6 +57,7 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   ASMediaFocusManager:
+    :commit: fb8db29b198cbebb41052e5427fee44fe23c057a
     :git: https://github.com/devangmundhra/ASMediaFocusManager.git
   BNSwipeableView:
     :git: https://github.com/devangmundhra/BNSwipeableView.git
@@ -52,24 +65,25 @@ EXTERNAL SOURCES:
     :branch: development
     :git: https://github.com/RestKit/RestKit.git
   SDWebImage:
-    :commit: b8ab9d77b5dc18203d8a75990133b72cd3556cc1
+    :commit: 282e8179193a49867575cd658ae64883aedbce7b
     :git: https://github.com/rs/SDWebImage.git
   TITokenField:
     :git: https://github.com/devangmundhra/TITokenField.git
 
 SPEC CHECKSUMS:
-  AFNetworking: e528f20d06b1b818c3571266fb5efa20031a8ace
+  AFNetworking: 9ec8aafb9269236a7630bd8d9838ce2ba30fa2a0
   ASMediaFocusManager: 8be8e44556d78d18ed1e1eb14b5362d1847c16f2
   BNSwipeableView: f10ecb74337225b5659861e150b96e2b8464fc7a
-  MBProgressHUD: 9b55a90566fb5d07df0602f6fd9fa04510ad5d52
-  RestKit: 97d7bd3ea0749ecb6d20e339d61f570069645b67
-  SDWebImage: 4e2b2287a54c052cb0d717bcdf37387b9c4751ae
+  libwebp: 40517fa1fd3716eded73b4696c45fc0b66e4b414
+  MBProgressHUD: 1fd8591a2216d5dec6de24e09187bb03bcbe9946
+  RestKit: 8c8c63c5dc821ea10164c169dd554b14a1f9a327
+  SDWebImage: 79a8bac9ccf85b269100b294f7b43684dab8bf8a
   SMPageControl: 9d100f9aa8ca0cf10222666ff31d4d1cbfdac674
   SOCKit: ed67aeeca4a697b63a933229e53f4670d5b9300f
   SSToolkit: 689acaedac79c2079e492e528a55bcb5db9d98c4
   SVPullToRefresh: 61a0e4bd12bd6f8e3465909810b0fbeb1a28d5f2
   SVSegmentedControl: e874fc56c2a1efb9f597ddf0908101393f53fe96
-  TestFlightSDK: 6c97c15d0fb4735bac761ec563ba7dfe11541cbf
+  TestFlightSDK: 3af0a385405725e36452a35ef63ba8b3f2ef3ffc
   TITokenField: db7c28576a8f78ecae7ac2ee80ef72912c7cb940
   TransitionKit: 3b3836af6887d16a0834fa35031028792d1d5c0c
 

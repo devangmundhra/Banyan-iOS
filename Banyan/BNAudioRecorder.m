@@ -58,13 +58,9 @@
 
 - (void)setup
 {
-    NSString *docsDir = [BanyanAppDelegate applicationDocumentsDirectory];
+    NSURL *docsDir = [BanyanAppDelegate applicationDocumentsDirectory];
     NSString *fileName = [NSString stringWithFormat:@"%@.caf", [BNMisc genRandStringLength:5]];
-    NSString *soundFilePath = [docsDir
-                               stringByAppendingPathComponent:fileName];
-    
-    NSURL *soundFileURL = [NSURL fileURLWithPath:soundFilePath];
-    
+    NSURL *soundFileURL = [docsDir URLByAppendingPathComponent:fileName];
     
     NSDictionary *recordSettings = [NSDictionary
                                     dictionaryWithObjectsAndKeys:

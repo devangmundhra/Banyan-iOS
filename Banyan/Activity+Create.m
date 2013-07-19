@@ -25,12 +25,14 @@
     RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
                                               requestDescriptorWithMapping:activityMapping
                                               objectClass:[Activity class]
-                                              rootKeyPath:nil];
+                                              rootKeyPath:nil
+                                              method:RKRequestMethodPOST];
     
     RKObjectMapping *activityResponseMapping = [RKObjectMapping mappingForClass:[Activity class]];
     [activityResponseMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"activityId"}];
     
     RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:activityResponseMapping
+                                                                                            method:RKRequestMethodPOST
                                                                                        pathPattern:nil
                                                                                            keyPath:nil
                                                                                        statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];

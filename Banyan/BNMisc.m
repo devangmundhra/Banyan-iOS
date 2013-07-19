@@ -7,9 +7,14 @@
 //
 
 #import "BNMisc.h"
+#import <UIKit/UIKit.h>
+#import <ImageIO/ImageIO.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+#import "BanyanAppDelegate.h"
 
 @implementation BNMisc
 
+#pragma mark Dates
 + (NSString *)longCurrentDate
 {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -52,4 +57,47 @@
     
     return randomString;
 }
+
+#pragma mark GIF Images
++ (NSString *) gifFromArray:(NSArray *)imagesArray
+{
+    NSUInteger kFrameCount = imagesArray.count;
+    
+    NSDictionary *fileProperties = @{
+                                     (__bridge id)kCGImagePropertyGIFDictionary: @{
+                                             (__bridge id)kCGImagePropertyGIFLoopCount: @0, // 0 means loop forever
+                                             }
+                                     };
+    
+    NSDictionary *frameProperties = @{
+                                      (__bridge id)kCGImagePropertyGIFDictionary: @{
+                                              (__bridge id)kCGImagePropertyGIFDelayTime: @2.0f, // a float (not double!) in seconds, rounded to centiseconds in the GIF data
+                                              },
+                                      (__bridge id)kCGImageDestinationLossyCompressionQuality: @0.5,
+                                      };
+
+    NSURL *documentsDirectoryURL = [BanyanAppDelegate applicationDocumentsDirectory];
+    NSString *fileName = [NSString stringWithFormat:@"%@.gif", [BNMisc genRandStringLength:5]];
+    NSURL *fileURL = [documentsDirectoryURL URLByAppendingPathComponent:fileName];
+    
+    CGImageDestinationRef destination = CGImageDestinationCreateWithURL((__bridge CFURLRef)fileURL, kUTTypeGIF, kFrameCount, NULL);
+    CGImageDestinationSetProperties(destination, (__bridge CFDictionaryRef)fileProperties);
+    
+    for (NSUInteger i = 0; i < kFrameCount; i++) {
+        @autoreleasepool {
+            UIImage *image = [imagesArray objectAtIndex:i];
+            CGImageDestinationAddImage(destination, image.CGImage, (__bridge CFDictionaryRef)frameProperties);
+        }
+    }
+    
+    if (!CGImageDestinationFinalize(destination)) {
+        NSLog(@"failed to finalize image destination");
+        return nil;
+    }
+    CFRelease(destination);
+    
+    NSLog(@"url=%@", fileURL);
+    return [fileURL absoluteString];
+}
+
 @end

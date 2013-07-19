@@ -49,7 +49,7 @@
         <attribute name="viewedByCurUser" optional="YES" attributeType="Boolean" syncable="YES"/>
         <relationship name="author" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="User" inverseName="remoteObject" inverseEntity="User" syncable="YES"/>
         <relationship name="comments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Comment" inverseName="remoteObject" inverseEntity="Comment" syncable="YES"/>
-        <relationship name="media" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Media" inverseName="remoteObject" inverseEntity="Media" syncable="YES"/>
+        <relationship name="media" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Media" inverseName="remoteObject" inverseEntity="Media" syncable="YES"/>
     </entity>
     <entity name="Story" representedClassName="Story" parentEntity="RemoteObject" syncable="YES">
         <attribute name="canContribute" optional="YES" attributeType="Boolean" syncable="YES"/>

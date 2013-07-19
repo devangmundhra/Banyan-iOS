@@ -9,6 +9,7 @@
 #import "Media.h"
 #import "RemoteObject.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "SDWebImage/SDWebImageDownloader.h"
 #import "UIImage+ResizeAdditions.h"
 #import "AFParseAPIClient.h"
 #import "BNMisc.h"
@@ -98,6 +99,8 @@
         return NSLocalizedString(@"Video", @"");
     } else if ([self.mediaType isEqualToString:@"audio"]) {
         return NSLocalizedString(@"Audio", @"");
+    } else if ([self.mediaType isEqualToString:@"gif"]) {
+        return NSLocalizedString(@"Gif", @"");
     } else {
         return self.mediaType;
     }
@@ -142,6 +145,11 @@
             successBlock();
             [self save];
         } failure:errorBlock];
+    } else if ([self.mediaType isEqualToString:@"gif"]) {
+        [self uploadGifWithSuccess:^{
+            successBlock();
+            [self save];
+        } failure:errorBlock];
     }
 }
 
@@ -155,22 +163,23 @@
     [[AFParseAPIClient sharedClient] deletePath:PARSE_API_FILES_URL(self.filename)
                                      parameters:nil
                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                            self.remoteStatus = MediaRemoteStatusSync;
-                                            self.remoteObject = nil;
-                                            [self remove];
+//                                            self.remoteStatus = MediaRemoteStatusSync;
                                             if (successBlock)
                                                 successBlock();
                                         }
                                         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                            self.remoteStatus = MediaRemoteStatusFailed;
+//                                            self.remoteStatus = MediaRemoteStatusFailed;
                                             if (errorBlock)
                                                 errorBlock(error);
                                         }];
     
+    self.remoteObject = nil;
+    [self remove];
+    
     [[AFParseAPIClient sharedClient] setDefaultHeader:@"X-Parse-Master-Key" value:nil];
 }
 
-+ (Media *)getMediaOfType:(NSString *)type inMediaSet:(NSSet *)mediaSet
++ (Media *)getMediaOfType:(NSString *)type inMediaSet:(NSOrderedSet *)mediaSet
 {
     Media *mediaToReturn = nil;
     for (Media *media in mediaSet) {
@@ -180,6 +189,18 @@
         }
     }
     return mediaToReturn;
+}
+
++ (NSOrderedSet *)getAllMediaOfType:(NSString *)type inMediaSet:(NSOrderedSet *)mediaSet
+{
+    NSMutableOrderedSet *mediaToReturn = [NSMutableOrderedSet orderedSet];
+    for (Media *media in mediaSet) {
+        if ([media.mediaType isEqualToString:type]) {
+            [mediaToReturn insertObject:media atIndex:mediaToReturn.count];
+        }
+    }
+    
+    return mediaToReturn.count ? mediaToReturn : nil;
 }
 
 # pragma mark Private methods
@@ -248,6 +269,29 @@
      ];
 }
 
+- (void) uploadGifWithSuccess:(void (^)())successBlock failure:(void (^)(NSError *error))errorBlock
+{
+    self.remoteStatus = MediaRemoteStatusProcessing;
+    NSData *gifData = nil;
+    PFFile *gifFile = nil;
+    gifData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.localURL]];
+    gifFile = [PFFile fileWithName:[NSString stringWithFormat:@"%@.gif", [BNMisc genRandStringLength:10]]
+                                data:gifData];
+    self.remoteStatus = MediaRemoteStatusPushing;
+    
+    [gifFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            self.remoteURL = gifFile.url;
+            self.filename = gifFile.name;
+            self.remoteStatus = MediaRemoteStatusSync;
+            self.localURL = nil;
+            successBlock();
+        } else {
+            errorBlock(error);
+        }
+    }];
+}
+
 + (RKEntityMapping *)mediaMappingForRK
 {
     RKEntityMapping *mediaMapping = [RKEntityMapping mappingForEntityForName:kBNMediaClassKey
@@ -257,4 +301,46 @@
     mediaMapping.identificationAttributes = @[@"filename", @"remoteURL"];
     return mediaMapping;
 }
+
+- (void) getImageWithContentMode:(UIViewContentMode)contentMode
+                          bounds:(CGSize)size
+            interpolationQuality:(CGInterpolationQuality)quality
+             forMediaWithSuccess:(void (^)(UIImage *))success
+                         failure:(void (^)(NSError *error))failure
+{
+    [self getImageForMediaWithSuccess:^(UIImage *image) {
+        success([image resizedImageWithContentMode:contentMode bounds:size interpolationQuality:quality]);
+    }
+                              failure:failure];
+}
+
+- (void) getImageForMediaWithSuccess:(void (^)(UIImage *image))success failure:(void (^)(NSError *error))failure
+{
+    assert([self.mediaType isEqualToString:@"image"]);
+    
+    if ([self.remoteURL length]) {
+        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:self.remoteURL] options:SDWebImageDownloaderUseNSURLCache
+                                                             progress:nil
+                                                            completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+                                                                if (image)
+                                                                    success(image);
+                                                                else
+                                                                    if (failure) failure(error);
+                                                            }];
+    } else if ([self.localURL length]) {
+        ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
+        [library assetForURL:[NSURL URLWithString:self.localURL] resultBlock:^(ALAsset *asset) {
+            ALAssetRepresentation *rep = [asset defaultRepresentation];
+            CGImageRef imageRef = [rep fullScreenImage];
+            UIImage *image = [UIImage imageWithCGImage:imageRef];
+            success(image);
+        }
+                failureBlock:^(NSError *error) {
+                    NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
+                }
+         ];
+    }
+}
+
+
 @end

@@ -416,16 +416,14 @@
 }
 
 #pragma mark MediaPickerButtonDelegate methods
-- (void) mediaPickerButtonTapped:(MediaPickerButton *)sender
+- (void) addNewMedia:(MediaPickerButton *)sender
 {
     [self dismissKeyboard:sender];
     
-    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.story.media];
-
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Modify Photo"
                                                              delegate:self
                                                     cancelButtonTitle:@"Cancel"
-                                               destructiveButtonTitle:imageMedia ? @"Delete Photo" : nil
+                                               destructiveButtonTitle:nil
                                                     otherButtonTitles:nil];
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
         [actionSheet addButtonWithTitle:MediaPickerControllerSourceTypeCamera];
@@ -433,6 +431,17 @@
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
     [actionSheet showInView:self.view];
 //    [actionSheet showFromTabBar:self.tabBarController.tabBar];
+}
+
+- (void) deletePreviousMedia:(Media *)media
+{
+    // If its a local image, don't delete it
+    if ([media.localURL length])
+        media.localURL = nil;
+    if ([media.remoteURL length]) {
+        [media deleteWitSuccess:nil failure:nil];
+    }
+    [media remove];
 }
 
 #pragma mark UIActionSheetDelegate
@@ -444,15 +453,7 @@
         // DO NOTHING ON CANCEL
     }
     else if (buttonIndex == actionSheet.destructiveButtonIndex) {
-        Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.story.media];
-        // If its a local image, don't delete it
-        if ([imageMedia.localURL length])
-            imageMedia.localURL = nil;
-        if ([imageMedia.remoteURL length]) {
-            [imageMedia deleteWitSuccess:nil failure:nil];
-        }
-        [imageMedia remove];
-        [self.addPhotoButton.imageView setImageWithURL:nil];
+        // DO NOTHING ON DESTRUCTIVE BUTTON. HANDLED SEPERATELY
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:MediaPickerControllerSourceTypeCamera]) {
         MediaPickerViewController *mediaPicker = [[MediaPickerViewController alloc] init];
@@ -476,24 +477,13 @@
 {
     Media *media = [Media newMediaForObject:self.story];
     media.mediaType = @"image";
-    UIImage *image = [info objectForKey:MediaPickerViewControllerInfoImage];
     media.localURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
     
-    [self.addPhotoButton.imageView  cancelImageRequestOperation];
-    [NSThread detachNewThreadSelector:@selector(useImage:) toTarget:self withObject:image];
+    [self.addPhotoButton addImageMedia:media];
 }
 
 - (void)mediaPickerDidCancel:(MediaPickerViewController *)mediaPicker
 {
-}
-
-- (void)useImage:(UIImage *)image {
-    // Create a graphics image context
-    UIImage* newImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill
-                                                    bounds:self.addPhotoButton.frame.size
-                                      interpolationQuality:kCGInterpolationHigh];
-    
-    [self.addPhotoButton.imageView setImage:newImage];
 }
 
 # pragma mark LocationPickerButtonDelegate

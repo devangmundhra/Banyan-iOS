@@ -39,7 +39,9 @@
         } else if ([key isEqualToString:@"comments"]) {
             NSLog(@"Copying relationship %@", key);
             [self setComments:[source comments]];
-        } else if ([key isEqualToString:@"media"] || [key isEqualToString:@"pieces"]) {
+        } else if ([key isEqualToString:@"pieces"]) {
+            NSLog(@"Skipping relationship %@", key);
+        } else if ([key isEqualToString:@"media"]) {
             NSLog(@"Skipping relationship %@", key);
             // Media if changed during editing will be persisted.
             //            [self setMedia:[source media]];
@@ -118,13 +120,13 @@
         obj.remoteStatus = RemoteObjectStatusFailed;
     }
     
-//    [request setEntity:[NSEntityDescription entityForName:kBNStoryClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
-//    request.predicate = [NSPredicate predicateWithFormat:@"(ANY pieces.remoteStatusNumber != %@)",
-//                         [NSNumber numberWithInt:RemoteObjectStatusSync]];;
-//    array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
-//    for (Story *story in array) {
-//        story.uploadStatusNumber = story.uploadStatusNumber;
-//    }
+    //    [request setEntity:[NSEntityDescription entityForName:kBNStoryClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
+    //    request.predicate = [NSPredicate predicateWithFormat:@"(ANY pieces.remoteStatusNumber != %@)",
+    //                         [NSNumber numberWithInt:RemoteObjectStatusSync]];;
+    //    array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+    //    for (Story *story in array) {
+    //        story.uploadStatusNumber = story.uploadStatusNumber;
+    //    }
 }
 
 #pragma mark-
@@ -143,6 +145,7 @@
 
 @implementation RemoteObject (CoreDataGeneratedAccessors)
 
+#pragma mark Comments
 - (void)addCommentsObject:(Comment *)value
 {
     NSSet *changedObjects = [[NSSet alloc] initWithObjects:&value count:1];
@@ -173,34 +176,124 @@
     [self didChangeValueForKey:@"comments" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
 }
 
-- (void)addMediaObject:(Media *)value
-{
-    NSSet *changedObjects = [[NSSet alloc] initWithObjects:&value count:1];
-    [self willChangeValueForKey:@"media" withSetMutation:NSKeyValueUnionSetMutation usingObjects:changedObjects];
-    [[self primitiveValueForKey:@"media"] addObject:value];
-    [self didChangeValueForKey:@"media" withSetMutation:NSKeyValueUnionSetMutation usingObjects:changedObjects];
+#pragma mark Media
+- (void)insertObject:(Media *)value inMediaAtIndex:(NSUInteger)idx {
+    NSIndexSet* indexes = [NSIndexSet indexSetWithIndex:idx];
+    [self willChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:@"media"];
+    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:@"media"]];
+    [tmpOrderedSet insertObject:value atIndex:idx];
+    [self setPrimitiveValue:tmpOrderedSet forKey:@"media"];
+    [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:@"media"];
 }
 
-- (void)removeMediaObject:(Media *)value
-{
-    NSSet *changedObjects = [[NSSet alloc] initWithObjects:&value count:1];
-    [self willChangeValueForKey:@"media" withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
-    [[self primitiveValueForKey:@"media"] removeObject:value];
-    [self didChangeValueForKey:@"media" withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
+- (void)removeObjectFromMediaAtIndex:(NSUInteger)idx {
+    NSIndexSet* indexes = [NSIndexSet indexSetWithIndex:idx];
+    [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:@"media"];
+    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:@"media"]];
+    [tmpOrderedSet removeObjectAtIndex:idx];
+    [self setPrimitiveValue:tmpOrderedSet forKey:@"media"];
+    [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:@"media"];
 }
 
-- (void)addMedia:(NSSet *)value
-{
-    [self willChangeValueForKey:@"media" withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];
-    [[self primitiveValueForKey:@"media"] unionSet:value];
-    [self didChangeValueForKey:@"media" withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];
+- (void)insertMedia:(NSArray *)values atIndexes:(NSIndexSet *)indexes {
+    [self willChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:@"media"];
+    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:@"media"]];
+    [tmpOrderedSet insertObjects:values atIndexes:indexes];
+    [self setPrimitiveValue:tmpOrderedSet forKey:@"media"];
+    [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:@"media"];
 }
 
-- (void)removeMedia:(NSSet *)value
+- (void)removeMediaAtIndexes:(NSIndexSet *)indexes {
+    [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:@"media"];
+    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:@"media"]];
+    [tmpOrderedSet removeObjectsAtIndexes:indexes];
+    [self setPrimitiveValue:tmpOrderedSet forKey:@"media"];
+    [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:@"media"];
+}
+
+- (void)replaceObjectInMediaAtIndex:(NSUInteger)idx withObject:(Media *)value {
+    NSIndexSet* indexes = [NSIndexSet indexSetWithIndex:idx];
+    [self willChange:NSKeyValueChangeReplacement valuesAtIndexes:indexes forKey:@"media"];
+    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:@"media"]];
+    [tmpOrderedSet replaceObjectAtIndex:idx withObject:value];
+    [self setPrimitiveValue:tmpOrderedSet forKey:@"media"];
+    [self didChange:NSKeyValueChangeReplacement valuesAtIndexes:indexes forKey:@"media"];
+}
+
+- (void)replaceMediaAtIndexes:(NSIndexSet *)indexes withMedia:(NSArray *)values {
+    [self willChange:NSKeyValueChangeReplacement valuesAtIndexes:indexes forKey:@"media"];
+    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:@"media"]];
+    [tmpOrderedSet replaceObjectsAtIndexes:indexes withObjects:values];
+    [self setPrimitiveValue:tmpOrderedSet forKey:@"media"];
+    [self didChange:NSKeyValueChangeReplacement valuesAtIndexes:indexes forKey:@"media"];
+}
+
+- (void)addMediaObject:(Media *)value {
+    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:@"media"]];
+    NSUInteger idx = [tmpOrderedSet count];
+    NSIndexSet* indexes = [NSIndexSet indexSetWithIndex:idx];
+    [self willChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:@"media"];
+    [tmpOrderedSet addObject:value];
+    [self setPrimitiveValue:tmpOrderedSet forKey:@"media"];
+    [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:@"media"];
+}
+
+- (void)removeMediaObject:(Media *)value {
+    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:@"media"]];
+    NSUInteger idx = [tmpOrderedSet indexOfObject:value];
+    if (idx != NSNotFound) {
+        NSIndexSet* indexes = [NSIndexSet indexSetWithIndex:idx];
+        [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:@"media"];
+        [tmpOrderedSet removeObject:value];
+        [self setPrimitiveValue:tmpOrderedSet forKey:@"media"];
+        [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:@"media"];
+    }
+}
+
+- (void)addMedia:(NSOrderedSet *)values {
+    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:@"media"]];
+    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+    NSUInteger valuesCount = [values count];
+    NSUInteger objectsCount = [tmpOrderedSet count];
+    for (NSUInteger i = 0; i < valuesCount; ++i) {
+        [indexes addIndex:(objectsCount + i)];
+    }
+    if (valuesCount > 0) {
+        [self willChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:@"media"];
+        [tmpOrderedSet addObjectsFromArray:[values array]];
+        [self setPrimitiveValue:tmpOrderedSet forKey:@"media"];
+        [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:indexes forKey:@"media"];
+    }
+}
+
+- (void)removeMedia:(NSOrderedSet *)values {
+    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:@"media"]];
+    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+    for (id value in values) {
+        NSUInteger idx = [tmpOrderedSet indexOfObject:value];
+        if (idx != NSNotFound) {
+            [indexes addIndex:idx];
+        }
+    }
+    if ([indexes count] > 0) {
+        [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:@"media"];
+        [tmpOrderedSet removeObjectsAtIndexes:indexes];
+        [self setPrimitiveValue:tmpOrderedSet forKey:@"media"];
+        [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexes forKey:@"media"];
+    }
+}
+
+- (void)exchangeObjectInMediaAtIndex:(NSUInteger)idx1 withObjectInMediaAtIndex:(NSUInteger)idx2
 {
-    [self willChangeValueForKey:@"media" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
-    [[self primitiveValueForKey:@"media"] minusSet:value];
-    [self didChangeValueForKey:@"media" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
+    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+    [indexes addIndex:idx1];
+    [indexes addIndex:idx2];
+    
+    [self willChange:NSKeyValueChangeReplacement valuesAtIndexes:indexes forKey:@"media"];
+    NSMutableOrderedSet *tmpOrderedSet = [NSMutableOrderedSet orderedSetWithOrderedSet:[self mutableOrderedSetValueForKey:@"media"]];
+    [tmpOrderedSet exchangeObjectAtIndex:idx1 withObjectAtIndex:idx2];
+    [self setPrimitiveValue:tmpOrderedSet forKey:@"media"];
+    [self didChange:NSKeyValueChangeReplacement valuesAtIndexes:indexes forKey:@"media"];
 }
 
 @end

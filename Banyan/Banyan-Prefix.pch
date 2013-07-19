@@ -32,3 +32,5 @@
 #define REPLACE_NULL_WITH_ZERO(__value__) ([__value__ isEqual:[NSNull null]] ? [NSNumber numberWithInt:0] : __value__)
 #define REPLACE_NULL_WITH_EMPTY_ARRAY(__value__) ([__value__ isEqual:[NSNull null]] ? [NSArray array] : __value__)
 #define REPLACE_NIL_WITH_EMPTY_STRING(__value__) (__value__ ? __value__ : @"")
+
+#define DEVICE_VERSION_7PLUS ([[UIDevice currentDevice].systemVersion floatValue] >= 7.0)

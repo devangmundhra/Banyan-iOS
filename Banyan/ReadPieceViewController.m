@@ -262,7 +262,9 @@
     self.imageView.frame = CGRectZero;
     self.audioPlayer.view.frame = CGRectZero; self.audioPlayer.view.hidden = YES;
     
-    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
+    Media *imageMedia = [Media getMediaOfType:@"gif" inMediaSet:self.piece.media];
+    if (![imageMedia.localURL length] && ![imageMedia.remoteURL length])
+        imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
     Media *audioMedia = [Media getMediaOfType:@"audio" inMediaSet:self.piece.media];
     
     // Allocate custom parts of the view depending on what the piece contains
@@ -620,8 +622,10 @@
 - (NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view
 {
     NSURL *url = nil;
-    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
-
+    Media *imageMedia = [Media getMediaOfType:@"gif" inMediaSet:self.piece.media];
+    if (![imageMedia.localURL length] && ![imageMedia.remoteURL length])
+        imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
+    
     if ([imageMedia.remoteURL length])
         url = [NSURL URLWithString:imageMedia.remoteURL];
     else if ([imageMedia.localURL length])

@@ -129,7 +129,6 @@
 		51A8DC9516928AE00017E86F /* Banyan.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC9316928AE00017E86F /* Banyan.xcdatamodeld */; };
 		51A8DC981692C4490017E86F /* Story+Permissions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC971692C4490017E86F /* Story+Permissions.m */; };
 		51AFD5F117607800008C7203 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 51AFD5F017607800008C7203 /* User.m */; };
-		51AFD5F417607D01008C7203 /* RemoteObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 51AFD5F317607D00008C7203 /* RemoteObject.m */; };
 		51AFD5F71765B64B008C7203 /* BNFeedbackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51AFD5F61765B64B008C7203 /* BNFeedbackViewController.m */; };
 		51B234E117154C43004241C1 /* shareButtonBlack.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B234DD17154C43004241C1 /* shareButtonBlack.png */; };
 		51B234E217154C43004241C1 /* shareButtonBlack@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B234DE17154C43004241C1 /* shareButtonBlack@2x.png */; };
@@ -177,6 +176,7 @@
 		51CCA15717324998007616EA /* heartSymbolWhite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CCA15517324998007616EA /* heartSymbolWhite@2x.png */; };
 		51CCA15A17324B7E007616EA /* heartSymbolHollow.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CCA15817324B7E007616EA /* heartSymbolHollow.png */; };
 		51CCA15B17324B7E007616EA /* heartSymbolHollow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CCA15917324B7E007616EA /* heartSymbolHollow@2x.png */; };
+		51CE90B51796724500A2F7CB /* RemoteObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CE90B41796392800A2F7CB /* RemoteObject.m */; };
 		51CFD92915F1F260002926F9 /* SettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD92715F1F260002926F9 /* SettingsTableViewController.m */; };
 		51CFD93615F3E80B002926F9 /* FollowingFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD93515F3E80B002926F9 /* FollowingFriendsViewController.m */; };
 		51CFD93A15F57F70002926F9 /* FollowingUsersCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD93915F57F70002926F9 /* FollowingUsersCell.m */; };
@@ -393,8 +393,6 @@
 		51A8DC971692C4490017E86F /* Story+Permissions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Story+Permissions.m"; path = "Banyan/Story+Permissions.m"; sourceTree = "<group>"; };
 		51AFD5EF17607800008C7203 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = User.h; path = Banyan/User.h; sourceTree = "<group>"; };
 		51AFD5F017607800008C7203 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = User.m; path = Banyan/User.m; sourceTree = "<group>"; };
-		51AFD5F217607D00008C7203 /* RemoteObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RemoteObject.h; path = Banyan/RemoteObject.h; sourceTree = "<group>"; };
-		51AFD5F317607D00008C7203 /* RemoteObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RemoteObject.m; path = Banyan/RemoteObject.m; sourceTree = "<group>"; };
 		51AFD5F51765B64B008C7203 /* BNFeedbackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNFeedbackViewController.h; sourceTree = "<group>"; };
 		51AFD5F61765B64B008C7203 /* BNFeedbackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNFeedbackViewController.m; sourceTree = "<group>"; };
 		51B234DD17154C43004241C1 /* shareButtonBlack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shareButtonBlack.png; sourceTree = "<group>"; };
@@ -447,6 +445,8 @@
 		51CCA15517324998007616EA /* heartSymbolWhite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "heartSymbolWhite@2x.png"; sourceTree = "<group>"; };
 		51CCA15817324B7E007616EA /* heartSymbolHollow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = heartSymbolHollow.png; sourceTree = "<group>"; };
 		51CCA15917324B7E007616EA /* heartSymbolHollow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "heartSymbolHollow@2x.png"; sourceTree = "<group>"; };
+		51CE90B31796392800A2F7CB /* RemoteObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RemoteObject.h; path = Banyan/RemoteObject.h; sourceTree = "<group>"; };
+		51CE90B41796392800A2F7CB /* RemoteObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RemoteObject.m; path = Banyan/RemoteObject.m; sourceTree = "<group>"; };
 		51CFD92615F1F260002926F9 /* SettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsTableViewController.h; sourceTree = "<group>"; };
 		51CFD92715F1F260002926F9 /* SettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsTableViewController.m; sourceTree = "<group>"; };
 		51CFD93415F3E80B002926F9 /* FollowingFriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowingFriendsViewController.h; sourceTree = "<group>"; };
@@ -879,8 +879,8 @@
 		5189B35215B3965A00562DD0 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				51AFD5F217607D00008C7203 /* RemoteObject.h */,
-				51AFD5F317607D00008C7203 /* RemoteObject.m */,
+				51CE90B31796392800A2F7CB /* RemoteObject.h */,
+				51CE90B41796392800A2F7CB /* RemoteObject.m */,
 				51FAC0C1172FB8390046C2D6 /* Value Transformers */,
 				51FAC0B9172C82A40046C2D6 /* Comment */,
 				51B598A315EB451600DF4D9D /* Activity */,
@@ -1432,6 +1432,7 @@
 				5189B33915B395F300562DD0 /* Piece+Delete.m in Sources */,
 				5189B33A15B395F300562DD0 /* Piece+Edit.m in Sources */,
 				5189B33B15B395F300562DD0 /* Piece+Stats.m in Sources */,
+				51CE90B51796724500A2F7CB /* RemoteObject.m in Sources */,
 				5189B33E15B395F300562DD0 /* StoryReaderController.m in Sources */,
 				5189B34315B395F300562DD0 /* Story+Create.m in Sources */,
 				5189B34415B395F300562DD0 /* Story+Delete.m in Sources */,
@@ -1480,7 +1481,6 @@
 				5128EB5417478B3D00393173 /* BNAudioRecorder.m in Sources */,
 				5128EB5717478B5500393173 /* BNAudioStreamingPlayer.m in Sources */,
 				51AFD5F117607800008C7203 /* User.m in Sources */,
-				51AFD5F417607D01008C7203 /* RemoteObject.m in Sources */,
 				51AFD5F71765B64B008C7203 /* BNFeedbackViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -17,7 +17,7 @@ typedef enum {
     RemoteObjectStatusSync,       // Post uploaded
 } RemoteObjectStatus;
 
-@class Comment, Media, Statistics1, User;
+@class Comment, Media, User;
 
 @interface RemoteObject : NSManagedObject
 
@@ -41,7 +41,7 @@ typedef enum {
 @property (nonatomic) int16_t numberOfViews;
 // Relationships
 @property (nonatomic, retain) NSSet * comments;
-@property (nonatomic, retain) NSSet * media;
+@property (nonatomic, retain) NSOrderedSet * media;
 
 // Revision management
 - (void)cloneFrom:(RemoteObject *)source;
@@ -56,6 +56,7 @@ typedef enum {
 
 @end
 
+
 @interface RemoteObject (CoreDataGeneratedAccessors)
 
 - (void)addCommentsObject:(Comment *)value;
@@ -63,9 +64,15 @@ typedef enum {
 - (void)addComments:(NSSet *)values;
 - (void)removeComments:(NSSet *)values;
 
+- (void)insertObject:(Media *)value inMediaAtIndex:(NSUInteger)idx;
+- (void)removeObjectFromMediaAtIndex:(NSUInteger)idx;
+- (void)insertMedia:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
+- (void)removeMediaAtIndexes:(NSIndexSet *)indexes;
+- (void)replaceObjectInMediaAtIndex:(NSUInteger)idx withObject:(Media *)value;
+- (void)replaceMediaAtIndexes:(NSIndexSet *)indexes withMedia:(NSArray *)values;
 - (void)addMediaObject:(Media *)value;
 - (void)removeMediaObject:(Media *)value;
-- (void)addMedia:(NSSet *)values;
-- (void)removeMedia:(NSSet *)values;
-
+- (void)addMedia:(NSOrderedSet *)values;
+- (void)removeMedia:(NSOrderedSet *)values;
+- (void)exchangeObjectInMediaAtIndex:(NSUInteger)idx withObjectInMediaAtIndex:(NSUInteger)idx;
 @end

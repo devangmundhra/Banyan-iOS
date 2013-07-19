@@ -234,7 +234,9 @@
         RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
                                                   requestDescriptorWithMapping:storyRequestMapping
                                                   objectClass:[Story class]
-                                                  rootKeyPath:nil];
+                                                  rootKeyPath:nil
+                                                  method:RKRequestMethodPOST];
+        
         RKEntityMapping *storyResponseMapping = [RKEntityMapping mappingForEntityForName:kBNStoryClassKey
                                                                     inManagedObjectStore:[RKManagedObjectStore defaultStore]];
         [storyResponseMapping addAttributeMappingsFromDictionary:@{
@@ -244,6 +246,7 @@
         storyResponseMapping.identificationAttributes = @[@"bnObjectId"];
 
         RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:storyResponseMapping
+                                                                                                method:RKRequestMethodPOST
                                                                                            pathPattern:nil
                                                                                                keyPath:nil
                                                                                            statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];

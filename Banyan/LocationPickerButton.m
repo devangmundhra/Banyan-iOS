@@ -62,16 +62,16 @@
     
     [self addSubview:onOffButton];
     
-    // Name Buttong
+    // Name Button
     self.nameButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    nameButton.frame = CGRectMake(bounds.origin.x + 35.0f, bounds.origin.y, bounds.size.width - self.onOffButton.frame.size.width, bounds.size.height);
+    nameButton.frame = CGRectMake(CGRectGetMaxX(onOffButton.frame), bounds.origin.y, bounds.size.width - CGRectGetWidth(onOffButton.frame), bounds.size.height);
     [nameButton.titleLabel setFont:[UIFont fontWithName:@"Roboto-Condensed" size:15]];
     nameButton.titleLabel.minimumScaleFactor = 0.8;
 //    [nameButton setBackgroundImage:[[UIImage imageNamed:@"SidebarToolbarButton"] stretchableImageWithLeftCapWidth:5.0 topCapHeight:0.0] forState:UIControlStateNormal];
 //    [nameButton setBackgroundImage:[[UIImage imageNamed:@"SidebarToolbarButtonHighlighted"] stretchableImageWithLeftCapWidth:5.0 topCapHeight:0.0] forState:UIControlStateHighlighted];
     [nameButton setTitle:@"Add Location" forState:UIControlStateNormal];
     [nameButton addTarget:self action:@selector(handleNameButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [nameButton setBackgroundColor:BANYAN_BROWN_COLOR];
+    [nameButton setBackgroundColor:BANYAN_LIGHT_GREEN_COLOR];
 //    [nameButton setImage:[UIImage imageNamed:@"sidebar_camera"] forState:UIControlStateNormal];
     [nameButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 12.0f, 0.0f, 10.0f)];
     [nameButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, 8.0f, 0.0f, 0.0f)];
