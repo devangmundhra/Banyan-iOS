@@ -11,6 +11,7 @@
 #import "Story_Defines.h"
 #import "AFBanyanAPIClient.h"
 #import "Media.h"
+#import "BNMisc.h"
 
 @implementation Piece (Edit)
 
@@ -87,6 +88,9 @@
     };
     
     if ([piece.media count]) {
+        if (![piece createGifFileIfReqdAndShouldContinue])
+            return;
+        
         BOOL mediaBeingUploaded = NO;
         for (Media *media in piece.media) {
             if ([media.localURL length]) {
@@ -98,7 +102,7 @@
                  failure:^(NSError *error) {
                      piece.remoteStatus = RemoteObjectStatusFailed;
                      [piece save];
-                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error uploading %@ when editing piece %@", media.mediaTypeName, piece.shortText]
+                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error uploading %@ when editing piece %@", media.mediaTypeName, piece.shortText.length ? piece.shortText : @""]
                                                                      message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]
                                                                     delegate:nil
                                                            cancelButtonTitle:@"OK"
@@ -119,6 +123,89 @@
     }
     
     [piece save];
+}
+
+- (BOOL) createGifFileIfReqdAndShouldContinue
+{
+    // Create gif if required
+    // If there is not already a gif file present in the media list and number of image media is more than one,
+    // a gif file needs to be created
+    NSOrderedSet *imageMediaSet = [Media getAllMediaOfType:@"image" inMediaSet:self.media];
+    if (imageMediaSet.count <= 1) {
+        NSLog(@"Won't be needing any gif1");
+        return YES;
+    }
+    
+    Media *gifMedia = [Media getMediaOfType:@"gif" inMediaSet:self.media];
+    if (gifMedia) {
+        NSLog(@"Won't be needing any gif creation");
+        return YES; // No need to creating anything new
+    }
+    
+    // If there is already a request to create a new gif, don't do anything now
+    if (self.creatingGifFromMedia) {
+        NSLog(@"Gif creation already in progress");
+        return NO;
+    }
+    
+    self.creatingGifFromMedia = YES;
+    __block NSMutableArray *mediaArray = [NSMutableArray array];
+    for (int i = 0; i < imageMediaSet.count; i++) {
+        [mediaArray addObject:[NSNull null]];
+    }
+    
+    __block unsigned int numImagesSuccessfullyObtained = 0;
+    __block unsigned int numImageFetchResults = 0;
+
+    NSLog(@"Creating gif!");
+    
+    // Get all the images
+    [imageMediaSet enumerateObjectsUsingBlock:^(Media *media, NSUInteger idx, BOOL *stop) {
+        [media getImageForMediaWithSuccess:^(UIImage *image){
+            [mediaArray replaceObjectAtIndex:idx withObject:image];
+            numImagesSuccessfullyObtained++;
+            numImageFetchResults++;
+        }
+                                   failure:^(NSError *error) {
+                                       NSLog(@"Error %@ in creating images", error.localizedDescription);
+                                       numImageFetchResults++;
+                                   }];
+    }];
+
+    dispatch_queue_t waitQueue = dispatch_queue_create("io.banyan.waitForDownloadingPictures", NULL);
+    dispatch_async(waitQueue, ^{
+        while (numImageFetchResults < imageMediaSet.count) {
+            sleep(1); // sleep for a second
+        }
+        
+        assert(imageMediaSet.count == numImageFetchResults);
+        
+        if (imageMediaSet.count == numImagesSuccessfullyObtained) {
+            dispatch_async(dispatch_get_main_queue(), ^{ // Do image processing in main queue only
+                // Create a gif
+                NSString *gifUrl = [BNMisc gifFromArray:mediaArray];
+                if (gifUrl) {
+                    // Add the new piece
+                    Media *media = [Media newMediaForObject:self];
+                    media.mediaType = @"gif";
+                    media.localURL = gifUrl;
+                } else {
+                    NSLog(@"Problem in creating a new gif after getting all images");
+                }
+                self.creatingGifFromMedia = NO;
+                self.remoteStatus = RemoteObjectStatusFailed;
+                [self save];
+            });
+        } else {
+            NSLog(@"Error in creating gif. Couln't fetch all images to create it.");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.creatingGifFromMedia = NO;
+                self.remoteStatus = RemoteObjectStatusFailed;
+                [self save];
+            });
+        }
+    });
+    return NO;
 }
 
 @end

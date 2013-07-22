@@ -17,8 +17,6 @@
 #import "SSTextView.h"
 #import "SSTextField.h"
 #import "Media.h"
-#import "MBProgressHUD.h"
-#import "BNMisc.h"
 
 @interface ModifyPieceViewController ()
 
@@ -258,15 +256,15 @@
         media.localURL = [audioRecording absoluteString];
     }
     
+    BOOL anyMediaDeleted = mediaToDelete.count;
+    
     // Delete any media that were indicated to be deleted
     for (Media *media in mediaToDelete) {
         // If its a local image, don't delete it
-        if ([media.localURL length])
-            media.localURL = nil;
         if ([media.remoteURL length]) {
             [media deleteWitSuccess:nil
                             failure:^(NSError *error) {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error deleting %@ when editing piece %@", media.mediaTypeName, self.piece.shortText]
+                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error deleting %@ when editing piece %@", media.mediaTypeName, self.piece.shortText.length ? self.piece.shortText : @""]
                                                                 message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]
                                                                delegate:nil
                                                       cancelButtonTitle:@"OK"
@@ -274,6 +272,8 @@
                 [alert show];
             }];
         }
+        else
+            [media remove];
     }
     
     // If there are multiple image media, convert them into a gif
@@ -281,91 +281,31 @@
     NSOrderedSet *backupImageMediaSet = [Media getAllMediaOfType:@"image" inMediaSet:self.backupMedia_];
     // Gif should be created only if number if images is greater than 2
     // And if we are adding a new piece
-    // Or the images and order of images are not the same
-    BOOL shouldCreateNewGif = (imageMediaSet.count > 1) && (self.editMode == ModifyPieceViewControllerEditModeAddPiece || ![imageMediaSet isEqualToOrderedSet:backupImageMediaSet]);
-
-    if (shouldCreateNewGif) {        
-        NSMutableArray __block *mediaArray = [NSMutableArray array];
-        
-        // For RunLoop
-        __block BOOL doneRun = NO;
-        __block BOOL success = NO;
-        NSDate *currentDate = [NSDate date];
-        
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        hud.labelText = @"Creating gif image";
-        hud.detailsLabelText = @"Merging the images into a single image";
-        NSLog(@"Creating gif!");
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
-        
-        // Get all the images
-        for (int i = 0; i < imageMediaSet.count; i++) {
-            Media *media = [imageMediaSet objectAtIndex:i];
-            [media getImageForMediaWithSuccess:^(UIImage *image){
-                [mediaArray insertObject:image atIndex:i];
-            }
-                                       failure:nil];
-        }
-        
-        while (imageMediaSet.count > mediaArray.count) {
-            // If this has timed out (10 secs), exit
-            if (-[currentDate timeIntervalSinceNow] > 10)
-                break;
-        }
-
-        if (imageMediaSet.count == mediaArray.count)
-            success = YES;
-
-        // Create a gif
-        NSString *gifUrl = [BNMisc gifFromArray:[mediaArray copy]];
-        if (gifUrl) {
-            // If there was any previous gif file, it should be deleted
-            Media *gifMedia = [Media getMediaOfType:@"gif" inMediaSet:self.piece.media];
-            if ([gifMedia.localURL length])
-                gifMedia.localURL = nil;
+    //   Or the images and order of images are not the same
+    //   Or any media should not have been deleted when the piece is being edited
+    BOOL shouldCreateNewGif = (imageMediaSet.count > 1) && (self.editMode == ModifyPieceViewControllerEditModeAddPiece || ![imageMediaSet isEqualToOrderedSet:backupImageMediaSet] || (self.editMode == ModifyPieceViewControllerEditModeEditPiece && anyMediaDeleted));
+    
+    // If a new gif should be deleted or if there is only 1 or 0 images so that a previous gif should be deleted
+    if (shouldCreateNewGif || imageMediaSet.count <= 1) {
+        Media *gifMedia = [Media getMediaOfType:@"gif" inMediaSet:self.piece.media];
+        if (gifMedia) {
             if ([gifMedia.remoteURL length]) {
                 [gifMedia deleteWitSuccess:nil
                                    failure:^(NSError *error) {
-                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error deleting %@ when editing piece %@", gifMedia.mediaTypeName, self.piece.shortText]
+                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error deleting %@ when editing piece %@", gifMedia.mediaTypeName, self.piece.shortText.length ? self.piece.shortText : @""]
                                                                                        message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]
                                                                                       delegate:nil
                                                                              cancelButtonTitle:@"OK"
                                                                              otherButtonTitles:nil];
                                        [alert show];
                                    }];
-            }
-            
-            // Add the new piece
-            Media *media = [Media newMediaForObject:self.piece];
-            media.mediaType = @"gif";
-            media.localURL = gifUrl;
+            } else
+                [gifMedia remove];
         }
-        
-        do
-        {
-            // Start the run loop but return after each source is handled.
-            SInt32    result = CFRunLoopRunInMode(kCFRunLoopDefaultMode, 10, YES);
-            
-            // If a source explicitly stopped the run loop, or if there are no
-            // sources or timers, go ahead and exit.
-            if ((result == kCFRunLoopRunStopped) || (result == kCFRunLoopRunFinished))
-                doneRun = YES;
-            
-            // If this has timed out (10 secs), exit
-            if (-[currentDate timeIntervalSinceNow] > 10)
-                doneRun = YES;
-            
-            // Check for any other exit conditions here and set the
-            // done variable as needed.
-        }
-        while (!doneRun);
-        [hud hide:YES];
-    } else {
-        // Delete gif if any
     }
     
     if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
-    {        
+    {
         [Piece createNewPiece:self.piece];
         NSLog(@"New piece %@ saved", self.piece);
         [TestFlight passCheckpoint:@"New piece created successfully"];
@@ -449,13 +389,15 @@
 - (void) deletePreviousMedia:(Media *)media
 {
     [mediaToDelete addObject:media];
-    [self.addPhotoButton deleteImageMedia:media];
+    [self.addPhotoButton reloadList];
     self.doneButton.enabled = YES;
 }
 
 - (NSOrderedSet *)listOfMediaForMediaPickerButton
 {
-    return [Media getAllMediaOfType:@"image" inMediaSet:self.piece.media];
+    NSMutableOrderedSet *set = [NSMutableOrderedSet orderedSetWithOrderedSet:[Media getAllMediaOfType:@"image" inMediaSet:self.piece.media]];
+    [set minusSet:mediaToDelete];
+    return set;
 }
 
 - (void) updateMediaFromNumber:(NSUInteger)fromNumber toNumber:(NSUInteger)toNumber
@@ -499,7 +441,7 @@
     Media *media = [Media newMediaForObject:self.piece];
     media.mediaType = @"image";
     media.localURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
-    [self.addPhotoButton addImageMedia:media];
+    [self.addPhotoButton reloadList];
     
     self.doneButton.enabled = [self checkForChanges];
 }

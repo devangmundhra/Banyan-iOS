@@ -479,7 +479,7 @@
     media.mediaType = @"image";
     media.localURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
     
-    [self.addPhotoButton addImageMedia:media];
+    [self.addPhotoButton reloadList];
 }
 
 - (void)mediaPickerDidCancel:(MediaPickerViewController *)mediaPicker

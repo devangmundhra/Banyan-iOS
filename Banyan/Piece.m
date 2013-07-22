@@ -18,6 +18,7 @@
 @dynamic story;
 @dynamic tags;
 @dynamic timeStamp;
+@dynamic creatingGifFromMedia;
 
 + (NSArray *)oldPiecesInStory:(Story *)story
 {

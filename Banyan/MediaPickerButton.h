@@ -25,8 +25,6 @@
 @interface MediaPickerButton : UIView <UITableViewDelegate, UITableViewDataSource>
 @property (strong, nonatomic) id<MediaPickerButtonDelegate> delegate;
 
-- (void) addImageMedia:(Media *)media;
-- (void) deleteImageMedia:(Media *)media;
 - (void) reloadList;
 
 @end

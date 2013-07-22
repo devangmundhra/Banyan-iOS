@@ -10,6 +10,7 @@
 #import "Comment.h"
 #import "Media.h"
 #import "Story.h"
+#import "Piece.h"
 
 @implementation RemoteObject
 
@@ -118,6 +119,9 @@
     NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
     for (RemoteObject *obj in array) {
         obj.remoteStatus = RemoteObjectStatusFailed;
+        if ([obj isKindOfClass:[Piece class]]) {
+            ((Piece *)obj).creatingGifFromMedia = NO;
+        }
     }
     
     //    [request setEntity:[NSEntityDescription entityForName:kBNStoryClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];

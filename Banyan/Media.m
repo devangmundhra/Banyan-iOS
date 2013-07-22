@@ -322,10 +322,12 @@
         [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:self.remoteURL] options:SDWebImageDownloaderUseNSURLCache
                                                              progress:nil
                                                             completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
-                                                                if (image)
-                                                                    success(image);
-                                                                else
+                                                                if (image) {
+                                                                    if (success) success(image);
+                                                                }
+                                                                else {
                                                                     if (failure) failure(error);
+                                                                }
                                                             }];
     } else if ([self.localURL length]) {
         ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
@@ -333,11 +335,9 @@
             ALAssetRepresentation *rep = [asset defaultRepresentation];
             CGImageRef imageRef = [rep fullScreenImage];
             UIImage *image = [UIImage imageWithCGImage:imageRef];
-            success(image);
+            if (success) success(image);
         }
-                failureBlock:^(NSError *error) {
-                    NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
-                }
+                failureBlock:failure
          ];
     }
 }

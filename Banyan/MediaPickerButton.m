@@ -24,6 +24,7 @@
     if (self) {
         // Initialization code
         self.myImageView = [[UIImageView alloc] init];
+        self.myImageView.backgroundColor = BANYAN_WHITE_COLOR;
         self.myImageView.clipsToBounds = YES;
         self.myImageView.userInteractionEnabled = NO;
         self.myImageView.transform = CGAffineTransformMakeRotation(M_PI_2);
@@ -72,6 +73,9 @@
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     self.tableView.editing = YES;
+    self.tableView.allowsSelectionDuringEditing = YES;
+    self.tableView.showsHorizontalScrollIndicator = NO;
+    self.tableView.showsVerticalScrollIndicator = NO;
     
     self.clipsToBounds = YES;
     self.addImageButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -118,12 +122,18 @@
 	return cell;
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return indexPath;
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	/*
 	 To conform to the Human Interface Guidelines, selections should not be persistent --
 	 deselect the row after it has been selected.
 	 */
+    Media *mediaToDelete = [[self.delegate listOfMediaForMediaPickerButton] objectAtIndex:indexPath.row];
+    [self.delegate deletePreviousMedia:mediaToDelete];
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
@@ -142,78 +152,79 @@
     return UITableViewCellEditingStyleNone;
 }
 
+- (BOOL) tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
 - (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return NO;
 }
 
+#define RESIZED_REORDER_CONTROL_VIEW_TAG 1
 - (void) tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	//	Grip customization code goes in here...
-	for(UIView* view in cell.subviews)
-	{
-		if([[[view class] description] isEqualToString:@"UITableViewCellReorderControl"])
-		{
-			UIView* resizedGripView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetMaxX(view.frame), CGRectGetMaxY(view.frame))];
-			[resizedGripView addSubview:view];
-			[cell addSubview:resizedGripView];
-            
-			CGSize sizeDifference = CGSizeMake(resizedGripView.frame.size.width - view.frame.size.width, resizedGripView.frame.size.height - view.frame.size.height);
-			CGSize transformRatio = CGSizeMake(resizedGripView.frame.size.width / view.frame.size.width, resizedGripView.frame.size.height / view.frame.size.height);
-            
-			//	Original transform
-			CGAffineTransform transform = CGAffineTransformIdentity;
-            
-			//	Scale custom view so grip will fill entire cell
-			transform = CGAffineTransformScale(transform, transformRatio.width, transformRatio.height);
-            
-			//	Move custom view so the grip's top left aligns with the cell's top left
-			transform = CGAffineTransformTranslate(transform, -sizeDifference.width / 2.0, -sizeDifference.height / 2.0);
-            
-			[resizedGripView setTransform:transform];
-            
-			for(UIImageView* cellGrip in view.subviews)
-			{
-				if([cellGrip isKindOfClass:[UIImageView class]])
-					[cellGrip setImage:nil];
-			}
-		}
-	}
-}
+    UIView *resizedGripView = nil;
 
-#pragma mark -
-#pragma mark Instance Methods
-
-- (void) reloadList
-{
-    [self.tableView reloadData];
-}
-
-- (void)handleMediaPickerButtonTappedAdd:(id)sender
-{
-    if (delegate) {
-        [delegate addNewMedia:self];
+    for (UIView *view in cell.subviews) {
+        if (view.tag == RESIZED_REORDER_CONTROL_VIEW_TAG) {
+            // The control for this cell has already been resized
+            resizedGripView = view;
+            break;
+        }
     }
-}
-
-- (void) deleteImageMedia:(Media *)media
-{
-//    for (UIView *view in self.scrollView.subviews) {
-//        if ([view isKindOfClass:[BNImageButton class]] && [((BNImageButton *)view).media isEqual:media]) {
-//            BNImageButton *button = (BNImageButton *)view;
-//            [button removeFromSuperview];
-//            numMediaAdded--;
-//            // Adjust all the other subviews to shift
-//            break;
-//            
-//        }
-//    }
+    
+    //	Grip customization code goes in here...
+    for(UIView* view in cell.subviews)
+    {
+        if([[[view class] description] isEqualToString:@"UITableViewCellReorderControl"])
+        {
+            if (!resizedGripView) {
+                UIView* resizedGripView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetMaxX(view.frame), CGRectGetMaxY(view.frame))];
+                resizedGripView.tag = RESIZED_REORDER_CONTROL_VIEW_TAG;
+                
+                [resizedGripView addSubview:view];
+                [cell addSubview:resizedGripView];
+                
+                CGSize sizeDifference = CGSizeMake(resizedGripView.frame.size.width - view.frame.size.width, resizedGripView.frame.size.height - view.frame.size.height);
+                CGSize transformRatio = CGSizeMake(resizedGripView.frame.size.width / view.frame.size.width, resizedGripView.frame.size.height / view.frame.size.height);
+                
+                //	Original transform
+                CGAffineTransform transform = CGAffineTransformIdentity;
+                
+                //	Scale custom view so grip will fill entire cell
+                transform = CGAffineTransformScale(transform, transformRatio.width, transformRatio.height);
+                
+                //	Move custom view so the grip's top left aligns with the cell's top left
+                transform = CGAffineTransformTranslate(transform, -sizeDifference.width / 2.0, -sizeDifference.height / 2.0);
+                
+                [resizedGripView setTransform:transform];
+            } else {
+                // If the reorder control was already transformed, just translate it. It was already scaled earlier.
+                CGAffineTransform transform = resizedGripView.transform;
+                transform = CGAffineTransformScale(transform, 1/transform.a, 1/transform.d);
+                [view setTransform:transform];
+                [resizedGripView addSubview:view];
+            }
+            
+            for(UIImageView* cellGrip in view.subviews)
+            {
+                if([cellGrip isKindOfClass:[UIImageView class]])
+                    [cellGrip setImage:nil];
+            }
+        }
+    }
 }
 
 - (MediaPickerButtonTableViewCell *)tableViewCellWithReuseIdentifier:(NSString *)identifier
 {
 	MediaPickerButtonTableViewCell *cell = [[MediaPickerButtonTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                                                  reuseIdentifier:identifier];
+    cell.backgroundColor = BANYAN_WHITE_COLOR;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleMediaPickerButtonTappedDelete:)];
+    [cell addGestureRecognizer:tap];
+    
     cell.showsReorderControl = YES;
 	return cell;
 }
@@ -227,34 +238,30 @@
     [cell.media getImageWithContentMode:UIViewContentModeScaleAspectFit bounds:CGSizeMake(CGRectGetHeight(self.bounds), CGRectGetHeight(self.bounds)) interpolationQuality:kCGInterpolationLow forMediaWithSuccess:^(UIImage *image) {[imageView setImage:image];} failure:nil];
 }
 
-- (void) addImageMedia:(Media *)imageMedia
-{    
-//    BNImageButton *imageButton = [BNImageButton buttonWithType:UIButtonTypeCustom];
-//    imageButton.media = imageMedia;
-//    [imageButton addTarget:imageButton action:@selector(handleBNImageButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-//    [imageButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
-//    [imageButton setAdjustsImageWhenHighlighted:NO];
-//    imageButton.showsTouchWhenHighlighted = YES;
-//    imageButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-//        
-//    if ([imageMedia.remoteURL length]) {
-//        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:imageMedia.remoteURL] options:SDWebImageDownloaderUseNSURLCache progress:nil completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
-//            if (image)
-//                [imageButton setImage:image forState:UIControlStateNormal];
-//        }];
-//    } else if ([imageMedia.localURL length]) {
-//        ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
-//        [library assetForURL:[NSURL URLWithString:imageMedia.localURL] resultBlock:^(ALAsset *asset) {
-//            ALAssetRepresentation *rep = [asset defaultRepresentation];
-//            CGImageRef imageRef = [rep fullScreenImage];
-//            UIImage *image = [UIImage imageWithCGImage:imageRef];
-//            [imageButton setImage:image forState:UIControlStateNormal];
-//        }
-//                failureBlock:^(NSError *error) {
-//                    NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
-//                }
-//         ];
-//    }
+#pragma mark -
+#pragma mark Instance Methods
+
+- (void) reloadList
+{
+    self.tableView.editing = NO;
+    [self.tableView reloadData];
+    self.tableView.editing = YES;
+}
+
+- (void)handleMediaPickerButtonTappedAdd:(id)sender
+{
+    if (delegate) {
+        [delegate addNewMedia:self];
+    }
+}
+
+- (void)handleMediaPickerButtonTappedDelete:(id)sender
+{
+    MediaPickerButtonTableViewCell *cell = (MediaPickerButtonTableViewCell *)((UITapGestureRecognizer *)sender).view;
+    
+    if (delegate) {
+        [delegate deletePreviousMedia:cell.media];
+    }
 }
 
 @end

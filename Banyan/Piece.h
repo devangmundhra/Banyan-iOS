@@ -20,6 +20,7 @@
 @property (nonatomic, retain) NSString * shortText;
 @property (nonatomic, retain) NSString * tags;
 @property (nonatomic, retain) Story *story;
+@property (nonatomic) BOOL creatingGifFromMedia;
 
 + (NSArray *)piecesFailedToBeUploaded;
 + (NSArray *)oldPiecesInStory:(Story *)story;

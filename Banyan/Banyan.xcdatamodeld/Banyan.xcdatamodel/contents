@@ -26,6 +26,7 @@
         <relationship name="remoteObject" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="RemoteObject" inverseName="media" inverseEntity="RemoteObject" syncable="YES"/>
     </entity>
     <entity name="Piece" representedClassName="Piece" parentEntity="RemoteObject" syncable="YES">
+        <attribute name="creatingGifFromMedia" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="longText" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="pieceNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="shortText" optional="YES" attributeType="String" syncable="YES"/>
