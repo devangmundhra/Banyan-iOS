@@ -19,7 +19,7 @@
     Story *story = self.story;
     
     self.story = nil;
-    [super remove];
+    [self remove];
     
     // Update the length
     story.length = story.pieces.count;

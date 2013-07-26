@@ -29,6 +29,8 @@
 @property (nonatomic, retain) NSNumber * primitiveUploadStatusNumber;
 @property (nonatomic, retain) NSString * sectionIdentifier;
 @property (nonatomic, retain) NSString * primitiveSectionIdentifier;
+@property (nonatomic) BOOL newPiecesToView;
+
 
 + (NSArray *)storiesFailedToBeUploaded;
 + (NSArray *)syncedStories;

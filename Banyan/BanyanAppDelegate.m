@@ -524,6 +524,9 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     // Configure a managed object cache to ensure we do not create duplicate objects
     managedObjectStore.managedObjectCache = [[RKInMemoryManagedObjectCache alloc] initWithManagedObjectContext:managedObjectStore.persistentStoreManagedObjectContext];
     
+    managedObjectStore.persistentStoreManagedObjectContext.undoManager = nil;
+    managedObjectStore.mainQueueManagedObjectContext.undoManager = nil;
+    
     NSLog(@"BanyanAppDelegate MainMOC %@ PersistentMOC %@ Persistent Store: %@", managedObjectStore.mainQueueManagedObjectContext, managedObjectStore.persistentStoreManagedObjectContext, persistentStore);
     
     [RKManagedObjectStore setDefaultStore:managedObjectStore];

@@ -81,6 +81,7 @@
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(%K == %@) AND (story = %@)",
 							  attribute, value, story];
     [request setPredicate:predicate];
+    [request setFetchLimit:1];
     
     NSError *error = nil;
     NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];

@@ -11,9 +11,9 @@
 #import <FacebookSDK/FacebookSDK.h>
 
 typedef enum {
+    RemoteObjectStatusLocal,       // Only local version
     RemoteObjectStatusPushing,    // Uploading post
     RemoteObjectStatusFailed,      // Upload failed
-    RemoteObjectStatusLocal,       // Only local version
     RemoteObjectStatusSync,       // Post uploaded
 } RemoteObjectStatus;
 

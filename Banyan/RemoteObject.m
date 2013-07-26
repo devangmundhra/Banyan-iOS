@@ -29,8 +29,13 @@
 
 #pragma mark -
 #pragma mark Revision management
-- (void)cloneFrom:(RemoteObject *)source {
+- (void)cloneFrom:(RemoteObject *)source
+{
     for (NSString *key in [[[source entity] attributesByName] allKeys]) {
+        if ([key isEqualToString:@"bnObjectId"]) {
+            NSLog(@"Skipping attribute %@", key);
+            continue;
+        }
         NSLog(@"Copying attribute %@", key);
         [self setValue:[source valueForKey:key] forKey:key];
     }
@@ -44,13 +49,6 @@
             NSLog(@"Skipping relationship %@", key);
         } else if ([key isEqualToString:@"media"]) {
             NSLog(@"Skipping relationship %@", key);
-            // Media if changed during editing will be persisted.
-            //            [self setMedia:[source media]];
-            //            self.media = [Media newMediaForObject:self];
-            //            for (NSString *key in [[[source.media entity] attributesByName] allKeys]) {
-            //                NSLog(@"Copying media attribute %@", key);
-            //                [self.media setValue:[source.media valueForKey:key] forKey:key];
-            //            }
         } else {
             NSLog(@"Copying relationship %@", key);
             [self setValue: [source valueForKey:key] forKey: key];

@@ -119,45 +119,21 @@
         return;
     
     // Release rest of the subviews which are outside the window
-    __block NSMutableSet *tempSet = [NSMutableSet set];
-    [self.pieceSubviewsInuseList enumerateObjectsUsingBlock:^(SinglePieceView *obj, BOOL *stop) {
-        if (!(obj.pieceNum >= pieceNum - floor(NUM_PIECES_WINDOW/2) && obj.pieceNum <= pieceNum + floor(NUM_PIECES_WINDOW/2)))
-            [tempSet addObject:obj];
+    NSSet *tempSet = [self.pieceSubviewsInuseList objectsPassingTest:^BOOL(SinglePieceView *obj, BOOL *stop) {
+        return (!(obj.pieceNum >= pieceNum - floor(NUM_PIECES_WINDOW/2) && obj.pieceNum <= pieceNum + floor(NUM_PIECES_WINDOW/2)));
     }];
+    
     [tempSet enumerateObjectsUsingBlock:^(SinglePieceView *obj, BOOL *stop){
         [self removePieceSubview:obj];
     }];
     
-    CGRect currentFrame = [self calculateFrameForPieceNum:pieceNum];
-    if (!CGRectEqualToRect(CGRectZero, currentFrame)) {
-        SinglePieceView *curPV = [self addPieceSubviewAtFrame:currentFrame forPieceNum:pieceNum];
-        [self loadPieceWithNumber:pieceNum atView:curPV];
-    }
-    NSUInteger prevPrevPieceNum = pieceNum - 2;
-    CGRect previousPrevFrame = [self calculateFrameForPieceNum:prevPrevPieceNum];
-    if (!CGRectEqualToRect(CGRectZero, previousPrevFrame)) {
-        SinglePieceView *prePV = [self addPieceSubviewAtFrame:previousPrevFrame forPieceNum:prevPrevPieceNum];
-        [self loadPieceWithNumber:prevPrevPieceNum atView:prePV];
-    }
-    
-    NSUInteger prevPieceNum = pieceNum - 1;
-    CGRect previousFrame = [self calculateFrameForPieceNum:prevPieceNum];
-    if (!CGRectEqualToRect(CGRectZero, previousFrame)) {
-        SinglePieceView *prePV = [self addPieceSubviewAtFrame:previousFrame forPieceNum:prevPieceNum];
-        [self loadPieceWithNumber:prevPieceNum atView:prePV];
-    }
-    
-    NSUInteger nextPieceNum = pieceNum + 1;
-    CGRect nextFrame = [self calculateFrameForPieceNum:nextPieceNum];
-    if (!CGRectEqualToRect(CGRectZero, nextFrame)) {
-        SinglePieceView *nextPV = [self addPieceSubviewAtFrame:nextFrame forPieceNum:nextPieceNum];
-        [self loadPieceWithNumber:nextPieceNum atView:nextPV];
-    }
-    NSUInteger nextNextPieceNum = pieceNum + 2;
-    CGRect nextNextFrame = [self calculateFrameForPieceNum:nextNextPieceNum];
-    if (!CGRectEqualToRect(CGRectZero, nextNextFrame)) {
-        SinglePieceView *nextPV = [self addPieceSubviewAtFrame:nextNextFrame forPieceNum:nextNextPieceNum];
-        [self loadPieceWithNumber:nextNextPieceNum atView:nextPV];
+    // Load up all the pieces for and around the current piece number
+    for (int i = pieceNum - floor(NUM_PIECES_WINDOW/2); i <= pieceNum + floor(NUM_PIECES_WINDOW/2); i++) {
+        CGRect frame = [self calculateFrameForPieceNum:i];
+        if (!CGRectEqualToRect(CGRectZero, frame)) {
+            SinglePieceView *pv = [self addPieceSubviewAtFrame:frame forPieceNum:i];
+            [self loadPieceWithNumber:i atView:pv];
+        }
     }
 }
 
@@ -171,7 +147,7 @@
     Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:pieceNum]];
     if (piece) {
         [view setPiece:piece];
-    } else {
+    } else if (self.story.bnObjectId) {
         [view setStatusForView:@"Fetching this piece..."];
 
         // Store the id of the story that this BanyanConnection method set out to fetch.
@@ -203,11 +179,8 @@
 - (void)resetView
 {
     // Release all the subviews which are outside the window
-    __block NSMutableSet *tempSet = [NSMutableSet set];
-    [self.pieceSubviewsInuseList enumerateObjectsUsingBlock:^(SinglePieceView *obj, BOOL *stop) {
-        [tempSet addObject:obj];
-    }];
-    [tempSet enumerateObjectsUsingBlock:^(SinglePieceView *obj, BOOL *stop){
+    NSArray *tempSet = [self.pieceSubviewsInuseList allObjects];
+    [tempSet enumerateObjectsUsingBlock:^(SinglePieceView *obj, NSUInteger idx, BOOL *stop) {
         [self removePieceSubview:obj];
     }];
 }

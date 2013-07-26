@@ -343,7 +343,7 @@ typedef enum {
 {
     switch (row) {
         case SettingsNotificationSectionAddStoryContribute:
-            return @"Invited to contributor to a story";
+            return @"Invited as a contributor to a story";
             break;
         case SettingsNotificationSectionAddStoryView:
             return @"Added as a spectator in a story";

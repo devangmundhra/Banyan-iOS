@@ -25,6 +25,14 @@
 @dynamic pieces;
 @dynamic uploadStatusNumber, primitiveUploadStatusNumber;
 @dynamic sectionIdentifier, primitiveSectionIdentifier;
+@dynamic newPiecesToView;
+
+- (void)awakeFromFetch
+{
+    [super awakeFromFetch];
+    self.newPiecesToView = self.viewedByCurUser && self.currentPieceNum > 0 ? YES  : NO;
+    
+}
 
 + (NSArray *)syncedStories
 {
@@ -145,7 +153,7 @@
     [self didChangeValueForKey:@"uploadStatusNumber"];
     
     [self setPrimitiveSectionIdentifier:nil];
-    [self.managedObjectContext refreshObject:self mergeChanges:YES];
+//    [self.managedObjectContext refreshObject:self mergeChanges:YES];
 }
 
 - (void) share
