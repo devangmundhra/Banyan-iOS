@@ -12,5 +12,7 @@
 	<true/>
 	<key>io.banyan.Banyan.userDefaults.addStoryInvitedContrPushNotification</key>
 	<true/>
+	<key>io.banyan.Banyan.userDefaults.pageTurnAnimation</key>
+	<true/>
 </dict>
 </plist>

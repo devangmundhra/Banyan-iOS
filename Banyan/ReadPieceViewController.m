@@ -24,7 +24,6 @@
 @interface ReadPieceViewController ()
 
 @property (strong, nonatomic) IBOutlet UIScrollView *contentView;
-@property (strong, nonatomic) IBOutlet UIView *storyInfoView;
 @property (strong, nonatomic) IBOutlet SSLabel *pieceCaptionView;
 @property (strong, nonatomic) IBOutlet UITextView *pieceTextView;
 @property (strong, nonatomic) IBOutlet UIImageView *imageView;
@@ -55,7 +54,6 @@
 @synthesize imageView = _imageView;
 @synthesize pieceCaptionView = _pieceCaptionView;
 @synthesize pieceTextView = _pieceTextView;
-@synthesize storyInfoView = _storyInfoView;
 @synthesize pieceInfoView = _pieceInfoView;
 @synthesize contributorsButton = _contributorsButton;
 @synthesize viewsButton = _viewsButton;
@@ -93,10 +91,6 @@
     return self;
 }
 
-#define TOOLBAR_HEIGHT 44.0f // tool bar. TODO: Find a way to do this programmatically
-#define INFOVIEW_HEIGHT 38.0f
-#define BUTTON_SPACING 5.0f
-
 - (id) initWithPiece:(Piece *)piece
 {
     self = [super init];
@@ -117,53 +111,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
     
-    CGRect frame = self.view.bounds;
-    frame.size.height = INFOVIEW_HEIGHT;
-    
-    self.storyInfoView = [[UIView alloc] initWithFrame:frame];
-    self.storyInfoView.backgroundColor = BANYAN_BLACK_COLOR;
-
-    UIImage *backArrowImage = [UIImage imageNamed:@"backArrow"];
-    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    backButton.frame = CGRectMake(BUTTON_SPACING, 0, floor(backArrowImage.size.width), floor(CGRectGetHeight(self.storyInfoView.bounds)));
-    [backButton setImage:backArrowImage forState:UIControlStateNormal];
-    [backButton addTarget:self.delegate action:@selector(cancelButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    backButton.showsTouchWhenHighlighted = YES;
-    [self.storyInfoView addSubview:backButton];
-    
-    UIImage *settingsImage = [UIImage imageNamed:@"settingsButton"];
-    UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    settingsButton.frame = CGRectMake(floor(self.view.frame.size.width - settingsImage.size.width - BUTTON_SPACING), 0,
-                                      floor(settingsImage.size.width), floor(CGRectGetHeight(self.storyInfoView.bounds)));
-    [settingsButton setImage:settingsImage forState:UIControlStateNormal];
-    [settingsButton addTarget:self.delegate action:@selector(settingsPopup:) forControlEvents:UIControlEventTouchUpInside];
-    settingsButton.showsTouchWhenHighlighted = YES;
-    [self.storyInfoView addSubview:settingsButton];
-    
-    UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    titleButton.frame = CGRectMake(CGRectGetMaxX(backButton.frame) + 2*BUTTON_SPACING, 0,
-                                   CGRectGetMinX(settingsButton.frame) - CGRectGetMaxX(backButton.frame) - 2*BUTTON_SPACING,
-                                   CGRectGetHeight(self.storyInfoView.bounds));
-    titleButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:20];
-    titleButton.titleLabel.minimumScaleFactor = 0.7;
-    titleButton.backgroundColor = BANYAN_BLACK_COLOR;
-    [titleButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
-    titleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    [titleButton setTitleShadowColor:[UIColor colorWithWhite:0.0 alpha:0.5] forState:UIControlStateNormal];
-    [titleButton setTitle:self.delegate.title forState:UIControlStateNormal];
-    if (self.piece.story.canContribute) {
-        titleButton.showsTouchWhenHighlighted = YES;
-        [titleButton addTarget:self.delegate action:@selector(editStoryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        titleButton.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:self.delegate.title
-                                                                                attributes:@{NSUnderlineStyleAttributeName: @1}];;
-    }
-    [self.storyInfoView insertSubview:titleButton atIndex:0];
-    
-    [self.view addSubview:self.storyInfoView];
-
-    frame = [UIScreen mainScreen].bounds;
-    frame.size.height -= CGRectGetHeight(self.storyInfoView.bounds);
-    frame.origin.y = CGRectGetMaxY(self.storyInfoView.bounds);
+    CGRect frame = [UIScreen mainScreen].bounds;
     self.contentView = [[UIScrollView alloc] initWithFrame:frame];
     self.contentView.backgroundColor = BANYAN_WHITE_COLOR;
     [self.view addSubview:self.contentView];
@@ -453,7 +401,6 @@
     // e.g. self.myOutlet = nil;
     [self setLocationLabel:nil];
     [self setContentView:nil];
-    [self setStoryInfoView:nil];
     [self setPieceInfoView:nil];
     [self setImageView:nil];
     [self setPieceTextView:nil];

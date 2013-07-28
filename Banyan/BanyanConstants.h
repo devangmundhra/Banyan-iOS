@@ -39,6 +39,9 @@ extern NSString *const BNUserDefaultsAddStoryInvitedViewPushNotification;
 extern NSString *const BNUserDefaultsAddPieceToContributedStoryPushNotification;
 extern NSString *const BNUserDefaultsPieceActionPushNotification;
 extern NSString *const BNUserDefaultsUserFollowingPushNotification;
+
+extern NSString *const BNUserDefaultsUserPageTurnAnimation;
+
 #pragma mark - PFObject Story Class
 // Class key
 extern NSString *const kBNStoryClassKey;

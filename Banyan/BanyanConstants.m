@@ -36,6 +36,8 @@ NSString *const BNUserDefaultsAddPieceToContributedStoryPushNotification = @"io.
 NSString *const BNUserDefaultsPieceActionPushNotification = @"io.banyan.Banyan.userDefaults.pieceActionPushNotification";
 NSString *const BNUserDefaultsUserFollowingPushNotification = @"io.banyan.Banyan.userDefaults.userFollowingPushNotification";
 
+NSString *const BNUserDefaultsUserPageTurnAnimation = @"io.banyan.Banyan.userDefaults.pageTurnAnimation";
+
 #pragma mark - ManagedObject Story Class
 // Class key
 NSString *const kBNStoryClassKey   = @"Story";

@@ -22,9 +22,6 @@
 @protocol ReadPieceViewControllerDelegate <NSObject>
 
 - (BOOL) readPieceViewControllerFlipToPiece:(NSNumber *)pieceNumber;
-- (void) editStoryButtonPressed:(id)sender;
-- (void) cancelButtonPressed:(id)sender;
-- (void) settingsPopup:(id)sender;
 - (void) setCurrentPiece:(Piece *)piece;
 @end
 

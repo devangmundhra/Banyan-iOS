@@ -17,6 +17,7 @@
 typedef enum {
     SettingsTableViewProfileSection = 0,
     SettingsTableViewSocialSection,
+    SettingsTableViewReadingOptionsSection,
     SettingsTableViewNotificationsSection,
     SettingsTableViewAboutSection,
 } SettingsTableViewSection;
@@ -114,17 +115,28 @@ typedef enum {
 {
     // Return the number of sections.
     if (![BanyanAppDelegate loggedIn])
-        return 1;
+        return 2;
     else
-        return 4;
+        return 5;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
     
-    if (![BanyanAppDelegate loggedIn])
-        return 2;
+    if (![BanyanAppDelegate loggedIn]) {
+        switch (section) {
+            case 0: // Reading Options
+                return 1;
+                break;
+            case 1: // About
+                return 2;
+                break;
+                
+            default:
+                break;
+        }
+    }
     
     switch (section) {
         case SettingsTableViewProfileSection:
@@ -132,6 +144,10 @@ typedef enum {
             break;
         
         case SettingsTableViewSocialSection:
+            return 1;
+            break;
+            
+        case SettingsTableViewReadingOptionsSection:
             return 1;
             break;
             
@@ -151,8 +167,19 @@ typedef enum {
 
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    if (![BanyanAppDelegate loggedIn])
-        return @"About";
+    if (![BanyanAppDelegate loggedIn]) {
+        switch (section) {
+            case 0: // Reading Options
+                return @"Reading Options";
+                break;
+            case 1: // About
+                return @"About";
+                break;
+                
+            default:
+                break;
+        }
+    }
     
     switch (section) {
         case SettingsTableViewProfileSection:
@@ -161,6 +188,10 @@ typedef enum {
             
         case SettingsTableViewSocialSection:
             return @"Social";
+            break;
+            
+        case SettingsTableViewReadingOptionsSection:
+            return @"Reading Options";
             break;
             
         case SettingsTableViewNotificationsSection:
@@ -189,14 +220,23 @@ typedef enum {
     
     // Configure the cell...
     if (![BanyanAppDelegate loggedIn]) {
-        cell.textLabel.text = [self textForAboutSectionAtRow:indexPath.row];
-        
-        if (!(indexPath.row == SettingsAboutSectionFeedback))
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        else
-            cell.accessoryType = UITableViewCellAccessoryNone;
-    }
-    else {
+        switch (indexPath.section) {
+            case 0: // Reading Options
+                cell.textLabel.text = [self textForReadingOptionsSectionAtRow:indexPath.row];
+                cell.accessoryView = [self accessoryViewForReadingOptionsSectionAtRow:indexPath.row];
+                break;
+            case 1: // About
+                cell.textLabel.text = [self textForAboutSectionAtRow:indexPath.row];
+                if (!(indexPath.row == SettingsAboutSectionFeedback))
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                else
+                    cell.accessoryType = UITableViewCellAccessoryNone;
+                break;
+                
+            default:
+                break;
+        }
+    } else {
         if (!(indexPath.section == SettingsAboutSectionAbout && indexPath.row == SettingsAboutSectionFeedback))
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         else
@@ -210,6 +250,11 @@ typedef enum {
                 cell.textLabel.text = [self textForSocialSectionAtRow:indexPath.row];
                 break;
                 
+            case SettingsTableViewReadingOptionsSection:
+                cell.textLabel.text = [self textForReadingOptionsSectionAtRow:indexPath.row];
+                cell.accessoryView = [self accessoryViewForReadingOptionsSectionAtRow:indexPath.row];
+                break;
+                
             case SettingsTableViewNotificationsSection:
                 cell.textLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:12];
                 cell.textLabel.text = [self textForNotificationsSectionAtRow:indexPath.row];
@@ -218,6 +263,10 @@ typedef enum {
                 
             case SettingsTableViewAboutSection:
                 cell.textLabel.text = [self textForAboutSectionAtRow:indexPath.row];
+                if (!(indexPath.row == SettingsAboutSectionFeedback))
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                else
+                    cell.accessoryType = UITableViewCellAccessoryNone;
                 break;
                 
             default:
@@ -249,6 +298,10 @@ typedef enum {
             [self actionForSocialSectionAtRow:indexPath.row];
             break;
             
+        case SettingsTableViewReadingOptionsSection:
+            [self actionForReadingOptionsSectionAtRow:indexPath.row];
+            break;
+
         case SettingsTableViewNotificationsSection:
             [self actionForNotificationsSectionAtRow:indexPath.row];
             break;
@@ -330,6 +383,62 @@ typedef enum {
     }
 }
 
+# pragma mark Reading Options Section
+typedef enum {
+    SettingsReadingOptionsPieceChangeTransition = 0,
+} SettingsReadingOptionsSections;
+
+- (NSString *) textForReadingOptionsSectionAtRow:(NSInteger)row
+{
+    switch (row) {
+        case SettingsReadingOptionsPieceChangeTransition:
+            return @"Page Turn Animation";
+            break;
+            
+        default:
+            assert(false);
+            break;
+    }
+}
+
+- (void) actionForReadingOptionsSectionAtRow:(NSInteger) row
+{
+    switch (row) {
+            
+        default:
+            break;
+    }
+}
+
+- (UIView *)accessoryViewForReadingOptionsSectionAtRow:(NSInteger) row
+{
+    UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    BOOL on;
+    switch (row) {
+        case SettingsReadingOptionsPieceChangeTransition:
+            [switchView addTarget:self action:@selector(pageTurnAnimationSwitchChanged:) forControlEvents:UIControlEventValueChanged];
+            on = [defaults boolForKey:BNUserDefaultsUserPageTurnAnimation];
+            break;
+            
+        default:
+            assert(false);
+            break;
+    }
+    [switchView setOn:on animated:NO];
+    return switchView;
+}
+
+- (IBAction)pageTurnAnimationSwitchChanged:(UISwitch *)switchControl
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:switchControl.on forKey:BNUserDefaultsUserPageTurnAnimation];
+    [defaults synchronize];
+
+    NSLog( @"The %@: %@", BNUserDefaultsUserPageTurnAnimation, switchControl.on ? @"ON" : @"OFF" );
+}
+
 # pragma mark Notifications Section
 typedef enum {
     SettingsNotificationSectionAddStoryContribute = 0,
@@ -337,7 +446,7 @@ typedef enum {
     SettingsNotificationSectionAddPiece,
     SettingsNotificationSectionPieceAction,
     SettingsNotificationSectionUserFollowing,
-} SettingsSettingsSection;
+} SettingsNotificationsSection;
 
 - (NSString *) textForNotificationsSectionAtRow:(NSInteger)row
 {

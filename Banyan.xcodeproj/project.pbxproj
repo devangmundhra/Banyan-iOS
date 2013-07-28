@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0B8D601560334B81AE48FCCD /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6EDBDCCC91248339FDC7301 /* libPods.a */; };
 		5103FB9F166898960095B11F /* UIImage+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 5103FB9E166898960095B11F /* UIImage+Create.m */; };
+		5105364F17A5AD720046D969 /* defaultPerfs.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5105364E17A5AD720046D969 /* defaultPerfs.plist */; };
 		510787C6163A36A90042B436 /* UIImage+AlphaAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787C1163A36A90042B436 /* UIImage+AlphaAdditions.m */; };
 		510787C7163A36A90042B436 /* UIImage+ResizeAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787C3163A36A90042B436 /* UIImage+ResizeAdditions.m */; };
 		510787C8163A36A90042B436 /* UIImage+RoundedCornerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 510787C5163A36A90042B436 /* UIImage+RoundedCornerAdditions.m */; };
@@ -30,7 +31,6 @@
 		5128EB4F17472FF600393173 /* record.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128EB4317472FF600393173 /* record.png */; };
 		5128EB5417478B3D00393173 /* BNAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 5128EB5317478B3D00393173 /* BNAudioRecorder.m */; };
 		5128EB5717478B5500393173 /* BNAudioStreamingPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5128EB5617478B5500393173 /* BNAudioStreamingPlayer.m */; };
-		51444A1217737F680037570A /* defaultPerfs.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51444A1117737F680037570A /* defaultPerfs.plist */; };
 		5144EC6A1712277600F0B265 /* cameraSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC601712277600F0B265 /* cameraSymbol.png */; };
 		5144EC6B1712277600F0B265 /* cameraSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC611712277600F0B265 /* cameraSymbol@2x.png */; };
 		5144EC6C1712277600F0B265 /* locationSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC621712277600F0B265 /* locationSymbol.png */; };
@@ -218,6 +218,7 @@
 /* Begin PBXFileReference section */
 		5103FB9D166898960095B11F /* UIImage+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+Create.h"; path = "Banyan/UIImage+Create.h"; sourceTree = "<group>"; };
 		5103FB9E166898960095B11F /* UIImage+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Create.m"; path = "Banyan/UIImage+Create.m"; sourceTree = "<group>"; };
+		5105364E17A5AD720046D969 /* defaultPerfs.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = defaultPerfs.plist; sourceTree = "<group>"; };
 		510787C0163A36A90042B436 /* UIImage+AlphaAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+AlphaAdditions.h"; path = "Banyan/UIImage+AlphaAdditions.h"; sourceTree = "<group>"; };
 		510787C1163A36A90042B436 /* UIImage+AlphaAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+AlphaAdditions.m"; path = "Banyan/UIImage+AlphaAdditions.m"; sourceTree = "<group>"; };
 		510787C2163A36A90042B436 /* UIImage+ResizeAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+ResizeAdditions.h"; path = "Banyan/UIImage+ResizeAdditions.h"; sourceTree = "<group>"; };
@@ -250,8 +251,6 @@
 		5128EB5317478B3D00393173 /* BNAudioRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioRecorder.m; sourceTree = "<group>"; };
 		5128EB5517478B5500393173 /* BNAudioStreamingPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNAudioStreamingPlayer.h; sourceTree = "<group>"; };
 		5128EB5617478B5500393173 /* BNAudioStreamingPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioStreamingPlayer.m; sourceTree = "<group>"; };
-		51444A1117737F680037570A /* defaultPerfs.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = defaultPerfs.plist; sourceTree = "<group>"; };
-		51444A131773FF0D0037570A /* defaultPerfs.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = defaultPerfs.plist; sourceTree = "<group>"; };
 		5144EC601712277600F0B265 /* cameraSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cameraSymbol.png; sourceTree = "<group>"; };
 		5144EC611712277600F0B265 /* cameraSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cameraSymbol@2x.png"; sourceTree = "<group>"; };
 		5144EC621712277600F0B265 /* locationSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = locationSymbol.png; sourceTree = "<group>"; };
@@ -853,8 +852,7 @@
 			isa = PBXGroup;
 			children = (
 				5189B2BF15B387E200562DD0 /* Banyan-Info.plist */,
-				51444A131773FF0D0037570A /* defaultPerfs.plist */,
-				51444A1117737F680037570A /* defaultPerfs.plist */,
+				5105364E17A5AD720046D969 /* defaultPerfs.plist */,
 				5189B2C015B387E200562DD0 /* InfoPlist.strings */,
 				5189B2C315B387E200562DD0 /* main.m */,
 				5189B2C515B387E200562DD0 /* Banyan-Prefix.pch */,
@@ -1278,7 +1276,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				51444A1217737F680037570A /* defaultPerfs.plist in Resources */,
+				5105364F17A5AD720046D969 /* defaultPerfs.plist in Resources */,
 				51F60EF816E8423E00F9715E /* Icon.png in Resources */,
 				51F60EF916E8423E00F9715E /* Icon@2x.png in Resources */,
 				5189B2C215B387E200562DD0 /* InfoPlist.strings in Resources */,

@@ -17,6 +17,8 @@
 @interface StoryReaderController ()
 @property (strong, nonatomic) Piece *currentPiece;
 
+@property (strong, nonatomic) IBOutlet UIView *storyInfoView;
+
 @property (strong, nonatomic) UIToolbar *toolbar;
 @property (strong, nonatomic) UIBarButtonItem *cancelButton;
 @property (strong, nonatomic) UIBarButtonItem *settingsButton;
@@ -32,6 +34,7 @@
 @synthesize cancelButton = _cancelButton;
 @synthesize settingsButton = _settingsButton;
 @synthesize titleLabel = _titleLabel;
+@synthesize storyInfoView = _storyInfoView;
 
 - (void)setCurrentPiece:(Piece *)currentPiece
 {
@@ -62,17 +65,71 @@
     return self;
 }
 
+#define INFOVIEW_HEIGHT 38.0f
+#define BUTTON_SPACING 5.0f
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
     self.title = self.story.title;
+
+    CGRect frame = self.view.bounds;
+    frame.size.height = INFOVIEW_HEIGHT;
+    
+    self.storyInfoView = [[UIView alloc] initWithFrame:frame];
+    self.storyInfoView.backgroundColor = BANYAN_BLACK_COLOR;
+    
+    UIImage *backArrowImage = [UIImage imageNamed:@"backArrow"];
+    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    backButton.frame = CGRectMake(BUTTON_SPACING, 0, floor(backArrowImage.size.width), floor(CGRectGetHeight(self.storyInfoView.bounds)));
+    [backButton setImage:backArrowImage forState:UIControlStateNormal];
+    [backButton addTarget:self action:@selector(cancelButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    backButton.showsTouchWhenHighlighted = YES;
+    [self.storyInfoView addSubview:backButton];
+    
+    UIImage *settingsImage = [UIImage imageNamed:@"settingsButton"];
+    UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    settingsButton.frame = CGRectMake(floor(self.view.frame.size.width - settingsImage.size.width - BUTTON_SPACING), 0,
+                                      floor(settingsImage.size.width), floor(CGRectGetHeight(self.storyInfoView.bounds)));
+    [settingsButton setImage:settingsImage forState:UIControlStateNormal];
+    [settingsButton addTarget:self action:@selector(settingsPopup:) forControlEvents:UIControlEventTouchUpInside];
+    settingsButton.showsTouchWhenHighlighted = YES;
+    [self.storyInfoView addSubview:settingsButton];
+    
+    UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    titleButton.frame = CGRectMake(CGRectGetMaxX(backButton.frame) + 2*BUTTON_SPACING, 0,
+                                   CGRectGetMinX(settingsButton.frame) - CGRectGetMaxX(backButton.frame) - 2*BUTTON_SPACING,
+                                   CGRectGetHeight(self.storyInfoView.bounds));
+    titleButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:20];
+    titleButton.titleLabel.minimumScaleFactor = 0.7;
+    titleButton.backgroundColor = BANYAN_BLACK_COLOR;
+    [titleButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
+    titleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    [titleButton setTitleShadowColor:[UIColor colorWithWhite:0.0 alpha:0.5] forState:UIControlStateNormal];
+    [titleButton setTitle:self.title forState:UIControlStateNormal];
+    if (self.story.canContribute) {
+        titleButton.showsTouchWhenHighlighted = YES;
+        [titleButton addTarget:self action:@selector(editStoryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        titleButton.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:self.title
+                                                                                attributes:@{NSUnderlineStyleAttributeName: @1}];;
+    }
+    [self.storyInfoView insertSubview:titleButton atIndex:0];
+    
+    [self.view addSubview:self.storyInfoView];
+    [self performSelector:@selector(hideStoryInfoView) withObject:nil afterDelay:2];
+    
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
     self.view.frame = [UIScreen mainScreen].applicationFrame;
     
     [Story viewedStory:self.story];
     
-    self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStylePageCurl
+    UIPageViewControllerTransitionStyle pageTurnAnimation = UIPageViewControllerTransitionStylePageCurl;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if (![defaults boolForKey:BNUserDefaultsUserPageTurnAnimation])
+        pageTurnAnimation = UIPageViewControllerTransitionStyleScroll;
+    
+    self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:pageTurnAnimation
                                                               navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
                                                                             options:nil];
     self.pageViewController.delegate = self;
@@ -83,13 +140,17 @@
     self.pageViewController.dataSource = self;
 
     [self addChildViewController:self.pageViewController];
-    [self.view addSubview:self.pageViewController.view];
+    [self.view insertSubview:self.pageViewController.view belowSubview:self.storyInfoView];
     self.pageViewController.view.frame = self.view.bounds;
     [self.pageViewController didMoveToParentViewController:self];
     self.view.gestureRecognizers = self.pageViewController.gestureRecognizers;
     [self.view.gestureRecognizers enumerateObjectsUsingBlock:^(UIGestureRecognizer *gR, NSUInteger idx, BOOL *stop){
         gR.delegate = self;
     }];
+    
+    UISwipeGestureRecognizer* swipeDownGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showStoryInfoView:)];
+    swipeDownGestureRecognizer.direction = UISwipeGestureRecognizerDirectionDown;
+    [self.view addGestureRecognizer:swipeDownGestureRecognizer];
     
 //    [self setupToolbar];
     
@@ -201,40 +262,39 @@
     self.toolbar.userInteractionEnabled = YES;
 }
 
-- (void) hideToolbar:(BOOL)hide
-{
-    [[UIApplication sharedApplication] setStatusBarHidden:hide withAnimation:UIStatusBarAnimationSlide];
-
-    if (hide) {        
-        [UIView animateWithDuration:0.3
-                         animations:^{                             
-                             CGRect tbFrame = self.toolbar.frame;
-                             tbFrame.origin.y -= tbFrame.size.height;
-                             self.toolbar.frame = tbFrame;
-                         }
-                         completion:^(BOOL finished) {
-                             [self.toolbar removeFromSuperview];
-                         }];
-    } else {        
-        [UIView animateWithDuration:0.3
-                         animations:^{                             
-                             [self.view addSubview:self.toolbar];
-                             
-                             CGRect tbFrame = self.toolbar.frame;
-                             tbFrame.origin.y += tbFrame.size.height;
-                             self.toolbar.frame = tbFrame;
-                         }];
-    }
-}
-
-- (IBAction)tap:(id)sender
-{
-    BOOL hidden = [[UIApplication sharedApplication] isStatusBarHidden];
-    [self hideToolbar:!hidden];
-}
-
 # pragma mark
 # pragma mark target actions
+- (void)showStoryInfoView:(id)sender
+{
+//    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         [self.view addSubview:self.storyInfoView];
+                         
+                         CGRect siFrame = self.storyInfoView.frame;
+                         siFrame.origin.y += siFrame.size.height;
+                         self.storyInfoView.frame = siFrame;
+                     } completion:^(BOOL finished) {
+                         [self performSelector:@selector(hideStoryInfoView) withObject:nil afterDelay:4];
+                     }];
+}
+
+- (void)hideStoryInfoView
+{
+//    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+    
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         CGRect siFrame = self.storyInfoView.frame;
+                         siFrame.origin.y -= siFrame.size.height;
+                         self.storyInfoView.frame = siFrame;
+                     }
+                     completion:^(BOOL finished) {
+                         [self.storyInfoView removeFromSuperview];
+                     }];
+}
+
 - (void)settingsPopup:(id)sender
 {
     UIActionSheet *actionSheet = nil;
