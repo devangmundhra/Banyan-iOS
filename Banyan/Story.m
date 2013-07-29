@@ -223,4 +223,17 @@
     [TestFlight passCheckpoint:@"Story shared"];
 }
 
+- (void) saveStoryMOIdToUserDefaults
+{
+    // Save this story in the UserDefaults so that next time the user will add a piece here.
+    NSError *error = nil;
+    BOOL returnVal = [self.managedObjectContext obtainPermanentIDsForObjects:@[self] error:&error];
+    if (!returnVal) {
+        NSLog(@"Failed to obtain the permanentIds of the story because of error %@", error);
+    } else {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setURL:[[self objectID] URIRepresentation] forKey:BNUserDefaultsCurrentOngoingStoryToContribute];
+        [defaults synchronize];
+    }
+}
 @end

@@ -67,46 +67,36 @@
     [searchNavigationController setTabBarItem:searchTabBarItem];
     [profileNavigationController setTabBarItem:settingsTabBar];
     
-    //    self.tabBarController.delegate = self;
     [self setViewControllers:@[storyListNavigationController, /*searchNavigationController,*/ profileNavigationController] animated:YES];
 }
 
 -(IBAction) addTabButtonPressed:(UIButton *)sender
 {
     BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
-
     if (![BanyanAppDelegate loggedIn]) {
         [delegate login];
     } else {
-        Story *story = [Story newDraftStory];
-        ModifyStoryViewController *newStoryViewController = [[ModifyStoryViewController alloc] initWithStory:story];
-        [self presentViewController:newStoryViewController animated:YES completion:nil];
+        // If there is already a default story user is creating a story on, use that story.
+        // Else show the story picker view controller.
+        
+        Story *story = [Story getCurrentOngoingStoryToContribute];
+        if (!story) {
+            StoryPickerViewController *vc = [[StoryPickerViewController alloc] initWithStyle:UITableViewStylePlain];
+            vc.delegate = self;
+            UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:vc];
+            [self presentViewController:nvc animated:YES completion:nil];
+        } else {
+            StoryListTableViewController *listVc = [[self.tabBarController viewControllers] objectAtIndex:0];
+            [listVc addPieceToStory:story];        }
     }
-//    BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
-//    if (![BanyanAppDelegate loggedIn]) {
-//        [delegate login];
-//    } else {
-//        // If there is already a default story user is creating a story on, use that story.
-//        // Else show the story picker view controller.
-//        
-//        Story *story = [Story getCurrentOngoingStoryToContribute];
-//        if (!story) {
-//            StoryPickerViewController *vc = [[StoryPickerViewController alloc] initWithStyle:UITableViewStylePlain];
-//            vc.delegate = self;
-//            UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:vc];
-//            [self presentViewController:nvc animated:YES completion:nil];
-//        } else {
-//            StoryListTableViewController *listVc = [[self.tabBarController viewControllers] objectAtIndex:0];
-//            [listVc addPieceToStory:story];        }
-//    }
 }
 
-//# pragma mark StoryPickerViewControllerDelegate
-//- (void) storyPickerViewControllerDidPickStory:(Story *)story
-//{
-//    StoryListTableViewController *listVc = [[self viewControllers] objectAtIndex:0];
-//    [listVc addPieceToStory:story];
-//}
+# pragma mark StoryPickerViewControllerDelegate
+- (void) storyPickerViewControllerDidPickStory:(Story *)story
+{
+    StoryListTableViewController *listVc = [[self viewControllers] objectAtIndex:0];
+    [listVc addPieceToStory:story];
+}
 
 - (void)didReceiveMemoryWarning
 {

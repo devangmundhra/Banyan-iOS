@@ -36,6 +36,7 @@
 + (NSArray *)syncedStories;
 + (NSArray *)unsavedStories;
 - (NSNumber *)calculateUploadStatusNumber;
+- (void) saveStoryMOIdToUserDefaults;
 + (Story *)getCurrentOngoingStoryToContribute;
 + (NSArray *)getStoriesUserCanContributeTo;
 

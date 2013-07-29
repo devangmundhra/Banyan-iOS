@@ -1,6 +1,6 @@
 //
-//  NewStoryViewController.m
-//  Storied
+//  ModifyStoryViewController.m
+//  Banyan
 //
 //  Created by Devang Mundhra on 3/10/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
@@ -83,6 +83,7 @@
 @synthesize numPlayersLabel, numSpectatorsLabel;
 @synthesize backupStory_ = _backupStory_;
 @synthesize editMode = _editMode;
+@synthesize delegate = _delegate;
 
 - (id) initWithStory:(Story *)story
 {
@@ -96,7 +97,7 @@
             self.backupStory_ = [NSEntityDescription insertNewObjectForEntityForName:[[story entity] name] inManagedObjectContext:[story managedObjectContext]];
             [self.backupStory_ cloneFrom:story];
         }
-
+        
     }
     return self;
 }
@@ -120,8 +121,8 @@
 	// Do any additional setup after loading the view, typically from a nib.
     
     self.addPhotoButton.hidden = YES; // Stories don't have photos
-//    self.addPhotoButton.delegate = self;
-
+    //    self.addPhotoButton.delegate = self;
+    
     self.inviteContactsButton.enabled = 1;
     [self.inviteContactsButton setBackgroundColor:BANYAN_GREEN_COLOR];
     [self.inviteContactsButton setImage:[UIImage imageNamed:@"addUserSymbol"] forState:UIControlStateNormal];
@@ -150,7 +151,7 @@
     
     self.viewerPrivacySegmentedControl = [[SVSegmentedControl alloc] initWithSectionTitles:@[@"Everyone", @"Limited", @"Selected"]];
     [self.viewerPrivacySegmentedControl addTarget:self action:@selector(storyPrivacySegmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
-
+    
     self.contributorPrivacySegmentedControl.crossFadeLabelsOnDrag = YES;
     self.contributorPrivacySegmentedControl.height = 25;
     self.contributorPrivacySegmentedControl.font = [UIFont fontWithName:STORY_FONT size:12];;
@@ -158,8 +159,8 @@
     self.contributorPrivacySegmentedControl.textColor = BANYAN_WHITE_COLOR;
     [self.scrollView addSubview:self.contributorPrivacySegmentedControl];
     self.contributorPrivacySegmentedControl.center = CGPointMake(160, 78);
-
-
+    
+    
     self.viewerPrivacySegmentedControl.crossFadeLabelsOnDrag = YES;
     self.viewerPrivacySegmentedControl.height = 25;
     self.viewerPrivacySegmentedControl.font = [UIFont fontWithName:STORY_FONT size:12];
@@ -221,17 +222,17 @@
     if (self.story.tags) {
         [[self.story.tags componentsSeparatedByString:kTokenisingCharacter]
          enumerateObjectsUsingBlock:^(NSString *token, NSUInteger idx, BOOL *stop) {
-            [self.tagsFieldView.tokenField addTokenWithTitle:token];
-        }];
+             [self.tagsFieldView.tokenField addTokenWithTitle:token];
+         }];
     }
     else {
         [self.tagsFieldView.tokenField setPromptText:@"Tags: "];
     }
     
     [self updateScrollViewContentSize];
-
+    
     [self.inviteContactsButton addTarget:self action:@selector(inviteContacts:) forControlEvents:UIControlEventTouchUpInside];
-    self.inviteContactsButton.enabled = (self.contributorPrivacySegmentedControl.selectedSegmentIndex == ContributorPrivacySegmentedControlInvited) || (self.viewerPrivacySegmentedControl.selectedSegmentIndex == ViewerPrivacySegmentedControlInvited);    
+    self.inviteContactsButton.enabled = (self.contributorPrivacySegmentedControl.selectedSegmentIndex == ContributorPrivacySegmentedControlInvited) || (self.viewerPrivacySegmentedControl.selectedSegmentIndex == ViewerPrivacySegmentedControlInvited);
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -264,13 +265,13 @@
     }
 }
 
-- (IBAction)doneNewStory:(UIBarButtonItem *)sender 
+- (IBAction)doneNewStory:(UIBarButtonItem *)sender
 {
     [self dismissKeyboard:nil];
     // Title
     self.story.title = (self.storyTitleTextField.text && ![self.storyTitleTextField.text isEqualToString:@""]) ? self.storyTitleTextField.text : [BNMisc longCurrentDate];
     
-    // Story Privacy    
+    // Story Privacy
     self.story.writeAccess = [self contributorPrivacyDictionary];
     self.story.readAccess = [self viewerPrivacyDictionary];
     
@@ -300,7 +301,9 @@
         NSLog(@"ModifyStoryViewController_No valid edit mode");
     }
     
-    [self dismissEditView];
+    [self dismissEditViewWithCompletionBlock:^{
+        [self.delegate modifyStoryViewControllerDidSelectStory:self.story];
+    }];
 }
 
 - (IBAction)cancel:(id)sender
@@ -314,7 +317,11 @@
 		[self.story remove];
     
 	self.story = nil; // Just in case
-    [self dismissEditView];
+    [self dismissEditViewWithCompletionBlock:^{
+        if ([self.delegate respondsToSelector:@selector(modifyStoryViewControllerDidDismiss:)]) {
+            [self.delegate modifyStoryViewControllerDidDismiss:self];
+        }
+    }];
 }
 
 # pragma mark story privacy
@@ -402,7 +409,7 @@
             return nil;
         }
     }
-
+    
     return [NSDictionary dictionaryWithObject:self.invitedToViewList forKey:kBNStoryPrivacyInvitedFacebookFriends];
 }
 
@@ -430,7 +437,7 @@
     [actionSheet addButtonWithTitle:MediaPickerControllerSourceTypePhotoLib];
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
     [actionSheet showInView:self.view];
-//    [actionSheet showFromTabBar:self.tabBarController.tabBar];
+    //    [actionSheet showFromTabBar:self.tabBarController.tabBar];
 }
 
 - (void) deletePreviousMedia:(Media *)media
@@ -530,11 +537,11 @@
 {
     
     [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardWillShowNotification 
+                                                    name:UIKeyboardWillShowNotification
                                                   object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardWillHideNotification 
+                                                    name:UIKeyboardWillHideNotification
                                                   object:nil];
     
 }
@@ -549,8 +556,8 @@
     UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
     self.scrollView.contentInset = contentInsets;
     self.scrollView.scrollIndicatorInsets = contentInsets;
-
-    // If active text field is hidden by keyboard, scroll it so it's visible    
+    
+    // If active text field is hidden by keyboard, scroll it so it's visible
     if (self.activeField == self.tagsFieldView.tokenField) {
         CGRect aRect = self.view.frame;
         aRect.size.height -= self.kbSize.height;
@@ -566,7 +573,7 @@
 
 // Called when the UIKeyboardWillBeHidden is sent
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification
-{    
+{
     UIEdgeInsets contentInsets = UIEdgeInsetsZero;
     self.scrollView.contentInset = contentInsets;
     self.scrollView.scrollIndicatorInsets = contentInsets;
@@ -579,7 +586,7 @@
     [self dismissKeyboard:NULL];
 }
 
-- (IBAction)dismissKeyboard:(id)sender 
+- (IBAction)dismissKeyboard:(id)sender
 {
     if (self.activeField.isFirstResponder)
         [self.activeField resignFirstResponder];
@@ -632,7 +639,7 @@
 }
 
 - (void)tokenFieldFrameDidChange:(TITokenField *)tokenField
-{    
+{
     if (self.activeField == self.tagsFieldView.tokenField) {
         if (self.activeField == self.tagsFieldView.tokenField) {
             CGRect aRect = self.view.frame;
@@ -657,10 +664,10 @@
 }
 
 #pragma mark Methods to interface between views
-- (void) dismissEditView
+- (void) dismissEditViewWithCompletionBlock:(void (^)(void))completionBlock
 {
     [self deleteBackupStory];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:completionBlock];
 }
 
 #pragma Memory Management

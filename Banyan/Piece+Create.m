@@ -204,9 +204,7 @@
     uploadPiece(piece);
     
     // Save this story in the UserDefaults so that next time the user will add a piece here.
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setURL:[[piece.story objectID] URIRepresentation] forKey:BNUserDefaultsCurrentOngoingStoryToContribute];
-    [defaults synchronize];
+    [piece.story saveStoryMOIdToUserDefaults];
 }
 
 @end

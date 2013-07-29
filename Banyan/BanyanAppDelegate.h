@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
-#import "MasterTabBarController.h"
 #import "UserLoginViewController.h"
 
 #define DEV FALSE
@@ -32,10 +31,11 @@
 
 #define GOOGLE_API_KEY @"AIzaSyBwOBP068EO-Ubi0Qzu8uwFnZZHaIVwNyg"
 
-@interface BanyanAppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate, UserLoginViewControllerDelegate>
+@class MasterTabBarController;
+@interface BanyanAppDelegate : UIResponder <UIApplicationDelegate, UserLoginViewControllerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
-@property (nonatomic, strong) BNTabBarController *tabBarController;
+@property (nonatomic, strong) MasterTabBarController *tabBarController;
 
 - (void) fireRemoteObjectTimer;
 - (void) invalidateRemoteObjectTimer;

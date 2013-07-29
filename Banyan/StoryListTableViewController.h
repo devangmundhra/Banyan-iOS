@@ -12,6 +12,8 @@
 
 @interface StoryListTableViewController : CoreDataTableViewController <SingleStoryCellDelegate> {
 	NSIndexPath * indexOfVisibleBackView;
-} 
+}
+
+-(void) addPieceToStory:(Story *)story;
 
 @end

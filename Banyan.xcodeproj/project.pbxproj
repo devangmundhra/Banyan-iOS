@@ -56,6 +56,7 @@
 		517A01D7170A7A9E00665F0F /* MediaPickerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 517A01D6170A7A9E00665F0F /* MediaPickerButton.m */; };
 		517A01DA170BFA3000665F0F /* InviteFriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 517A01D9170BFA2F00665F0F /* InviteFriendCell.m */; };
 		517A01DD170BFA5B00665F0F /* InviteFriendCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 517A01DC170BFA5A00665F0F /* InviteFriendCell.xib */; };
+		51802BB617A6E8DA00213090 /* StoryPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51802BB517A6E8D900213090 /* StoryPickerViewController.m */; };
 		51815328171230AB006F73D3 /* readButtonUnselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 51815326171230AB006F73D3 /* readButtonUnselected.png */; };
 		51815329171230AB006F73D3 /* readButtonUnselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51815327171230AB006F73D3 /* readButtonUnselected@2x.png */; };
 		5181532C17123412006F73D3 /* writeButtonUnselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181532A17123412006F73D3 /* writeButtonUnselected.png */; };
@@ -286,6 +287,8 @@
 		517A01D9170BFA2F00665F0F /* InviteFriendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InviteFriendCell.m; path = Banyan/InviteFriendCell.m; sourceTree = "<group>"; };
 		517A01DC170BFA5A00665F0F /* InviteFriendCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = InviteFriendCell.xib; path = Banyan/InviteFriendCell.xib; sourceTree = "<group>"; };
 		517A01DE170EB02900665F0F /* User_Defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = User_Defines.h; path = Banyan/User_Defines.h; sourceTree = "<group>"; };
+		51802BB417A6E8D900213090 /* StoryPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryPickerViewController.h; path = Banyan/StoryPickerViewController.h; sourceTree = "<group>"; };
+		51802BB517A6E8D900213090 /* StoryPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryPickerViewController.m; path = Banyan/StoryPickerViewController.m; sourceTree = "<group>"; };
 		51815326171230AB006F73D3 /* readButtonUnselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = readButtonUnselected.png; sourceTree = "<group>"; };
 		51815327171230AB006F73D3 /* readButtonUnselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "readButtonUnselected@2x.png"; sourceTree = "<group>"; };
 		5181532A17123412006F73D3 /* writeButtonUnselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = writeButtonUnselected.png; sourceTree = "<group>"; };
@@ -621,6 +624,8 @@
 				51F095671702A6DE009D5A28 /* ModifyStoryViewController.xib */,
 				5189B2DD15B395F300562DD0 /* InvitedTableViewController.h */,
 				5189B2DE15B395F300562DD0 /* InvitedTableViewController.m */,
+				51802BB417A6E8D900213090 /* StoryPickerViewController.h */,
+				51802BB517A6E8D900213090 /* StoryPickerViewController.m */,
 				517A01DB170BFA3700665F0F /* InviteFriendCell */,
 			);
 			name = Edit;
@@ -1468,6 +1473,7 @@
 				5189B34615B395F300562DD0 /* Story+Stats.m in Sources */,
 				5189B34915B395F300562DD0 /* StoryListTableViewController.m in Sources */,
 				5189B34D15B395F300562DD0 /* UserLoginViewController.m in Sources */,
+				51802BB617A6E8DA00213090 /* StoryPickerViewController.m in Sources */,
 				51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */,
 				51CFD92915F1F260002926F9 /* SettingsTableViewController.m in Sources */,
 				51CFD93615F3E80B002926F9 /* FollowingFriendsViewController.m in Sources */,

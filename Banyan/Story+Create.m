@@ -308,15 +308,7 @@
     }
     
     // Save this story in the UserDefaults so that next time the user will add a piece here.
-    NSError *error = nil;
-    BOOL returnVal = [story.managedObjectContext obtainPermanentIDsForObjects:@[story] error:&error];
-    if (!returnVal) {
-        NSLog(@"Failed to obtain the permanentIds of the story because of error %@", error);
-    } else {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setURL:[[story objectID] URIRepresentation] forKey:BNUserDefaultsCurrentOngoingStoryToContribute];
-        [defaults synchronize];
-    }
+    [story saveStoryMOIdToUserDefaults];
 }
 
 @end

@@ -7,9 +7,8 @@
 //
 
 #import "BNTabBarController.h"
-#import "ModifyStoryViewController.h"
-//#import "StoryPickerViewController.h"
+#import "StoryPickerViewController.h"
 
-@interface MasterTabBarController : BNTabBarController /*<StoryPickerViewControllerDelegate>*/
+@interface MasterTabBarController : BNTabBarController <StoryPickerViewControllerDelegate>
 
 @end

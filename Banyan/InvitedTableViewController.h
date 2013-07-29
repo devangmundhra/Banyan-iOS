@@ -34,7 +34,7 @@ typedef enum {
 
 @interface InvitedTableViewController : UITableViewController <UISearchBarDelegate, UISearchDisplayDelegate, InviteFriendCellDelegate>
 
-@property (nonatomic, weak) id<InvitedTableViewControllerDelegate> delegate;
+@property (nonatomic, strong) id<InvitedTableViewControllerDelegate> delegate;
 
 - (id)initWithViewerPermissions:(NSDictionary *)viewerPermission contributorPermission:(NSDictionary *)contributorPermission;
 

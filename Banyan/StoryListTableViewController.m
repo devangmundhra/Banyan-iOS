@@ -39,12 +39,13 @@ typedef enum {
 {
     [super viewDidLoad];
     
+    [self.tableView registerClass:[SingleStoryCell class] forCellReuseIdentifier:@"SingleStoryCell"];
     [self.view setBackgroundColor:BANYAN_LIGHTGRAY_COLOR];
     [self.tableView setSeparatorColor:BANYAN_LIGHTGRAY_COLOR];
     self.tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     [self.tableView setShowsHorizontalScrollIndicator:NO];
     [self.tableView setShowsVerticalScrollIndicator:NO];
-
+    
     // Fetched results controller
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
     NSSortDescriptor *uploadStatusSD = [NSSortDescriptor sortDescriptorWithKey:@"uploadStatusNumber" ascending:YES];
@@ -53,7 +54,7 @@ typedef enum {
                                                              ascending:NO
                                                               selector:@selector(compare:)];
     request.sortDescriptors = [NSArray arrayWithObjects:uploadStatusSD, newPiecesSD, dateSD, nil];
-
+    
     self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                         managedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext
                                                                           sectionNameKeyPath:nil
@@ -79,7 +80,7 @@ typedef enum {
     [self.filterStoriesSegmentedControl setContentOffset:CGSizeMake(5, 0) forSegmentAtIndex:FilterStoriesSegmentIndexFollowing];
     [self.filterStoriesSegmentedControl setContentOffset:CGSizeMake(5, 0) forSegmentAtIndex:FilterStoriesSegmentIndexPopular];
     self.filterStoriesSegmentedControl.apportionsSegmentWidthsByContent = YES;
-
+    
     [self.navigationItem setTitleView:self.filterStoriesSegmentedControl];
     
     // Notifications to refresh data
@@ -105,7 +106,7 @@ typedef enum {
 - (void)viewDidUnload
 {
     [super viewDidUnload];
-
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self setFilterStoriesSegmentedControl:nil];
     self.fetchedResultsController = nil;
@@ -129,7 +130,7 @@ typedef enum {
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"SingleStoryCell";
-    SingleStoryCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    SingleStoryCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     if (cell == nil) {
         cell = [[SingleStoryCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
@@ -231,7 +232,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
         [Story deleteStory:story];
         [TestFlight passCheckpoint:@"Story deleted by swipe"];
-    }    
+    }
 }
 
 - (void)addPieceForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -295,7 +296,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         case FilterStoriesSegmentIndexFollowing:
             arrayOfUserIdsBeingFollowed = [NSMutableArray array];
             for (NSMutableDictionary *user in [[NSUserDefaults standardUserDefaults]
-                 objectForKey:BNUserDefaultsBanyanUsersFacebookFriends]) {
+                                               objectForKey:BNUserDefaultsBanyanUsersFacebookFriends]) {
                 if ([[user objectForKey:USER_BEING_FOLLOWED] boolValue]) {
                     [arrayOfUserIdsBeingFollowed addObject:[user objectForKey:@"objectId"]];
                 }
@@ -306,7 +307,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         default:
             break;
     }
-
+    
     self.fetchedResultsController.fetchRequest.predicate = predicate;
     [self performFetch];
 }
@@ -401,6 +402,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (![BanyanAppDelegate loggedIn] || !story.canContribute)
         return;
+    
     Piece *piece = [Piece newPieceDraftForStory:story];
     ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
     [addPieceViewController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];

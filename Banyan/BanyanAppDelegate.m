@@ -11,6 +11,7 @@
 #import "AFParseAPIClient.h"
 #import "AFBanyanAPIClient.h"
 #import "BanyanConnection.h"
+#import "MasterTabBarController.h"
 
 @interface BanyanAppDelegate ()
 @property (strong, nonatomic) NSTimer *remoteObjectBackgroundTimer;
