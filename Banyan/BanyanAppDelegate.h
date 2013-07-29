@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
-#import "BNTabBarController.h"
+#import "MasterTabBarController.h"
 #import "UserLoginViewController.h"
 
 #define DEV FALSE

@@ -19,6 +19,7 @@
 		510F49171727D191005BC5ED /* NSObject+BlockObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F49161727D191005BC5ED /* NSObject+BlockObservation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		510F4920172A5B86005BC5ED /* Piece.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F491F172A5B86005BC5ED /* Piece.m */; };
 		510F4923172A5C17005BC5ED /* Story.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F4922172A5C17005BC5ED /* Story.m */; };
+		511B422117A6672200466A8B /* MasterTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 511B422017A6672200466A8B /* MasterTabBarController.m */; };
 		511E708B161A9756009AAD25 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708A161A9756009AAD25 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		511E708E161A977F009AAD25 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
 		5128EB4617472FF600393173 /* delete@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128EB3A17472FF600393173 /* delete@2x.png */; };
@@ -237,6 +238,8 @@
 		510F491F172A5B86005BC5ED /* Piece.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Piece.m; path = Banyan/Piece.m; sourceTree = "<group>"; };
 		510F4921172A5C17005BC5ED /* Story.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Story.h; path = Banyan/Story.h; sourceTree = "<group>"; };
 		510F4922172A5C17005BC5ED /* Story.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Story.m; path = Banyan/Story.m; sourceTree = "<group>"; };
+		511B421F17A6672200466A8B /* MasterTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterTabBarController.h; sourceTree = "<group>"; };
+		511B422017A6672200466A8B /* MasterTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterTabBarController.m; sourceTree = "<group>"; };
 		511E708A161A9756009AAD25 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		5128EB3A17472FF600393173 /* delete@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "delete@2x.png"; sourceTree = "<group>"; };
@@ -567,6 +570,34 @@
 			name = Media;
 			sourceTree = "<group>";
 		};
+		511B421C17A6669100466A8B /* BNImageLabel */ = {
+			isa = PBXGroup;
+			children = (
+				51B2351817168C68004241C1 /* BNImageLabel.h */,
+				51B2351917168C68004241C1 /* BNImageLabel.m */,
+			);
+			name = BNImageLabel;
+			sourceTree = "<group>";
+		};
+		511B421D17A6669C00466A8B /* BNTableViewController */ = {
+			isa = PBXGroup;
+			children = (
+				51B2351F1717DBA9004241C1 /* BNTableViewController.h */,
+				51B235201717DBA9004241C1 /* BNTableViewController.m */,
+			);
+			name = BNTableViewController;
+			sourceTree = "<group>";
+		};
+		511B421E17A666B100466A8B /* BNTabBarController */ = {
+			isa = PBXGroup;
+			children = (
+				5158AE2816F56F7E0089193E /* BNTabBarController.h */,
+				5158AE2916F56F7E0089193E /* BNTabBarController.m */,
+			);
+			name = BNTabBarController;
+			path = Banyan;
+			sourceTree = "<group>";
+		};
 		5128EB3917472FE300393173 /* Music player */ = {
 			isa = PBXGroup;
 			children = (
@@ -607,10 +638,8 @@
 		5158AE2D16F56F850089193E /* Tab Bar Controller */ = {
 			isa = PBXGroup;
 			children = (
-				5158AE2816F56F7E0089193E /* BNTabBarController.h */,
-				5158AE2916F56F7E0089193E /* BNTabBarController.m */,
-				5189B35B15B3976700562DD0 /* Story List */,
-				51CFD93015F3121C002926F9 /* Settings */,
+				511B421F17A6672200466A8B /* MasterTabBarController.h */,
+				511B422017A6672200466A8B /* MasterTabBarController.m */,
 			);
 			name = "Tab Bar Controller";
 			sourceTree = "<group>";
@@ -840,6 +869,8 @@
 				5189B2C615B387E200562DD0 /* BanyanAppDelegate.h */,
 				5189B2C715B387E200562DD0 /* BanyanAppDelegate.m */,
 				5158AE2D16F56F850089193E /* Tab Bar Controller */,
+				5189B35B15B3976700562DD0 /* Story List */,
+				51CFD93015F3121C002926F9 /* Settings */,
 				51B2351B17168C6D004241C1 /* Custom Views and View Controllers */,
 				5189B2BE15B387E200562DD0 /* Supporting Files */,
 				5166B1B515E75B420072749C /* Resources */,
@@ -1091,10 +1122,9 @@
 		51B2351B17168C6D004241C1 /* Custom Views and View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				51B2351817168C68004241C1 /* BNImageLabel.h */,
-				51B2351917168C68004241C1 /* BNImageLabel.m */,
-				51B2351F1717DBA9004241C1 /* BNTableViewController.h */,
-				51B235201717DBA9004241C1 /* BNTableViewController.m */,
+				511B421C17A6669100466A8B /* BNImageLabel */,
+				511B421D17A6669C00466A8B /* BNTableViewController */,
+				511B421E17A666B100466A8B /* BNTabBarController */,
 			);
 			name = "Custom Views and View Controllers";
 			path = ..;
@@ -1443,6 +1473,7 @@
 				51CFD93615F3E80B002926F9 /* FollowingFriendsViewController.m in Sources */,
 				51CFD93A15F57F70002926F9 /* FollowingUsersCell.m in Sources */,
 				510787C6163A36A90042B436 /* UIImage+AlphaAdditions.m in Sources */,
+				511B422117A6672200466A8B /* MasterTabBarController.m in Sources */,
 				510787C7163A36A90042B436 /* UIImage+ResizeAdditions.m in Sources */,
 				51984D46176EEB5600CD6C3E /* SinglePieceView.m in Sources */,
 				510787C8163A36A90042B436 /* UIImage+RoundedCornerAdditions.m in Sources */,

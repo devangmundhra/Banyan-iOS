@@ -10,9 +10,6 @@
 #import "User_Defines.h"
 #import "AFParseAPIClient.h"
 #import "AFBanyanAPIClient.h"
-#import "StoryListTableViewController.h"
-#import "SettingsTableViewController.h"
-#import "ModifyStoryViewController.h"
 #import "BanyanConnection.h"
 
 @interface BanyanAppDelegate ()
@@ -86,7 +83,7 @@
     }
     
     [self appearances];
-        
+    
     if ([BanyanAppDelegate loggedIn]) {
         // User has Facebook ID.
         // Update user details and get updates on FB friends
@@ -104,12 +101,12 @@
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
      UIRemoteNotificationTypeAlert];
     
-//    [FBSettings enableBetaFeature:FBBetaFeaturesOpenGraphShareDialog];
-//    [FBSettings enableBetaFeature:FBBetaFeaturesShareDialog];
+    //    [FBSettings enableBetaFeature:FBBetaFeaturesOpenGraphShareDialog];
+    //    [FBSettings enableBetaFeature:FBBetaFeaturesShareDialog];
     
     [RemoteObject validateAllObjects];
     
-    [self setupTabBarController];    
+    self.tabBarController = [[MasterTabBarController alloc] init];
     self.window.rootViewController = self.tabBarController;
     [self.window makeKeyAndVisible];
     
@@ -125,14 +122,14 @@ void uncaughtExceptionHandler(NSException *exception)
 
 #pragma mark customize appearnaces
 - (void) appearances
-{    
+{
     if (!DEVICE_VERSION_7PLUS) {
         [[UINavigationBar appearance] setTintColor:BANYAN_GREEN_COLOR];
         [[UIBarButtonItem appearance] setTintColor:BANYAN_GREEN_COLOR];
     }
     
     [[UISwitch appearance] setOnTintColor:BANYAN_GREEN_COLOR];
-        
+    
     [[UITabBar appearance] setSelectedImageTintColor:BANYAN_BROWN_COLOR];
 }
 
@@ -151,22 +148,22 @@ void uncaughtExceptionHandler(NSException *exception)
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
-//    BOOL wasHandled = [FBAppCall handleOpenURL:url
-//                             sourceApplication:sourceApplication];
+    //    BOOL wasHandled = [FBAppCall handleOpenURL:url
+    //                             sourceApplication:sourceApplication];
     
     // add app-specific handling code here
     return [PFFacebookUtils handleOpenURL:url];
-//    return wasHandled;
+    //    return wasHandled;
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
 {
-//    BOOL wasHandled = [FBAppCall handleOpenURL:url
-//                             sourceApplication:nil];
+    //    BOOL wasHandled = [FBAppCall handleOpenURL:url
+    //                             sourceApplication:nil];
     
     // add app-specific handling code here
     return [PFFacebookUtils handleOpenURL:url];
-//    return wasHandled;
+    //    return wasHandled;
 }
 
 #pragma mark application methods
@@ -180,7 +177,7 @@ void uncaughtExceptionHandler(NSException *exception)
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
+    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 
@@ -214,7 +211,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
     [PFPush subscribeToChannelInBackground:@""];
 }
 
-- (void)application:(UIApplication *)application 
+- (void)application:(UIApplication *)application
 didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [PFPush handlePush:userInfo];
 }
@@ -230,7 +227,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 }
 
 - (void)logout
-{    
+{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults removeObjectForKey:BNUserDefaultsUserInfo];
     [defaults removeObjectForKey:BNUserDefaultsFacebookFriends];
@@ -288,13 +285,13 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     
     NSString *addPieceChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNAddPieceToContributedStoryPushNotification];
     [PFPush unsubscribeFromChannelInBackground:addPieceChannelName];
-
+    
     NSString *pieceActionChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNPieceActionPushNotification];
     [PFPush unsubscribeFromChannelInBackground:pieceActionChannelName];
-
+    
     NSString *userFollowChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNUserFollowingPushNotification];
     [PFPush unsubscribeFromChannelInBackground:userFollowChannelName];
-
+    
 }
 
 + (BOOL)loggedIn
@@ -327,50 +324,50 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
         
         [[AFParseAPIClient sharedClient] postPath:PARSE_API_FUNCTION_URL(@"facebookFriendsOnBanyan")
                                        parameters:[NSDictionary dictionaryWithObject:facebookFriendsId forKey:@"facebookFriendsId"]
-                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                             NSDictionary *results = (NSDictionary *)responseObject;
-                                             NSArray *friendsOnBanyan = [results objectForKey:@"result"];
-                                             NSMutableArray *idOfFriendsOnBanyan = [NSMutableArray arrayWithCapacity:[friendsOnBanyan count]];
-                                             NSMutableArray *friendsOnBanyanMutable = [NSMutableArray arrayWithCapacity:[friendsOnBanyan count]];
-                                             for (NSDictionary *friend in friendsOnBanyan) {
-                                                 [idOfFriendsOnBanyan addObject:[friend objectForKey:@"objectId"]];
-                                                 [friendsOnBanyanMutable addObject:[NSMutableDictionary dictionaryWithDictionary:friend]];
-                                             }
-                                             
-                                             NSDictionary *constraint = [NSDictionary dictionaryWithObject:idOfFriendsOnBanyan forKey:@"$in"];    
-                                             NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:kBNActivityTypeFollowUser, kBNActivityTypeKey,
-                                                                             [PFUser currentUser].objectId, kBNActivityFromUserKey,
-                                                                             constraint, kBNActivityToUserKey, nil];
-                                             NSError *error = nil;
-                                             NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
-                                             if (!jsonData) {
-                                                 NSLog(@"NSJSONSerialization failed %@", error);
-                                             }
-                                             NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-                                             NSDictionary *getFriendsBeingFollowed = [NSMutableDictionary dictionaryWithObject:json forKey:@"where"];
-                                             
-                                             [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(kBNActivityClassKey)
-                                                                           parameters:getFriendsBeingFollowed
-                                                                              success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                                                                  NSDictionary *results = (NSDictionary *)responseObject;
-                                                                                  NSMutableSet *userIdsBeingFollowed = [NSMutableSet set];
-                                                                                  for (NSDictionary *user in [results objectForKey:@"results"]) {
-                                                                                      [userIdsBeingFollowed addObject:[user objectForKey:kBNActivityToUserKey]];
-                                                                                  }
-                                                                                  for (NSMutableDictionary *userFriend in friendsOnBanyanMutable) {
-                                                                                      if ([userIdsBeingFollowed containsObject:[userFriend objectForKey:@"objectId"]]) {
-                                                                                          [userFriend setObject:[NSNumber numberWithBool:YES] forKey:USER_BEING_FOLLOWED];
-                                                                                      } else {
-                                                                                          [userFriend setObject:[NSNumber numberWithBool:NO] forKey:USER_BEING_FOLLOWED];
-                                                                                      }
-                                                                                  }
-                                                                                  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                                                                                  [defaults setObject:friendsOnBanyanMutable forKey:BNUserDefaultsBanyanUsersFacebookFriends];
-                                                                                  [defaults synchronize];
-                                                                              }
-                                                                              failure:AF_PARSE_ERROR_BLOCK()];
-                                         }
-                                         failure:AF_PARSE_ERROR_BLOCK()];
+                                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                              NSDictionary *results = (NSDictionary *)responseObject;
+                                              NSArray *friendsOnBanyan = [results objectForKey:@"result"];
+                                              NSMutableArray *idOfFriendsOnBanyan = [NSMutableArray arrayWithCapacity:[friendsOnBanyan count]];
+                                              NSMutableArray *friendsOnBanyanMutable = [NSMutableArray arrayWithCapacity:[friendsOnBanyan count]];
+                                              for (NSDictionary *friend in friendsOnBanyan) {
+                                                  [idOfFriendsOnBanyan addObject:[friend objectForKey:@"objectId"]];
+                                                  [friendsOnBanyanMutable addObject:[NSMutableDictionary dictionaryWithDictionary:friend]];
+                                              }
+                                              
+                                              NSDictionary *constraint = [NSDictionary dictionaryWithObject:idOfFriendsOnBanyan forKey:@"$in"];
+                                              NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:kBNActivityTypeFollowUser, kBNActivityTypeKey,
+                                                                              [PFUser currentUser].objectId, kBNActivityFromUserKey,
+                                                                              constraint, kBNActivityToUserKey, nil];
+                                              NSError *error = nil;
+                                              NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
+                                              if (!jsonData) {
+                                                  NSLog(@"NSJSONSerialization failed %@", error);
+                                              }
+                                              NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+                                              NSDictionary *getFriendsBeingFollowed = [NSMutableDictionary dictionaryWithObject:json forKey:@"where"];
+                                              
+                                              [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(kBNActivityClassKey)
+                                                                            parameters:getFriendsBeingFollowed
+                                                                               success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                                                                   NSDictionary *results = (NSDictionary *)responseObject;
+                                                                                   NSMutableSet *userIdsBeingFollowed = [NSMutableSet set];
+                                                                                   for (NSDictionary *user in [results objectForKey:@"results"]) {
+                                                                                       [userIdsBeingFollowed addObject:[user objectForKey:kBNActivityToUserKey]];
+                                                                                   }
+                                                                                   for (NSMutableDictionary *userFriend in friendsOnBanyanMutable) {
+                                                                                       if ([userIdsBeingFollowed containsObject:[userFriend objectForKey:@"objectId"]]) {
+                                                                                           [userFriend setObject:[NSNumber numberWithBool:YES] forKey:USER_BEING_FOLLOWED];
+                                                                                       } else {
+                                                                                           [userFriend setObject:[NSNumber numberWithBool:NO] forKey:USER_BEING_FOLLOWED];
+                                                                                       }
+                                                                                   }
+                                                                                   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                                                                                   [defaults setObject:friendsOnBanyanMutable forKey:BNUserDefaultsBanyanUsersFacebookFriends];
+                                                                                   [defaults synchronize];
+                                                                               }
+                                                                               failure:AF_PARSE_ERROR_BLOCK()];
+                                          }
+                                          failure:AF_PARSE_ERROR_BLOCK()];
         
     } else {
         // We have users data
@@ -501,7 +498,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 }
 
 - (void) restKitCoreDataInitialization
-{    
+{
     // Initialize managed object store
     NSManagedObjectModel *managedObjectModel = [NSManagedObjectModel mergedModelFromBundles:nil];
     RKManagedObjectStore *managedObjectStore = [[RKManagedObjectStore alloc] initWithManagedObjectModel:managedObjectModel];
@@ -536,62 +533,13 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 + (UIViewController*) topMostController
 {
     UIViewController *topController = ((BanyanAppDelegate *)[[UIApplication sharedApplication] delegate]).window.rootViewController;
-                     
+    
     while (topController.presentedViewController) {
         topController = topController.presentedViewController;
     }
     
     return topController;
 }
-
-#pragma mark TabBar Controller Methods
-- (void)setupTabBarController
-{
-    self.tabBarController = [[BNTabBarController alloc] init];
-    StoryListTableViewController *storyListVC = [[StoryListTableViewController alloc] init];
-    storyListVC.title = @"Stories";
-    
-    UITabBarItem *storyListTabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:[UIImage imageNamed:@"homeTabSymbol"] tag:0];
-    
-    UITableViewController *searchVC = [[UITableViewController alloc] initWithStyle:UITableViewStylePlain];
-    UITabBarItem *searchTabBarItem = [[UITabBarItem alloc] initWithTitle:@"Search" image:[UIImage imageNamed:@"searchTabSymbol"] tag:0];
-    
-//    Story *story = [Story newDraftStory];
-//    ModifyStoryViewController *newStoryViewController = [[ModifyStoryViewController alloc] initWithStory:story];
-//    UITabBarItem *addTabBarItem = [[UITabBarItem alloc] initWithTitle:nil image:[UIImage imageNamed:@"addTabSymbol"] tag:0];
-    
-    UIImage *buttonImage = [UIImage imageNamed:@"addWithGreen"];
-    [self.tabBarController addCenterButtonWithImage:buttonImage andTarget:self withAction:@selector(addTabButtonPressed:)];
-    
-    SettingsTableViewController *settingsVC = [[SettingsTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    UITabBarItem *settingsTabBar = [[UITabBarItem alloc] initWithTitle:nil image:[UIImage imageNamed:@"userProfileTabSymbol"] tag:0];
-    
-    UINavigationController *storyListNavigationController = [[UINavigationController alloc] initWithRootViewController:storyListVC];
-//    UINavigationController *addNavigationController = [[UINavigationController alloc] initWithRootViewController:newStoryViewController];
-    UINavigationController *searchNavigationController = [[UINavigationController alloc] initWithRootViewController:searchVC];
-    UINavigationController *profileNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsVC];
-
-    [storyListNavigationController setTabBarItem:storyListTabBarItem];
-    [searchNavigationController setTabBarItem:searchTabBarItem];
-//    [addNavigationController setTabBarItem:addTabBarItem];
-    [profileNavigationController setTabBarItem:settingsTabBar];
-
-    self.tabBarController.delegate = self;
-    [self.tabBarController setViewControllers:@[storyListNavigationController, /*searchNavigationController,*/ /*addNavigationController, */profileNavigationController] animated:YES];
-}
-
--(IBAction) addTabButtonPressed:(UIButton *)sender
-{
-    if (![BanyanAppDelegate loggedIn]) {
-        [self login];
-    } else {
-        Story *story = [Story newDraftStory];
-        ModifyStoryViewController *newStoryViewController = [[ModifyStoryViewController alloc] initWithStory:story];
-        [self.tabBarController presentViewController:newStoryViewController animated:YES completion:nil];
-    }
-
-}
-
 
 # pragma mark UserLoginViewControllerDelegate
 - (void)logInViewController:(UserLoginViewController *)logInController didLogInUser:(PFUser *)user
