@@ -31,7 +31,7 @@
     story.remoteStatus = RemoteObjectStatusLocal;
     story.author = [User currentUser];
     story.createdAt = story.updatedAt = [NSDate date];
-
+    
     [story save];
     
     return story;
@@ -45,13 +45,13 @@
     story.canContribute = story.canView = YES;
     
     story.remoteStatus = RemoteObjectStatusPushing;
-
+    
     // Persist again
     [story save];
     
     NSLog(@"Adding story %@", story);
-
-
+    
+    
     //    PARSE
     void (^sendRequestToContributors)(Story *) = ^(Story *story) {
         NSArray *contributorsList = [story storyContributors];
@@ -77,7 +77,7 @@
         params.picture = [NSURL URLWithString:imageMedia.remoteURL];
         params.ref = @"Story";
         [FBDialogs presentShareDialogWithParams:params clientState:nil handler:nil];
-         
+        
         // send push notifications
         
         UIRemoteNotificationType types = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
@@ -113,11 +113,11 @@
                                                      [channels addObject:channel];
                                                  }
                                                  NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                                        [NSString stringWithFormat:@"%@ has invited you to contribute to a story titled %@",
+                                                                       [NSString stringWithFormat:@"%@ has invited you to contribute to a story titled %@",
                                                                         [[PFUser currentUser] objectForKey:USER_NAME], story.title], @"alert",
-                                                                        [NSNumber numberWithInt:1], @"badge",
-                                                                        story.bnObjectId, @"Story id",
-                                                                        nil];
+                                                                       [NSNumber numberWithInt:1], @"badge",
+                                                                       story.bnObjectId, @"Story id",
+                                                                       nil];
                                                  // send push notication to this user id
                                                  PFPush *push = [[PFPush alloc] init];
                                                  [push setChannels:channels];
@@ -213,7 +213,7 @@
     void (^uploadStory)(Story *) = ^(Story *story) {
         RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
         objectManager.managedObjectStore = [RKManagedObjectStore defaultStore];
-
+        
         // For serializing
         RKObjectMapping *storyRequestMapping = [RKObjectMapping requestMapping];
         [storyRequestMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_WRITE_ACCESS, STORY_READ_ACCESS, STORY_TAGS, @"isLocationEnabled"]];
@@ -240,11 +240,11 @@
         RKEntityMapping *storyResponseMapping = [RKEntityMapping mappingForEntityForName:kBNStoryClassKey
                                                                     inManagedObjectStore:[RKManagedObjectStore defaultStore]];
         [storyResponseMapping addAttributeMappingsFromDictionary:@{
-                                                PARSE_OBJECT_ID : @"bnObjectId",
-         }];
+                                                                   PARSE_OBJECT_ID : @"bnObjectId",
+                                                                   }];
         [storyResponseMapping addAttributeMappingsFromArray:@[PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT]];
         storyResponseMapping.identificationAttributes = @[@"bnObjectId"];
-
+        
         RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:storyResponseMapping
                                                                                                 method:RKRequestMethodPOST
                                                                                            pathPattern:nil
@@ -305,6 +305,17 @@
     // No media
     else {
         uploadStory(story);
+    }
+    
+    // Save this story in the UserDefaults so that next time the user will add a piece here.
+    NSError *error = nil;
+    BOOL returnVal = [story.managedObjectContext obtainPermanentIDsForObjects:@[story] error:&error];
+    if (!returnVal) {
+        NSLog(@"Failed to obtain the permanentIds of the story because of error %@", error);
+    } else {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setURL:[[story objectID] URIRepresentation] forKey:BNUserDefaultsCurrentOngoingStoryToContribute];
+        [defaults synchronize];
     }
 }
 

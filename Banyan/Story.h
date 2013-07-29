@@ -36,6 +36,9 @@
 + (NSArray *)syncedStories;
 + (NSArray *)unsavedStories;
 - (NSNumber *)calculateUploadStatusNumber;
++ (Story *)getCurrentOngoingStoryToContribute;
++ (NSArray *)getStoriesUserCanContributeTo;
+
 @end
 
 @interface Story (CoreDataGeneratedAccessors)

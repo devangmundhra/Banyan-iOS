@@ -82,8 +82,48 @@
     return array;
 }
 
++ (Story *)getCurrentOngoingStoryToContribute
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSURL *currentOngingStory = [defaults URLForKey:BNUserDefaultsCurrentOngoingStoryToContribute];
+    
+    if (!currentOngingStory)
+        return nil;
+    
+    NSManagedObjectID *storyId = [[RKManagedObjectStore defaultStore].persistentStoreCoordinator managedObjectIDForURIRepresentation:currentOngingStory];
+    NSError *error = nil;
+    Story *story = (Story *)[[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext existingObjectWithID:storyId error:&error];
+    if (error) {
+        NSLog(@"Error in fetching current story: %@", error);
+    }
+    return story;
+}
+
++ (NSArray *)getStoriesUserCanContributeTo
+{
+    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:kBNStoryClassKey];
+    //    [request setEntity:[NSEntityDescription entityForName:kBNStoryClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(canContribute == YES)",
+							  [NSNumber numberWithInt:RemoteObjectStatusFailed]];
+    [request setPredicate:predicate];
+    
+    NSSortDescriptor *uploadStatusSD = [NSSortDescriptor sortDescriptorWithKey:@"uploadStatusNumber" ascending:YES];
+    NSSortDescriptor *newPiecesSD = [NSSortDescriptor sortDescriptorWithKey:@"newPiecesToView" ascending:YES];
+    NSSortDescriptor *dateSD = [NSSortDescriptor sortDescriptorWithKey:@"updatedAt"
+                                                             ascending:NO
+                                                              selector:@selector(compare:)];
+    request.sortDescriptors = [NSArray arrayWithObjects:uploadStatusSD, newPiecesSD, dateSD, nil];
+    
+    NSError *error = nil;
+    NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+    if (array == nil) {
+        array = [NSArray array];
+    }
+    return array;
+}
+
 - (NSNumber *)calculateUploadStatusNumber
-{    
+{
     if (self.remoteStatus != RemoteObjectStatusSync)
         return self.remoteStatusNumber;
     
@@ -101,7 +141,7 @@
 }
 
 - (NSString *)uploadStatusString
-{    
+{
     switch ([self.uploadStatusNumber intValue]) {
         case RemoteObjectStatusPushing:
             return NSLocalizedString(@"Uploading...", @"");
@@ -153,7 +193,7 @@
     [self didChangeValueForKey:@"uploadStatusNumber"];
     
     [self setPrimitiveSectionIdentifier:nil];
-//    [self.managedObjectContext refreshObject:self mergeChanges:YES];
+    //    [self.managedObjectContext refreshObject:self mergeChanges:YES];
 }
 
 - (void) share

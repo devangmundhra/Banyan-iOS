@@ -21,8 +21,8 @@
 + (Piece *) newPieceForStory:(Story *)story
 {
     Piece *piece = [[Piece alloc] initWithEntity:[NSEntityDescription entityForName:kBNPieceClassKey
-                                                          inManagedObjectContext:[story managedObjectContext]]
-               insertIntoManagedObjectContext:[story managedObjectContext]];
+                                                             inManagedObjectContext:[story managedObjectContext]]
+                  insertIntoManagedObjectContext:[story managedObjectContext]];
     
     piece.story = story;
     
@@ -55,9 +55,9 @@
     }
     
     piece.remoteStatus = RemoteObjectStatusPushing;
-
+    
     [piece save];
-
+    
     // If the story of the piece has not been updated yet, don't do anything. Just fail.
     // Someone else will comeback later and create this
     if (piece.story.remoteStatus != RemoteObjectStatusSync) {
@@ -165,8 +165,8 @@
         RKEntityMapping *pieceResponseMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
                                                                     inManagedObjectStore:[RKManagedObjectStore defaultStore]];
         [pieceResponseMapping addAttributeMappingsFromDictionary:@{
-                                                PARSE_OBJECT_ID : @"bnObjectId",
-         }];
+                                                                   PARSE_OBJECT_ID : @"bnObjectId",
+                                                                   }];
         [pieceResponseMapping addAttributeMappingsFromArray:@[PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT, PIECE_NUMBER]];
         pieceResponseMapping.identificationAttributes = @[@"bnObjectId"];
         
@@ -200,8 +200,13 @@
                               NSLog(@"Error in create piece");
                           }];
     };
-
+    
     uploadPiece(piece);
+    
+    // Save this story in the UserDefaults so that next time the user will add a piece here.
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setURL:[[piece.story objectID] URIRepresentation] forKey:BNUserDefaultsCurrentOngoingStoryToContribute];
+    [defaults synchronize];
 }
 
 @end
