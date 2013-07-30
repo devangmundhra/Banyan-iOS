@@ -148,6 +148,16 @@ static BOOL _loggedIn;
                    withFont:_mediumFont fontSize:12
               lineBreakMode:NSLineBreakByTruncatingTail baselineAdjustment:UIBaselineAdjustmentAlignCenters];
     
+    if ([self.story.uploadStatusNumber unsignedIntegerValue] != RemoteObjectStatusSync) {
+        NSString *statusString = self.story.sectionIdentifier;
+        point.x = CGRectGetMaxX(self.frame) - TABLE_CELL_MARGIN;
+        point.y = TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT + TABLE_CELL_MARGIN/2;
+        CGSize size = CGSizeMake(CGRectGetWidth(self.frame)/2 - TABLE_CELL_MARGIN, BOTTOM_VIEW_HEIGHT);
+        CGSize expectedSize = [statusString sizeWithFont:_mediumFont constrainedToSize:size];
+        point.x -= expectedSize.width;
+        [BANYAN_LIGHTGRAY_COLOR set];
+        [statusString drawAtPoint:point forWidth:floor(expectedSize.width) withFont:_mediumFont fontSize:10 lineBreakMode:NSLineBreakByClipping baselineAdjustment:UIBaselineAdjustmentNone];
+    }    
 }
 
 # pragma mark BNSwipeableView delegates

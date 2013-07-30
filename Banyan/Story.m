@@ -144,7 +144,7 @@
 {
     switch ([self.uploadStatusNumber intValue]) {
         case RemoteObjectStatusPushing:
-            return NSLocalizedString(@"Uploading...", @"");
+            return NSLocalizedString(@"Uploading", @"");
             break;
         case RemoteObjectStatusFailed:
             return NSLocalizedString(@"Failed to upload", @"");

@@ -151,9 +151,7 @@
     UISwipeGestureRecognizer* swipeDownGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showStoryInfoView:)];
     swipeDownGestureRecognizer.direction = UISwipeGestureRecognizerDirectionDown;
     [self.view addGestureRecognizer:swipeDownGestureRecognizer];
-    
-//    [self setupToolbar];
-    
+        
     [[NSNotificationCenter defaultCenter] addObserver:self 
                                              selector:@selector(userLoginStatusChanged) 
                                                  name:BNUserLogInNotification 
@@ -268,8 +266,12 @@
 {
 //    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
 
+    if (!self.storyInfoView.hidden)
+        return;
+    
     [UIView animateWithDuration:0.3
                      animations:^{
+                         self.storyInfoView.hidden = NO;
                          [self.view addSubview:self.storyInfoView];
                          
                          CGRect siFrame = self.storyInfoView.frame;
@@ -292,6 +294,7 @@
                      }
                      completion:^(BOOL finished) {
                          [self.storyInfoView removeFromSuperview];
+                         self.storyInfoView.hidden = YES;
                      }];
 }
 

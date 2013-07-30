@@ -132,7 +132,7 @@
     // a gif file needs to be created
     NSOrderedSet *imageMediaSet = [Media getAllMediaOfType:@"image" inMediaSet:self.media];
     if (imageMediaSet.count <= 1) {
-        NSLog(@"Won't be needing any gif1");
+        NSLog(@"Won't be needing any gif");
         return YES;
     }
     

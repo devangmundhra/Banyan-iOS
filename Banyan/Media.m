@@ -40,6 +40,7 @@
                   insertIntoManagedObjectContext:[remoteObject managedObjectContext]];
     
     media.remoteObject = remoteObject;
+    media.filename = [BNMisc genRandStringLength:10];
     return media;
 }
 
@@ -129,7 +130,6 @@
 
 - (void) uploadWithSuccess:(void (^)())successBlock failure:(void (^)(NSError *error))errorBlock
 {
-    assert(self.filename.length == 0);
     [self save];
     if (self.remoteStatus == MediaRemoteStatusSync) {
         return;
@@ -210,7 +210,7 @@
     NSData *audioData = nil;
     PFFile *audioFile = nil;
     audioData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.localURL]];
-    audioFile = [PFFile fileWithName:[NSString stringWithFormat:@"%@.caf", [BNMisc genRandStringLength:10]]
+    audioFile = [PFFile fileWithName:[NSString stringWithFormat:@"%@.caf", self.filename]
                                 data:audioData];
     self.remoteStatus = MediaRemoteStatusPushing;
     
@@ -246,7 +246,7 @@
         UIImage *resizedImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:[[UIScreen mainScreen] bounds].size interpolationQuality:kCGInterpolationLow];
         
         imageData = UIImageJPEGRepresentation(resizedImage, 1);
-        imageFile = [PFFile fileWithName:[NSString stringWithFormat:@"%@.jpg", [BNMisc genRandStringLength:10]]
+        imageFile = [PFFile fileWithName:[NSString stringWithFormat:@"%@.jpg", self.filename]
                                     data:imageData];
         self.remoteStatus = MediaRemoteStatusPushing;
         
@@ -275,7 +275,7 @@
     NSData *gifData = nil;
     PFFile *gifFile = nil;
     gifData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.localURL]];
-    gifFile = [PFFile fileWithName:[NSString stringWithFormat:@"%@.gif", [BNMisc genRandStringLength:10]]
+    gifFile = [PFFile fileWithName:[NSString stringWithFormat:@"%@.gif", self.filename]
                                 data:gifData];
     self.remoteStatus = MediaRemoteStatusPushing;
     
