@@ -11,6 +11,7 @@
 
 @interface Story (Edit)
 
++ (void) updateLengthAndPieceNumbers:(Story *)story;
 + (void) editStory:(Story *)story;
 
 @end

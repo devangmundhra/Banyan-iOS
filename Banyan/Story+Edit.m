@@ -15,6 +15,22 @@
 
 @implementation Story (Edit)
 
++ (void) updateLengthAndPieceNumbers:(Story *)story
+{
+    // Update the length
+    story.length = story.pieces.count;
+    // Update the value for the piece numbers
+    if (!story.length)
+        story.pieces = nil;
+    else {
+        [story.pieces enumerateObjectsUsingBlock:^(Piece *localPiece, NSUInteger idx, BOOL *stop) {
+            localPiece.pieceNumber = idx+1;
+        }];
+    }
+    
+    [story save];
+}
+
 + (void) editStory:(Story *)story
 {
     [story save];
@@ -95,69 +111,5 @@
     
     updateStory(story);
     [story save];
-}
-@end
-
-@implementation Story (CoreDataGeneratedAccessors)
-
-- (void)insertObject:(Piece *)value inPiecesAtIndex:(NSUInteger)idx
-{
-    [self willChange:NSKeyValueChangeInsertion valuesAtIndexes:[NSIndexSet indexSetWithIndex:idx] forKey:@"pieces"];
-    [[self primitiveValueForKey:@"pieces"] insertObject:value atIndex:idx];
-    [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:[NSIndexSet indexSetWithIndex:idx] forKey:@"pieces"];
-}
-
-- (void)removeObjectFromPiecesAtIndex:(NSUInteger)idx
-{
-    [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:[NSIndexSet indexSetWithIndex:idx] forKey:@"pieces"];
-    [[self primitiveValueForKey:@"pieces"] removeObjectAtIndex:idx];
-    [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:[NSIndexSet indexSetWithIndex:idx] forKey:@"pieces"];
-}
-
-- (void)insertPieces:(NSArray *)value atIndexes:(NSIndexSet *)indexes
-{
-    
-}
-- (void)removePiecesAtIndexes:(NSIndexSet *)indexes
-{
-    
-}
-- (void)replaceObjectInPiecesAtIndex:(NSUInteger)idx withObject:(Piece *)value
-{
-    
-}
-- (void)replacePiecesAtIndexes:(NSIndexSet *)indexes withPieces:(NSArray *)values
-{
-    
-}
-
-- (void)addPiecesObject:(Piece *)value
-{
-    NSSet *changedObjects = [[NSSet alloc] initWithObjects:&value count:1];
-    [self willChangeValueForKey:@"pieces" withSetMutation:NSKeyValueUnionSetMutation usingObjects:changedObjects];
-    [[self primitiveValueForKey:@"pieces"] addObject:value];
-    [self didChangeValueForKey:@"pieces" withSetMutation:NSKeyValueUnionSetMutation usingObjects:changedObjects];
-}
-
-- (void)removePiecesObject:(Piece *)value
-{
-    NSSet *changedObjects = [[NSSet alloc] initWithObjects:&value count:1];
-    [self willChangeValueForKey:@"pieces" withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
-    [[self primitiveValueForKey:@"pieces"] removeObject:value];
-    [self didChangeValueForKey:@"pieces" withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
-}
-
-- (void)addPieces:(NSSet *)value
-{
-    [self willChangeValueForKey:@"pieces" withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];
-    [[self primitiveValueForKey:@"pieces"] unionSet:value];
-    [self didChangeValueForKey:@"pieces" withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];
-}
-
-- (void)removePieces:(NSSet *)value
-{
-    [self willChangeValueForKey:@"pieces" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
-    [[self primitiveValueForKey:@"pieces"] minusSet:value];
-    [self didChangeValueForKey:@"pieces" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
 }
 @end

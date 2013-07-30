@@ -120,8 +120,11 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    [self.delegate storyPickerViewControllerDidPickStory:[self.contributableStories objectAtIndex:indexPath.row]];
-    [self dismissStoryPickerViewController];
+    Story *story = [self.contributableStories objectAtIndex:indexPath.row];
+
+    [self dismissStoryPickerViewControllerWithCompletionBlock:^{
+        [self.delegate storyPickerViewControllerDidPickStory:story];
+    }];
 }
 
 #pragma mark target actions
@@ -140,13 +143,13 @@
 
 - (void) cancelButtonPressed:(id)sender
 {
-    [self dismissStoryPickerViewController];
+    [self dismissStoryPickerViewControllerWithCompletionBlock:nil];
 }
 
 #pragma mark ModifyStoryViewControllerDelegate
 - (void) modifyStoryViewControllerDidDismiss:(ModifyStoryViewController *)viewController
 {
-    [self dismissStoryPickerViewController];
+    [self dismissStoryPickerViewControllerWithCompletionBlock:nil];
 }
 
 - (void) modifyStoryViewControllerDidSelectStory:(Story *)story
@@ -154,13 +157,14 @@
     if (HAVE_ASSERTS) {
         assert(story);
     }
-    [self.delegate storyPickerViewControllerDidPickStory:story];
-    [self dismissStoryPickerViewController];
+    [self dismissStoryPickerViewControllerWithCompletionBlock:^{
+        [self.delegate storyPickerViewControllerDidPickStory:story];
+    }];
 }
 
-- (void) dismissStoryPickerViewController
+- (void) dismissStoryPickerViewControllerWithCompletionBlock:(void (^)(void))completionBlock
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:completionBlock];
 }
 
 - (void)didReceiveMemoryWarning

@@ -7,7 +7,7 @@
 //
 
 #import "Piece+Delete.h"
-#import "Story.h"
+#import "Story+Edit.h"
 #import "AFBanyanAPIClient.h"
 #import "MBProgressHUD.h"
 #import "BanyanAppDelegate.h"
@@ -21,18 +21,7 @@
     self.story = nil;
     [self remove];
     
-    // Update the length
-    story.length = story.pieces.count;
-    // Update the value for the piece numbers
-    if (!story.length)
-        story.pieces = nil;
-    else {
-        [story.pieces enumerateObjectsUsingBlock:^(Piece *localPiece, NSUInteger idx, BOOL *stop) {
-            localPiece.pieceNumber = idx+1;
-        }];
-    }
-    
-    [story save];
+    [Story updateLengthAndPieceNumbers:story];
 }
 
 + (void) deletePiece:(Piece *)piece

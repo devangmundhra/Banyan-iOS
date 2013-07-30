@@ -86,15 +86,16 @@
             UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:vc];
             [self presentViewController:nvc animated:YES completion:nil];
         } else {
-            StoryListTableViewController *listVc = [[self.tabBarController viewControllers] objectAtIndex:0];
-            [listVc addPieceToStory:story];        }
+            StoryListTableViewController *listVc = [((UINavigationController *)[[self viewControllers] objectAtIndex:0]).viewControllers objectAtIndex:0];
+            [listVc addPieceToStory:story];
+        }
     }
 }
 
 # pragma mark StoryPickerViewControllerDelegate
 - (void) storyPickerViewControllerDidPickStory:(Story *)story
 {
-    StoryListTableViewController *listVc = [[self viewControllers] objectAtIndex:0];
+    StoryListTableViewController *listVc = [((UINavigationController *)[[self viewControllers] objectAtIndex:0]).viewControllers objectAtIndex:0];
     [listVc addPieceToStory:story];
 }
 

@@ -47,11 +47,7 @@
     assert(piece.bnObjectId.length == 0);
     
     if (piece.remoteStatus == RemoteObjectStatusLocal) {
-        // Do this one time per piece
-        piece.story.length = piece.story.pieces.count;
-        [piece.story.pieces enumerateObjectsUsingBlock:^(Piece *localPiece, NSUInteger idx, BOOL *stop) {
-            localPiece.pieceNumber = idx+1;
-        }];
+        [Story updateLengthAndPieceNumbers:piece.story];
     }
     
     piece.remoteStatus = RemoteObjectStatusPushing;

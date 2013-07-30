@@ -20,7 +20,7 @@
 
 @interface ModifyPieceViewController ()
 
-@property (weak, nonatomic) IBOutlet UILabel *storyTitleLabel;
+@property (weak, nonatomic) IBOutlet UIButton *storyTitleButton;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet SSTextField *pieceCaptionView;
 @property (weak, nonatomic) IBOutlet SSTextView *pieceTextView;
@@ -59,7 +59,7 @@
 @synthesize audioPickerView = _audioPickerView;
 @synthesize audioRecorder = _audioRecorder;
 @synthesize mediaToDelete;
-@synthesize storyTitleLabel = _storyTitleLabel;
+@synthesize storyTitleButton = _storyTitleButton;
 @synthesize backupMedia_ = _backupMedia_;
 
 - (id) initWithPiece:(Piece *)piece
@@ -111,11 +111,19 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-    self.storyTitleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:16];
-    self.storyTitleLabel.attributedText = [[NSAttributedString alloc] initWithString:self.piece.story.title
-                                                                           attributes:@{NSUnderlineStyleAttributeName: @1,
-                                                                                        NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}];
-    self.storyTitleLabel.textAlignment = NSTextAlignmentCenter;
+    self.storyTitleButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:16];
+    [self.storyTitleButton setAttributedTitle:[[NSAttributedString alloc] initWithString:self.piece.story.title
+                                                                              attributes:@{NSUnderlineStyleAttributeName: @1,
+                                                                                           NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}] forState:UIControlStateNormal];
+    self.storyTitleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece) {
+        // Only if this is a new piece should we allow changing the story for the piece.
+        self.storyTitleButton.showsTouchWhenHighlighted = YES;
+        self.storyTitleButton.userInteractionEnabled = YES;
+    } else {
+        self.storyTitleButton.userInteractionEnabled = NO;
+    }
+    
     mediaToDelete = [NSMutableSet set];
     
     self.locationManager = [[BNFBLocationManager alloc] init];
@@ -202,7 +210,7 @@
     }
 }
 
-- (void)restoreBackupPiece:(BOOL)upload {
+- (void)restoreBackupPiece:(BOOL)upload {    
     if (self.backupPiece_) {
         [self.piece cloneFrom:self.backupPiece_];
         
@@ -223,9 +231,7 @@
 
 - (IBAction)cancel:(UIBarButtonItem *)sender
 {
-    if (self.editMode == ModifyPieceViewControllerEditModeEditPiece) {
-        [self restoreBackupPiece:NO];
-    }
+    [self restoreBackupPiece:NO];
     
 	//remove the original piece in case of local draft unsaved
 	if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
@@ -312,6 +318,7 @@
     }
     else if (self.editMode == ModifyPieceViewControllerEditModeEditPiece)
     {
+        // If the piece's story has changed, update the old one and the new one
         [Piece editPiece:self.piece];
     }
     else {
@@ -350,6 +357,15 @@
     [Piece deletePiece:self.piece];
     [self dismissEditView];
     [TestFlight passCheckpoint:@"Piece deleted"];
+}
+
+- (IBAction)storyChangeButtonPressed:(id)sender
+{
+    NSLog(@"Current story is %@", self.piece.story.title);
+    StoryPickerViewController *vc = [[StoryPickerViewController alloc] initWithStyle:UITableViewStylePlain];
+    vc.delegate = self;
+    UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:vc];
+    [self presentViewController:nvc animated:YES completion:nil];
 }
 
 #pragma mark UIAlertViewDelegate
@@ -475,6 +491,17 @@
 {
     [self.addLocationButton locationPickerLocationUpdatedWithLocation:self.locationManager.location];
     [self.addLocationButton locationPickerLocationEnabled:YES];
+}
+
+# pragma mark StoryPickerViewControllerDelegate
+- (void) storyPickerViewControllerDidPickStory:(Story *)story
+{
+    // A new story was picked.
+    // Change the story of this piece to the new story
+    self.piece.story = story;
+    [self.storyTitleButton setAttributedTitle:[[NSAttributedString alloc] initWithString:self.piece.story.title
+                                                                              attributes:@{NSUnderlineStyleAttributeName: @1,
+                                                                                           NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}] forState:UIControlStateNormal];
 }
 
 # pragma mark - Keyboard notifications
