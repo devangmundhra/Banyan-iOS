@@ -32,11 +32,13 @@
         return;
     }
     piece.remoteStatus = RemoteObjectStatusPushing;
-
-    NSLog(@"Update piece %@ for story %@", piece, piece.story);
+    
+    NSLog(@"Trying to update piece %@", piece.bnObjectId);
     
     // Block to upload the piece
     void (^updatePiece)(Piece *) = ^(Piece *piece) {
+        NSLog(@"Update piece %@ for story %@", piece, piece.story);
+
         RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
         // For serializing
         RKObjectMapping *pieceRequestMapping = [RKObjectMapping requestMapping];
@@ -91,31 +93,37 @@
         if (![piece createGifFileIfReqdAndShouldContinue])
             return;
         
+        // If all the media haven't been uploaded yet, don't edit the piece
+        
         BOOL mediaBeingUploaded = NO;
         for (Media *media in piece.media) {
             if ([media.localURL length]) {
+                assert(media.remoteStatus != MediaRemoteStatusSync);
+                
+                if (media.remoteStatus == MediaRemoteStatusProcessing || media.remoteStatus == MediaRemoteStatusPushing) {
+                    mediaBeingUploaded = YES;
+                    continue;
+                }
                 // Upload the media then update the piece
                 [media
                  uploadWithSuccess:^{
-                     updatePiece(piece);
+                     NSLog(@"Successfully uploaded %@ [%@] when editing piece %@", media.mediaTypeName, media.filename, piece.shortText.length ? piece.shortText : @"");
+                     piece.remoteStatus = RemoteObjectStatusFailed; // So that this is called again to update the media array
                  }
                  failure:^(NSError *error) {
                      piece.remoteStatus = RemoteObjectStatusFailed;
                      [piece save];
-                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error uploading %@ when editing piece %@", media.mediaTypeName, piece.shortText.length ? piece.shortText : @""]
-                                                                     message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]
-                                                                    delegate:nil
-                                                           cancelButtonTitle:@"OK"
-                                                           otherButtonTitles:nil];
-                     [alert show];
+                     NSLog(@"Error uploading %@ [%@] when editing piece %@", media.mediaTypeName, media.filename, piece.shortText.length ? piece.shortText : @"");
                  }];
                 mediaBeingUploaded = YES;
             }
         }
-        // Media wasn't changed
-        if (!mediaBeingUploaded) {
-            updatePiece(piece);
-        }
+        // Media is being uploaded
+        if (mediaBeingUploaded)
+            return;
+
+        // All the media has been uploaded. So the editPiece can happen now
+        updatePiece(piece);
     }
     // No media changed.
     else {

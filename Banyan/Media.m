@@ -35,12 +35,14 @@
 
 + (Media *)newMediaForObject:(RemoteObject *)remoteObject
 {
-    Media *media = [[Media alloc] initWithEntity:[NSEntityDescription entityForName:@"Media"
-                                                             inManagedObjectContext:[remoteObject managedObjectContext]]
-                  insertIntoManagedObjectContext:[remoteObject managedObjectContext]];
+    Media *media = [NSEntityDescription insertNewObjectForEntityForName:@"Media" inManagedObjectContext:[remoteObject managedObjectContext]];
     
     media.remoteObject = remoteObject;
     media.filename = [BNMisc genRandStringLength:10];
+    media.createdAt = [NSDate date];
+    media.remoteStatus = MediaRemoteStatusLocal;
+    [media save];
+    
     return media;
 }
 
@@ -66,11 +68,11 @@
     }
 }
 
-- (void)awakeFromFetch {
-    if ((self.remoteStatus == MediaRemoteStatusPushing /*&& _uploadOperation == nil*/) || (self.remoteStatus == MediaRemoteStatusProcessing)) {
-        self.remoteStatus = MediaRemoteStatusFailed;
-    }
-}
+//- (void)awakeFromFetch {
+//    if ((self.remoteStatus == MediaRemoteStatusPushing /*&& _uploadOperation == nil*/) || (self.remoteStatus == MediaRemoteStatusProcessing)) {
+//        self.remoteStatus = MediaRemoteStatusFailed;
+//    }
+//}
 
 - (MediaRemoteStatus)remoteStatus {
     return (MediaRemoteStatus)[[self remoteStatusNumber] intValue];
@@ -128,31 +130,50 @@
     return [Media titleForRemoteStatus:self.remoteStatusNumber];
 }
 
-- (void) uploadWithSuccess:(void (^)())successBlock failure:(void (^)(NSError *error))errorBlock
++ (void) validateAllMedias
 {
-    [self save];
-    if (self.remoteStatus == MediaRemoteStatusSync) {
-        return;
-    }
+    // Any objects which are in the Uploading state should be marked as failed
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:[NSEntityDescription entityForName:@"Media" inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@) OR (remoteStatusNumber = %@)",
+                              [NSNumber numberWithInt:MediaRemoteStatusPushing], [NSNumber numberWithInt:MediaRemoteStatusProcessing]];
+    [request setPredicate:predicate];
     
-    if ([self.mediaType isEqualToString:@"image"]) {
-        [self uploadImageWithSuccess:^{
-            successBlock();
-            [self save];
-        } failure:errorBlock];
-    } else if ([self.mediaType isEqualToString:@"audio"]) {
-        [self uploadAudioWithSuccess:^{
-            successBlock();
-            [self save];
-        } failure:errorBlock];
-    } else if ([self.mediaType isEqualToString:@"gif"]) {
-        [self uploadGifWithSuccess:^{
-            successBlock();
-            [self save];
-        } failure:errorBlock];
-    }
+    NSError *error = nil;
+    NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+    for (Media *obj in array)
+        obj.remoteStatus = MediaRemoteStatusFailed;
 }
 
+- (void) uploadWithSuccess:(void (^)())successBlock failure:(void (^)(NSError *error))errorBlock
+{
+    if (self.remoteStatus == MediaRemoteStatusSync || self.remoteStatus == MediaRemoteStatusProcessing || self.remoteStatus == MediaRemoteStatusPushing) {
+        return;
+    }
+
+    NSLog(@"Uploading %@ media (Status: %@, filename: %@) for object id: %@", self.mediaType, self.remoteStatusNumber, self.filename, self.remoteObject.bnObjectId);
+    
+    void (^success)() = ^(){
+        successBlock();
+        self.remoteStatus = MediaRemoteStatusSync;
+        self.localURL = nil;
+        [self save];
+    };
+    
+    void (^failure)(NSError *error) = ^(NSError *error){
+        errorBlock(error);
+        self.remoteStatus = MediaRemoteStatusFailed;
+        [self save];
+    };
+    
+    if ([self.mediaType isEqualToString:@"image"]) {
+        [self uploadImageWithSuccess:success failure:failure];
+    } else if ([self.mediaType isEqualToString:@"audio"]) {
+        [self uploadAudioWithSuccess:success failure:failure];
+    } else if ([self.mediaType isEqualToString:@"gif"]) {
+        [self uploadGifWithSuccess:success failure:failure];
+    }
+}
 
 - (void) deleteWitSuccess:(void (^)(void))successBlock failure:(void (^)(NSError *error))errorBlock
 {
@@ -218,8 +239,6 @@
         if (succeeded) {
             self.remoteURL = audioFile.url;
             self.filename = audioFile.name;
-            self.remoteStatus = MediaRemoteStatusSync;
-            self.localURL = nil;
             successBlock();
         } else {
             errorBlock(error);
@@ -254,8 +273,6 @@
             if (succeeded) {
                 self.remoteURL = imageFile.url;
                 self.filename = imageFile.name;
-                self.remoteStatus = MediaRemoteStatusSync;
-                self.localURL = nil;
                 successBlock();
             } else {
                 errorBlock(error);
@@ -263,7 +280,6 @@
         }];
     }
             failureBlock:^(NSError *error) {
-                self.remoteStatus = MediaRemoteStatusFailed;
                 errorBlock(error);
             }
      ];
@@ -283,8 +299,6 @@
         if (succeeded) {
             self.remoteURL = gifFile.url;
             self.filename = gifFile.name;
-            self.remoteStatus = MediaRemoteStatusSync;
-            self.localURL = nil;
             successBlock();
         } else {
             errorBlock(error);

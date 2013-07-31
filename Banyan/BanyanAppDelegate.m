@@ -104,9 +104,7 @@
     
     //    [FBSettings enableBetaFeature:FBBetaFeaturesOpenGraphShareDialog];
     //    [FBSettings enableBetaFeature:FBBetaFeaturesShareDialog];
-    
-    [RemoteObject validateAllObjects];
-    
+        
     self.tabBarController = [[MasterTabBarController alloc] init];
     self.window.rootViewController = self.tabBarController;
     [self.window makeKeyAndVisible];
@@ -192,8 +190,12 @@ void uncaughtExceptionHandler(NSException *exception)
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     // We need to properly handle activation of the application with regards to SSO
     // (e.g., returning from iOS 6.0 authorization dialog or from fast app switching).
+    [RemoteObject validateAllObjects];
+
     [FBSession.activeSession handleDidBecomeActive];
-    [self fireRemoteObjectTimer];
+    
+    if ([[AFBanyanAPIClient sharedClient] isReachable])
+        [self fireRemoteObjectTimer];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

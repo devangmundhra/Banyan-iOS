@@ -30,8 +30,8 @@
 - (void)awakeFromFetch
 {
     [super awakeFromFetch];
+    self.currentPieceNum = self.currentPieceNum > self.length ? self.length : self.currentPieceNum;
     self.newPiecesToView = self.viewedByCurUser && self.currentPieceNum > 0 ? YES  : NO;
-    
 }
 
 + (NSArray *)syncedStories

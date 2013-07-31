@@ -10,9 +10,9 @@
 #import <CoreData/CoreData.h>
 
 typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
+    MediaRemoteStatusLocal,       // Only local version
     MediaRemoteStatusPushing,    // Uploading post
     MediaRemoteStatusFailed,      // Upload failed
-    MediaRemoteStatusLocal,       // Only local version
     MediaRemoteStatusSync,       // Post uploaded
     MediaRemoteStatusProcessing, // Intermediate status before uploading
 };
@@ -60,5 +60,7 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
 + (Media *)getMediaOfType:(NSString *)type inMediaSet:(NSOrderedSet *)mediaSet;
 + (NSOrderedSet *)getAllMediaOfType:(NSString *)type inMediaSet:(NSOrderedSet *)mediaSet;
 + (RKEntityMapping *)mediaMappingForRK;
+
++ (void)validateAllMedias;
 
 @end

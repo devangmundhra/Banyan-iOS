@@ -146,11 +146,12 @@
         [locationLocationMapping addAttributeMappingsFromArray:@[@"street", @"city", @"state", @"country", @"zip", @"latitude", @"longitude"]];
         [locationMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationLocationMapping]];
         [pieceRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationMapping]];
-        
-        RKObjectMapping *mediaMapping = [RKObjectMapping requestMapping];
-        [mediaMapping addAttributeMappingsFromDictionary:@{@"remoteURL": @"url"}];
-        [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType"]];
-        [pieceRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:mediaMapping]];
+
+        // Media, if any, should be uploaded via edit piece, not here. This is so that empty media entities are not created in the backend.
+//        RKObjectMapping *mediaMapping = [RKObjectMapping requestMapping];
+//        [mediaMapping addAttributeMappingsFromDictionary:@{@"remoteURL": @"url"}];
+//        [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType"]];
+//        [pieceRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:mediaMapping]];
         
         RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
                                                   requestDescriptorWithMapping:pieceRequestMapping
@@ -201,6 +202,7 @@
     
     // Save this story in the UserDefaults so that next time the user will add a piece here.
     [piece.story saveStoryMOIdToUserDefaults];
+    [piece.story save];
 }
 
 @end

@@ -129,6 +129,8 @@
     //    for (Story *story in array) {
     //        story.uploadStatusNumber = story.uploadStatusNumber;
     //    }
+    
+    [Media validateAllMedias];
 }
 
 #pragma mark-

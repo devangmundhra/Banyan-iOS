@@ -143,13 +143,15 @@
     [self.view insertSubview:self.pageViewController.view belowSubview:self.storyInfoView];
     self.pageViewController.view.frame = self.view.bounds;
     [self.pageViewController didMoveToParentViewController:self];
-    self.view.gestureRecognizers = self.pageViewController.gestureRecognizers;
-    [self.view.gestureRecognizers enumerateObjectsUsingBlock:^(UIGestureRecognizer *gR, NSUInteger idx, BOOL *stop){
-        gR.delegate = self;
-    }];
     
     UISwipeGestureRecognizer* swipeDownGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showStoryInfoView:)];
     swipeDownGestureRecognizer.direction = UISwipeGestureRecognizerDirectionDown;
+    
+    [self.pageViewController.gestureRecognizers enumerateObjectsUsingBlock:^(UIGestureRecognizer *gR, NSUInteger idx, BOOL *stop){
+        gR.delegate = self;
+        [gR requireGestureRecognizerToFail:swipeDownGestureRecognizer]; // So that a swipe down does not cause page turn
+    }];
+    self.view.gestureRecognizers = self.pageViewController.gestureRecognizers;
     [self.view addGestureRecognizer:swipeDownGestureRecognizer];
         
     [[NSNotificationCenter defaultCenter] addObserver:self 
