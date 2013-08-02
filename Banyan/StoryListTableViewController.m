@@ -58,7 +58,7 @@ typedef enum {
     self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                         managedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext
                                                                           sectionNameKeyPath:nil
-                                                                                   cacheName:nil];
+                                                                                   cacheName:@"StoryListCache"];
     self.fetchedResultsController.delegate = nil; // If nil, explicitly call perform fetch (via Notification) to update list
     
     [self.tableView addPullToRefreshWithActionHandler:^{

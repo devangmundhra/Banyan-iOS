@@ -41,7 +41,7 @@
     media.filename = [BNMisc genRandStringLength:10];
     media.createdAt = [NSDate date];
     media.remoteStatus = MediaRemoteStatusLocal;
-    [media save];
+//    [media save];
     
     return media;
 }

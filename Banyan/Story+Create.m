@@ -32,7 +32,7 @@
     story.author = [User currentUser];
     story.createdAt = story.updatedAt = [NSDate date];
     
-    [story save];
+//    [story save];
     
     return story;
 }

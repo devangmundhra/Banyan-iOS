@@ -73,7 +73,7 @@
                                       (__bridge id)kCGImagePropertyGIFDictionary: @{
                                               (__bridge id)kCGImagePropertyGIFDelayTime: @2.0f, // a float (not double!) in seconds, rounded to centiseconds in the GIF data
                                               },
-                                      (__bridge id)kCGImageDestinationLossyCompressionQuality: @0.5,
+                                      (__bridge id)kCGImageDestinationLossyCompressionQuality: @1,
                                       };
 
     NSURL *documentsDirectoryURL = [BanyanAppDelegate applicationDocumentsDirectory];
