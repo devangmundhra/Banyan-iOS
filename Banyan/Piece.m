@@ -104,4 +104,11 @@
     [story setUploadStatusNumber:[story calculateUploadStatusNumber]];
     UPDATE_STORY_LIST(nil);
 }
+
+#pragma mark share
+- (void) shareOnFacebook
+{
+    
+}
+
 @end

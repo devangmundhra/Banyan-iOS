@@ -300,4 +300,11 @@
     [[self primitiveValueForKey:@"pieces"] minusSet:value];
     [self didChangeValueForKey:@"pieces" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
 }
+
+#pragma mark share
+- (void) shareOnFacebook
+{
+    
+}
+
 @end

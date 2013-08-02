@@ -244,6 +244,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (void) shareStoryAtIndexPath:(NSIndexPath *)indexPath
 {
     Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    
     NSLog(@"Sharing story: %@", story);
     assert(false);
 }

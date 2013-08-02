@@ -52,7 +52,7 @@ typedef enum {
 + (void)validateAllObjects;
 
 # pragma mark sharing
-- (void)share;
+- (void)shareOnFacebook;
 
 @end
 
