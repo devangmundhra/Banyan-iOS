@@ -333,6 +333,24 @@
     [self presentViewController:newStoryViewController animated:YES completion:nil];
 }
 
+- (void) deletePiece:(Piece *)piece
+{
+    NSUInteger curPieceNum = self.currentPiece.pieceNumber;
+    NSNumber *turnToPage = nil;
+    if (curPieceNum != [self.story.pieces count]) {
+        turnToPage = [NSNumber numberWithUnsignedInteger:curPieceNum];
+    } else { // This was the last piece
+        turnToPage = [NSNumber numberWithUnsignedInteger:curPieceNum-1];
+    }
+    [Piece deletePiece:self.currentPiece];
+    
+    if (!self.story.pieces.count) {
+        [self prepareToGoToStoryList];
+    } else {
+        [self readPieceViewControllerFlipToPiece:turnToPage];
+    }
+}
+
 #pragma mark Action sheet delegate method.
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -357,20 +375,8 @@
         [self presentViewController:addPieceViewController animated:YES completion:nil];
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Delete piece"]) {
-        NSUInteger curPieceNum = self.currentPiece.pieceNumber;
-        NSNumber *turnToPage = nil;
-        if (curPieceNum != [self.story.pieces count]) {
-            turnToPage = [NSNumber numberWithUnsignedInteger:curPieceNum];
-        } else { // This was the last piece
-            turnToPage = [NSNumber numberWithUnsignedInteger:curPieceNum-1];
-        }
-        [Piece deletePiece:self.currentPiece];
-        
-        if (!self.story.pieces.count) {
-            [self prepareToGoToStoryList];
-        } else {
-            [self readPieceViewControllerFlipToPiece:turnToPage];
-        }
+        // Do this after a delay so that the action sheet can be dismissed
+        [self performSelector:@selector(deletePiece:) withObject:self.currentPiece afterDelay:0.5];
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share via Facebook"]) {
         // Share
