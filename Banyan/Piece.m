@@ -8,7 +8,9 @@
 
 #import "Piece.h"
 #import "Story.h"
-
+#import "User.h"
+#import "Media.h"
+#import "BanyanAppDelegate.h"
 
 @implementation Piece
 
@@ -108,7 +110,90 @@
 #pragma mark share
 - (void) shareOnFacebook
 {
+    NSURL *urlToShare = [NSURL URLWithString:self.permaLink];
+    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.media];
+    NSURL *imageURL = [NSURL URLWithString:REPLACE_EMPTY_STRING_WITH_NIL(imageMedia.remoteURL)];
     
+    NSString *message = nil;
+    NSString *shortText = REPLACE_EMPTY_STRING_WITH_NIL(self.shortText);
+    NSString *longText = REPLACE_EMPTY_STRING_WITH_NIL(self.longText);
+    if (shortText) {
+        message = [NSString stringWithString:shortText];
+        if (longText)
+            message = [message stringByAppendingFormat:@"\n%@", longText];
+    }
+    else if (longText) {
+        message = [NSString stringWithString:longText];
+    }
+    
+    // This code demonstrates 3 different ways of sharing using the Facebook SDK.
+    // The first method tries to share via the Facebook app. This allows sharing without
+    // the user having to authorize your app, and is available as long as the user has the
+    // correct Facebook app installed. This publish will result in a fast-app-switch to the
+    // Facebook app.
+    // The second method tries to share via Facebook's iOS6 integration, which also
+    // allows sharing without the user having to authorize your app, and is available as
+    // long as the user has linked their Facebook account with iOS6. This publish will
+    // result in a popup iOS6 dialog.
+    // The third method tries to share via a Graph API request. This does require the user
+    // to authorize your app. They must also grant your app publish permissions. This
+    // allows the app to publish without any user interaction.
+    
+    // If it is available, we will first try to post using the share dialog in the Facebook app
+    FBAppCall *appCall = [FBDialogs presentShareDialogWithLink:urlToShare
+                                                          name:self.story.title
+                                                       caption:shortText
+                                                   description:longText
+                                                       picture:imageURL
+                                                   clientState:nil
+                                                       handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
+                                                           if (error) {
+                                                               NSLog(@"Error: %@", error.description);
+                                                           } else {
+                                                               NSLog(@"Success!");
+                                                           }
+                                                       }];
+    
+    if (!appCall && imageMedia) {
+        [imageMedia getImageForMediaWithSuccess:^(UIImage *image) {
+            // Next try to post using Facebook's iOS6 integration
+            BOOL displayedNativeDialog = [FBDialogs presentOSIntegratedShareDialogModallyFrom:[BanyanAppDelegate topMostController]
+                                                                                  initialText:message
+                                                                                        image:image
+                                                                                          url:urlToShare
+                                                                                      handler:nil];
+            
+            if (!displayedNativeDialog) {
+                // Lastly, fall back on a request for permissions and a direct post using the Graph API
+                [self performFacebookPublishAction:^{
+                    [FBRequestConnection startForUploadPhoto:image
+                                           completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                                                [self showAlert:@"Photo Post" result:result error:error];
+                                           }];
+                    
+                }];
+            }
+        } failure:^(NSError *error) {
+            [self showAlert:message result:nil error:error];
+        }];
+    } else {
+        BOOL displayedNativeDialog = [FBDialogs presentOSIntegratedShareDialogModallyFrom:[BanyanAppDelegate topMostController]
+                                                                              initialText:message
+                                                                                    image:nil
+                                                                                      url:urlToShare
+                                                                                  handler:nil];
+        
+        if (!displayedNativeDialog) {
+            // Lastly, fall back on a request for permissions and a direct post using the Graph API
+            [self performFacebookPublishAction:^{
+                [FBRequestConnection startForPostStatusUpdate:message
+                                            completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                                                [self showAlert:@"Post status" result:result error:error];
+                                            }];
+                
+            }];
+        }
+    }
 }
 
 @end

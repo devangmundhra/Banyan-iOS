@@ -67,16 +67,7 @@
             return;
         
         // send request to facebook
-        
-        FBShareDialogParams *params = [[FBShareDialogParams alloc] init];
-        params.dataFailuresFatal = NO;
-        params.caption = story.title;
-        params.description = @"Check this new story out!";
-        params.friends = fbIds;
-        Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:story.media];
-        params.picture = [NSURL URLWithString:imageMedia.remoteURL];
-        params.ref = @"Story";
-        [FBDialogs presentShareDialogWithParams:params clientState:nil handler:nil];
+        [story shareOnFacebook];
         
         // send push notifications
         
@@ -144,20 +135,7 @@
         if ([fbIds count] == 0)
             return;
         
-        // send request to facebook
-        
-        FBShareDialogParams *params = [[FBShareDialogParams alloc] init];
-        params.dataFailuresFatal = NO;
-        params.caption = story.title;
-        params.description = @"Check this new story out!";
-        params.friends = fbIds;
-        Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:story.media];
-        params.picture = [NSURL URLWithString:imageMedia.remoteURL];
-        params.ref = @"Story";
-        [FBDialogs presentShareDialogWithParams:params clientState:nil handler:nil];
-        
         // send push notifications
-        
         UIRemoteNotificationType types = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
         if (types == UIRemoteNotificationTypeNone)
             return;
@@ -242,7 +220,7 @@
         [storyResponseMapping addAttributeMappingsFromDictionary:@{
                                                                    PARSE_OBJECT_ID : @"bnObjectId",
                                                                    }];
-        [storyResponseMapping addAttributeMappingsFromArray:@[PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT]];
+        [storyResponseMapping addAttributeMappingsFromArray:@[PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT, @"permaLink"]];
         storyResponseMapping.identificationAttributes = @[@"bnObjectId"];
         
         RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:storyResponseMapping

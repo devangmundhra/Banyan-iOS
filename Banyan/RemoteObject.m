@@ -146,6 +146,64 @@
 {
 }
 
+// Convenience method to perform some action that requires the "publish_actions" permissions.
+- (void) performFacebookPublishAction:(void (^)(void)) action {
+    // we defer request for permission to post to the moment of post, then we check for the permission
+    if ([FBSession.activeSession.permissions indexOfObject:@"publish_actions"] == NSNotFound) {
+        // if we don't already have the permission, then we request it now
+        [FBSession.activeSession requestNewPublishPermissions:@[@"publish_actions"]
+                                              defaultAudience:FBSessionDefaultAudienceFriends
+                                            completionHandler:^(FBSession *session, NSError *error) {
+                                                if (!error) {
+                                                    action();
+                                                }
+                                                //For this example, ignore errors (such as if user cancels).
+                                            }];
+    } else {
+        action();
+    }
+    
+}
+
+// UIAlertView helper for post buttons
+- (void)showAlert:(NSString *)message
+           result:(id)result
+            error:(NSError *)error {
+    
+    NSString *alertMsg;
+    NSString *alertTitle;
+    if (error) {
+        alertTitle = @"Error";
+        // For simplicity, we will use any error message provided by the SDK,
+        // but you may consider inspecting the fberrorShouldNotifyUser or
+        // fberrorCategory to provide better recourse to users. See the Scrumptious
+        // sample for more examples on error handling.
+        if (error.fberrorUserMessage) {
+            alertMsg = error.fberrorUserMessage;
+        } else {
+            alertMsg = @"Operation failed due to a connection problem, retry later.";
+        }
+    } else {
+//        NSDictionary *resultDict = (NSDictionary *)result;
+        alertMsg = [NSString stringWithFormat:@"Successfully posted '%@'.", message];
+//        NSString *postId = [resultDict valueForKey:@"id"];
+//        if (!postId) {
+//            postId = [resultDict valueForKey:@"postId"];
+//        }
+//        if (postId) {
+//            alertMsg = [NSString stringWithFormat:@"%@\nPost ID: %@", alertMsg, postId];
+//        }
+        alertTitle = @"Success";
+    }
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:alertTitle
+                                                        message:alertMsg
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+    [alertView show];
+}
+
 @end
 
 @implementation RemoteObject (CoreDataGeneratedAccessors)

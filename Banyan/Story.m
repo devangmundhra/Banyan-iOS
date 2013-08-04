@@ -8,7 +8,9 @@
 
 #import "Story.h"
 #import "Piece.h"
-
+#import "Media.h"
+#import "Story+Permissions.h"
+#import "User_Defines.h"
 
 @implementation Story
 
@@ -304,7 +306,24 @@
 #pragma mark share
 - (void) shareOnFacebook
 {
+    NSArray *contributorsList = [self storyContributors];
     
+    NSMutableArray *fbIds = [NSMutableArray arrayWithCapacity:1];
+    for (NSDictionary *contributor in contributorsList)
+    {
+        if (![[contributor objectForKey:@"id"] isEqualToString:[[PFUser currentUser] objectForKey:USER_FACEBOOK_ID]])
+            [fbIds addObject:[contributor objectForKey:@"id"]];
+    }
+    
+    FBShareDialogParams *params = [[FBShareDialogParams alloc] init];
+    params.dataFailuresFatal = NO;
+    params.caption = self.title;
+    params.description = @"Check this new story out!";
+    params.friends = fbIds;
+    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.media];
+    params.picture = [NSURL URLWithString:imageMedia.remoteURL];
+    params.ref = @"Story";
+    [FBDialogs presentShareDialogWithParams:params clientState:nil handler:nil];
 }
 
 @end

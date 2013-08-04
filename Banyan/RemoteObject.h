@@ -52,8 +52,11 @@ typedef enum {
 + (void)validateAllObjects;
 
 # pragma mark sharing
-- (void)shareOnFacebook;
-
+- (void) shareOnFacebook;
+- (void) performFacebookPublishAction:(void (^)(void)) action;
+- (void)showAlert:(NSString *)message
+           result:(id)result
+            error:(NSError *)error;
 @end
 
 
