@@ -313,6 +313,10 @@
     if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
     {
         [Piece createNewPiece:self.piece];
+        NSUInteger currentPieceNum = [self.piece.story.pieces indexOfObject:self.piece];
+        assert(currentPieceNum != NSNotFound);
+        self.piece.story.currentPieceNum = currentPieceNum+1;
+
         NSLog(@"New piece %@ saved", self.piece);
         [TestFlight passCheckpoint:@"New piece created successfully"];
     }
@@ -388,8 +392,6 @@
 #pragma mark MediaPickerButtonDelegate methods
 - (void) addNewMedia:(MediaPickerButton *)sender
 {
-    [self dismissKeyboard:sender];
-    
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Modify Photo"
                                                              delegate:self
                                                     cancelButtonTitle:@"Cancel"
@@ -435,12 +437,14 @@
         // DO NOTHING ON DESTROY (Handled seperately)
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:MediaPickerControllerSourceTypeCamera]) {
+        [self dismissKeyboard:nil];
         MediaPickerViewController *mediaPicker = [[MediaPickerViewController alloc] init];
         mediaPicker.delegate = self;
         [self addChildViewController:mediaPicker];
         [mediaPicker shouldStartCameraController];
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:MediaPickerControllerSourceTypePhotoLib]) {
+        [self dismissKeyboard:nil];
         MediaPickerViewController *mediaPicker = [[MediaPickerViewController alloc] init];
         mediaPicker.delegate = self;
         [self addChildViewController:mediaPicker];
@@ -556,6 +560,9 @@
     
     if (self.pieceTextView.isFirstResponder)
         [self.pieceTextView resignFirstResponder];
+    
+    if (self.pieceCaptionView.isFirstResponder)
+        [self.pieceCaptionView resignFirstResponder];
 }
 
 - (BOOL)checkForChanges

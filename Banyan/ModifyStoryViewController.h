@@ -12,7 +12,7 @@
 #import "TITokenField.h"
 #import "LocationPickerButton.h"
 #import "MediaPickerViewController.h"
-#import "MediaPickerButton.h"
+#import "SingleImagePickerButton.h"
 #import "Story+Create.h"
 
 @class ModifyStoryViewController;
@@ -27,7 +27,7 @@
 
 typedef enum {ModifyStoryViewControllerEditModeAdd, ModifyStoryViewControllerEditModeEdit} ModifyStoryViewControllerEditMode;
 
-@interface ModifyStoryViewController : UIViewController <UITextFieldDelegate, InvitedTableViewControllerDelegate, UIScrollViewDelegate, BNFBLocationManagerDelegate, TITokenFieldDelegate, LocationPickerButtonDelegate, MediaPickerButtonDelegate, MediaPickerViewControllerDelegate, UIActionSheetDelegate>
+@interface ModifyStoryViewController : UIViewController <UITextFieldDelegate, InvitedTableViewControllerDelegate, UIScrollViewDelegate, BNFBLocationManagerDelegate, TITokenFieldDelegate, LocationPickerButtonDelegate, SingleImagePickerButtonDelegate, MediaPickerViewControllerDelegate, UIActionSheetDelegate>
 
 @property (strong, nonatomic) Story *story;
 @property (strong, nonatomic) id <ModifyStoryViewControllerDelegate>delegate;

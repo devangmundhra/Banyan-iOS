@@ -168,7 +168,7 @@
                 [self performFacebookPublishAction:^{
                     [FBRequestConnection startForUploadPhoto:image
                                            completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-                                                [self showAlert:@"Photo Post" result:result error:error];
+                                                [self showAlert:shortText?shortText:longText result:result error:error];
                                            }];
                     
                 }];
@@ -186,11 +186,9 @@
         if (!displayedNativeDialog) {
             // Lastly, fall back on a request for permissions and a direct post using the Graph API
             [self performFacebookPublishAction:^{
-                [FBRequestConnection startForPostStatusUpdate:message
-                                            completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-                                                [self showAlert:@"Post status" result:result error:error];
-                                            }];
-                
+                [FBRequestConnection startForPostStatusUpdate:message place:self.location?self.location:nil tags:nil completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                    [self showAlert:shortText?shortText:longText result:result error:error];
+                }];                
             }];
         }
     }

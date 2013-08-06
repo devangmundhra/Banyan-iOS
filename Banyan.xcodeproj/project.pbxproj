@@ -22,6 +22,7 @@
 		511B422117A6672200466A8B /* MasterTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 511B422017A6672200466A8B /* MasterTabBarController.m */; };
 		512598BB17AB916600FEFCF0 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 512598BA17AB916600FEFCF0 /* FacebookSDK.framework */; };
 		512598BC17AB918D00FEFCF0 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
+		512598BF17B0D5C500FEFCF0 /* SingleImagePickerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 512598BE17B0D5C500FEFCF0 /* SingleImagePickerButton.m */; };
 		5128EB4617472FF600393173 /* delete@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128EB3A17472FF600393173 /* delete@2x.png */; };
 		5128EB4717472FF600393173 /* delete.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128EB3B17472FF600393173 /* delete.png */; };
 		5128EB4817472FF600393173 /* stop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128EB3C17472FF600393173 /* stop@2x.png */; };
@@ -240,6 +241,8 @@
 		511E708A161A9756009AAD25 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		512598BA17AB916600FEFCF0 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
+		512598BD17B0D5C500FEFCF0 /* SingleImagePickerButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SingleImagePickerButton.h; sourceTree = "<group>"; };
+		512598BE17B0D5C500FEFCF0 /* SingleImagePickerButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SingleImagePickerButton.m; sourceTree = "<group>"; };
 		5128EB3A17472FF600393173 /* delete@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "delete@2x.png"; sourceTree = "<group>"; };
 		5128EB3B17472FF600393173 /* delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = delete.png; sourceTree = "<group>"; };
 		5128EB3C17472FF600393173 /* stop@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stop@2x.png"; sourceTree = "<group>"; };
@@ -728,6 +731,8 @@
 				517A01D3170983B400665F0F /* MediaPickerViewController.m */,
 				517A01D5170A7A9E00665F0F /* MediaPickerButton.h */,
 				517A01D6170A7A9E00665F0F /* MediaPickerButton.m */,
+				512598BD17B0D5C500FEFCF0 /* SingleImagePickerButton.h */,
+				512598BE17B0D5C500FEFCF0 /* SingleImagePickerButton.m */,
 			);
 			name = "Media Picker";
 			sourceTree = "<group>";
@@ -1453,6 +1458,7 @@
 				5189B32F15B395F300562DD0 /* ModifyPieceViewController.m in Sources */,
 				5189B33115B395F300562DD0 /* ModifyStoryViewController.m in Sources */,
 				5189B33515B395F300562DD0 /* ReadPieceViewController.m in Sources */,
+				512598BF17B0D5C500FEFCF0 /* SingleImagePickerButton.m in Sources */,
 				5189B33815B395F300562DD0 /* Piece+Create.m in Sources */,
 				5189B33915B395F300562DD0 /* Piece+Delete.m in Sources */,
 				5189B33A15B395F300562DD0 /* Piece+Edit.m in Sources */,

@@ -202,7 +202,7 @@
     
     // Save this story in the UserDefaults so that next time the user will add a piece here.
     [piece.story saveStoryMOIdToUserDefaults];
-    [piece.story save];
+    [piece save];
 }
 
 @end

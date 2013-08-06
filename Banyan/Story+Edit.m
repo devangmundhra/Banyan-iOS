@@ -50,10 +50,12 @@
     
     story.remoteStatus = RemoteObjectStatusPushing;
     
-     NSLog(@"Edit Story %@", story);
+    NSLog(@"Trying to update story %@", story.bnObjectId);
     
     // Block to upload the story
     void (^updateStory)(Story *) = ^(Story *story) {
+        NSLog(@"Edit Story %@", story);
+
         RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
         // For serializing
         RKObjectMapping *storyRequestMapping = [RKObjectMapping requestMapping];
@@ -109,7 +111,46 @@
                          }];
     };
     
-    updateStory(story);
+    if ([story.media count]) {
+        // Story should only have 1 media at most
+        assert(story.media.count <= 1);
+        
+        // If all the media haven't been uploaded yet, don't edit the story
+        BOOL mediaBeingUploaded = NO;
+        for (Media *media in story.media) {
+            if ([media.localURL length]) {
+                assert(media.remoteStatus != MediaRemoteStatusSync);
+                
+                if (media.remoteStatus == MediaRemoteStatusProcessing || media.remoteStatus == MediaRemoteStatusPushing) {
+                    mediaBeingUploaded = YES;
+                    continue;
+                }
+                // Upload the media then update the story
+                [media
+                 uploadWithSuccess:^{
+                     NSLog(@"Successfully uploaded %@ [%@] when editing story %@", media.mediaTypeName, media.filename, story.title);
+                     story.remoteStatus = RemoteObjectStatusFailed; // So that this is called again to update the media array
+                 }
+                 failure:^(NSError *error) {
+                     story.remoteStatus = RemoteObjectStatusFailed;
+                     [story save];
+                     NSLog(@"Error uploading %@ [%@] when editing story %@", media.mediaTypeName, media.filename, story.title);
+                 }];
+                mediaBeingUploaded = YES;
+            }
+        }
+        // Media is being uploaded
+        if (mediaBeingUploaded)
+            return;
+        
+        // All the media has been uploaded. So the editStory can happen now
+        updateStory(story);
+    }
+    // No media changed.
+    else {
+        updateStory(story);
+    }
+
     [story save];
 }
 @end

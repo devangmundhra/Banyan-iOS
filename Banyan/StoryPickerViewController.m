@@ -149,7 +149,7 @@
 #pragma mark ModifyStoryViewControllerDelegate
 - (void) modifyStoryViewControllerDidDismiss:(ModifyStoryViewController *)viewController
 {
-    [self dismissStoryPickerViewControllerWithCompletionBlock:nil];
+//    [self dismissStoryPickerViewControllerWithCompletionBlock:nil];
 }
 
 - (void) modifyStoryViewControllerDidSelectStory:(Story *)story

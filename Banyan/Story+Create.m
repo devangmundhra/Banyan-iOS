@@ -204,10 +204,11 @@
         [locationMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationLocationMapping]];
         [storyRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationMapping]];
         
-        RKObjectMapping *mediaMapping = [RKObjectMapping requestMapping];
-        [mediaMapping addAttributeMappingsFromDictionary:@{@"remoteURL": @"url"}];
-        [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType"]];
-        [storyRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:mediaMapping]];
+        // Media, if any, should be uploaded via edit story, not here. This is so that empty media entities are not created in the backend.
+//        RKObjectMapping *mediaMapping = [RKObjectMapping requestMapping];
+//        [mediaMapping addAttributeMappingsFromDictionary:@{@"remoteURL": @"url"}];
+//        [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType"]];
+//        [storyRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:mediaMapping]];
         
         RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
                                                   requestDescriptorWithMapping:storyRequestMapping
@@ -243,6 +244,11 @@
                               if ([story numberOfViewers]) {
                                   sendRequestToViewers(story);
                               }
+                              if ([story.media count]) {
+                                  // Media should be uploaded asynchronously.
+                                  // So edit the story now which will in turn upload the media.
+                                  [Story editStory:story];
+                              }
                               [story save];
                           }
                           failure:^(RKObjectRequestOperation *operation, NSError *error) {
@@ -252,39 +258,8 @@
                           }];
     };
     
-    // Upload the file and then upload the story
-    if ([story.media count]) {
-        BOOL mediaBeingUploaded = NO;
-        for (Media *media in story.media) {
-            if ([media.localURL length]) {
-                // Upload the media then update the story
-                [media
-                 uploadWithSuccess:^{
-                     uploadStory(story);
-                 }
-                 failure:^(NSError *error) {
-                     story.remoteStatus = RemoteObjectStatusFailed;
-                     [story save];
-                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in finding Image"
-                                                                     message:[NSString stringWithFormat:@"Can't find Asset Library image. Error: %@", error.localizedDescription]
-                                                                    delegate:nil
-                                                           cancelButtonTitle:@"OK"
-                                                           otherButtonTitles:nil];
-                     [alert show];
-                 }];
-                mediaBeingUploaded = YES;
-            }
-        }
-        // Media wasn't changed.
-        if (!mediaBeingUploaded) {
-            uploadStory(story);
-        }
-    }
-    // No media
-    else {
-        uploadStory(story);
-    }
-    
+    uploadStory(story);
+
     // Save this story in the UserDefaults so that next time the user will add a piece here.
     [story saveStoryMOIdToUserDefaults];
 }

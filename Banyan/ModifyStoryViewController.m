@@ -40,7 +40,7 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *inviteContactsButton;
 @property (weak, nonatomic) IBOutlet LocationPickerButton *addLocationButton;
-@property (weak, nonatomic) IBOutlet MediaPickerButton *addPhotoButton;
+@property (weak, nonatomic) IBOutlet SingleImagePickerButton *addPhotoButton;
 @property (weak, nonatomic) IBOutlet TITokenFieldView *tagsFieldView;
 
 @property (weak, nonatomic) UITextField *activeField;
@@ -59,6 +59,9 @@
 
 @property (nonatomic) ModifyStoryViewControllerEditMode editMode;
 @property (strong, nonatomic) Story *backupStory_;
+
+@property (strong, nonatomic) NSMutableSet *mediaToDelete;
+@property (strong, nonatomic) NSOrderedSet *backupMedia_;
 
 @end
 
@@ -84,6 +87,8 @@
 @synthesize backupStory_ = _backupStory_;
 @synthesize editMode = _editMode;
 @synthesize delegate = _delegate;
+@synthesize backupMedia_ = _backupMedia_;
+@synthesize mediaToDelete;
 
 - (id) initWithStory:(Story *)story
 {
@@ -95,6 +100,7 @@
         } else {
             self.editMode = ModifyStoryViewControllerEditModeEdit;
             self.backupStory_ = [NSEntityDescription insertNewObjectForEntityForName:[[story entity] name] inManagedObjectContext:[story managedObjectContext]];
+            self.backupMedia_ = [NSOrderedSet orderedSetWithOrderedSet:self.story.media];
             [self.backupStory_ cloneFrom:story];
         }
         
@@ -120,8 +126,9 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
-    self.addPhotoButton.hidden = YES; // Stories don't have photos
-    //    self.addPhotoButton.delegate = self;
+    self.addPhotoButton.delegate = self;
+    
+    mediaToDelete = [NSMutableSet set];
     
     self.inviteContactsButton.enabled = 1;
     [self.inviteContactsButton setBackgroundColor:BANYAN_GREEN_COLOR];
@@ -202,6 +209,30 @@
             [self.viewerPrivacySegmentedControl setSelectedSegmentIndex:ViewerPrivacySegmentedControlPublic animated:NO];
             numSpectatorsLabel.hidden = YES;
         }
+        
+        // Cover image
+        Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.story.media];
+        
+        if (imageMedia) {
+            if ([imageMedia.remoteURL length]) {
+                [self.addPhotoButton.imageView setImageWithURL:[NSURL URLWithString:imageMedia.remoteURL] placeholderImage:nil options:SDWebImageProgressiveDownload];
+            } else if ([imageMedia.localURL length]) {
+                ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
+                [library assetForURL:[NSURL URLWithString:imageMedia.localURL] resultBlock:^(ALAsset *asset) {
+                    ALAssetRepresentation *rep = [asset defaultRepresentation];
+                    CGImageRef imageRef = [rep fullScreenImage];
+                    UIImage *image = [UIImage imageWithCGImage:imageRef];
+                    [self.addPhotoButton.imageView setImage:image];
+                }
+                        failureBlock:^(NSError *error) {
+                            NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
+                        }
+                 ];
+            } else {
+                [self.addPhotoButton.imageView  setImageWithURL:nil];
+            }
+        }
+        
         self.navigationBar.topItem.title = @"Edit Story";
     } else {
         [self.contributorPrivacySegmentedControl setSelectedSegmentIndex:ContributorPrivacySegmentedControlInvited animated:NO];
@@ -262,6 +293,19 @@
 {
     if (self.backupStory_) {
         [self.story cloneFrom:self.backupStory_];
+        
+        // Restore the media
+        if (![self.backupMedia_ isEqualToOrderedSet:self.story.media]) {
+            // Remove any new media that might have been added
+            NSMutableOrderedSet *mediaToRemove = [NSMutableOrderedSet orderedSetWithOrderedSet:self.story.media];
+            [mediaToRemove minusOrderedSet:self.backupMedia_];
+            for (Media *media in mediaToRemove) {
+                [media remove];
+            }
+            assert([self.story.media intersectsOrderedSet:self.backupMedia_] && [self.backupMedia_ intersectsOrderedSet:self.story.media]);
+            // Set the old media back again in case the ordering was changed
+            [self.story setMedia:self.backupMedia_];
+        }
     }
 }
 
@@ -281,6 +325,24 @@
         self.story.location = (FBGraphObject<FBGraphPlace> *)self.locationManager.location;
     } else  {
         self.story.isLocationEnabled = NO;
+    }
+    
+    // Delete any media that were indicated to be deleted
+    for (Media *media in mediaToDelete) {
+        // If its a local image, don't delete it
+        if ([media.remoteURL length]) {
+            [media deleteWitSuccess:nil
+                            failure:^(NSError *error) {
+                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error deleting %@ when editing piece %@", media.mediaTypeName, self.story.title]
+                                                                                message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]
+                                                                               delegate:nil
+                                                                      cancelButtonTitle:@"OK"
+                                                                      otherButtonTitles:nil];
+                                [alert show];
+                            }];
+        }
+        else
+            [media remove];
     }
     
     NSArray *tagsArray = [self.tagsFieldView tokenTitles];
@@ -422,15 +484,17 @@
     return [viewersDictionary copy];
 }
 
-#pragma mark MediaPickerButtonDelegate methods
-- (void) addNewMedia:(MediaPickerButton *)sender
+#pragma mark SingleImagePickerButton methods
+- (void) singleImagePickerButtonTapped:(SingleImagePickerButton *)sender;
 {
     [self dismissKeyboard:sender];
+    
+    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.story.media];
     
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Modify Photo"
                                                              delegate:self
                                                     cancelButtonTitle:@"Cancel"
-                                               destructiveButtonTitle:nil
+                                               destructiveButtonTitle:imageMedia ? @"Delete Photo" : nil
                                                     otherButtonTitles:nil];
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
         [actionSheet addButtonWithTitle:MediaPickerControllerSourceTypeCamera];
@@ -438,17 +502,6 @@
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
     [actionSheet showInView:self.view];
     //    [actionSheet showFromTabBar:self.tabBarController.tabBar];
-}
-
-- (void) deletePreviousMedia:(Media *)media
-{
-    // If its a local image, don't delete it
-    if ([media.localURL length])
-        media.localURL = nil;
-    if ([media.remoteURL length]) {
-        [media deleteWitSuccess:nil failure:nil];
-    }
-    [media remove];
 }
 
 #pragma mark UIActionSheetDelegate
@@ -460,7 +513,9 @@
         // DO NOTHING ON CANCEL
     }
     else if (buttonIndex == actionSheet.destructiveButtonIndex) {
-        // DO NOTHING ON DESTRUCTIVE BUTTON. HANDLED SEPERATELY
+        Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.story.media];
+        [mediaToDelete addObject:imageMedia];
+        [self.addPhotoButton.imageView setImageWithURL:nil];
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:MediaPickerControllerSourceTypeCamera]) {
         MediaPickerViewController *mediaPicker = [[MediaPickerViewController alloc] init];
@@ -482,15 +537,29 @@
 #pragma mark MediaPickerViewControllerDelegate methods
 - (void) mediaPicker:(MediaPickerViewController *)mediaPicker finishedPickingMediaWithInfo:(NSDictionary *)info
 {
+    // Add the current media to mediaToDelete
+    [mediaToDelete addObjectsFromArray:[self.story.media array]];
+    
     Media *media = [Media newMediaForObject:self.story];
     media.mediaType = @"image";
+    UIImage *image = [info objectForKey:MediaPickerViewControllerInfoImage];
     media.localURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
     
-    [self.addPhotoButton reloadList];
+    [self.addPhotoButton.imageView  cancelImageRequestOperation];
+    [NSThread detachNewThreadSelector:@selector(useImage:) toTarget:self withObject:image];
 }
 
 - (void)mediaPickerDidCancel:(MediaPickerViewController *)mediaPicker
 {
+}
+
+- (void)useImage:(UIImage *)image {
+    // Create a graphics image context
+    UIImage* newImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill
+                                                    bounds:self.addPhotoButton.frame.size
+                                      interpolationQuality:kCGInterpolationHigh];
+    
+    [self.addPhotoButton.imageView setImage:newImage];
 }
 
 # pragma mark LocationPickerButtonDelegate
