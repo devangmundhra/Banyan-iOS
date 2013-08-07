@@ -55,6 +55,7 @@
     [actionButton setTitle:@"Find Friends" forState:UIControlStateNormal];
     [actionButton setBackgroundColor:BANYAN_GREEN_COLOR];
     [actionButton addTarget:self action:@selector(findFriends) forControlEvents:UIControlEventTouchUpInside];
+    actionButton.enabled = NO;
     layer.borderColor = BANYAN_DARK_GREEN_COLOR.CGColor;
     frame.origin.x += 20;
     frame.origin.y += 10;

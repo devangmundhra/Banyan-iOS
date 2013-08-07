@@ -96,10 +96,15 @@
         // Image View
     
     // Set name
+    
     NSString *nameString = [_user objectForKey:USER_NAME];
+    if (!nameString.length) {
+        nameString = [_user objectForKey:USER_USERNAME];
+    }
+    
     CGSize nameSize = [nameString sizeWithFont:[UIFont boldSystemFontOfSize:16.0f] forWidth:144.0f lineBreakMode:NSLineBreakByTruncatingTail];
-    [_nameButton setTitle:[_user objectForKey:USER_NAME] forState:UIControlStateNormal];
-    [_nameButton setTitle:[_user objectForKey:USER_NAME] forState:UIControlStateHighlighted];
+    [_nameButton setTitle:nameString forState:UIControlStateNormal];
+    [_nameButton setTitle:nameString forState:UIControlStateHighlighted];
     
     [_nameButton setFrame:CGRectMake( /*60.0f*/6.0f, 17.0f, nameSize.width, nameSize.height)];
     

@@ -14,7 +14,8 @@
 
 + (void)createActivity:(Activity *)activity
 {
-    if (!(activity.pieceId || activity.storyId) && ![activity.type isEqualToString:kBNActivityTypeFollowUser]) {
+    if (!(activity.pieceId || activity.storyId) &&
+        !([activity.type isEqualToString:kBNActivityTypeFollowUser] || [activity.type isEqualToString:kBNActivityTypeUnfollowUser])) {
         return;
     }
     RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
