@@ -17,7 +17,7 @@
 @property (nonatomic, retain) User * author;
 @property (nonatomic, retain) NSString * content;
 @property (nonatomic, retain) NSDate * createdAt;
-@property (nonatomic, retain) NSString * commentID;
+@property (nonatomic, retain) NSNumber * commentID;
 @property (nonatomic, retain) RemoteObject *remoteObject;
 
 @end

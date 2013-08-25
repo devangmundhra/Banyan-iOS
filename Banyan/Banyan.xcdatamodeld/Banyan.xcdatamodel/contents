@@ -2,7 +2,7 @@
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3381.3" systemVersion="12E55" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Comment" representedClassName="Comment" syncable="YES">
         <attribute name="author" attributeType="Transformable" syncable="YES"/>
-        <attribute name="commentID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="commentID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="remoteObject" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="RemoteObject" inverseName="comments" inverseEntity="RemoteObject" syncable="YES"/>
@@ -31,11 +31,10 @@
         <attribute name="pieceNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="shortText" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tags" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="timeStamp" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
         <relationship name="story" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Story" inverseName="pieces" inverseEntity="Story" syncable="YES"/>
     </entity>
     <entity name="RemoteObject" representedClassName="RemoteObject" isAbstract="YES" syncable="YES">
-        <attribute name="bnObjectId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="bnObjectId" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="createdAt" attributeType="Date" syncable="YES"/>
         <attribute name="favoriteByCurUser" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="isLocationEnabled" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
@@ -46,6 +45,8 @@
         <attribute name="numberOfViews" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="permaLink" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="remoteStatusNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="resourceUri" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="timeStamp" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" indexed="YES" syncable="YES"/>
         <attribute name="viewedByCurUser" optional="YES" attributeType="Boolean" syncable="YES"/>
         <relationship name="author" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="User" inverseName="remoteObject" inverseEntity="User" syncable="YES"/>
@@ -76,8 +77,9 @@
         <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="profilePic" optional="YES" attributeType="Transformable" valueTransformerName="ImageToDataTransformer" syncable="YES"/>
+        <attribute name="resourceUri" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="userId" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="userId" optional="YES" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="username" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <relationship name="remoteObject" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RemoteObject" inverseName="author" inverseEntity="RemoteObject" syncable="YES"/>
     </entity>

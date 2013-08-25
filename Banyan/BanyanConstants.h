@@ -29,7 +29,6 @@ extern NSString *const BNRefreshCurrentStoryListNotification;
 #define UPDATE_STORY_LIST(_object_) [[NSNotificationCenter defaultCenter] postNotificationName:BNRefreshCurrentStoryListNotification object:_object_]
 
 #pragma mark - NSUserDefaults
-extern NSString *const BNUserDefaultsFacebookFriends;
 extern NSString *const BNUserDefaultsUserInfo;
 extern NSString *const BNUserDefaultsBanyanUsersFacebookFriends;
 extern NSString *const BNUserDefaultsLastSuccessfulStoryUpdateTime;

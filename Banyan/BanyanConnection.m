@@ -8,9 +8,6 @@
 
 #import "BanyanConnection.h"
 #import "AFBanyanAPIClient.h"
-#import "Story_Defines.h"
-#import "Story+Stats.h"
-#import "Piece+Stats.h"
 #import "Story+Permissions.h"
 #import "Story+Edit.h"
 #import "Piece+Edit.h"
@@ -98,52 +95,22 @@
 
 + (void)loadStoriesFromBanyanWithSuccessBlock:(void (^)())successBlock errorBlock:(void (^)(NSError *error))errorBlock
 {
-    NSString *getPath = BANYAN_API_GET_PUBLIC_STORIES();
-    if ([PFUser currentUser]) {
-        getPath = BANYAN_API_GET_USER_STORIES([PFUser currentUser]);
-    }
+    NSString *getPath = BANYAN_API_GET_STORIES();
     
     // Initialize RestKit
     RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
     objectManager.managedObjectStore = [RKManagedObjectStore defaultStore];
     
-    // Story attributes
-    RKEntityMapping *storyMapping = [RKEntityMapping mappingForEntityForName:kBNStoryClassKey
-                                                        inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-    [storyMapping addAttributeMappingsFromDictionary:@{
-     STORY_CAN_VIEW : @"canView",
-     STORY_CAN_CONTRIBUTE : @"canContribute",
-     STORY_IS_INVITED: @"isInvited",
-     PARSE_OBJECT_ID : @"bnObjectId",
-     @"numViews" : @"numberOfViews",
-     @"numLikes" : @"numberOfLikes",
-     @"userViewed" : @"viewedByCurUser",
-     @"userLiked" : @"likedByCurUser",
-     @"firstUnviewedPieceNumByUser" : @"currentPieceNum"
-     }];
-    storyMapping.identificationAttributes = @[@"bnObjectId"];
-    
-    [storyMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_READ_ACCESS, STORY_WRITE_ACCESS, STORY_TAGS, STORY_LENGTH, @"permaLink",
-                                                    PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT, @"isLocationEnabled", @"location"]];
-    // Media
-    [storyMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:[Media mediaMappingForRK]]];
-    
-    // Author
-    [storyMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:[User UserMappingForRK]]];
-    
     // Response
-    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:storyMapping
+    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:[Story storyMappingForRK]
                                                                                             method:RKRequestMethodGET
                                                                                        pathPattern:nil
-                                                                                           keyPath:nil
+                                                                                           keyPath:@"objects"
                                                                                        statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     [objectManager addResponseDescriptor:responseDescriptor];
     
-    NSDictionary *params = nil;
-    if ([PFUser currentUser]) params = @{@"user": [PFUser currentUser].objectId};
-    
     [objectManager getObjectsAtPath:getPath
-                         parameters:params
+                         parameters:nil
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
 //                                // Delete all unsaved stories
 //                                NSArray *unsavedStories = [Story unsavedStories];
@@ -182,40 +149,17 @@
     RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
     objectManager.managedObjectStore = [RKManagedObjectStore defaultStore];
     
-    // Piece attributes
-    RKEntityMapping *pieceMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
-                                                        inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-    [pieceMapping addAttributeMappingsFromArray:@[PIECE_NUMBER, PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled", @"location",
-                                                  PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT, @"permaLink", @"timeStamp"]];
-    [pieceMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"bnObjectId",
-                                                       @"numViews" : @"numberOfViews",
-                                                       @"numLikes" : @"numberOfLikes",
-                                                       @"userViewed" : @"viewedByCurUser",
-                                                       @"userLiked" : @"likedByCurUser"}];
-    pieceMapping.identificationAttributes = @[@"bnObjectId"];
-    
-    // Media
-    [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media"
-                                                                                 toKeyPath:@"media"
-                                                                               withMapping:[Media mediaMappingForRK]]];
-    
-    // Author
-    [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:[User UserMappingForRK]]];
-    
     // Response
-    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceMapping
+    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:[Piece pieceMappingForRK]
                                                                                             method:RKRequestMethodGET
                                                                                        pathPattern:nil
                                                                                            keyPath:@"result.pieces"
                                                                                        statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
-    NSMutableDictionary *userParams = [NSMutableDictionary dictionaryWithDictionary:params];
-    if ([PFUser currentUser])
-        [userParams setObject:[PFUser currentUser].objectId forKey:@"user"];
     
     [objectManager addResponseDescriptor:responseDescriptor];
     
     [objectManager getObjectsAtPath:BANYAN_API_OBJECT_URL(kBNStoryClassKey, story.bnObjectId)
-                         parameters:userParams
+                         parameters:params
                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                 // Delete all unsaved pieces
                                 NSArray *pieces = [mappingResult array];
@@ -270,7 +214,7 @@
 {
     NSArray *failedStories = [Story storiesFailedToBeUploaded];
     for (Story *story in failedStories) {
-        if (story.bnObjectId.length)
+        if (NUMBER_EXISTS(story.bnObjectId))
             [Story editStory:story];
         else
             [Story createNewStory:story];
@@ -278,7 +222,7 @@
     
     NSArray *failedPieces = [Piece piecesFailedToBeUploaded];
     for (Piece *piece in failedPieces) {
-        if (piece.bnObjectId.length)
+        if (NUMBER_EXISTS(piece.bnObjectId))
             [Piece editPiece:piece];
         else
             [Piece createNewPiece:piece];

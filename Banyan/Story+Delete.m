@@ -25,8 +25,8 @@
         return;
     }
     
-    if (story.remoteStatus != RemoteObjectStatusLocal && story.bnObjectId.length > 0) {
-        NSString *storyId = story.bnObjectId;
+    if (story.remoteStatus != RemoteObjectStatusLocal && NUMBER_EXISTS(story.bnObjectId)) {
+        NSNumber *storyId = story.bnObjectId;
         NSLog(@"%s Story id: %@", __PRETTY_FUNCTION__, storyId);
         
         // For RunLoop

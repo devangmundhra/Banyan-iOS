@@ -30,7 +30,7 @@
                                               method:RKRequestMethodPOST];
     
     RKObjectMapping *activityResponseMapping = [RKObjectMapping mappingForClass:[Activity class]];
-    [activityResponseMapping addAttributeMappingsFromDictionary:@{PARSE_OBJECT_ID : @"activityId"}];
+    [activityResponseMapping addAttributeMappingsFromDictionary:@{@"id" : @"activityId"}];
     
     RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:activityResponseMapping
                                                                                             method:RKRequestMethodPOST

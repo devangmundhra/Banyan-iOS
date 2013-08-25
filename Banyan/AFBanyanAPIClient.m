@@ -10,8 +10,8 @@
 #import "AFJSONRequestOperation.h"
 #import "BanyanAppDelegate.h"
 
-static NSString * const kAFBanyanAPIBaseURLString = @"http://www.banyan.io/api/v1/";
-//static NSString * const kAFBanyanAPIBaseURLString = @"http://127.0.0.1:8000/api/v1/";
+//static NSString * const kAFBanyanAPIBaseURLString = @"http://www.banyan.io/api/v1/";
+static NSString * const kAFBanyanAPIBaseURLString = @"http://127.0.0.1:8000/api/v1/";
 
 @implementation AFBanyanAPIClient
 
@@ -37,6 +37,13 @@ static NSString * const kAFBanyanAPIBaseURLString = @"http://www.banyan.io/api/v
     // Accept HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
     [self setDefaultHeader:@"Accept" value:@"application/json"];
     
+    if ([BanyanAppDelegate loggedIn]) {
+        // Set the header authorizations so that the api knows who the user is
+        NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] dictionaryForKey:BNUserDefaultsUserInfo];
+        NSString *email = [userInfo objectForKey:@"email"];
+        NSString *apikey = [userInfo objectForKey:@"api_key"];
+        [self setAuthorizationHeaderWithUsername:email apikey:apikey];
+    }
     [self setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus isNetworkReachable) {
         if (isNetworkReachable == AFNetworkReachabilityStatusReachableViaWiFi || isNetworkReachable == AFNetworkReachabilityStatusReachableViaWWAN) {
             [((BanyanAppDelegate *)[UIApplication sharedApplication].delegate) fireRemoteObjectTimer];
@@ -57,5 +64,11 @@ static NSString * const kAFBanyanAPIBaseURLString = @"http://www.banyan.io/api/v
         return NO;
     }
 }
+
+- (void)setAuthorizationHeaderWithUsername:(NSString *)username apikey:(NSString *)apikey
+{
+	NSString *basicAuthCredentials = [NSString stringWithFormat:@"%@:%@", username, apikey];
+    [self setDefaultHeader:@"Authorization" value:[NSString stringWithFormat:@"ApiKey %@", basicAuthCredentials]];
+};
 
 @end

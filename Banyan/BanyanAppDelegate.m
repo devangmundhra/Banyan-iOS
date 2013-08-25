@@ -12,8 +12,10 @@
 #import "AFBanyanAPIClient.h"
 #import "BanyanConnection.h"
 #import "MasterTabBarController.h"
+#import "UserLoginViewController.h"
+#import "User.h"
 
-@interface BanyanAppDelegate ()
+@interface BanyanAppDelegate () <UserLoginViewControllerDelegate>
 @property (strong, nonatomic) NSTimer *remoteObjectBackgroundTimer;
 
 @end
@@ -34,12 +36,12 @@
     NSDictionary *defaultPreferences = [NSDictionary dictionaryWithContentsOfFile:defaultPrefsFile];
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultPreferences];
     
-    // Normal launch stuff
-    [Parse setApplicationId:PARSE_APP_ID
-                  clientKey:PARSE_CLIENT_KEY];
+//    // Normal launch stuff
+//    [Parse setApplicationId:PARSE_APP_ID
+//                  clientKey:PARSE_CLIENT_KEY];
     
-    // Override point for customization after application launch.
-    [PFFacebookUtils initializeFacebook];
+//    // Override point for customization after application launch.
+//    [PFFacebookUtils initializeFacebook];
     
 #define TESTING 1
 #ifdef TESTING
@@ -63,9 +65,9 @@
     [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     
     // RestKit initialization
-    RKLogConfigureByName("RestKit/Network*", RKLogLevelWarning);
-    RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelWarning);
-    RKLogConfigureByName("RestKit/CoreData", RKLogLevelWarning);
+    RKLogConfigureByName("RestKit/Network*", RKLogLevelTrace);
+    RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelTrace);
+    RKLogConfigureByName("RestKit/CoreData", RKLogLevelTrace);
     
     [self restKitCoreDataInitialization];
     
@@ -85,18 +87,20 @@
     
     [self appearances];
     
-    if ([BanyanAppDelegate loggedIn]) {
+    if ([BanyanAppDelegate loggedIn] &&
+        [FBSession openActiveSessionWithAllowLoginUI:NO]) {
         // User has Facebook ID.
         // Update user details and get updates on FB friends
         [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
             if (!error) {
-                [self facebookRequest:connection didLoad:result];
+                [self updateUserCredentials:result];
             } else {
                 [self facebookRequest:connection didFailWithError:error];
             }
         }];
     } else {
         NSLog(@"User missing Facebook ID");
+        [self logout];
     }
     
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
@@ -147,22 +151,13 @@ void uncaughtExceptionHandler(NSException *exception)
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
-    //    BOOL wasHandled = [FBAppCall handleOpenURL:url
-    //                             sourceApplication:sourceApplication];
+    BOOL urlWasHandled = [FBAppCall handleOpenURL:url
+                                sourceApplication:sourceApplication
+                                  fallbackHandler:^(FBAppCall *call) {
+                                      // handle deep links and responses for Login or Share Dialog here
+                                  }];
     
-    // add app-specific handling code here
-    return [PFFacebookUtils handleOpenURL:url];
-    //    return wasHandled;
-}
-
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
-{
-    //    BOOL wasHandled = [FBAppCall handleOpenURL:url
-    //                             sourceApplication:nil];
-    
-    // add app-specific handling code here
-    return [PFFacebookUtils handleOpenURL:url];
-    //    return wasHandled;
+    return urlWasHandled;
 }
 
 #pragma mark application methods
@@ -205,41 +200,81 @@ void uncaughtExceptionHandler(NSException *exception)
 }
 
 # pragma mark push notifications
-- (void)application:(UIApplication *)application
-didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
-{
-    // Tell Parse about the device token.
-    [PFPush storeDeviceToken:newDeviceToken];
-    // Subscribe to the global broadcast channel.
-    [PFPush subscribeToChannelInBackground:@""];
-}
-
-- (void)application:(UIApplication *)application
-didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    [PFPush handlePush:userInfo];
-}
+//- (void)application:(UIApplication *)application
+//didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
+//{
+//    // Tell Parse about the device token.
+//    [PFPush storeDeviceToken:newDeviceToken];
+//    // Subscribe to the global broadcast channel.
+//    [PFPush subscribeToChannelInBackground:@""];
+//}
+//
+//- (void)application:(UIApplication *)application
+//didReceiveRemoteNotification:(NSDictionary *)userInfo {
+//    [PFPush handlePush:userInfo];
+//}
 
 # pragma mark User Account Management
 - (void)login
 {
     // animate the tabbar up to the screen
-    UserLoginViewController *userLoginViewController = [[UserLoginViewController alloc] init];
+    UserLoginViewController *userLoginViewController = [[UserLoginViewController alloc] initWithNibName:@"UserLoginViewController" bundle:nil];
     userLoginViewController.delegate = self;
-    userLoginViewController.facebookPermissions = [NSArray arrayWithObjects: @"email", @"user_about_me", nil];
     [self.tabBarController presentViewController:userLoginViewController animated:YES completion:nil];
 }
 
 - (void)logout
 {
+    // Unsubscribe before removing the userinfo from NSUserDefaults
+//    [self unsubscribeFromAllPushNotifications];
+
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults removeObjectForKey:BNUserDefaultsUserInfo];
-    [defaults removeObjectForKey:BNUserDefaultsFacebookFriends];
     [defaults synchronize];
-    [self unsubscribeFromAllPushNotifications];
-    [PFUser logOut];
+    [FBSession.activeSession closeAndClearTokenInformation];
     [[NSNotificationCenter defaultCenter] postNotificationName:BNUserLogOutNotification
                                                         object:nil];
     return;
+}
+
+# pragma mark UserLoginViewControllerDelegate methods
+- (void) loginViewControllerDidLoginWithFacebookUser:(id<FBGraphUser>)user
+{
+    [self updateUserCredentials:user];
+}
+
+
+- (void) updateUserCredentials:(id<FBGraphUser>)user
+{
+    NSString *accessToken = [[FBSession.activeSession accessTokenData] accessToken];
+    [[AFBanyanAPIClient sharedClient] postPath:@"users/"
+                                    parameters:@{@"facebook": @{@"access_token": accessToken, @"id": user.id}}
+                                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                           BOOL shouldNotifyUserLogin = ![BanyanAppDelegate loggedIn];
+                                           NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:(NSDictionary *)responseObject];
+                                           // TODO: Get friends the user is actually following instead of just the facebook friends on banyan
+                                           NSDictionary *fbFriends = [userInfo objectForKey:@"social_data"];
+                                           [userInfo removeObjectForKey:@"social_data"];
+                                           NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                                           [defaults setObject:userInfo forKey:BNUserDefaultsUserInfo];
+                                           [defaults setObject:fbFriends forKey:BNUserDefaultsBanyanUsersFacebookFriends];
+                                           [defaults synchronize];
+                                           
+                                           if (shouldNotifyUserLogin) {
+                                               // User was not logged in previously
+                                               [[NSNotificationCenter defaultCenter] postNotificationName:BNUserLogInNotification
+                                                                                                   object:self];
+                                           }
+//                                           [self subscribeToPushNotifications];
+                                           
+                                           // Set the header authorizations so that the api knows who the user is
+                                           NSString *email = [userInfo objectForKey:@"email"];
+                                           NSString *apikey = [userInfo objectForKey:@"api_key"];
+                                           [[AFBanyanAPIClient sharedClient] setAuthorizationHeaderWithUsername:email apikey:apikey];
+                                           
+                                       } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                           NSLog(@"An error occurred: %@", error);
+                                       }];
 }
 
 - (void) subscribeToPushNotifications
@@ -247,31 +282,31 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     BOOL on;
     
-    NSString *addStoryContriChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedContributePushNotification];
+    NSString *addStoryContriChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedContributePushNotification];
     on = [defaults boolForKey:BNUserDefaultsAddStoryInvitedContributePushNotification];
     if (on) {
         [PFPush subscribeToChannelInBackground:addStoryContriChannelName];
     }
     
-    NSString *addStoryViewChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedViewPushNotification];
+    NSString *addStoryViewChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedViewPushNotification];
     on = [defaults boolForKey:BNUserDefaultsAddStoryInvitedViewPushNotification];
     if (on) {
         [PFPush subscribeToChannelInBackground:addStoryViewChannelName];
     }
     
-    NSString *addPieceChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNAddPieceToContributedStoryPushNotification];
+    NSString *addPieceChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNAddPieceToContributedStoryPushNotification];
     on = [defaults boolForKey:BNUserDefaultsAddPieceToContributedStoryPushNotification];
     if (on) {
         [PFPush subscribeToChannelInBackground:addPieceChannelName];
     }
     
-    NSString *pieceActionChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNPieceActionPushNotification];
+    NSString *pieceActionChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNPieceActionPushNotification];
     on = [defaults boolForKey:BNUserDefaultsPieceActionPushNotification];
     if (on) {
         [PFPush subscribeToChannelInBackground:pieceActionChannelName];
     }
     
-    NSString *userFollowChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNUserFollowingPushNotification];
+    NSString *userFollowChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNUserFollowingPushNotification];
     on = [defaults boolForKey:BNUserDefaultsUserFollowingPushNotification];
     if (on) {
         [PFPush subscribeToChannelInBackground:userFollowChannelName];
@@ -280,162 +315,37 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 
 - (void) unsubscribeFromAllPushNotifications
 {
-    NSString *addStoryContriChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedContributePushNotification];
+    NSString *addStoryContriChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedContributePushNotification];
     [PFPush unsubscribeFromChannelInBackground:addStoryContriChannelName];
     
-    NSString *addStoryViewChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedViewPushNotification];
+    NSString *addStoryViewChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedViewPushNotification];
     [PFPush unsubscribeFromChannelInBackground:addStoryViewChannelName];
     
-    NSString *addPieceChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNAddPieceToContributedStoryPushNotification];
+    NSString *addPieceChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNAddPieceToContributedStoryPushNotification];
     [PFPush unsubscribeFromChannelInBackground:addPieceChannelName];
     
-    NSString *pieceActionChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNPieceActionPushNotification];
+    NSString *pieceActionChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNPieceActionPushNotification];
     [PFPush unsubscribeFromChannelInBackground:pieceActionChannelName];
     
-    NSString *userFollowChannelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNUserFollowingPushNotification];
+    NSString *userFollowChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNUserFollowingPushNotification];
     [PFPush unsubscribeFromChannelInBackground:userFollowChannelName];
     
 }
 
 + (BOOL)loggedIn
 {
-    if ([PFUser currentUser] && // Check if a user is cached
-        [PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) // Check if user is linked to Facebook
+    if ([[NSUserDefaults standardUserDefaults] dictionaryForKey:BNUserDefaultsUserInfo]) // Check if user is linked to Facebook
     {
         return YES;
     }
     return NO;
 }
 
-- (void)facebookRequest:(FBRequestConnection *)connection didLoad:(id)result
-{
-    // This method is called twice - once for the user's /me profile, and a second time when obtaining their friends. We will try and handle both scenarios in a single method.
-    
-    NSArray *data = [result objectForKey:@"data"];
-    
-    if (data) {
-        // we have friends data
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:data forKey:BNUserDefaultsFacebookFriends];
-        [defaults synchronize];
-        
-        // Get friends being followed
-        NSMutableArray *facebookFriendsId = [NSMutableArray array];
-        for (NSDictionary *facebookFriend in [defaults objectForKey:BNUserDefaultsFacebookFriends]) {
-            [facebookFriendsId addObject:[facebookFriend objectForKey:@"id"]];
-        }
-        
-        [[AFParseAPIClient sharedClient] postPath:PARSE_API_FUNCTION_URL(@"facebookFriendsOnBanyan")
-                                       parameters:[NSDictionary dictionaryWithObject:facebookFriendsId forKey:@"facebookFriendsId"]
-                                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                              NSDictionary *results = (NSDictionary *)responseObject;
-                                              NSArray *friendsOnBanyan = [results objectForKey:@"result"];
-                                              NSMutableArray *idOfFriendsOnBanyan = [NSMutableArray arrayWithCapacity:[friendsOnBanyan count]];
-                                              NSMutableArray *friendsOnBanyanMutable = [NSMutableArray arrayWithCapacity:[friendsOnBanyan count]];
-                                              for (NSDictionary *friend in friendsOnBanyan) {
-                                                  [idOfFriendsOnBanyan addObject:[friend objectForKey:@"objectId"]];
-                                                  [friendsOnBanyanMutable addObject:[NSMutableDictionary dictionaryWithDictionary:friend]];
-                                              }
-                                              
-                                              NSDictionary *constraint = [NSDictionary dictionaryWithObject:idOfFriendsOnBanyan forKey:@"$in"];
-                                              NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:kBNActivityTypeFollowUser, kBNActivityTypeKey,
-                                                                              [PFUser currentUser].objectId, kBNActivityFromUserKey,
-                                                                              constraint, kBNActivityToUserKey, nil];
-                                              NSError *error = nil;
-                                              NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
-                                              if (!jsonData) {
-                                                  NSLog(@"NSJSONSerialization failed %@", error);
-                                              }
-                                              NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-                                              NSDictionary *getFriendsBeingFollowed = [NSMutableDictionary dictionaryWithObject:json forKey:@"where"];
-                                              
-                                              [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(kBNActivityClassKey)
-                                                                            parameters:getFriendsBeingFollowed
-                                                                               success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                                                                   NSDictionary *results = (NSDictionary *)responseObject;
-                                                                                   NSMutableSet *userIdsBeingFollowed = [NSMutableSet set];
-                                                                                   for (NSDictionary *user in [results objectForKey:@"results"]) {
-                                                                                       [userIdsBeingFollowed addObject:[user objectForKey:kBNActivityToUserKey]];
-                                                                                   }
-                                                                                   for (NSMutableDictionary *userFriend in friendsOnBanyanMutable) {
-                                                                                       if ([userIdsBeingFollowed containsObject:[userFriend objectForKey:@"objectId"]]) {
-                                                                                           [userFriend setObject:[NSNumber numberWithBool:YES] forKey:USER_BEING_FOLLOWED];
-                                                                                       } else {
-                                                                                           [userFriend setObject:[NSNumber numberWithBool:NO] forKey:USER_BEING_FOLLOWED];
-                                                                                       }
-                                                                                   }
-                                                                                   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                                                                                   [defaults setObject:friendsOnBanyanMutable forKey:BNUserDefaultsBanyanUsersFacebookFriends];
-                                                                                   [defaults synchronize];
-                                                                               }
-                                                                               failure:AF_PARSE_ERROR_BLOCK()];
-                                          }
-                                          failure:AF_PARSE_ERROR_BLOCK()];
-        
-    } else {
-        // We have users data
-        // User info
-        if ([result isKindOfClass:[NSDictionary class]] && [PFUser currentUser])
-        {
-            NSDictionary *resultsDict = result;
-            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-            if (![defaults objectForKey:BNUserDefaultsUserInfo]) {
-                // User was not logged in previously
-                [[NSNotificationCenter defaultCenter] postNotificationName:BNUserLogInNotification
-                                                                    object:self];
-            }
-            [defaults setObject:resultsDict forKey:BNUserDefaultsUserInfo];
-            [defaults synchronize];
-            
-            PFUser *currentUser = [PFUser currentUser];
-            NSString *facebookId = [result objectForKey:@"id"];
-            NSString *facebookFirstName = [result objectForKey:@"first_name"];
-            NSString *facebookLastName = [result objectForKey:@"last_name"];
-            NSString *facebookName = [result objectForKey:@"name"];
-            NSString *facebookEmail = [resultsDict objectForKey:@"email"];
-            
-            [currentUser setEmail:facebookEmail];
-            
-            if (facebookFirstName && facebookFirstName != 0) {
-                [currentUser setObject:facebookFirstName forKey:USER_FIRSTNAME];
-            }
-            
-            if (facebookLastName && facebookLastName != 0) {
-                [currentUser setObject:facebookLastName forKey:USER_LASTNAME];
-            }
-            
-            if (facebookName && facebookName != 0) {
-                [currentUser setObject:facebookName forKey:USER_NAME];
-            }
-            if (facebookId && facebookId != 0) {
-                [currentUser setObject:facebookId forKey:USER_FACEBOOK_ID];
-            }
-            if (currentUser.isNew) {
-                [currentUser setUsername:facebookEmail];
-            }
-            [currentUser saveEventually:^(BOOL succeeded, NSError *error) {
-                if (!succeeded) {
-                    NSLog(@"%s User could not be updated because of error %@. Logging out", __PRETTY_FUNCTION__, error);
-                    [self logout];
-                }
-            }];
-        }
-        
-        [FBRequestConnection startForMyFriendsWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-            if (!error) {
-                [self facebookRequest:connection didLoad:result];
-            } else {
-                [self facebookRequest:connection didFailWithError:error];
-            }
-        }];
-    }
-}
-
 - (void)facebookRequest:(FBRequestConnection *)connection didFailWithError:(NSError *)error
 {
     NSLog(@"Facebook error: %@", error);
     
-    if ([PFUser currentUser]) {
+    if ([BanyanAppDelegate loggedIn]) {
         if ([[[[error userInfo] objectForKey:@"error"] objectForKey:@"type"]
              isEqualToString: @"OAuthException"]) {
             NSLog(@"The facebook token was invalidated");
@@ -542,20 +452,6 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     }
     
     return topController;
-}
-
-# pragma mark UserLoginViewControllerDelegate
-- (void)logInViewController:(UserLoginViewController *)logInController didLogInUser:(PFUser *)user
-{
-    NSLog(@"Getting user info");
-    [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        if (!error) {
-            [(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate] facebookRequest:connection didLoad:result];
-        } else {
-            [(BanyanAppDelegate *)[[UIApplication sharedApplication] delegate] facebookRequest:connection didFailWithError:error];
-        }
-    }];
-    [self subscribeToPushNotifications];
 }
 
 #pragma mark Background Timer to upload unsaved objects

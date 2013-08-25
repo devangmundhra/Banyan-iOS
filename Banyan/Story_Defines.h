@@ -28,8 +28,4 @@
 #define STORY_AUTHOR @"author"
 #define STORY_TAGS @"tags"
 
-#define PARSE_OBJECT_CREATED_AT @"createdAt"
-#define PARSE_OBJECT_UPDATED_AT @"updatedAt"
-#define PARSE_OBJECT_ID @"objectId"
-
 @end

@@ -13,14 +13,13 @@
 
 @protocol UserLoginViewControllerDelegate <NSObject>
 
-- (void)logInViewController:(UserLoginViewController *)logInController didLogInUser:(PFUser *)user;
+- (void) loginViewControllerDidLoginWithFacebookUser:(id<FBGraphUser>)user;
+
 
 @end
 
 @interface UserLoginViewController : UIViewController
 
 @property (weak, nonatomic) IBOutlet id<UserLoginViewControllerDelegate> delegate;
-@property (strong, nonatomic) NSArray *facebookPermissions;
-@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
 
 @end

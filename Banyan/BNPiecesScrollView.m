@@ -144,35 +144,15 @@
         return;
     }
     
-    Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:pieceNum]];
-    if (piece) {
-        [view setPiece:piece];
-    } else if (self.story.bnObjectId) {
-        [view setStatusForView:@"Fetching this piece..."];
-
-        // Store the id of the story that this BanyanConnection method set out to fetch.
-        // If the storyIds and pieceNum are still the same when the method returns, that means we can update the SinglePieceView.
-        // Otherwise, things have changed so don't bother updatating the piece.
-        __block NSString *storyIdBeingLookedUp = [self.story.bnObjectId copy];
-        [BanyanConnection loadPiecesForStory:self.story atPieceNumbers:@[[NSNumber numberWithUnsignedInteger:pieceNum]]
-                             completionBlock:^{
-                                 if (pieceNum == view.pieceNum && [storyIdBeingLookedUp isEqualToString:self.story.bnObjectId]) {
-                                     Piece *updatedPiece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:pieceNum]];
-                                     if (updatedPiece)
-                                         [view setPiece:updatedPiece];
-                                 } else {
-                                     NSLog(@"Piece changed so skipping it");
-                                 }
-                             }
-                                  errorBlock:^(NSError *error) {
-                                      if (pieceNum == view.pieceNum && [storyIdBeingLookedUp isEqualToString:self.story.bnObjectId]) {
-                                          NSLog(@"Error in BNPiecesScrollView:loadPieceWithNumber Could not load piece");
-                                          [view setStatusForView:[NSString stringWithFormat:@"Error: %@ in fetching this piece", error.localizedDescription]];
-                                      } else {
-                                          NSLog(@"Piece changed so skipping it");
-                                      }
-                                  }
-         ];
+    @try {
+        Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:pieceNum]];
+        if (piece) {
+            [view setPiece:piece];
+        }
+    }
+    @catch (NSException *exception) {
+        [view setStatusForView:@"There was a problem in fetching this piece"];
+        NSLog(@"%s Error in setting piece: Exception name: %@, reason: %@", __PRETTY_FUNCTION__, exception.name, exception.reason);
     }
 }
 

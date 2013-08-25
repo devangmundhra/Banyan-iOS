@@ -44,7 +44,7 @@
 
 + (void) createNewPiece:(Piece *)piece
 {
-    assert(piece.bnObjectId.length == 0);
+    assert(!NUMBER_EXISTS(piece.bnObjectId));
     
     if (piece.remoteStatus == RemoteObjectStatusLocal) {
         [Story updateLengthAndPieceNumbers:piece.story];
@@ -72,7 +72,7 @@
         NSMutableArray *fbIds = [NSMutableArray arrayWithCapacity:1];
         for (NSDictionary *contributor in followersList)
         {
-            if (![[contributor objectForKey:@"id"] isEqualToString:[[PFUser currentUser] objectForKey:USER_FACEBOOK_ID]])
+            if (![[contributor objectForKey:@"id"] isEqualToString:[BNSharedUser currentUser].facebookId])
                 [fbIds addObject:[contributor objectForKey:@"id"]];
         }
         
@@ -115,7 +115,7 @@
                                                  }
                                                  NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
                                                                        [NSString stringWithFormat:@"%@ has added a new piece to the story titled %@",
-                                                                        [[PFUser currentUser] objectForKey:USER_NAME], story.title], @"alert",
+                                                                        [BNSharedUser currentUser].name, story.title], @"alert",
                                                                        [NSNumber numberWithInt:1], @"badge",
                                                                        piece.bnObjectId, @"Piece id",
                                                                        nil];
@@ -137,7 +137,7 @@
         RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
         // For serializing
         RKObjectMapping *pieceRequestMapping = [RKObjectMapping requestMapping];
-        [pieceRequestMapping addAttributeMappingsFromDictionary:@{@"author.userId" : @"authorId", @"story.bnObjectId" : PIECE_STORY}];
+        [pieceRequestMapping addAttributeMappingsFromDictionary:@{@"author.resourceUri" : @"author", @"story.resourceUri" : PIECE_STORY}];
         [pieceRequestMapping addAttributeMappingsFromArray:@[PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled", @"timeStamp"]];
         
         RKObjectMapping *locationMapping = [RKObjectMapping requestMapping];
@@ -161,10 +161,8 @@
         
         RKEntityMapping *pieceResponseMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
                                                                     inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-        [pieceResponseMapping addAttributeMappingsFromDictionary:@{
-                                                                   PARSE_OBJECT_ID : @"bnObjectId",
-                                                                   }];
-        [pieceResponseMapping addAttributeMappingsFromArray:@[PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT, PIECE_NUMBER, @"permaLink"]];
+        [pieceResponseMapping addAttributeMappingsFromDictionary:@{@"resource_uri": @"resourceUri"}];
+        [pieceResponseMapping addAttributeMappingsFromArray:@[@"createdAt", @"updatedAt", PIECE_NUMBER, @"permaLink", @"bnObjectId"]];
         pieceResponseMapping.identificationAttributes = @[@"bnObjectId"];
         
         RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceResponseMapping

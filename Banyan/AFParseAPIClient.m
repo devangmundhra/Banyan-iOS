@@ -34,8 +34,8 @@ return _sharedClient;
     
     // Accept HTTP Header; see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
     [self setDefaultHeader:@"Accept" value:@"application/json"];
-    [self setDefaultHeader:@"X-Parse-Application-Id" value:PARSE_APP_ID];
-	[self setDefaultHeader:@"X-Parse-REST-API-Key" value:PARSE_REST_API_KEY];
+//    [self setDefaultHeader:@"X-Parse-Application-Id" value:PARSE_APP_ID];
+//	[self setDefaultHeader:@"X-Parse-REST-API-Key" value:PARSE_REST_API_KEY];
     return self;
 }
 

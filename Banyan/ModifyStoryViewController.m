@@ -13,7 +13,7 @@
 #import "UIImage+Create.h"
 #import "Story+Create.h"
 #import "LocationPickerButton.h"
-#import "User_Defines.h"
+#import "User.h"
 #import <QuartzCore/QuartzCore.h>
 #import "SSTextField.h"
 #import "Media.h"
@@ -458,11 +458,11 @@
 {
     // Whose fb friends to call depends upon the list added in kBNStoryPrivacyInvitedFacebookFriends
     if ([[self viewerScope] isEqualToString:kBNStoryPrivacyScopeLimited]) {
-        PFUser *currentUser = [PFUser currentUser];
+        BNSharedUser *currentUser = [BNSharedUser currentUser];
         if (currentUser) {
             NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
-                                            [currentUser objectForKey:USER_NAME], @"name",
-                                            [currentUser objectForKey:USER_FACEBOOK_ID], @"id", nil];
+                                            currentUser.name, @"name",
+                                            currentUser.facebookId, @"id", nil];
             if (![self.invitedToViewList containsObject:selfInvitation])
                 [self.invitedToViewList addObject:selfInvitation];
         } else {

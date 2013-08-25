@@ -7,24 +7,21 @@
 //
 
 #import "UserLoginViewController.h"
-#import "BanyanAppDelegate.h"
 
-@interface UserLoginViewController ()
+@interface UserLoginViewController () <FBLoginViewDelegate>
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
-@property (weak, nonatomic) IBOutlet UIButton *facebookLoginButton;
 @property (weak, nonatomic) IBOutlet UINavigationBar *navigationBar;
 @property (weak, nonatomic) IBOutlet UINavigationItem *backNavigationItem;
+@property (weak, nonatomic) IBOutlet FBLoginView *fbLoginView;
 
 @end
 
 @implementation UserLoginViewController
 @synthesize cancelButton = _cancelButton;
-@synthesize facebookLoginButton = _facebookLoginButton;
 @synthesize navigationBar = _navigationBar;
 @synthesize backNavigationItem = _backNavigationItem;
+@synthesize fbLoginView = _fbLoginView;
 @synthesize delegate = _delegate;
-@synthesize facebookPermissions = _facebookPermissions;
-@synthesize activityIndicator = _activityIndicator;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -39,6 +36,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+    self.fbLoginView.readPermissions = [NSArray arrayWithObjects: @"email", @"user_about_me", nil];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -48,38 +46,80 @@
 
 #pragma mark target actions
 
-- (IBAction)facebookLogin:(UIButton *)sender 
-{    
-    [PFFacebookUtils logInWithPermissions:self.facebookPermissions block:^(PFUser *user, NSError *error) {
-        [self.activityIndicator stopAnimating]; // Hide loading indicator
-        
-        if (!user) {
-            if (!error) {
-                NSLog(@"Uh oh. The user cancelled the Facebook login.");
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Error" message:@"Uh oh. The user cancelled the Facebook login." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Dismiss", nil];
-                [alert show];
-            } else {
-                NSLog(@"Uh oh. An error occurred: %@", error);
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Error" message:[error description] delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Dismiss", nil];
-                [alert show];
-            }
-        } else if (user.isNew) {
-            NSLog(@"User with facebook signed up and logged in!");
-            [self.delegate logInViewController:self didLogInUser:user];
-        } else {
-            NSLog(@"User with facebook logged in!");
-            [self.delegate logInViewController:self didLogInUser:user];
-        }
-    }];
-    
-    [self.activityIndicator startAnimating]; // Show loading indicator until login is finished
-    [self dismissViewControllerAnimated:YES completion:nil];
-    return;
-}
+//- (IBAction)facebookLogin:(UIButton *)sender 
+//{
+//    [FBSession openActiveSessionWithReadPermissions:self.facebookPermissions
+//                                       allowLoginUI:YES
+//                                  completionHandler:^(FBSession *session,
+//                                                      FBSessionState status,
+//                                                      NSError *error) {
+//                                      [self.activityIndicator stopAnimating]; // Hide loading indicator
+//                                      if (error) {
+//                                          NSLog(@"Uh oh. An error occurred: %@", error);
+//                                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Error" message:[error description] delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Dismiss", nil];
+//                                          [alert show];
+//                                      } else {
+//                                          // Respond to session state changes
+//                                          if ([session isOpen]) {
+//                                              // Call the banyan api to get the real user data
+//                                              [self.delegate logInViewController:self didLogInUser:nil];
+//                                          } else {
+//                                              UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Error" message:@"Unable to open an active session on facebook" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Dismiss", nil];
+//                                              [alert show];
+//                                          }
+//                                      }
+//                                  }];
+//    
+//    [self.activityIndicator startAnimating]; // Show loading indicator until login is finished
+//    [self dismissViewControllerAnimated:YES completion:nil];
+//    return;
+//}
 
 - (IBAction)cancel:(id)sender 
 {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+# pragma mark FBLoginViewDelegate methods
+- (void)loginViewFetchedUserInfo:(FBLoginView *)loginView
+                            user:(id<FBGraphUser>)user
+{
+    [self.delegate loginViewControllerDidLoginWithFacebookUser:user];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)loginView:(FBLoginView *)loginView
+      handleError:(NSError *)error {
+    NSString *alertMessage, *alertTitle;
+    if (error.fberrorShouldNotifyUser) {
+        // If the SDK has a message for the user, surface it. This conveniently
+        // handles cases like password change or iOS6 app slider state.
+        alertTitle = @"Facebook Error";
+        alertMessage = error.fberrorUserMessage;
+    } else if (error.fberrorCategory == FBErrorCategoryAuthenticationReopenSession) {
+        // It is important to handle session closures since they can happen
+        // outside of the app. You can inspect the error for more context
+        // but this sample generically notifies the user.
+        alertTitle = @"Session Error";
+        alertMessage = @"Your current session is no longer valid. Please log in again.";
+    } else if (error.fberrorCategory == FBErrorCategoryUserCancelled) {
+        // The user has cancelled a login. You can inspect the error
+        // for more context. For this sample, we will simply ignore it.
+        NSLog(@"user cancelled login");
+    } else {
+        // For simplicity, this sample treats other errors blindly.
+        alertTitle  = @"Unknown Error";
+        alertMessage = @"Error. Please try again later.";
+        NSLog(@"Unexpected error:%@", error);
+    }
+    
+    if (alertMessage) {
+        [[[UIAlertView alloc] initWithTitle:alertTitle
+                                    message:alertMessage
+                                   delegate:nil
+                          cancelButtonTitle:@"OK"
+                          otherButtonTitles:nil] show];
+    }
 }
 
 #pragma Memory Management

@@ -299,7 +299,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             for (NSMutableDictionary *user in [[NSUserDefaults standardUserDefaults]
                                                objectForKey:BNUserDefaultsBanyanUsersFacebookFriends]) {
                 if ([[user objectForKey:USER_BEING_FOLLOWED] boolValue]) {
-                    [arrayOfUserIdsBeingFollowed addObject:[user objectForKey:@"objectId"]];
+                    [arrayOfUserIdsBeingFollowed addObject:[user objectForKey:@"id"]];
                 }
             }
             // Create a predicate where author in arrayOfUserIdsBeingFollowed

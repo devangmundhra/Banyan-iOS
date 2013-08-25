@@ -25,7 +25,6 @@ NSString *const BNStoryListRefreshedNotification = @"io.banyan.Banyan:StoryListR
 NSString *const BNRefreshCurrentStoryListNotification = @"io.banyan.Banyan:RefreshCurrentStoryListNotification";
 
 #pragma mark - NSUserDefaults
-NSString *const BNUserDefaultsFacebookFriends = @"io.banyan.Banyan.userDefaults.facebookFriends";
 NSString *const BNUserDefaultsUserInfo = @"io.banyan.Banyan.userDefaults.userInfo";
 NSString *const BNUserDefaultsBanyanUsersFacebookFriends = @"io.banyan.Banyan.userDefaults.banyanUsersFacebookFriends";
 NSString *const BNUserDefaultsLastSuccessfulStoryUpdateTime = @"io.banyan.Banyan.userDefaults.banyanLastSuccessfulUpdatedTime";
@@ -68,8 +67,8 @@ NSString *const kBNActivityClassKey = @"Activity";
 NSString *const kBNActivityTypeKey        = @"type";
 NSString *const kBNActivityFromUserKey    = @"fromUser";
 NSString *const kBNActivityToUserKey      = @"toUser";
-NSString *const kBNActivityPieceKey       = @"pieceId";
-NSString *const kBNActivityStoryKey       = @"storyId";
+NSString *const kBNActivityPieceKey       = @"piece";
+NSString *const kBNActivityStoryKey       = @"story";
 
 // Type values
 NSString *const kBNActivityTypeLike       = @"like";

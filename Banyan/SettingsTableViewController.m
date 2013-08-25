@@ -9,6 +9,7 @@
 #import "SettingsTableViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "BNFeedbackViewController.h"
+#import "User.h"
 
 @interface SettingsTableViewController ()
 
@@ -524,7 +525,7 @@ typedef enum {
     [defaults setBool:switchControl.on forKey:BNUserDefaultsAddStoryInvitedContributePushNotification];
     [defaults synchronize];
     
-    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedContributePushNotification];
+    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedContributePushNotification];
     if (switchControl.on) {
         [PFPush subscribeToChannelInBackground:channelName];
     } else {
@@ -538,7 +539,7 @@ typedef enum {
     [defaults setBool:switchControl.on forKey:BNUserDefaultsAddStoryInvitedViewPushNotification];
     [defaults synchronize];
     
-    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedViewPushNotification];
+    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedViewPushNotification];
     if (switchControl.on) {
         [PFPush subscribeToChannelInBackground:channelName];
     } else {
@@ -552,7 +553,7 @@ typedef enum {
     [defaults setBool:switchControl.on forKey:BNAddPieceToContributedStoryPushNotification];
     [defaults synchronize];
     
-    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNAddPieceToContributedStoryPushNotification];
+    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNAddPieceToContributedStoryPushNotification];
     if (switchControl.on) {
         [PFPush subscribeToChannelInBackground:channelName];
     } else {
@@ -566,7 +567,7 @@ typedef enum {
     [defaults setBool:switchControl.on forKey:BNUserDefaultsPieceActionPushNotification];
     [defaults synchronize];
     
-    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNPieceActionPushNotification];
+    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNPieceActionPushNotification];
     if (switchControl.on) {
         [PFPush subscribeToChannelInBackground:channelName];
     } else {
@@ -580,7 +581,7 @@ typedef enum {
     [defaults setBool:switchControl.on forKey:BNUserDefaultsUserFollowingPushNotification];
     [defaults synchronize];
     
-    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [[PFUser currentUser] objectId], BNPushNotificationChannelTypeSeperator, BNUserFollowingPushNotification];
+    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNUserFollowingPushNotification];
     if (switchControl.on) {
         [PFPush subscribeToChannelInBackground:channelName];
     } else {

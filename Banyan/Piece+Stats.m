@@ -11,6 +11,7 @@
 #import "AFParseAPIClient.h"
 #import "Activity+Create.h"
 #import "Story.h"
+#import "User.h"
 
 @implementation Piece (Stats)
 
@@ -28,15 +29,15 @@
     if (piece.viewedByCurUser || piece.remoteStatus != RemoteObjectStatusSync)
         return;
     
-    PFUser *currentUser = [PFUser currentUser];
+    BNSharedUser *currentUser = [BNSharedUser currentUser];
     if (!currentUser)
         return;
     
     Activity *activity = [Activity activityWithType:kBNActivityTypeView
-                                           fromUser:currentUser.objectId
-                                             toUser:currentUser.objectId
-                                            pieceId:piece.bnObjectId
-                                            storyId:piece.story.bnObjectId];
+                                           fromUser:currentUser.resourceUri
+                                             toUser:currentUser.resourceUri
+                                            pieceId:piece.resourceUri
+                                            storyId:piece.story.resourceUri];
     [Activity createActivity:activity];
     
     piece.viewedByCurUser = YES;
@@ -46,7 +47,7 @@
 
 + (void) toggleLikedPiece:(Piece *)piece
 {
-    PFUser *currentUser = [PFUser currentUser];
+    BNSharedUser *currentUser = [BNSharedUser currentUser];
     if (!currentUser)
         return;
     
@@ -54,10 +55,10 @@
     if (piece.likedByCurUser) {
         // unlike piece
         activity = [Activity activityWithType:kBNActivityTypeUnlike
-                                     fromUser:currentUser.objectId
-                                       toUser:currentUser.objectId
-                                      pieceId:piece.bnObjectId
-                                      storyId:piece.story.bnObjectId];
+                                     fromUser:currentUser.resourceUri
+                                       toUser:currentUser.resourceUri
+                                      pieceId:piece.resourceUri
+                                      storyId:piece.story.resourceUri];
         
         piece.likedByCurUser = NO;
         piece.numberOfLikes -= 1;
@@ -65,10 +66,10 @@
     else {
         // like piece
         activity = [Activity activityWithType:kBNActivityTypeLike
-                                     fromUser:currentUser.objectId
-                                       toUser:currentUser.objectId
-                                      pieceId:piece.bnObjectId
-                                      storyId:piece.story.bnObjectId];
+                                     fromUser:currentUser.resourceUri
+                                       toUser:currentUser.resourceUri
+                                      pieceId:piece.resourceUri
+                                      storyId:piece.story.resourceUri];
         
         piece.likedByCurUser = YES;
         piece.numberOfLikes += 1;
@@ -78,158 +79,29 @@
 
 + (void) toggleFavouritedPiece:(Piece *)piece
 {
-    PFUser *currentUser = [PFUser currentUser];
+    BNSharedUser *currentUser = [BNSharedUser currentUser];
     if (!currentUser)
         return;
     Activity *activity = nil;
     if (piece.favoriteByCurUser) {
         // unfavourite piece
         activity = [Activity activityWithType:kBNActivityTypeUnfavourite
-                                     fromUser:currentUser.objectId
-                                       toUser:currentUser.objectId
-                                      pieceId:piece.bnObjectId
-                                      storyId:piece.story.bnObjectId];
+                                     fromUser:currentUser.resourceUri
+                                       toUser:currentUser.resourceUri
+                                      pieceId:piece.resourceUri
+                                      storyId:piece.story.resourceUri];
         piece.favoriteByCurUser = NO;
     }
     else {
         // favourite piece
         activity = [Activity activityWithType:kBNActivityTypeFavourite
-                                    fromUser:currentUser.objectId
-                                      toUser:currentUser.objectId
-                                     pieceId:piece.bnObjectId
-                                     storyId:piece.story.bnObjectId];
+                                    fromUser:currentUser.resourceUri
+                                      toUser:currentUser.resourceUri
+                                     pieceId:piece.resourceUri
+                                     storyId:piece.story.resourceUri];
         piece.favoriteByCurUser = YES;
     }
     [Activity createActivity:activity];
 }
-
-//- (void) updatePieceStats
-//{
-//    [self updateViews];
-//    [self updateLikes];
-//    [self updateFavourites];
-//}
-//
-//# pragma mark views
-//- (void) updateViews
-//{
-//    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.bnObjectId, kBNActivityPieceKey, kBNActivityTypeView, kBNActivityTypeKey, nil];
-//    
-//    NSError *error = nil;
-//    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
-//    
-//    if (!jsonData) {
-//        NSLog(@"NSJSONSerialization failed %@", error);
-//    }
-//    
-//    NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-//    
-//    NSMutableDictionary *getViewNum = [NSMutableDictionary dictionaryWithObjectsAndKeys:json, @"where",
-//                                       [NSNumber numberWithInt:1], @"count",
-//                                       [NSNumber numberWithInt:0], @"limit", nil];
-//    
-//    [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(kBNActivityClassKey)
-//                                  parameters:getViewNum
-//                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//                                         NSDictionary *numViewFields = responseObject;
-//                                         self.statistics.numberOfViews = [numViewFields objectForKey:@"count"];
-//                                     }
-//                                     failure:AF_PARSE_ERROR_BLOCK()];
-//    
-//    PFUser *currentUser = [PFUser currentUser];
-//    if (currentUser) {
-//        [jsonDictionary setObject:currentUser.objectId forKey:kBNActivityFromUserKey];
-//        jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
-//        if (!jsonData) {
-//            NSLog(@"NSJSONSerialization failed %@", error);
-//        }
-//        json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-//        getViewNum = [NSMutableDictionary dictionaryWithObjectsAndKeys:json, @"where",
-//                      [NSNumber numberWithInt:1], @"count",
-//                      [NSNumber numberWithInt:0], @"limit", nil];
-//        
-//        [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(kBNActivityClassKey)
-//                                      parameters:getViewNum
-//                                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//                                             NSDictionary *numViewFields = responseObject;
-//                                             NSNumber *views = [numViewFields objectForKey:@"count"];
-//                                             if ([views integerValue] > 0) {
-//                                                 self.statistics.viewed = YES;
-//                                             }
-//                                         }
-//                                         failure:AF_PARSE_ERROR_BLOCK()];
-//    }
-//}
-//
-//# pragma mark likes
-//- (void) updateLikes
-//{
-//    NSMutableDictionary *jsonDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.bnObjectId, kBNActivityPieceKey, kBNActivityTypeLike, kBNActivityTypeKey, nil];
-//    
-//    NSError *error = nil;
-//    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
-//    
-//    if (!jsonData) {
-//        NSLog(@"NSJSONSerialization failed %@", error);
-//    }
-//    
-//    NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-//    
-//    NSMutableDictionary *getLikes = [NSMutableDictionary dictionaryWithObjectsAndKeys:json, @"where",
-//                                       [NSNumber numberWithInt:1], @"count", nil];
-//    
-//    [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(kBNActivityClassKey)
-//                                  parameters:getLikes
-//                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//                                         NSDictionary *likerFields = responseObject;
-//                                         self.statistics.numberOfLikes = [likerFields objectForKey:@"count"];
-//                                         NSMutableArray *likers = [NSMutableArray arrayWithCapacity:[self.statistics.numberOfLikes integerValue]];
-//                                         for (NSDictionary *liker in [likerFields objectForKey:@"results"]) {
-//                                             [likers addObject:[liker objectForKey:kBNActivityFromUserKey]];
-//                                         }
-//                                         self.statistics.likers = [likers copy];
-//                                         PFUser *currentUser = [PFUser currentUser];
-//                                         if (currentUser) {
-//                                             if ([self.statistics.likers containsObject:currentUser.objectId]) {
-//                                                 self.statistics.liked = YES;
-//                                             }
-//                                         }
-//                                     }
-//                                     failure:AF_PARSE_ERROR_BLOCK()];
-//}
-//
-//# pragma mark favourites
-//- (void) updateFavourites
-//{
-//    PFUser *currentUser = [PFUser currentUser];
-//    if (!currentUser) {
-//        return;
-//    }
-//    NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:self.bnObjectId, kBNActivityPieceKey, kBNActivityTypeFavourite, kBNActivityTypeKey, currentUser.objectId, kBNActivityFromUserKey, nil];
-//    
-//    NSError *error = nil;
-//    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:0 error:&error];
-//    
-//    if (!jsonData) {
-//        NSLog(@"NSJSONSerialization failed %@", error);
-//    }
-//    
-//    NSString *json = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-//    
-//    NSMutableDictionary *getFavs = [NSMutableDictionary dictionaryWithObjectsAndKeys:json, @"where",
-//                                     [NSNumber numberWithInt:1], @"count",
-//                                     [NSNumber numberWithInt:0], @"limit", nil];
-//    
-//    [[AFParseAPIClient sharedClient] getPath:PARSE_API_CLASS_URL(kBNActivityClassKey)
-//                                  parameters:getFavs
-//                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//                                         NSDictionary *numFavFields = responseObject;
-//                                         NSNumber *favs = [numFavFields objectForKey:@"count"];
-//                                         if ([favs integerValue] > 0) {
-//                                             self.statistics.favourite = YES;
-//                                         }
-//                                     }
-//                                     failure:AF_PARSE_ERROR_BLOCK()];
-//}
 
 @end

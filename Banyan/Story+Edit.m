@@ -36,7 +36,7 @@
     [story save];
 
     // If the object has not been created yet, don't ask for editing it on the server.
-    if (!story.bnObjectId.length) {
+    if (!NUMBER_EXISTS(story.bnObjectId)) {
         // TODO: There is still a race condition here when the story is being created
         // and an edit comes in
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Can't synchronize the story with the server."
@@ -71,7 +71,7 @@
         RKObjectMapping *mediaMapping = [RKObjectMapping requestMapping];
         [mediaMapping addAttributeMappingsFromDictionary:@{@"remoteURL": @"url"}];
         [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType"]];
-        [storyRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:mediaMapping]];
+        [storyRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"coverMedia" withMapping:mediaMapping]];
         
         RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
                                                   requestDescriptorWithMapping:storyRequestMapping
@@ -82,7 +82,7 @@
         RKEntityMapping *storyResponseMapping = [RKEntityMapping mappingForEntityForName:kBNStoryClassKey
                                                                     inManagedObjectStore:[RKManagedObjectStore defaultStore]];
 
-        [storyResponseMapping addAttributeMappingsFromArray:@[PARSE_OBJECT_UPDATED_AT]];
+        [storyResponseMapping addAttributeMappingsFromArray:@[@"updatedAt"]];
         
         RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:storyResponseMapping
                                                                                                 method:RKRequestMethodPUT

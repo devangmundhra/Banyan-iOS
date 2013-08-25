@@ -26,6 +26,8 @@
 @dynamic comments;
 @dynamic media;
 @dynamic viewedByCurUser, likedByCurUser, favoriteByCurUser, numberOfLikes, numberOfViews;
+@dynamic timeStamp;
+@dynamic resourceUri;
 
 #pragma mark -
 #pragma mark Revision management

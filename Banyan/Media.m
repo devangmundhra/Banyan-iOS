@@ -13,6 +13,7 @@
 #import "UIImage+ResizeAdditions.h"
 #import "AFParseAPIClient.h"
 #import "BNMisc.h"
+#import "BNAWSS3Client.h"
 
 @implementation Media
 
@@ -180,24 +181,18 @@
     if (!self.filename)
         return;
     
-    [[AFParseAPIClient sharedClient] setDefaultHeader:@"X-Parse-Master-Key" value:PARSE_MASTER_KEY];
-    [[AFParseAPIClient sharedClient] deletePath:PARSE_API_FILES_URL(self.filename)
-                                     parameters:nil
-                                        success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//                                            self.remoteStatus = MediaRemoteStatusSync;
-                                            if (successBlock)
-                                                successBlock();
-                                        }
-                                        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-//                                            self.remoteStatus = MediaRemoteStatusFailed;
-                                            if (errorBlock)
-                                                errorBlock(error);
-                                        }];
+    [BNAWSS3Client deleteObjectWithFileName:self.filename inBackgroundWithBlock:^(bool succeeded, NSError *error) {
+        if (succeeded)
+        {
+            if (successBlock) successBlock();
+        } else {
+            if (errorBlock) errorBlock(error);
+        }
+    }];
     
     self.remoteObject = nil;
     [self remove];
     
-    [[AFParseAPIClient sharedClient] setDefaultHeader:@"X-Parse-Master-Key" value:nil];
 }
 
 + (Media *)getMediaOfType:(NSString *)type inMediaSet:(NSOrderedSet *)mediaSet
@@ -229,16 +224,12 @@
 {
     self.remoteStatus = MediaRemoteStatusProcessing;
     NSData *audioData = nil;
-    PFFile *audioFile = nil;
     audioData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.localURL]];
-    audioFile = [PFFile fileWithName:[NSString stringWithFormat:@"%@.caf", self.filename]
-                                data:audioData];
     self.remoteStatus = MediaRemoteStatusPushing;
     
-    [audioFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    [BNAWSS3Client uploadData:audioData withContentType:@"audio/caf" forFileName:[NSString stringWithFormat:@"%@.caf", self.filename] inBackgroundWithBlock:^(bool succeeded, NSString *url, NSError *error) {
         if (succeeded) {
-            self.remoteURL = audioFile.url;
-            self.filename = audioFile.name;
+            self.remoteURL = url;
             successBlock();
         } else {
             errorBlock(error);
@@ -253,7 +244,6 @@
     
     [library assetForURL:[NSURL URLWithString:self.localURL] resultBlock:^(ALAsset *asset) {
         NSData *imageData;
-        PFFile *imageFile = nil;
         
         ALAssetRepresentation *rep = [asset defaultRepresentation];
         CGImageRef imageRef = [rep fullScreenImage]; // not fullResolutionImage
@@ -265,14 +255,12 @@
         UIImage *resizedImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:[[UIScreen mainScreen] bounds].size interpolationQuality:kCGInterpolationLow];
         
         imageData = UIImageJPEGRepresentation(resizedImage, 1);
-        imageFile = [PFFile fileWithName:[NSString stringWithFormat:@"%@.jpg", self.filename]
-                                    data:imageData];
-        self.remoteStatus = MediaRemoteStatusPushing;
         
-        [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        self.remoteStatus = MediaRemoteStatusPushing;
+
+        [BNAWSS3Client uploadData:imageData withContentType:@"image/jpeg" forFileName:[NSString stringWithFormat:@"%@.jpg", self.filename] inBackgroundWithBlock:^(bool succeeded, NSString *url, NSError *error) {
             if (succeeded) {
-                self.remoteURL = imageFile.url;
-                self.filename = imageFile.name;
+                self.remoteURL = url;
                 successBlock();
             } else {
                 errorBlock(error);
@@ -289,16 +277,12 @@
 {
     self.remoteStatus = MediaRemoteStatusProcessing;
     NSData *gifData = nil;
-    PFFile *gifFile = nil;
     gifData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.localURL]];
-    gifFile = [PFFile fileWithName:[NSString stringWithFormat:@"%@.gif", self.filename]
-                                data:gifData];
     self.remoteStatus = MediaRemoteStatusPushing;
     
-    [gifFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    [BNAWSS3Client uploadData:gifData withContentType:@"image/gif" forFileName:[NSString stringWithFormat:@"%@.gif", self.filename] inBackgroundWithBlock:^(bool succeeded, NSString *url, NSError *error) {
         if (succeeded) {
-            self.remoteURL = gifFile.url;
-            self.filename = gifFile.name;
+            self.remoteURL = url;
             successBlock();
         } else {
             errorBlock(error);

@@ -508,14 +508,14 @@
                       contributors:(NSArray *)selectedContributors
 {
     NSDictionary *selfInvitation = nil;
-    PFUser *currentUser = [PFUser currentUser];
+    BNSharedUser *currentUser = [BNSharedUser currentUser];
     if (HAVE_ASSERTS)
         assert(currentUser);
     
     if (currentUser) {
         selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
-                                        [currentUser objectForKey:USER_NAME], @"name",
-                                        [currentUser objectForKey:USER_FACEBOOK_ID], @"id", nil];
+                                        currentUser.name, @"name",
+                                        currentUser.facebookId, @"id", nil];
     }
     // Update read access
     if (selectedViewers) {

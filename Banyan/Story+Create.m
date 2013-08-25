@@ -31,6 +31,7 @@
     story.remoteStatus = RemoteObjectStatusLocal;
     story.author = [User currentUser];
     story.createdAt = story.updatedAt = [NSDate date];
+    story.timeStamp = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSinceReferenceDate]];
     
 //    [story save];
     
@@ -40,8 +41,8 @@
 // Upload the given story using RestKit
 + (void)createNewStory:(Story *)story
 {
-    assert(story.bnObjectId.length == 0);
-    assert(story.author.userId.length > 0);
+    assert(!NUMBER_EXISTS(story.bnObjectId));
+    assert(NUMBER_EXISTS(story.author.userId));
     story.canContribute = story.canView = YES;
     
     story.remoteStatus = RemoteObjectStatusPushing;
@@ -59,7 +60,7 @@
         NSMutableArray *fbIds = [NSMutableArray arrayWithCapacity:1];
         for (NSDictionary *contributor in contributorsList)
         {
-            if (![[contributor objectForKey:@"id"] isEqualToString:[[PFUser currentUser] objectForKey:USER_FACEBOOK_ID]])
+            if (![[contributor objectForKey:@"id"] isEqualToString:[BNSharedUser currentUser].facebookId])
                 [fbIds addObject:[contributor objectForKey:@"id"]];
         }
         
@@ -105,7 +106,7 @@
                                                  }
                                                  NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
                                                                        [NSString stringWithFormat:@"%@ has invited you to contribute to a story titled %@",
-                                                                        [[PFUser currentUser] objectForKey:USER_NAME], story.title], @"alert",
+                                                                        [BNSharedUser currentUser].name, story.title], @"alert",
                                                                        [NSNumber numberWithInt:1], @"badge",
                                                                        story.bnObjectId, @"Story id",
                                                                        nil];
@@ -128,7 +129,7 @@
         NSMutableArray *fbIds = [NSMutableArray arrayWithCapacity:1];
         for (NSDictionary *viewer in viewersList)
         {
-            if (![[viewer objectForKey:@"id"] isEqualToString:[[PFUser currentUser] objectForKey:USER_FACEBOOK_ID]])
+            if (![[viewer objectForKey:@"id"] isEqualToString:[BNSharedUser currentUser].facebookId])
                 [fbIds addObject:[viewer objectForKey:@"id"]];
         }
         
@@ -170,7 +171,7 @@
                                                  }
                                                  NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
                                                                        [NSString stringWithFormat:@"%@ has invited you to view a story titled %@",
-                                                                        [[PFUser currentUser] objectForKey:USER_NAME], story.title], @"alert",
+                                                                        [BNSharedUser currentUser].name, story.title], @"alert",
                                                                        [NSNumber numberWithInt:1], @"badge",
                                                                        story.bnObjectId, @"Story id",
                                                                        nil];
@@ -194,8 +195,8 @@
         
         // For serializing
         RKObjectMapping *storyRequestMapping = [RKObjectMapping requestMapping];
-        [storyRequestMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_WRITE_ACCESS, STORY_READ_ACCESS, STORY_TAGS, @"isLocationEnabled"]];
-        [storyRequestMapping addAttributeMappingsFromDictionary:@{@"author.userId" : @"authorId"}];
+        [storyRequestMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_WRITE_ACCESS, STORY_READ_ACCESS, STORY_TAGS, @"isLocationEnabled", @"timeStamp"]];
+        [storyRequestMapping addAttributeMappingsFromDictionary:@{@"author.resourceUri" : @"author"}];
         
         RKObjectMapping *locationMapping = [RKObjectMapping requestMapping];
         [locationMapping addAttributeMappingsFromArray:@[@"id", @"category", @"name"]];
@@ -203,12 +204,6 @@
         [locationLocationMapping addAttributeMappingsFromArray:@[@"street", @"city", @"state", @"country", @"zip", @"latitude", @"longitude"]];
         [locationMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationLocationMapping]];
         [storyRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationMapping]];
-        
-        // Media, if any, should be uploaded via edit story, not here. This is so that empty media entities are not created in the backend.
-//        RKObjectMapping *mediaMapping = [RKObjectMapping requestMapping];
-//        [mediaMapping addAttributeMappingsFromDictionary:@{@"remoteURL": @"url"}];
-//        [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType"]];
-//        [storyRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:mediaMapping]];
         
         RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
                                                   requestDescriptorWithMapping:storyRequestMapping
@@ -218,10 +213,8 @@
         
         RKEntityMapping *storyResponseMapping = [RKEntityMapping mappingForEntityForName:kBNStoryClassKey
                                                                     inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-        [storyResponseMapping addAttributeMappingsFromDictionary:@{
-                                                                   PARSE_OBJECT_ID : @"bnObjectId",
-                                                                   }];
-        [storyResponseMapping addAttributeMappingsFromArray:@[PARSE_OBJECT_CREATED_AT, PARSE_OBJECT_UPDATED_AT, @"permaLink"]];
+        [storyResponseMapping addAttributeMappingsFromDictionary:@{@"resource_uri": @"resourceUri"}];
+        [storyResponseMapping addAttributeMappingsFromArray:@[@"createdAt", @"updatedAt", @"permaLink", @"bnObjectId"]];
         storyResponseMapping.identificationAttributes = @[@"bnObjectId"];
         
         RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:storyResponseMapping

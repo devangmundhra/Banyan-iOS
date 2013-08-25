@@ -39,7 +39,7 @@
 - (void) saveStoryMOIdToUserDefaults;
 + (Story *)getCurrentOngoingStoryToContribute;
 + (NSArray *)getStoriesUserCanContributeTo;
-
++ (RKEntityMapping *)storyMappingForRK;
 @end
 
 @interface Story (CoreDataGeneratedAccessors)

@@ -20,7 +20,7 @@
     [piece save];
     
     // If the object has not been created yet, don't ask for editing it on the server.
-    if (!piece.bnObjectId.length) {
+    if (!NUMBER_EXISTS(piece.bnObjectId)) {
         // TODO: There is still a race condition here when the piece is being created
         // and an edit comes in
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Can't synchronize the piece with the server."
@@ -64,7 +64,7 @@
                                                   method:RKRequestMethodPUT];
         RKEntityMapping *pieceResponseMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
                                                                     inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-        [pieceResponseMapping addAttributeMappingsFromArray:@[PARSE_OBJECT_UPDATED_AT]];
+        [pieceResponseMapping addAttributeMappingsFromArray:@[@"updatedAt"]];
         
         RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceResponseMapping
                                                                                                 method:RKRequestMethodPUT

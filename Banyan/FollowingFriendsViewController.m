@@ -10,6 +10,7 @@
 #import "AFParseAPIClient.h"
 #import "Activity+Create.h"
 #import <QuartzCore/QuartzCore.h>
+#import "User.h"
 
 @interface FollowingFriendsViewController ()
 
@@ -130,13 +131,13 @@
 #pragma mark target - actions
 
 - (void)shouldToggleFollowFriendForCell:(FollowingUsersCell *)cell {
-    PFUser *currentUser = [PFUser currentUser];
+    BNSharedUser *currentUser = [BNSharedUser currentUser];
     NSMutableDictionary *cellUser = cell.user;
     if ([cell.followButton isSelected]) {
         // Unfollow
         cell.followButton.selected = NO;
         Activity *activity = [Activity activityWithType:kBNActivityTypeUnfollowUser
-                                                      fromUser:currentUser.objectId
+                                                      fromUser:currentUser.resourceUri
                                                         toUser:[cellUser objectForKey:@"objectId"]
                                                        pieceId:nil
                                                        storyId:nil];
@@ -147,7 +148,7 @@
         // Follow
         cell.followButton.selected = YES;
         Activity *activity = [Activity activityWithType:kBNActivityTypeFollowUser
-                                               fromUser:currentUser.objectId
+                                               fromUser:currentUser.resourceUri
                                                  toUser:[cellUser objectForKey:@"objectId"]
                                                 pieceId:nil
                                                 storyId:nil];

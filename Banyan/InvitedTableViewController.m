@@ -129,13 +129,18 @@
     self.searchDisplayController.searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
     self.tableView.scrollEnabled = YES;
     self.navigationItem.title = @"Invitations";
-
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSArray *array = [defaults objectForKey:BNUserDefaultsFacebookFriends];
-    self.listContacts = array;
-    [self setContactIndex];
     
-    [TestFlight passCheckpoint:@"Invitation view loaded"];
+    [FBRequestConnection startForMyFriendsWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if (!error) {
+            NSArray *array = [result objectForKey:@"data"];
+            self.listContacts = array;
+            [self setContactIndex];
+            [TestFlight passCheckpoint:@"Invitation view loaded"];
+        } else {
+            // TODO: Handle error
+        }
+        [self.tableView reloadData];
+    }];    
 }
 
 #pragma mark - Table view data source
@@ -290,6 +295,7 @@
         [self.selectedContributorContacts addObject:friend];
     }
     [cell canWrite:[self hasWritePermission:friend]];
+    [cell canRead:[self hasReadPermission:friend]];
     [cell enableReadButton:![self hasWritePermission:friend]&&!self.allViewers];
 }
 

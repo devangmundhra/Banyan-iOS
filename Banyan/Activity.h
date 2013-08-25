@@ -10,7 +10,7 @@
 
 @interface Activity : NSObject <NSCoding>
 
-@property (strong, nonatomic) NSString *activityId;
+@property (strong, nonatomic) NSNumber *activityId;
 @property (strong, nonatomic) NSString *type;
 @property (strong, nonatomic) NSString *fromUser;
 @property (strong, nonatomic) NSString *toUser;

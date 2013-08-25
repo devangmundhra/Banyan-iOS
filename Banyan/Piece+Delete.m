@@ -44,7 +44,7 @@
     hud.labelText = @"Deleting piece";
     [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
 
-    if (piece.remoteStatus != RemoteObjectStatusLocal && piece.bnObjectId.length > 0) {
+    if (piece.remoteStatus != RemoteObjectStatusLocal && NUMBER_EXISTS(piece.bnObjectId)) {
         [[AFBanyanAPIClient sharedClient] deletePath:BANYAN_API_OBJECT_URL(@"Piece", piece.bnObjectId)
                                           parameters:nil
                                              success:^(AFHTTPRequestOperation *operation, id responseObject) {

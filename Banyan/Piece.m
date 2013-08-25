@@ -11,6 +11,7 @@
 #import "User.h"
 #import "Media.h"
 #import "BanyanAppDelegate.h"
+#import "Piece_Defines.h"
 
 @implementation Piece
 
@@ -19,7 +20,6 @@
 @dynamic shortText;
 @dynamic story;
 @dynamic tags;
-@dynamic timeStamp;
 @dynamic creatingGifFromMedia;
 
 + (NSArray *)oldPiecesInStory:(Story *)story
@@ -194,4 +194,26 @@
     }
 }
 
++ (RKEntityMapping *)pieceMappingForRK
+{
+    RKEntityMapping *pieceMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
+                                                        inManagedObjectStore:[RKManagedObjectStore defaultStore]];
+    [pieceMapping addAttributeMappingsFromArray:@[@"bnObjectId", PIECE_NUMBER, PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled", @"location",
+                                                  @"createdAt", @"updatedAt", @"permaLink", @"timeStamp"]];
+    [pieceMapping addAttributeMappingsFromDictionary:@{@"numViews" : @"numberOfViews",
+                                                       @"numLikes" : @"numberOfLikes",
+                                                       @"userViewed" : @"viewedByCurUser",
+                                                       @"userLiked" : @"likedByCurUser",
+                                                       @"resource_uri" : @"resourceUri",}];
+    pieceMapping.identificationAttributes = @[@"bnObjectId"];
+    
+    // Media
+    [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media"
+                                                                                 toKeyPath:@"media"
+                                                                               withMapping:[Media mediaMappingForRK]]];
+    
+    // Author
+    [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:[User UserMappingForRK]]];
+    return pieceMapping;
+}
 @end
