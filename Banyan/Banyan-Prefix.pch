@@ -14,6 +14,7 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
     #import <MobileCoreServices/MobileCoreServices.h>
+    #import <CoreData/CoreData.h>
     #import <RestKit/RestKit.h>
     #import <RestKit/CoreData.h>
     #import "TestFlight.h"
@@ -36,3 +37,6 @@
 #define NUMBER_EXISTS(__value__) !([__value__ isEqual:[NSNull null]] || [__value__ intValue] == 0)
 
 #define DEVICE_VERSION_7PLUS ([[UIDevice currentDevice].systemVersion floatValue] >= 7.0)
+
+#define DEBUG true
+#define HAVE_ASSERTS DEBUG

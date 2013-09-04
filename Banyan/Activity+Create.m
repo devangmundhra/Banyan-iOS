@@ -14,7 +14,7 @@
 
 + (void)createActivity:(Activity *)activity
 {
-    if (!(activity.pieceId || activity.storyId) &&
+    if (!(activity.piece || activity.story) &&
         !([activity.type isEqualToString:kBNActivityTypeFollowUser] || [activity.type isEqualToString:kBNActivityTypeUnfollowUser])) {
         return;
     }

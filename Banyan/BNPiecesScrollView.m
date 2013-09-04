@@ -16,6 +16,7 @@
 
 @property (strong, nonatomic) NSMutableSet *pieceSubviewsInuseList;
 @property (strong, nonatomic) NSMutableSet *pieceSubviewsFreeList;
+
 @end
 
 @implementation BNPiecesScrollView
@@ -23,6 +24,7 @@
 @synthesize pieceSubviewsInuseList = _pieceSubviewsInuseList;
 @synthesize pieceSubviewsFreeList = _pieceSubviewsFreeList;
 @synthesize story = _story;
+@synthesize currentPieceNum = _currentPieceNum;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -117,6 +119,9 @@
 {
     if (!pieceNum || pieceNum > self.story.length)
         return;
+    
+    
+    self.currentPieceNum = pieceNum;
     
     // Release rest of the subviews which are outside the window
     NSSet *tempSet = [self.pieceSubviewsInuseList objectsPassingTest:^BOOL(SinglePieceView *obj, BOOL *stop) {

@@ -31,8 +31,8 @@
     Activity *activity = [Activity activityWithType:kBNActivityTypeView
                                            fromUser:currentUser.resourceUri
                                              toUser:currentUser.resourceUri
-                                            pieceId:nil
-                                            storyId:story.resourceUri];
+                                            piece:nil
+                                            story:story.resourceUri];
     [Activity createActivity:activity];
     
     story.viewedByCurUser = YES;
@@ -52,8 +52,8 @@
         activity = [Activity activityWithType:kBNActivityTypeUnlike
                                      fromUser:currentUser.resourceUri
                                        toUser:currentUser.resourceUri
-                                      pieceId:nil
-                                      storyId:story.resourceUri];
+                                      piece:nil
+                                      story:story.resourceUri];
         story.numberOfLikes -= 1;
     }
     else {
@@ -62,8 +62,8 @@
         activity = [Activity activityWithType:kBNActivityTypeLike
                                      fromUser:currentUser.resourceUri
                                        toUser:currentUser.resourceUri
-                                      pieceId:nil
-                                      storyId:story.resourceUri];
+                                      piece:nil
+                                      story:story.resourceUri];
 
         story.numberOfLikes += 1;
     }
@@ -82,8 +82,8 @@
         activity = [Activity activityWithType:kBNActivityTypeUnfavourite
                                      fromUser:currentUser.resourceUri
                                        toUser:currentUser.resourceUri
-                                      pieceId:nil
-                                      storyId:story.resourceUri];
+                                      piece:nil
+                                      story:story.resourceUri];
         story.favoriteByCurUser = NO;
     }
     else {
@@ -91,8 +91,8 @@
         activity = [Activity activityWithType:kBNActivityTypeFavourite
                                      fromUser:currentUser.resourceUri
                                        toUser:currentUser.resourceUri
-                                      pieceId:nil
-                                      storyId:story.resourceUri];
+                                      piece:nil
+                                      story:story.resourceUri];
         story.favoriteByCurUser = YES;
     }
     [Activity createActivity:activity];

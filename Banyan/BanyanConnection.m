@@ -40,21 +40,7 @@
 + (void) userLoginStatusChanged:(NSNotification *)notification
 {
     if ([[notification name] isEqualToString:BNUserLogOutNotification]) {
-        // Get all the stories in the database
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
-        
-        NSError *error = nil;
-        NSArray *stories = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
-        
-        if (stories)
-        {
-            [BanyanConnection resetPermissionsForStories:stories];
-        }
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
-                                                                object:self];
-        });
+        [self loadDataSource];
     } else if ([[notification name] isEqualToString:BNUserLogInNotification]) {
         [self loadDataSource];
     } else {
@@ -62,8 +48,109 @@
     }
 }
 
++ (RKPaginator *) storiesPaginator
+{
+    return nil;
+    
+    static RKPaginator *_storiesPaginator = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
+        [RKObjectManager setSharedManager:objectManager];
+        objectManager.managedObjectStore = [RKManagedObjectStore defaultStore];
+        
+        // Response
+        RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:[Story storyMappingForRK]
+                                                                                                method:RKRequestMethodGET
+                                                                                           pathPattern:nil
+                                                                                               keyPath:@"objects"
+                                                                                           statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+        [objectManager addResponseDescriptor:responseDescriptor];
+        
+        RKObjectMapping *paginationMapping = [RKObjectMapping mappingForClass:[RKPaginator class]];
+        [paginationMapping addAttributeMappingsFromDictionary:@{
+                                                                @"meta.limit": @"perPage",
+                                                                @"meta.offset": @"pageCount",
+                                                                @"meta.total_count": @"objectCount",
+                                                                }];
+        [objectManager setPaginationMapping:paginationMapping];
+        
+        NSString *requestString = [NSString stringWithFormat:@"/api/v1/story/?offset=:offset&limit=:perPage&format=json"];
+        
+        _storiesPaginator = [objectManager paginatorWithPathPattern:requestString];
+        _storiesPaginator.perPage = 2; // this will request /posts?page=N&per_page=2
+        
+        [_storiesPaginator setCompletionBlockWithSuccess:^(RKPaginator *paginator, NSArray *objects, NSUInteger page) {
+            
+//            // Delete all unsaved stories
+//            NSArray *unsavedStories = [Story unsavedStories];
+//            for (Story *story in unsavedStories) {
+//                [story remove];
+//            }
+            
+            // Delete all stories if this is the first load
+            if (page == 1) {
+                NSFetchRequest * allStories = [[NSFetchRequest alloc] init];
+                [allStories setEntity:[NSEntityDescription entityForName:kBNStoryClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
+                [allStories setIncludesPropertyValues:NO]; //only fetch the managedObjectID
+                
+                NSError * error = nil;
+                NSArray * stories = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:allStories error:&error];
+                //error handling goes here
+                for (Story * story in stories) {
+                    if ([objects containsObject:story])
+                        continue;
+                    [story remove];
+                }
+                error = nil;
+                if (![[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:&error]) {
+                    NSLog(@"Unresolved Core Data Save error %@, %@ in saving remote object", error, [error userInfo]);
+                    exit(-1);
+                }
+            }
+            
+            NSArray *stories = objects;
+//            // Delete stories that have been deleted on the server
+//            NSArray *syncedStories =[Story syncedStories];
+//            for (Story *story in syncedStories) {
+//                if (![stories containsObject:story])
+//                    [story remove];
+//            }
+            [stories enumerateObjectsUsingBlock:^(Story *story, NSUInteger idx, BOOL *stop) {
+                NSArray *unsavedPieces = [Piece unsavedPiecesInStory:story];
+                if (unsavedPieces.count)
+                    NSLog(@"%u unsaved pieces in story :%@", unsavedPieces.count, story.title);
+                for (Piece *piece in unsavedPieces) {
+                    [piece remove];
+                }
+                story.lastSynced = [NSDate date];
+                story.currentPieceNum = MAX([Piece pieceForStory:story withAttribute:@"viewedByCurUser" asValue:[NSNumber numberWithBool:FALSE]].pieceNumber, 1);
+            }];
+            if (page==1)
+                [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
+                                                                    object:self];
+            
+        } failure:^(RKPaginator *paginator, NSError *error) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in fetching stories."
+                                                            message:[error localizedDescription]
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+            [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
+                                                                object:self];
+            NSLog(@"Hit error: %@", error);
+        }];
+    });
+    
+    return _storiesPaginator;
+}
+
 + (void) loadDataSource
-{    
+{
+//    [[self storiesPaginator] loadPage:1];
+//    return;
+    
     NSLog(@"%s loadDataSource begin", __PRETTY_FUNCTION__);
     
     [BanyanConnection
@@ -132,8 +219,8 @@
 //                                    for (Piece *piece in unsavedPieces) {
 //                                        [piece remove];
 //                                    }
-                                    story.remoteStatus = RemoteObjectStatusSync;
                                     story.lastSynced = [NSDate date];
+                                    story.currentPieceNum = MAX([Piece pieceForStory:story withAttribute:@"viewedByCurUser" asValue:[NSNumber numberWithBool:FALSE]].pieceNumber, 1);
                                 }];
                                 if (successBlock)
                                     successBlock();                            }

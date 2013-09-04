@@ -9,7 +9,6 @@
 #import "Piece.h"
 #import "Story+Create.h"
 #import "Story+Edit.h"
-#import "AFParseAPIClient.h"
 
 @interface Piece (Create)
 + (void)createNewPiece:(Piece *)piece;

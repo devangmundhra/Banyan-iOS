@@ -7,7 +7,6 @@
 //
 
 #import "FollowingFriendsViewController.h"
-#import "AFParseAPIClient.h"
 #import "Activity+Create.h"
 #import <QuartzCore/QuartzCore.h>
 #import "User.h"
@@ -139,8 +138,8 @@
         Activity *activity = [Activity activityWithType:kBNActivityTypeUnfollowUser
                                                       fromUser:currentUser.resourceUri
                                                         toUser:[cellUser objectForKey:@"objectId"]
-                                                       pieceId:nil
-                                                       storyId:nil];
+                                                       piece:nil
+                                                       story:nil];
         [Activity createActivity:activity];
         [self changeFollowingStatusForUser:cellUser toStatus:NO];
         [[NSNotificationCenter defaultCenter] postNotificationName:BNUserFollowingChangedNotification object:nil];
@@ -150,8 +149,8 @@
         Activity *activity = [Activity activityWithType:kBNActivityTypeFollowUser
                                                fromUser:currentUser.resourceUri
                                                  toUser:[cellUser objectForKey:@"objectId"]
-                                                pieceId:nil
-                                                storyId:nil];
+                                                piece:nil
+                                                story:nil];
         [Activity createActivity:activity];
         [self changeFollowingStatusForUser:cellUser toStatus:YES];
         [[NSNotificationCenter defaultCenter] postNotificationName:BNUserFollowingChangedNotification object:nil];

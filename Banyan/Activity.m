@@ -13,22 +13,22 @@
 @synthesize type = _type;
 @synthesize fromUser = _fromUser;
 @synthesize toUser = _toUser;
-@synthesize pieceId = _pieceId;
-@synthesize storyId = _storyId;
+@synthesize piece = _piece;
+@synthesize story = _story;
 @synthesize initialized = _initialized;
 
 + (Activity *) activityWithType:(NSString *)type
                        fromUser:(NSString *)fromUser
                          toUser:(NSString *)toUser
-                        pieceId:(NSString *)pieceId
-                        storyId:(NSString *)storyId
+                          piece:(NSString *)piece
+                          story:(NSString *)story
 {
     Activity *newActivity = [[Activity alloc] init];
     newActivity.type = type;
     newActivity.fromUser = fromUser;
     newActivity.toUser = toUser;
-    newActivity.pieceId = pieceId;
-    newActivity.storyId = storyId;
+    newActivity.piece = piece;
+    newActivity.story = story;
     
     return newActivity;
 }
@@ -38,8 +38,8 @@
     [encoder encodeObject:self.type forKey:kBNActivityTypeKey];
     [encoder encodeObject:self.fromUser forKey:kBNActivityFromUserKey];
     [encoder encodeObject:self.toUser forKey:kBNActivityToUserKey];
-    [encoder encodeObject:self.pieceId forKey:kBNActivityPieceKey];
-    [encoder encodeObject:self.storyId forKey:kBNActivityStoryKey];
+    [encoder encodeObject:self.piece forKey:kBNActivityPieceKey];
+    [encoder encodeObject:self.story forKey:kBNActivityStoryKey];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder
@@ -49,16 +49,16 @@
         self.type = [decoder decodeObjectForKey:kBNActivityTypeKey];
         self.fromUser = [decoder decodeObjectForKey:kBNActivityFromUserKey];
         self.toUser = [decoder decodeObjectForKey:kBNActivityToUserKey];
-        self.pieceId = [decoder decodeObjectForKey:kBNActivityPieceKey];
-        self.storyId = [decoder decodeObjectForKey:kBNActivityStoryKey];
+        self.piece = [decoder decodeObjectForKey:kBNActivityPieceKey];
+        self.story = [decoder decodeObjectForKey:kBNActivityStoryKey];
     }
     return self;
 }
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"{Activity\n type: %@ fromUser: %@, toUser: %@, pieceId: %@, storyId: %@\n}",
-            self.type, self.fromUser, self.toUser, self.pieceId, self.storyId];
+    return [NSString stringWithFormat:@"{Activity\n type: %@ fromUser: %@, toUser: %@, piece: %@, story: %@\n}",
+            self.type, self.fromUser, self.toUser, self.piece, self.story];
 }
 
 @end

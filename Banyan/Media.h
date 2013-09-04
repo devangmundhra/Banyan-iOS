@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+#import "BNMisc.h"
 
 typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
     MediaRemoteStatusLocal,       // Only local version

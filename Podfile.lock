@@ -1,5 +1,5 @@
 PODS:
-  - AFNetworking (1.3.1)
+  - AFNetworking (1.3.2)
   - ASMediaFocusManager (0.2)
   - BNSwipeableView (0.0.1)
   - libwebp (0.3.0-rc7):
@@ -36,23 +36,21 @@ PODS:
   - SMPageControl (1.0)
   - SOCKit (1.1)
   - SSToolkit (1.0.4)
-  - SVPullToRefresh (0.4.1)
   - SVSegmentedControl (0.2)
-  - TestFlightSDK (1.3.0-beta.7)
-  - TITokenField (0.9.1)
+  - TestFlightSDK (2.0)
+  - TITokenField (0.9.2)
   - TransitionKit (1.1.1)
 
 DEPENDENCIES:
   - ASMediaFocusManager (from `https://github.com/devangmundhra/ASMediaFocusManager.git`, commit `fb8db29b198cbebb41052e5427fee44fe23c057a`)
   - BNSwipeableView (from `https://github.com/devangmundhra/BNSwipeableView.git`)
-  - MBProgressHUD (>= 0.5)
+  - MBProgressHUD (>= 0.7)
   - RestKit (from `https://github.com/RestKit/RestKit.git`, branch `development`)
   - SDWebImage (from `https://github.com/rs/SDWebImage.git`, commit `282e8179193a49867575cd658ae64883aedbce7b`)
   - SMPageControl (~> 1.0)
   - SSToolkit
-  - SVPullToRefresh
   - SVSegmentedControl
-  - TestFlightSDK (>= 1.2.5)
+  - TestFlightSDK (>= 1.3)
   - TITokenField (from `https://github.com/devangmundhra/TITokenField.git`)
 
 EXTERNAL SOURCES:
@@ -71,20 +69,19 @@ EXTERNAL SOURCES:
     :git: https://github.com/devangmundhra/TITokenField.git
 
 SPEC CHECKSUMS:
-  AFNetworking: 9ec8aafb9269236a7630bd8d9838ce2ba30fa2a0
+  AFNetworking: 7f9bcd7c287a75476cd5c61e82fd3380e93e4c54
   ASMediaFocusManager: 8be8e44556d78d18ed1e1eb14b5362d1847c16f2
   BNSwipeableView: f10ecb74337225b5659861e150b96e2b8464fc7a
   libwebp: 40517fa1fd3716eded73b4696c45fc0b66e4b414
   MBProgressHUD: 1fd8591a2216d5dec6de24e09187bb03bcbe9946
-  RestKit: 8c8c63c5dc821ea10164c169dd554b14a1f9a327
+  RestKit: f02adc3cce61f7f59271c140d44faf3c1462e782
   SDWebImage: 79a8bac9ccf85b269100b294f7b43684dab8bf8a
   SMPageControl: 9d100f9aa8ca0cf10222666ff31d4d1cbfdac674
-  SOCKit: ed67aeeca4a697b63a933229e53f4670d5b9300f
+  SOCKit: 2f3bc4d07910de12dcc202815e07db68a3802581
   SSToolkit: 689acaedac79c2079e492e528a55bcb5db9d98c4
-  SVPullToRefresh: 61a0e4bd12bd6f8e3465909810b0fbeb1a28d5f2
   SVSegmentedControl: e874fc56c2a1efb9f597ddf0908101393f53fe96
-  TestFlightSDK: 3af0a385405725e36452a35ef63ba8b3f2ef3ffc
-  TITokenField: db7c28576a8f78ecae7ac2ee80ef72912c7cb940
-  TransitionKit: 3b3836af6887d16a0834fa35031028792d1d5c0c
+  TestFlightSDK: 940906d4b2550cf397c6f2d2fcc4ebfdcd8ae858
+  TITokenField: 7d3d45e212044fa1a06db62b16ff7143891eab04
+  TransitionKit: d0e3344aac92991395d4c2e72d9c5a8ceeb12910
 
-COCOAPODS: 0.20.2
+COCOAPODS: 0.23.0

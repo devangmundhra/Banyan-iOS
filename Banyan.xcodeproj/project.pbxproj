@@ -91,7 +91,6 @@
 		5189B2C215B387E200562DD0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5189B2C015B387E200562DD0 /* InfoPlist.strings */; };
 		5189B2C415B387E200562DD0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2C315B387E200562DD0 /* main.m */; };
 		5189B2C815B387E200562DD0 /* BanyanAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2C715B387E200562DD0 /* BanyanAppDelegate.m */; };
-		5189B32715B395F300562DD0 /* AFParseAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2D615B395F300562DD0 /* AFParseAPIClient.m */; };
 		5189B32815B395F300562DD0 /* ArrayToDataTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2D815B395F300562DD0 /* ArrayToDataTransformer.m */; };
 		5189B32A15B395F300562DD0 /* ImageToDataTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2DC15B395F300562DD0 /* ImageToDataTransformer.m */; };
 		5189B32B15B395F300562DD0 /* InvitedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2DE15B395F300562DD0 /* InvitedTableViewController.m */; };
@@ -330,8 +329,6 @@
 		5189B2C515B387E200562DD0 /* Banyan-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Banyan-Prefix.pch"; sourceTree = "<group>"; };
 		5189B2C615B387E200562DD0 /* BanyanAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BanyanAppDelegate.h; sourceTree = "<group>"; };
 		5189B2C715B387E200562DD0 /* BanyanAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BanyanAppDelegate.m; sourceTree = "<group>"; };
-		5189B2D515B395F300562DD0 /* AFParseAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFParseAPIClient.h; path = Banyan/AFParseAPIClient.h; sourceTree = "<group>"; };
-		5189B2D615B395F300562DD0 /* AFParseAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFParseAPIClient.m; path = Banyan/AFParseAPIClient.m; sourceTree = "<group>"; };
 		5189B2D715B395F300562DD0 /* ArrayToDataTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ArrayToDataTransformer.h; path = Banyan/ArrayToDataTransformer.h; sourceTree = "<group>"; };
 		5189B2D815B395F300562DD0 /* ArrayToDataTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ArrayToDataTransformer.m; path = Banyan/ArrayToDataTransformer.m; sourceTree = "<group>"; };
 		5189B2DB15B395F300562DD0 /* ImageToDataTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ImageToDataTransformer.h; path = Banyan/ImageToDataTransformer.h; sourceTree = "<group>"; };
@@ -907,8 +904,6 @@
 		5189B35115B3964000562DD0 /* Networking Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				5189B2D515B395F300562DD0 /* AFParseAPIClient.h */,
-				5189B2D615B395F300562DD0 /* AFParseAPIClient.m */,
 				510787CD163A36D80042B436 /* AFBanyanAPIClient.h */,
 				510787CE163A36D80042B436 /* AFBanyanAPIClient.m */,
 				5192329F1671CC57009686E4 /* AFGoogleAPIClient.h */,
@@ -1463,7 +1458,6 @@
 			files = (
 				5189B2C415B387E200562DD0 /* main.m in Sources */,
 				5189B2C815B387E200562DD0 /* BanyanAppDelegate.m in Sources */,
-				5189B32715B395F300562DD0 /* AFParseAPIClient.m in Sources */,
 				5189B32815B395F300562DD0 /* ArrayToDataTransformer.m in Sources */,
 				5189B32A15B395F300562DD0 /* ImageToDataTransformer.m in Sources */,
 				5189B32B15B395F300562DD0 /* InvitedTableViewController.m in Sources */,
@@ -1557,8 +1551,8 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Devang Mundhra (X6GCQVUWTS)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Devang Mundhra (X6GCQVUWTS)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1581,8 +1575,8 @@
 					"-ObjC",
 					"-all_load",
 				);
-				PROVISIONING_PROFILE = "C862FDC0-2DA1-4D76-B963-0B33541ACB48";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "C862FDC0-2DA1-4D76-B963-0B33541ACB48";
+				PROVISIONING_PROFILE = "1F802F43-06A9-4CA0-8CDE-25E83BF84D14";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "1F802F43-06A9-4CA0-8CDE-25E83BF84D14";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1598,8 +1592,8 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Devang Mundhra (X6GCQVUWTS)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Devang Mundhra (X6GCQVUWTS)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -1615,8 +1609,8 @@
 					"-ObjC",
 					"-all_load",
 				);
-				PROVISIONING_PROFILE = "C862FDC0-2DA1-4D76-B963-0B33541ACB48";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "C862FDC0-2DA1-4D76-B963-0B33541ACB48";
+				PROVISIONING_PROFILE = "1F802F43-06A9-4CA0-8CDE-25E83BF84D14";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "1F802F43-06A9-4CA0-8CDE-25E83BF84D14";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};

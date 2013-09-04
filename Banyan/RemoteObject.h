@@ -59,6 +59,9 @@ typedef enum {
 - (void)showAlert:(NSString *)message
            result:(id)result
             error:(NSError *)error;
+
+// Misc methods
+- (NSString *)getIdentifierForMediaFileName;
 @end
 
 

@@ -105,7 +105,6 @@
 + (NSArray *)getStoriesUserCanContributeTo
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:kBNStoryClassKey];
-    //    [request setEntity:[NSEntityDescription entityForName:kBNStoryClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(canContribute == YES)",
 							  [NSNumber numberWithInt:RemoteObjectStatusFailed]];
     [request setPredicate:predicate];
@@ -271,10 +270,10 @@
                                                        @"permission.canRead" : @"canView",
                                                        @"permission.canWrite" : @"canContribute",
                                                        @"permission.isInvited" : @"isInvited",
-                                                       @"numViews" : @"numberOfViews",
-                                                       @"numLikes" : @"numberOfLikes",
-                                                       @"userViewed" : @"viewedByCurUser",
-                                                       @"userLiked" : @"likedByCurUser",
+                                                       @"stats.numViews" : @"numberOfViews",
+                                                       @"stats.numLikes" : @"numberOfLikes",
+                                                       @"stats.userViewed" : @"viewedByCurUser",
+                                                       @"stats.userLiked" : @"likedByCurUser",
                                                        @"firstUnviewedPieceNumByUser" : @"currentPieceNum",
                                                        @"resource_uri" : @"resourceUri",
                                                        }];
@@ -285,13 +284,16 @@
     [storyMapping addPropertyMappingsFromArray:@[[RKRelationshipMapping relationshipMappingFromKeyPath:@"pieces" toKeyPath:@"pieces" withMapping:[Piece pieceMappingForRK]],
                                                  [RKRelationshipMapping relationshipMappingFromKeyPath:@"coverMedia" toKeyPath:@"media" withMapping:[Media mediaMappingForRK]],
                                                  [RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:[User UserMappingForRK]]]];
-//    // Media
-//    [storyMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:[Media mediaMappingForRK]]];
-//    
-//    // Author
-//    [storyMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:[User UserMappingForRK]]];
     
     return storyMapping;
+}
+
+- (NSString *)getIdentifierForMediaFileName
+{
+    if (self.title.length)
+        return [self.title substringToIndex:MIN(10, self.title.length)];
+    else
+        return [BNMisc genRandStringLength:10];
 }
 
 @end

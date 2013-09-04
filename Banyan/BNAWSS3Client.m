@@ -24,7 +24,7 @@
 
 + (void) uploadData:(NSData *)data withContentType:(NSString *)contentType
         forFileName:(NSString *)filename
-inBackgroundWithBlock:(void (^)(bool succeeded, NSString *url, NSError *error))block
+inBackgroundWithBlock:(void (^)(bool succeeded, NSString *url, NSString *filename, NSError *error))block
 {
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
@@ -41,11 +41,11 @@ inBackgroundWithBlock:(void (^)(bool succeeded, NSString *url, NSError *error))b
         dispatch_async(dispatch_get_main_queue(), ^{
             if (putObjectResponse.error != nil)
             {
-                block(NO, nil, putObjectResponse.error);
+                block(NO, nil, nil, putObjectResponse.error);
             }
             else
             {
-                block(YES, [por.url absoluteString], putObjectResponse.error);
+                block(YES, [por.url absoluteString], filename, putObjectResponse.error);
             }
         });
     });

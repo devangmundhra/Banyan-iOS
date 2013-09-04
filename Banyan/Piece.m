@@ -81,6 +81,8 @@
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(%K == %@) AND (story = %@)",
 							  attribute, value, story];
     [request setPredicate:predicate];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"pieceNumber" ascending:YES];
+    [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
     [request setFetchLimit:1];
     
     NSError *error = nil;
@@ -200,10 +202,10 @@
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
     [pieceMapping addAttributeMappingsFromArray:@[@"bnObjectId", PIECE_NUMBER, PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled", @"location",
                                                   @"createdAt", @"updatedAt", @"permaLink", @"timeStamp"]];
-    [pieceMapping addAttributeMappingsFromDictionary:@{@"numViews" : @"numberOfViews",
-                                                       @"numLikes" : @"numberOfLikes",
-                                                       @"userViewed" : @"viewedByCurUser",
-                                                       @"userLiked" : @"likedByCurUser",
+    [pieceMapping addAttributeMappingsFromDictionary:@{@"stats.numViews" : @"numberOfViews",
+                                                       @"stats.numLikes" : @"numberOfLikes",
+                                                       @"stats.userViewed" : @"viewedByCurUser",
+                                                       @"stats.userLiked" : @"likedByCurUser",
                                                        @"resource_uri" : @"resourceUri",}];
     pieceMapping.identificationAttributes = @[@"bnObjectId"];
     
@@ -215,5 +217,15 @@
     // Author
     [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:[User UserMappingForRK]]];
     return pieceMapping;
+}
+
+- (NSString *)getIdentifierForMediaFileName
+{
+    if (self.shortText.length)
+        return [self.shortText substringToIndex:MIN(10, self.shortText.length)];
+    else if (self.longText.length)
+        return [self.longText substringToIndex:MIN(10, self.longText.length)];
+    else
+        return [BNMisc genRandStringLength:10];
 }
 @end

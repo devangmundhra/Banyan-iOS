@@ -250,9 +250,7 @@
     if (![self.piece.shortText isEqualToString:self.pieceCaptionView.text])
         self.piece.shortText = self.pieceCaptionView.text;
     
-    if (self.piece.story.isLocationEnabled == YES ) {
-        self.piece.location = (FBGraphObject<FBGraphPlace> *)self.locationManager.location;
-    }
+    self.piece.location = (FBGraphObject<FBGraphPlace> *)self.locationManager.location;
     
     // Get the recording from audioRecorder
     NSURL *audioRecording = [self.audioRecorder getRecording];

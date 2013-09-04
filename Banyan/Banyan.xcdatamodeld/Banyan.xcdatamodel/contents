@@ -44,7 +44,7 @@
         <attribute name="numberOfLikes" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="numberOfViews" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="permaLink" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="remoteStatusNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="remoteStatusNumber" optional="YES" attributeType="Integer 16" defaultValueString="3" indexed="YES" syncable="YES"/>
         <attribute name="resourceUri" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="timeStamp" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" indexed="YES" syncable="YES"/>
@@ -65,7 +65,7 @@
         <attribute name="sectionIdentifier" optional="YES" transient="YES" attributeType="String" defaultValueString="Drafts" indexed="YES" syncable="YES"/>
         <attribute name="tags" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="uploadStatusNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="uploadStatusNumber" optional="YES" attributeType="Integer 16" defaultValueString="3" indexed="YES" syncable="YES"/>
         <attribute name="writeAccess" optional="YES" attributeType="Transformable" syncable="YES"/>
         <relationship name="pieces" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Piece" inverseName="story" inverseEntity="Piece" syncable="YES"/>
     </entity>

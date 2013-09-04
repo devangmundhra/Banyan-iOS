@@ -8,12 +8,12 @@
 
 #import "StoryListTableViewController.h"
 #import "BanyanAppDelegate.h"
-#import "SVPullToRefresh.h"
 #import "Story+Delete.h"
 #import "Piece+Create.h"
 #import "StoryReaderController.h"
 #import "MBProgressHUD.h"
 #import "BanyanConnection.h"
+#import "AFBanyanAPIClient.h"
 
 typedef enum {
     FilterStoriesSegmentIndexFollowing = 0,
@@ -23,6 +23,7 @@ typedef enum {
 @interface StoryListTableViewController ()
 @property (strong, nonatomic) IBOutlet UISegmentedControl *filterStoriesSegmentedControl;
 @property (strong, nonatomic) NSIndexPath *indexOfVisibleBackView;
+
 @end
 
 @implementation StoryListTableViewController
@@ -59,11 +60,13 @@ typedef enum {
                                                                         managedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext
                                                                           sectionNameKeyPath:nil
                                                                                    cacheName:nil]; // Adding cache causes issues in filtering after changing predicates
-    self.fetchedResultsController.delegate = nil; // If nil, explicitly call perform fetch (via Notification) to update list
+    self.fetchedResultsController.delegate = self; // If nil, explicitly call perform fetch (via Notification) to update list
     
-    [self.tableView addPullToRefreshWithActionHandler:^{
-        [[BanyanConnection class] performSelectorInBackground:@selector(loadDataSource) withObject:nil];
-    }];
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    refreshControl.tintColor = BANYAN_GREEN_COLOR;
+    [refreshControl addTarget:[BanyanConnection class] action:@selector(loadDataSource) forControlEvents:UIControlEventValueChanged];
+    self.refreshControl = refreshControl;
+//    [self.refreshControl beginRefreshing];
     
     [self.tableView setRowHeight:TABLE_ROW_HEIGHT];
     
@@ -199,7 +202,6 @@ typedef enum {
 {
     Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
     if (story.length) {
-        [self updateStoryInBackgroud:story];
         return indexPath;
     } else {
         [self addPieceToStory:story];
@@ -285,7 +287,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void) filterStoriesForTableDataSource
 {
-    [self.tableView.pullToRefreshView stopAnimating];
+    [self.refreshControl endRefreshing];
     
     NSPredicate *predicate = nil;
     NSMutableArray *arrayOfUserIdsBeingFollowed = nil;
@@ -297,7 +299,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         case FilterStoriesSegmentIndexFollowing:
             arrayOfUserIdsBeingFollowed = [NSMutableArray array];
             for (NSMutableDictionary *user in [[NSUserDefaults standardUserDefaults]
-                                               objectForKey:BNUserDefaultsBanyanUsersFacebookFriends]) {
+                                               arrayForKey:BNUserDefaultsBanyanUsersFacebookFriends]) {
                 if ([[user objectForKey:USER_BEING_FOLLOWED] boolValue]) {
                     [arrayOfUserIdsBeingFollowed addObject:[user objectForKey:@"id"]];
                 }
@@ -319,12 +321,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         // This is only for the initial part when the status of reachability is Unknown.
         // We don't want to keep getting this notification and refreshing the story table.
         [[NSNotificationCenter defaultCenter] removeObserver:self name:AFNetworkingReachabilityDidChangeNotification object:nil];
-        if (![[AFParseAPIClient sharedClient] isReachable]) {
+        if (![[AFBanyanAPIClient sharedClient] isReachable]) {
             return;
         }
     }
     
-    [self.tableView triggerPullToRefresh];
+    [self.refreshControl beginRefreshing];
 }
 
 
@@ -423,6 +425,15 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 		[(SingleStoryCell *)cell revealSwipedViewAnimated:YES];
 	}
     self.indexOfVisibleBackView = indexPath;
+}
+
+#pragma mark UIScrollViewDelegate
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (scrollView.contentSize.height - scrollView.contentOffset.y < (self.view.bounds.size.height)) {
+        if (![BanyanConnection storiesPaginator].objectRequestOperation && [[BanyanConnection storiesPaginator] isLoaded] && [[BanyanConnection storiesPaginator] hasNextPage]) {
+            [[BanyanConnection storiesPaginator] loadNextPage];
+        }
+    }
 }
 
 - (void)hideVisibleSwipedView:(BOOL)animated {

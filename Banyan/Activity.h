@@ -14,14 +14,14 @@
 @property (strong, nonatomic) NSString *type;
 @property (strong, nonatomic) NSString *fromUser;
 @property (strong, nonatomic) NSString *toUser;
-@property (strong, nonatomic) NSString *pieceId;
-@property (strong, nonatomic) NSString *storyId;
+@property (strong, nonatomic) NSString *piece;
+@property (strong, nonatomic) NSString *story;
 @property BOOL initialized;
 
 + (Activity *) activityWithType:(NSString *)type
                        fromUser:(NSString *)fromUser
                          toUser:(NSString *)toUser
-                        pieceId:(NSString *)pieceId
-                        storyId:(NSString *)storyId;
+                          piece:(NSString *)piece
+                          story:(NSString *)story;
 
 @end

@@ -8,7 +8,6 @@
 
 #import "Piece+Stats.h"
 #import "Piece+Edit.h"
-#import "AFParseAPIClient.h"
 #import "Activity+Create.h"
 #import "Story.h"
 #import "User.h"
@@ -36,8 +35,8 @@
     Activity *activity = [Activity activityWithType:kBNActivityTypeView
                                            fromUser:currentUser.resourceUri
                                              toUser:currentUser.resourceUri
-                                            pieceId:piece.resourceUri
-                                            storyId:piece.story.resourceUri];
+                                            piece:piece.resourceUri
+                                            story:piece.story.resourceUri];
     [Activity createActivity:activity];
     
     piece.viewedByCurUser = YES;
@@ -57,8 +56,8 @@
         activity = [Activity activityWithType:kBNActivityTypeUnlike
                                      fromUser:currentUser.resourceUri
                                        toUser:currentUser.resourceUri
-                                      pieceId:piece.resourceUri
-                                      storyId:piece.story.resourceUri];
+                                      piece:piece.resourceUri
+                                      story:piece.story.resourceUri];
         
         piece.likedByCurUser = NO;
         piece.numberOfLikes -= 1;
@@ -68,8 +67,8 @@
         activity = [Activity activityWithType:kBNActivityTypeLike
                                      fromUser:currentUser.resourceUri
                                        toUser:currentUser.resourceUri
-                                      pieceId:piece.resourceUri
-                                      storyId:piece.story.resourceUri];
+                                      piece:piece.resourceUri
+                                      story:piece.story.resourceUri];
         
         piece.likedByCurUser = YES;
         piece.numberOfLikes += 1;
@@ -88,8 +87,8 @@
         activity = [Activity activityWithType:kBNActivityTypeUnfavourite
                                      fromUser:currentUser.resourceUri
                                        toUser:currentUser.resourceUri
-                                      pieceId:piece.resourceUri
-                                      storyId:piece.story.resourceUri];
+                                      piece:piece.resourceUri
+                                      story:piece.story.resourceUri];
         piece.favoriteByCurUser = NO;
     }
     else {
@@ -97,8 +96,8 @@
         activity = [Activity activityWithType:kBNActivityTypeFavourite
                                     fromUser:currentUser.resourceUri
                                       toUser:currentUser.resourceUri
-                                     pieceId:piece.resourceUri
-                                     storyId:piece.story.resourceUri];
+                                     piece:piece.resourceUri
+                                     story:piece.story.resourceUri];
         piece.favoriteByCurUser = YES;
     }
     [Activity createActivity:activity];

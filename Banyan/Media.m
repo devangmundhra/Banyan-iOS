@@ -11,9 +11,8 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "SDWebImage/SDWebImageDownloader.h"
 #import "UIImage+ResizeAdditions.h"
-#import "AFParseAPIClient.h"
-#import "BNMisc.h"
 #import "BNAWSS3Client.h"
+#import "User.h"
 
 @implementation Media
 
@@ -227,14 +226,17 @@
     audioData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.localURL]];
     self.remoteStatus = MediaRemoteStatusPushing;
     
-    [BNAWSS3Client uploadData:audioData withContentType:@"audio/caf" forFileName:[NSString stringWithFormat:@"%@.caf", self.filename] inBackgroundWithBlock:^(bool succeeded, NSString *url, NSError *error) {
-        if (succeeded) {
-            self.remoteURL = url;
-            successBlock();
-        } else {
-            errorBlock(error);
+    [BNAWSS3Client uploadData:audioData withContentType:@"audio/caf" forFileName:[NSString stringWithFormat:@"%@/%@_%@.caf", [BNSharedUser currentUser].userId, [self.remoteObject getIdentifierForMediaFileName], self.filename]
+        inBackgroundWithBlock:^(bool succeeded, NSString *url, NSString *filename, NSError *error) {
+            if (succeeded) {
+                self.remoteURL = url;
+                self.filename = filename;
+                successBlock();
+            } else {
+                errorBlock(error);
+            }
         }
-    }];
+     ];
 }
 
 - (void) uploadImageWithSuccess:(void (^)())successBlock failure:(void (^)(NSError *error))errorBlock
@@ -258,9 +260,10 @@
         
         self.remoteStatus = MediaRemoteStatusPushing;
 
-        [BNAWSS3Client uploadData:imageData withContentType:@"image/jpeg" forFileName:[NSString stringWithFormat:@"%@.jpg", self.filename] inBackgroundWithBlock:^(bool succeeded, NSString *url, NSError *error) {
+        [BNAWSS3Client uploadData:imageData withContentType:@"image/jpeg" forFileName:[NSString stringWithFormat:@"%@/%@_%@.jpg", [BNSharedUser currentUser].userId, [self.remoteObject getIdentifierForMediaFileName], self.filename] inBackgroundWithBlock:^(bool succeeded, NSString *url, NSString *filename, NSError *error) {
             if (succeeded) {
                 self.remoteURL = url;
+                self.filename = filename;
                 successBlock();
             } else {
                 errorBlock(error);
@@ -280,9 +283,10 @@
     gifData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.localURL]];
     self.remoteStatus = MediaRemoteStatusPushing;
     
-    [BNAWSS3Client uploadData:gifData withContentType:@"image/gif" forFileName:[NSString stringWithFormat:@"%@.gif", self.filename] inBackgroundWithBlock:^(bool succeeded, NSString *url, NSError *error) {
+    [BNAWSS3Client uploadData:gifData withContentType:@"image/gif" forFileName:[NSString stringWithFormat:@"%@/%@_%@.gif", [BNSharedUser currentUser].userId, [self.remoteObject getIdentifierForMediaFileName], self.filename] inBackgroundWithBlock:^(bool succeeded, NSString *url, NSString *filename, NSError *error) {
         if (succeeded) {
             self.remoteURL = url;
+            self.filename = filename;
             successBlock();
         } else {
             errorBlock(error);

@@ -206,6 +206,11 @@
     [alertView show];
 }
 
+- (NSString *)getIdentifierForMediaFileName
+{
+    return [BNMisc genRandStringLength:10];
+}
+
 @end
 
 @implementation RemoteObject (CoreDataGeneratedAccessors)

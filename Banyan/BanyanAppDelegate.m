@@ -8,7 +8,6 @@
 
 #import "BanyanAppDelegate.h"
 #import "User_Defines.h"
-#import "AFParseAPIClient.h"
 #import "AFBanyanAPIClient.h"
 #import "BanyanConnection.h"
 #import "MasterTabBarController.h"
@@ -70,9 +69,6 @@
     RKLogConfigureByName("RestKit/CoreData", RKLogLevelTrace);
     
     [self restKitCoreDataInitialization];
-    
-    if (![[AFParseAPIClient sharedClient] isReachable])
-        NSLog(@"Parse not reachable");
     
     if (![[AFBanyanAPIClient sharedClient] isReachable])
         NSLog(@"Banyan not reachable");
@@ -253,7 +249,7 @@ void uncaughtExceptionHandler(NSException *exception)
                                            BOOL shouldNotifyUserLogin = ![BanyanAppDelegate loggedIn];
                                            NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:(NSDictionary *)responseObject];
                                            // TODO: Get friends the user is actually following instead of just the facebook friends on banyan
-                                           NSDictionary *fbFriends = [userInfo objectForKey:@"social_data"];
+                                           NSDictionary *fbFriends = [[[userInfo objectForKey:@"social_data"] objectForKey:@"facebook"] objectForKey:@"friends_on_banyan"];
                                            [userInfo removeObjectForKey:@"social_data"];
                                            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
                                            [defaults setObject:userInfo forKey:BNUserDefaultsUserInfo];
@@ -273,7 +269,7 @@ void uncaughtExceptionHandler(NSException *exception)
                                            [[AFBanyanAPIClient sharedClient] setAuthorizationHeaderWithUsername:email apikey:apikey];
                                            
                                        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                           NSLog(@"An error occurred: %@", error);
+                                           NSLog(@"An error occurred: %@", error.localizedDescription);
                                        }];
 }
 

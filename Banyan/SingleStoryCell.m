@@ -98,7 +98,6 @@
     // switch the indicator when more than 50% of the previous/next page is visible
     CGFloat pageWidth = CGRectGetWidth(self.piecesScrollView.frame);
     NSUInteger page = floor((self.piecesScrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
-    self.story.currentPieceNum = page + 1;
     [self.piecesScrollView scrollToPieceNumber:page+1];
 }
 
@@ -138,7 +137,7 @@
 {
     if (!self.story || ![self.story.pieces count])
         return nil;
-    NSUInteger pieceNum = self.story.currentPieceNum;
+    NSUInteger pieceNum = self.piecesScrollView.currentPieceNum;
     Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:pieceNum]];
     return piece;
 }

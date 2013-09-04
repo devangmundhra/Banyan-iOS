@@ -8,10 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-#define DEV FALSE
-
-#define HAVE_ASSERTS TRUE
-
 #define AWS_ACCESS_KEY @"AKIAJ3LJBD4SE3HS4NIQ"
 #define AWS_SECRET_KEY @"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"
 
