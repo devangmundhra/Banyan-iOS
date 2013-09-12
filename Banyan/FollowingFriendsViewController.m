@@ -27,7 +27,7 @@
         self.title = @"Follow/Find Friends";
         
         // Get friends being followed
-        NSMutableArray *facebookFriendsOnBanyan = [[NSUserDefaults standardUserDefaults] objectForKey:BNUserDefaultsBanyanUsersFacebookFriends];
+        NSArray *facebookFriendsOnBanyan = [[NSUserDefaults standardUserDefaults] arrayForKey:BNUserDefaultsBanyanUsersFacebookFriends];
         NSSortDescriptor *followingSortDescriptor =[NSSortDescriptor sortDescriptorWithKey:USER_BEING_FOLLOWED ascending:NO];
         NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:USER_NAME ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
         NSArray *sortArray = [NSArray arrayWithObjects:followingSortDescriptor, nameSortDescriptor, nil];

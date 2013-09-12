@@ -13,6 +13,7 @@
 #import "MasterTabBarController.h"
 #import "UserLoginViewController.h"
 #import "User.h"
+#import "BNAWSSNSClient.h"
 
 @interface BanyanAppDelegate () <UserLoginViewControllerDelegate>
 @property (strong, nonatomic) NSTimer *remoteObjectBackgroundTimer;
@@ -35,13 +36,6 @@
     NSDictionary *defaultPreferences = [NSDictionary dictionaryWithContentsOfFile:defaultPrefsFile];
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultPreferences];
     
-//    // Normal launch stuff
-//    [Parse setApplicationId:PARSE_APP_ID
-//                  clientKey:PARSE_CLIENT_KEY];
-    
-//    // Override point for customization after application launch.
-//    [PFFacebookUtils initializeFacebook];
-    
 #define TESTING 1
 #ifdef TESTING
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -59,6 +53,9 @@
 #endif
     
     [TestFlight takeOff:TESTFLIGHT_BANYAN_APP_TOKEN];
+    
+    [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
+     UIRemoteNotificationTypeAlert];
     
     //let AFNetworking manage the activity indicator
     [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
@@ -98,16 +95,14 @@
         NSLog(@"User missing Facebook ID");
         [self logout];
     }
-    
-    [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
-     UIRemoteNotificationTypeAlert];
-    
-    //    [FBSettings enableBetaFeature:FBBetaFeaturesOpenGraphShareDialog];
-    //    [FBSettings enableBetaFeature:FBBetaFeaturesShareDialog];
         
     self.tabBarController = [[MasterTabBarController alloc] init];
     self.window.rootViewController = self.tabBarController;
     [self.window makeKeyAndVisible];
+    
+    // Extract the notification data
+    NSDictionary *notificationPayload = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
+    [BanyanAppDelegate handlePush:notificationPayload];
     
     return YES;
 }
@@ -196,19 +191,34 @@ void uncaughtExceptionHandler(NSException *exception)
 }
 
 # pragma mark push notifications
-//- (void)application:(UIApplication *)application
-//didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
-//{
-//    // Tell Parse about the device token.
-//    [PFPush storeDeviceToken:newDeviceToken];
-//    // Subscribe to the global broadcast channel.
+- (void)application:(UIApplication *)application
+didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
+{
+    NSString* deviceToken = [[[[newDeviceToken description]
+                                stringByReplacingOccurrencesOfString: @"<" withString: @""]
+                               stringByReplacingOccurrencesOfString: @">" withString: @""]
+                             stringByReplacingOccurrencesOfString: @" " withString: @""];
+    // Tell AWS SNS about the device token.
+    [BNAWSSNSClient registerDeviceToken:[NSString stringWithFormat:@"%@", deviceToken]];
+    
+    // Subscribe to the global broadcast channel.
 //    [PFPush subscribeToChannelInBackground:@""];
-//}
-//
-//- (void)application:(UIApplication *)application
-//didReceiveRemoteNotification:(NSDictionary *)userInfo {
-//    [PFPush handlePush:userInfo];
-//}
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+    NSLog(@"Failed to register for notification for error: %@", error.localizedDescription);
+}
+
+- (void)application:(UIApplication *)application
+didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    [BanyanAppDelegate handlePush:userInfo];
+}
+
++ (void) handlePush:(NSDictionary *)userInfo
+{
+    NSLog(@"Handing push with info: %@", userInfo);
+}
 
 # pragma mark User Account Management
 - (void)login
@@ -222,12 +232,18 @@ void uncaughtExceptionHandler(NSException *exception)
 - (void)logout
 {
     // Unsubscribe before removing the userinfo from NSUserDefaults
-//    [self unsubscribeFromAllPushNotifications];
+    [self unsubscribeFromAllPushNotifications];
 
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults removeObjectForKey:BNUserDefaultsUserInfo];
     [defaults synchronize];
     [FBSession.activeSession closeAndClearTokenInformation];
+    // Delete API_KEY information so that APIAuthentication is not triggered by the server
+    [[AFBanyanAPIClient sharedClient] clearAuthorizationHeader];
+    // Clear cookies so that SessionAuthentication does not pass in the server
+    for (NSHTTPCookie *cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]) {
+        [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
+    }
     [[NSNotificationCenter defaultCenter] postNotificationName:BNUserLogOutNotification
                                                         object:nil];
     return;
@@ -249,13 +265,13 @@ void uncaughtExceptionHandler(NSException *exception)
                                            BOOL shouldNotifyUserLogin = ![BanyanAppDelegate loggedIn];
                                            NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:(NSDictionary *)responseObject];
                                            // TODO: Get friends the user is actually following instead of just the facebook friends on banyan
-                                           NSDictionary *fbFriends = [[[userInfo objectForKey:@"social_data"] objectForKey:@"facebook"] objectForKey:@"friends_on_banyan"];
+                                           NSArray *fbFriends = [[[[userInfo objectForKey:@"social_data"] objectForKey:@"facebook"] objectForKey:@"friends_on_banyan"] copy];
                                            [userInfo removeObjectForKey:@"social_data"];
                                            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
                                            [defaults setObject:userInfo forKey:BNUserDefaultsUserInfo];
                                            [defaults setObject:fbFriends forKey:BNUserDefaultsBanyanUsersFacebookFriends];
                                            [defaults synchronize];
-                                           
+
                                            if (shouldNotifyUserLogin) {
                                                // User was not logged in previously
                                                [[NSNotificationCenter defaultCenter] postNotificationName:BNUserLogInNotification
@@ -275,57 +291,43 @@ void uncaughtExceptionHandler(NSException *exception)
 
 - (void) subscribeToPushNotifications
 {
+    // Enable or disable endpoint arn depending upon the preference
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     BOOL on;
     
-    NSString *addStoryContriChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedContributePushNotification];
     on = [defaults boolForKey:BNUserDefaultsAddStoryInvitedContributePushNotification];
     if (on) {
-        [PFPush subscribeToChannelInBackground:addStoryContriChannelName];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_INVTOCONTRIBUTE forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"InvitedToContribute"]];
     }
     
-    NSString *addStoryViewChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedViewPushNotification];
     on = [defaults boolForKey:BNUserDefaultsAddStoryInvitedViewPushNotification];
     if (on) {
-        [PFPush subscribeToChannelInBackground:addStoryViewChannelName];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_INVTOVIEW forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"InvitedToView"]];
     }
     
-    NSString *addPieceChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNAddPieceToContributedStoryPushNotification];
     on = [defaults boolForKey:BNUserDefaultsAddPieceToContributedStoryPushNotification];
     if (on) {
-        [PFPush subscribeToChannelInBackground:addPieceChannelName];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_PIECEADDED forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"PieceAdded"]];
     }
     
-    NSString *pieceActionChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNPieceActionPushNotification];
     on = [defaults boolForKey:BNUserDefaultsPieceActionPushNotification];
     if (on) {
-        [PFPush subscribeToChannelInBackground:pieceActionChannelName];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_PIECEACTION forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"PieceAction"]];
     }
     
-    NSString *userFollowChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNUserFollowingPushNotification];
     on = [defaults boolForKey:BNUserDefaultsUserFollowingPushNotification];
     if (on) {
-        [PFPush subscribeToChannelInBackground:userFollowChannelName];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_USERFOLLOWING forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"UserFollowing"]];
     }
 }
 
 - (void) unsubscribeFromAllPushNotifications
 {
-    NSString *addStoryContriChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedContributePushNotification];
-    [PFPush unsubscribeFromChannelInBackground:addStoryContriChannelName];
-    
-    NSString *addStoryViewChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedViewPushNotification];
-    [PFPush unsubscribeFromChannelInBackground:addStoryViewChannelName];
-    
-    NSString *addPieceChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNAddPieceToContributedStoryPushNotification];
-    [PFPush unsubscribeFromChannelInBackground:addPieceChannelName];
-    
-    NSString *pieceActionChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNPieceActionPushNotification];
-    [PFPush unsubscribeFromChannelInBackground:pieceActionChannelName];
-    
-    NSString *userFollowChannelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNUserFollowingPushNotification];
-    [PFPush unsubscribeFromChannelInBackground:userFollowChannelName];
-    
+    [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_INVTOCONTRIBUTE forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"InvitedToContribute"]];
+    [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_INVTOVIEW forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"InvitedToView"]];
+    [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_PIECEACTION forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"PieceAction"]];
+    [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_PIECEADDED forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"PieceAdded"]];
+    [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_USERFOLLOWING forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"UserFollowing"]];
 }
 
 + (BOOL)loggedIn

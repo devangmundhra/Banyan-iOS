@@ -97,7 +97,10 @@
     
     // Set name
     
-    NSString *nameString = [_user objectForKey:USER_NAME];
+    NSString *nameString = [NSString stringWithFormat:@"%@ %@", [_user objectForKey:USER_FIRSTNAME], [_user objectForKey:USER_LASTNAME]];
+    if (!nameString.length) {
+        nameString = [_user objectForKey:USER_NAME];
+    }
     if (!nameString.length) {
         nameString = [_user objectForKey:USER_USERNAME];
     }

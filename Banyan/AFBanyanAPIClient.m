@@ -69,6 +69,6 @@ static NSString * const kAFBanyanAPIBaseURLString = @"http://127.0.0.1:8000/api/
 {
 	NSString *basicAuthCredentials = [NSString stringWithFormat:@"%@:%@", username, apikey];
     [self setDefaultHeader:@"Authorization" value:[NSString stringWithFormat:@"ApiKey %@", basicAuthCredentials]];
-};
+}
 
 @end

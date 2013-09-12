@@ -10,6 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "BNFeedbackViewController.h"
 #import "User.h"
+#import "BNAWSSNSClient.h"
 
 @interface SettingsTableViewController ()
 
@@ -524,12 +525,11 @@ typedef enum {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setBool:switchControl.on forKey:BNUserDefaultsAddStoryInvitedContributePushNotification];
     [defaults synchronize];
-    
-    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedContributePushNotification];
+
     if (switchControl.on) {
-        [PFPush subscribeToChannelInBackground:channelName];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_INVTOCONTRIBUTE forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"InvitedToContribute"]];
     } else {
-        [PFPush unsubscribeFromChannelInBackground:channelName];
+        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_INVTOCONTRIBUTE forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"InvitedToContribute"]];
     }
     NSLog( @"The %@: %@", BNAddStoryInvitedContributePushNotification, switchControl.on ? @"ON" : @"OFF" );
 }
@@ -539,11 +539,10 @@ typedef enum {
     [defaults setBool:switchControl.on forKey:BNUserDefaultsAddStoryInvitedViewPushNotification];
     [defaults synchronize];
     
-    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNAddStoryInvitedViewPushNotification];
     if (switchControl.on) {
-        [PFPush subscribeToChannelInBackground:channelName];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_INVTOVIEW forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"InvitedToView"]];
     } else {
-        [PFPush unsubscribeFromChannelInBackground:channelName];
+        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_INVTOVIEW forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"InvitedToView"]];
     }
     NSLog( @"The %@: %@", BNAddStoryInvitedViewPushNotification, switchControl.on ? @"ON" : @"OFF" );
 }
@@ -553,11 +552,10 @@ typedef enum {
     [defaults setBool:switchControl.on forKey:BNAddPieceToContributedStoryPushNotification];
     [defaults synchronize];
     
-    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNAddPieceToContributedStoryPushNotification];
     if (switchControl.on) {
-        [PFPush subscribeToChannelInBackground:channelName];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_PIECEADDED forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"PieceAdded"]];
     } else {
-        [PFPush unsubscribeFromChannelInBackground:channelName];
+        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_PIECEADDED forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"PieceAdded"]];
     }
     NSLog( @"The %@: %@", BNAddPieceToContributedStoryPushNotification, switchControl.on ? @"ON" : @"OFF" );
 }
@@ -567,11 +565,10 @@ typedef enum {
     [defaults setBool:switchControl.on forKey:BNUserDefaultsPieceActionPushNotification];
     [defaults synchronize];
     
-    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNPieceActionPushNotification];
     if (switchControl.on) {
-        [PFPush subscribeToChannelInBackground:channelName];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_PIECEACTION forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"PieceAction"]];
     } else {
-        [PFPush unsubscribeFromChannelInBackground:channelName];
+        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_PIECEACTION forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"PieceAction"]];
     }
     NSLog( @"The %@: %@", BNPieceActionPushNotification, switchControl.on ? @"ON" : @"OFF" );
 }
@@ -581,11 +578,10 @@ typedef enum {
     [defaults setBool:switchControl.on forKey:BNUserDefaultsUserFollowingPushNotification];
     [defaults synchronize];
     
-    NSString *channelName = [NSString stringWithFormat:@"%@%@%@", [BNSharedUser currentUser].userId, BNPushNotificationChannelTypeSeperator, BNUserFollowingPushNotification];
     if (switchControl.on) {
-        [PFPush subscribeToChannelInBackground:channelName];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_USERFOLLOWING forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"UserFollowing"]];
     } else {
-        [PFPush unsubscribeFromChannelInBackground:channelName];
+        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_USERFOLLOWING forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"UserFollowing"]];
     }
     NSLog( @"The %@: %@", BNUserFollowingPushNotification, switchControl.on ? @"ON" : @"OFF" );
 }

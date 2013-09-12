@@ -11,6 +11,12 @@
 #define AWS_ACCESS_KEY @"AKIAJ3LJBD4SE3HS4NIQ"
 #define AWS_SECRET_KEY @"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"
 
+#define AWS_APPARN_INVTOCONTRIBUTE @"arn:aws:sns:us-east-1:925059984507:app/APNS_SANDBOX/Banyan_SBX_InvToContribute"
+#define AWS_APPARN_INVTOVIEW @"arn:aws:sns:us-east-1:925059984507:app/APNS_SANDBOX/Banyan_SBX_InvToView"
+#define AWS_APPARN_PIECEACTION @"arn:aws:sns:us-east-1:925059984507:app/APNS_SANDBOX/Banyan_SBX_PieceAction"
+#define AWS_APPARN_PIECEADDED @"arn:aws:sns:us-east-1:925059984507:app/APNS_SANDBOX/Banyan_SBX_PieceAddedToFollowedStory"
+#define AWS_APPARN_USERFOLLOWING @"arn:aws:sns:us-east-1:925059984507:app/APNS_SANDBOX/Banyan_SBX_UserFollowing"
+
 #define FACEBOOK_APP_ID @"244613942300893"
 #define TESTFLIGHT_BANYAN_APP_TOKEN @"ebf0542f-c311-4378-b6d0-1f14c6fdf4a6"
 

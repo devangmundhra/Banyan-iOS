@@ -66,7 +66,6 @@ typedef enum {
     refreshControl.tintColor = BANYAN_GREEN_COLOR;
     [refreshControl addTarget:[BanyanConnection class] action:@selector(loadDataSource) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refreshControl;
-//    [self.refreshControl beginRefreshing];
     
     [self.tableView setRowHeight:TABLE_ROW_HEIGHT];
     
@@ -326,6 +325,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         }
     }
     
+    [BanyanConnection loadDataSource];
     [self.refreshControl beginRefreshing];
 }
 
