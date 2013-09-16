@@ -20,6 +20,7 @@
 		510F4920172A5B86005BC5ED /* Piece.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F491F172A5B86005BC5ED /* Piece.m */; };
 		510F4923172A5C17005BC5ED /* Story.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F4922172A5C17005BC5ED /* Story.m */; };
 		511B422117A6672200466A8B /* MasterTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 511B422017A6672200466A8B /* MasterTabBarController.m */; };
+		5122365C17E688220032892A /* AWSSNS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5122365B17E688220032892A /* AWSSNS.framework */; };
 		512598BB17AB916600FEFCF0 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 512598BA17AB916600FEFCF0 /* FacebookSDK.framework */; };
 		512598BC17AB918D00FEFCF0 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
 		512598BF17B0D5C500FEFCF0 /* SingleImagePickerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 512598BE17B0D5C500FEFCF0 /* SingleImagePickerButton.m */; };
@@ -119,7 +120,6 @@
 		5189B3C715B39BE100562DD0 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3C615B39BE100562DD0 /* MobileCoreServices.framework */; };
 		5189B3C915B39BE700562DD0 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3C815B39BE700562DD0 /* AudioToolbox.framework */; };
 		5189B45715B3A38E00562DD0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3C415B39BD100562DD0 /* QuartzCore.framework */; };
-		518CAA2717DB9DC200D641A6 /* AWSSNS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 518CAA2617DB9DC200D641A6 /* AWSSNS.framework */; };
 		518CAA2A17DBA23500D641A6 /* BNAWSSNSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 518CAA2917DBA23500D641A6 /* BNAWSSNSClient.m */; };
 		519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 519232A01671CC57009686E4 /* AFGoogleAPIClient.m */; };
 		5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 5192332616743F02009686E4 /* GooglePlacesObject.m */; };
@@ -243,6 +243,7 @@
 		511B422017A6672200466A8B /* MasterTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterTabBarController.m; sourceTree = "<group>"; };
 		511E708A161A9756009AAD25 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		5122365B17E688220032892A /* AWSSNS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSSNS.framework; sourceTree = "<group>"; };
 		512598BA17AB916600FEFCF0 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		512598BD17B0D5C500FEFCF0 /* SingleImagePickerButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SingleImagePickerButton.h; sourceTree = "<group>"; };
 		512598BE17B0D5C500FEFCF0 /* SingleImagePickerButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SingleImagePickerButton.m; sourceTree = "<group>"; };
@@ -377,7 +378,6 @@
 		5189B3C415B39BD100562DD0 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		5189B3C615B39BE100562DD0 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		5189B3C815B39BE700562DD0 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		518CAA2617DB9DC200D641A6 /* AWSSNS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSSNS.framework; sourceTree = "<group>"; };
 		518CAA2817DBA23500D641A6 /* BNAWSSNSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNAWSSNSClient.h; path = Banyan/BNAWSSNSClient.h; sourceTree = "<group>"; };
 		518CAA2917DBA23500D641A6 /* BNAWSSNSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNAWSSNSClient.m; path = Banyan/BNAWSSNSClient.m; sourceTree = "<group>"; };
 		5192329F1671CC57009686E4 /* AFGoogleAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFGoogleAPIClient.h; path = Banyan/AFGoogleAPIClient.h; sourceTree = "<group>"; };
@@ -527,7 +527,7 @@
 				512598BB17AB916600FEFCF0 /* FacebookSDK.framework in Frameworks */,
 				517A01BC17095F0E00665F0F /* OpenGLES.framework in Frameworks */,
 				517A01BA17095EDC00665F0F /* CoreText.framework in Frameworks */,
-				518CAA2717DB9DC200D641A6 /* AWSSNS.framework in Frameworks */,
+				5122365C17E688220032892A /* AWSSNS.framework in Frameworks */,
 				519AFA7215C26F5D00F68F3C /* AssetsLibrary.framework in Frameworks */,
 				5189B45715B3A38E00562DD0 /* QuartzCore.framework in Frameworks */,
 				5189B3C915B39BE700562DD0 /* AudioToolbox.framework in Frameworks */,
@@ -829,7 +829,7 @@
 		5189B2B615B387E200562DD0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				518CAA2617DB9DC200D641A6 /* AWSSNS.framework */,
+				5122365B17E688220032892A /* AWSSNS.framework */,
 				514EEA8D17C5EF5400B4BCBF /* AWSS3.framework */,
 				514EEA8B17C5EF4700B4BCBF /* AWSRuntime.framework */,
 				512598BA17AB916600FEFCF0 /* FacebookSDK.framework */,

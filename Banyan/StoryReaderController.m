@@ -18,7 +18,6 @@
 @property (strong, nonatomic) Piece *currentPiece;
 
 @property (strong, nonatomic) IBOutlet UIView *storyInfoView;
-
 @property (strong, nonatomic) UIToolbar *toolbar;
 @property (strong, nonatomic) UIBarButtonItem *cancelButton;
 @property (strong, nonatomic) UIBarButtonItem *settingsButton;
@@ -74,15 +73,20 @@
 
     self.title = self.story.title;
 
-    CGRect frame = self.view.bounds;
-    frame.size.height = INFOVIEW_HEIGHT;
+    self.view.backgroundColor = BANYAN_WHITE_COLOR;
+    CGRect frame = [UIScreen mainScreen].applicationFrame;
+    self.view.frame = frame;
+    
+    CGFloat statusBarOffset = [[UIApplication sharedApplication] statusBarFrame].size.height;
+    frame = self.view.bounds;
+    frame.size.height = INFOVIEW_HEIGHT + statusBarOffset;
     
     self.storyInfoView = [[UIView alloc] initWithFrame:frame];
     self.storyInfoView.backgroundColor = BANYAN_BLACK_COLOR;
     
     UIImage *backArrowImage = [UIImage imageNamed:@"backArrow"];
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    backButton.frame = CGRectMake(BUTTON_SPACING, 0, floor(backArrowImage.size.width), floor(CGRectGetHeight(self.storyInfoView.bounds)));
+    backButton.frame = CGRectMake(BUTTON_SPACING, statusBarOffset, floor(backArrowImage.size.width), floor(CGRectGetHeight(self.storyInfoView.bounds))-statusBarOffset);
     [backButton setImage:backArrowImage forState:UIControlStateNormal];
     [backButton addTarget:self action:@selector(cancelButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     backButton.showsTouchWhenHighlighted = YES;
@@ -90,17 +94,17 @@
     
     UIImage *settingsImage = [UIImage imageNamed:@"settingsButton"];
     UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    settingsButton.frame = CGRectMake(floor(self.view.frame.size.width - settingsImage.size.width - BUTTON_SPACING), 0,
-                                      floor(settingsImage.size.width), floor(CGRectGetHeight(self.storyInfoView.bounds)));
+    settingsButton.frame = CGRectMake(floor(self.view.frame.size.width - settingsImage.size.width - BUTTON_SPACING), statusBarOffset,
+                                      floor(settingsImage.size.width), floor(CGRectGetHeight(self.storyInfoView.bounds))-statusBarOffset);
     [settingsButton setImage:settingsImage forState:UIControlStateNormal];
     [settingsButton addTarget:self action:@selector(settingsPopup:) forControlEvents:UIControlEventTouchUpInside];
     settingsButton.showsTouchWhenHighlighted = YES;
     [self.storyInfoView addSubview:settingsButton];
     
     UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    titleButton.frame = CGRectMake(CGRectGetMaxX(backButton.frame) + 2*BUTTON_SPACING, 0,
+    titleButton.frame = CGRectMake(CGRectGetMaxX(backButton.frame) + 2*BUTTON_SPACING, statusBarOffset,
                                    CGRectGetMinX(settingsButton.frame) - CGRectGetMaxX(backButton.frame) - 2*BUTTON_SPACING,
-                                   CGRectGetHeight(self.storyInfoView.bounds));
+                                   CGRectGetHeight(self.storyInfoView.bounds)-statusBarOffset);
     titleButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:20];
     titleButton.titleLabel.minimumScaleFactor = 0.7;
     titleButton.backgroundColor = BANYAN_BLACK_COLOR;
@@ -118,9 +122,6 @@
     
     [self.view addSubview:self.storyInfoView];
     [self performSelector:@selector(hideStoryInfoView) withObject:nil afterDelay:2];
-    
-    self.view.backgroundColor = BANYAN_WHITE_COLOR;
-    self.view.frame = [UIScreen mainScreen].applicationFrame;
     
     [Story viewedStory:self.story];
     

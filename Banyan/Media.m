@@ -156,6 +156,11 @@
     void (^success)() = ^(){
         successBlock();
         self.remoteStatus = MediaRemoteStatusSync;
+        // Remove the local file
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSError *error = nil;
+        [fileManager removeItemAtPath:self.localURL error:&error];
+        assert(!error);
         self.localURL = nil;
         [self save];
     };

@@ -112,6 +112,9 @@
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
     
     CGRect frame = [UIScreen mainScreen].bounds;
+    CGFloat statusBarOffset = [[UIApplication sharedApplication] statusBarFrame].size.height;
+    frame.origin.y += statusBarOffset;
+    frame.size.height -= statusBarOffset;
     self.contentView = [[UIScrollView alloc] initWithFrame:frame];
     self.contentView.backgroundColor = BANYAN_WHITE_COLOR;
     [self.view addSubview:self.contentView];

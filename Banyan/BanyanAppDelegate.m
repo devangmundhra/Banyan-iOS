@@ -200,9 +200,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
                              stringByReplacingOccurrencesOfString: @" " withString: @""];
     // Tell AWS SNS about the device token.
     [BNAWSSNSClient registerDeviceToken:[NSString stringWithFormat:@"%@", deviceToken]];
-    
-    // Subscribe to the global broadcast channel.
-//    [PFPush subscribeToChannelInBackground:@""];
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
@@ -277,7 +274,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
                                                [[NSNotificationCenter defaultCenter] postNotificationName:BNUserLogInNotification
                                                                                                    object:self];
                                            }
-//                                           [self subscribeToPushNotifications];
+                                           [self subscribeToPushNotifications];
                                            
                                            // Set the header authorizations so that the api knows who the user is
                                            NSString *email = [userInfo objectForKey:@"email"];
