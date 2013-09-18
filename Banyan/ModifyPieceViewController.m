@@ -24,9 +24,7 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet SSTextField *pieceCaptionView;
 @property (weak, nonatomic) IBOutlet SSTextView *pieceTextView;
-@property (weak, nonatomic) IBOutlet UINavigationBar *navigationBar;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 @property (weak, nonatomic) IBOutlet LocationPickerButton *addLocationButton;
 @property (weak, nonatomic) IBOutlet MediaPickerButton *addPhotoButton;
 
@@ -42,13 +40,13 @@
 
 @property (strong, nonatomic) NSMutableSet *mediaToDelete;
 
+@property (strong, nonatomic) IBOutlet UIToolbar *inputAccessoryView;
+
 @end
 
 @implementation ModifyPieceViewController
 
 @synthesize pieceTextView = _pieceTextView;
-@synthesize navigationBar = _navigationBar;
-@synthesize cancelButton = _cancelButton;
 @synthesize doneButton = _doneButton;
 @synthesize piece = _piece;
 @synthesize delegate = _delegate;
@@ -110,6 +108,12 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    
+    self.doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonItemStyleDone target:self action:@selector(done:)];
+    [self.navigationItem setRightBarButtonItem:self.doneButton];
+    [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
     
     self.storyTitleButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:16];
     [self.storyTitleButton setAttributedTitle:[[NSAttributedString alloc] initWithString:self.piece.story.title
@@ -156,6 +160,7 @@
     self.pieceTextView.textColor = BANYAN_BLACK_COLOR;
     self.pieceTextView.font = [UIFont fontWithName:@"Roboto" size:18];
     self.pieceTextView.textAlignment = NSTextAlignmentLeft;
+    self.pieceTextView.inputAccessoryView = self.inputAccessoryView;
 
     self.addPhotoButton.delegate = self;
     
@@ -182,17 +187,16 @@
         
         self.pieceCaptionView.text = self.piece.shortText;
         self.pieceTextView.text = self.piece.longText;
-        self.navigationBar.topItem.title = @"Edit Piece";
+        self.title = @"Edit Piece";
     } else {
-        self.navigationBar.topItem.title = @"Add Piece";
+        self.title = @"Add Piece";
     }
     
     self.doneButton.enabled = [self checkForChanges];
 
     CGSize screenSize = [UIScreen mainScreen].applicationFrame.size;
     self.scrollView.contentSize = CGSizeMake(screenSize.width,
-                                             screenSize.height
-                                             - self.navigationBar.frame.size.height);
+                                             screenSize.height);
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -569,7 +573,12 @@
     return YES;
 }
 
-#pragma mark UITextFieldDelegate
+- (IBAction)addHashTag:(id)sender
+{
+    self.pieceTextView.text=[NSString stringWithFormat:@"%@%@", self.pieceTextView.text, @"#"];
+}
+
+#pragma mark UITextFieldDelegate / UITextViewDelegate
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
 }
@@ -583,7 +592,6 @@
 {
     self.doneButton.enabled = [self checkForChanges];
 }
-
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {

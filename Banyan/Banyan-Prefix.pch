@@ -38,5 +38,4 @@
 
 #define DEVICE_VERSION_7PLUS ([[UIDevice currentDevice].systemVersion floatValue] >= 7.0)
 
-#define DEBUG true
-#define HAVE_ASSERTS DEBUG
+#define HAVE_ASSERTS true

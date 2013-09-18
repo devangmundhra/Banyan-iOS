@@ -9,17 +9,11 @@
 #import "UserLoginViewController.h"
 
 @interface UserLoginViewController () <FBLoginViewDelegate>
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
-@property (weak, nonatomic) IBOutlet UINavigationBar *navigationBar;
-@property (weak, nonatomic) IBOutlet UINavigationItem *backNavigationItem;
 @property (weak, nonatomic) IBOutlet FBLoginView *fbLoginView;
 
 @end
 
 @implementation UserLoginViewController
-@synthesize cancelButton = _cancelButton;
-@synthesize navigationBar = _navigationBar;
-@synthesize backNavigationItem = _backNavigationItem;
 @synthesize fbLoginView = _fbLoginView;
 @synthesize delegate = _delegate;
 
@@ -35,6 +29,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+    self.title = @"Get started!";
+    [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
+
 	// Do any additional setup after loading the view, typically from a nib.
     self.fbLoginView.readPermissions = [NSArray arrayWithObjects: @"email", @"user_about_me", nil];
 }

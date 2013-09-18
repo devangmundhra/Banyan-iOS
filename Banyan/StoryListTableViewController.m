@@ -408,9 +408,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     
     Piece *piece = [Piece newPieceDraftForStory:story];
     ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
-    [addPieceViewController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
-    [addPieceViewController setModalPresentationStyle:UIModalPresentationFullScreen];
-    [self presentViewController:addPieceViewController animated:YES completion:nil];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:addPieceViewController];
+    [navController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
+    [navController setModalPresentationStyle:UIModalPresentationFullScreen];
+    [self presentViewController:navController animated:YES completion:nil];
 }
 
 #pragma mark - Swipeable controls

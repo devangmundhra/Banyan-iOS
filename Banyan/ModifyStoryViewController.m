@@ -27,11 +27,6 @@
     NSInteger viewers;
 }
 
-@property (weak, nonatomic) IBOutlet UINavigationBar *navigationBar;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
-
-
 @property (weak, nonatomic) NSString *storyTitle;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet SSTextField *storyTitleTextField;
@@ -41,7 +36,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *inviteContactsButton;
 @property (weak, nonatomic) IBOutlet LocationPickerButton *addLocationButton;
 @property (weak, nonatomic) IBOutlet SingleImagePickerButton *addPhotoButton;
-@property (weak, nonatomic) IBOutlet TITokenFieldView *tagsFieldView;
 
 @property (weak, nonatomic) UITextField *activeField;
 @property (nonatomic) CGSize kbSize;
@@ -126,6 +120,8 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
+    [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done:)]];
+    [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
     self.addPhotoButton.delegate = self;
     
     mediaToDelete = [NSMutableSet set];
@@ -160,23 +156,23 @@
     [self.viewerPrivacySegmentedControl addTarget:self action:@selector(storyPrivacySegmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
     
     self.contributorPrivacySegmentedControl.crossFadeLabelsOnDrag = YES;
-    self.contributorPrivacySegmentedControl.height = 25;
     self.contributorPrivacySegmentedControl.font = [UIFont fontWithName:STORY_FONT size:12];;
     self.contributorPrivacySegmentedControl.thumb.tintColor = BANYAN_GREEN_COLOR;
     self.contributorPrivacySegmentedControl.textColor = BANYAN_WHITE_COLOR;
+    self.contributorPrivacySegmentedControl.height = 25;
     [self.scrollView addSubview:self.contributorPrivacySegmentedControl];
-    self.contributorPrivacySegmentedControl.center = CGPointMake(160, 78);
+    self.contributorPrivacySegmentedControl.center = CGPointMake(141, 96);
     
     
     self.viewerPrivacySegmentedControl.crossFadeLabelsOnDrag = YES;
-    self.viewerPrivacySegmentedControl.height = 25;
     self.viewerPrivacySegmentedControl.font = [UIFont fontWithName:STORY_FONT size:12];
     self.viewerPrivacySegmentedControl.thumb.tintColor = BANYAN_GREEN_COLOR;
     self.viewerPrivacySegmentedControl.backgroundTintColor = BANYAN_BROWN_COLOR;
     self.viewerPrivacySegmentedControl.titleEdgeInsets = UIEdgeInsetsMake(0, 3, 0, 3);
     self.viewerPrivacySegmentedControl.textColor = BANYAN_WHITE_COLOR;
+    self.viewerPrivacySegmentedControl.height = 25;
     [self.scrollView addSubview:self.viewerPrivacySegmentedControl];
-    self.viewerPrivacySegmentedControl.center = CGPointMake(160, 132);
+    self.viewerPrivacySegmentedControl.center = CGPointMake(141, 151);
     
     self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
@@ -233,31 +229,13 @@
             }
         }
         
-        self.navigationBar.topItem.title = @"Edit Story";
+        self.title = @"Edit Story";
     } else {
         [self.contributorPrivacySegmentedControl setSelectedSegmentIndex:ContributorPrivacySegmentedControlInvited animated:NO];
         numPlayersLabel.hidden = NO;
         [self.viewerPrivacySegmentedControl setSelectedSegmentIndex:ViewerPrivacySegmentedControlPublic animated:NO];
         numSpectatorsLabel.hidden = YES;
-        self.navigationBar.topItem.title = @"Add Story";
-    }
-    
-    // Tags
-    self.tagsFieldView.scrollEnabled = NO;
-    [self.tagsFieldView.tokenField setDelegate:self];
-	[self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldFrameDidChange:) forControlEvents:(UIControlEvents)TITokenFieldControlEventFrameDidChange];
-	[self.tagsFieldView.tokenField setTokenizingCharacters:[NSCharacterSet characterSetWithCharactersInString:@",;."]]; // Default is a comma
-    [self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldChangedEditing:) forControlEvents:UIControlEventEditingDidBegin];
-	[self.tagsFieldView.tokenField addTarget:self action:@selector(tokenFieldChangedEditing:) forControlEvents:UIControlEventEditingDidEnd];
-    self.tagsFieldView.tokenField.returnKeyType = UIReturnKeyDone;
-    if (self.story.tags) {
-        [[self.story.tags componentsSeparatedByString:kTokenisingCharacter]
-         enumerateObjectsUsingBlock:^(NSString *token, NSUInteger idx, BOOL *stop) {
-             [self.tagsFieldView.tokenField addTokenWithTitle:token];
-         }];
-    }
-    else {
-        [self.tagsFieldView.tokenField setPromptText:@"Tags: "];
+        self.title = @"Add Story";
     }
     
     [self updateScrollViewContentSize];
@@ -309,7 +287,7 @@
     }
 }
 
-- (IBAction)doneNewStory:(UIBarButtonItem *)sender
+- (IBAction)done:(UIBarButtonItem *)sender
 {
     [self dismissKeyboard:nil];
     // Title
@@ -344,11 +322,6 @@
         else
             [media remove];
     }
-    
-    NSArray *tagsArray = [self.tagsFieldView tokenTitles];
-    NSString *tags = [tagsArray componentsJoinedByString:kTokenisingCharacter];
-    self.story.tags = tags;
-    NSLog(@"tags are %@", tags);
     
     // Upload Story
     if (self.editMode == ModifyStoryViewControllerEditModeAdd) {
@@ -625,19 +598,6 @@
     UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
     self.scrollView.contentInset = contentInsets;
     self.scrollView.scrollIndicatorInsets = contentInsets;
-    
-    // If active text field is hidden by keyboard, scroll it so it's visible
-    if (self.activeField == self.tagsFieldView.tokenField) {
-        CGRect aRect = self.view.frame;
-        aRect.size.height -= self.kbSize.height;
-        
-        CGRect translatedFrame = [self.scrollView convertRect:self.tagsFieldView.separator.frame fromView:self.tagsFieldView];
-        
-        if (!CGRectContainsPoint(aRect, translatedFrame.origin)) {
-            CGPoint scrollPoint = CGPointMake(0.0, CGRectGetMaxY(translatedFrame) - self.kbSize.height + 10);
-            [self.scrollView setContentOffset:scrollPoint animated:YES];
-        }
-    }
 }
 
 // Called when the UIKeyboardWillBeHidden is sent
@@ -693,35 +653,6 @@
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
     self.activeField = nil;
-}
-
-#pragma mark TITokenField Delegate
-- (BOOL)tokenField:(TITokenField *)tokenField willRemoveToken:(TIToken *)token
-{
-	return YES;
-}
-
-- (void)tokenFieldChangedEditing:(TITokenField *)tokenField
-{
-	// There's some kind of annoying bug where UITextFieldViewModeWhile/UnlessEditing doesn't do anything.
-	[tokenField setRightViewMode:(tokenField.editing ? UITextFieldViewModeAlways : UITextFieldViewModeNever)];
-}
-
-- (void)tokenFieldFrameDidChange:(TITokenField *)tokenField
-{
-    if (self.activeField == self.tagsFieldView.tokenField) {
-        if (self.activeField == self.tagsFieldView.tokenField) {
-            CGRect aRect = self.view.frame;
-            aRect.size.height -= self.kbSize.height;
-            
-            CGRect translatedFrame = [self.scrollView convertRect:self.tagsFieldView.separator.frame fromView:self.tagsFieldView];
-            
-            if (!CGRectContainsPoint(aRect, translatedFrame.origin)) {
-                CGPoint scrollPoint = CGPointMake(0.0, CGRectGetMaxY(translatedFrame) - self.kbSize.height + 10);
-                [self.scrollView setContentOffset:scrollPoint animated:YES];
-            }
-        }
-    }
 }
 
 - (void) updateScrollViewContentSize

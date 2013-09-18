@@ -61,9 +61,9 @@
     [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     
     // RestKit initialization
-    RKLogConfigureByName("RestKit/Network*", RKLogLevelTrace);
-    RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelTrace);
-    RKLogConfigureByName("RestKit/CoreData", RKLogLevelTrace);
+    RKLogConfigureByName("RestKit/Network*", RKLogLevelWarning);
+    RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelWarning);
+    RKLogConfigureByName("RestKit/CoreData", RKLogLevelWarning);
     
     [self restKitCoreDataInitialization];
     
@@ -223,7 +223,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     // animate the tabbar up to the screen
     UserLoginViewController *userLoginViewController = [[UserLoginViewController alloc] initWithNibName:@"UserLoginViewController" bundle:nil];
     userLoginViewController.delegate = self;
-    [self.tabBarController presentViewController:userLoginViewController animated:YES completion:nil];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:userLoginViewController];
+    [self.tabBarController presentViewController:navController animated:YES completion:nil];
 }
 
 - (void)logout
@@ -294,37 +295,37 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     
     on = [defaults boolForKey:BNUserDefaultsAddStoryInvitedContributePushNotification];
     if (on) {
-        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_INVTOCONTRIBUTE forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"InvitedToContribute"]];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_INVTOCONTRIBUTE forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"InvitedToContribute"]];
     }
     
     on = [defaults boolForKey:BNUserDefaultsAddStoryInvitedViewPushNotification];
     if (on) {
-        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_INVTOVIEW forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"InvitedToView"]];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_INVTOVIEW forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"InvitedToView"]];
     }
     
     on = [defaults boolForKey:BNUserDefaultsAddPieceToContributedStoryPushNotification];
     if (on) {
-        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_PIECEADDED forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"PieceAdded"]];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_PIECEADDED forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"PieceAdded"]];
     }
     
     on = [defaults boolForKey:BNUserDefaultsPieceActionPushNotification];
     if (on) {
-        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_PIECEACTION forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"PieceAction"]];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_PIECEACTION forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"PieceAction"]];
     }
     
     on = [defaults boolForKey:BNUserDefaultsUserFollowingPushNotification];
     if (on) {
-        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_USERFOLLOWING forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"UserFollowing"]];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_USERFOLLOWING forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"UserFollowing"]];
     }
 }
 
 - (void) unsubscribeFromAllPushNotifications
 {
-    [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_INVTOCONTRIBUTE forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"InvitedToContribute"]];
-    [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_INVTOVIEW forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"InvitedToView"]];
-    [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_PIECEACTION forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"PieceAction"]];
-    [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_PIECEADDED forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"PieceAdded"]];
-    [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_USERFOLLOWING forEndpointArn:[[BNAWSSNSClient getEndpointsDict] objectForKey:@"UserFollowing"]];
+    [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_INVTOCONTRIBUTE forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"InvitedToContribute"]];
+    [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_INVTOVIEW forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"InvitedToView"]];
+    [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_PIECEACTION forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"PieceAction"]];
+    [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_PIECEADDED forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"PieceAdded"]];
+    [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_USERFOLLOWING forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"UserFollowing"]];
 }
 
 + (BOOL)loggedIn

@@ -331,7 +331,8 @@
 {
     self.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     ModifyStoryViewController *newStoryViewController = [[ModifyStoryViewController alloc] initWithStory:self.story];
-    [self presentViewController:newStoryViewController animated:YES completion:nil];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:newStoryViewController];
+    [self presentViewController:navController animated:YES completion:nil];
 }
 
 - (void) deletePiece:(Piece *)piece
@@ -366,14 +367,16 @@
         Piece *piece = [Piece newPieceDraftForStory:self.story];
         ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
         addPieceViewController.delegate = self;
-        [addPieceViewController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
-        [self presentViewController:addPieceViewController animated:YES completion:nil];
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:addPieceViewController];
+        [navController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
+        [self presentViewController:navController animated:YES completion:nil];
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Edit piece"]) {
         ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:self.currentPiece];
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:addPieceViewController];
         //    addSceneViewController.delegate = self;
-        [addPieceViewController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
-        [self presentViewController:addPieceViewController animated:YES completion:nil];
+        [navController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
+        [self presentViewController:navController animated:YES completion:nil];
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Delete piece"]) {
         // Do this after a delay so that the action sheet can be dismissed

@@ -133,7 +133,8 @@
     Story *story = [Story newDraftStory];
     ModifyStoryViewController *newStoryViewController = [[ModifyStoryViewController alloc] initWithStory:story];
     newStoryViewController.delegate = self;
-    [self presentViewController:newStoryViewController animated:YES completion:nil];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:newStoryViewController];
+    [self presentViewController:navController animated:YES completion:nil];
 }
 
 - (void) getMoreStories:(id)sender
