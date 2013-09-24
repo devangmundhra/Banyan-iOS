@@ -51,6 +51,8 @@
             NSLog(@"Skipping relationship %@", key);
         } else if ([key isEqualToString:@"media"]) {
             NSLog(@"Skipping relationship %@", key);
+        } else if ([key isEqualToString:@"author"]) {
+            NSLog(@"Skipping relationship %@", key);
         } else {
             NSLog(@"Copying relationship %@", key);
             [self setValue: [source valueForKey:key] forKey: key];

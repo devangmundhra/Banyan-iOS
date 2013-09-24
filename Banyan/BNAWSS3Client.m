@@ -9,6 +9,8 @@
 #import "BNAWSS3Client.h"
 #import "BanyanAppDelegate.h"
 
+static NSString *AWSS3BucketName = @"banyancontent";
+
 @implementation BNAWSS3Client
 
 + (AmazonS3Client *)sharedClient
@@ -31,7 +33,7 @@ inBackgroundWithBlock:(void (^)(bool succeeded, NSString *url, NSString *filenam
         
         // Upload image data.  Remember to set the content type.
         S3PutObjectRequest *por = [[S3PutObjectRequest alloc] initWithKey:filename
-                                                                  inBucket:@"banyan.io"];
+                                                                  inBucket:AWSS3BucketName];
         por.contentType = contentType;
         por.data        = data;
         
@@ -56,7 +58,7 @@ inBackgroundWithBlock:(void (^)(bool succeeded, NSString *url, NSString *filenam
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
         // Delete the object
-        S3DeleteObjectResponse *deleteObjectResponse = [self.sharedClient deleteObjectWithKey:filename withBucket:@"banyan.io"];
+        S3DeleteObjectResponse *deleteObjectResponse = [self.sharedClient deleteObjectWithKey:filename withBucket:AWSS3BucketName];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             if (deleteObjectResponse.error != nil)

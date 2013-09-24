@@ -203,7 +203,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
-{
+{    
     NSLog(@"Failed to register for notification for error: %@", error.localizedDescription);
 }
 
@@ -214,7 +214,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 
 + (void) handlePush:(NSDictionary *)userInfo
 {
-    NSLog(@"Handing push with info: %@", userInfo);
+    NSLog(@"Handling push with info: %@", userInfo);
 }
 
 # pragma mark User Account Management
@@ -257,8 +257,15 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 - (void) updateUserCredentials:(id<FBGraphUser>)user
 {
     NSString *accessToken = [[FBSession.activeSession accessTokenData] accessToken];
+    NSMutableDictionary *postInfo = [NSMutableDictionary dictionary];
+    [postInfo setObject:user.first_name forKey:@"first_name"];
+    [postInfo setObject:user.last_name forKey:@"last_name"];
+    [postInfo setObject:user.name forKey:@"name"];
+    [postInfo setObject:[user objectForKey:@"email"] forKey:@"email"];
+    [postInfo setObject:@{@"access_token": accessToken, @"id": user.id} forKey:@"facebook"];
+
     [[AFBanyanAPIClient sharedClient] postPath:@"users/"
-                                    parameters:@{@"facebook": @{@"access_token": accessToken, @"id": user.id}}
+                                    parameters:postInfo
                                        success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                            BOOL shouldNotifyUserLogin = ![BanyanAppDelegate loggedIn];
                                            NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:(NSDictionary *)responseObject];
@@ -275,12 +282,13 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
                                                [[NSNotificationCenter defaultCenter] postNotificationName:BNUserLogInNotification
                                                                                                    object:self];
                                            }
-                                           [self subscribeToPushNotifications];
                                            
                                            // Set the header authorizations so that the api knows who the user is
                                            NSString *email = [userInfo objectForKey:@"email"];
                                            NSString *apikey = [userInfo objectForKey:@"api_key"];
                                            [[AFBanyanAPIClient sharedClient] setAuthorizationHeaderWithUsername:email apikey:apikey];
+                                           
+                                           [self subscribeToPushNotifications];
                                            
                                        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                            NSLog(@"An error occurred: %@", error.localizedDescription);

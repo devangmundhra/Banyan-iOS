@@ -112,9 +112,11 @@
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
     
     CGRect frame = [UIScreen mainScreen].bounds;
-    CGFloat statusBarOffset = [[UIApplication sharedApplication] statusBarFrame].size.height;
-    frame.origin.y += statusBarOffset;
-    frame.size.height -= statusBarOffset;
+    if (DEVICE_VERSION_7PLUS) {
+        CGFloat statusBarOffset = [[UIApplication sharedApplication] statusBarFrame].size.height;
+        frame.origin.y += statusBarOffset;
+        frame.size.height -= statusBarOffset;
+    }
     self.contentView = [[UIScrollView alloc] initWithFrame:frame];
     self.contentView.backgroundColor = BANYAN_WHITE_COLOR;
     [self.view addSubview:self.contentView];
@@ -204,6 +206,7 @@
     if ([self.delegate respondsToSelector:@selector(setCurrentPiece:)]) {
         [self.delegate performSelector:@selector(setCurrentPiece:) withObject:self.piece];
     }
+//    [self refreshUI];
 }
 
 - (void)refreshUI
@@ -392,7 +395,7 @@
     pieceObserverToken2 = [self.piece addObserverForKeyPath:@"longText" task:^(id obj, NSDictionary *change) {
         [readPieceViewController refreshUI];
     }];
-    pieceObserverToken3 = [self.piece addObserverForKeyPath:@"imageURL" task:^(id obj, NSDictionary *change) {
+    pieceObserverToken3 = [self.piece addObserverForKeyPath:@"media" task:^(id obj, NSDictionary *change) {
         [readPieceViewController refreshUI];
     }];
 }

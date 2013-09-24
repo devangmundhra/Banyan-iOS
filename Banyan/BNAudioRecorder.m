@@ -59,12 +59,12 @@
 - (void)setup
 {
     NSURL *docsDir = [BanyanAppDelegate applicationDocumentsDirectory];
-    NSString *fileName = [NSString stringWithFormat:@"%@.caf", [BNMisc genRandStringLength:5]];
+    NSString *fileName = [NSString stringWithFormat:@"%@.wav", [BNMisc genRandStringLength:5]];
     NSURL *soundFileURL = [docsDir URLByAppendingPathComponent:fileName];
     
     NSDictionary *recordSettings = [NSDictionary
                                     dictionaryWithObjectsAndKeys:
-                                    [NSNumber numberWithInt:AVAudioQualityMax],
+                                    [NSNumber numberWithInt:AVAudioQualityHigh],
                                     AVEncoderAudioQualityKey,
                                     [NSNumber numberWithInt:16],
                                     AVEncoderBitRateKey,

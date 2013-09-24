@@ -143,6 +143,14 @@
     NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
     for (Media *obj in array)
         obj.remoteStatus = MediaRemoteStatusFailed;
+    
+    // Delete all media with no remoteObject
+    predicate = [NSPredicate predicateWithFormat:@"remoteObject = nil"];
+    [request setPredicate:predicate];
+    error = nil;
+    array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+    for (Media *obj in array)
+        [obj remove];
 }
 
 - (void) uploadWithSuccess:(void (^)())successBlock failure:(void (^)(NSError *error))errorBlock
@@ -156,11 +164,6 @@
     void (^success)() = ^(){
         successBlock();
         self.remoteStatus = MediaRemoteStatusSync;
-        // Remove the local file
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSError *error = nil;
-        [fileManager removeItemAtPath:self.localURL error:&error];
-        assert(!error);
         self.localURL = nil;
         [self save];
     };
@@ -231,11 +234,18 @@
     audioData = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.localURL]];
     self.remoteStatus = MediaRemoteStatusPushing;
     
-    [BNAWSS3Client uploadData:audioData withContentType:@"audio/caf" forFileName:[NSString stringWithFormat:@"%@/%@_%@.caf", [BNSharedUser currentUser].userId, [self.remoteObject getIdentifierForMediaFileName], self.filename]
+    [BNAWSS3Client uploadData:audioData withContentType:@"audio/wav" forFileName:[NSString stringWithFormat:@"%@/%@_%@.wav", [BNSharedUser currentUser].userId, [self.remoteObject getIdentifierForMediaFileName], self.filename]
         inBackgroundWithBlock:^(bool succeeded, NSString *url, NSString *filename, NSError *error) {
             if (succeeded) {
                 self.remoteURL = url;
                 self.filename = filename;
+                
+                // Remove the local file
+                NSFileManager *fileManager = [NSFileManager defaultManager];
+                NSError *error = nil;
+                if (![fileManager removeItemAtPath:[[NSURL URLWithString:self.localURL] path] error:&error])
+                    NSLog(@"Error: %@ in deleting file: %@", error.localizedDescription, self.localURL);
+                
                 successBlock();
             } else {
                 errorBlock(error);
@@ -292,6 +302,13 @@
         if (succeeded) {
             self.remoteURL = url;
             self.filename = filename;
+            
+            // Remove the local file
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            NSError *error = nil;
+            if (![fileManager removeItemAtPath:[[NSURL URLWithString:self.localURL] path] error:&error])
+                NSLog(@"Error: %@ in deleting file: %@", error.localizedDescription, self.localURL);
+            
             successBlock();
         } else {
             errorBlock(error);

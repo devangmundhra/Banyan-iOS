@@ -11,11 +11,11 @@
                 <outlet property="addLocationButton" destination="95" id="96"/>
                 <outlet property="addPhotoButton" destination="98" id="99"/>
                 <outlet property="audioPickerView" destination="101" id="157"/>
-                <outlet property="inputAccessoryView" destination="396" id="401"/>
                 <outlet property="pieceCaptionView" destination="83" id="94"/>
                 <outlet property="pieceTextView" destination="84" id="93"/>
                 <outlet property="scrollView" destination="81" id="92"/>
                 <outlet property="storyTitleButton" destination="380" id="394"/>
+                <outlet property="textViewInputAccessoryView" destination="396" id="u6V-nm-OPb"/>
                 <outlet property="view" destination="1" id="3"/>
             </connections>
         </placeholder>

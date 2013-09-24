@@ -35,6 +35,7 @@
     [super awakeFromFetch];
     self.currentPieceNum = self.currentPieceNum > self.length ? self.length : self.currentPieceNum;
     self.newPiecesToView = self.viewedByCurUser && self.currentPieceNum > 0 ? YES  : NO;
+    [self setUploadStatusNumber:[self calculateUploadStatusNumber]];
 }
 
 + (NSArray *)syncedStories
@@ -98,6 +99,7 @@
     Story *story = (Story *)[[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext existingObjectWithID:storyId error:&error];
     if (error) {
         NSLog(@"Error in fetching current story: %@", error);
+        [defaults removeObjectForKey:BNUserDefaultsCurrentOngoingStoryToContribute];
     }
     return story;
 }

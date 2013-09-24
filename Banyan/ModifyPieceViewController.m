@@ -40,7 +40,7 @@
 
 @property (strong, nonatomic) NSMutableSet *mediaToDelete;
 
-@property (strong, nonatomic) IBOutlet UIToolbar *inputAccessoryView;
+@property (strong, nonatomic) IBOutlet UIToolbar *textViewInputAccessoryView;
 
 @end
 
@@ -111,7 +111,7 @@
     if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
         self.edgesForExtendedLayout = UIRectEdgeNone;
     
-    self.doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonItemStyleDone target:self action:@selector(done:)];
+    self.doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done:)];
     [self.navigationItem setRightBarButtonItem:self.doneButton];
     [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
     
@@ -160,7 +160,7 @@
     self.pieceTextView.textColor = BANYAN_BLACK_COLOR;
     self.pieceTextView.font = [UIFont fontWithName:@"Roboto" size:18];
     self.pieceTextView.textAlignment = NSTextAlignmentLeft;
-    self.pieceTextView.inputAccessoryView = self.inputAccessoryView;
+    self.pieceTextView.inputAccessoryView = self.textViewInputAccessoryView;
 
     self.addPhotoButton.delegate = self;
     

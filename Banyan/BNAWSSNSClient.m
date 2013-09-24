@@ -57,10 +57,10 @@
         [[self endpointsDict] setObject:resp.endpointArn forKey:@"UserFollowing"];
         
         BNSharedUser *currentUser = [BNSharedUser currentUser];
-        
+
         if (currentUser) {
-            [[AFBanyanAPIClient sharedClient] putPath:currentUser.resourceUri
-                                           parameters:@{@"push_endpoints": @{@"apns": [self endpointsDict]}}
+            [[AFBanyanAPIClient sharedClient] putPath:[NSString stringWithFormat:@"%@%@/", currentUser.resourceUri, @"installations"]
+                                           parameters:@{@"device_token":deviceToken, @"type":[UIDevice currentDevice].systemName, @"push_endpoints": @{@"apns": [self endpointsDict]}}
                                               success:nil
                                               failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                                   NSLog(@"An error occurred: %@", error.localizedDescription);
