@@ -19,7 +19,12 @@
 		510F49171727D191005BC5ED /* NSObject+BlockObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F49161727D191005BC5ED /* NSObject+BlockObservation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		510F4920172A5B86005BC5ED /* Piece.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F491F172A5B86005BC5ED /* Piece.m */; };
 		510F4923172A5C17005BC5ED /* Story.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F4922172A5C17005BC5ED /* Story.m */; };
-		511B422117A6672200466A8B /* MasterTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 511B422017A6672200466A8B /* MasterTabBarController.m */; };
+		51170B5717F2D1E10015B343 /* BNSidePanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B5617F2D1E10015B343 /* BNSidePanelController.m */; };
+		51170B6217F3D73D0015B343 /* SideNavigatorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B6117F3D73D0015B343 /* SideNavigatorViewController.m */; };
+		51170B6E17F42CD50015B343 /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B6C17F42CD50015B343 /* ProfileViewController.m */; };
+		51170B6F17F42CD50015B343 /* ProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51170B6D17F42CD50015B343 /* ProfileViewController.xib */; };
+		51170B7317F4319C0015B343 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B7117F4319C0015B343 /* AboutViewController.m */; };
+		51170B7417F4319C0015B343 /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51170B7217F4319C0015B343 /* AboutViewController.xib */; };
 		5122365C17E688220032892A /* AWSSNS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5122365B17E688220032892A /* AWSSNS.framework */; };
 		512598BB17AB916600FEFCF0 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 512598BA17AB916600FEFCF0 /* FacebookSDK.framework */; };
 		512598BC17AB918D00FEFCF0 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
@@ -239,8 +244,16 @@
 		510F491F172A5B86005BC5ED /* Piece.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Piece.m; path = Banyan/Piece.m; sourceTree = "<group>"; };
 		510F4921172A5C17005BC5ED /* Story.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Story.h; path = Banyan/Story.h; sourceTree = "<group>"; };
 		510F4922172A5C17005BC5ED /* Story.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Story.m; path = Banyan/Story.m; sourceTree = "<group>"; };
-		511B421F17A6672200466A8B /* MasterTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterTabBarController.h; sourceTree = "<group>"; };
-		511B422017A6672200466A8B /* MasterTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterTabBarController.m; sourceTree = "<group>"; };
+		51170B5517F2D1E10015B343 /* BNSidePanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNSidePanelController.h; sourceTree = "<group>"; };
+		51170B5617F2D1E10015B343 /* BNSidePanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNSidePanelController.m; sourceTree = "<group>"; };
+		51170B6017F3D73D0015B343 /* SideNavigatorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideNavigatorViewController.h; sourceTree = "<group>"; };
+		51170B6117F3D73D0015B343 /* SideNavigatorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SideNavigatorViewController.m; sourceTree = "<group>"; };
+		51170B6B17F42CD50015B343 /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileViewController.h; sourceTree = "<group>"; };
+		51170B6C17F42CD50015B343 /* ProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileViewController.m; sourceTree = "<group>"; };
+		51170B6D17F42CD50015B343 /* ProfileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProfileViewController.xib; sourceTree = "<group>"; };
+		51170B7017F4319C0015B343 /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
+		51170B7117F4319C0015B343 /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
+		51170B7217F4319C0015B343 /* AboutViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AboutViewController.xib; sourceTree = "<group>"; };
 		511E708A161A9756009AAD25 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		5122365B17E688220032892A /* AWSSNS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSSNS.framework; sourceTree = "<group>"; };
@@ -577,6 +590,46 @@
 			name = Media;
 			sourceTree = "<group>";
 		};
+		51170B6317F425D70015B343 /* FeedBackViewController */ = {
+			isa = PBXGroup;
+			children = (
+				51AFD5F51765B64B008C7203 /* BNFeedbackViewController.h */,
+				51AFD5F61765B64B008C7203 /* BNFeedbackViewController.m */,
+			);
+			name = FeedBackViewController;
+			sourceTree = "<group>";
+		};
+		51170B6417F425E90015B343 /* Following Friend View Controller */ = {
+			isa = PBXGroup;
+			children = (
+				51CFD93415F3E80B002926F9 /* FollowingFriendsViewController.h */,
+				51CFD93515F3E80B002926F9 /* FollowingFriendsViewController.m */,
+				51CFD93815F57F70002926F9 /* FollowingUsersCell.h */,
+				51CFD93915F57F70002926F9 /* FollowingUsersCell.m */,
+			);
+			name = "Following Friend View Controller";
+			sourceTree = "<group>";
+		};
+		51170B6A17F4262A0015B343 /* Profile View Controller */ = {
+			isa = PBXGroup;
+			children = (
+				51170B6B17F42CD50015B343 /* ProfileViewController.h */,
+				51170B6C17F42CD50015B343 /* ProfileViewController.m */,
+				51170B6D17F42CD50015B343 /* ProfileViewController.xib */,
+			);
+			name = "Profile View Controller";
+			sourceTree = "<group>";
+		};
+		51170B7517F431A00015B343 /* About View Controller */ = {
+			isa = PBXGroup;
+			children = (
+				51170B7017F4319C0015B343 /* AboutViewController.h */,
+				51170B7117F4319C0015B343 /* AboutViewController.m */,
+				51170B7217F4319C0015B343 /* AboutViewController.xib */,
+			);
+			name = "About View Controller";
+			sourceTree = "<group>";
+		};
 		511B421C17A6669100466A8B /* BNImageLabel */ = {
 			isa = PBXGroup;
 			children = (
@@ -644,13 +697,13 @@
 			name = Read;
 			sourceTree = "<group>";
 		};
-		5158AE2D16F56F850089193E /* Tab Bar Controller */ = {
+		5158AE2D16F56F850089193E /* Side Panel Controller */ = {
 			isa = PBXGroup;
 			children = (
-				511B421F17A6672200466A8B /* MasterTabBarController.h */,
-				511B422017A6672200466A8B /* MasterTabBarController.m */,
+				51170B5517F2D1E10015B343 /* BNSidePanelController.h */,
+				51170B5617F2D1E10015B343 /* BNSidePanelController.m */,
 			);
-			name = "Tab Bar Controller";
+			name = "Side Panel Controller";
 			sourceTree = "<group>";
 		};
 		51596AB21744BB0A008F5276 /* Constants and Misc */ = {
@@ -881,9 +934,9 @@
 				51596AB21744BB0A008F5276 /* Constants and Misc */,
 				5189B2C615B387E200562DD0 /* BanyanAppDelegate.h */,
 				5189B2C715B387E200562DD0 /* BanyanAppDelegate.m */,
-				5158AE2D16F56F850089193E /* Tab Bar Controller */,
+				5158AE2D16F56F850089193E /* Side Panel Controller */,
 				5189B35B15B3976700562DD0 /* Story List */,
-				51CFD93015F3121C002926F9 /* Settings */,
+				51CFD93B15F57F75002926F9 /* SideNavigator View Controller */,
 				51B2351B17168C6D004241C1 /* Custom Views and View Controllers */,
 				5189B2BE15B387E200562DD0 /* Supporting Files */,
 				5166B1B515E75B420072749C /* Resources */,
@@ -1183,11 +1236,6 @@
 			children = (
 				51CFD92615F1F260002926F9 /* SettingsTableViewController.h */,
 				51CFD92715F1F260002926F9 /* SettingsTableViewController.m */,
-				51CFD93415F3E80B002926F9 /* FollowingFriendsViewController.h */,
-				51CFD93515F3E80B002926F9 /* FollowingFriendsViewController.m */,
-				51AFD5F51765B64B008C7203 /* BNFeedbackViewController.h */,
-				51AFD5F61765B64B008C7203 /* BNFeedbackViewController.m */,
-				51CFD93B15F57F75002926F9 /* UITableViewCell */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -1207,13 +1255,18 @@
 			name = UITableViewCell;
 			sourceTree = "<group>";
 		};
-		51CFD93B15F57F75002926F9 /* UITableViewCell */ = {
+		51CFD93B15F57F75002926F9 /* SideNavigator View Controller */ = {
 			isa = PBXGroup;
 			children = (
-				51CFD93815F57F70002926F9 /* FollowingUsersCell.h */,
-				51CFD93915F57F70002926F9 /* FollowingUsersCell.m */,
+				51170B6017F3D73D0015B343 /* SideNavigatorViewController.h */,
+				51170B6117F3D73D0015B343 /* SideNavigatorViewController.m */,
+				51170B7517F431A00015B343 /* About View Controller */,
+				51170B6317F425D70015B343 /* FeedBackViewController */,
+				51170B6417F425E90015B343 /* Following Friend View Controller */,
+				51CFD93015F3121C002926F9 /* Settings */,
+				51170B6A17F4262A0015B343 /* Profile View Controller */,
 			);
-			name = UITableViewCell;
+			name = "SideNavigator View Controller";
 			sourceTree = "<group>";
 		};
 		51FAC0B9172C82A40046C2D6 /* Comment */ = {
@@ -1339,6 +1392,7 @@
 				51CFD94915F58337002926F9 /* buttonFollowingSelected@2x.png in Resources */,
 				51CFD94A15F58337002926F9 /* buttonFollowSelected.png in Resources */,
 				51CFD94B15F58337002926F9 /* buttonFollowSelected@2x.png in Resources */,
+				51170B6F17F42CD50015B343 /* ProfileViewController.xib in Resources */,
 				51F2288C161A9E22006B3AA7 /* Default-568h@2x.png in Resources */,
 				51FD96ED1665E6C7001A1709 /* dotted-pattern.png in Resources */,
 				51FD96EE1665E6C7001A1709 /* dotted-pattern@2x.png in Resources */,
@@ -1364,6 +1418,7 @@
 				5181533F1712A5F1006F73D3 /* homeTabSymbol@2x.png in Resources */,
 				518153401712A5F1006F73D3 /* notificationTabSymbol.png in Resources */,
 				518153411712A5F1006F73D3 /* notificationTabSymbol@2x.png in Resources */,
+				51170B7417F4319C0015B343 /* AboutViewController.xib in Resources */,
 				518153421712A5F1006F73D3 /* searchTabSymbol.png in Resources */,
 				518153431712A5F1006F73D3 /* searchTabSymbol@2x.png in Resources */,
 				518153441712A5F1006F73D3 /* userProfileTabSymbol.png in Resources */,
@@ -1465,6 +1520,7 @@
 				5189B2C815B387E200562DD0 /* BanyanAppDelegate.m in Sources */,
 				5189B32815B395F300562DD0 /* ArrayToDataTransformer.m in Sources */,
 				5189B32A15B395F300562DD0 /* ImageToDataTransformer.m in Sources */,
+				51170B6E17F42CD50015B343 /* ProfileViewController.m in Sources */,
 				5189B32B15B395F300562DD0 /* InvitedTableViewController.m in Sources */,
 				51984D40176EDE1000CD6C3E /* BNPiecesScrollView.m in Sources */,
 				5189B32F15B395F300562DD0 /* ModifyPieceViewController.m in Sources */,
@@ -1489,10 +1545,11 @@
 				51CFD93615F3E80B002926F9 /* FollowingFriendsViewController.m in Sources */,
 				51CFD93A15F57F70002926F9 /* FollowingUsersCell.m in Sources */,
 				510787C6163A36A90042B436 /* UIImage+AlphaAdditions.m in Sources */,
-				511B422117A6672200466A8B /* MasterTabBarController.m in Sources */,
 				518CAA2A17DBA23500D641A6 /* BNAWSSNSClient.m in Sources */,
 				510787C7163A36A90042B436 /* UIImage+ResizeAdditions.m in Sources */,
+				51170B6217F3D73D0015B343 /* SideNavigatorViewController.m in Sources */,
 				51984D46176EEB5600CD6C3E /* SinglePieceView.m in Sources */,
+				51170B7317F4319C0015B343 /* AboutViewController.m in Sources */,
 				510787C8163A36A90042B436 /* UIImage+RoundedCornerAdditions.m in Sources */,
 				510787CF163A36D80042B436 /* AFBanyanAPIClient.m in Sources */,
 				510787D2163A36F20042B436 /* BNGoogleLocationManager.m in Sources */,
@@ -1529,6 +1586,7 @@
 				5128EB5717478B5500393173 /* BNAudioStreamingPlayer.m in Sources */,
 				51AFD5F117607800008C7203 /* User.m in Sources */,
 				51AFD5F71765B64B008C7203 /* BNFeedbackViewController.m in Sources */,
+				51170B5717F2D1E10015B343 /* BNSidePanelController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

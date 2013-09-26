@@ -56,16 +56,29 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if (self.centerButton && ![self.centerButton superview])
+    [self showCenterButton];
+}
+
+- (void) hideCenterButton
+{
+    if (self.centerButton && [self.centerButton superview]) {
+        [self.centerButton removeFromSuperview];
+        self.centerButton.hidden = YES;
+    }
+}
+
+- (void) showCenterButton
+{
+    if (self.centerButton && ![self.centerButton superview]) {
+        self.centerButton.hidden = NO;
         [self.view addSubview:self.centerButton];
-    
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    if (self.centerButton && [self.centerButton superview])
-        [self.centerButton removeFromSuperview];
+    [self hideCenterButton];
 }
 
 - (void)didReceiveMemoryWarning

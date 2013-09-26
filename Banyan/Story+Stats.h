@@ -17,5 +17,4 @@
 
 + (void) toggleFavouritedStory:(Story *)story;
 
-//- (void) updateStoryStats;
 @end

@@ -17,7 +17,6 @@
 @interface StoryReaderController ()
 @property (strong, nonatomic) Piece *currentPiece;
 
-@property (strong, nonatomic) IBOutlet UIView *storyInfoView;
 @property (strong, nonatomic) UIToolbar *toolbar;
 @property (strong, nonatomic) UIBarButtonItem *cancelButton;
 @property (strong, nonatomic) UIBarButtonItem *settingsButton;
@@ -33,7 +32,6 @@
 @synthesize cancelButton = _cancelButton;
 @synthesize settingsButton = _settingsButton;
 @synthesize titleLabel = _titleLabel;
-@synthesize storyInfoView = _storyInfoView;
 
 - (void)setCurrentPiece:(Piece *)currentPiece
 {
@@ -64,51 +62,22 @@
     return self;
 }
 
-#define INFOVIEW_HEIGHT 38.0f
 #define BUTTON_SPACING 5.0f
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
     self.title = self.story.title;
-
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
-    CGRect frame = [UIScreen mainScreen].applicationFrame;
-    self.view.frame = frame;
     
-    CGFloat statusBarOffset = [[UIApplication sharedApplication] statusBarFrame].size.height;
-    frame = self.view.bounds;
-    frame.size.height = INFOVIEW_HEIGHT + statusBarOffset;
-    
-    self.storyInfoView = [[UIView alloc] initWithFrame:frame];
-    self.storyInfoView.backgroundColor = BANYAN_BLACK_COLOR;
-    
-    UIImage *backArrowImage = [UIImage imageNamed:@"backArrow"];
-    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    backButton.frame = CGRectMake(BUTTON_SPACING, statusBarOffset, floor(backArrowImage.size.width), floor(CGRectGetHeight(self.storyInfoView.bounds))-statusBarOffset);
-    [backButton setImage:backArrowImage forState:UIControlStateNormal];
-    [backButton addTarget:self action:@selector(cancelButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    backButton.showsTouchWhenHighlighted = YES;
-    [self.storyInfoView addSubview:backButton];
-    
-    UIImage *settingsImage = [UIImage imageNamed:@"settingsButton"];
-    UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    settingsButton.frame = CGRectMake(floor(self.view.frame.size.width - settingsImage.size.width - BUTTON_SPACING), statusBarOffset,
-                                      floor(settingsImage.size.width), floor(CGRectGetHeight(self.storyInfoView.bounds))-statusBarOffset);
-    [settingsButton setImage:settingsImage forState:UIControlStateNormal];
-    [settingsButton addTarget:self action:@selector(settingsPopup:) forControlEvents:UIControlEventTouchUpInside];
-    settingsButton.showsTouchWhenHighlighted = YES;
-    [self.storyInfoView addSubview:settingsButton];
+    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settingsButton"] style:UIBarButtonItemStyleDone target:self action:@selector(settingsPopup:)];
+    self.navigationItem.rightBarButtonItem = rightBarButton;
     
     UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    titleButton.frame = CGRectMake(CGRectGetMaxX(backButton.frame) + 2*BUTTON_SPACING, statusBarOffset,
-                                   CGRectGetMinX(settingsButton.frame) - CGRectGetMaxX(backButton.frame) - 2*BUTTON_SPACING,
-                                   CGRectGetHeight(self.storyInfoView.bounds)-statusBarOffset);
-    titleButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:20];
+    titleButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:15];
     titleButton.titleLabel.minimumScaleFactor = 0.7;
-    titleButton.backgroundColor = BANYAN_BLACK_COLOR;
-    [titleButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
+    [titleButton setTitleColor:BANYAN_BLACK_COLOR forState:UIControlStateNormal];
     titleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     [titleButton setTitleShadowColor:[UIColor colorWithWhite:0.0 alpha:0.5] forState:UIControlStateNormal];
     [titleButton setTitle:self.title forState:UIControlStateNormal];
@@ -118,10 +87,9 @@
         titleButton.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:self.title
                                                                                 attributes:@{NSUnderlineStyleAttributeName: @1}];;
     }
-    [self.storyInfoView insertSubview:titleButton atIndex:0];
     
-    [self.view addSubview:self.storyInfoView];
-    [self performSelector:@selector(hideStoryInfoView) withObject:nil afterDelay:2];
+    [self.navigationItem setTitleView:titleButton];
+    [self performSelector:@selector(hideNavigationBar:) withObject:nil afterDelay:1];
     
     [Story viewedStory:self.story];
     
@@ -141,11 +109,11 @@
     self.pageViewController.dataSource = self;
 
     [self addChildViewController:self.pageViewController];
-    [self.view insertSubview:self.pageViewController.view belowSubview:self.storyInfoView];
+    [self.view addSubview:self.pageViewController.view];
     self.pageViewController.view.frame = self.view.bounds;
     [self.pageViewController didMoveToParentViewController:self];
     
-    UISwipeGestureRecognizer* swipeDownGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showStoryInfoView:)];
+    UISwipeGestureRecognizer* swipeDownGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNavigationBar:)];
     swipeDownGestureRecognizer.direction = UISwipeGestureRecognizerDirectionDown;
     
     [self.pageViewController.gestureRecognizers enumerateObjectsUsingBlock:^(UIGestureRecognizer *gR, NSUInteger idx, BOOL *stop){
@@ -186,119 +154,21 @@
     [self.story resetPermission];
 }
 
-- (void)setupToolbar
-{
-    if (self.toolbar == nil) {
-        self.toolbar = [[UIToolbar alloc] init];
-        self.toolbar.tintColor = BANYAN_GREEN_COLOR;
-        self.toolbar.barStyle = UIBarStyleDefault;
-        
-//        [self.toolbar setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
-        
-        [self.view addSubview:self.toolbar];
-    }
-    
-    NSMutableArray *buttons = [NSMutableArray array];
-    if (self.cancelButton == nil) {
-        self.cancelButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backArrow"]
-                                                             style:UIBarButtonItemStyleBordered
-                                                            target:self
-                                                            action:@selector(cancelButtonPressed:)];
-    }
-    [buttons addObject:self.cancelButton];
-
-    if (self.title.length > 0) {
-        UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-                                                                               target:nil
-                                                                               action:nil];
-        [buttons addObject:space];
-        
-        if (self.titleLabel == nil) {
-            UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
-            titleButton.center = self.toolbar.center;
-            CGRect btnFrame = titleButton.frame;
-            btnFrame.size.width = self.view.frame.size.width - 100;
-            btnFrame.size.height = 21;
-            titleButton.frame = btnFrame;
-            if (self.story.canContribute) {
-                titleButton.showsTouchWhenHighlighted = YES;
-                [titleButton addTarget:self action:@selector(editStoryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-            }
-            titleButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:20];
-            titleButton.titleLabel.minimumScaleFactor = 0.7;
-            titleButton.backgroundColor = [UIColor clearColor];
-            [titleButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
-            titleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-            [titleButton setTitleShadowColor:[UIColor colorWithWhite:0.0 alpha:0.5] forState:UIControlStateNormal];
-            self.titleLabel = [[UIBarButtonItem alloc] initWithCustomView:titleButton];
-        }
-        [(UIButton *)self.titleLabel.customView setTitle:self.title forState:UIControlStateNormal];
-        
-        [buttons addObject:self.titleLabel];
-        
-        space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-                                                               target:nil
-                                                               action:nil];
-        [buttons addObject:space];
-    }
-    
-    if (self.settingsButton == nil) {
-        self.settingsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settingsButton"]
-                                                             style:UIBarButtonItemStyleBordered
-                                                            target:self
-                                                            action:@selector(settingsPopup:)];
-    }
-    [buttons addObject:self.settingsButton];
-    
-    [self.toolbar sizeToFit];
-    CGRect bounds = self.toolbar.bounds;
-    bounds = CGRectMake(0, 0, self.view.bounds.size.width, bounds.size.height);
-    self.toolbar.bounds = bounds;
-    
-//    CGRect frame = self.toolbar.frame;
-//    frame.origin.y += [UIApplication sharedApplication].statusBarFrame.size.height;
-//    self.toolbar.frame = frame;
-    
-    self.toolbar.items = buttons;
-    self.toolbar.userInteractionEnabled = YES;
-}
-
 # pragma mark
 # pragma mark target actions
-- (void)showStoryInfoView:(id)sender
-{
-//    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
 
-    if (!self.storyInfoView.hidden)
-        return;
-    
-    [UIView animateWithDuration:0.3
-                     animations:^{
-                         self.storyInfoView.hidden = NO;
-                         [self.view addSubview:self.storyInfoView];
-                         
-                         CGRect siFrame = self.storyInfoView.frame;
-                         siFrame.origin.y += siFrame.size.height;
-                         self.storyInfoView.frame = siFrame;
-                     } completion:^(BOOL finished) {
-                         [self performSelector:@selector(hideStoryInfoView) withObject:nil afterDelay:4];
-                     }];
+- (IBAction)hideNavigationBar:(id)sender
+{
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
-- (void)hideStoryInfoView
+- (IBAction)showNavigationBar:(id)sender
 {
-//    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+    if (!self.navigationController.navigationBarHidden)
+        return;
     
-    [UIView animateWithDuration:0.3
-                     animations:^{
-                         CGRect siFrame = self.storyInfoView.frame;
-                         siFrame.origin.y -= siFrame.size.height;
-                         self.storyInfoView.frame = siFrame;
-                     }
-                     completion:^(BOOL finished) {
-                         [self.storyInfoView removeFromSuperview];
-                         self.storyInfoView.hidden = YES;
-                     }];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [self performSelector:@selector(hideNavigationBar:) withObject:sender afterDelay:2];
 }
 
 - (void)settingsPopup:(id)sender
@@ -320,11 +190,6 @@
 
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
     [actionSheet showInView:self.view];
-}
-
-- (void)cancelButtonPressed:(id)sender
-{
-    [self dismissReadView];
 }
 
 - (void)editStoryButtonPressed:(id)sender

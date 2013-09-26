@@ -22,11 +22,10 @@
 
 #define GOOGLE_API_KEY @"AIzaSyBwOBP068EO-Ubi0Qzu8uwFnZZHaIVwNyg"
 
-@class MasterTabBarController;
 @interface BanyanAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
-@property (nonatomic, strong) MasterTabBarController *tabBarController;
+@property (strong, nonatomic) UINavigationController *storyListTableViewController;
 
 - (void) fireRemoteObjectTimer;
 - (void) invalidateRemoteObjectTimer;

@@ -11,5 +11,7 @@
 @interface BNTabBarController : UITabBarController
 
 - (void) addCenterButtonWithImage:(UIImage *)image andTarget:(id)target withAction:(SEL)action;
+- (void) hideCenterButton;
+- (void) showCenterButton;
 
 @end

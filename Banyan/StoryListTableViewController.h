@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "CoreDataTableViewController.h"
 #import "SingleStoryCell.h"
+#import "StoryPickerViewController.h"
 
-@interface StoryListTableViewController : CoreDataTableViewController <SingleStoryCellDelegate> {
+@interface StoryListTableViewController : CoreDataTableViewController <SingleStoryCellDelegate, StoryPickerViewControllerDelegate> {
 	NSIndexPath * indexOfVisibleBackView;
 }
 

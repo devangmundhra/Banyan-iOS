@@ -8,6 +8,8 @@
 
 #import "BNFeedbackViewController.h"
 #import "SSTextView.h"
+#import "UIViewController+JASidePanel.h"
+#import "BNSidePanelController.h"
 
 @interface BNFeedbackViewController ()
 
@@ -104,7 +106,9 @@
 - (IBAction)doneButtonPressed:(id)sender
 {
     [TestFlight submitFeedback:textView.text];
-    [self.navigationController popViewControllerAnimated:YES];
+    self.navigationItem.rightBarButtonItem.enabled = NO;
+    textView.text = @"Thank you for your feedback!";
+    [self.sidePanelController showLeftPanelAnimated:YES];
 }
 
 - (void)didReceiveMemoryWarning

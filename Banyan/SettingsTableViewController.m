@@ -17,11 +17,8 @@
 @end
 
 typedef enum {
-    SettingsTableViewProfileSection = 0,
-    SettingsTableViewSocialSection,
     SettingsTableViewReadingOptionsSection,
     SettingsTableViewNotificationsSection,
-    SettingsTableViewAboutSection,
 } SettingsTableViewSection;
 
 @implementation SettingsTableViewController
@@ -36,79 +33,19 @@ typedef enum {
     return self;
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    
-    [self updateSignInOutButtons];
 
-    // Notifications to handle permission controls
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(userLoginStatusChanged:)
-                                                 name:BNUserLogInNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(userLoginStatusChanged:)
-                                                 name:BNUserLogOutNotification
-                                               object:nil];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     [self.tableView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    self.clearsSelectionOnViewWillAppear = YES;    
+    self.clearsSelectionOnViewWillAppear = YES;
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
-- (void) userLoginStatusChanged:(NSNotification *)notification
-{
-    [self updateSignInOutButtons];
-    [self.tableView reloadData];
-}
-
-- (void) updateSignInOutButtons
-{
-    BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), 55)];
-    UIButton *actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [actionButton.titleLabel setFont:[UIFont fontWithName:@"Roboto-Bold" size:18]];
-    actionButton.userInteractionEnabled = YES;
-    
-    CALayer *layer = actionButton.layer;
-    [layer setCornerRadius:5.0f];
-    [layer setMasksToBounds:YES];
-    [layer setBorderWidth: 1.0f];
-
-    [view addSubview:actionButton];
-    
-    CGRect frame = view.frame;
-    frame.origin.x += 20;
-    frame.size.width -= 40;
-    frame.size.height = 40;
-    actionButton.frame = frame;
-    self.tableView.tableFooterView = view;
-
-    if (![BanyanAppDelegate loggedIn]) {
-        [actionButton setTitle:@"Sign in" forState:UIControlStateNormal];
-        [actionButton setBackgroundColor:BANYAN_GREEN_COLOR];
-        [actionButton addTarget:delegate action:@selector(login) forControlEvents:UIControlEventTouchUpInside];
-        layer.borderColor = BANYAN_DARK_GREEN_COLOR.CGColor;
-    } else {
-        [actionButton setTitle:@"Sign out" forState:UIControlStateNormal];
-        [actionButton setBackgroundColor:BANYAN_RED_COLOR];
-        [actionButton addTarget:delegate action:@selector(logout) forControlEvents:UIControlEventTouchUpInside];
-    }
 }
 
 #pragma mark - Table view data source
@@ -117,50 +54,23 @@ typedef enum {
 {
     // Return the number of sections.
     if (![BanyanAppDelegate loggedIn])
-        return 2;
+        return 1;
     else
-        return 5;
+        return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    
-    if (![BanyanAppDelegate loggedIn]) {
-        switch (section) {
-            case 0: // Reading Options
-                return 1;
-                break;
-            case 1: // About
-                return 2;
-                break;
-                
-            default:
-                break;
-        }
-    }
-    
     switch (section) {
-        case SettingsTableViewProfileSection:
-            return 2;
-            break;
-        
-        case SettingsTableViewSocialSection:
-            return 1;
-            break;
-            
         case SettingsTableViewReadingOptionsSection:
             return 1;
             break;
             
         case SettingsTableViewNotificationsSection:
-            return 3;
+            return 5;
             break;
-            
-        case SettingsTableViewAboutSection:
-            return 2;
-            break;
-            
+
         default:
             return 0;
             break;
@@ -169,39 +79,13 @@ typedef enum {
 
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    if (![BanyanAppDelegate loggedIn]) {
-        switch (section) {
-            case 0: // Reading Options
-                return @"Reading Options";
-                break;
-            case 1: // About
-                return @"About";
-                break;
-                
-            default:
-                break;
-        }
-    }
-    
     switch (section) {
-        case SettingsTableViewProfileSection:
-            return @"Profile";
-            break;
-            
-        case SettingsTableViewSocialSection:
-            return @"Social";
-            break;
-            
         case SettingsTableViewReadingOptionsSection:
             return @"Reading Options";
             break;
             
         case SettingsTableViewNotificationsSection:
             return @"Notifications";
-            break;
-            
-        case SettingsTableViewAboutSection:
-            return @"About";
             break;
             
         default:
@@ -218,64 +102,26 @@ typedef enum {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    cell.textLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:18];
+    cell.textLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:15];
     
     // Configure the cell...
-    if (![BanyanAppDelegate loggedIn]) {
-        switch (indexPath.section) {
-            case 0: // Reading Options
-                cell.textLabel.text = [self textForReadingOptionsSectionAtRow:indexPath.row];
-                cell.accessoryView = [self accessoryViewForReadingOptionsSectionAtRow:indexPath.row];
-                break;
-            case 1: // About
-                cell.textLabel.text = [self textForAboutSectionAtRow:indexPath.row];
-                if (!(indexPath.row == SettingsAboutSectionFeedback))
-                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                else
-                    cell.accessoryType = UITableViewCellAccessoryNone;
-                break;
-                
-            default:
-                break;
-        }
-    } else {
-        if (!(indexPath.section == SettingsAboutSectionAbout && indexPath.row == SettingsAboutSectionFeedback))
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        else
-            cell.accessoryType = UITableViewCellAccessoryNone;
-        switch (indexPath.section) {
-            case SettingsTableViewProfileSection:
-                cell.textLabel.text = [self textForProfileSectionAtRow:indexPath.row];
-                break;
-                
-            case SettingsTableViewSocialSection:
-                cell.textLabel.text = [self textForSocialSectionAtRow:indexPath.row];
-                break;
-                
-            case SettingsTableViewReadingOptionsSection:
-                cell.textLabel.text = [self textForReadingOptionsSectionAtRow:indexPath.row];
-                cell.accessoryView = [self accessoryViewForReadingOptionsSectionAtRow:indexPath.row];
-                break;
-                
-            case SettingsTableViewNotificationsSection:
-                cell.textLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:12];
-                cell.textLabel.text = [self textForNotificationsSectionAtRow:indexPath.row];
-                cell.accessoryView = [self accessoryViewForNotificationsSectionAtRow:indexPath.row];
-                break;
-                
-            case SettingsTableViewAboutSection:
-                cell.textLabel.text = [self textForAboutSectionAtRow:indexPath.row];
-                if (!(indexPath.row == SettingsAboutSectionFeedback))
-                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                else
-                    cell.accessoryType = UITableViewCellAccessoryNone;
-                break;
-                
-            default:
-                cell.textLabel.text = @"Undefined";
-                break;
-        }
+    switch (indexPath.section) {
+        case SettingsTableViewReadingOptionsSection:
+            cell.textLabel.text = [self textForReadingOptionsSectionAtRow:indexPath.row];
+            cell.accessoryView = [self accessoryViewForReadingOptionsSectionAtRow:indexPath.row];
+            break;
+            
+        case SettingsTableViewNotificationsSection:
+            cell.textLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:12];
+            cell.textLabel.text = [self textForNotificationsSectionAtRow:indexPath.row];
+            cell.accessoryView = [self accessoryViewForNotificationsSectionAtRow:indexPath.row];
+            break;
+            
+        default:
+            cell.textLabel.text = @"Undefined";
+            break;
     }
+    cell.accessoryType = UITableViewCellAccessoryNone;
 
     return cell;
 }
@@ -286,98 +132,14 @@ typedef enum {
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     // Navigation logic may go here. Create and push another view controller.
-    if (![BanyanAppDelegate loggedIn]) {
-        [self actionForAboutSectionAtRow:indexPath.row];
-        return;
-    }
     
     switch (indexPath.section) {
-        case SettingsTableViewProfileSection:
-            [self actionForProfileSectionAtRow:indexPath.row];
-            break;
-            
-        case SettingsTableViewSocialSection:
-            [self actionForSocialSectionAtRow:indexPath.row];
-            break;
-            
         case SettingsTableViewReadingOptionsSection:
             [self actionForReadingOptionsSectionAtRow:indexPath.row];
             break;
 
         case SettingsTableViewNotificationsSection:
             [self actionForNotificationsSectionAtRow:indexPath.row];
-            break;
-            
-        case SettingsTableViewAboutSection:
-            [self actionForAboutSectionAtRow:indexPath.row];
-            break;
-            
-        default:
-            break;
-    }
-}
-
-# pragma mark Profile Section
-typedef enum {
-    SettingsProfileSectionMyProfile = 0,
-    SettingsProfileSectionEditProfile = 1,
-} SettingsProfileSection;
-
-- (NSString *) textForProfileSectionAtRow:(NSInteger)row
-{
-    switch (row) {
-        case SettingsProfileSectionMyProfile:
-            return @"My Profile";
-            break;
-        case SettingsProfileSectionEditProfile:
-            return @"Edit Profile";
-            break;
-            
-        default:
-            assert(false);
-            break;
-    }
-}
-
-- (void) actionForProfileSectionAtRow:(NSInteger) row
-{
-    switch (row) {
-        case SettingsProfileSectionMyProfile:
-            break;
-        case SettingsProfileSectionEditProfile:
-            break;
-            
-        default:
-            break;
-    }
-}
-
-# pragma mark Social Section
-typedef enum {
-    SettingsSocialSectionFindFriends = 0,
-} SettingsSocialSection;
-
-- (NSString *) textForSocialSectionAtRow:(NSInteger)row
-{
-    switch (row) {
-        case SettingsSocialSectionFindFriends:
-            return @"Find Friends";
-            break;
-            
-        default:
-            assert(false);
-            break;
-    }
-}
-
-- (void) actionForSocialSectionAtRow:(NSInteger) row
-{
-    FollowingFriendsViewController *findFriendsVc = nil;
-    switch (row) {
-            break;
-        case SettingsSocialSectionFindFriends:
-            findFriendsVc = [[FollowingFriendsViewController alloc] initWithStyle:UITableViewStylePlain];
-            [self.navigationController pushViewController:findFriendsVc animated:YES];
             break;
             
         default:
@@ -584,51 +346,6 @@ typedef enum {
         [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_USERFOLLOWING forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"UserFollowing"]];
     }
     NSLog( @"The %@: %@", BNUserFollowingPushNotification, switchControl.on ? @"ON" : @"OFF" );
-}
-
-# pragma mark About Section
-typedef enum {
-    SettingsAboutSectionAbout = 0,
-    SettingsAboutSectionFeedback,
-    SettingsAboutSectionLegal
-} SettingsAboutSection;
-
-- (NSString *) textForAboutSectionAtRow:(NSInteger)row
-{
-    switch (row) {
-        case SettingsAboutSectionAbout:
-            return @"About";
-            break;
-        case SettingsAboutSectionFeedback:
-            return @"Feedback";
-            break;
-        case SettingsAboutSectionLegal:
-            return @"Legal";
-            break;
-            
-        default:
-            assert(false);
-            break;
-    }
-}
-
-- (void) actionForAboutSectionAtRow:(NSInteger) row
-{
-    BNFeedbackViewController *fbVC = nil;
-    switch (row) {
-        case SettingsAboutSectionAbout:
-            break;
-        case SettingsAboutSectionFeedback:
-            fbVC = [[BNFeedbackViewController alloc] init];
-            [self.navigationController pushViewController:fbVC animated:YES];
-//            [self presentViewController:fbVC animated:YES completion:nil];            
-            break;
-        case SettingsAboutSectionLegal:
-            break;
-            
-        default:
-            break;
-    }
 }
 
 #pragma Memory Management

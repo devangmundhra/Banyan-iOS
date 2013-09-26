@@ -2,6 +2,9 @@ PODS:
   - AFNetworking (1.3.2)
   - ASMediaFocusManager (0.2)
   - BNSwipeableView (0.0.1)
+  - ISO8601DateFormatterValueTransformer (0.5.0):
+    - RKValueTransformers (~> 1.0.0)
+  - JASidePanels (1.3.2)
   - libwebp (0.3.0-rc7):
     - libwebp/dec
     - libwebp/dsp
@@ -11,7 +14,7 @@ PODS:
   - libwebp/dsp (0.3.0-rc7)
   - libwebp/utils (0.3.0-rc7)
   - libwebp/webp (0.3.0-rc7)
-  - MBProgressHUD (0.7)
+  - MBProgressHUD (0.8)
   - RestKit (0.20.4-dev):
     - RestKit/Core
   - RestKit/Core (0.20.4-dev):
@@ -25,15 +28,18 @@ PODS:
     - RestKit/Support
     - SOCKit
   - RestKit/ObjectMapping (0.20.4-dev):
+    - ISO8601DateFormatterValueTransformer (~> 0.5.0)
     - RestKit/Support
+    - RKValueTransformers (~> 1.0.0)
   - RestKit/Support (0.20.4-dev):
     - TransitionKit (= 1.1.1)
+  - RKValueTransformers (1.0.0)
   - SDWebImage (3.3):
     - libwebp
     - SDWebImage/MapKit
   - SDWebImage/MapKit (3.3):
     - libwebp
-  - SMPageControl (1.0)
+  - SMPageControl (1.1)
   - SOCKit (1.1)
   - SSToolkit (1.0.4)
   - SVSegmentedControl (0.2)
@@ -44,6 +50,7 @@ PODS:
 DEPENDENCIES:
   - ASMediaFocusManager (from `https://github.com/devangmundhra/ASMediaFocusManager.git`, commit `fb8db29b198cbebb41052e5427fee44fe23c057a`)
   - BNSwipeableView (from `https://github.com/devangmundhra/BNSwipeableView.git`)
+  - JASidePanels (from `https://github.com/ckassen/JASidePanels.git`, commit `1b3c1f461e2f03bb2b07ad003195f6eda511b660`)
   - MBProgressHUD (>= 0.7)
   - RestKit (from `https://github.com/RestKit/RestKit.git`, branch `development`)
   - SDWebImage (from `https://github.com/rs/SDWebImage.git`, commit `282e8179193a49867575cd658ae64883aedbce7b`)
@@ -59,6 +66,9 @@ EXTERNAL SOURCES:
     :git: https://github.com/devangmundhra/ASMediaFocusManager.git
   BNSwipeableView:
     :git: https://github.com/devangmundhra/BNSwipeableView.git
+  JASidePanels:
+    :commit: 1b3c1f461e2f03bb2b07ad003195f6eda511b660
+    :git: https://github.com/ckassen/JASidePanels.git
   RestKit:
     :branch: development
     :git: https://github.com/RestKit/RestKit.git
@@ -72,11 +82,14 @@ SPEC CHECKSUMS:
   AFNetworking: 7f9bcd7c287a75476cd5c61e82fd3380e93e4c54
   ASMediaFocusManager: 8be8e44556d78d18ed1e1eb14b5362d1847c16f2
   BNSwipeableView: f10ecb74337225b5659861e150b96e2b8464fc7a
+  ISO8601DateFormatterValueTransformer: d0af1f50a9df42db72d7418db31938b8473e0af8
+  JASidePanels: c0e642a7311ec9cc9adfa616fa4a795e4e169f20
   libwebp: 40517fa1fd3716eded73b4696c45fc0b66e4b414
-  MBProgressHUD: 1fd8591a2216d5dec6de24e09187bb03bcbe9946
-  RestKit: f02adc3cce61f7f59271c140d44faf3c1462e782
+  MBProgressHUD: 2bbc6f470111daf7f3eaa4eb12b8cbf01c4c0622
+  RestKit: 7b563c5e4019e9b5c1e4c0f88f976dff4b442c9b
+  RKValueTransformers: 01dc043fd853f6e40459b2e732dff545298a0f91
   SDWebImage: 79a8bac9ccf85b269100b294f7b43684dab8bf8a
-  SMPageControl: 9d100f9aa8ca0cf10222666ff31d4d1cbfdac674
+  SMPageControl: c723bd0716b6bfc6ea927de2538b64c1929f7da6
   SOCKit: 2f3bc4d07910de12dcc202815e07db68a3802581
   SSToolkit: 689acaedac79c2079e492e528a55bcb5db9d98c4
   SVSegmentedControl: e874fc56c2a1efb9f597ddf0908101393f53fe96
@@ -84,4 +97,4 @@ SPEC CHECKSUMS:
   TITokenField: 7d3d45e212044fa1a06db62b16ff7143891eab04
   TransitionKit: d0e3344aac92991395d4c2e72d9c5a8ceeb12910
 
-COCOAPODS: 0.23.0
+COCOAPODS: 0.25.0

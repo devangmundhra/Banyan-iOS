@@ -14,6 +14,7 @@
 #import "MBProgressHUD.h"
 #import "BanyanConnection.h"
 #import "AFBanyanAPIClient.h"
+#import "MasterTabBarController.h"
 
 typedef enum {
     FilterStoriesSegmentIndexFollowing = 0,
@@ -30,15 +31,18 @@ typedef enum {
 @synthesize filterStoriesSegmentedControl = _filterStoriesSegmentedControl;
 @synthesize indexOfVisibleBackView = _indexOfVisibleBackView;
 
-- (void)viewDidAppear:(BOOL)animated
+-(UIStatusBarStyle)preferredStatusBarStyle
 {
-    [super viewDidAppear:animated];
-    self.navigationController.navigationBar.translucent = NO;
+    return UIStatusBarStyleBlackTranslucent;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [self setNeedsStatusBarAppearanceUpdate];
+
+    self.title = @"Stories";
     
     [self.tableView registerClass:[SingleStoryCell class] forCellReuseIdentifier:@"SingleStoryCell"];
     [self.view setBackgroundColor:BANYAN_LIGHTGRAY_COLOR];
@@ -85,6 +89,9 @@ typedef enum {
     
     [self.navigationItem setTitleView:self.filterStoriesSegmentedControl];
     
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                                                           target:self action:@selector(addStoryOrPieceButtonPressed:)];
+    self.navigationItem.rightBarButtonItem.tintColor = BANYAN_GREEN_COLOR;
     // Notifications to refresh data
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -119,12 +126,6 @@ typedef enum {
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
 }
 
 #pragma mark - Table view data source
@@ -398,7 +399,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     storyReaderController.story = story;
     storyReaderController.hidesBottomBarWhenPushed = YES;
     storyReaderController.wantsFullScreenLayout = YES;
-    [self presentViewController:storyReaderController animated:YES completion:nil];
+//    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:storyReaderController];
+//    [self presentViewController:navController animated:YES completion:nil];
+    [self.navigationController pushViewController:storyReaderController animated:YES];
 }
 
 -(void) addPieceToStory:(Story *)story
@@ -412,6 +415,33 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [navController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
     [navController setModalPresentationStyle:UIModalPresentationFullScreen];
     [self presentViewController:navController animated:YES completion:nil];
+}
+
+-(IBAction) addStoryOrPieceButtonPressed:(UIButton *)sender
+{
+    BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (![BanyanAppDelegate loggedIn]) {
+        [delegate login];
+    } else {
+        // If there is already a default story user is creating a story on, use that story.
+        // Else show the story picker view controller.
+        
+        Story *story = [Story getCurrentOngoingStoryToContribute];
+        if (!story) {
+            StoryPickerViewController *vc = [[StoryPickerViewController alloc] initWithStyle:UITableViewStylePlain];
+            vc.delegate = self;
+            UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:vc];
+            [self presentViewController:nvc animated:YES completion:nil];
+        } else {
+            [self addPieceToStory:story];
+        }
+    }
+}
+
+# pragma mark StoryPickerViewControllerDelegate
+- (void) storyPickerViewControllerDidPickStory:(Story *)story
+{
+    [self addPieceToStory:story];
 }
 
 #pragma mark - Swipeable controls

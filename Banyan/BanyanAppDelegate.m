@@ -10,21 +10,25 @@
 #import "User_Defines.h"
 #import "AFBanyanAPIClient.h"
 #import "BanyanConnection.h"
-#import "MasterTabBarController.h"
 #import "UserLoginViewController.h"
 #import "User.h"
 #import "BNAWSSNSClient.h"
+#import "BNSidePanelController.h"
+#import "SideNavigatorViewController.h"
+#import "StoryListTableViewController.h"
 
 @interface BanyanAppDelegate () <UserLoginViewControllerDelegate>
 @property (strong, nonatomic) NSTimer *remoteObjectBackgroundTimer;
+@property (strong, nonatomic) BNSidePanelController *homeViewController;
 
 @end
 
 @implementation BanyanAppDelegate
 
 @synthesize window = _window;
-@synthesize tabBarController = _tabBarController;
 @synthesize remoteObjectBackgroundTimer = _remoteObjectBackgroundTimer;
+@synthesize homeViewController = _homeViewController;
+@synthesize storyListTableViewController = _storyListTableViewController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -95,9 +99,13 @@
         NSLog(@"User missing Facebook ID");
         [self logout];
     }
-        
-    self.tabBarController = [[MasterTabBarController alloc] init];
-    self.window.rootViewController = self.tabBarController;
+    
+    self.storyListTableViewController = [[UINavigationController alloc] initWithRootViewController:[[StoryListTableViewController alloc] init]];
+    self.homeViewController = [[BNSidePanelController alloc] init];
+    self.homeViewController.shouldResizeLeftPanel = YES;
+    self.homeViewController.centerPanel = self.storyListTableViewController;
+    self.homeViewController.leftPanel = [[SideNavigatorViewController alloc] init];
+    self.window.rootViewController = self.homeViewController;
     [self.window makeKeyAndVisible];
     
     // Extract the notification data
@@ -224,7 +232,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     UserLoginViewController *userLoginViewController = [[UserLoginViewController alloc] initWithNibName:@"UserLoginViewController" bundle:nil];
     userLoginViewController.delegate = self;
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:userLoginViewController];
-    [self.tabBarController presentViewController:navController animated:YES completion:nil];
+    [self.homeViewController presentViewController:navController animated:YES completion:nil];
 }
 
 - (void)logout
