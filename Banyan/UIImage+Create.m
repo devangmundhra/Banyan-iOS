@@ -41,8 +41,8 @@
 + (UIImage *) imageFromText:(NSString *)text withSize:(CGFloat)fontSize
 {
     // set the font type and size
-    UIFont *font = [UIFont systemFontOfSize:fontSize];
-    CGSize size  = [text sizeWithFont:font];
+    UIFont *font = [UIFont systemFontOfSize:fontSize];    
+    CGSize size  = [text sizeWithAttributes:@{NSFontAttributeName: font}];
     
     // check if UIGraphicsBeginImageContextWithOptions is available (iOS is 4.0+)
     if (UIGraphicsBeginImageContextWithOptions != NULL)
@@ -57,7 +57,7 @@
     // CGContextSetShadowWithColor(ctx, CGSizeMake(1.0, 1.0), 5.0, [[UIColor grayColor] CGColor]);
     
     // draw in context, you can use also drawInRect:withFont:
-    [text drawAtPoint:CGPointMake(0.0, 0.0) withFont:font];
+    [text drawAtPoint:CGPointMake(0.0, 0.0) withAttributes:@{NSFontAttributeName: font}];
     
     // transfer image
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();

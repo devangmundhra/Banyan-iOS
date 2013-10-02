@@ -9,6 +9,7 @@
 #import "Story+Permissions.h"
 #import "AFBanyanAPIClient.h"
 #import "User.h"
+#import "Piece.h"
 
 @implementation Story (Permissions)
 
@@ -85,6 +86,20 @@
         return [invitedToViewFBList arrayByAddingObjectsFromArray:invitedToViewBNList];
     }
     return nil;
+}
+
+- (NSString *)shortStringOfContributors
+{
+    NSMutableArray *contributorArray = [NSMutableArray array];
+    // Add author of story first
+    [contributorArray addObject:self.author.name];
+    
+    // Add other pieces first
+    for (Piece *piece in self.pieces) {
+        [contributorArray addObject:piece.author.name];
+    }
+    
+    return [[NSOrderedSet orderedSetWithArray:contributorArray].array componentsJoinedByString:@", "];
 }
 
 @end

@@ -252,6 +252,9 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:BNUserLogOutNotification
                                                         object:nil];
+    
+    // Set the page to the home page
+    [self.homeViewController setCenterPanel:self.storyListTableViewController];
     return;
 }
 
@@ -438,6 +441,20 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
                                                                           withConfiguration:nil
                                                                                     options:nil
                                                                                       error:&error];
+    if (!persistentStore) {
+        // The below assert will fail if the core data schema was changed. For now, just drop the database
+        // and recreate it. It will automatically get filled up when it gets synced.
+        // TO-DO: Use migration
+        [[NSFileManager defaultManager] removeItemAtPath:storePath error:&error];
+
+        [managedObjectStore createPersistentStoreCoordinator];
+        persistentStore = [managedObjectStore addSQLitePersistentStoreAtPath:storePath
+                                                      fromSeedDatabaseAtPath:nil
+                                                           withConfiguration:nil
+                                                                     options:nil
+                                                                       error:&error];
+    }
+    
     NSAssert(persistentStore, @"Failed to add persistent store with error: %@", error);
     
     // Create the managed object contexts
@@ -448,8 +465,6 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     
     managedObjectStore.persistentStoreManagedObjectContext.undoManager = nil;
     managedObjectStore.mainQueueManagedObjectContext.undoManager = nil;
-    
-    NSLog(@"BanyanAppDelegate MainMOC %@ PersistentMOC %@ Persistent Store: %@", managedObjectStore.mainQueueManagedObjectContext, managedObjectStore.persistentStoreManagedObjectContext, persistentStore);
     
     [RKManagedObjectStore setDefaultStore:managedObjectStore];
 }

@@ -107,7 +107,15 @@
         actionButton.backgroundColor = [BANYAN_GREEN_COLOR colorWithAlphaComponent:0.5];
         layer.borderColor = BANYAN_GREEN_COLOR.CGColor;
         
-        CGSize expectedSize = [actionButton.titleLabel.text sizeWithFont:[UIFont fontWithName:@"Roboto-Bold" size:18] constrainedToSize:view.frame.size];
+        NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
+        paraStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+        paraStyle.alignment = NSTextAlignmentLeft;
+
+        
+        CGSize expectedSize = [actionButton.titleLabel.text boundingRectWithSize:view.frame.size
+                                                         options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:18],
+                                                                                                                                                   NSParagraphStyleAttributeName: paraStyle}
+                                                         context:nil].size;
         
         CGRect frame = view.frame;
         frame.size = expectedSize;

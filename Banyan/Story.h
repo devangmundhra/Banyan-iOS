@@ -22,6 +22,7 @@
 @property (nonatomic, retain) id readAccess;
 @property (nonatomic) int16_t currentPieceNum;
 @property (nonatomic, retain) NSString * tags;
+@property (nonatomic, retain) NSString * category;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) id writeAccess;
 @property (nonatomic, retain) NSOrderedSet *pieces;

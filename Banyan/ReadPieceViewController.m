@@ -264,8 +264,14 @@
         [self.contentView bringSubviewToFront:self.pieceInfoView];
         // author label
         CGSize maximumLabelSize = CGSizeMake(130, CGRectGetHeight(frame));
-        CGSize expectedLabelSize = [self.piece.author.name sizeWithFont:[UIFont fontWithName:@"Roboto" size:16]
-                                                      constrainedToSize:maximumLabelSize lineBreakMode:NSLineBreakByTruncatingTail];
+        NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
+        paraStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+        paraStyle.alignment = NSTextAlignmentLeft;
+        CGSize expectedLabelSize = [self.piece.author.name boundingRectWithSize:maximumLabelSize options:0
+                                                              attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:16],
+                                                                                                                 NSParagraphStyleAttributeName: paraStyle}
+                                                                 context:nil].size;
+
         self.authorLabel.frame = CGRectMake(0, 0, expectedLabelSize.width+22/*for inset adjustment*/, CGRectGetHeight(frame));
         self.authorLabel.textEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 2);
         self.authorLabel.text = self.piece.author.name;
@@ -313,8 +319,10 @@
         
         CGSize maximumLabelSize = frame.size;
         maximumLabelSize.width -= 40; // adjust for the textInsets
-        CGSize expectedLabelSize = [self.piece.shortText sizeWithFont:[UIFont fontWithName:@"Roboto-BoldCondensed" size:26]
-                                                    constrainedToSize:maximumLabelSize];
+        CGSize expectedLabelSize = [self.piece.shortText boundingRectWithSize:maximumLabelSize
+                                                                      options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin
+                                                                   attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-BoldCondensed" size:26]}
+                                                                      context:nil].size;
         frame.size.height = expectedLabelSize.height;
         self.pieceCaptionView.frame = frame;
         

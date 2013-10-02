@@ -9,6 +9,7 @@
 #import "SingleStoryView.h"
 #import "BanyanAppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
+#import "Story+Permissions.h"
 
 @interface SingleStoryView ()
 
@@ -28,6 +29,7 @@ static UIImage *_deleteStoryImage;
 static NSDateFormatter *_dateFormatter;
 static UIFont *_boldFont;
 static UIFont *_mediumFont;
+static UIFont *_smallFont;
 static BOOL _loggedIn;
 
 @implementation SingleStoryView
@@ -55,6 +57,7 @@ static BOOL _loggedIn;
         
         _boldFont = [UIFont fontWithName:@"Roboto-Bold" size:20];
         _mediumFont = [UIFont fontWithName:@"Roboto-Medium" size:12];
+        _smallFont = [UIFont fontWithName:@"Roboto-Medium" size:10];
         
         _loggedIn = [BanyanAppDelegate loggedIn];
         
@@ -139,24 +142,42 @@ static BOOL _loggedIn;
     // and now draw the Path!
     CGContextStrokePath(context);
 
-    NSArray *tags = [self.story.tags componentsSeparatedByString:@","];
-    NSString *tagsString = [tags componentsJoinedByString:@" "];
+    // Story authors
     [[UIColor grayColor] set];
+    NSString *authorString = [NSString stringWithFormat:@"by %@", [self.story shortStringOfContributors]];
     point.x = TABLE_CELL_MARGIN;
     point.y = TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT + TABLE_CELL_MARGIN/2;
-    [tagsString drawAtPoint:point forWidth:CGRectGetWidth(self.frame) - 2*TABLE_CELL_MARGIN
-                   withFont:_mediumFont fontSize:12
-              lineBreakMode:NSLineBreakByTruncatingTail baselineAdjustment:UIBaselineAdjustmentAlignCenters];
+    
+    NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
+    paraStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+    
+    [authorString drawInRect:CGRectMake(point.x, point.y, CGRectGetWidth(self.frame) - 2*TABLE_CELL_MARGIN, BOTTOM_VIEW_HEIGHT)
+              withAttributes:@{NSFontAttributeName: _mediumFont,
+                               NSForegroundColorAttributeName: [UIColor grayColor],
+                               NSParagraphStyleAttributeName: paraStyle}];
     
     if ([self.story.uploadStatusNumber unsignedIntegerValue] != RemoteObjectStatusSync) {
         NSString *statusString = self.story.sectionIdentifier;
         point.x = CGRectGetMaxX(self.frame) - TABLE_CELL_MARGIN;
         point.y = TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT + TABLE_CELL_MARGIN/2;
         CGSize size = CGSizeMake(CGRectGetWidth(self.frame)/2 - TABLE_CELL_MARGIN, BOTTOM_VIEW_HEIGHT);
-        CGSize expectedSize = [statusString sizeWithFont:_mediumFont constrainedToSize:size];
+        paraStyle = [[NSMutableParagraphStyle alloc] init];
+        paraStyle.lineBreakMode = NSLineBreakByClipping;
+        
+        CGSize expectedSize = [statusString boundingRectWithSize:size
+                                                         options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin
+                                                      attributes:@{NSFontAttributeName: _smallFont,
+                                                                   NSParagraphStyleAttributeName: paraStyle}
+                                                         context:nil].size;
+        
         point.x -= expectedSize.width;
+        
         [BANYAN_LIGHTGRAY_COLOR set];
-        [statusString drawAtPoint:point forWidth:floor(expectedSize.width) withFont:_mediumFont fontSize:10 lineBreakMode:NSLineBreakByClipping baselineAdjustment:UIBaselineAdjustmentNone];
+        
+        [statusString drawInRect:CGRectMake(point.x, point.y, floor(expectedSize.width), BOTTOM_VIEW_HEIGHT)
+                  withAttributes:@{NSFontAttributeName: _smallFont,
+                                   NSForegroundColorAttributeName: BANYAN_LIGHTGRAY_COLOR,
+                                   NSParagraphStyleAttributeName: paraStyle}];
     }    
 }
 
@@ -179,24 +200,40 @@ static BOOL _loggedIn;
     CGContextStrokePath(context);
     
     CGPoint point;
-    CGSize size, expectedSize, clockStringSize;
+    CGSize size, clockStringSize;
     NSString *string;
 
     // Story title
     [BANYAN_BLACK_COLOR set];
     point = CGPointMake(TABLE_CELL_MARGIN, TABLE_CELL_MARGIN/2);
-    [self.story.title drawAtPoint:point
-                         forWidth:CGRectGetWidth(self.frame) - TABLE_CELL_MARGIN - BUTTON_SPACING
-                         withFont:_boldFont fontSize:20
-                    lineBreakMode:NSLineBreakByTruncatingTail baselineAdjustment:UIBaselineAdjustmentNone];
+    NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
+    paraStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+    
+    [self.story.title drawInRect:CGRectMake(point.x, point.y, CGRectGetWidth(self.frame) - TABLE_CELL_MARGIN - BUTTON_SPACING, TOP_VIEW_HEIGHT)
+                  withAttributes:@{NSFontAttributeName: _boldFont,
+                                   NSForegroundColorAttributeName: BANYAN_BLACK_COLOR,
+                                   NSParagraphStyleAttributeName: paraStyle}];
     
     // Time label
     point = CGPointMake(TABLE_CELL_MARGIN+_clockSymbolImage.size.width+SPACER_DISTANCE, TOP_VIEW_HEIGHT/2+SPACER_DISTANCE);
     [[UIColor grayColor] set];
     string = [_dateFormatter stringFromDate:[self.story.createdAt dateByAddingTimeInterval:[[NSTimeZone systemTimeZone] secondsFromGMT]]];
     size = CGSizeMake(CGRectGetWidth(self.frame)/2 - TABLE_CELL_MARGIN - BUTTON_SPACING, TOP_VIEW_HEIGHT/2);
-    expectedSize = [string sizeWithFont:_mediumFont constrainedToSize:size];
-    clockStringSize = [string drawAtPoint:point forWidth:floor(expectedSize.width) withFont:_mediumFont fontSize:12 lineBreakMode:NSLineBreakByClipping baselineAdjustment:UIBaselineAdjustmentNone];
+    
+    paraStyle = [[NSMutableParagraphStyle alloc] init];
+    paraStyle.lineBreakMode = NSLineBreakByClipping;
+    
+    clockStringSize = [string boundingRectWithSize:size
+                                        options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin
+                                     attributes:@{NSFontAttributeName: _mediumFont,
+                                                  NSParagraphStyleAttributeName: paraStyle}
+                                        context:nil].size;
+    
+    [string drawInRect:CGRectMake(point.x, point.y, floor(clockStringSize.width), TOP_VIEW_HEIGHT)
+              withAttributes:@{NSFontAttributeName: _mediumFont,
+                               NSForegroundColorAttributeName: [UIColor grayColor],
+                               NSParagraphStyleAttributeName: paraStyle}];
+    
     // Time image
     // Center image according to label
     point = CGPointMake(TABLE_CELL_MARGIN, floor(TOP_VIEW_HEIGHT/2 + (clockStringSize.height - _clockSymbolImage.size.height)/2)+SPACER_DISTANCE);
@@ -209,10 +246,17 @@ static BOOL _loggedIn;
         [[UIColor grayColor] set];
         string = self.story.location.name;
         size = CGSizeMake(CGRectGetWidth(self.frame)/2 - TABLE_CELL_MARGIN - BUTTON_SPACING, TOP_VIEW_HEIGHT/2);
-        expectedSize = [string sizeWithFont:_mediumFont constrainedToSize:size];
-        size = [string drawAtPoint:point forWidth:floor(expectedSize.width) withFont:_mediumFont
-                          fontSize:12 lineBreakMode:NSLineBreakByClipping
-                baselineAdjustment:UIBaselineAdjustmentNone];
+        
+        size = [string boundingRectWithSize:size
+                                               options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin
+                                            attributes:@{NSFontAttributeName: _mediumFont,
+                                                         NSForegroundColorAttributeName:
+                                                             [UIColor grayColor],NSParagraphStyleAttributeName: paraStyle}
+                                               context:nil].size;
+        
+        [string drawInRect:CGRectMake(point.x, point.y, floor(size.width), TOP_VIEW_HEIGHT)
+            withAttributes:@{NSFontAttributeName: _mediumFont,
+                             NSParagraphStyleAttributeName: paraStyle}];
         
         // Location image
         // Center image according to label

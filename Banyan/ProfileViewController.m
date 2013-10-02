@@ -10,6 +10,8 @@
 #import "User.h"
 #import "BanyanAppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
+#import "UIViewController+JASidePanel.h"
+#import "BNSidePanelController.h"
 
 @interface ProfileViewController ()
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
@@ -58,11 +60,17 @@
     [layer setMasksToBounds:YES];
     [layer setBorderWidth:1.0f];
     
-    BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
     [self.signOutButton setTitle:@"Sign out" forState:UIControlStateNormal];
-    [self.signOutButton addTarget:delegate action:@selector(logout) forControlEvents:UIControlEventTouchUpInside];
+    [self.signOutButton addTarget:self action:@selector(logoutButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     self.signOutButton.backgroundColor = BANYAN_RED_COLOR;
     layer.borderColor = BANYAN_RED_COLOR.CGColor;
+}
+
+- (IBAction)logoutButtonPressed:(id)sender
+{
+    [self.sidePanelController showLeftPanelAnimated:YES];
+    BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [delegate logout];
 }
 
 - (void)didReceiveMemoryWarning

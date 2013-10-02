@@ -116,23 +116,15 @@
     UISwipeGestureRecognizer* swipeDownGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNavigationBar:)];
     swipeDownGestureRecognizer.direction = UISwipeGestureRecognizerDirectionDown;
     
-    [self.pageViewController.gestureRecognizers enumerateObjectsUsingBlock:^(UIGestureRecognizer *gR, NSUInteger idx, BOOL *stop){
-        gR.delegate = self;
-        [gR requireGestureRecognizerToFail:swipeDownGestureRecognizer]; // So that a swipe down does not cause page turn
-    }];
+//    [self.pageViewController.gestureRecognizers enumerateObjectsUsingBlock:^(UIGestureRecognizer *gR, NSUInteger idx, BOOL *stop){
+//        gR.delegate = self;
+//        [gR requireGestureRecognizerToFail:swipeDownGestureRecognizer]; // So that a swipe down does not cause page turn
+//    }];
+
     self.view.gestureRecognizers = self.pageViewController.gestureRecognizers;
     [self.view addGestureRecognizer:swipeDownGestureRecognizer];
-        
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(userLoginStatusChanged) 
-                                                 name:BNUserLogInNotification 
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(userLoginStatusChanged) 
-                                                 name:BNUserLogOutNotification
-                                               object:nil];
     
-    [TestFlight passCheckpoint:[NSString stringWithFormat:@"Story with id %@ started to be read", self.story.bnObjectId]];
+    [TestFlight passCheckpoint:@"Story started to be read"];
 }
 
 
@@ -147,11 +139,6 @@
     self.settingsButton = nil;
     self.titleLabel = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void) userLoginStatusChanged
-{
-    [self.story resetPermission];
 }
 
 # pragma mark
@@ -267,9 +254,7 @@
 {
     [MBProgressHUD hideHUDForView:self.view animated:YES];
     // Dismiss the read scenes page view controller
-    [self dismissViewControllerAnimated:YES completion:^{
-        [self dismissReadView];
-    }];
+    [self dismissReadView];
 }
 
 # pragma mark - UIPageViewControllerDataSource
@@ -281,19 +266,9 @@
     NSUInteger pieceNum = [self pieceNumberForViewController:(ReadPieceViewController *)viewController];
     
     if (pieceNum >= self.story.length) {
-        NSLog(@"End of story reached for story %@", self.story.title);
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        hud.mode = MBProgressHUDModeText;
-        hud.detailsLabelText = @"Looping to the beginning of the story.";
-        [hud hide:YES afterDelay:2];
-        return [self viewControllerAtPieceNumber:1];
-//        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//        hud.mode = MBProgressHUDModeText;
-//        hud.labelText = @"End of story";
-//        hud.detailsLabelText = self.story.title;
-//        [self prepareToGoToStoryList];
-//        self.currentPiece = nil;
-//        return nil;
+        // Go to next story or go to Story List
+        [self dismissReadView];
+        return nil;
     }
     else {
         pieceNum++;
@@ -309,20 +284,9 @@
     NSUInteger pieceNum = [self pieceNumberForViewController:(ReadPieceViewController *)viewController];
     
     if (pieceNum <= 1) {
-        NSLog(@"Beginning of story reached for story %@", self.story.title);
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        hud.mode = MBProgressHUDModeText;
-        hud.detailsLabelText = @"Going to the last piece in the story.";
-        [hud hide:YES afterDelay:2];
-        return [self viewControllerAtPieceNumber:self.story.length];
-//        NSLog(@"index: %u NOT FOUND", pieceNum);
-//        NSLog(@"Beginning of story reached for story %@", self.story.title);
-//        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//        hud.mode = MBProgressHUDModeText;
-//        hud.labelText = @"Beginning of story";
-//        hud.detailsLabelText = @"Going back to story list";
-//        [self prepareToGoToStoryList];
-//        return nil;
+        // Go to story list
+        [self dismissReadView];
+        return nil;
     }
     else {
         pieceNum--;
@@ -398,49 +362,6 @@
 }
 
 #pragma mark UIGestureRecognizerDelegate
-- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
-{
-    NSUInteger currentPieceNum = self.currentPiece.pieceNumber;
-
-    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-        if ([(UIPanGestureRecognizer*)gestureRecognizer velocityInView:gestureRecognizer.view].x > 0.0f) {
-            // Going left
-            Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum-1]];
-            if (!piece)
-                return NO;
-            else
-                return YES;
-        } else {
-            // Going right
-            Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum+1]];
-            if (!piece)
-                return NO;
-            else
-                return YES;
-        }
-    }
-    
-    if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
-        if ([(UITapGestureRecognizer*)gestureRecognizer locationInView:gestureRecognizer.view].x > self.view.frame.size.width/2) {
-            // Tapped on left side
-            Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum-1]];
-            if (!piece)
-                return NO;
-            else
-                return YES;
-        } else {
-            // Tapped on right side
-            Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum+1]];
-            if (!piece)
-                return NO;
-            else
-                return YES;
-        }
-    }
-    
-    return YES;
-}
-
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
     if ([touch.view isKindOfClass:[UIControl class]]

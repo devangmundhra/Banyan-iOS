@@ -15,15 +15,20 @@
 #import "BanyanConnection.h"
 #import "AFBanyanAPIClient.h"
 #import "MasterTabBarController.h"
+#import "CEFlipAnimationController.h"
+#import "CEHorizontalSwipeInteractionController.h"
 
 typedef enum {
     FilterStoriesSegmentIndexFollowing = 0,
     FilterStoriesSegmentIndexPopular
 } FilterStoriesSegmentIndex;
 
-@interface StoryListTableViewController ()
+@interface StoryListTableViewController () <UIViewControllerTransitioningDelegate>
 @property (strong, nonatomic) IBOutlet UISegmentedControl *filterStoriesSegmentedControl;
 @property (strong, nonatomic) NSIndexPath *indexOfVisibleBackView;
+
+@property (strong, nonatomic) CEFlipAnimationController *animationController;
+@property (strong, nonatomic) CEHorizontalSwipeInteractionController *interactionController;
 
 @end
 
@@ -33,7 +38,7 @@ typedef enum {
 
 -(UIStatusBarStyle)preferredStatusBarStyle
 {
-    return UIStatusBarStyleBlackTranslucent;
+    return UIStatusBarStyleLightContent;
 }
 
 - (void)viewDidLoad
@@ -42,6 +47,10 @@ typedef enum {
     
     [self setNeedsStatusBarAppearanceUpdate];
 
+    // Animation between view controllers
+    self.animationController = [[CEFlipAnimationController alloc] init];
+    self.interactionController = [[CEHorizontalSwipeInteractionController alloc] init];
+    
     self.title = @"Stories";
     
     [self.tableView registerClass:[SingleStoryCell class] forCellReuseIdentifier:@"SingleStoryCell"];
@@ -79,7 +88,6 @@ typedef enum {
                                            action:@selector(filterStories:)
                                  forControlEvents:UIControlEventValueChanged];
     self.filterStoriesSegmentedControl.tintColor = BANYAN_GREEN_COLOR;
-    self.filterStoriesSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
     self.filterStoriesSegmentedControl.selectedSegmentIndex = FilterStoriesSegmentIndexPopular;
     [self.filterStoriesSegmentedControl setWidth:100 forSegmentAtIndex:FilterStoriesSegmentIndexFollowing];
     [self.filterStoriesSegmentedControl setWidth:100 forSegmentAtIndex:FilterStoriesSegmentIndexPopular];
@@ -398,10 +406,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     StoryReaderController *storyReaderController = [[StoryReaderController alloc] initWithPiece:pieceToShow];
     storyReaderController.story = story;
     storyReaderController.hidesBottomBarWhenPushed = YES;
-    storyReaderController.wantsFullScreenLayout = YES;
+    storyReaderController.transitioningDelegate = self;
+    
 //    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:storyReaderController];
-//    [self presentViewController:navController animated:YES completion:nil];
-    [self.navigationController pushViewController:storyReaderController animated:YES];
+    [self presentViewController:storyReaderController animated:YES completion:nil];
+//    [self.navigationController pushViewController:storyReaderController animated:YES];
 }
 
 -(void) addPieceToStory:(Story *)story
@@ -436,6 +445,32 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             [self addPieceToStory:story];
         }
     }
+}
+
+#pragma mark - UIViewControllerTransitioningDelegate
+
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source
+{
+//    [self.interactionController wireToViewController:presented forOperation:CEInteractionOperationDismiss];
+    
+    self.animationController.reverse = YES;
+    return self.animationController;
+}
+
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed
+{
+    self.animationController.reverse = NO;
+    return self.animationController;
+}
+
+//- (id<UIViewControllerInteractiveTransitioning>)interactionControllerForPresentation:(id<UIViewControllerAnimatedTransitioning>)animator
+//{
+//    return self.interactionController;
+//}
+
+- (id<UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id<UIViewControllerAnimatedTransitioning>)animator
+{
+    return self.interactionController.interactionInProgress ? self.interactionController : nil;
 }
 
 # pragma mark StoryPickerViewControllerDelegate

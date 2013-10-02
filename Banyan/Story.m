@@ -22,7 +22,7 @@
 @dynamic length;
 @dynamic readAccess;
 @dynamic currentPieceNum;
-@dynamic tags;
+@dynamic tags, category;
 @dynamic title;
 @dynamic writeAccess;
 @dynamic pieces;
@@ -95,6 +95,9 @@
         return nil;
     
     NSManagedObjectID *storyId = [[RKManagedObjectStore defaultStore].persistentStoreCoordinator managedObjectIDForURIRepresentation:currentOngingStory];
+    if (!storyId)
+        return nil;
+    
     NSError *error = nil;
     Story *story = (Story *)[[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext existingObjectWithID:storyId error:&error];
     if (error) {

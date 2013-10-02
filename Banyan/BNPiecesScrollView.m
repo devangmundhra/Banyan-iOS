@@ -179,15 +179,32 @@
         if ([BanyanAppDelegate loggedIn]) {
             if (self.story.canContribute) {
                 NSString *addPcMsg = @"No pieces in the story.\nClick to add a piece!";
-                [addPcMsg drawInRect:smallRect withFont:[UIFont fontWithName:@"Roboto-Bold" size:20] lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
+                NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
+                paraStyle.lineBreakMode = NSLineBreakByWordWrapping;
+                paraStyle.alignment = NSTextAlignmentCenter;
+                
+                [addPcMsg drawInRect:smallRect withAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:20],
+                                                                NSForegroundColorAttributeName: BANYAN_GREEN_COLOR,
+                                                                NSParagraphStyleAttributeName: paraStyle}];
             } else {
                 [BANYAN_BROWN_COLOR set];
                 NSString *addPcMsg = @"No pieces in the story yet!";
-                [addPcMsg drawInRect:smallRect withFont:[UIFont fontWithName:@"Roboto-Bold" size:20] lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
+                NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
+                paraStyle.lineBreakMode = NSLineBreakByWordWrapping;
+                paraStyle.alignment = NSTextAlignmentCenter;
+                
+                [addPcMsg drawInRect:smallRect withAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:20],
+                                                                NSForegroundColorAttributeName: BANYAN_BROWN_COLOR,
+                                                                NSParagraphStyleAttributeName: paraStyle}];
             }
         } else {
             NSString *loginMsg = @"No pieces in the story yet.\nLog in to contribute.";
-            [loginMsg drawInRect:smallRect withFont:[UIFont fontWithName:@"Roboto-Bold" size:20] lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
+            NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
+            paraStyle.lineBreakMode = NSLineBreakByWordWrapping;
+            paraStyle.alignment = NSTextAlignmentCenter;
+            
+            [loginMsg drawInRect:smallRect withAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:20],
+                                                            NSForegroundColorAttributeName: BANYAN_BROWN_COLOR, NSParagraphStyleAttributeName: paraStyle}];
         }
     }
 }

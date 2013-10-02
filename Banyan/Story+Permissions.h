@@ -19,4 +19,6 @@
 - (NSUInteger) numberOfContributors;
 - (NSArray *)storyContributors;
 
+- (NSString *)shortStringOfContributors;
+
 @end

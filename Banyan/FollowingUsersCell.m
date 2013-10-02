@@ -105,14 +105,25 @@
         nameString = [_user objectForKey:USER_USERNAME];
     }
     
-    CGSize nameSize = [nameString sizeWithFont:[UIFont boldSystemFontOfSize:16.0f] forWidth:144.0f lineBreakMode:NSLineBreakByTruncatingTail];
+    NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
+    paraStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+    paraStyle.alignment = NSTextAlignmentLeft;
+    
+    CGSize nameSize = [nameString boundingRectWithSize:CGSizeMake(144.0f, _nameButton.frame.size.height)
+                                               options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:16.0f],
+                                                                                                                                         NSParagraphStyleAttributeName: paraStyle}
+                                               context:nil].size;
+    
     [_nameButton setTitle:nameString forState:UIControlStateNormal];
     [_nameButton setTitle:nameString forState:UIControlStateHighlighted];
     
     [_nameButton setFrame:CGRectMake( /*60.0f*/6.0f, 17.0f, nameSize.width, nameSize.height)];
     
     // Set photo number label
-    CGSize photoLabelSize = [@"photos" sizeWithFont:[UIFont systemFontOfSize:11.0f] forWidth:144.0f lineBreakMode:NSLineBreakByTruncatingTail];
+    CGSize photoLabelSize = [@"photos" boundingRectWithSize:CGSizeMake(144.0f, _photoLabel.frame.size.height)
+                                                    options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:1.0f],
+                                                                                                                                              NSParagraphStyleAttributeName: paraStyle}
+                                                    context:nil].size;
     [_photoLabel setFrame:CGRectMake( /*60.0f*/6.0f, 17.0f + nameSize.height, 140.0f, photoLabelSize.height)];
     
     // Set follow button
