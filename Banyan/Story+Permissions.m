@@ -92,7 +92,7 @@
 {
     NSMutableArray *contributorArray = [NSMutableArray array];
     // Add author of story first
-    [contributorArray addObject:self.author.name];
+    [contributorArray addObject:REPLACE_NIL_WITH_EMPTY_STRING(self.author.name)];
     
     // Add other pieces first
     for (Piece *piece in self.pieces) {

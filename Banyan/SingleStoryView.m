@@ -200,7 +200,7 @@ static BOOL _loggedIn;
     CGContextStrokePath(context);
     
     CGPoint point;
-    CGSize size, clockStringSize;
+    CGSize size, clockStringSize, locationStringSize;
     NSString *string;
 
     // Story title
@@ -239,6 +239,7 @@ static BOOL _loggedIn;
     point = CGPointMake(TABLE_CELL_MARGIN, floor(TOP_VIEW_HEIGHT/2 + (clockStringSize.height - _clockSymbolImage.size.height)/2)+SPACER_DISTANCE);
     [_clockSymbolImage drawAtPoint:point];
     
+    locationStringSize = CGSizeZero;
     if (self.story.isLocationEnabled && [self.story.location.name length]) {
         // Location label
         point.x = TABLE_CELL_MARGIN+_clockSymbolImage.size.width+SPACER_DISTANCE+clockStringSize.width+2*SPACER_DISTANCE+_locationSymbolImage.size.width+SPACER_DISTANCE;
@@ -247,22 +248,45 @@ static BOOL _loggedIn;
         string = self.story.location.name;
         size = CGSizeMake(CGRectGetWidth(self.frame)/2 - TABLE_CELL_MARGIN - BUTTON_SPACING, TOP_VIEW_HEIGHT/2);
         
-        size = [string boundingRectWithSize:size
+        locationStringSize = [string boundingRectWithSize:size
                                                options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin
                                             attributes:@{NSFontAttributeName: _mediumFont,
-                                                         NSForegroundColorAttributeName:
-                                                             [UIColor grayColor],NSParagraphStyleAttributeName: paraStyle}
+                                                         NSForegroundColorAttributeName: [UIColor grayColor],
+                                                         NSParagraphStyleAttributeName: paraStyle}
                                                context:nil].size;
         
-        [string drawInRect:CGRectMake(point.x, point.y, floor(size.width), TOP_VIEW_HEIGHT)
+        [string drawInRect:CGRectMake(point.x, point.y, floor(locationStringSize.width), TOP_VIEW_HEIGHT)
             withAttributes:@{NSFontAttributeName: _mediumFont,
+                             NSForegroundColorAttributeName: [UIColor grayColor],
                              NSParagraphStyleAttributeName: paraStyle}];
         
         // Location image
         // Center image according to label
         point = CGPointMake(TABLE_CELL_MARGIN+_clockSymbolImage.size.width+SPACER_DISTANCE+clockStringSize.width+2*SPACER_DISTANCE,
-                            floor(TOP_VIEW_HEIGHT/2 + (size.height - _locationSymbolImage.size.height)/2)+SPACER_DISTANCE);
+                            floor(TOP_VIEW_HEIGHT/2 + (locationStringSize.height - _locationSymbolImage.size.height)/2)+SPACER_DISTANCE);
         [_locationSymbolImage drawAtPoint:point];
+    }
+    
+    // Number of pieces
+    if (self.story.pieces.count) {
+        point.x = TABLE_CELL_MARGIN+_clockSymbolImage.size.width+SPACER_DISTANCE+clockStringSize.width+2*SPACER_DISTANCE+_locationSymbolImage.size.width+SPACER_DISTANCE+locationStringSize.width+SPACER_DISTANCE;
+        point.y = TOP_VIEW_HEIGHT/2+SPACER_DISTANCE;
+        [[UIColor grayColor] set];
+        string = [NSString stringWithFormat:@"#%d pcs", self.story.pieces.count];
+        
+        size = CGSizeMake(CGRectGetWidth(self.frame)/2 - TABLE_CELL_MARGIN - BUTTON_SPACING, TOP_VIEW_HEIGHT/2);
+        
+        size = [string boundingRectWithSize:size
+                                    options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin
+                                 attributes:@{NSFontAttributeName: _mediumFont,
+                                              NSForegroundColorAttributeName: [UIColor grayColor],
+                                              NSParagraphStyleAttributeName: paraStyle}
+                                    context:nil].size;
+        
+        [string drawInRect:CGRectMake(point.x, point.y, floor(size.width), TOP_VIEW_HEIGHT)
+            withAttributes:@{NSFontAttributeName: _mediumFont,
+                             NSForegroundColorAttributeName: [UIColor grayColor],
+                             NSParagraphStyleAttributeName: paraStyle}];
     }
 }
 

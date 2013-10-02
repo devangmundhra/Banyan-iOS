@@ -23,6 +23,9 @@
 
 @implementation SideNavigatorViewController
 
+#define BACKGROUND_COLOR BANYAN_DARKBROWN_COLOR
+#define SEPERATOR_COLOR BANYAN_BROWN_COLOR
+#define FOREGROUND_COLOR BANYAN_LIGHTGRAY_COLOR
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -65,8 +68,8 @@
 {
     [super viewDidLoad];
     [self setNeedsStatusBarAppearanceUpdate];
-    self.tableView.backgroundColor = BANYAN_DARKBROWN_COLOR;
-    self.tableView.separatorColor = BANYAN_BROWN_COLOR;
+    self.tableView.backgroundColor = BACKGROUND_COLOR;
+    self.tableView.separatorColor = SEPERATOR_COLOR;
     self.tableView.rowHeight = 40.0f;
 }
 
@@ -85,7 +88,7 @@
 {
     BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), 65)];
-    view.backgroundColor = BANYAN_DARKBROWN_COLOR;
+    view.backgroundColor = BACKGROUND_COLOR;
     
     
     if (![BanyanAppDelegate loggedIn]) {
@@ -160,7 +163,7 @@
     }
     
     cell.textLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:15];
-    cell.textLabel.textColor = BANYAN_LIGHTGRAY_COLOR;
+    cell.textLabel.textColor = FOREGROUND_COLOR;
     
     // Configure the cell...
     if ([BanyanAppDelegate loggedIn]) {
@@ -205,9 +208,9 @@
         }
     }
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    cell.backgroundColor = BANYAN_DARKBROWN_COLOR;
+    cell.backgroundColor = BACKGROUND_COLOR;
     UIView *backgroundView = [[UIView alloc] initWithFrame:cell.bounds];
-    backgroundView.backgroundColor = BANYAN_BROWN_COLOR;
+    backgroundView.backgroundColor = SEPERATOR_COLOR;
     backgroundView.layer.masksToBounds = YES;
     backgroundView.layer.shadowOffset = CGSizeMake(0, 0);
     backgroundView.layer.shadowRadius = 5;

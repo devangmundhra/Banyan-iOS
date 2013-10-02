@@ -154,6 +154,7 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     if (self.beganUpdates) [self.tableView endUpdates];
+    self.beganUpdates = NO;
 }
 
 - (void)endSuspensionOfUpdatesDueToContextChanges

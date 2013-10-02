@@ -20,9 +20,13 @@
 #import "Media.h"
 #import "User.h"
 #import "SDWebImage/UIImageView+WebCache.h"
+#import "Piece+Delete.h"
+#import "ModifyStoryViewController.h"
+#import "ModifyPieceViewController.h"
 
-@interface ReadPieceViewController ()
+@interface ReadPieceViewController () <UIActionSheetDelegate, ModifyPieceViewControllerDelegate>
 
+@property (strong, nonatomic) UIView *storyInfoView;
 @property (strong, nonatomic) IBOutlet UIScrollView *contentView;
 @property (strong, nonatomic) IBOutlet SSLabel *pieceCaptionView;
 @property (strong, nonatomic) IBOutlet UITextView *pieceTextView;
@@ -68,6 +72,7 @@
 @synthesize pieceObserverToken1, pieceObserverToken2, pieceObserverToken3, pieceObserverToken4;
 @synthesize mediaFocusManager = _mediaFocusManager;
 @synthesize audioPlayer = _audioPlayer;
+@synthesize storyInfoView = _storyInfoView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -106,17 +111,74 @@
     [self refreshUI];
 }
 
+#define INFOVIEW_HEIGHT 38.0f
+#define BUTTON_SPACING 5.0f
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
     
-    CGRect frame = [UIScreen mainScreen].bounds;
-    if (DEVICE_VERSION_7PLUS) {
-        CGFloat statusBarOffset = [[UIApplication sharedApplication] statusBarFrame].size.height;
-        frame.origin.y += statusBarOffset;
-        frame.size.height -= statusBarOffset;
+    CGRect frame = [UIScreen mainScreen].applicationFrame;
+    self.view.frame = frame;
+    
+    CGFloat statusBarOffset = [[UIApplication sharedApplication] statusBarFrame].size.height;
+    frame = self.view.bounds;
+    frame.size.height = INFOVIEW_HEIGHT + statusBarOffset;
+    
+    self.storyInfoView = [[UIView alloc] initWithFrame:frame];
+    self.storyInfoView.backgroundColor = [UIColor clearColor];
+    
+    UIImage *backArrowImage = [UIImage imageNamed:@"backArrow"];
+    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    CGFloat maxButtonDim = MAX(backArrowImage.size.width, backArrowImage.size.height) + BUTTON_SPACING + 4;
+    backButton.frame = CGRectMake(BUTTON_SPACING, statusBarOffset, floor(maxButtonDim), floor(maxButtonDim));
+    [backButton setImage:backArrowImage forState:UIControlStateNormal];
+    [backButton addTarget:self.delegate action:@selector(readPieceViewControllerDoneReading) forControlEvents:UIControlEventTouchUpInside];
+    backButton.showsTouchWhenHighlighted = YES;
+    [backButton.layer setBorderWidth:0.5f];
+    [backButton.layer setBorderColor:BANYAN_LIGHTGRAY_COLOR.CGColor];
+    [backButton.layer setCornerRadius:4];
+    [self.storyInfoView addSubview:backButton];
+    
+    UIImage *settingsImage = [UIImage imageNamed:@"settingsButton"];
+    maxButtonDim = MAX(settingsImage.size.width, settingsImage.size.height) + BUTTON_SPACING + 4;
+    UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    settingsButton.frame = CGRectMake(floor(self.view.frame.size.width - maxButtonDim - BUTTON_SPACING), statusBarOffset,
+                                      floor(maxButtonDim), floor(maxButtonDim));
+    
+    [settingsButton setImage:settingsImage forState:UIControlStateNormal];
+    [settingsButton addTarget:self action:@selector(settingsPopup:) forControlEvents:UIControlEventTouchUpInside];
+    settingsButton.showsTouchWhenHighlighted = YES;
+    [settingsButton.layer setBorderWidth:0.5f];
+    [settingsButton.layer setBorderColor:BANYAN_LIGHTGRAY_COLOR.CGColor];
+    [settingsButton.layer setCornerRadius:4];
+    [self.storyInfoView addSubview:settingsButton];
+    
+    UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    titleButton.frame = CGRectMake(CGRectGetMaxX(backButton.frame) + 2*BUTTON_SPACING, statusBarOffset,
+                                   CGRectGetMinX(settingsButton.frame) - CGRectGetMaxX(backButton.frame) - 2*BUTTON_SPACING,
+                                   CGRectGetHeight(self.storyInfoView.bounds)-statusBarOffset);
+    titleButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:16];
+    titleButton.titleLabel.minimumScaleFactor = 0.7;
+    titleButton.backgroundColor = [UIColor clearColor];
+    [titleButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    titleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    [titleButton setTitleShadowColor:[UIColor colorWithWhite:0.0 alpha:0.5] forState:UIControlStateNormal];
+    [titleButton setTitle:self.piece.story.title forState:UIControlStateNormal];
+    if (self.piece.story.canContribute) {
+        titleButton.showsTouchWhenHighlighted = YES;
+        [titleButton addTarget:self action:@selector(editStoryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        titleButton.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:self.piece.story.title
+                                                                                attributes:@{NSUnderlineStyleAttributeName: @1}];;
     }
+    [self.storyInfoView insertSubview:titleButton atIndex:0];
+    
+    [self.view addSubview:self.storyInfoView];
+    
+    frame = [UIScreen mainScreen].bounds;
+    frame.origin.y += CGRectGetMaxY(self.storyInfoView.frame);
+    frame.size.height -= CGRectGetMaxY(self.storyInfoView.frame);
     self.contentView = [[UIScrollView alloc] initWithFrame:frame];
     self.contentView.backgroundColor = BANYAN_WHITE_COLOR;
     [self.view addSubview:self.contentView];
@@ -284,7 +346,8 @@
         NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
         [dateFormat setDateStyle:NSDateFormatterShortStyle];
         self.timeLabel.frame = CGRectMake(CGRectGetMaxX(self.authorLabel.frame), 0, 75, CGRectGetHeight(frame));
-        self.timeLabel.text = [NSString stringWithFormat:@"(%@)",[dateFormat stringFromDate:[self.piece.createdAt dateByAddingTimeInterval:[[NSTimeZone systemTimeZone] secondsFromGMT]]]];
+        self.timeLabel.text = [NSString stringWithFormat:@"(%@)",[dateFormat stringFromDate:[self.piece.createdAt
+                                                                                             dateByAddingTimeInterval:[[NSTimeZone systemTimeZone] secondsFromGMT]]]];
         self.timeLabel.textEdgeInsets = UIEdgeInsetsMake(0, 2, 0, 0);
         self.timeLabel.font = [UIFont fontWithName:@"Roboto" size:16];
         self.timeLabel.minimumScaleFactor = 0.8;
@@ -330,12 +393,20 @@
         csize.height = CGRectGetMaxY(self.pieceCaptionView.frame); // overwrite because caption will always be lower than image.
     }
     if (hasDescription) {
-        frame = CGRectMake(20, CGRectGetMaxY(frame), frame.size.width-2*20, [UIScreen mainScreen].applicationFrame.size.height - CGRectGetMaxY(frame));
+        CGPoint descOrigin = CGPointMake(20, CGRectGetMaxY(frame));
+        NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
+        paraStyle.alignment = NSTextAlignmentLeft;
+        
+        frame = [self.piece.longText boundingRectWithSize:CGSizeMake(frame.size.width-2*20, FLT_MAX)
+                                                  options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin
+                                               attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:18],
+                                                            NSParagraphStyleAttributeName: paraStyle}
+                                                  context:nil];
+        frame.origin = descOrigin;
+        frame.size.height += CGRectGetHeight([[UIApplication sharedApplication] statusBarFrame]); // Some correction otherwise the whole text isn't showing up
+        
         self.pieceTextView.frame = frame;
         self.pieceTextView.text = self.piece.longText;
-        frame = self.pieceTextView.frame;
-        self.pieceTextView.contentSize = frame.size;
-        self.pieceTextView.frame = frame;
         csize.height += CGRectGetHeight(self.pieceTextView.frame);
     }
     self.contentView.contentSize = csize;
@@ -453,6 +524,94 @@
 }
 
 #pragma mark target actions for read piece buttons/gestures
+# pragma mark
+# pragma mark target actions
+
+- (void)settingsPopup:(id)sender
+{
+    UIActionSheet *actionSheet = nil;
+    if (self.piece.story.canContribute && [BanyanAppDelegate loggedIn]) {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                  delegate:self
+                                         cancelButtonTitle:@"Cancel"
+                                    destructiveButtonTitle:nil
+                                         otherButtonTitles:@"Add a piece", @"Edit piece", @"Delete piece", @"Share via Facebook", nil];
+    } else {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                  delegate:self
+                                         cancelButtonTitle:@"Cancel"
+                                    destructiveButtonTitle:nil
+                                         otherButtonTitles:@"Share via Facebook", nil];
+    }
+    
+    actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
+    [actionSheet showInView:self.view];
+}
+
+- (void)editStoryButtonPressed:(id)sender
+{
+    self.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    ModifyStoryViewController *newStoryViewController = [[ModifyStoryViewController alloc] initWithStory:self.piece.story];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:newStoryViewController];
+    [self presentViewController:navController animated:YES completion:nil];
+}
+
+- (void) deletePiece:(Piece *)piece
+{
+    NSUInteger curPieceNum = self.piece.pieceNumber;
+    NSNumber *turnToPage = nil;
+    if (curPieceNum != [self.piece.story.pieces count]) {
+        turnToPage = [NSNumber numberWithUnsignedInteger:curPieceNum];
+    } else { // This was the last piece
+        turnToPage = [NSNumber numberWithUnsignedInteger:curPieceNum-1];
+    }
+    [Piece deletePiece:self.piece];
+    
+    if (!self.piece.story.pieces.count) {
+        [self.delegate readPieceViewControllerDoneReading];
+    } else {
+        [self.delegate readPieceViewControllerFlipToPiece:turnToPage];
+    }
+}
+
+#pragma mark Action sheet delegate method.
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    // the user clicked one of the OK/Cancel buttons
+    if (buttonIndex == actionSheet.cancelButtonIndex) {
+        // DO NOTHING ON CANCEL
+    }
+    else if (buttonIndex == actionSheet.destructiveButtonIndex) {
+        // delete story
+    }
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Add a piece"]) {
+        Piece *piece = [Piece newPieceDraftForStory:self.piece.story];
+        ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
+        addPieceViewController.delegate = self;
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:addPieceViewController];
+        [navController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
+        [self presentViewController:navController animated:YES completion:nil];
+    }
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Edit piece"]) {
+        ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:self.piece];
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:addPieceViewController];
+        //    addSceneViewController.delegate = self;
+        [navController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
+        [self presentViewController:navController animated:YES completion:nil];
+    }
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Delete piece"]) {
+        // Do this after a delay so that the action sheet can be dismissed
+        [self performSelector:@selector(deletePiece:) withObject:self.piece afterDelay:0.5];
+    }
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share via Facebook"]) {
+        // Share
+        [self.piece shareOnFacebook];
+    }
+    else {
+        NSLog(@"StoryReaderController_actionSheetclickedButtonAtIndex %@", [actionSheet buttonTitleAtIndex:buttonIndex]);
+    }
+}
+
 - (IBAction)storyContributors
 {
     InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] initWithViewerPermissions:self.piece.story.readAccess
@@ -514,6 +673,12 @@
     if ([self.delegate respondsToSelector:@selector(readPieceViewControllerFlipToPiece:)]) {
         [self.delegate performSelector:@selector(readPieceViewControllerFlipToPiece:) withObject:[NSNumber numberWithInteger:page+1]];
     }
+}
+
+#pragma mark ModifyPieceViewControllerDelegate
+- (void)modifyPieceViewController:(ModifyPieceViewController *)controller didFinishAddingPiece:(Piece *)piece
+{
+    [self.delegate readPieceViewControllerFlipToPiece:[NSNumber numberWithInt:piece.pieceNumber]];
 }
 
 # pragma mark InvitedTableViewControllerDelegate

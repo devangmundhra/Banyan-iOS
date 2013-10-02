@@ -19,12 +19,15 @@
 		510F49171727D191005BC5ED /* NSObject+BlockObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F49161727D191005BC5ED /* NSObject+BlockObservation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		510F4920172A5B86005BC5ED /* Piece.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F491F172A5B86005BC5ED /* Piece.m */; };
 		510F4923172A5C17005BC5ED /* Story.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F4922172A5C17005BC5ED /* Story.m */; };
+		5114F56817FBE839000CB875 /* libAviarySDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5114F56517FBE839000CB875 /* libAviarySDK.a */; };
+		5114F56917FBE839000CB875 /* AviarySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5114F56717FBE839000CB875 /* AviarySDKResources.bundle */; };
 		51170B5717F2D1E10015B343 /* BNSidePanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B5617F2D1E10015B343 /* BNSidePanelController.m */; };
 		51170B6217F3D73D0015B343 /* SideNavigatorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B6117F3D73D0015B343 /* SideNavigatorViewController.m */; };
 		51170B6E17F42CD50015B343 /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B6C17F42CD50015B343 /* ProfileViewController.m */; };
 		51170B6F17F42CD50015B343 /* ProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51170B6D17F42CD50015B343 /* ProfileViewController.xib */; };
 		51170B7317F4319C0015B343 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B7117F4319C0015B343 /* AboutViewController.m */; };
 		51170B7417F4319C0015B343 /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51170B7217F4319C0015B343 /* AboutViewController.xib */; };
+		51170B7817F906FF0015B343 /* BNHorizontalSwipeInteractionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B7717F906FF0015B343 /* BNHorizontalSwipeInteractionController.m */; };
 		5122365C17E688220032892A /* AWSSNS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5122365B17E688220032892A /* AWSSNS.framework */; };
 		512598BB17AB916600FEFCF0 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 512598BA17AB916600FEFCF0 /* FacebookSDK.framework */; };
 		512598BC17AB918D00FEFCF0 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
@@ -218,8 +221,6 @@
 		51FAC0C91731144F0046C2D6 /* heartSymbolPink@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51FAC0C71731144F0046C2D6 /* heartSymbolPink@2x.png */; };
 		51FD96ED1665E6C7001A1709 /* dotted-pattern.png in Resources */ = {isa = PBXBuildFile; fileRef = 51FD96EB1665E6C7001A1709 /* dotted-pattern.png */; };
 		51FD96EE1665E6C7001A1709 /* dotted-pattern@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51FD96EC1665E6C7001A1709 /* dotted-pattern@2x.png */; };
-		51FE17DF1766FAA400E10639 /* libAviarySDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51FE17DC1766FAA400E10639 /* libAviarySDK.a */; };
-		51FE17E01766FAA400E10639 /* AviarySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51FE17DE1766FAA400E10639 /* AviarySDKResources.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -244,6 +245,16 @@
 		510F491F172A5B86005BC5ED /* Piece.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Piece.m; path = Banyan/Piece.m; sourceTree = "<group>"; };
 		510F4921172A5C17005BC5ED /* Story.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Story.h; path = Banyan/Story.h; sourceTree = "<group>"; };
 		510F4922172A5C17005BC5ED /* Story.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Story.m; path = Banyan/Story.m; sourceTree = "<group>"; };
+		5114F55D17FBE839000CB875 /* AFOpenGLManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFOpenGLManager.h; sourceTree = "<group>"; };
+		5114F55E17FBE839000CB875 /* AFPhotoEditorContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorContext.h; sourceTree = "<group>"; };
+		5114F55F17FBE839000CB875 /* AFPhotoEditorController+InAppPurchase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AFPhotoEditorController+InAppPurchase.h"; sourceTree = "<group>"; };
+		5114F56017FBE839000CB875 /* AFPhotoEditorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorController.h; sourceTree = "<group>"; };
+		5114F56117FBE839000CB875 /* AFPhotoEditorControllerOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorControllerOptions.h; sourceTree = "<group>"; };
+		5114F56217FBE839000CB875 /* AFPhotoEditorCustomization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorCustomization.h; sourceTree = "<group>"; };
+		5114F56317FBE839000CB875 /* AFPhotoEditorProduct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorProduct.h; sourceTree = "<group>"; };
+		5114F56417FBE839000CB875 /* AFPhotoEditorSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorSession.h; sourceTree = "<group>"; };
+		5114F56517FBE839000CB875 /* libAviarySDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libAviarySDK.a; sourceTree = "<group>"; };
+		5114F56717FBE839000CB875 /* AviarySDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AviarySDKResources.bundle; sourceTree = "<group>"; };
 		51170B5517F2D1E10015B343 /* BNSidePanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNSidePanelController.h; sourceTree = "<group>"; };
 		51170B5617F2D1E10015B343 /* BNSidePanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNSidePanelController.m; sourceTree = "<group>"; };
 		51170B6017F3D73D0015B343 /* SideNavigatorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideNavigatorViewController.h; sourceTree = "<group>"; };
@@ -254,6 +265,8 @@
 		51170B7017F4319C0015B343 /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
 		51170B7117F4319C0015B343 /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
 		51170B7217F4319C0015B343 /* AboutViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AboutViewController.xib; sourceTree = "<group>"; };
+		51170B7617F906FF0015B343 /* BNHorizontalSwipeInteractionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNHorizontalSwipeInteractionController.h; path = Banyan/BNHorizontalSwipeInteractionController.h; sourceTree = "<group>"; };
+		51170B7717F906FF0015B343 /* BNHorizontalSwipeInteractionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNHorizontalSwipeInteractionController.m; path = Banyan/BNHorizontalSwipeInteractionController.m; sourceTree = "<group>"; };
 		511E708A161A9756009AAD25 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		5122365B17E688220032892A /* AWSSNS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSSNS.framework; sourceTree = "<group>"; };
@@ -513,14 +526,6 @@
 		51FAC0C71731144F0046C2D6 /* heartSymbolPink@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "heartSymbolPink@2x.png"; sourceTree = "<group>"; };
 		51FD96EB1665E6C7001A1709 /* dotted-pattern.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dotted-pattern.png"; sourceTree = "<group>"; };
 		51FD96EC1665E6C7001A1709 /* dotted-pattern@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dotted-pattern@2x.png"; sourceTree = "<group>"; };
-		51FE17D61766FAA400E10639 /* AFOpenGLManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFOpenGLManager.h; sourceTree = "<group>"; };
-		51FE17D71766FAA400E10639 /* AFPhotoEditorContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorContext.h; sourceTree = "<group>"; };
-		51FE17D81766FAA400E10639 /* AFPhotoEditorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorController.h; sourceTree = "<group>"; };
-		51FE17D91766FAA400E10639 /* AFPhotoEditorControllerOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorControllerOptions.h; sourceTree = "<group>"; };
-		51FE17DA1766FAA400E10639 /* AFPhotoEditorCustomization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorCustomization.h; sourceTree = "<group>"; };
-		51FE17DB1766FAA400E10639 /* AFPhotoEditorSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorSession.h; sourceTree = "<group>"; };
-		51FE17DC1766FAA400E10639 /* libAviarySDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libAviarySDK.a; sourceTree = "<group>"; };
-		51FE17DE1766FAA400E10639 /* AviarySDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AviarySDKResources.bundle; sourceTree = "<group>"; };
 		8ED9F22B0C2B4CE9B82B3621 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		F6EDBDCCC91248339FDC7301 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -545,7 +550,7 @@
 				5189B45715B3A38E00562DD0 /* QuartzCore.framework in Frameworks */,
 				5189B3C915B39BE700562DD0 /* AudioToolbox.framework in Frameworks */,
 				5189B3C715B39BE100562DD0 /* MobileCoreServices.framework in Frameworks */,
-				51FE17DF1766FAA400E10639 /* libAviarySDK.a in Frameworks */,
+				5114F56817FBE839000CB875 /* libAviarySDK.a in Frameworks */,
 				5189B2BC15B387E200562DD0 /* CoreGraphics.framework in Frameworks */,
 				514EEA8C17C5EF4700B4BCBF /* AWSRuntime.framework in Frameworks */,
 				5189B3C315B39BCC00562DD0 /* MapKit.framework in Frameworks */,
@@ -590,6 +595,39 @@
 			name = Media;
 			sourceTree = "<group>";
 		};
+		5114F55B17FBE839000CB875 /* AviarySDK */ = {
+			isa = PBXGroup;
+			children = (
+				5114F55C17FBE839000CB875 /* Headers */,
+				5114F56517FBE839000CB875 /* libAviarySDK.a */,
+				5114F56617FBE839000CB875 /* Resources */,
+			);
+			path = AviarySDK;
+			sourceTree = "<group>";
+		};
+		5114F55C17FBE839000CB875 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				5114F55D17FBE839000CB875 /* AFOpenGLManager.h */,
+				5114F55E17FBE839000CB875 /* AFPhotoEditorContext.h */,
+				5114F55F17FBE839000CB875 /* AFPhotoEditorController+InAppPurchase.h */,
+				5114F56017FBE839000CB875 /* AFPhotoEditorController.h */,
+				5114F56117FBE839000CB875 /* AFPhotoEditorControllerOptions.h */,
+				5114F56217FBE839000CB875 /* AFPhotoEditorCustomization.h */,
+				5114F56317FBE839000CB875 /* AFPhotoEditorProduct.h */,
+				5114F56417FBE839000CB875 /* AFPhotoEditorSession.h */,
+			);
+			path = Headers;
+			sourceTree = "<group>";
+		};
+		5114F56617FBE839000CB875 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5114F56717FBE839000CB875 /* AviarySDKResources.bundle */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		51170B6317F425D70015B343 /* FeedBackViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -628,6 +666,15 @@
 				51170B7217F4319C0015B343 /* AboutViewController.xib */,
 			);
 			name = "About View Controller";
+			sourceTree = "<group>";
+		};
+		51170B7917F907090015B343 /* Interaction Controller for Story List */ = {
+			isa = PBXGroup;
+			children = (
+				51170B7617F906FF0015B343 /* BNHorizontalSwipeInteractionController.h */,
+				51170B7717F906FF0015B343 /* BNHorizontalSwipeInteractionController.m */,
+			);
+			name = "Interaction Controller for Story List";
 			sourceTree = "<group>";
 		};
 		511B421C17A6669100466A8B /* BNImageLabel */ = {
@@ -697,13 +744,14 @@
 			name = Read;
 			sourceTree = "<group>";
 		};
-		5158AE2D16F56F850089193E /* Side Panel Controller */ = {
+		5158AE2D16F56F850089193E /* BNSidePanelController */ = {
 			isa = PBXGroup;
 			children = (
 				51170B5517F2D1E10015B343 /* BNSidePanelController.h */,
 				51170B5617F2D1E10015B343 /* BNSidePanelController.m */,
 			);
-			name = "Side Panel Controller";
+			name = BNSidePanelController;
+			path = Banyan;
 			sourceTree = "<group>";
 		};
 		51596AB21744BB0A008F5276 /* Constants and Misc */ = {
@@ -781,7 +829,7 @@
 		517A01AA1709539800665F0F /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
-				51FE17D41766FAA400E10639 /* AviarySDK */,
+				5114F55B17FBE839000CB875 /* AviarySDK */,
 			);
 			name = Vendors;
 			sourceTree = "<group>";
@@ -934,7 +982,6 @@
 				51596AB21744BB0A008F5276 /* Constants and Misc */,
 				5189B2C615B387E200562DD0 /* BanyanAppDelegate.h */,
 				5189B2C715B387E200562DD0 /* BanyanAppDelegate.m */,
-				5158AE2D16F56F850089193E /* Side Panel Controller */,
 				5189B35B15B3976700562DD0 /* Story List */,
 				51CFD93B15F57F75002926F9 /* SideNavigator View Controller */,
 				51B2351B17168C6D004241C1 /* Custom Views and View Controllers */,
@@ -1096,6 +1143,7 @@
 				51984D42176EE10E00CD6C3E /* CoreDataTableViewController.m */,
 				5189B31715B395F300562DD0 /* StoryListTableViewController.h */,
 				5189B31815B395F300562DD0 /* StoryListTableViewController.m */,
+				51170B7917F907090015B343 /* Interaction Controller for Story List */,
 			);
 			name = "Story List";
 			path = ..;
@@ -1190,6 +1238,7 @@
 		51B2351B17168C6D004241C1 /* Custom Views and View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				5158AE2D16F56F850089193E /* BNSidePanelController */,
 				511B421C17A6669100466A8B /* BNImageLabel */,
 				511B421D17A6669C00466A8B /* BNTableViewController */,
 				511B421E17A666B100466A8B /* BNTabBarController */,
@@ -1289,37 +1338,6 @@
 				51FAC0BB172F8C500046C2D6 /* FBGraphObjectToDataTransformer.m */,
 			);
 			name = "Value Transformers";
-			sourceTree = "<group>";
-		};
-		51FE17D41766FAA400E10639 /* AviarySDK */ = {
-			isa = PBXGroup;
-			children = (
-				51FE17D51766FAA400E10639 /* Headers */,
-				51FE17DC1766FAA400E10639 /* libAviarySDK.a */,
-				51FE17DD1766FAA400E10639 /* Resources */,
-			);
-			path = AviarySDK;
-			sourceTree = "<group>";
-		};
-		51FE17D51766FAA400E10639 /* Headers */ = {
-			isa = PBXGroup;
-			children = (
-				51FE17D61766FAA400E10639 /* AFOpenGLManager.h */,
-				51FE17D71766FAA400E10639 /* AFPhotoEditorContext.h */,
-				51FE17D81766FAA400E10639 /* AFPhotoEditorController.h */,
-				51FE17D91766FAA400E10639 /* AFPhotoEditorControllerOptions.h */,
-				51FE17DA1766FAA400E10639 /* AFPhotoEditorCustomization.h */,
-				51FE17DB1766FAA400E10639 /* AFPhotoEditorSession.h */,
-			);
-			path = Headers;
-			sourceTree = "<group>";
-		};
-		51FE17DD1766FAA400E10639 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				51FE17DE1766FAA400E10639 /* AviarySDKResources.bundle */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1441,7 +1459,7 @@
 				51B234FE171658BF004241C1 /* Roboto-Bold.ttf in Resources */,
 				51B234FF171658BF004241C1 /* Roboto-BoldCondensed.ttf in Resources */,
 				51B23500171658BF004241C1 /* Roboto-BoldCondensedItalic.ttf in Resources */,
-				51FE17E01766FAA400E10639 /* AviarySDKResources.bundle in Resources */,
+				5114F56917FBE839000CB875 /* AviarySDKResources.bundle in Resources */,
 				51B23501171658BF004241C1 /* Roboto-BoldItalic.ttf in Resources */,
 				51B23502171658BF004241C1 /* Roboto-Condensed.ttf in Resources */,
 				51B23503171658BF004241C1 /* Roboto-CondensedItalic.ttf in Resources */,
@@ -1549,6 +1567,7 @@
 				510787C7163A36A90042B436 /* UIImage+ResizeAdditions.m in Sources */,
 				51170B6217F3D73D0015B343 /* SideNavigatorViewController.m in Sources */,
 				51984D46176EEB5600CD6C3E /* SinglePieceView.m in Sources */,
+				51170B7817F906FF0015B343 /* BNHorizontalSwipeInteractionController.m in Sources */,
 				51170B7317F4319C0015B343 /* AboutViewController.m in Sources */,
 				510787C8163A36A90042B436 /* UIImage+RoundedCornerAdditions.m in Sources */,
 				510787CF163A36D80042B436 /* AFBanyanAPIClient.m in Sources */,
@@ -1692,10 +1711,11 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Banyan/Banyan-Prefix.pch";
 				INFOPLIST_FILE = "Banyan/Banyan-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Banyan/AviarySDK\"",
+					"\\\"$(SRCROOT)/Banyan/AviarySDK\\\"",
+					/Users/devangmundhra/Developer/Banyan/Banyan/AviarySDK,
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -1736,10 +1756,11 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Banyan/Banyan-Prefix.pch";
 				INFOPLIST_FILE = "Banyan/Banyan-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Banyan/AviarySDK\"",
+					"\\\"$(SRCROOT)/Banyan/AviarySDK\\\"",
+					/Users/devangmundhra/Developer/Banyan/Banyan/AviarySDK,
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",

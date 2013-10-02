@@ -11,8 +11,6 @@
 #import "Story+Permissions.h"
 #import "MBProgressHUD.h"
 #import "Piece+Create.h"
-#import "Piece+Delete.h"
-#import "ModifyStoryViewController.h"
 
 @interface StoryReaderController ()
 @property (strong, nonatomic) Piece *currentPiece;
@@ -62,34 +60,12 @@
     return self;
 }
 
-#define BUTTON_SPACING 5.0f
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
     self.title = self.story.title;
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
-    
-    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settingsButton"] style:UIBarButtonItemStyleDone target:self action:@selector(settingsPopup:)];
-    self.navigationItem.rightBarButtonItem = rightBarButton;
-    
-    UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    titleButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:15];
-    titleButton.titleLabel.minimumScaleFactor = 0.7;
-    [titleButton setTitleColor:BANYAN_BLACK_COLOR forState:UIControlStateNormal];
-    titleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    [titleButton setTitleShadowColor:[UIColor colorWithWhite:0.0 alpha:0.5] forState:UIControlStateNormal];
-    [titleButton setTitle:self.title forState:UIControlStateNormal];
-    if (self.story.canContribute) {
-        titleButton.showsTouchWhenHighlighted = YES;
-        [titleButton addTarget:self action:@selector(editStoryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        titleButton.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:self.title
-                                                                                attributes:@{NSUnderlineStyleAttributeName: @1}];;
-    }
-    
-    [self.navigationItem setTitleView:titleButton];
-    [self performSelector:@selector(hideNavigationBar:) withObject:nil afterDelay:1];
     
     [Story viewedStory:self.story];
     
@@ -113,16 +89,11 @@
     self.pageViewController.view.frame = self.view.bounds;
     [self.pageViewController didMoveToParentViewController:self];
     
-    UISwipeGestureRecognizer* swipeDownGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showNavigationBar:)];
-    swipeDownGestureRecognizer.direction = UISwipeGestureRecognizerDirectionDown;
-    
-//    [self.pageViewController.gestureRecognizers enumerateObjectsUsingBlock:^(UIGestureRecognizer *gR, NSUInteger idx, BOOL *stop){
-//        gR.delegate = self;
-//        [gR requireGestureRecognizerToFail:swipeDownGestureRecognizer]; // So that a swipe down does not cause page turn
-//    }];
+    [self.pageViewController.gestureRecognizers enumerateObjectsUsingBlock:^(UIGestureRecognizer *gR, NSUInteger idx, BOOL *stop){
+        gR.delegate = self;
+    }];
 
     self.view.gestureRecognizers = self.pageViewController.gestureRecognizers;
-    [self.view addGestureRecognizer:swipeDownGestureRecognizer];
     
     [TestFlight passCheckpoint:@"Story started to be read"];
 }
@@ -139,108 +110,6 @@
     self.settingsButton = nil;
     self.titleLabel = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-# pragma mark
-# pragma mark target actions
-
-- (IBAction)hideNavigationBar:(id)sender
-{
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
-}
-
-- (IBAction)showNavigationBar:(id)sender
-{
-    if (!self.navigationController.navigationBarHidden)
-        return;
-    
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
-    [self performSelector:@selector(hideNavigationBar:) withObject:sender afterDelay:2];
-}
-
-- (void)settingsPopup:(id)sender
-{
-    UIActionSheet *actionSheet = nil;
-    if (self.story.canContribute && [BanyanAppDelegate loggedIn]) {
-        actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                  delegate:self
-                                         cancelButtonTitle:@"Cancel"
-                                    destructiveButtonTitle:nil
-                                         otherButtonTitles:@"Add a piece", @"Edit piece", @"Delete piece", @"Share via Facebook", nil];
-    } else {
-        actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                  delegate:self
-                                         cancelButtonTitle:@"Cancel"
-                                    destructiveButtonTitle:nil
-                                         otherButtonTitles:@"Share via Facebook", nil];
-    }
-
-    actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
-    [actionSheet showInView:self.view];
-}
-
-- (void)editStoryButtonPressed:(id)sender
-{
-    self.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    ModifyStoryViewController *newStoryViewController = [[ModifyStoryViewController alloc] initWithStory:self.story];
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:newStoryViewController];
-    [self presentViewController:navController animated:YES completion:nil];
-}
-
-- (void) deletePiece:(Piece *)piece
-{
-    NSUInteger curPieceNum = self.currentPiece.pieceNumber;
-    NSNumber *turnToPage = nil;
-    if (curPieceNum != [self.story.pieces count]) {
-        turnToPage = [NSNumber numberWithUnsignedInteger:curPieceNum];
-    } else { // This was the last piece
-        turnToPage = [NSNumber numberWithUnsignedInteger:curPieceNum-1];
-    }
-    [Piece deletePiece:self.currentPiece];
-    
-    if (!self.story.pieces.count) {
-        [self prepareToGoToStoryList];
-    } else {
-        [self readPieceViewControllerFlipToPiece:turnToPage];
-    }
-}
-
-#pragma mark Action sheet delegate method.
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    // the user clicked one of the OK/Cancel buttons
-    if (buttonIndex == actionSheet.cancelButtonIndex) {
-        // DO NOTHING ON CANCEL
-    }
-    else if (buttonIndex == actionSheet.destructiveButtonIndex) {
-        // delete story
-    }
-    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Add a piece"]) {
-        Piece *piece = [Piece newPieceDraftForStory:self.story];
-        ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
-        addPieceViewController.delegate = self;
-        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:addPieceViewController];
-        [navController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
-        [self presentViewController:navController animated:YES completion:nil];
-    }
-    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Edit piece"]) {
-        ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:self.currentPiece];
-        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:addPieceViewController];
-        //    addSceneViewController.delegate = self;
-        [navController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
-        [self presentViewController:navController animated:YES completion:nil];
-    }
-    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Delete piece"]) {
-        // Do this after a delay so that the action sheet can be dismissed
-        [self performSelector:@selector(deletePiece:) withObject:self.currentPiece afterDelay:0.5];
-    }
-    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share via Facebook"]) {
-        // Share
-        [self.currentPiece shareOnFacebook];
-    }
-    else {
-        NSLog(@"StoryReaderController_actionSheetclickedButtonAtIndex %@", [actionSheet buttonTitleAtIndex:buttonIndex]);
-    }
 }
 
 # pragma mark - HUD when transitioning back
@@ -267,7 +136,7 @@
     
     if (pieceNum >= self.story.length) {
         // Go to next story or go to Story List
-        [self dismissReadView];
+        // Interaction gesture recognizer will take care of it
         return nil;
     }
     else {
@@ -285,7 +154,7 @@
     
     if (pieceNum <= 1) {
         // Go to story list
-        [self dismissReadView];
+        // Interaction gesture recognizer will take care of it
         return nil;
     }
     else {
@@ -326,12 +195,6 @@
     return readPieceViewController;
 }
 
-#pragma mark ModifyPieceViewControllerDelegate
-- (void)modifyPieceViewController:(ModifyPieceViewController *)controller didFinishAddingPiece:(Piece *)piece
-{
-    [self readPieceViewControllerFlipToPiece:[NSNumber numberWithInt:piece.pieceNumber]];
-}
-
 #pragma mark ReadPieceViewControllerDelegate
 - (BOOL)readPieceViewControllerFlipToPiece:(NSNumber *)pieceNumber
 {
@@ -361,7 +224,69 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void) readPieceViewControllerDoneReading
+{
+    [self dismissReadView];
+}
+
+- (void) interactionControllerDidWireToViewWithGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
+{
+    // The behaviour we want is that when we are at the beginning or end of story, we use this gesture
+    // recognizer, else let the default PageViewController's gesture recognizer play out
+    for (UIGestureRecognizer *gR in self.view.gestureRecognizers) {
+        if ([gR isEqual:gestureRecognizer]) {
+            continue;
+        }
+        if ([gR isKindOfClass:[UIPanGestureRecognizer class]]) {
+            [gestureRecognizer requireGestureRecognizerToFail:gR];
+        }
+    }
+}
+
 #pragma mark UIGestureRecognizerDelegate
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    NSUInteger currentPieceNum = self.currentPiece.pieceNumber;
+    
+    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+        if ([(UIPanGestureRecognizer*)gestureRecognizer velocityInView:gestureRecognizer.view].x > 0.0f) {
+            // Going left
+            Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum-1]];
+            if (!piece)
+                return NO;
+            else
+                return YES;
+        } else {
+            // Going right
+            Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum+1]];
+            if (!piece)
+                return NO;
+            else
+                return YES;
+        }
+    }
+    
+    if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+        if ([(UITapGestureRecognizer*)gestureRecognizer locationInView:gestureRecognizer.view].x > self.view.frame.size.width/2) {
+            // Tapped on left side
+            Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum-1]];
+            if (!piece)
+                return NO;
+            else
+                return YES;
+        } else {
+            // Tapped on right side
+            Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum+1]];
+            if (!piece)
+                return NO;
+            else
+                return YES;
+        }
+    }
+    
+    return YES;
+}
+
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
     if ([touch.view isKindOfClass:[UIControl class]]
@@ -374,6 +299,7 @@
         return YES;
     }
 }
+
 
 #pragma Memory Management
 - (void)didReceiveMemoryWarning

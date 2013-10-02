@@ -1,9 +1,9 @@
 //
 //  StoryListTableViewController.m
-//  Storied
+//  Banyan
 //
 //  Created by Devang Mundhra on 3/9/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Banyan. All rights reserved.
 //
 
 #import "StoryListTableViewController.h"
@@ -16,7 +16,8 @@
 #import "AFBanyanAPIClient.h"
 #import "MasterTabBarController.h"
 #import "CEFlipAnimationController.h"
-#import "CEHorizontalSwipeInteractionController.h"
+#import "BNHorizontalSwipeInteractionController.h"
+#import "ModifyPieceViewController.h"
 
 typedef enum {
     FilterStoriesSegmentIndexFollowing = 0,
@@ -28,7 +29,7 @@ typedef enum {
 @property (strong, nonatomic) NSIndexPath *indexOfVisibleBackView;
 
 @property (strong, nonatomic) CEFlipAnimationController *animationController;
-@property (strong, nonatomic) CEHorizontalSwipeInteractionController *interactionController;
+@property (strong, nonatomic) BNHorizontalSwipeInteractionController *interactionController;
 
 @end
 
@@ -38,7 +39,7 @@ typedef enum {
 
 -(UIStatusBarStyle)preferredStatusBarStyle
 {
-    return UIStatusBarStyleLightContent;
+    return UIStatusBarStyleDefault;
 }
 
 - (void)viewDidLoad
@@ -49,7 +50,7 @@ typedef enum {
 
     // Animation between view controllers
     self.animationController = [[CEFlipAnimationController alloc] init];
-    self.interactionController = [[CEHorizontalSwipeInteractionController alloc] init];
+    self.interactionController = [[BNHorizontalSwipeInteractionController alloc] init];
     
     self.title = @"Stories";
     
@@ -118,6 +119,18 @@ typedef enum {
                                                object:nil];
     
     [TestFlight passCheckpoint:@"RootViewController loaded"];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    self.suspendAutomaticTrackingOfChangesInManagedObjectContext = YES;
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    self.suspendAutomaticTrackingOfChangesInManagedObjectContext = NO;
 }
 
 - (void)viewDidUnload
@@ -256,7 +269,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     NSLog(@"Sharing story: %@", story);
-    assert(false);
+    NSAssert(false, @"Not sharing story yet!");
 }
 
 #pragma mark StoryListCellDelegate
@@ -451,7 +464,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source
 {
-//    [self.interactionController wireToViewController:presented forOperation:CEInteractionOperationDismiss];
+    [self.interactionController wireToViewController:presented forOperation:CEInteractionOperationDismiss];
     
     self.animationController.reverse = YES;
     return self.animationController;
@@ -463,15 +476,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     return self.animationController;
 }
 
-//- (id<UIViewControllerInteractiveTransitioning>)interactionControllerForPresentation:(id<UIViewControllerAnimatedTransitioning>)animator
-//{
-//    return self.interactionController;
-//}
-
 - (id<UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id<UIViewControllerAnimatedTransitioning>)animator
 {
     return self.interactionController.interactionInProgress ? self.interactionController : nil;
 }
+
 
 # pragma mark StoryPickerViewControllerDelegate
 - (void) storyPickerViewControllerDidPickStory:(Story *)story

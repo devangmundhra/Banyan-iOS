@@ -102,6 +102,8 @@
     
     self.storyListTableViewController = [[UINavigationController alloc] initWithRootViewController:[[StoryListTableViewController alloc] init]];
     self.homeViewController = [[BNSidePanelController alloc] init];
+    self.homeViewController.allowRightSwipe = NO;
+    self.homeViewController.allowLeftSwipe = NO;
     self.homeViewController.shouldResizeLeftPanel = YES;
     self.homeViewController.centerPanel = self.storyListTableViewController;
     self.homeViewController.leftPanel = [[SideNavigatorViewController alloc] init];
@@ -211,7 +213,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
-{    
+{
+//    [BNAWSSNSClient registerDeviceToken:@"1111111111111111111111111111111111111111111111111111111111111111"];
     NSLog(@"Failed to register for notification for error: %@", error.localizedDescription);
 }
 

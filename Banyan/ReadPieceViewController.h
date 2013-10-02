@@ -22,6 +22,8 @@
 
 - (BOOL) readPieceViewControllerFlipToPiece:(NSNumber *)pieceNumber;
 - (void) setCurrentPiece:(Piece *)piece;
+- (void) readPieceViewControllerDoneReading;
+
 @end
 
 @interface ReadPieceViewController : UIViewController <InvitedTableViewControllerDelegate, ASMediasFocusDelegate>
