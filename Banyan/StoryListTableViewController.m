@@ -267,9 +267,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (void) shareStoryAtIndexPath:(NSIndexPath *)indexPath
 {
     Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    
+    [story shareOnFacebook];
     NSLog(@"Sharing story: %@", story);
-    NSAssert(false, @"Not sharing story yet!");
 }
 
 #pragma mark StoryListCellDelegate

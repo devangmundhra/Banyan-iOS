@@ -121,7 +121,7 @@
     
     CGRect frame = [UIScreen mainScreen].applicationFrame;
     self.view.frame = frame;
-    
+
     CGFloat statusBarOffset = [[UIApplication sharedApplication] statusBarFrame].size.height;
     frame = self.view.bounds;
     frame.size.height = INFOVIEW_HEIGHT + statusBarOffset;
@@ -131,7 +131,8 @@
     
     UIImage *backArrowImage = [UIImage imageNamed:@"backArrow"];
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    CGFloat maxButtonDim = MAX(backArrowImage.size.width, backArrowImage.size.height) + BUTTON_SPACING + 4;
+    [backButton setExclusiveTouch:YES];
+    CGFloat maxButtonDim = MAX(backArrowImage.size.width, backArrowImage.size.height) + BUTTON_SPACING*2;
     backButton.frame = CGRectMake(BUTTON_SPACING, statusBarOffset, floor(maxButtonDim), floor(maxButtonDim));
     [backButton setImage:backArrowImage forState:UIControlStateNormal];
     [backButton addTarget:self.delegate action:@selector(readPieceViewControllerDoneReading) forControlEvents:UIControlEventTouchUpInside];
@@ -142,8 +143,9 @@
     [self.storyInfoView addSubview:backButton];
     
     UIImage *settingsImage = [UIImage imageNamed:@"settingsButton"];
-    maxButtonDim = MAX(settingsImage.size.width, settingsImage.size.height) + BUTTON_SPACING + 4;
+    maxButtonDim = MAX(settingsImage.size.width, settingsImage.size.height) + BUTTON_SPACING*2;
     UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [settingsButton setExclusiveTouch:YES];
     settingsButton.frame = CGRectMake(floor(self.view.frame.size.width - maxButtonDim - BUTTON_SPACING), statusBarOffset,
                                       floor(maxButtonDim), floor(maxButtonDim));
     
@@ -156,6 +158,7 @@
     [self.storyInfoView addSubview:settingsButton];
     
     UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [titleButton setExclusiveTouch:YES];
     titleButton.frame = CGRectMake(CGRectGetMaxX(backButton.frame) + 2*BUTTON_SPACING, statusBarOffset,
                                    CGRectGetMinX(settingsButton.frame) - CGRectGetMaxX(backButton.frame) - 2*BUTTON_SPACING,
                                    CGRectGetHeight(self.storyInfoView.bounds)-statusBarOffset);
@@ -187,7 +190,9 @@
     self.authorLabel = [[SSLabel alloc] initWithFrame:CGRectZero];
     self.timeLabel = [[SSLabel alloc] initWithFrame:CGRectZero];
     self.commentsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.commentsButton.exclusiveTouch = YES;
     self.likesButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.likesButton.exclusiveTouch = YES;
     [self.likesButton addTarget:self action:@selector(likeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.pieceInfoView addSubview:self.authorLabel];
     [self.pieceInfoView addSubview:self.timeLabel];
@@ -251,7 +256,7 @@
     [Piece viewedPiece:self.piece];
 
     [self addPieceObserver];
-
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(userLoginStatusChanged) 
                                                  name:BNUserLogInNotification 
@@ -262,13 +267,22 @@
                                                object:nil];
 }
 
+- (void) addGestureRecognizerToContentView:(UIGestureRecognizer *)gR
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if (![defaults boolForKey:BNUserDefaultsUserPageTurnAnimation] && [self.delegate dismissPanGestureRecognizer]) {
+        [self.contentView addGestureRecognizer:gR];
+    }
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     if ([self.delegate respondsToSelector:@selector(setCurrentPiece:)]) {
         [self.delegate performSelector:@selector(setCurrentPiece:) withObject:self.piece];
     }
-//    [self refreshUI];
+    
+    [self addGestureRecognizerToContentView:[self.delegate dismissPanGestureRecognizer]];
 }
 
 - (void)refreshUI

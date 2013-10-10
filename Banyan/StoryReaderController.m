@@ -12,6 +12,8 @@
 #import "MBProgressHUD.h"
 #import "Piece+Create.h"
 
+
+
 @interface StoryReaderController ()
 @property (strong, nonatomic) Piece *currentPiece;
 
@@ -19,6 +21,8 @@
 @property (strong, nonatomic) UIBarButtonItem *cancelButton;
 @property (strong, nonatomic) UIBarButtonItem *settingsButton;
 @property (strong, nonatomic) UIBarButtonItem *titleLabel;
+@property (nonatomic) BOOL transitionStyleScroll;
+@property (strong, nonatomic) UIPanGestureRecognizer *dismissPanGestureRecognizer;
 
 @end
 
@@ -30,6 +34,8 @@
 @synthesize cancelButton = _cancelButton;
 @synthesize settingsButton = _settingsButton;
 @synthesize titleLabel = _titleLabel;
+@synthesize transitionStyleScroll = _transitionStyleScroll;
+@synthesize dismissPanGestureRecognizer = _dismissPanGestureRecognizer;
 
 - (void)setCurrentPiece:(Piece *)currentPiece
 {
@@ -71,8 +77,12 @@
     
     UIPageViewControllerTransitionStyle pageTurnAnimation = UIPageViewControllerTransitionStylePageCurl;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if (![defaults boolForKey:BNUserDefaultsUserPageTurnAnimation])
+    if (![defaults boolForKey:BNUserDefaultsUserPageTurnAnimation]) {
         pageTurnAnimation = UIPageViewControllerTransitionStyleScroll;
+        self.transitionStyleScroll = YES;
+    } else {
+        self.transitionStyleScroll = NO;
+    }
     
     self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:pageTurnAnimation
                                                               navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
@@ -89,15 +99,14 @@
     self.pageViewController.view.frame = self.view.bounds;
     [self.pageViewController didMoveToParentViewController:self];
     
-    [self.pageViewController.gestureRecognizers enumerateObjectsUsingBlock:^(UIGestureRecognizer *gR, NSUInteger idx, BOOL *stop){
-        gR.delegate = self;
-    }];
+//    [self.pageViewController.gestureRecognizers enumerateObjectsUsingBlock:^(UIGestureRecognizer *gR, NSUInteger idx, BOOL *stop){
+//        gR.delegate = self;
+//    }];
 
     self.view.gestureRecognizers = self.pageViewController.gestureRecognizers;
     
     [TestFlight passCheckpoint:@"Story started to be read"];
 }
-
 
 - (void)viewDidUnload
 {
@@ -112,19 +121,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-# pragma mark - HUD when transitioning back
-- (void)prepareToGoToStoryList
-{
-    self.view.gestureRecognizers = nil;
-    [self performSelector:@selector(hideHUDAndDone) withObject:self afterDelay:HUD_STAY_DELAY];
-}
-
-- (void)hideHUDAndDone
-{
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
-    // Dismiss the read scenes page view controller
-    [self dismissReadView];
-}
 
 # pragma mark - UIPageViewControllerDataSource
 // View controller to display after the current view controller has been turned ahead
@@ -231,14 +227,13 @@
 
 - (void) interactionControllerDidWireToViewWithGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
 {
-    // The behaviour we want is that when we are at the beginning or end of story, we use this gesture
-    // recognizer, else let the default PageViewController's gesture recognizer play out
-    for (UIGestureRecognizer *gR in self.view.gestureRecognizers) {
-        if ([gR isEqual:gestureRecognizer]) {
-            continue;
-        }
-        if ([gR isKindOfClass:[UIPanGestureRecognizer class]]) {
-            [gestureRecognizer requireGestureRecognizerToFail:gR];
+    gestureRecognizer.delegate = self;
+    if (self.transitionStyleScroll) {
+        // No interactive dismissal for Scroll type transition
+        [self.view removeGestureRecognizer:gestureRecognizer];
+        self.dismissPanGestureRecognizer = (UIPanGestureRecognizer *)gestureRecognizer;
+        for (ReadPieceViewController *viewController in [self.pageViewController viewControllers]) {
+            [viewController addGestureRecognizerToContentView:gestureRecognizer];
         }
     }
 }
@@ -253,53 +248,17 @@
             // Going left
             Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum-1]];
             if (!piece)
-                return NO;
-            else
                 return YES;
         } else {
             // Going right
             Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum+1]];
             if (!piece)
-                return NO;
-            else
-                return YES;
+                return NO; // For now
         }
     }
     
-    if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
-        if ([(UITapGestureRecognizer*)gestureRecognizer locationInView:gestureRecognizer.view].x > self.view.frame.size.width/2) {
-            // Tapped on left side
-            Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum-1]];
-            if (!piece)
-                return NO;
-            else
-                return YES;
-        } else {
-            // Tapped on right side
-            Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum+1]];
-            if (!piece)
-                return NO;
-            else
-                return YES;
-        }
-    }
-    
-    return YES;
+    return NO;
 }
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
-{
-    if ([touch.view isKindOfClass:[UIControl class]]
-        || [touch.view isKindOfClass:[UIButton class]]
-        || [touch.view isKindOfClass:[UIBarButtonItem class]]
-        || [touch.view isKindOfClass:[UIToolbar class]]) {
-        return NO;
-    }
-    else {
-        return YES;
-    }
-}
-
 
 #pragma Memory Management
 - (void)didReceiveMemoryWarning

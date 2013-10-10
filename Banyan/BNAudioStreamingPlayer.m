@@ -149,6 +149,7 @@ void audioRouteChangeListenerCallback (
     toolBar.translucent = YES;
     toolBar.backgroundColor = BANYAN_BLACK_COLOR;
     [self.view addSubview:toolBar];
+    toolBar.exclusiveTouch = YES;
     
     audioTimeControl = [[UISlider alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds), 44)];
     CGRect frame = audioTimeControl.frame;

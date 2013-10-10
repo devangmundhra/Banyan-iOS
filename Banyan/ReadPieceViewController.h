@@ -18,11 +18,12 @@
 
 @class ReadPieceViewController;
 
-@protocol ReadPieceViewControllerDelegate <NSObject>
+@protocol ReadPieceViewControllerDelegate <NSObject, UIGestureRecognizerDelegate>
 
 - (BOOL) readPieceViewControllerFlipToPiece:(NSNumber *)pieceNumber;
 - (void) setCurrentPiece:(Piece *)piece;
 - (void) readPieceViewControllerDoneReading;
+- (UIPanGestureRecognizer *) dismissPanGestureRecognizer;
 
 @end
 
@@ -32,5 +33,6 @@
 @property (weak, nonatomic) IBOutlet UIViewController<ReadPieceViewControllerDelegate> *delegate;
 
 - (id) initWithPiece:(Piece *)piece;
+- (void) addGestureRecognizerToContentView:(UIGestureRecognizer *)gR;
 
 @end
