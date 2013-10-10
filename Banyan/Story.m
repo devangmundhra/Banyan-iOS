@@ -281,10 +281,11 @@
                                                        @"stats.userLiked" : @"likedByCurUser",
                                                        @"firstUnviewedPieceNumByUser" : @"currentPieceNum",
                                                        @"resource_uri" : @"resourceUri",
+                                                       @"perma_link" : @"permaLink",
                                                        }];
     storyMapping.identificationAttributes = @[@"bnObjectId"];
     
-    [storyMapping addAttributeMappingsFromArray:@[@"bnObjectId", STORY_TITLE, STORY_READ_ACCESS, STORY_WRITE_ACCESS, STORY_TAGS, STORY_LENGTH, @"permaLink",
+    [storyMapping addAttributeMappingsFromArray:@[@"bnObjectId", STORY_TITLE, STORY_READ_ACCESS, STORY_WRITE_ACCESS, STORY_TAGS, STORY_LENGTH,
                                                   @"createdAt", @"updatedAt", @"isLocationEnabled", @"location"]];
     [storyMapping addPropertyMappingsFromArray:@[[RKRelationshipMapping relationshipMappingFromKeyPath:@"pieces" toKeyPath:@"pieces" withMapping:[Piece pieceMappingForRK]],
                                                  [RKRelationshipMapping relationshipMappingFromKeyPath:@"coverMedia" toKeyPath:@"media" withMapping:[Media mediaMappingForRK]],

@@ -201,12 +201,14 @@
     RKEntityMapping *pieceMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
     [pieceMapping addAttributeMappingsFromArray:@[@"bnObjectId", PIECE_NUMBER, PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled", @"location",
-                                                  @"createdAt", @"updatedAt", @"permaLink", @"timeStamp"]];
+                                                  @"createdAt", @"updatedAt", @"timeStamp"]];
     [pieceMapping addAttributeMappingsFromDictionary:@{@"stats.numViews" : @"numberOfViews",
                                                        @"stats.numLikes" : @"numberOfLikes",
                                                        @"stats.userViewed" : @"viewedByCurUser",
                                                        @"stats.userLiked" : @"likedByCurUser",
-                                                       @"resource_uri" : @"resourceUri",}];
+                                                       @"resource_uri" : @"resourceUri",
+                                                       @"perma_link" : @"permaLink",
+                                                       }];
     pieceMapping.identificationAttributes = @[@"bnObjectId"];
     
     // Media

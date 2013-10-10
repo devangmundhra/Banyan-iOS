@@ -37,7 +37,7 @@
     [self setupNavigationBar];
     
     [self addNewStoryButton];
-    //    [self addGetMoreStoriesButton];
+//    [self addGetMoreStoriesButton];
     
     self.contributableStories = [Story getStoriesUserCanContributeTo];
 }
@@ -50,7 +50,7 @@
 
 - (void)setupNavigationBar
 {
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backArrow"]
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"
                                                                              style:UIBarButtonItemStyleBordered
                                                                             target:self
                                                                             action:@selector(cancelButtonPressed:)];
@@ -60,13 +60,18 @@
 {
     UIButton *actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
     actionButton.frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), 40);
-    [actionButton.titleLabel setFont:[UIFont fontWithName:@"Roboto" size:16]];
-    [actionButton setTitleColor:BANYAN_BLACK_COLOR forState:UIControlStateNormal];
-    actionButton.titleLabel.textAlignment = NSTextAlignmentLeft;
+    actionButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+    actionButton.titleEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 0);
+    
+    NSAttributedString *actionTitle = [[NSAttributedString alloc] initWithString:@"Create a new story"
+                                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:16],
+                                                                                   NSForegroundColorAttributeName : BANYAN_BLACK_COLOR,
+                                                                                   }];
+    
+    [actionButton setAttributedTitle:actionTitle forState:UIControlStateNormal];
+    
     actionButton.userInteractionEnabled = YES;
     [actionButton setBackgroundColor:BANYAN_CREAM_COLOR];
-    
-    [actionButton setTitle:@"Create a new story" forState:UIControlStateNormal];
     [actionButton addTarget:self action:@selector(createNewStory:) forControlEvents:UIControlEventTouchUpInside];
     
     self.tableView.tableHeaderView = actionButton;
@@ -76,13 +81,17 @@
 {
     UIButton *actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
     actionButton.frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), 40);
-    [actionButton.titleLabel setFont:[UIFont fontWithName:@"Roboto" size:16]];
-    [actionButton setTitleColor:BANYAN_BLACK_COLOR forState:UIControlStateNormal];
-    actionButton.titleLabel.textAlignment = NSTextAlignmentLeft;
+    actionButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     actionButton.userInteractionEnabled = YES;
     [actionButton setBackgroundColor:BANYAN_CREAM_COLOR];
     
-    [actionButton setTitle:@"Get more stoies" forState:UIControlStateNormal];
+    NSAttributedString *actionTitle = [[NSAttributedString alloc] initWithString:@"Get more stoies"
+                                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:16],
+                                                                                   NSForegroundColorAttributeName : BANYAN_BLACK_COLOR,
+                                                                                   }];
+    
+    [actionButton setAttributedTitle:actionTitle forState:UIControlStateNormal];
+    
     [actionButton addTarget:self action:@selector(getMoreStories:) forControlEvents:UIControlEventTouchUpInside];
     
     self.tableView.tableFooterView = actionButton;

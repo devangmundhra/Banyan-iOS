@@ -130,6 +130,7 @@
                  uploadWithSuccess:^{
                      NSLog(@"Successfully uploaded %@ [%@] when editing story %@", media.mediaTypeName, media.filename, story.title);
                      story.remoteStatus = RemoteObjectStatusFailed; // So that this is called again to update the media array
+                     [Story editStory:story];
                  }
                  failure:^(NSError *error) {
                      story.remoteStatus = RemoteObjectStatusFailed;
