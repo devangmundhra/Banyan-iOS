@@ -26,7 +26,6 @@ typedef enum {
 
 @interface StoryListTableViewController () <UIViewControllerTransitioningDelegate>
 @property (strong, nonatomic) IBOutlet UISegmentedControl *filterStoriesSegmentedControl;
-@property (strong, nonatomic) NSIndexPath *indexOfVisibleBackView;
 
 @property (strong, nonatomic) CEFlipAnimationController *animationController;
 @property (strong, nonatomic) BNHorizontalSwipeInteractionController *interactionController;
@@ -35,7 +34,6 @@ typedef enum {
 
 @implementation StoryListTableViewController
 @synthesize filterStoriesSegmentedControl = _filterStoriesSegmentedControl;
-@synthesize indexOfVisibleBackView = _indexOfVisibleBackView;
 
 -(UIStatusBarStyle)preferredStatusBarStyle
 {
@@ -140,7 +138,6 @@ typedef enum {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self setFilterStoriesSegmentedControl:nil];
     self.fetchedResultsController = nil;
-    self.indexOfVisibleBackView = nil;
     NSLog(@"Root View Controller Unloaded");
 }
 
@@ -487,36 +484,15 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self addPieceToStory:story];
 }
 
-#pragma mark - Swipeable controls
-
-- (void)revealSwipedViewAtIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated {
-	
-	UITableViewCell * cell = [self.tableView cellForRowAtIndexPath:indexPath];
-	
-	[self hideVisibleSwipedView:animated];
-	
-	if ([cell respondsToSelector:@selector(revealSwipedViewAnimated:)]){
-		[(SingleStoryCell *)cell revealSwipedViewAnimated:YES];
-	}
-    self.indexOfVisibleBackView = indexPath;
-}
 
 #pragma mark UIScrollViewDelegate
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
     if (scrollView.contentSize.height - scrollView.contentOffset.y < (self.view.bounds.size.height)) {
         if (![BanyanConnection storiesPaginator].objectRequestOperation && [[BanyanConnection storiesPaginator] isLoaded] && [[BanyanConnection storiesPaginator] hasNextPage]) {
             [[BanyanConnection storiesPaginator] loadNextPage];
         }
     }
-}
-
-- (void)hideVisibleSwipedView:(BOOL)animated {
-	
-	UITableViewCell * cell = [self.tableView cellForRowAtIndexPath:self.indexOfVisibleBackView];
-	if ([cell respondsToSelector:@selector(hideSwipedViewAnimated:)]) {
-		[(SingleStoryCell *)cell hideSwipedViewAnimated:YES];
-	}
-    self.indexOfVisibleBackView = nil;
 }
 
 #pragma Memory Management

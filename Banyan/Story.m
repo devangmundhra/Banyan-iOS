@@ -100,9 +100,10 @@
     
     NSError *error = nil;
     Story *story = (Story *)[[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext existingObjectWithID:storyId error:&error];
-    if (error) {
-        NSLog(@"Error in fetching current story: %@", error);
+    if (error || !story.canContribute) {
+        NSLog(@"Error in fetching current story: %@ contributable: %@", error, [NSNumber numberWithBool:story.canContribute]);
         [defaults removeObjectForKey:BNUserDefaultsCurrentOngoingStoryToContribute];
+        story = nil;
     }
     return story;
 }
@@ -200,7 +201,9 @@
     [self didChangeValueForKey:@"uploadStatusNumber"];
     
     [self setPrimitiveSectionIdentifier:nil];
-    //    [self.managedObjectContext refreshObject:self mergeChanges:YES];
+//    [self.managedObjectContext performBlock:^{
+//        [self.managedObjectContext refreshObject:self mergeChanges:YES];
+//    }];
 }
 
 - (void) share

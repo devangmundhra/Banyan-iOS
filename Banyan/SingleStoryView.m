@@ -156,7 +156,9 @@ static BOOL _loggedIn;
                                NSForegroundColorAttributeName: [UIColor grayColor],
                                NSParagraphStyleAttributeName: paraStyle}];
     
-    if ([self.story.uploadStatusNumber unsignedIntegerValue] != RemoteObjectStatusSync) {
+    // If the uploadStatusNumber says not sync, confirm it by actually calculating the upload status number.
+    // Sometimes, due to caching, the uploadStatusNumber does not reflect the latest value
+    if ([self.story.uploadStatusNumber unsignedIntegerValue] != RemoteObjectStatusSync && [[self.story calculateUploadStatusNumber] unsignedIntegerValue] != RemoteObjectStatusSync) {
         NSString *statusString = self.story.sectionIdentifier;
         point.x = CGRectGetMaxX(self.frame) - TABLE_CELL_MARGIN;
         point.y = TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT + TABLE_CELL_MARGIN/2;
@@ -297,11 +299,11 @@ static BOOL _loggedIn;
         // Have the reveal Backview button on front view
         frontViewControlImage = _backViewShowImage;
         [self.storyFrontViewControl removeTarget:self.delegate action:@selector(shareStory:) forControlEvents:UIControlEventTouchUpInside];
-        [self.storyFrontViewControl addTarget:self action:@selector(showBackView:) forControlEvents:UIControlEventTouchUpInside];
+        [self.storyFrontViewControl addTarget:self action:@selector(toggleBackView:) forControlEvents:UIControlEventTouchUpInside];
     } else {
         // Just have the share button in front view.
         frontViewControlImage = _shareBlackImage;
-        [self.storyFrontViewControl removeTarget:self action:@selector(showBackView:) forControlEvents:UIControlEventTouchUpInside];
+        [self.storyFrontViewControl removeTarget:self action:@selector(toggleBackView:) forControlEvents:UIControlEventTouchUpInside];
         [self.storyFrontViewControl addTarget:self.delegate action:@selector(shareStory:) forControlEvents:UIControlEventTouchUpInside];
     }
     [self.storyFrontViewControl setImage:frontViewControlImage forState:UIControlStateNormal];
@@ -318,22 +320,6 @@ static BOOL _loggedIn;
 {
     if (self.story.canContribute)
     {
-        // Add backview control button
-        UIButton *backViewControlButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        // Make sure the button ends up in the right place when the cell is resized
-        backViewControlButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
-        [backViewControlButton setImage:_backViewHideImage forState:UIControlStateNormal];
-        [backViewControlButton addTarget:self action:@selector(hideBackView:) forControlEvents:UIControlEventTouchUpInside];
-        // Set the button's frame
-        CGRect backViewControlButtonFrame = backViewControlButton.bounds;
-        backViewControlButtonFrame.origin.x = TABLE_CELL_MARGIN;
-        backViewControlButtonFrame.origin.y = self.topSwipeView.backView.bounds.origin.y;
-        backViewControlButtonFrame.size = _backViewHideImage.size;
-        backViewControlButtonFrame.size.height = self.topSwipeView.backView.bounds.size.height;
-        backViewControlButton.frame = backViewControlButtonFrame;
-        
-        [self.topSwipeView.backView addSubview:backViewControlButton];
-        
         // Add Piece Button
         UIButton *addPieceButton = [UIButton buttonWithType:UIButtonTypeCustom];
         // Make sure the button ends up in the right place when the cell is resized
@@ -342,7 +328,7 @@ static BOOL _loggedIn;
         [addPieceButton addTarget:self.delegate action:@selector(addPiece:) forControlEvents:UIControlEventTouchUpInside];
         // Set the button's frame
         CGRect addPieceButtonFrame = addPieceButton.bounds;
-        addPieceButtonFrame.origin.x = floor(CGRectGetMaxX(backViewControlButton.frame) + BUTTON_SPACING);
+        addPieceButtonFrame.origin.x = TABLE_CELL_MARGIN + BUTTON_SPACING;
         addPieceButtonFrame.origin.y = floor(self.topSwipeView.backView.bounds.origin.y);
         addPieceButtonFrame.size = _addPieceImage.size;
         addPieceButtonFrame.size.height = floor(self.topSwipeView.backView.bounds.size.height);
@@ -386,14 +372,19 @@ static BOOL _loggedIn;
     }
 }
 
+- (void) toggleSwipeableViewAnimated:(BOOL)animated
+{
+    [self.topSwipeView toggleBackViewDisplay:animated];
+}
+
 - (void) hideSwipedViewAnimated:(BOOL)animated
 {
-    [self.topSwipeView hideBackViewAnimated:animated inDirection:UISwipeGestureRecognizerDirectionRight];
+    [self.topSwipeView hideBackViewAnimated:animated];
 }
 
 - (void) revealSwipedViewAnimated:(BOOL)animated
 {
-    [self.topSwipeView revealBackViewAnimated:animated inDirection:UISwipeGestureRecognizerDirectionLeft];
+    [self.topSwipeView revealBackViewAnimated:animated];
 }
 
 - (void)backViewWillAppear:(BOOL)animated
@@ -422,14 +413,9 @@ static BOOL _loggedIn;
     return self.story.canContribute;
 }
 
-- (void) hideBackView:(UIButton *)button
+- (void) toggleBackView:(UIButton *)button
 {
-    [self hideSwipedViewAnimated:YES];
-}
-
-- (void) showBackView:(UIButton *)button
-{
-    [self revealSwipedViewAnimated:YES];
+    [self toggleSwipeableViewAnimated:YES];
 }
 
 #pragma mark UIAlertView

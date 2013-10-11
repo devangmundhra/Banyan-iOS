@@ -43,7 +43,7 @@ PODS:
   - SOCKit (1.1)
   - SSToolkit (1.0.4)
   - SVSegmentedControl (0.2)
-  - TestFlightSDK (2.0)
+  - TestFlightSDK (2.1.1b)
   - TITokenField (0.9.2)
   - TransitionKit (1.1.1)
   - VCTransitionsLibrary (1.1.0)
@@ -95,7 +95,7 @@ SPEC CHECKSUMS:
   SOCKit: 2f3bc4d07910de12dcc202815e07db68a3802581
   SSToolkit: 689acaedac79c2079e492e528a55bcb5db9d98c4
   SVSegmentedControl: e874fc56c2a1efb9f597ddf0908101393f53fe96
-  TestFlightSDK: 940906d4b2550cf397c6f2d2fcc4ebfdcd8ae858
+  TestFlightSDK: 2dc092bf16239551bdf6d31ea6bba265b6785287
   TITokenField: 7d3d45e212044fa1a06db62b16ff7143891eab04
   TransitionKit: d0e3344aac92991395d4c2e72d9c5a8ceeb12910
   VCTransitionsLibrary: 71d0cee8ccce9769bb80b7c6f648e08290417467

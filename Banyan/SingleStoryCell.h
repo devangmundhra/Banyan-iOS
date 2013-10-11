@@ -26,8 +26,6 @@
 @property (nonatomic, strong) UITableViewController<SingleStoryCellDelegate> *delegate;
 
 - (void) setStory:(Story *)story;
-- (void) hideSwipedViewAnimated:(BOOL)animated;
-- (void) revealSwipedViewAnimated:(BOOL)animated;
 - (Piece *) currentlyVisiblePiece;
 - (void)redisplay;
 
