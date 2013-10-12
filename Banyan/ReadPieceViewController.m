@@ -559,7 +559,7 @@
     }
     
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
-    [actionSheet showInView:self.view];
+    [actionSheet showInView:self.contentView];
 }
 
 - (void)editStoryButtonPressed:(id)sender
