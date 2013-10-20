@@ -289,14 +289,6 @@
                   errorBlock:errorBlock];
 }
 
-+ (void) resetPermissionsForStories:(NSArray *)stories
-{
-    for (Story *story in stories)
-    {
-        [story resetPermission];
-    }
-}
-
 + (void) uploadFailedObjects
 {
     NSArray *failedStories = [Story storiesFailedToBeUploaded];

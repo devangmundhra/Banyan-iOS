@@ -7,34 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "InviteFriendCell.h"
+#import "BNPermissionsObject.h"
+#import "InvitedFBFriendsViewController.h"
 
 @class InvitedTableViewController;
-
-// These correspond to the index for UISegmentedControl for Write
-typedef enum {
-    ContributorPrivacySegmentedControlPublic = 0,
-    ContributorPrivacySegmentedControlInvited = 1,
-} StoryPrivacySegmentIndex;
-
-// These correspond to the index for UISegmentedControl for Read
-typedef enum {
-    ViewerPrivacySegmentedControlPublic = 0,
-    ViewerPrivacySegmentedControlLimited = 1,
-    ViewerPrivacySegmentedControlInvited = 2,
-} ViewerPrivacySegmentedControl;
 
 @protocol InvitedTableViewControllerDelegate <NSObject>
 
 - (void) invitedTableViewController:(InvitedTableViewController *)invitedTableViewController
-         finishedInvitingForViewers:(NSArray *)selectedViewers
-                       contributors:(NSArray *)selectedContributors;
+         finishedInvitingForViewerPermissions:(BNPermissionsObject *)viewerPermissions
+                       contributorPermissions:(BNPermissionsObject *)contributorPermissions;
 @end
 
-@interface InvitedTableViewController : UITableViewController <UISearchBarDelegate, UISearchDisplayDelegate, InviteFriendCellDelegate>
+@interface InvitedTableViewController : UITableViewController <InvitedFBFriendsViewControllerDelegate>
 
 @property (nonatomic, strong) id<InvitedTableViewControllerDelegate> delegate;
 
-- (id)initWithViewerPermissions:(NSDictionary *)viewerPermission contributorPermission:(NSDictionary *)contributorPermission;
+- (id)initWithViewerPermissions:(BNPermissionsObject *)viewerPermission contributorPermission:(BNPermissionsObject *)contributorPermission;
 
 @end

@@ -12,7 +12,6 @@
 #import "Story+Edit.h"
 #import "BanyanAppDelegate.h"
 #import "User_Defines.h"
-#import "InvitedTableViewController.h"
 #import "ASMediaFocusManager.h"
 #import "BNAudioStreamingPlayer.h"
 
@@ -27,7 +26,7 @@
 
 @end
 
-@interface ReadPieceViewController : UIViewController <InvitedTableViewControllerDelegate, ASMediasFocusDelegate>
+@interface ReadPieceViewController : UIViewController <ASMediasFocusDelegate>
 
 @property (strong, nonatomic) Piece *piece;
 @property (weak, nonatomic) IBOutlet UIViewController<ReadPieceViewControllerDelegate> *delegate;

@@ -15,7 +15,6 @@
 
 + (RKPaginator *) storiesPaginator;
 + (void) loadDataSource;
-+ (void) resetPermissionsForStories:(NSArray *)stories;
 + (void) loadPiecesForStory:(Story *)story completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *error))errorBlock;
 + (void) loadPiecesForStory:(Story *)story atPieceNumbers:(NSArray *)pieceNumbers completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *error))errorBlock;
 + (void) uploadFailedObjects;

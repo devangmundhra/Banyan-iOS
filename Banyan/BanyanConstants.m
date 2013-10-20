@@ -44,6 +44,7 @@ NSString *const BNUserDefaultsCurrentOngoingStoryToContribute = @"io.banyan.Bany
 NSString *const kBNStoryClassKey   = @"Story";
 
 // Dictionary keys for invitees
+NSString *const kBNPermssionsVersion = @"PermissionsVersion";
 NSString *const kBNStoryPrivacyScope = @"Scope";
 NSString *const kBNStoryPrivacyScopeInvited = @"Invited";
 NSString *const kBNStoryPrivacyScopeLimited = @"Limited";

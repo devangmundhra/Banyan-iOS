@@ -8,311 +8,313 @@
 
 #import "InvitedTableViewController.h"
 #import "BanyanAppDelegate.h"
+#import "InvitedFBFriendsViewController.h"
+#import "User.h"
 
-@interface InvitedTableViewController ()
+@interface InvitedTableViewController () <InvitedFBFriendsViewControllerDelegate>
 
-@property (nonatomic, strong) NSArray *listContacts;
-@property (nonatomic, strong) NSMutableArray *filteredListContacts;
-@property (strong, nonatomic) NSMutableArray *contactIndex;
-@property (strong, nonatomic) IBOutlet UISearchDisplayController *searchDisplayController;
-@property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
-
-@property (nonatomic) BOOL allViewers;
-@property (nonatomic, strong) NSMutableArray *selectedViewerContacts;
-
-@property (nonatomic) BOOL allContributors;
-@property (nonatomic, strong) NSMutableArray *selectedContributorContacts;
+@property (nonatomic, strong) BNPermissionsObject *viewerPermission;
+@property (nonatomic, strong) BNPermissionsObject *contributorPermission;
 
 @end
 
 @implementation InvitedTableViewController
-@synthesize listContacts = _listContacts;
-@synthesize filteredListContacts = _filteredListContacts;
-@synthesize selectedViewerContacts = _selectedViewerContacts;
-@synthesize selectedContributorContacts = _selectedContributorContacts;
-@synthesize delegate = _delegate;
-@synthesize contactIndex = _contactIndex;
-@synthesize searchDisplayController;
-@synthesize searchBar;
+@synthesize viewerPermission = _viewerPermission;
+@synthesize contributorPermission = _contributorPermission;
+
+typedef enum {
+    InvitedTableViewSectionContributor,
+    InvitedTableViewSectionViewer,
+    InvitedTableViewSectionMax,
+} InvitedTableViewSection;
+
+typedef enum {
+    InvitedTableViewContributorsRowPublic,
+    InvitedTableViewContributorsRowSelectedFB,
+    InvitedTableViewContributorsRowMax,
+} InvitedTableViewContributorsRow;
+
+typedef enum {
+    InvitedTableViewViewersRowPublic,
+    InvitedTableViewViewersRowLimitedFB,
+    InvitedTableViewViewersRowSelectedFB,
+    InvitedTableViewViewersRowMax,
+} InvitedTableViewViewersRow;
 
 // When initialized from storyboard
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     if ((self = [super initWithCoder:aDecoder])) {
-
+        
     }
     return self;
 }
 
-- (id)initWithStyle:(UITableViewStyle)style
+- (id)initWithViewerPermissions:(BNPermissionsObject *)viewerPermission contributorPermission:(BNPermissionsObject *)contributorPermission
 {
-    self = [super initWithStyle:style];
+    self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        // Custom initialization
         
-         searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-         searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
-         searchDisplayController.delegate = self;
-         searchDisplayController.searchResultsDataSource = self;
-
-        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneInviting:)]];
-        [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
+        _viewerPermission = viewerPermission;
+        _contributorPermission = contributorPermission;
+        
+        self.title = @"Permissions for story";
     }
     return self;
-}
-
-- (id)initWithViewerPermissions:(NSDictionary *)viewerPermission contributorPermission:(NSDictionary *)contributorPermission
-{
-    self = [super initWithStyle:UITableViewStylePlain];
-    if (self) {
-        // Custom initialization
-        
-        searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-        searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
-        searchDisplayController.delegate = self;
-        searchDisplayController.searchResultsDataSource = self;
-        
-        [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneInviting:)]];
-        [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
-        
-        if (![[viewerPermission objectForKey:kBNStoryPrivacyScope] isEqualToString:kBNStoryPrivacyScopeInvited]) {
-            self.allViewers = YES;
-            self.selectedViewerContacts = nil;
-        } else {
-            self.allViewers = NO;
-            self.selectedViewerContacts = [NSMutableArray arrayWithArray:[[viewerPermission objectForKey:kBNStoryPrivacyInviteeList]
-                                                                          objectForKey:kBNStoryPrivacyInvitedFacebookFriends]];
-        }
-        if (![[contributorPermission objectForKey:kBNStoryPrivacyScope] isEqualToString:kBNStoryPrivacyScopeInvited]) {
-            self.allContributors = YES;
-            self.selectedContributorContacts = nil;
-        } else {
-            self.allContributors = NO;
-            self.selectedContributorContacts = [NSMutableArray arrayWithArray:[[contributorPermission objectForKey:kBNStoryPrivacyInviteeList]
-                                                                          objectForKey:kBNStoryPrivacyInvitedFacebookFriends]];
-        }        
-    }
-    return self;
-}
-
-- (void)setListContacts:(NSArray *)listContacts
-{
-    if (listContacts == _listContacts)
-        return;
-    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-    _listContacts = [listContacts sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
-}
-
-- (void)setContactIndex 
-{
-    // Create the index
-    if (!_contactIndex)
-        _contactIndex = [[NSMutableArray alloc] init];
-        
-    for (NSDictionary *friend in self.listContacts)
-    {
-        // Get the first character of each name
-        char alphabet = [[friend objectForKey:@"name"] characterAtIndex:0];
-        NSString *uniChar = [NSString stringWithFormat:@"%c", alphabet];
-        // add each letter to the index array
-        if (![_contactIndex containsObject:uniChar])
-            [_contactIndex addObject:uniChar];
-    }
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
-    [self.tableView registerNib:[UINib nibWithNibName:@"InviteFriendCell" bundle:nil] forCellReuseIdentifier:@"InviteFriendCell"];
-    [[self tableView] setTableHeaderView:searchBar];
-    self.searchDisplayController.searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
-    self.tableView.scrollEnabled = YES;
-    self.navigationItem.title = @"Invitations";
+    [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneInviting:)]];
+    [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
     
-    [FBRequestConnection startForMyFriendsWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        if (!error) {
-            NSArray *array = [result objectForKey:@"data"];
-            self.listContacts = array;
-            [self setContactIndex];
-            [TestFlight passCheckpoint:@"Invitation view loaded"];
-        } else {
-            // TODO: Handle error
-        }
-        [self.tableView reloadData];
-    }];    
+//    self.tableView.rowHeight = 75.0f;
+    [TestFlight passCheckpoint:@"Invitation view loaded"];
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - Table view data source
-- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
-{
-    if (tableView == self.searchDisplayController.searchResultsTableView)
-        return nil;
-    else
-        return [[NSArray arrayWithObject:UITableViewIndexSearch] arrayByAddingObjectsFromArray:self.contactIndex];
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    if (tableView == self.searchDisplayController.searchResultsTableView)
-        return nil;
-	else
-        return [self.contactIndex objectAtIndex:section];
-}
-
-- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index
-{
-    if (index == 0)
-        [self.tableView scrollRectToVisible:self.tableView.tableHeaderView.frame animated:NO];
-    return index-1;
-}
-
-- (NSArray *)getContactsForSection:(NSInteger)section
-{
-    NSString *alphabet = [self.contactIndex objectAtIndex:section];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name beginswith[c] %@", alphabet];
-    NSArray *contacts = [self.listContacts filteredArrayUsingPredicate:predicate];
-    return contacts;
-}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    if (tableView == self.searchDisplayController.searchResultsTableView)
-        return 1;
-	else
-        return [self.contactIndex count];
+    // Return the number of sections.
+    return InvitedTableViewSectionMax;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (tableView == self.searchDisplayController.searchResultsTableView)
-	{
-        return [self.filteredListContacts count];
+    // Return the number of rows in the section.
+    switch (section) {
+        case InvitedTableViewSectionContributor: // Contributor Permission Section
+            return InvitedTableViewContributorsRowMax;
+            break;
+            
+        case InvitedTableViewSectionViewer: // Reader Permission Section
+            return InvitedTableViewViewersRowMax;
+            break;
+            
+        default:
+            break;
     }
-	else
-	{
-        NSArray *contacts = [self getContactsForSection:section];
-        return [contacts count];
+    return 0;
+}
+
+-(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    switch (section) {
+        case InvitedTableViewSectionContributor:
+            return @"Permission for contributors";
+            break;
+            
+        case InvitedTableViewSectionViewer:
+            return @"Permission for viewers";
+            break;
+            
+        default:
+            return nil;
+            break;
     }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"InviteFriendCell";
-    InviteFriendCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    static NSString *CellIdentifier = @"Cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        NSArray *nibs = [[NSBundle mainBundle] loadNibNamed:@"InviteFriendCell" owner:self options:nil];
-        cell = (InviteFriendCell *)[nibs objectAtIndex:0];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
-
+    
     // Configure the cell...
-    NSDictionary *friend = nil;
-    
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
-        friend = [self.filteredListContacts objectAtIndex:indexPath.row];
-    } else {
-        NSArray *contacts = [self getContactsForSection:indexPath.section];
-        friend = [contacts objectAtIndex:indexPath.row];
+    switch (indexPath.section) {
+        case InvitedTableViewSectionContributor:
+            switch (indexPath.row) {
+                case InvitedTableViewContributorsRowPublic:
+                    cell.textLabel.text = @"Public";
+                    if ([self.contributorPermission.scope isEqualToString:kBNStoryPrivacyScopePublic]) {
+                        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                        cell.detailTextLabel.text = [self.contributorPermission stringifyPermissionObject];
+                    } else {
+                        cell.accessoryType = UITableViewCellAccessoryNone;
+                        cell.detailTextLabel.text = @"";
+                    }
+                    break;
+                case InvitedTableViewContributorsRowSelectedFB:
+                    cell.textLabel.text = @"Selected Facebook friends";
+                    if ([self.contributorPermission.scope isEqualToString:kBNStoryPrivacyScopeInvited]) {
+                        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                        cell.detailTextLabel.text = [self.contributorPermission stringifyPermissionObject];
+                    } else {
+                        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                        cell.detailTextLabel.text = @"";
+                    }
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+            
+        case InvitedTableViewSectionViewer:
+            switch (indexPath.row) {
+                case InvitedTableViewViewersRowPublic:
+                    cell.textLabel.text = @"Public";
+                    if ([self.viewerPermission.scope isEqualToString:kBNStoryPrivacyScopePublic]) {
+                        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                        cell.detailTextLabel.text = [self.viewerPermission stringifyPermissionObject];
+                    } else {
+                        cell.accessoryType = UITableViewCellAccessoryNone;
+                        cell.detailTextLabel.text = @"";
+                    }
+                    break;
+                    
+                case InvitedTableViewViewersRowLimitedFB:
+                    cell.textLabel.text = @"All friends on Facebook";
+                    if ([self.viewerPermission.scope isEqualToString:kBNStoryPrivacyScopeLimited]) {
+                        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                        cell.detailTextLabel.text = [self.viewerPermission stringifyPermissionObject];
+                    } else {
+                        cell.accessoryType = UITableViewCellAccessoryNone;
+                        cell.detailTextLabel.text = @"";
+                    }
+                    break;
+                    
+                case InvitedTableViewViewersRowSelectedFB:
+                    cell.textLabel.text = @"Selected Facebook friends";
+                    if ([self.viewerPermission.scope isEqualToString:kBNStoryPrivacyScopeInvited]) {
+                        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                        cell.detailTextLabel.text = [self.viewerPermission stringifyPermissionObject];
+                    } else {
+                        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                        cell.detailTextLabel.text = @"";
+                    }
+                    break;
+                default:
+                    break;
+            }
+            break;
+            
+        default:
+            break;
     }
+    cell.textLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:20];
+    cell.detailTextLabel.font = [UIFont fontWithName:@"Roboto" size:12];
     
-    cell.delegate = self;
-    
-    // Set the name
-    [cell setName:[friend objectForKey:@"name"]];
-
-    // Set/disable write button. If write is enabled, read is automatically enabled.
-    
-    // Set/disable read button
-    [cell enableReadButton:!self.allViewers];
-    [cell enableWriteButton:!self.allContributors];
-    
-    [cell canRead:[self hasReadPermission:friend]];
-    [cell canWrite:[self hasWritePermission:friend]];
-
+    // Disable view permissions button if contributor permissions is Public
+    if ([self.contributorPermission.scope isEqualToString:kBNStoryPrivacyScopePublic] && indexPath.section == InvitedTableViewSectionViewer) {
+        cell.contentView.alpha = 0.5;
+    } else {
+        cell.contentView.alpha = 1.0;
+    }
     return cell;
-}
-
-- (BOOL) hasReadPermission:(NSDictionary *)friend
-{
-    if (self.allContributors || self.allViewers)
-        return TRUE;
-    
-    if (HAVE_ASSERTS)
-        assert(self.selectedViewerContacts);
-    
-    return [self.selectedViewerContacts containsObject:friend] || [self.selectedContributorContacts containsObject:friend];
-}
-
-- (BOOL) hasWritePermission:(NSDictionary *)friend
-{
-    if (self.allContributors)
-        return TRUE;
-    
-    if (HAVE_ASSERTS)
-        assert(self.selectedContributorContacts);
-    
-    return [self.selectedContributorContacts containsObject:friend];
-}
-
-# pragma mark InviteFriendCellDelegate methods
-- (void)inviteFriendCellReadButtonTapped:(InviteFriendCell *)cell
-{
-    NSIndexPath * myIndexPath = [self.tableView indexPathForCell:cell];
-    NSDictionary *friend = nil;
-    
-    if ([cell superview] == self.searchDisplayController.searchResultsTableView) {
-        friend = [self.filteredListContacts objectAtIndex:myIndexPath.row];
-    } else {
-        NSArray *contacts = [self getContactsForSection:myIndexPath.section];
-        friend = [contacts objectAtIndex:myIndexPath.row];
-    }
-    
-    // Toggle read permission
-    if ([self hasReadPermission:friend]) {
-        [self.selectedViewerContacts removeObject:friend];
-    } else {
-        [self.selectedViewerContacts addObject:friend];
-    }
-    [cell canRead:[self hasReadPermission:friend]];
-}
-
-- (void)inviteFriendCellWriteButtonTapped:(InviteFriendCell *)cell
-{
-    NSIndexPath * myIndexPath = [self.tableView indexPathForCell:cell];
-    NSDictionary *friend = nil;
-    
-    if ([cell superview] == self.searchDisplayController.searchResultsTableView) {
-        friend = [self.filteredListContacts objectAtIndex:myIndexPath.row];
-    } else {
-        NSArray *contacts = [self getContactsForSection:myIndexPath.section];
-        friend = [contacts objectAtIndex:myIndexPath.row];
-    }
-    
-    // Toggle write permission
-    if ([self hasWritePermission:friend]) {
-        [self.selectedContributorContacts removeObject:friend];
-    } else {
-        [self.selectedContributorContacts addObject:friend];
-    }
-    [cell canWrite:[self hasWritePermission:friend]];
-    [cell canRead:[self hasReadPermission:friend]];
-    [cell enableReadButton:![self hasWritePermission:friend]&&!self.allViewers];
 }
 
 #pragma mark - Table view delegate
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Don't handle touch events here, let the tableviewcells take care of taps on read/write buttons
-    return nil;
+    // Disable view permissions button if contributor permissions is Public
+    if ([self.contributorPermission.scope isEqualToString:kBNStoryPrivacyScopePublic] && indexPath.section == InvitedTableViewSectionViewer) {
+        return nil;
+    }
+    return indexPath;
 }
 
-- (IBAction)doneInviting:(UIBarButtonItem *)sender 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    InvitedFBFriendsViewController *vc = nil;
+    BNSharedUser *currentUser = nil;
+    NSDictionary *selfInvitation = nil;
+    NSMutableArray *fbInvitees = nil;
+    
+    switch (indexPath.section) {
+        case InvitedTableViewSectionContributor:
+            switch (indexPath.row) {
+                case InvitedTableViewContributorsRowPublic:
+                    self.contributorPermission.scope = kBNStoryPrivacyScopePublic;
+                    self.viewerPermission.scope = kBNStoryPrivacyScopePublic;
+                    break;
+                    
+                case InvitedTableViewContributorsRowSelectedFB:
+                    self.contributorPermission.scope = kBNStoryPrivacyScopeInvited;
+                    vc = [[InvitedFBFriendsViewController alloc] initWithViewerPermissions:self.viewerPermission contributorPermission:self.contributorPermission];
+                    vc.delegate = self;
+                    [self.navigationController pushViewController:vc animated:YES];
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+            
+        case InvitedTableViewSectionViewer:
+            switch (indexPath.row) {
+                case InvitedTableViewViewersRowPublic:
+                    self.viewerPermission.scope = kBNStoryPrivacyScopePublic;
+                    break;
+                    
+                case InvitedTableViewViewersRowLimitedFB:
+                    self.viewerPermission.scope = kBNStoryPrivacyScopeLimited;
+                    currentUser = [BNSharedUser currentUser];
+                    if (HAVE_ASSERTS)
+                        NSAssert(currentUser, @"No Current user available when modifying story");
+                    if (currentUser) {
+                        selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                    currentUser.name, @"name",
+                                                    currentUser.facebookId, @"id", nil];
+                        fbInvitees = self.viewerPermission.facebookInvitedList;
+                        
+                        if (![fbInvitees containsObject:selfInvitation])
+                            [fbInvitees addObject:selfInvitation];
+                        self.viewerPermission.facebookInvitedList = fbInvitees;
+                    }
+
+                    break;
+                    
+                case InvitedTableViewViewersRowSelectedFB:
+                    self.viewerPermission.scope = kBNStoryPrivacyScopeInvited;
+                    // Remove the self invitation from the list if here
+                    currentUser = [BNSharedUser currentUser];
+                    if (HAVE_ASSERTS)
+                        NSAssert(currentUser, @"No Current user available when modifying story");
+                    if (currentUser) {
+                        selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
+                                          currentUser.name, @"name",
+                                          currentUser.facebookId, @"id", nil];
+                        fbInvitees = self.viewerPermission.facebookInvitedList;
+                        
+                        [fbInvitees removeObject:selfInvitation];
+                        self.viewerPermission.facebookInvitedList = fbInvitees;
+                    }
+                    vc = [[InvitedFBFriendsViewController alloc] initWithViewerPermissions:self.viewerPermission
+                                                                     contributorPermission:self.contributorPermission];
+                    vc.delegate = self;
+                    [self.navigationController pushViewController:vc animated:YES];
+                    break;
+                default:
+                    break;
+            }
+            break;
+            
+        default:
+            break;
+    }
+    [tableView reloadData];
+}
+
+# pragma mark target-actions
+- (IBAction)doneInviting:(UIBarButtonItem *)sender
 {
     [self dismissViewControllerAnimated:YES completion:^{
         [self.delegate invitedTableViewController:self
-                       finishedInvitingForViewers:self.selectedViewerContacts
-                                     contributors:self.selectedContributorContacts];
+             finishedInvitingForViewerPermissions:self.viewerPermission
+                           contributorPermissions:self.contributorPermission];
     }];
 }
 
@@ -321,53 +323,28 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark Content Filtering
-
-- (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
+#pragma mark InvitedFBFriendsViewControllerDelegate
+- (void) invitedFBFriendsViewController:(InvitedFBFriendsViewController *)invitedFBFriendsViewController
+             finishedInvitingForViewers:(NSMutableArray *)selectedViewers
+                           contributors:(NSMutableArray *)selectedContributors
 {
-	/*
-	 Update the filtered array based on the search text and scope.
-	 */
-	
-	[self.filteredListContacts removeAllObjects]; // First clear the filtered array.
-	
-    NSPredicate *resultPredicate = [NSPredicate 
-                                    predicateWithFormat:@"name beginswith[cd] %@",
-                                    searchText];
-    self.filteredListContacts = [[self.listContacts filteredArrayUsingPredicate:resultPredicate] mutableCopy];
-}
-
-#pragma mark UISearchDisplayController Delegate Methods
-
-- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
-{
-    [self filterContentForSearchText:searchString scope:
-     [[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
-    
-    // Return YES to cause the search result table view to be reloaded.
-    return YES;
-}
-
-- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption
-{
-    [self filterContentForSearchText:[self.searchDisplayController.searchBar text] scope:
-     [[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:searchOption]];
-    
-    // Return YES to cause the search result table view to be reloaded.
-    return YES;
-}
-
-- (void)searchDisplayController:(UISearchDisplayController *)controller didHideSearchResultsTableView:(UITableView *)tableView
-{
+    if ([self.viewerPermission.scope isEqualToString:kBNStoryPrivacyScopeLimited]) {
+        BNSharedUser *currentUser = [BNSharedUser currentUser];
+        if (HAVE_ASSERTS)
+            NSAssert(currentUser, @"No Current user available when modifying story");
+        if (currentUser) {
+            NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
+                                            currentUser.name, @"name",
+                                            currentUser.facebookId, @"id", nil];
+            if (![selectedViewers containsObject:selfInvitation])
+                [selectedViewers addObject:selfInvitation];
+            
+        }
+    }
+    self.viewerPermission.facebookInvitedList = selectedViewers;
+    self.contributorPermission.facebookInvitedList = selectedContributors;
     [self.tableView reloadData];
 }
 
-#pragma Memory Management
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
 @end
+

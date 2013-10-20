@@ -50,6 +50,8 @@
 		5144EC6F1712277600F0B265 /* readButtonSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC651712277600F0B265 /* readButtonSelected@2x.png */; };
 		5144EC701712277600F0B265 /* writeButtonSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC661712277600F0B265 /* writeButtonSelected.png */; };
 		5144EC711712277600F0B265 /* writeButtonSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC671712277600F0B265 /* writeButtonSelected@2x.png */; };
+		514CDF5418125BFF0098B0A9 /* BNPermissionsObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 514CDF5318125BFE0098B0A9 /* BNPermissionsObject.m */; };
+		514CDF5B18131F410098B0A9 /* InvitedFBFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 514CDF5A18131F410098B0A9 /* InvitedFBFriendsViewController.m */; };
 		514EEA8C17C5EF4700B4BCBF /* AWSRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 514EEA8B17C5EF4700B4BCBF /* AWSRuntime.framework */; };
 		514EEA8E17C5EF5500B4BCBF /* AWSS3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 514EEA8D17C5EF5400B4BCBF /* AWSS3.framework */; };
 		514EEA9117C5F49300B4BCBF /* BNAWSS3Client.m in Sources */ = {isa = PBXBuildFile; fileRef = 514EEA9017C5F49300B4BCBF /* BNAWSS3Client.m */; };
@@ -293,6 +295,10 @@
 		5144EC651712277600F0B265 /* readButtonSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "readButtonSelected@2x.png"; sourceTree = "<group>"; };
 		5144EC661712277600F0B265 /* writeButtonSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = writeButtonSelected.png; sourceTree = "<group>"; };
 		5144EC671712277600F0B265 /* writeButtonSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "writeButtonSelected@2x.png"; sourceTree = "<group>"; };
+		514CDF5218125BFE0098B0A9 /* BNPermissionsObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNPermissionsObject.h; path = Banyan/BNPermissionsObject.h; sourceTree = "<group>"; };
+		514CDF5318125BFE0098B0A9 /* BNPermissionsObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNPermissionsObject.m; path = Banyan/BNPermissionsObject.m; sourceTree = "<group>"; };
+		514CDF5918131F410098B0A9 /* InvitedFBFriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InvitedFBFriendsViewController.h; path = Banyan/InvitedFBFriendsViewController.h; sourceTree = "<group>"; };
+		514CDF5A18131F410098B0A9 /* InvitedFBFriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InvitedFBFriendsViewController.m; path = Banyan/InvitedFBFriendsViewController.m; sourceTree = "<group>"; };
 		514EEA8B17C5EF4700B4BCBF /* AWSRuntime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSRuntime.framework; sourceTree = "<group>"; };
 		514EEA8D17C5EF5400B4BCBF /* AWSS3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSS3.framework; sourceTree = "<group>"; };
 		514EEA8F17C5F49300B4BCBF /* BNAWSS3Client.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNAWSS3Client.h; path = Banyan/BNAWSS3Client.h; sourceTree = "<group>"; };
@@ -728,6 +734,8 @@
 				51F095671702A6DE009D5A28 /* ModifyStoryViewController.xib */,
 				5189B2DD15B395F300562DD0 /* InvitedTableViewController.h */,
 				5189B2DE15B395F300562DD0 /* InvitedTableViewController.m */,
+				514CDF5918131F410098B0A9 /* InvitedFBFriendsViewController.h */,
+				514CDF5A18131F410098B0A9 /* InvitedFBFriendsViewController.m */,
 				51802BB417A6E8D900213090 /* StoryPickerViewController.h */,
 				51802BB517A6E8D900213090 /* StoryPickerViewController.m */,
 				517A01DB170BFA3700665F0F /* InviteFriendCell */,
@@ -742,6 +750,15 @@
 				5189B30115B395F300562DD0 /* StoryReaderController.m */,
 			);
 			name = Read;
+			sourceTree = "<group>";
+		};
+		514CDF5518125C030098B0A9 /* Permissions */ = {
+			isa = PBXGroup;
+			children = (
+				514CDF5218125BFE0098B0A9 /* BNPermissionsObject.h */,
+				514CDF5318125BFE0098B0A9 /* BNPermissionsObject.m */,
+			);
+			name = Permissions;
 			sourceTree = "<group>";
 		};
 		5158AE2D16F56F850089193E /* BNSidePanelController */ = {
@@ -1032,6 +1049,7 @@
 				517A01DF170EB02D00665F0F /* User */,
 				5189B35715B396E700562DD0 /* Piece */,
 				5189B35A15B3975100562DD0 /* Story */,
+				514CDF5518125C030098B0A9 /* Permissions */,
 			);
 			name = Model;
 			path = ..;
@@ -1574,10 +1592,12 @@
 				510787D2163A36F20042B436 /* BNGoogleLocationManager.m in Sources */,
 				510787D5163A37190042B436 /* Activity.m in Sources */,
 				5157CD031650902900C22CCE /* BanyanConnection.m in Sources */,
+				514CDF5B18131F410098B0A9 /* InvitedFBFriendsViewController.m in Sources */,
 				5103FB9F166898960095B11F /* UIImage+Create.m in Sources */,
 				519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */,
 				5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */,
 				519233331675305F009686E4 /* LocationPickerTableViewController.m in Sources */,
+				514CDF5418125BFF0098B0A9 /* BNPermissionsObject.m in Sources */,
 				51A8DC9116928A240017E86F /* Activity+Create.m in Sources */,
 				51A8DC9516928AE00017E86F /* Banyan.xcdatamodeld in Sources */,
 				51A8DC981692C4490017E86F /* Story+Permissions.m in Sources */,

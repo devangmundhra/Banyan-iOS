@@ -626,15 +626,6 @@
     }
 }
 
-- (IBAction)storyContributors
-{
-    InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] initWithViewerPermissions:self.piece.story.readAccess
-                                                                                                     contributorPermission:self.piece.story.writeAccess];
-    invitedTableViewController.delegate = self;
-    
-    [self presentViewController:[[UINavigationController alloc] initWithRootViewController:invitedTableViewController] animated:YES completion:nil];
-}
-
 - (void)togglePieceLikeButtonLabel
 {
     UIImage *heartImage = nil;
@@ -693,48 +684,6 @@
 - (void)modifyPieceViewController:(ModifyPieceViewController *)controller didFinishAddingPiece:(Piece *)piece
 {
     [self.delegate readPieceViewControllerFlipToPiece:[NSNumber numberWithInt:piece.pieceNumber]];
-}
-
-# pragma mark InvitedTableViewControllerDelegate
-- (void)invitedTableViewController:(InvitedTableViewController *)invitedTableViewController
-        finishedInvitingForViewers:(NSArray *)selectedViewers
-                      contributors:(NSArray *)selectedContributors
-{
-    NSDictionary *selfInvitation = nil;
-    BNSharedUser *currentUser = [BNSharedUser currentUser];
-    if (HAVE_ASSERTS)
-        assert(currentUser);
-    
-    if (currentUser) {
-        selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
-                                        currentUser.name, @"name",
-                                        currentUser.facebookId, @"id", nil];
-    }
-    // Update read access
-    if (selectedViewers) {
-        NSMutableDictionary *readAccess = nil;
-        NSMutableArray *readList = [NSMutableArray arrayWithArray:selectedViewers];
-        [readList addObjectsFromArray:selectedContributors];
-        [readList addObject:selfInvitation];
-        [readAccess setObject:kBNStoryPrivacyScopeInvited forKey:kBNStoryPrivacyScope];
-        [readAccess setObject:[NSDictionary dictionaryWithObject:readList forKey:kBNStoryPrivacyInvitedFacebookFriends]
-                       forKey:kBNStoryPrivacyInviteeList];
-        self.piece.story.readAccess = readAccess;
-    }
-    
-    // Update write access
-    if (selectedContributors) {
-        NSMutableDictionary *writeAccess = nil;
-        NSMutableArray *writeList = [NSMutableArray arrayWithArray:selectedContributors];
-        [writeList addObject:selfInvitation];
-        [writeAccess setObject:kBNStoryPrivacyScopeInvited forKey:kBNStoryPrivacyScope];
-        [writeAccess setObject:[NSDictionary dictionaryWithObject:writeList forKey:kBNStoryPrivacyInvitedFacebookFriends]
-                       forKey:kBNStoryPrivacyInviteeList];
-        self.piece.story.writeAccess = writeAccess;
-    }
-    
-    [Story editStory:self.piece.story];
-    [self refreshUI];
 }
 
 #pragma mark - ASMediaFocusDelegate

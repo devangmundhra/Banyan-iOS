@@ -5,7 +5,6 @@ pod 'BNSwipeableView', :git => 'https://github.com/devangmundhra/BNSwipeableView
 pod 'MBProgressHUD', '>= 0.7'
 pod 'TestFlightSDK', '>= 1.3'
 pod 'RestKit', :git => 'https://github.com/RestKit/RestKit.git', :branch => 'development'
-pod 'SVSegmentedControl'
 pod 'SMPageControl', '~> 1.0'
 pod 'SSToolkit'
 pod 'ASMediaFocusManager', :git => 'https://github.com/devangmundhra/ASMediaFocusManager.git', :commit => 'd17dc365683f4ff81705d877c4be400bc38df069'

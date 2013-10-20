@@ -9,7 +9,6 @@
 #import "ModifyStoryViewController.h"
 #import "Story_Defines.h"
 #import "BanyanAppDelegate.h"
-#import "SVSegmentedControl.h"
 #import "UIImage+Create.h"
 #import "Story+Create.h"
 #import "LocationPickerButton.h"
@@ -30,9 +29,8 @@
 @property (weak, nonatomic) NSString *storyTitle;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet SSTextField *storyTitleTextField;
-@property (strong, nonatomic) IBOutlet SVSegmentedControl *contributorPrivacySegmentedControl;
-@property (strong, nonatomic) IBOutlet SVSegmentedControl *viewerPrivacySegmentedControl;
 
+@property (weak, nonatomic) IBOutlet UILabel *inviteeLabel;
 @property (weak, nonatomic) IBOutlet UIButton *inviteContactsButton;
 @property (weak, nonatomic) IBOutlet LocationPickerButton *addLocationButton;
 @property (weak, nonatomic) IBOutlet SingleImagePickerButton *addPhotoButton;
@@ -40,11 +38,8 @@
 @property (weak, nonatomic) UITextField *activeField;
 @property (nonatomic) CGSize kbSize;
 
-@property (weak, nonatomic) IBOutlet UILabel *numSpectatorsLabel;
-@property (strong, nonatomic) NSMutableArray *invitedToViewList;
-
-@property (weak, nonatomic) IBOutlet UILabel *numPlayersLabel;
-@property (strong, nonatomic) NSMutableArray *invitedToContributeList;
+@property (strong, nonatomic) BNPermissionsObject *writeAccessList;
+@property (strong, nonatomic) BNPermissionsObject *readAccessList;
 
 @property (strong, nonatomic) UITapGestureRecognizer *tapRecognizer;
 
@@ -69,19 +64,18 @@
 @synthesize storyTitle = _storyTitle;
 @synthesize storyTitleTextField = _storyTitleTextField;
 @synthesize tapRecognizer = _tapRecognizer;
-@synthesize invitedToViewList = _invitedToViewList;
-@synthesize invitedToContributeList = _invitedToContributeList;
+@synthesize writeAccessList = _writeAccessList;
+@synthesize readAccessList = _readAccessList;
 @synthesize locationManager = _locationManager;
 @synthesize activeField = _activeField;
-@synthesize contributorPrivacySegmentedControl = _contributorPrivacySegmentedControl;
-@synthesize viewerPrivacySegmentedControl = _viewerPrivacySegmentedControl;
 @synthesize addLocationButton = _addLocationButton;
 @synthesize addPhotoButton = _addPhotoButton;
-@synthesize numPlayersLabel, numSpectatorsLabel;
 @synthesize backupStory_ = _backupStory_;
 @synthesize editMode = _editMode;
 @synthesize delegate = _delegate;
 @synthesize backupMedia_ = _backupMedia_;
+@synthesize inviteeLabel = _inviteeLabel;
+@synthesize inviteContactsButton = _inviteContactsButton;
 @synthesize mediaToDelete;
 
 - (id) initWithStory:(Story *)story
@@ -129,10 +123,6 @@
     
     mediaToDelete = [NSMutableSet set];
     
-    self.inviteContactsButton.enabled = 1;
-    [self.inviteContactsButton setBackgroundColor:BANYAN_GREEN_COLOR];
-    [self.inviteContactsButton setImage:[UIImage imageNamed:@"addUserSymbol"] forState:UIControlStateNormal];
-    
     self.storyTitleTextField.delegate = self;
     self.storyTitleTextField.textEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 5);
     self.storyTitleTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
@@ -152,62 +142,32 @@
     
     self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapAnywhere:)];
     
-    self.contributorPrivacySegmentedControl = [[SVSegmentedControl alloc] initWithSectionTitles:@[@"Everyone", @"Selected"]];
-    [self.contributorPrivacySegmentedControl addTarget:self action:@selector(storyPrivacySegmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
-    
-    self.viewerPrivacySegmentedControl = [[SVSegmentedControl alloc] initWithSectionTitles:@[@"Everyone", @"Limited", @"Selected"]];
-    [self.viewerPrivacySegmentedControl addTarget:self action:@selector(storyPrivacySegmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
-    
-    self.contributorPrivacySegmentedControl.crossFadeLabelsOnDrag = YES;
-    self.contributorPrivacySegmentedControl.font = [UIFont fontWithName:STORY_FONT size:12];;
-    self.contributorPrivacySegmentedControl.thumb.tintColor = BANYAN_GREEN_COLOR;
-    self.contributorPrivacySegmentedControl.textColor = BANYAN_WHITE_COLOR;
-    self.contributorPrivacySegmentedControl.height = 25;
-    [self.scrollView addSubview:self.contributorPrivacySegmentedControl];
-    self.contributorPrivacySegmentedControl.center = CGPointMake(141, 96);
-    
-    
-    self.viewerPrivacySegmentedControl.crossFadeLabelsOnDrag = YES;
-    self.viewerPrivacySegmentedControl.font = [UIFont fontWithName:STORY_FONT size:12];
-    self.viewerPrivacySegmentedControl.thumb.tintColor = BANYAN_GREEN_COLOR;
-    self.viewerPrivacySegmentedControl.backgroundTintColor = BANYAN_BROWN_COLOR;
-    self.viewerPrivacySegmentedControl.titleEdgeInsets = UIEdgeInsetsMake(0, 3, 0, 3);
-    self.viewerPrivacySegmentedControl.textColor = BANYAN_WHITE_COLOR;
-    self.viewerPrivacySegmentedControl.height = 25;
-    [self.scrollView addSubview:self.viewerPrivacySegmentedControl];
-    self.viewerPrivacySegmentedControl.center = CGPointMake(141, 151);
-    
     self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
-    self.invitedToContributeList = [NSMutableArray array];
-    self.invitedToViewList = [NSMutableArray array];
-    
+    // Default is selected permissions for writers
+    self.writeAccessList = [BNPermissionsObject permissionObject];
+    self.writeAccessList.scope = kBNStoryPrivacyScopeInvited;
+
+    // Default is limited permissions for viewers
+    self.readAccessList = [BNPermissionsObject permissionObject];
+    self.readAccessList.scope = kBNStoryPrivacyScopeLimited;
+    BNSharedUser *currentUser = [BNSharedUser currentUser];
+    if (HAVE_ASSERTS)
+        NSAssert(currentUser, @"No Current user available when modifying story");
+    if (currentUser) {
+        NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
+                                        currentUser.name, @"name",
+                                        currentUser.facebookId, @"id", nil];
+        self.readAccessList.facebookInvitedList = [NSMutableArray arrayWithObject:selfInvitation];
+    }
+
     if (self.editMode == ModifyStoryViewControllerEditModeEdit) {
         // Set the title and permissions
         self.storyTitleTextField.text = self.story.title;
-        // Players
-        if ([[self.story contributorPrivacyScope] isEqualToString:kBNStoryPrivacyScopeInvited]) {
-            [self.contributorPrivacySegmentedControl setSelectedSegmentIndex:ContributorPrivacySegmentedControlInvited animated:NO];
-            numPlayersLabel.hidden = NO;
-            numPlayersLabel.text = [NSString stringWithFormat:@"%u", [self.story numberOfContributors]];
-            self.invitedToContributeList = [NSMutableArray arrayWithArray:[self.story storyContributors]];
-        } else {
-            [self.contributorPrivacySegmentedControl setSelectedSegmentIndex:ContributorPrivacySegmentedControlPublic animated:NO];
-            numPlayersLabel.hidden = YES;
-        }
-        // Spectators
-        if ([[self.story viewerPrivacyScope] isEqualToString:kBNStoryPrivacyScopeInvited]) {
-            [self.viewerPrivacySegmentedControl setSelectedSegmentIndex:ViewerPrivacySegmentedControlInvited animated:NO];
-            numSpectatorsLabel.hidden = NO;
-            numSpectatorsLabel.text = [NSString stringWithFormat:@"%u", [self.story numberOfViewers]];
-            self.invitedToViewList = [NSMutableArray arrayWithArray:[self.story storyViewers]];
-        } else if ([[self.story viewerPrivacyScope] isEqualToString:kBNStoryPrivacyScopeLimited]) {
-            [self.viewerPrivacySegmentedControl setSelectedSegmentIndex:ViewerPrivacySegmentedControlLimited animated:NO];
-            numSpectatorsLabel.hidden = YES;
-        } else {
-            [self.viewerPrivacySegmentedControl setSelectedSegmentIndex:ViewerPrivacySegmentedControlPublic animated:NO];
-            numSpectatorsLabel.hidden = YES;
-        }
+        // Contributors
+        self.writeAccessList = [BNPermissionsObject permissionObjectWithDictionary:self.story.writeAccess];
+        // Viewers
+        self.readAccessList = [BNPermissionsObject permissionObjectWithDictionary:self.story.readAccess];
         
         // Cover image
         Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.story.media];
@@ -234,17 +194,13 @@
         
         self.title = @"Edit Story";
     } else {
-        [self.contributorPrivacySegmentedControl setSelectedSegmentIndex:ContributorPrivacySegmentedControlInvited animated:NO];
-        numPlayersLabel.hidden = NO;
-        [self.viewerPrivacySegmentedControl setSelectedSegmentIndex:ViewerPrivacySegmentedControlPublic animated:NO];
-        numSpectatorsLabel.hidden = YES;
         self.title = @"Add Story";
     }
     
-    [self updateScrollViewContentSize];
-    
     [self.inviteContactsButton addTarget:self action:@selector(inviteContacts:) forControlEvents:UIControlEventTouchUpInside];
-    self.inviteContactsButton.enabled = (self.contributorPrivacySegmentedControl.selectedSegmentIndex == ContributorPrivacySegmentedControlInvited) || (self.viewerPrivacySegmentedControl.selectedSegmentIndex == ViewerPrivacySegmentedControlInvited);
+    [self updatePermissionTextInView];
+    
+    [self updateScrollViewContentSize];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -255,8 +211,8 @@
 # pragma mark- Target Actions for story
 - (void) inviteContacts:(id)sender
 {
-    InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] initWithViewerPermissions:[self viewerPrivacyDictionary]
-                                                                                                     contributorPermission:[self contributorPrivacyDictionary]];
+    InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] initWithViewerPermissions:[self.readAccessList copy]
+                                                                                                     contributorPermission:[self.writeAccessList copy]];
     invitedTableViewController.delegate = self;
     [self presentViewController:[[UINavigationController alloc] initWithRootViewController:invitedTableViewController] animated:YES completion:nil];
 }
@@ -297,8 +253,8 @@
     self.story.title = (self.storyTitleTextField.text && ![self.storyTitleTextField.text isEqualToString:@""]) ? self.storyTitleTextField.text : [BNMisc longCurrentDate];
     
     // Story Privacy
-    self.story.writeAccess = [self contributorPrivacyDictionary];
-    self.story.readAccess = [self viewerPrivacyDictionary];
+    self.story.writeAccess = [self.writeAccessList permissionsDictionary];
+    self.story.readAccess = [self.readAccessList permissionsDictionary];
     
     // Story Location
     if (self.isLocationEnabled == YES) {
@@ -362,102 +318,19 @@
     }];
 }
 
-# pragma mark story privacy
-
-- (void) storyPrivacySegmentedControlChangedValue:(SVSegmentedControl *)segmentedControl
+# pragma mark Instance methods
+- (void) updatePermissionTextInView
 {
-    if (segmentedControl == self.contributorPrivacySegmentedControl) {
-        if (segmentedControl.selectedSegmentIndex == ContributorPrivacySegmentedControlInvited) {
-            self.viewerPrivacySegmentedControl.enabled = YES;
-            self.viewerPrivacySegmentedControl.alpha = 1;
-            numPlayersLabel.hidden = NO;
-        } else {
-            if (self.viewerPrivacySegmentedControl.selectedSegmentIndex != ViewerPrivacySegmentedControlPublic) {
-                [self.viewerPrivacySegmentedControl setSelectedSegmentIndex:ViewerPrivacySegmentedControlPublic animated:YES];
-            }
-            self.viewerPrivacySegmentedControl.enabled = NO;
-            self.viewerPrivacySegmentedControl.alpha = 0.5;
-            numPlayersLabel.hidden = YES;
-        }
-    }
-    
-    numSpectatorsLabel.hidden = self.viewerPrivacySegmentedControl.selectedSegmentIndex != ViewerPrivacySegmentedControlInvited;
-    self.inviteContactsButton.enabled = (self.contributorPrivacySegmentedControl.selectedSegmentIndex == ContributorPrivacySegmentedControlInvited) || (self.viewerPrivacySegmentedControl.selectedSegmentIndex == ViewerPrivacySegmentedControlInvited);
-}
+    NSString *permStr = [NSString stringWithFormat:@"%@ can contribute to the story.\r%@ can view the story.",
+                         [self.writeAccessList stringifyPermissionObject], [self.readAccessList stringifyPermissionObject]];
+    NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] initWithString:permStr
+                                                                             attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:12]}];
+    [attr setAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:14]}
+                  range:[permStr rangeOfString:[self.writeAccessList stringifyPermissionObject]]];
+    [attr setAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:14]}
+                  range:[permStr rangeOfString:[NSString stringWithFormat:@"\r%@", [self.readAccessList stringifyPermissionObject]]]];
 
-- (NSString *)contributorScope
-{
-    if (self.contributorPrivacySegmentedControl.selectedSegmentIndex == ContributorPrivacySegmentedControlInvited) {
-        return kBNStoryPrivacyScopeInvited;
-    } else {
-        return kBNStoryPrivacyScopePublic;
-    }
-}
-
-- (NSDictionary *)contributorsInvited
-{
-    NSDictionary *dictToReturn = [NSDictionary dictionaryWithObject:self.invitedToContributeList forKey:kBNStoryPrivacyInvitedFacebookFriends];
-    return dictToReturn;
-}
-
-- (NSDictionary *)contributorPrivacyDictionary
-{
-    NSMutableDictionary *contributorsDictionary = [NSMutableDictionary dictionary];
-    
-    [contributorsDictionary setObject:[self contributorScope] forKey:kBNStoryPrivacyScope];
-    [contributorsDictionary setObject:[self contributorsInvited] forKey:kBNStoryPrivacyInviteeList];
-    return [contributorsDictionary copy];
-}
-
-- (NSString *)viewerScope
-{
-    switch (self.viewerPrivacySegmentedControl.selectedSegmentIndex) {
-        case ViewerPrivacySegmentedControlInvited:
-            return kBNStoryPrivacyScopeInvited;
-            break;
-            
-        case ViewerPrivacySegmentedControlLimited:
-            return kBNStoryPrivacyScopeLimited;
-            break;
-            
-        case ViewerPrivacySegmentedControlPublic:
-            return kBNStoryPrivacyScopePublic;
-            break;
-            
-        default:
-            return kBNStoryPrivacyScopeInvited;
-            break;
-    }
-}
-
-- (NSDictionary *)viewersInvited
-{
-    // Whose fb friends to call depends upon the list added in kBNStoryPrivacyInvitedFacebookFriends
-    if ([[self viewerScope] isEqualToString:kBNStoryPrivacyScopeLimited]) {
-        BNSharedUser *currentUser = [BNSharedUser currentUser];
-        if (currentUser) {
-            NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
-                                            currentUser.name, @"name",
-                                            currentUser.facebookId, @"id", nil];
-            if (![self.invitedToViewList containsObject:selfInvitation])
-                [self.invitedToViewList addObject:selfInvitation];
-        } else {
-            if (HAVE_ASSERTS)
-                assert(false);
-            return nil;
-        }
-    }
-    
-    return [NSDictionary dictionaryWithObject:self.invitedToViewList forKey:kBNStoryPrivacyInvitedFacebookFriends];
-}
-
-- (NSDictionary *)viewerPrivacyDictionary
-{
-    NSMutableDictionary *viewersDictionary = [NSMutableDictionary dictionary];
-    
-    [viewersDictionary setObject:[self viewerScope] forKey:kBNStoryPrivacyScope];
-    [viewersDictionary setObject:[self viewersInvited] forKey:kBNStoryPrivacyInviteeList];
-    return [viewersDictionary copy];
+    [self.inviteeLabel setAttributedText:attr];
 }
 
 #pragma mark SingleImagePickerButton methods
@@ -521,7 +394,7 @@
     UIImage *image = [info objectForKey:MediaPickerViewControllerInfoImage];
     media.localURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
     
-    [self.addPhotoButton.imageView  cancelImageRequestOperation];
+    [self.addPhotoButton.imageView  cancelCurrentImageLoad];
     [NSThread detachNewThreadSelector:@selector(useImage:) toTarget:self withObject:image];
 }
 
@@ -633,18 +506,13 @@
 }
 
 # pragma mark InvitedTableViewControllerDelegate
-- (void)invitedTableViewController:(InvitedTableViewController *)invitedTableViewController
-        finishedInvitingForViewers:(NSArray *)selectedViewers
-                      contributors:(NSArray *)selectedContributors
+- (void) invitedTableViewController:(InvitedTableViewController *)invitedTableViewController
+finishedInvitingForViewerPermissions:(BNPermissionsObject *)viewerPermissions
+             contributorPermissions:(BNPermissionsObject *)contributorPermissions
 {
-    if (selectedViewers) {
-        [self.invitedToViewList setArray:selectedViewers];
-    }
-    if (selectedContributors) {
-        [self.invitedToContributeList setArray:selectedContributors];
-    }
-    numSpectatorsLabel.text = [NSString stringWithFormat:@"%u", self.invitedToViewList.count];
-    numPlayersLabel.text = [NSString stringWithFormat:@"%u", self.invitedToContributeList.count];
+    self.readAccessList = viewerPermissions;
+    self.writeAccessList = contributorPermissions;
+    [self updatePermissionTextInView];
 }
 
 #pragma mark UITextFieldDelegate

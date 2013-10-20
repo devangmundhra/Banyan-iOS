@@ -14,29 +14,16 @@
 @implementation Story (Permissions)
 
 # pragma mark Permissions management
-- (void) resetPermission
+- (NSString *)contributorPermissions
 {
-    assert(false);
-//    self.isInvited = NO;
-//    self.canContribute = NO;
-//    self.canView = NO;
-//    
-//    if (![BNSharedUser currentUser]) {
-//        NSLog(@"%s No current user", __PRETTY_FUNCTION__);
-//    }
-//    NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:@"json", @"format", self.bnObjectId, @"object_id", [BNSharedUser currentUser].userId, @"user_id", nil];
-//    
-//    [[AFBanyanAPIClient sharedClient] getPath:BANYAN_API_GET_PERMISSIONS(@"Story")
-//                                   parameters:parameters
-//                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//                                          NSDictionary *results = (NSDictionary *)responseObject;
-//                                          self.canContribute = [[results objectForKey:@"write"] boolValue];
-//                                          self.canView = [[results objectForKey:@"read"] boolValue];
-//                                          self.isInvited = [[results objectForKey:@"invited"] boolValue];
-//                                      }
-//                                      failure:AF_BANYAN_ERROR_BLOCK()];
-//    
-//    return;
+    BNPermissionsObject *permissionObj = [BNPermissionsObject permissionObjectWithDictionary:self.writeAccess];
+    return [NSString stringWithFormat:@"%@ can contribute to the story", [permissionObj stringifyPermissionObject]];
+}
+
+- (NSString *)viewerPermissions
+{
+    BNPermissionsObject *permissionObj = [BNPermissionsObject permissionObjectWithDictionary:self.readAccess];
+    return [NSString stringWithFormat:@"%@ can view the story", [permissionObj stringifyPermissionObject]];
 }
 
 - (NSString *)contributorPrivacyScope

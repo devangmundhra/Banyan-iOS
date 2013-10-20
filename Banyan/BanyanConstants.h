@@ -48,6 +48,7 @@ extern NSString *const BNUserDefaultsCurrentOngoingStoryToContribute;
 extern NSString *const kBNStoryClassKey;
 
 // Dictionary keys for invitees
+extern NSString *const kBNPermssionsVersion;
 extern NSString *const kBNStoryPrivacyScope;
 extern NSString *const kBNStoryPrivacyScopeInvited;
 extern NSString *const kBNStoryPrivacyScopeLimited;

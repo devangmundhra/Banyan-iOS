@@ -92,7 +92,7 @@
     user.firstName = [userInfo objectForKey:USER_FIRSTNAME];
     user.lastName = [userInfo objectForKey:USER_LASTNAME];
     user.name = [userInfo objectForKey:USER_NAME];
-    user.facebookId = [[userInfo objectForKey:@"facebook"] objectForKey:@"id"];
+    user.facebookId = [[userInfo objectForKey:@"facebook"] objectForKey:@"facebookId"];
     user.userId = [userInfo objectForKey:@"id"];
     user.resourceUri = [userInfo objectForKey:@"resource_uri"];
     

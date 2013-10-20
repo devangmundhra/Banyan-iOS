@@ -7,10 +7,10 @@
 //
 
 #import "Story.h"
+#import "BNPermissionsObject.h"
 
 @interface Story (Permissions)
 
-- (void) resetPermission;
 - (NSString *)viewerPrivacyScope;
 - (NSUInteger) numberOfViewers;
 - (NSArray *) storyViewers;
@@ -20,5 +20,8 @@
 - (NSArray *)storyContributors;
 
 - (NSString *)shortStringOfContributors;
+
+- (NSString *)contributorPermissions;
+- (NSString *)viewerPermissions;
 
 @end
