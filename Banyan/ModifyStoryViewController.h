@@ -13,6 +13,7 @@
 #import "MediaPickerViewController.h"
 #import "SingleImagePickerButton.h"
 #import "Story+Create.h"
+#import "AVCamViewController.h"
 
 @class ModifyStoryViewController;
 
@@ -26,7 +27,7 @@
 
 typedef enum {ModifyStoryViewControllerEditModeAdd, ModifyStoryViewControllerEditModeEdit} ModifyStoryViewControllerEditMode;
 
-@interface ModifyStoryViewController : UIViewController <UITextFieldDelegate, InvitedTableViewControllerDelegate, UIScrollViewDelegate, BNFBLocationManagerDelegate, LocationPickerButtonDelegate, SingleImagePickerButtonDelegate, MediaPickerViewControllerDelegate, UIActionSheetDelegate>
+@interface ModifyStoryViewController : UIViewController <InvitedTableViewControllerDelegate, UITextFieldDelegate>
 
 @property (strong, nonatomic) Story *story;
 @property (strong, nonatomic) id <ModifyStoryViewControllerDelegate>delegate;

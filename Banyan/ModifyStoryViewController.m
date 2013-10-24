@@ -3,7 +3,7 @@
 //  Banyan
 //
 //  Created by Devang Mundhra on 3/10/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Banyan. All rights reserved.
 //
 
 #import "ModifyStoryViewController.h"
@@ -19,68 +19,61 @@
 #import "SDWebImage/UIImageView+WebCache.h"
 #import "BNMisc.h"
 #import "Story+Permissions.h"
+#import "SSLabel.h"
 
 @interface ModifyStoryViewController ()
-{
-    NSInteger contributors;
-    NSInteger viewers;
-}
 
-@property (weak, nonatomic) NSString *storyTitle;
-@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (weak, nonatomic) IBOutlet SSTextField *storyTitleTextField;
+@property (strong, nonatomic) NSString *storyTitle;
+@property (strong, nonatomic) UIScrollView *scrollView;
 
-@property (weak, nonatomic) IBOutlet UILabel *inviteeLabel;
-@property (weak, nonatomic) IBOutlet UIButton *inviteContactsButton;
-@property (weak, nonatomic) IBOutlet LocationPickerButton *addLocationButton;
-@property (weak, nonatomic) IBOutlet SingleImagePickerButton *addPhotoButton;
+@property (strong, nonatomic) IBOutlet SSTextField *storyTitleTextField;
 
-@property (weak, nonatomic) UITextField *activeField;
-@property (nonatomic) CGSize kbSize;
+@property (strong, nonatomic) IBOutlet UIView *invitationView;
+@property (strong, nonatomic) IBOutlet SSLabel *inviteeLabel;
+@property (strong, nonatomic) IBOutlet UIButton *inviteContactsButton;
+
 
 @property (strong, nonatomic) BNPermissionsObject *writeAccessList;
 @property (strong, nonatomic) BNPermissionsObject *readAccessList;
 
-@property (strong, nonatomic) UITapGestureRecognizer *tapRecognizer;
-
-@property (nonatomic) BOOL isLocationEnabled;
-@property (strong, nonatomic) BNFBLocationManager *locationManager;
-
 @property (nonatomic) ModifyStoryViewControllerEditMode editMode;
 @property (strong, nonatomic) Story *backupStory_;
-
-@property (strong, nonatomic) NSMutableSet *mediaToDelete;
-@property (strong, nonatomic) NSOrderedSet *backupMedia_;
 
 @end
 
 @implementation ModifyStoryViewController
 
-// Timeout for finding location
-#define kFindLocationTimeOut 0.5*60 // half a minute
-#define kTokenisingCharacter @","
-
-@synthesize scrollView = _scrollView;
 @synthesize storyTitle = _storyTitle;
 @synthesize storyTitleTextField = _storyTitleTextField;
-@synthesize tapRecognizer = _tapRecognizer;
 @synthesize writeAccessList = _writeAccessList;
 @synthesize readAccessList = _readAccessList;
-@synthesize locationManager = _locationManager;
-@synthesize activeField = _activeField;
-@synthesize addLocationButton = _addLocationButton;
-@synthesize addPhotoButton = _addPhotoButton;
 @synthesize backupStory_ = _backupStory_;
 @synthesize editMode = _editMode;
 @synthesize delegate = _delegate;
-@synthesize backupMedia_ = _backupMedia_;
 @synthesize inviteeLabel = _inviteeLabel;
 @synthesize inviteContactsButton = _inviteContactsButton;
-@synthesize mediaToDelete;
+@synthesize scrollView = _scrollView;
+@synthesize invitationView = _invitationView;
+
+#define TEXT_INSETS 5
+#define VIEW_INSETS 8
+
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        // Custom initialization
+        // this should never be called directly.
+        // initWithStory should be called instead
+        if (HAVE_ASSERTS)
+            assert(false);
+    }
+    return self;
+}
 
 - (id) initWithStory:(Story *)story
 {
-    if (self = [super initWithNibName:@"ModifyStoryViewController" bundle:nil]) {
+    if (self = [super init]) {
         self.hidesBottomBarWhenPushed = YES;
         self.story = story;
         if (self.story.remoteStatus == RemoteObjectStatusLocal) {
@@ -88,7 +81,6 @@
         } else {
             self.editMode = ModifyStoryViewControllerEditModeEdit;
             self.backupStory_ = [NSEntityDescription insertNewObjectForEntityForName:[[story entity] name] inManagedObjectContext:[story managedObjectContext]];
-            self.backupMedia_ = [NSOrderedSet orderedSetWithOrderedSet:self.story.media];
             [self.backupStory_ cloneFrom:story];
         }
         
@@ -119,30 +111,51 @@
     
     [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done:)]];
     [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
-    self.addPhotoButton.delegate = self;
     
-    mediaToDelete = [NSMutableSet set];
+    self.view.backgroundColor = BANYAN_WHITE_COLOR;
+    self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+    [self.scrollView setContentSize:self.view.bounds.size];
+    self.scrollView.scrollEnabled = NO;
+    [self.view addSubview:self.scrollView];
     
+    CGRect frame = self.scrollView.bounds;
+    frame.origin.x = VIEW_INSETS;
+    frame.size = self.scrollView.bounds.size;
+    frame.size.height = 44.0f;
+    frame.size.width -= 2*VIEW_INSETS;
+    frame.origin.y = 16.0f;
+    self.storyTitleTextField = [[SSTextField alloc] initWithFrame:frame];
+    self.storyTitleTextField.backgroundColor = [BANYAN_GREEN_COLOR colorWithAlphaComponent:0.2];
+    self.storyTitleTextField.placeholder = @"What do you want to call your story?";
     self.storyTitleTextField.delegate = self;
-    self.storyTitleTextField.textEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 5);
+    self.storyTitleTextField.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSETS, 0, TEXT_INSETS);
     self.storyTitleTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
+    self.storyTitleTextField.font = [UIFont fontWithName:@"Roboto-Bold" size:16];
+    [self.storyTitleTextField.layer setCornerRadius:8];
+    [self.scrollView addSubview:self.storyTitleTextField];
     
-    if (!self.locationManager) {
-        self.locationManager = [[BNFBLocationManager alloc] initWithDelegate:self];
-    }
-    self.isLocationEnabled = self.story.isLocationEnabled;
-    self.addLocationButton.delegate = self;
-    [self.addLocationButton locationPickerLocationEnabled:self.isLocationEnabled];
-    if (self.isLocationEnabled) {
-        self.locationManager.location = self.story.location;
-        if ([self.story.location.name length]) {
-            [self.addLocationButton setLocationPickerTitle:self.story.location.name];
-        }
-    }
+    UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapAnywhere:)];
+    [self.scrollView addGestureRecognizer:tapRecognizer];
+
+    frame.origin.y = CGRectGetMaxY(self.storyTitleTextField.frame) + 44 /* distance between caption and permission */;
+    self.invitationView = [[UIView alloc] initWithFrame:frame];
+    self.invitationView.backgroundColor = [BANYAN_GREEN_COLOR colorWithAlphaComponent:0.1];
+    [self.invitationView.layer setCornerRadius:8];
+    [self.scrollView addSubview:self.invitationView];
     
-    self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapAnywhere:)];
-    
-    self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    frame = self.invitationView.bounds;
+    self.inviteeLabel = [[SSLabel alloc] initWithFrame:frame];
+    self.inviteeLabel.textEdgeInsets = UIEdgeInsetsMake(TEXT_INSETS, TEXT_INSETS, TEXT_INSETS, TEXT_INSETS);
+    self.inviteeLabel.backgroundColor = [BANYAN_GREEN_COLOR colorWithAlphaComponent:0.1];
+    [self.inviteeLabel.layer setCornerRadius:8];
+    self.inviteeLabel.numberOfLines = 0;
+    [self.invitationView addSubview:self.inviteeLabel];
+
+    self.inviteContactsButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [self.inviteContactsButton setTitle:@"Change permissions" forState:UIControlStateNormal];
+    frame.origin.y = CGRectGetMaxY(self.inviteeLabel.frame);
+    self.inviteContactsButton.frame = frame;
+    [self.invitationView addSubview:self.inviteContactsButton];
     
     // Default is selected permissions for writers
     self.writeAccessList = [BNPermissionsObject permissionObject];
@@ -169,29 +182,6 @@
         // Viewers
         self.readAccessList = [BNPermissionsObject permissionObjectWithDictionary:self.story.readAccess];
         
-        // Cover image
-        Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.story.media];
-        
-        if (imageMedia) {
-            if ([imageMedia.remoteURL length]) {
-                [self.addPhotoButton.imageView setImageWithURL:[NSURL URLWithString:imageMedia.remoteURL] placeholderImage:nil options:SDWebImageProgressiveDownload];
-            } else if ([imageMedia.localURL length]) {
-                ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
-                [library assetForURL:[NSURL URLWithString:imageMedia.localURL] resultBlock:^(ALAsset *asset) {
-                    ALAssetRepresentation *rep = [asset defaultRepresentation];
-                    CGImageRef imageRef = [rep fullScreenImage];
-                    UIImage *image = [UIImage imageWithCGImage:imageRef];
-                    [self.addPhotoButton.imageView setImage:image];
-                }
-                        failureBlock:^(NSError *error) {
-                            NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
-                        }
-                 ];
-            } else {
-                [self.addPhotoButton.imageView  setImageWithURL:nil];
-            }
-        }
-        
         self.title = @"Edit Story";
     } else {
         self.title = @"Add Story";
@@ -199,8 +189,6 @@
     
     [self.inviteContactsButton addTarget:self action:@selector(inviteContacts:) forControlEvents:UIControlEventTouchUpInside];
     [self updatePermissionTextInView];
-    
-    [self updateScrollViewContentSize];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -209,6 +197,7 @@
 }
 
 # pragma mark- Target Actions for story
+
 - (void) inviteContacts:(id)sender
 {
     InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] initWithViewerPermissions:[self.readAccessList copy]
@@ -228,22 +217,8 @@
 
 - (void)restoreBackupStory:(BOOL)upload
 {
-    if (self.backupStory_) {
+    if (self.backupStory_)
         [self.story cloneFrom:self.backupStory_];
-        
-        // Restore the media
-        if (![self.backupMedia_ isEqualToOrderedSet:self.story.media]) {
-            // Remove any new media that might have been added
-            NSMutableOrderedSet *mediaToRemove = [NSMutableOrderedSet orderedSetWithOrderedSet:self.story.media];
-            [mediaToRemove minusOrderedSet:self.backupMedia_];
-            for (Media *media in mediaToRemove) {
-                [media remove];
-            }
-            assert([self.story.media intersectsOrderedSet:self.backupMedia_] && [self.backupMedia_ intersectsOrderedSet:self.story.media]);
-            // Set the old media back again in case the ordering was changed
-            [self.story setMedia:self.backupMedia_];
-        }
-    }
 }
 
 - (IBAction)done:(UIBarButtonItem *)sender
@@ -255,32 +230,6 @@
     // Story Privacy
     self.story.writeAccess = [self.writeAccessList permissionsDictionary];
     self.story.readAccess = [self.readAccessList permissionsDictionary];
-    
-    // Story Location
-    if (self.isLocationEnabled == YES) {
-        self.story.isLocationEnabled = YES;
-        self.story.location = (FBGraphObject<FBGraphPlace> *)self.locationManager.location;
-    } else  {
-        self.story.isLocationEnabled = NO;
-    }
-    
-    // Delete any media that were indicated to be deleted
-    for (Media *media in mediaToDelete) {
-        // If its a local image, don't delete it
-        if ([media.remoteURL length]) {
-            [media deleteWitSuccess:nil
-                            failure:^(NSError *error) {
-                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error deleting %@ when editing piece %@", media.mediaTypeName, self.story.title]
-                                                                                message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]
-                                                                               delegate:nil
-                                                                      cancelButtonTitle:@"OK"
-                                                                      otherButtonTitles:nil];
-                                [alert show];
-                            }];
-        }
-        else
-            [media remove];
-    }
     
     // Upload Story
     if (self.editMode == ModifyStoryViewControllerEditModeAdd) {
@@ -323,6 +272,13 @@
 {
     NSString *permStr = [NSString stringWithFormat:@"%@ can contribute to the story.\r%@ can view the story.",
                          [self.writeAccessList stringifyPermissionObject], [self.readAccessList stringifyPermissionObject]];
+    NSMutableAttributedString *labelStr =[[NSMutableAttributedString alloc] initWithString:@"Who can contribute or view the story?"
+                                                                                attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
+                                                                                             NSForegroundColorAttributeName: [UIColor grayColor]}];
+    
+    [labelStr appendAttributedString:[[NSMutableAttributedString alloc] initWithString:@"\r\r"
+                                                                            attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:8]}]];
+    
     NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] initWithString:permStr
                                                                              attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:12]}];
     [attr setAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:14]}
@@ -330,113 +286,26 @@
     [attr setAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:14]}
                   range:[permStr rangeOfString:[NSString stringWithFormat:@"\r%@", [self.readAccessList stringifyPermissionObject]]]];
 
-    [self.inviteeLabel setAttributedText:attr];
-}
+    [labelStr appendAttributedString:attr];
+    [self.inviteeLabel setAttributedText:labelStr];
 
-#pragma mark SingleImagePickerButton methods
-- (void) singleImagePickerButtonTapped:(SingleImagePickerButton *)sender;
-{
-    [self dismissKeyboard:sender];
+    CGSize expectedSize = [labelStr boundingRectWithSize:self.scrollView.bounds.size
+                                             options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin
+                                             context:nil].size;
     
-    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.story.media];
+    CGRect frame = self.inviteeLabel.frame;
+    frame.size.height = roundf(expectedSize.height) + 2*TEXT_INSETS + 2*TEXT_INSETS;
+    self.inviteeLabel.frame = frame;
     
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Modify Photo"
-                                                             delegate:self
-                                                    cancelButtonTitle:@"Cancel"
-                                               destructiveButtonTitle:imageMedia ? @"Delete Photo" : nil
-                                                    otherButtonTitles:nil];
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
-        [actionSheet addButtonWithTitle:MediaPickerControllerSourceTypeCamera];
-    [actionSheet addButtonWithTitle:MediaPickerControllerSourceTypePhotoLib];
-    actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
-    [actionSheet showInView:self.view];
-    //    [actionSheet showFromTabBar:self.tabBarController.tabBar];
-}
-
-#pragma mark UIActionSheetDelegate
-// Action sheet delegate method.
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    // the user clicked one of the OK/Cancel buttons
-    if (buttonIndex == actionSheet.cancelButtonIndex) {
-        // DO NOTHING ON CANCEL
-    }
-    else if (buttonIndex == actionSheet.destructiveButtonIndex) {
-        Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.story.media];
-        [mediaToDelete addObject:imageMedia];
-        [self.addPhotoButton.imageView setImageWithURL:nil];
-    }
-    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:MediaPickerControllerSourceTypeCamera]) {
-        MediaPickerViewController *mediaPicker = [[MediaPickerViewController alloc] init];
-        mediaPicker.delegate = self;
-        [self addChildViewController:mediaPicker];
-        [mediaPicker shouldStartCameraController];
-    }
-    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:MediaPickerControllerSourceTypePhotoLib]) {
-        MediaPickerViewController *mediaPicker = [[MediaPickerViewController alloc] init];
-        mediaPicker.delegate = self;
-        [self addChildViewController:mediaPicker];
-        [mediaPicker shouldStartPhotoLibraryPickerController];
-    }
-    else {
-        NSLog(@"ModifyPieceViewController_actionSheetclickedButtonAtIndex %@", [actionSheet buttonTitleAtIndex:buttonIndex]);
-    }
-}
-
-#pragma mark MediaPickerViewControllerDelegate methods
-- (void) mediaPicker:(MediaPickerViewController *)mediaPicker finishedPickingMediaWithInfo:(NSDictionary *)info
-{
-    // Add the current media to mediaToDelete
-    [mediaToDelete addObjectsFromArray:[self.story.media array]];
+    frame = self.inviteContactsButton.frame;
+    frame.origin.y = CGRectGetMaxY(self.inviteeLabel.frame);
+    self.inviteContactsButton.frame = frame;
     
-    Media *media = [Media newMediaForObject:self.story];
-    media.mediaType = @"image";
-    UIImage *image = [info objectForKey:MediaPickerViewControllerInfoImage];
-    media.localURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
-    
-    [self.addPhotoButton.imageView  cancelCurrentImageLoad];
-    [NSThread detachNewThreadSelector:@selector(useImage:) toTarget:self withObject:image];
+    frame = self.invitationView.frame;
+    frame.size.height = CGRectGetHeight(self.inviteeLabel.frame) + CGRectGetHeight(self.inviteContactsButton.frame);
+    self.invitationView.frame = frame;
 }
 
-- (void)mediaPickerDidCancel:(MediaPickerViewController *)mediaPicker
-{
-}
-
-- (void)useImage:(UIImage *)image {
-    // Create a graphics image context
-    UIImage* newImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill
-                                                    bounds:self.addPhotoButton.frame.size
-                                      interpolationQuality:kCGInterpolationHigh];
-    
-    [self.addPhotoButton.imageView setImage:newImage];
-}
-
-# pragma mark LocationPickerButtonDelegate
-- (void)locationPickerButtonTapped:(LocationPickerButton *)sender
-{
-    [self.addLocationButton locationPickerLocationEnabled:YES];
-    [self.locationManager showPlacePickerViewController];
-}
-
-- (void)locationPickerButtonToggleLocationEnable:(LocationPickerButton *)sender
-{
-    self.isLocationEnabled = !self.isLocationEnabled;
-    [self.addLocationButton locationPickerLocationEnabled:self.isLocationEnabled];
-    if (self.isLocationEnabled) {
-        [self locationPickerButtonTapped:sender];
-    } else {
-        [self.locationManager stopUpdatingLocation:nil];
-    }
-}
-
-# pragma mark BNLocationManagerDelegate
-- (void) locationUpdated
-{
-    if (self.locationManager.location)
-        self.isLocationEnabled = YES;
-    
-    [self.addLocationButton locationPickerLocationUpdatedWithLocation:self.locationManager.location];
-}
 
 # pragma mark - Keyboard notifications
 - (void)registerForKeyboardNotifications
@@ -467,23 +336,16 @@
 // Called when the UIKeyboardWillShowotification is sent.
 - (void)keyboardWillBeShown:(NSNotification*)aNotification
 {
-    NSDictionary* info = [aNotification userInfo];
-    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    self.kbSize = kbSize;
+//    NSDictionary* info = [aNotification userInfo];
+//    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
-    self.scrollView.contentInset = contentInsets;
-    self.scrollView.scrollIndicatorInsets = contentInsets;
+//    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
 }
 
 // Called when the UIKeyboardWillBeHidden is sent
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification
 {
-    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
-    self.scrollView.contentInset = contentInsets;
-    self.scrollView.scrollIndicatorInsets = contentInsets;
-    
-    [self.scrollView setContentOffset:CGPointZero animated:YES];
+//    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
 }
 
 -(void)didTapAnywhere: (UITapGestureRecognizer*) recognizer
@@ -493,8 +355,8 @@
 
 - (IBAction)dismissKeyboard:(id)sender
 {
-    if (self.activeField.isFirstResponder)
-        [self.activeField resignFirstResponder];
+    if (self.storyTitleTextField.isFirstResponder)
+        [self.storyTitleTextField resignFirstResponder];
 }
 
 #pragma mark UITextFieldDelegate
@@ -515,25 +377,6 @@ finishedInvitingForViewerPermissions:(BNPermissionsObject *)viewerPermissions
     [self updatePermissionTextInView];
 }
 
-#pragma mark UITextFieldDelegate
-- (void)textFieldDidBeginEditing:(UITextField *)textField
-{
-    self.activeField = textField;
-}
-
-- (void)textFieldDidEndEditing:(UITextField *)textField
-{
-    self.activeField = nil;
-}
-
-- (void) updateScrollViewContentSize
-{
-    CGSize screenSize = [UIScreen mainScreen].applicationFrame.size;
-    self.scrollView.contentSize = CGSizeMake(screenSize.width,
-                                             screenSize.height
-                                             - self.navigationController.navigationBar.frame.size.height);
-}
-
 #pragma mark Methods to interface between views
 - (void) dismissEditViewWithCompletionBlock:(void (^)(void))completionBlock
 {
@@ -549,5 +392,8 @@ finishedInvitingForViewerPermissions:(BNPermissionsObject *)viewerPermissions
     
     // Release any cached data, images, etc that aren't in use.
 }
+
+#undef TEXT_INSETS
+#undef VIEW_INSETS
 
 @end
