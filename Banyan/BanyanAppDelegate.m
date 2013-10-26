@@ -127,10 +127,7 @@ void uncaughtExceptionHandler(NSException *exception)
 #pragma mark customize appearnaces
 - (void) appearances
 {
-    if (!DEVICE_VERSION_7PLUS) {
-        [[UINavigationBar appearance] setTintColor:BANYAN_GREEN_COLOR];
-        [[UIBarButtonItem appearance] setTintColor:BANYAN_GREEN_COLOR];
-    }
+    [self.window setTintColor:BANYAN_GREEN_COLOR];
     
     [[UISwitch appearance] setOnTintColor:BANYAN_GREEN_COLOR];
     

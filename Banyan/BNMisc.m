@@ -92,6 +92,7 @@
     
     if (!CGImageDestinationFinalize(destination)) {
         NSLog(@"failed to finalize image destination");
+        CFRelease(destination);
         return nil;
     }
     CFRelease(destination);

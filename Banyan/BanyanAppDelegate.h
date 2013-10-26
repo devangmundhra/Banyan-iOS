@@ -22,6 +22,7 @@
 
 #define GOOGLE_API_KEY @"AIzaSyBwOBP068EO-Ubi0Qzu8uwFnZZHaIVwNyg"
 
+#define APP_DELEGATE ((BanyanAppDelegate *)([UIApplication sharedApplication].delegate))
 @interface BanyanAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
