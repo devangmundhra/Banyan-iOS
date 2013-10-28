@@ -1,6 +1,5 @@
-platform :ios, '6.0'
+platform :ios, '7.0'
 
-pod 'TITokenField', :git => 'https://github.com/devangmundhra/TITokenField.git'
 pod 'BNSwipeableView', :git => 'https://github.com/devangmundhra/BNSwipeableView.git'
 pod 'MBProgressHUD', '>= 0.7'
 pod 'TestFlightSDK', '>= 1.3'

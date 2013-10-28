@@ -21,6 +21,24 @@
 
 @end
 
+typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedIn) {
+    SidePanelOptionLoggedInHome,
+//    SidePanelOptionLoggedInProfile,
+//    SidePanelOptionLoggedInFriends,
+    SidePanelOptionLoggedInSettings,
+    SidePanelOptionLoggedInFeedback,
+    SidePanelOptionLoggedInAbout,
+    SidePanelOptionLoggedInMax,
+};
+
+typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
+    SidePanelOptionLoggedOutHome,
+    SidePanelOptionLoggedOutSettings,
+    SidePanelOptionLoggedOutFeedback,
+    SidePanelOptionLoggedOutAbout,
+    SidePanelOptionLoggedOutMax,
+};
+
 @implementation SideNavigatorViewController
 
 #define BACKGROUND_COLOR BANYAN_DARKBROWN_COLOR
@@ -149,9 +167,9 @@
     // Return the number of rows in the section.
     
     if ([BanyanAppDelegate loggedIn])
-        return 6;
+        return SidePanelOptionLoggedInMax;
     else
-        return 4;
+        return SidePanelOptionLoggedOutMax;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -168,22 +186,22 @@
     // Configure the cell...
     if ([BanyanAppDelegate loggedIn]) {
         switch (indexPath.row) {
-            case 0:
+            case SidePanelOptionLoggedInHome:
                 cell.textLabel.text = @"Home";
                 break;
-            case 1:
-                cell.textLabel.text = @"Profile";
-                break;
-            case 2:
-                cell.textLabel.text = @"Friends";
-                break;
-            case 3:
+//            case SidePanelOptionLoggedInProfile:
+//                cell.textLabel.text = @"Profile";
+//                break;
+//            case SidePanelOptionLoggedInFriends:
+//                cell.textLabel.text = @"Friends";
+//                break;
+            case SidePanelOptionLoggedInSettings:
                 cell.textLabel.text = @"Settings";
                 break;
-            case 4:
+            case SidePanelOptionLoggedInFeedback:
                 cell.textLabel.text = @"Feedback";
                 break;
-            case 5:
+            case SidePanelOptionLoggedInAbout:
                 cell.textLabel.text = @"About";
                 break;
             default:
@@ -191,16 +209,16 @@
         }
     } else {
         switch (indexPath.row) {
-            case 0:
+            case SidePanelOptionLoggedOutHome:
                 cell.textLabel.text = @"Home";
                 break;
-            case 1:
+            case SidePanelOptionLoggedOutSettings:
                 cell.textLabel.text = @"Settings";
                 break;
-            case 2:
+            case SidePanelOptionLoggedOutFeedback:
                 cell.textLabel.text = @"Feedback";
                 break;
-            case 3:
+            case SidePanelOptionLoggedOutAbout:
                 cell.textLabel.text = @"About";
                 break;
             default:
@@ -228,22 +246,22 @@
     // Navigation logic may go here. Create and push another view controller.
     if ([BanyanAppDelegate loggedIn]) {
         switch (indexPath.row) {
-            case 0:
+            case SidePanelOptionLoggedInHome:
                 self.sidePanelController.centerPanel = ((BanyanAppDelegate *)[[UIApplication sharedApplication] delegate]).storyListTableViewController;
                 break;
-            case 1:
-                self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[ProfileViewController alloc] init]];
-                break;
-            case 2:
-                self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[FollowingFriendsViewController alloc] init]];
-                break;
-            case 3:
+//            case SidePanelOptionLoggedInProfile:
+//                self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[ProfileViewController alloc] init]];
+//                break;
+//            case SidePanelOptionLoggedInFriends:
+//                self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[FollowingFriendsViewController alloc] init]];
+//                break;
+            case SidePanelOptionLoggedInSettings:
                 self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[SettingsTableViewController alloc] init]];
                 break;
-            case 4:
+            case SidePanelOptionLoggedInFeedback:
                 self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[BNFeedbackViewController alloc] init]];
                 break;
-            case 5:
+            case SidePanelOptionLoggedInAbout:
                 self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[AboutViewController alloc] init]];
                 break;
             default:
@@ -251,16 +269,16 @@
         }
     } else {
         switch (indexPath.row) {
-            case 0:
+            case SidePanelOptionLoggedOutHome:
                 self.sidePanelController.centerPanel = ((BanyanAppDelegate *)[[UIApplication sharedApplication] delegate]).storyListTableViewController;
                 break;
-            case 1:
+            case SidePanelOptionLoggedOutSettings:
                 self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[SettingsTableViewController alloc] init]];
                 break;
-            case 2:
+            case SidePanelOptionLoggedOutFeedback:
                 self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[BNFeedbackViewController alloc] init]];
                 break;
-            case 3:
+            case SidePanelOptionLoggedOutAbout:
                 self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[AboutViewController alloc] init]];
                 break;
             default:
