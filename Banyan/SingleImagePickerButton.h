@@ -10,15 +10,12 @@
 
 @class SingleImagePickerButton;
 
-@protocol SingleImagePickerButtonDelegate <NSObject>
-
-- (void) singleImagePickerButtonTapped:(SingleImagePickerButton *)sender;
-
-@end
-
 @interface SingleImagePickerButton : UIView
 
-@property (strong, nonatomic) id<SingleImagePickerButtonDelegate> delegate;
-@property (strong, nonatomic) UIImageView *imageView;
+- (void) addTargetForCamera:(id)target action:(SEL)action;
+- (void) addTargetForPhotoGallery:(id)target action:(SEL)action;
+- (void) addTargetToDeleteImage:(id)target action:(SEL)action;
+- (void) setImage:(UIImage *)image;
+- (void) unsetImage;
 
 @end

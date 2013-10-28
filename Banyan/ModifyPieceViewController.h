@@ -3,7 +3,7 @@
 //  Storied
 //
 //  Created by Devang Mundhra on 3/17/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Banyan. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -12,10 +12,10 @@
 #import "Story.h"
 #import "BNFBLocationManager.h"
 #import "LocationPickerButton.h"
-#import "MediaPickerViewController.h"
-#import "MediaPickerButton.h"
+#import "SingleImagePickerButton.h"
 #import "BNAudioRecorder.h"
 #import "StoryPickerViewController.h"
+#import "MediaPickerViewController.h"
 
 @class  ModifyPieceViewController;
 
@@ -28,7 +28,7 @@ typedef enum {ModifyPieceViewControllerEditModeAddPiece, ModifyPieceViewControll
 
 @end
 
-@interface ModifyPieceViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, UIAlertViewDelegate, UIActionSheetDelegate, BNFBLocationManagerDelegate, LocationPickerButtonDelegate, MediaPickerViewControllerDelegate, MediaPickerButtonDelegate, StoryPickerViewControllerDelegate>
+@interface ModifyPieceViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, UIAlertViewDelegate, BNFBLocationManagerDelegate, LocationPickerButtonDelegate, StoryPickerViewControllerDelegate>
 
 @property (strong, nonatomic) Piece *piece;
 @property (weak, nonatomic) id <ModifyPieceViewControllerDelegate> delegate;

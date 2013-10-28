@@ -159,7 +159,7 @@
     if (!appCall && imageMedia) {
         [imageMedia getImageForMediaWithSuccess:^(UIImage *image) {
             // Next try to post using Facebook's iOS6 integration
-            BOOL displayedNativeDialog = [FBDialogs presentOSIntegratedShareDialogModallyFrom:[BanyanAppDelegate topMostController]
+            BOOL displayedNativeDialog = [FBDialogs presentOSIntegratedShareDialogModallyFrom:[APP_DELEGATE topMostController]
                                                                                   initialText:message
                                                                                         image:image
                                                                                           url:urlToShare
@@ -179,7 +179,7 @@
             [self showAlert:message result:nil error:error];
         }];
     } else {
-        BOOL displayedNativeDialog = [FBDialogs presentOSIntegratedShareDialogModallyFrom:[BanyanAppDelegate topMostController]
+        BOOL displayedNativeDialog = [FBDialogs presentOSIntegratedShareDialogModallyFrom:[APP_DELEGATE topMostController]
                                                                               initialText:message
                                                                                     image:nil
                                                                                       url:urlToShare

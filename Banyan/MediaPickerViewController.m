@@ -136,7 +136,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     AFPhotoEditorController *editorController = [[AFPhotoEditorController alloc] initWithImage:image];
     [editorController setDelegate:self];
-    [self presentViewController:editorController animated:YES completion:nil];
+    [self presentViewController:editorController animated:NO completion:nil];
 }
 
 - (void)photoEditor:(AFPhotoEditorController *)editor finishedWithImage:(UIImage *)image

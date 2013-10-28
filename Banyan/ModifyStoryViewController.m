@@ -127,6 +127,7 @@
     self.storyTitleTextField.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSETS, 0, TEXT_INSETS);
     self.storyTitleTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
     self.storyTitleTextField.font = [UIFont fontWithName:@"Roboto-Bold" size:16];
+    self.storyTitleTextField.returnKeyType = UIReturnKeyDone;
     [self.storyTitleTextField.layer setCornerRadius:8];
     [self.scrollView addSubview:self.storyTitleTextField];
     

@@ -33,7 +33,7 @@
         __block BOOL doneRun = NO;
         __block BOOL success = NO;
         
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[BanyanAppDelegate topMostController].view animated:YES];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[APP_DELEGATE topMostController].view animated:YES];
         hud.labelText = @"Deleting story";
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
         

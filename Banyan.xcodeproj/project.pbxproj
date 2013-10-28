@@ -19,6 +19,8 @@
 		510F49171727D191005BC5ED /* NSObject+BlockObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F49161727D191005BC5ED /* NSObject+BlockObservation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		510F4920172A5B86005BC5ED /* Piece.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F491F172A5B86005BC5ED /* Piece.m */; };
 		510F4923172A5C17005BC5ED /* Story.m in Sources */ = {isa = PBXBuildFile; fileRef = 510F4922172A5C17005BC5ED /* Story.m */; };
+		5112D057181A4CE5003E8C37 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5112D056181A4CE5003E8C37 /* CoreVideo.framework */; };
+		5112D105181C61F0003E8C37 /* UIPlaceHolderTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5112D104181C61F0003E8C37 /* UIPlaceHolderTextView.m */; };
 		5114F56817FBE839000CB875 /* libAviarySDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5114F56517FBE839000CB875 /* libAviarySDK.a */; };
 		5114F56917FBE839000CB875 /* AviarySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5114F56717FBE839000CB875 /* AviarySDKResources.bundle */; };
 		51170B5717F2D1E10015B343 /* BNSidePanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B5617F2D1E10015B343 /* BNSidePanelController.m */; };
@@ -52,6 +54,10 @@
 		5144EC711712277600F0B265 /* writeButtonSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC671712277600F0B265 /* writeButtonSelected@2x.png */; };
 		514CDF5418125BFF0098B0A9 /* BNPermissionsObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 514CDF5318125BFE0098B0A9 /* BNPermissionsObject.m */; };
 		514CDF5B18131F410098B0A9 /* InvitedFBFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 514CDF5A18131F410098B0A9 /* InvitedFBFriendsViewController.m */; };
+		514CDF65181509B70098B0A9 /* AVCamViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 514CDF5D181509B70098B0A9 /* AVCamViewController.xib */; };
+		514CDF66181509B70098B0A9 /* AVCamCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 514CDF60181509B70098B0A9 /* AVCamCaptureManager.m */; };
+		514CDF67181509B70098B0A9 /* AVCamRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 514CDF62181509B70098B0A9 /* AVCamRecorder.m */; };
+		514CDF68181509B70098B0A9 /* AVCamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 514CDF64181509B70098B0A9 /* AVCamViewController.m */; };
 		514EEA8C17C5EF4700B4BCBF /* AWSRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 514EEA8B17C5EF4700B4BCBF /* AWSRuntime.framework */; };
 		514EEA8E17C5EF5500B4BCBF /* AWSS3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 514EEA8D17C5EF5400B4BCBF /* AWSS3.framework */; };
 		514EEA9117C5F49300B4BCBF /* BNAWSS3Client.m in Sources */ = {isa = PBXBuildFile; fileRef = 514EEA9017C5F49300B4BCBF /* BNAWSS3Client.m */; };
@@ -106,7 +112,6 @@
 		5189B32A15B395F300562DD0 /* ImageToDataTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2DC15B395F300562DD0 /* ImageToDataTransformer.m */; };
 		5189B32B15B395F300562DD0 /* InvitedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2DE15B395F300562DD0 /* InvitedTableViewController.m */; };
 		5189B32F15B395F300562DD0 /* ModifyPieceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2E415B395F300562DD0 /* ModifyPieceViewController.m */; };
-		5189B33015B395F300562DD0 /* ModifyPieceViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5189B2E515B395F300562DD0 /* ModifyPieceViewController.xib */; };
 		5189B33115B395F300562DD0 /* ModifyStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2E715B395F300562DD0 /* ModifyStoryViewController.m */; };
 		5189B33515B395F300562DD0 /* ReadPieceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2EF15B395F300562DD0 /* ReadPieceViewController.m */; };
 		5189B33815B395F300562DD0 /* Piece+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 5189B2F515B395F300562DD0 /* Piece+Create.m */; };
@@ -202,7 +207,6 @@
 		51CFD94915F58337002926F9 /* buttonFollowingSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94115F58337002926F9 /* buttonFollowingSelected@2x.png */; };
 		51CFD94A15F58337002926F9 /* buttonFollowSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94215F58337002926F9 /* buttonFollowSelected.png */; };
 		51CFD94B15F58337002926F9 /* buttonFollowSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */; };
-		51F095681702A6DE009D5A28 /* ModifyStoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51F095671702A6DE009D5A28 /* ModifyStoryViewController.xib */; };
 		51F2288C161A9E22006B3AA7 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F2288B161A9E22006B3AA7 /* Default-568h@2x.png */; };
 		51F57C4E171E95BE00A76FA5 /* addWithGreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F57C4C171E95BE00A76FA5 /* addWithGreen.png */; };
 		51F57C4F171E95BE00A76FA5 /* addWithGreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F57C4D171E95BE00A76FA5 /* addWithGreen@2x.png */; };
@@ -247,6 +251,9 @@
 		510F491F172A5B86005BC5ED /* Piece.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Piece.m; path = Banyan/Piece.m; sourceTree = "<group>"; };
 		510F4921172A5C17005BC5ED /* Story.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Story.h; path = Banyan/Story.h; sourceTree = "<group>"; };
 		510F4922172A5C17005BC5ED /* Story.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Story.m; path = Banyan/Story.m; sourceTree = "<group>"; };
+		5112D056181A4CE5003E8C37 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		5112D103181C61F0003E8C37 /* UIPlaceHolderTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIPlaceHolderTextView.h; path = Banyan/UIPlaceHolderTextView.h; sourceTree = "<group>"; };
+		5112D104181C61F0003E8C37 /* UIPlaceHolderTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UIPlaceHolderTextView.m; path = Banyan/UIPlaceHolderTextView.m; sourceTree = "<group>"; };
 		5114F55D17FBE839000CB875 /* AFOpenGLManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFOpenGLManager.h; sourceTree = "<group>"; };
 		5114F55E17FBE839000CB875 /* AFPhotoEditorContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorContext.h; sourceTree = "<group>"; };
 		5114F55F17FBE839000CB875 /* AFPhotoEditorController+InAppPurchase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AFPhotoEditorController+InAppPurchase.h"; sourceTree = "<group>"; };
@@ -299,6 +306,13 @@
 		514CDF5318125BFE0098B0A9 /* BNPermissionsObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNPermissionsObject.m; path = Banyan/BNPermissionsObject.m; sourceTree = "<group>"; };
 		514CDF5918131F410098B0A9 /* InvitedFBFriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InvitedFBFriendsViewController.h; path = Banyan/InvitedFBFriendsViewController.h; sourceTree = "<group>"; };
 		514CDF5A18131F410098B0A9 /* InvitedFBFriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InvitedFBFriendsViewController.m; path = Banyan/InvitedFBFriendsViewController.m; sourceTree = "<group>"; };
+		514CDF5D181509B70098B0A9 /* AVCamViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AVCamViewController.xib; sourceTree = "<group>"; };
+		514CDF5F181509B70098B0A9 /* AVCamCaptureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVCamCaptureManager.h; sourceTree = "<group>"; };
+		514CDF60181509B70098B0A9 /* AVCamCaptureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVCamCaptureManager.m; sourceTree = "<group>"; };
+		514CDF61181509B70098B0A9 /* AVCamRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVCamRecorder.h; sourceTree = "<group>"; };
+		514CDF62181509B70098B0A9 /* AVCamRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVCamRecorder.m; sourceTree = "<group>"; };
+		514CDF63181509B70098B0A9 /* AVCamViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVCamViewController.h; sourceTree = "<group>"; };
+		514CDF64181509B70098B0A9 /* AVCamViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVCamViewController.m; sourceTree = "<group>"; };
 		514EEA8B17C5EF4700B4BCBF /* AWSRuntime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSRuntime.framework; sourceTree = "<group>"; };
 		514EEA8D17C5EF5400B4BCBF /* AWSS3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSS3.framework; sourceTree = "<group>"; };
 		514EEA8F17C5F49300B4BCBF /* BNAWSS3Client.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNAWSS3Client.h; path = Banyan/BNAWSS3Client.h; sourceTree = "<group>"; };
@@ -371,7 +385,6 @@
 		5189B2DE15B395F300562DD0 /* InvitedTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InvitedTableViewController.m; path = Banyan/InvitedTableViewController.m; sourceTree = "<group>"; };
 		5189B2E315B395F300562DD0 /* ModifyPieceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModifyPieceViewController.h; path = Banyan/ModifyPieceViewController.h; sourceTree = "<group>"; };
 		5189B2E415B395F300562DD0 /* ModifyPieceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ModifyPieceViewController.m; path = Banyan/ModifyPieceViewController.m; sourceTree = "<group>"; };
-		5189B2E515B395F300562DD0 /* ModifyPieceViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ModifyPieceViewController.xib; path = Banyan/ModifyPieceViewController.xib; sourceTree = "<group>"; };
 		5189B2E615B395F300562DD0 /* ModifyStoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModifyStoryViewController.h; path = Banyan/ModifyStoryViewController.h; sourceTree = "<group>"; };
 		5189B2E715B395F300562DD0 /* ModifyStoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ModifyStoryViewController.m; path = Banyan/ModifyStoryViewController.m; sourceTree = "<group>"; };
 		5189B2EE15B395F300562DD0 /* ReadPieceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReadPieceViewController.h; path = Banyan/ReadPieceViewController.h; sourceTree = "<group>"; };
@@ -504,7 +517,6 @@
 		51CFD94115F58337002926F9 /* buttonFollowingSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFollowingSelected@2x.png"; sourceTree = "<group>"; };
 		51CFD94215F58337002926F9 /* buttonFollowSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFollowSelected.png; sourceTree = "<group>"; };
 		51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFollowSelected@2x.png"; sourceTree = "<group>"; };
-		51F095671702A6DE009D5A28 /* ModifyStoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ModifyStoryViewController.xib; path = Banyan/ModifyStoryViewController.xib; sourceTree = "<group>"; };
 		51F22884161A9DC1006B3AA7 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		51F22887161A9DE4006B3AA7 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		51F22889161A9DF2006B3AA7 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -541,6 +553,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5112D057181A4CE5003E8C37 /* CoreVideo.framework in Frameworks */,
 				512598BC17AB918D00FEFCF0 /* libsqlite3.dylib in Frameworks */,
 				51596AB71745E285008F5276 /* CoreMedia.framework in Frameworks */,
 				514EEA8E17C5EF5500B4BCBF /* AWSS3.framework in Frameworks */,
@@ -599,6 +612,15 @@
 				51BDA27E1743821400BD2C19 /* Media.m */,
 			);
 			name = Media;
+			sourceTree = "<group>";
+		};
+		5112D102181C61B8003E8C37 /* UIPlaceHolderTextView */ = {
+			isa = PBXGroup;
+			children = (
+				5112D103181C61F0003E8C37 /* UIPlaceHolderTextView.h */,
+				5112D104181C61F0003E8C37 /* UIPlaceHolderTextView.m */,
+			);
+			name = UIPlaceHolderTextView;
 			sourceTree = "<group>";
 		};
 		5114F55B17FBE839000CB875 /* AviarySDK */ = {
@@ -731,7 +753,6 @@
 			children = (
 				5189B2E615B395F300562DD0 /* ModifyStoryViewController.h */,
 				5189B2E715B395F300562DD0 /* ModifyStoryViewController.m */,
-				51F095671702A6DE009D5A28 /* ModifyStoryViewController.xib */,
 				5189B2DD15B395F300562DD0 /* InvitedTableViewController.h */,
 				5189B2DE15B395F300562DD0 /* InvitedTableViewController.m */,
 				514CDF5918131F410098B0A9 /* InvitedFBFriendsViewController.h */,
@@ -759,6 +780,28 @@
 				514CDF5318125BFE0098B0A9 /* BNPermissionsObject.m */,
 			);
 			name = Permissions;
+			sourceTree = "<group>";
+		};
+		514CDF5C181509B70098B0A9 /* BNCam */ = {
+			isa = PBXGroup;
+			children = (
+				514CDF5D181509B70098B0A9 /* AVCamViewController.xib */,
+				514CDF5E181509B70098B0A9 /* Classes */,
+			);
+			path = BNCam;
+			sourceTree = "<group>";
+		};
+		514CDF5E181509B70098B0A9 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				514CDF5F181509B70098B0A9 /* AVCamCaptureManager.h */,
+				514CDF60181509B70098B0A9 /* AVCamCaptureManager.m */,
+				514CDF61181509B70098B0A9 /* AVCamRecorder.h */,
+				514CDF62181509B70098B0A9 /* AVCamRecorder.m */,
+				514CDF63181509B70098B0A9 /* AVCamViewController.h */,
+				514CDF64181509B70098B0A9 /* AVCamViewController.m */,
+			);
+			path = Classes;
 			sourceTree = "<group>";
 		};
 		5158AE2D16F56F850089193E /* BNSidePanelController */ = {
@@ -947,6 +990,7 @@
 		5189B2B615B387E200562DD0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5112D056181A4CE5003E8C37 /* CoreVideo.framework */,
 				5122365B17E688220032892A /* AWSSNS.framework */,
 				514EEA8D17C5EF5400B4BCBF /* AWSS3.framework */,
 				514EEA8B17C5EF4700B4BCBF /* AWSRuntime.framework */,
@@ -986,6 +1030,7 @@
 			isa = PBXGroup;
 			children = (
 				51A8DC9316928AE00017E86F /* Banyan.xcdatamodeld */,
+				514CDF5C181509B70098B0A9 /* BNCam */,
 				5189B35415B3968600562DD0 /* Account Management */,
 				517A01C417097A2C00665F0F /* Media Picker */,
 				51BDA26B1741E74F00BD2C19 /* Audio Manager */,
@@ -1081,7 +1126,6 @@
 			children = (
 				5189B2E315B395F300562DD0 /* ModifyPieceViewController.h */,
 				5189B2E415B395F300562DD0 /* ModifyPieceViewController.m */,
-				5189B2E515B395F300562DD0 /* ModifyPieceViewController.xib */,
 			);
 			name = "Add or Edit Piece";
 			sourceTree = "<group>";
@@ -1256,6 +1300,7 @@
 		51B2351B17168C6D004241C1 /* Custom Views and View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				5112D102181C61B8003E8C37 /* UIPlaceHolderTextView */,
 				5158AE2D16F56F850089193E /* BNSidePanelController */,
 				511B421C17A6669100466A8B /* BNImageLabel */,
 				511B421D17A6669C00466A8B /* BNTableViewController */,
@@ -1414,7 +1459,6 @@
 				51F60EF816E8423E00F9715E /* Icon.png in Resources */,
 				51F60EF916E8423E00F9715E /* Icon@2x.png in Resources */,
 				5189B2C215B387E200562DD0 /* InfoPlist.strings in Resources */,
-				5189B33015B395F300562DD0 /* ModifyPieceViewController.xib in Resources */,
 				5189B34E15B395F300562DD0 /* UserLoginViewController.xib in Resources */,
 				5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */,
 				5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */,
@@ -1432,7 +1476,7 @@
 				51F2288C161A9E22006B3AA7 /* Default-568h@2x.png in Resources */,
 				51FD96ED1665E6C7001A1709 /* dotted-pattern.png in Resources */,
 				51FD96EE1665E6C7001A1709 /* dotted-pattern@2x.png in Resources */,
-				51F095681702A6DE009D5A28 /* ModifyStoryViewController.xib in Resources */,
+				514CDF65181509B70098B0A9 /* AVCamViewController.xib in Resources */,
 				517A01DD170BFA5B00665F0F /* InviteFriendCell.xib in Resources */,
 				5144EC6A1712277600F0B265 /* cameraSymbol.png in Resources */,
 				5144EC6B1712277600F0B265 /* cameraSymbol@2x.png in Resources */,
@@ -1571,7 +1615,9 @@
 				5189B33E15B395F300562DD0 /* StoryReaderController.m in Sources */,
 				5189B34315B395F300562DD0 /* Story+Create.m in Sources */,
 				5189B34415B395F300562DD0 /* Story+Delete.m in Sources */,
+				5112D105181C61F0003E8C37 /* UIPlaceHolderTextView.m in Sources */,
 				5189B34515B395F300562DD0 /* Story+Edit.m in Sources */,
+				514CDF67181509B70098B0A9 /* AVCamRecorder.m in Sources */,
 				5189B34615B395F300562DD0 /* Story+Stats.m in Sources */,
 				5189B34915B395F300562DD0 /* StoryListTableViewController.m in Sources */,
 				5189B34D15B395F300562DD0 /* UserLoginViewController.m in Sources */,
@@ -1589,7 +1635,9 @@
 				51170B7317F4319C0015B343 /* AboutViewController.m in Sources */,
 				510787C8163A36A90042B436 /* UIImage+RoundedCornerAdditions.m in Sources */,
 				510787CF163A36D80042B436 /* AFBanyanAPIClient.m in Sources */,
+				514CDF66181509B70098B0A9 /* AVCamCaptureManager.m in Sources */,
 				510787D2163A36F20042B436 /* BNGoogleLocationManager.m in Sources */,
+				514CDF68181509B70098B0A9 /* AVCamViewController.m in Sources */,
 				510787D5163A37190042B436 /* Activity.m in Sources */,
 				5157CD031650902900C22CCE /* BanyanConnection.m in Sources */,
 				514CDF5B18131F410098B0A9 /* InvitedFBFriendsViewController.m in Sources */,
@@ -1734,8 +1782,9 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\\\"$(SRCROOT)/Banyan/AviarySDK\\\"",
+					"\\\\\\\"$(SRCROOT)/Banyan/AviarySDK\\\\\\\"",
 					/Users/devangmundhra/Developer/Banyan/Banyan/AviarySDK,
+					/Users/devangmundhra/Developer/Banyan/Banyan/lib,
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -1779,8 +1828,9 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\\\"$(SRCROOT)/Banyan/AviarySDK\\\"",
+					"\\\\\\\"$(SRCROOT)/Banyan/AviarySDK\\\\\\\"",
 					/Users/devangmundhra/Developer/Banyan/Banyan/AviarySDK,
+					/Users/devangmundhra/Developer/Banyan/Banyan/lib,
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",

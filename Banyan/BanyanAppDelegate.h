@@ -35,7 +35,7 @@
 - (void) login;
 - (void) logout;
 + (BOOL)loggedIn;
-+ (UIViewController*) topMostController;
+- (UIViewController*) topMostController;
 + (NSURL *)applicationDocumentsDirectory;
 
 @end
