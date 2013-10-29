@@ -87,6 +87,7 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
     [super viewDidLoad];
     [self setNeedsStatusBarAppearanceUpdate];
     self.tableView.backgroundColor = BACKGROUND_COLOR;
+    
     self.tableView.separatorColor = SEPERATOR_COLOR;
     self.tableView.rowHeight = 40.0f;
 }

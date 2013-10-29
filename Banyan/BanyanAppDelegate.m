@@ -107,6 +107,7 @@
     self.homeViewController.shouldResizeLeftPanel = YES;
     self.homeViewController.centerPanel = self.storyListTableViewController;
     self.homeViewController.leftPanel = [[SideNavigatorViewController alloc] init];
+    self.homeViewController.pushesSidePanels = NO;
     self.window.rootViewController = self.homeViewController;
     [self.window makeKeyAndVisible];
     

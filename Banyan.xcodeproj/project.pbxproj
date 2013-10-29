@@ -22,6 +22,8 @@
 		5112D057181A4CE5003E8C37 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5112D056181A4CE5003E8C37 /* CoreVideo.framework */; };
 		5112D105181C61F0003E8C37 /* UIPlaceHolderTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5112D104181C61F0003E8C37 /* UIPlaceHolderTextView.m */; };
 		5112D106181E4EEA003E8C37 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 517A01BD17095F2100665F0F /* Accelerate.framework */; };
+		5112D109181E5DB9003E8C37 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 5112D108181E5DB9003E8C37 /* UIImage+ImageEffects.m */; };
+		5112D10D181E5E87003E8C37 /* ILTranslucentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5112D10C181E5E87003E8C37 /* ILTranslucentView.m */; };
 		5114F56817FBE839000CB875 /* libAviarySDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5114F56517FBE839000CB875 /* libAviarySDK.a */; };
 		5114F56917FBE839000CB875 /* AviarySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5114F56717FBE839000CB875 /* AviarySDKResources.bundle */; };
 		51170B5717F2D1E10015B343 /* BNSidePanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B5617F2D1E10015B343 /* BNSidePanelController.m */; };
@@ -255,6 +257,10 @@
 		5112D056181A4CE5003E8C37 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		5112D103181C61F0003E8C37 /* UIPlaceHolderTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIPlaceHolderTextView.h; path = Banyan/UIPlaceHolderTextView.h; sourceTree = "<group>"; };
 		5112D104181C61F0003E8C37 /* UIPlaceHolderTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UIPlaceHolderTextView.m; path = Banyan/UIPlaceHolderTextView.m; sourceTree = "<group>"; };
+		5112D107181E5DB9003E8C37 /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
+		5112D108181E5DB9003E8C37 /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
+		5112D10B181E5E87003E8C37 /* ILTranslucentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ILTranslucentView.h; path = ../ILTranslucentView/Source/ILTranslucentView.h; sourceTree = "<group>"; };
+		5112D10C181E5E87003E8C37 /* ILTranslucentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ILTranslucentView.m; path = ../ILTranslucentView/Source/ILTranslucentView.m; sourceTree = "<group>"; };
 		5114F55D17FBE839000CB875 /* AFOpenGLManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFOpenGLManager.h; sourceTree = "<group>"; };
 		5114F55E17FBE839000CB875 /* AFPhotoEditorContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorContext.h; sourceTree = "<group>"; };
 		5114F55F17FBE839000CB875 /* AFPhotoEditorController+InAppPurchase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AFPhotoEditorController+InAppPurchase.h"; sourceTree = "<group>"; };
@@ -623,6 +629,15 @@
 				5112D104181C61F0003E8C37 /* UIPlaceHolderTextView.m */,
 			);
 			name = UIPlaceHolderTextView;
+			sourceTree = "<group>";
+		};
+		5112D10A181E5E73003E8C37 /* ILTranslucentView */ = {
+			isa = PBXGroup;
+			children = (
+				5112D10B181E5E87003E8C37 /* ILTranslucentView.h */,
+				5112D10C181E5E87003E8C37 /* ILTranslucentView.m */,
+			);
+			name = ILTranslucentView;
 			sourceTree = "<group>";
 		};
 		5114F55B17FBE839000CB875 /* AviarySDK */ = {
@@ -1238,6 +1253,8 @@
 		51979A7B15F08E6F008194AF /* UIImage Categories */ = {
 			isa = PBXGroup;
 			children = (
+				5112D107181E5DB9003E8C37 /* UIImage+ImageEffects.h */,
+				5112D108181E5DB9003E8C37 /* UIImage+ImageEffects.m */,
 				510787C0163A36A90042B436 /* UIImage+AlphaAdditions.h */,
 				510787C1163A36A90042B436 /* UIImage+AlphaAdditions.m */,
 				510787C2163A36A90042B436 /* UIImage+ResizeAdditions.h */,
@@ -1302,6 +1319,7 @@
 		51B2351B17168C6D004241C1 /* Custom Views and View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				5112D10A181E5E73003E8C37 /* ILTranslucentView */,
 				5112D102181C61B8003E8C37 /* UIPlaceHolderTextView */,
 				5158AE2D16F56F850089193E /* BNSidePanelController */,
 				511B421C17A6669100466A8B /* BNImageLabel */,
@@ -1608,12 +1626,14 @@
 				5189B32F15B395F300562DD0 /* ModifyPieceViewController.m in Sources */,
 				5189B33115B395F300562DD0 /* ModifyStoryViewController.m in Sources */,
 				5189B33515B395F300562DD0 /* ReadPieceViewController.m in Sources */,
+				5112D109181E5DB9003E8C37 /* UIImage+ImageEffects.m in Sources */,
 				512598BF17B0D5C500FEFCF0 /* SingleImagePickerButton.m in Sources */,
 				5189B33815B395F300562DD0 /* Piece+Create.m in Sources */,
 				5189B33915B395F300562DD0 /* Piece+Delete.m in Sources */,
 				5189B33A15B395F300562DD0 /* Piece+Edit.m in Sources */,
 				5189B33B15B395F300562DD0 /* Piece+Stats.m in Sources */,
 				51CE90B51796724500A2F7CB /* RemoteObject.m in Sources */,
+				5112D10D181E5E87003E8C37 /* ILTranslucentView.m in Sources */,
 				5189B33E15B395F300562DD0 /* StoryReaderController.m in Sources */,
 				5189B34315B395F300562DD0 /* Story+Create.m in Sources */,
 				5189B34415B395F300562DD0 /* Story+Delete.m in Sources */,
