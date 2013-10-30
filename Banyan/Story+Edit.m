@@ -164,12 +164,11 @@
     
     // Check if any of the media in this set been uploaded, if so, use that url and filename
     for (Media *media in mediaSet) {
-        if ([media.mediaType isEqualToString:@"image"] && media.remoteStatus == MediaRemoteStatusSync) {
-            NSAssert1(media.remoteURL.length, @"Media uploaded for story %@ without length", self.title);
+        if ([media.mediaType isEqualToString:@"image"] && media.remoteStatus == MediaRemoteStatusLocal) {
+            NSAssert1(media.localURL.length, @"Media not available for story %@ without length", self.title);
             
             Media *newMedia = [Media newMediaForObject:self];
             [newMedia cloneFrom:media];
-            [media save];
             [Story editStory:self];
             return;
         }

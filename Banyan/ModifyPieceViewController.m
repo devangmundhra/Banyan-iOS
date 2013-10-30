@@ -302,6 +302,20 @@
             [self.audioPickerView addSubview:deleteAudioButton];
         }
         
+        // Cover image
+        Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
+        
+        if (imageMedia) {
+            [imageMedia getImageForMediaWithSuccess:^(UIImage *image) {
+                [self.addPhotoButton setImage:image];
+            } failure:^(NSError *error) {
+                NSLog(@"%s Error in getting image for piece (id: %@ text: %@)", __PRETTY_FUNCTION__, self.piece.bnObjectId, self.piece.shortText);
+                [self.addPhotoButton unsetImage];
+            }];
+        } else {
+            [self.addPhotoButton unsetImage];
+        }
+        
         self.pieceCaptionView.text = self.piece.shortText;
         self.pieceTextView.text = self.piece.longText;
         self.title = @"Edit Piece";

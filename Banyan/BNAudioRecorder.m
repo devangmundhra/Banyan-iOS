@@ -89,7 +89,8 @@
     }
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
 
-    self.view.backgroundColor = BANYAN_BROWN_COLOR;
+#define BACKGROUND_OPACITY 0.5
+    self.view.backgroundColor = [BANYAN_BROWN_COLOR colorWithAlphaComponent:BACKGROUND_OPACITY];
     
     controlButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [controlButton setImage:[UIImage imageNamed:@"record"] forState:UIControlStateNormal];
@@ -106,23 +107,24 @@
     timeLabel.text = [NSString stringWithFormat:@"0/%ds", RECORD_DURATION];
     timeLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
     timeLabel.textColor = BANYAN_WHITE_COLOR;
-    timeLabel.backgroundColor = BANYAN_BROWN_COLOR;
+    timeLabel.backgroundColor = BANYAN_CLEAR_COLOR;
     [self.view addSubview:timeLabel];
     
     sliderBar = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"emptyBar"]
                                                     resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)]];
-    sliderBar.backgroundColor = BANYAN_BROWN_COLOR;
+    sliderBar.backgroundColor = [BANYAN_BROWN_COLOR colorWithAlphaComponent:0.5];
     [sliderBar.layer setCornerRadius:4.0f];
     [sliderBar.layer setMasksToBounds:YES];
     [self.view addSubview:sliderBar];
     progressBar = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"progressBar"]
                                                       resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)]];
-    progressBar.backgroundColor = BANYAN_BROWN_COLOR;
+    progressBar.backgroundColor = [BANYAN_BROWN_COLOR colorWithAlphaComponent:BACKGROUND_OPACITY];
     [progressBar.layer setCornerRadius:4.0f];
     [progressBar.layer setMasksToBounds:YES];
     
     currentProgress = 0;
-    [self.view addSubview:progressBar];    
+    [self.view addSubview:progressBar];
+#undef BACKGROUND_OPACITY
 }
 
 - (void)dealloc

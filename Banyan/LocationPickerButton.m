@@ -39,6 +39,17 @@
     return self;
 }
 
+- (void)setBackgroundColor:(UIColor *)backgroundColor
+{
+    CGFloat white = 1;
+    CGFloat alpha = 1;
+    [backgroundColor getWhite:&white alpha:&alpha];
+    
+    [super setBackgroundColor:backgroundColor];
+    [self.nameButton setBackgroundColor:[self.nameButton.backgroundColor colorWithAlphaComponent:alpha]];
+    [self.onOffButton setBackgroundColor:[self.onOffButton.backgroundColor colorWithAlphaComponent:alpha]];
+}
+
 - (void) setup
 {
     self.clipsToBounds = YES;

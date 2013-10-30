@@ -11,6 +11,7 @@
 #import "AFBanyanAPIClient.h"
 #import "MBProgressHUD.h"
 #import "BanyanAppDelegate.h"
+#import "Media.h"
 
 @implementation Piece (Delete)
 
@@ -36,6 +37,17 @@
         return;
     }
     
+    // Delete all media for the piece
+    for (Media *media in piece.media) {
+        // If its a local image, don't delete it
+        if ([media.remoteURL length]) {
+            [media deleteWitSuccess:nil
+                            failure:nil]; // ignore errors for now
+        }
+        else
+            [media remove];
+    }
+    
     // For RunLoop
     __block BOOL doneRun = NO;
     __block BOOL success = NO;
@@ -51,7 +63,8 @@
                                                  NSLog(@"Piece deleted with response %@", responseObject);
                                                  [piece removeWithStoryUpdate];
                                                  doneRun = YES;
-                                                 success = YES;                                             }
+                                                 success = YES;
+                                             }
                                              failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                                  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error in deleting piece %@", piece.shortText]
                                                                                                  message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]

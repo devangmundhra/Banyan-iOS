@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3396" systemVersion="12E55" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3396" systemVersion="13A603" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Comment" representedClassName="Comment" syncable="YES">
         <attribute name="author" attributeType="Transformable" syncable="YES"/>
         <attribute name="commentID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -18,7 +18,7 @@
         <attribute name="mediaType" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="orientation" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="progress" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="remoteStatusNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="remoteStatusNumber" optional="YES" attributeType="Integer 16" defaultValueString="3" indexed="YES" syncable="YES"/>
         <attribute name="remoteURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="thumbnail" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>

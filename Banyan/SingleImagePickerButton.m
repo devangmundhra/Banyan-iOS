@@ -44,6 +44,17 @@
     return self;
 }
 
+- (void)setBackgroundColor:(UIColor *)backgroundColor
+{
+    CGFloat white = 1;
+    CGFloat alpha = 1;
+    [backgroundColor getWhite:&white alpha:&alpha];
+    
+    [super setBackgroundColor:backgroundColor];
+    [self.button setBackgroundColor:[self.button.backgroundColor colorWithAlphaComponent:alpha]];
+    [self.galleryButton setBackgroundColor:[self.galleryButton.backgroundColor colorWithAlphaComponent:alpha]];
+}
+
 - (void)setImageLoaded:(BOOL)imageLoaded
 {
     _imageLoaded = imageLoaded;

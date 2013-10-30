@@ -10,6 +10,7 @@
 #import "AFBanyanAPIClient.h"
 #import "MBProgressHUD.h"
 #import "BanyanAppDelegate.h"
+#import "Media.h"
 
 @implementation Story (Delete)
 
@@ -23,6 +24,17 @@
                                               otherButtonTitles:nil];
         [alert show];
         return;
+    }
+    
+    // Delete all media for the story
+    for (Media *media in story.media) {
+        // If its a local image, don't delete it
+        if ([media.remoteURL length]) {
+            [media deleteWitSuccess:nil
+                            failure:nil]; // ignore errors for now
+        }
+        else
+            [media remove];
     }
     
     if (story.remoteStatus != RemoteObjectStatusLocal && NUMBER_EXISTS(story.bnObjectId)) {

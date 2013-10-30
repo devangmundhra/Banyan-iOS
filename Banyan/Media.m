@@ -72,9 +72,7 @@
 {
     for (NSString *key in [[[source entity] attributesByName] allKeys]) {
         if ([key isEqualToString:@"filename"]) {
-            NSLog(@"Making attribute %@", key);
-            [self setValue:[NSString stringWithFormat:@"%@/%@_%@.gif", [BNSharedUser currentUser].userId, [self.remoteObject getIdentifierForMediaFileName], self.filename]
-                    forKey:key];
+            NSLog(@"Skipping attribute %@", key);
             continue;
         }
         NSLog(@"Copying attribute %@", key);
