@@ -291,7 +291,7 @@
     [storyMapping addAttributeMappingsFromArray:@[@"bnObjectId", STORY_TITLE, STORY_READ_ACCESS, STORY_WRITE_ACCESS, STORY_TAGS, STORY_LENGTH,
                                                   @"createdAt", @"updatedAt", @"isLocationEnabled", @"location"]];
     [storyMapping addPropertyMappingsFromArray:@[[RKRelationshipMapping relationshipMappingFromKeyPath:@"pieces" toKeyPath:@"pieces" withMapping:[Piece pieceMappingForRK]],
-                                                 [RKRelationshipMapping relationshipMappingFromKeyPath:@"coverMedia" toKeyPath:@"media" withMapping:[Media mediaMappingForRK]],
+                                                 [RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:[Media mediaMappingForRK]],
                                                  [RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:[User UserMappingForRK]]]];
     
     return storyMapping;

@@ -11,6 +11,9 @@
 #import "User.h"
 #import "Story+Permissions.h"
 #import "BNLabel.h"
+#import "Media.h"
+#import "UIImageView+WebCache.h"
+#import "UIImage+ImageEffects.h"
 
 @interface StoryPickerCell ()
 
@@ -91,6 +94,16 @@
     self.imageView.hidden = NO;
     self.fullLabel.hidden = YES;
     
+    // Image
+    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:story.media];
+    if (imageMedia.remoteStatus == RemoteObjectStatusSync) {
+        __weak UIImageView *wImageViewself = self.imageView;
+        [self.imageView setImageWithURL:[NSURL URLWithString:imageMedia.remoteURL] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+            UIImage *imageWithEffect = [image applyExtraLightEffect];
+            wImageViewself.image = imageWithEffect;
+        }];
+    }
+    
     // Story title
     frame.origin = CGPointMake(TEXT_INSETS, VIEW_INSETS);
     frame.size = CGSizeMake(CGRectGetWidth(self.bounds)-2*TEXT_INSETS, CGRectGetHeight(self.bounds)*0.7);
@@ -111,6 +124,7 @@
 
 - (void)displayAsAddStoryButton
 {
+    [self.imageView cancelCurrentImageLoad];
     self.imageView.hidden = YES;
     self.fullLabel.hidden = NO;
     self.fullLabel.text = @"Create a new story";

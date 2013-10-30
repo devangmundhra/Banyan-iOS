@@ -154,4 +154,27 @@
 
     [story save];
 }
+
+- (void) updateMediaIfRequiredWithMediaSet:(NSOrderedSet *)mediaSet
+{
+    // Check if the story already has a media object, if so, don't do anything
+    if (self.media.count) {
+        return;
+    }
+    
+    // Check if any of the media in this set been uploaded, if so, use that url and filename
+    for (Media *media in mediaSet) {
+        if ([media.mediaType isEqualToString:@"image"] && media.remoteStatus == MediaRemoteStatusSync) {
+            NSAssert1(media.remoteURL.length, @"Media uploaded for story %@ without length", self.title);
+            
+            Media *newMedia = [Media newMediaForObject:self];
+            [newMedia cloneFrom:media];
+            [media save];
+            [Story editStory:self];
+            return;
+        }
+        
+    }
+}
+
 @end

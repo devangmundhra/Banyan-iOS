@@ -68,6 +68,29 @@
     }
 }
 
+- (void)cloneFrom:(Media *)source
+{
+    for (NSString *key in [[[source entity] attributesByName] allKeys]) {
+        if ([key isEqualToString:@"filename"]) {
+            NSLog(@"Making attribute %@", key);
+            [self setValue:[NSString stringWithFormat:@"%@/%@_%@.gif", [BNSharedUser currentUser].userId, [self.remoteObject getIdentifierForMediaFileName], self.filename]
+                    forKey:key];
+            continue;
+        }
+        NSLog(@"Copying attribute %@", key);
+        [self setValue:[source valueForKey:key] forKey:key];
+    }
+    
+    for (NSString *key in [[[source entity] relationshipsByName] allKeys]) {
+        if ([key isEqualToString:@"remoteObject"]) {
+            NSLog(@"Skipping relationship %@", key);
+        } else {
+            NSLog(@"Copying relationship %@", key);
+            [self setValue: [source valueForKey:key] forKey: key];
+        }
+    }
+}
+
 //- (void)awakeFromFetch {
 //    if ((self.remoteStatus == MediaRemoteStatusPushing /*&& _uploadOperation == nil*/) || (self.remoteStatus == MediaRemoteStatusProcessing)) {
 //        self.remoteStatus = MediaRemoteStatusFailed;
@@ -162,16 +185,16 @@
     NSLog(@"Uploading %@ media (Status: %@, filename: %@) for object id: %@", self.mediaType, self.remoteStatusNumber, self.filename, self.remoteObject.bnObjectId);
     
     void (^success)() = ^(){
-        successBlock();
         self.remoteStatus = MediaRemoteStatusSync;
         self.localURL = nil;
         [self save];
+        successBlock();
     };
     
     void (^failure)(NSError *error) = ^(NSError *error){
-        errorBlock(error);
         self.remoteStatus = MediaRemoteStatusFailed;
         [self save];
+        errorBlock(error);
     };
     
     if ([self.mediaType isEqualToString:@"image"]) {

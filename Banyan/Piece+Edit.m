@@ -12,6 +12,7 @@
 #import "AFBanyanAPIClient.h"
 #import "Media.h"
 #import "BNMisc.h"
+#import "Story+Edit.h"
 
 @implementation Piece (Edit)
 
@@ -123,6 +124,8 @@
         if (mediaBeingUploaded)
             return;
 
+        // If the story doesn't have any media yet, use this for story media
+        [piece.story updateMediaIfRequiredWithMediaSet:piece.media];
         // All the media has been uploaded. So the editPiece can happen now
         updatePiece(piece);
     }

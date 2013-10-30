@@ -50,6 +50,7 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
 - (void)cancelUpload;
 - (void)remove;
 - (void)save;
+- (void)cloneFrom:(Media *)source;
 
 - (void) getImageForMediaWithSuccess:(void (^)(UIImage *))success failure:(void (^)(NSError *error))failure;
 - (void) getImageWithContentMode:(UIViewContentMode)contentMode
