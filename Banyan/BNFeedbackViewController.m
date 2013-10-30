@@ -7,13 +7,13 @@
 //
 
 #import "BNFeedbackViewController.h"
-#import "SSTextView.h"
+#import "UIPlaceHolderTextView.h"
 #import "UIViewController+JASidePanel.h"
 #import "BNSidePanelController.h"
 
 @interface BNFeedbackViewController ()
 
-@property (strong, nonatomic) SSTextView *textView;
+@property (strong, nonatomic) UIPlaceHolderTextView *textView;
 
 @end
 
@@ -42,7 +42,7 @@
     
     CGRect frame = self.view.bounds;
     frame.size.height -= CGRectGetHeight(self.navigationController.navigationBar.frame);
-    textView = [[SSTextView alloc] initWithFrame:frame];
+    textView = [[UIPlaceHolderTextView alloc] initWithFrame:frame];
     textView.font = [UIFont fontWithName:@"Roboto" size:18];
     textView.textAlignment = NSTextAlignmentLeft;
     textView.placeholder = @"Please tell us what you think about Banyan. What you like, what you don't like, or just a hi.\nWe would love to hear from you!";

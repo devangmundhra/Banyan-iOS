@@ -446,7 +446,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         
         Story *story = [Story getCurrentOngoingStoryToContribute];
         if (!story) {
-            StoryPickerViewController *vc = [[StoryPickerViewController alloc] initWithStyle:UITableViewStylePlain];
+            StoryPickerViewController *vc = [[StoryPickerViewController alloc] init];
             vc.delegate = self;
             UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:vc];
             [self presentViewController:nvc animated:YES completion:nil];

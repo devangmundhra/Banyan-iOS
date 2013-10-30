@@ -12,20 +12,20 @@
 #import "Story+Create.h"
 #import "User.h"
 #import <QuartzCore/QuartzCore.h>
-#import "SSTextField.h"
 #import "BNMisc.h"
 #import "Story+Permissions.h"
-#import "SSLabel.h"
+#import "BNLabel.h"
+#import "BNTextField.h"
 
 @interface ModifyStoryViewController ()
 
 @property (strong, nonatomic) NSString *storyTitle;
 @property (strong, nonatomic) UIScrollView *scrollView;
 
-@property (strong, nonatomic) IBOutlet SSTextField *storyTitleTextField;
+@property (strong, nonatomic) IBOutlet BNTextField *storyTitleTextField;
 
 @property (strong, nonatomic) IBOutlet UIView *invitationView;
-@property (strong, nonatomic) IBOutlet SSLabel *inviteeLabel;
+@property (strong, nonatomic) IBOutlet BNLabel *inviteeLabel;
 @property (strong, nonatomic) IBOutlet UIButton *inviteContactsButton;
 
 
@@ -120,7 +120,7 @@
     frame.size.height = 44.0f;
     frame.size.width -= 2*VIEW_INSETS;
     frame.origin.y = 16.0f;
-    self.storyTitleTextField = [[SSTextField alloc] initWithFrame:frame];
+    self.storyTitleTextField = [[BNTextField alloc] initWithFrame:frame];
     self.storyTitleTextField.backgroundColor = [BANYAN_GREEN_COLOR colorWithAlphaComponent:0.2];
     self.storyTitleTextField.placeholder = @"What do you want to call your story?";
     self.storyTitleTextField.delegate = self;
@@ -141,7 +141,7 @@
     [self.scrollView addSubview:self.invitationView];
     
     frame = self.invitationView.bounds;
-    self.inviteeLabel = [[SSLabel alloc] initWithFrame:frame];
+    self.inviteeLabel = [[BNLabel alloc] initWithFrame:frame];
     self.inviteeLabel.textEdgeInsets = UIEdgeInsetsMake(TEXT_INSETS, TEXT_INSETS, TEXT_INSETS, TEXT_INSETS);
     self.inviteeLabel.backgroundColor = [BANYAN_GREEN_COLOR colorWithAlphaComponent:0.1];
     [self.inviteeLabel.layer setCornerRadius:8];

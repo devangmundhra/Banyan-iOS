@@ -16,19 +16,19 @@
 #import "Piece+Create.h"
 #import "SMPageControl.h"
 #import "NSObject+BlockObservation.h"
-#import "SSLabel.h"
 #import "Media.h"
 #import "User.h"
 #import "SDWebImage/UIImageView+WebCache.h"
 #import "Piece+Delete.h"
 #import "ModifyStoryViewController.h"
 #import "ModifyPieceViewController.h"
+#import "BNLabel.h"
 
 @interface ReadPieceViewController () <UIActionSheetDelegate, ModifyPieceViewControllerDelegate>
 
 @property (strong, nonatomic) UIView *storyInfoView;
 @property (strong, nonatomic) IBOutlet UIScrollView *contentView;
-@property (strong, nonatomic) IBOutlet SSLabel *pieceCaptionView;
+@property (strong, nonatomic) IBOutlet BNLabel *pieceCaptionView;
 @property (strong, nonatomic) IBOutlet UITextView *pieceTextView;
 @property (strong, nonatomic) IBOutlet UIImageView *imageView;
 @property (strong, nonatomic) IBOutlet BNAudioStreamingPlayer *audioPlayer;
@@ -38,8 +38,8 @@
 @property (strong, nonatomic) IBOutlet UIButton *viewsButton;
 @property (strong, nonatomic) IBOutlet UIButton *likesButton;
 @property (strong, nonatomic) IBOutlet UIButton *commentsButton;
-@property (strong, nonatomic) IBOutlet SSLabel *authorLabel;
-@property (strong, nonatomic) IBOutlet SSLabel *timeLabel;
+@property (strong, nonatomic) IBOutlet BNLabel *authorLabel;
+@property (strong, nonatomic) IBOutlet BNLabel *timeLabel;
 
 @property (strong, nonatomic) IBOutlet UILabel *locationLabel;
 
@@ -187,8 +187,8 @@
     [self.view addSubview:self.contentView];
 
     self.pieceInfoView = [[UIView alloc] initWithFrame:CGRectZero];
-    self.authorLabel = [[SSLabel alloc] initWithFrame:CGRectZero];
-    self.timeLabel = [[SSLabel alloc] initWithFrame:CGRectZero];
+    self.authorLabel = [[BNLabel alloc] initWithFrame:CGRectZero];
+    self.timeLabel = [[BNLabel alloc] initWithFrame:CGRectZero];
     self.commentsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.commentsButton.exclusiveTouch = YES;
     self.likesButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -220,7 +220,7 @@
     [self.contentView insertSubview:self.imageView belowSubview:self.audioPlayer.view];
     
     // Caption
-    self.pieceCaptionView = [[SSLabel alloc] initWithFrame:CGRectZero];
+    self.pieceCaptionView = [[BNLabel alloc] initWithFrame:CGRectZero];
     self.pieceCaptionView.lineBreakMode = NSLineBreakByWordWrapping;
     self.pieceCaptionView.backgroundColor = [UIColor clearColor];
     self.pieceCaptionView.font = [UIFont fontWithName:@"Roboto-BoldCondensed" size:26];

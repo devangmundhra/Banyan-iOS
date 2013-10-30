@@ -2,26 +2,46 @@
 //  StoryPickerViewController.m
 //  Banyan
 //
-//  Created by Devang Mundhra on 7/28/13.
+//  Created by Devang Mundhra on 10/28/13.
 //
 //
 
 #import "StoryPickerViewController.h"
-#import "User.h"
+#import "ModifyStoryViewController.h"
+
+static NSString *CellIdentifier = @"StoryPickerCell";
+
+@interface StoryPickerViewController (ModifyStoryViewControllerDelegate)<ModifyStoryViewControllerDelegate>
+
+@end
+
+@interface StoryPickerViewController (UICollectionViewDelegateFlowLayout)<UICollectionViewDelegateFlowLayout>
+
+@end
 
 @interface StoryPickerViewController ()
 @property (strong, nonatomic) NSArray *contributableStories;
 
+
 @end
 
 @implementation StoryPickerViewController
-
 @synthesize contributableStories = _contributableStories;
 @synthesize delegate = _delegate;
 
-- (id)initWithStyle:(UITableViewStyle)style
+- (id)init
 {
-    self = [super initWithStyle:style];
+    UICollectionViewFlowLayout *aFlowLayout = [[UICollectionViewFlowLayout alloc] init];
+    self = [super initWithCollectionViewLayout:aFlowLayout];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
     }
@@ -31,21 +51,34 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+	// Do any additional setup after loading the view.
+    [self.collectionView registerClass:[StoryPickerCell class] forCellWithReuseIdentifier:CellIdentifier];
     
     self.title = @"Choose a story";
-    
+    self.collectionView.backgroundColor = BANYAN_LIGHTGRAY_COLOR;
+
     [self setupNavigationBar];
     
-    [self addNewStoryButton];
-//    [self addGetMoreStoriesButton];
+    NSMutableArray *storiesArray = [NSMutableArray arrayWithArray:[Story getStoriesUserCanContributeTo]];
+    [storiesArray insertObject:[NSNull null] atIndex:0]; // To add new story
+//    [storiesArray insertObject:[NSNull null] atIndex:[storiesArray count]];
     
-    self.contributableStories = [Story getStoriesUserCanContributeTo];
+    self.contributableStories = [storiesArray copy];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [self.tableView reloadData];
+}
+
+- (BOOL) isAddStoryIndexPath:(NSIndexPath *)indexPath
+{
+    return (indexPath.section == 0 && indexPath.item == 0);
+}
+
+- (BOOL) isMoreStoriesIndexPath:(NSIndexPath *)indexPath
+{
+    return (indexPath.section == 0 && indexPath.item == self.contributableStories.count-1);
 }
 
 - (void)setupNavigationBar
@@ -56,84 +89,46 @@
                                                                             action:@selector(cancelButtonPressed:)];
 }
 
-- (void) addNewStoryButton
+#pragma mark
+#pragma mark UICollectionViewDataSource
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    UIButton *actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    actionButton.frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), 40);
-    actionButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-    actionButton.titleEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 0);
-    
-    NSAttributedString *actionTitle = [[NSAttributedString alloc] initWithString:@"Create a new story"
-                                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:16],
-                                                                                   NSForegroundColorAttributeName : BANYAN_BLACK_COLOR,
-                                                                                   }];
-    
-    [actionButton setAttributedTitle:actionTitle forState:UIControlStateNormal];
-    
-    actionButton.userInteractionEnabled = YES;
-    [actionButton setBackgroundColor:BANYAN_CREAM_COLOR];
-    [actionButton addTarget:self action:@selector(createNewStory:) forControlEvents:UIControlEventTouchUpInside];
-    
-    self.tableView.tableHeaderView = actionButton;
-}
-
-- (void) addGetMoreStoriesButton
-{
-    UIButton *actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    actionButton.frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), 40);
-    actionButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-    actionButton.userInteractionEnabled = YES;
-    [actionButton setBackgroundColor:BANYAN_CREAM_COLOR];
-    
-    NSAttributedString *actionTitle = [[NSAttributedString alloc] initWithString:@"Get more stoies"
-                                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:16],
-                                                                                   NSForegroundColorAttributeName : BANYAN_BLACK_COLOR,
-                                                                                   }];
-    
-    [actionButton setAttributedTitle:actionTitle forState:UIControlStateNormal];
-    
-    [actionButton addTarget:self action:@selector(getMoreStories:) forControlEvents:UIControlEventTouchUpInside];
-    
-    self.tableView.tableFooterView = actionButton;
-}
-
-#pragma mark - Table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    // Return the number of sections.
     return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    // Return the number of rows in the section.
     return [self.contributableStories count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"StoryPickerCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-    }
+    StoryPickerCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
+    
     // Configure the cell...
-    Story *story = [self.contributableStories objectAtIndex:indexPath.row];
-    cell.textLabel.text = story.title;
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"Started by: %@", story.author.name];
+    if ([self isAddStoryIndexPath:indexPath]) {
+        [cell displayAsAddStoryButton];
+    } else {
+        Story *story = [self.contributableStories objectAtIndex:indexPath.item];
+        [cell setStory:story];
+    }
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+#pragma mark
+#pragma mark UICollectionViewDelegate
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
-    Story *story = [self.contributableStories objectAtIndex:indexPath.row];
-
-    [self dismissStoryPickerViewControllerWithCompletionBlock:^{
-        [self.delegate storyPickerViewControllerDidPickStory:story];
-    }];
+    [collectionView deselectItemAtIndexPath:indexPath animated:YES];
+    if ([self isAddStoryIndexPath:indexPath]) {
+        [self createNewStory:nil];
+    } else {
+        Story *story = [self.contributableStories objectAtIndex:indexPath.item];
+        
+        [self dismissStoryPickerViewControllerAnimated:YES completionBlock:^{
+            [self.delegate storyPickerViewControllerDidPickStory:story];
+        }];
+    }
 }
 
 #pragma mark target actions
@@ -153,13 +148,44 @@
 
 - (void) cancelButtonPressed:(id)sender
 {
-    [self dismissStoryPickerViewControllerWithCompletionBlock:nil];
+    [self dismissStoryPickerViewControllerAnimated:YES completionBlock:nil];
 }
 
-#pragma mark ModifyStoryViewControllerDelegate
+- (void) dismissStoryPickerViewControllerAnimated:(BOOL)animated completionBlock:(void (^)(void))completionBlock
+{
+    [self dismissViewControllerAnimated:animated completion:completionBlock];
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+@end
+
+@implementation StoryPickerViewController (UICollectionViewDelegateFlowLayout)
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([self isAddStoryIndexPath:indexPath])
+        return CGSizeMake(CGRectGetWidth(collectionView.frame) - 10, 44);
+    else
+        return CGSizeMake(CGRectGetWidth(collectionView.frame)/2-10, 80);
+}
+
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+{
+    return UIEdgeInsetsMake(5, 5, 5, 5);
+}
+
+@end
+
+@implementation StoryPickerViewController (ModifyStoryViewControllerDelegate)
+
 - (void) modifyStoryViewControllerDidDismiss:(ModifyStoryViewController *)viewController
 {
-//    [self dismissStoryPickerViewControllerWithCompletionBlock:nil];
+    //    [self dismissStoryPickerViewControllerWithCompletionBlock:nil];
 }
 
 - (void) modifyStoryViewControllerDidSelectStory:(Story *)story
@@ -167,20 +193,9 @@
     if (HAVE_ASSERTS) {
         assert(story);
     }
-    [self dismissStoryPickerViewControllerWithCompletionBlock:^{
+    [self dismissStoryPickerViewControllerAnimated:YES completionBlock:^{
         [self.delegate storyPickerViewControllerDidPickStory:story];
     }];
-}
-
-- (void) dismissStoryPickerViewControllerWithCompletionBlock:(void (^)(void))completionBlock
-{
-    [self dismissViewControllerAnimated:YES completion:completionBlock];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 @end

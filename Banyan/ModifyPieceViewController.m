@@ -14,10 +14,10 @@
 #import "Story+Edit.h"
 #import "Piece_Defines.h"
 #import "Story_Defines.h"
-#import "SSTextField.h"
 #import "Media.h"
 #import "AVCamViewController.h"
 #import "UIPlaceHolderTextView.h"
+#import "BNTextField.h"
 
 @interface ModifyPieceViewController (AddPhotoButtonActions)
 - (IBAction)addPhotoButtonTappedForCamera:(id)sender;
@@ -36,7 +36,7 @@
 
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (strong, nonatomic) IBOutlet UIButton *storyTitleButton;
-@property (strong, nonatomic) IBOutlet SSTextField *pieceCaptionView;
+@property (strong, nonatomic) IBOutlet BNTextField *pieceCaptionView;
 @property (strong, nonatomic) IBOutlet UIPlaceHolderTextView *pieceTextView;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 @property (strong, nonatomic) IBOutlet LocationPickerButton *addLocationButton;
@@ -198,7 +198,7 @@
     
     frame.origin.y = CGRectGetMaxY(self.storyTitleButton.frame) + VIEW_INSETS;
     frame.size.height = 44.0f;
-    self.pieceCaptionView = [[SSTextField alloc] initWithFrame:frame];
+    self.pieceCaptionView = [[BNTextField alloc] initWithFrame:frame];
     self.pieceCaptionView.delegate = self;
     self.pieceCaptionView.placeholder = @"What is this piece about?";
     self.pieceCaptionView.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSETS, 0, TEXT_INSETS);
@@ -505,7 +505,7 @@
 - (IBAction)storyChangeButtonPressed:(id)sender
 {
     NSLog(@"Current story is %@", self.piece.story.title);
-    StoryPickerViewController *vc = [[StoryPickerViewController alloc] initWithStyle:UITableViewStylePlain];
+    StoryPickerViewController *vc = [[StoryPickerViewController alloc] init];
     vc.delegate = self;
     UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:vc];
     [self presentViewController:nvc animated:YES completion:nil];

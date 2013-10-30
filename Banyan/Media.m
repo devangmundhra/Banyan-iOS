@@ -243,7 +243,7 @@
                 // Remove the local file
                 NSFileManager *fileManager = [NSFileManager defaultManager];
                 NSError *error = nil;
-                if (![fileManager removeItemAtPath:[[NSURL URLWithString:self.localURL] path] error:&error])
+                if (![fileManager removeItemAtPath:[(NSURL *)[NSURL URLWithString:self.localURL] path] error:&error])
                     NSLog(@"Error: %@ in deleting file: %@", error.localizedDescription, self.localURL);
                 
                 successBlock();
@@ -306,7 +306,7 @@
             // Remove the local file
             NSFileManager *fileManager = [NSFileManager defaultManager];
             NSError *error = nil;
-            if (![fileManager removeItemAtPath:[[NSURL URLWithString:self.localURL] path] error:&error])
+            if (![fileManager removeItemAtPath:[(NSURL *)[NSURL URLWithString:self.localURL] path] error:&error])
                 NSLog(@"Error: %@ in deleting file: %@", error.localizedDescription, self.localURL);
             
             successBlock();

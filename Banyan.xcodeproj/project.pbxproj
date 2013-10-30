@@ -80,7 +80,6 @@
 		517A01D7170A7A9E00665F0F /* MediaPickerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 517A01D6170A7A9E00665F0F /* MediaPickerButton.m */; };
 		517A01DA170BFA3000665F0F /* InviteFriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 517A01D9170BFA2F00665F0F /* InviteFriendCell.m */; };
 		517A01DD170BFA5B00665F0F /* InviteFriendCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 517A01DC170BFA5A00665F0F /* InviteFriendCell.xib */; };
-		51802BB617A6E8DA00213090 /* StoryPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51802BB517A6E8D900213090 /* StoryPickerViewController.m */; };
 		51815328171230AB006F73D3 /* readButtonUnselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 51815326171230AB006F73D3 /* readButtonUnselected.png */; };
 		51815329171230AB006F73D3 /* readButtonUnselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51815327171230AB006F73D3 /* readButtonUnselected@2x.png */; };
 		5181532C17123412006F73D3 /* writeButtonUnselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181532A17123412006F73D3 /* writeButtonUnselected.png */; };
@@ -210,6 +209,10 @@
 		51CFD94915F58337002926F9 /* buttonFollowingSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94115F58337002926F9 /* buttonFollowingSelected@2x.png */; };
 		51CFD94A15F58337002926F9 /* buttonFollowSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94215F58337002926F9 /* buttonFollowSelected.png */; };
 		51CFD94B15F58337002926F9 /* buttonFollowSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */; };
+		51E9B2BF181F8BCA004B35A5 /* StoryPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51E9B2BE181F8BCA004B35A5 /* StoryPickerViewController.m */; };
+		51E9B2C2181F8DD3004B35A5 /* BNLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 51E9B2C1181F8DD3004B35A5 /* BNLabel.m */; };
+		51E9B2C6181F8F88004B35A5 /* BNTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 51E9B2C5181F8F88004B35A5 /* BNTextField.m */; };
+		51E9B2D1181FA90A004B35A5 /* StoryPickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 51E9B2D0181FA90A004B35A5 /* StoryPickerCell.m */; };
 		51F2288C161A9E22006B3AA7 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F2288B161A9E22006B3AA7 /* Default-568h@2x.png */; };
 		51F57C4E171E95BE00A76FA5 /* addWithGreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F57C4C171E95BE00A76FA5 /* addWithGreen.png */; };
 		51F57C4F171E95BE00A76FA5 /* addWithGreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F57C4D171E95BE00A76FA5 /* addWithGreen@2x.png */; };
@@ -348,8 +351,6 @@
 		517A01D9170BFA2F00665F0F /* InviteFriendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InviteFriendCell.m; path = Banyan/InviteFriendCell.m; sourceTree = "<group>"; };
 		517A01DC170BFA5A00665F0F /* InviteFriendCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = InviteFriendCell.xib; path = Banyan/InviteFriendCell.xib; sourceTree = "<group>"; };
 		517A01DE170EB02900665F0F /* User_Defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = User_Defines.h; path = Banyan/User_Defines.h; sourceTree = "<group>"; };
-		51802BB417A6E8D900213090 /* StoryPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryPickerViewController.h; path = Banyan/StoryPickerViewController.h; sourceTree = "<group>"; };
-		51802BB517A6E8D900213090 /* StoryPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryPickerViewController.m; path = Banyan/StoryPickerViewController.m; sourceTree = "<group>"; };
 		51815326171230AB006F73D3 /* readButtonUnselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = readButtonUnselected.png; sourceTree = "<group>"; };
 		51815327171230AB006F73D3 /* readButtonUnselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "readButtonUnselected@2x.png"; sourceTree = "<group>"; };
 		5181532A17123412006F73D3 /* writeButtonUnselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = writeButtonUnselected.png; sourceTree = "<group>"; };
@@ -524,6 +525,14 @@
 		51CFD94115F58337002926F9 /* buttonFollowingSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFollowingSelected@2x.png"; sourceTree = "<group>"; };
 		51CFD94215F58337002926F9 /* buttonFollowSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFollowSelected.png; sourceTree = "<group>"; };
 		51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFollowSelected@2x.png"; sourceTree = "<group>"; };
+		51E9B2BD181F8BCA004B35A5 /* StoryPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryPickerViewController.h; path = Banyan/StoryPickerViewController.h; sourceTree = "<group>"; };
+		51E9B2BE181F8BCA004B35A5 /* StoryPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryPickerViewController.m; path = Banyan/StoryPickerViewController.m; sourceTree = "<group>"; };
+		51E9B2C0181F8DD3004B35A5 /* BNLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNLabel.h; path = Banyan/BNLabel.h; sourceTree = "<group>"; };
+		51E9B2C1181F8DD3004B35A5 /* BNLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNLabel.m; path = Banyan/BNLabel.m; sourceTree = "<group>"; };
+		51E9B2C4181F8F88004B35A5 /* BNTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNTextField.h; path = Banyan/BNTextField.h; sourceTree = "<group>"; };
+		51E9B2C5181F8F88004B35A5 /* BNTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNTextField.m; path = Banyan/BNTextField.m; sourceTree = "<group>"; };
+		51E9B2CF181FA90A004B35A5 /* StoryPickerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryPickerCell.h; path = Banyan/StoryPickerCell.h; sourceTree = "<group>"; };
+		51E9B2D0181FA90A004B35A5 /* StoryPickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryPickerCell.m; path = Banyan/StoryPickerCell.m; sourceTree = "<group>"; };
 		51F22884161A9DC1006B3AA7 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		51F22887161A9DE4006B3AA7 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		51F22889161A9DF2006B3AA7 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -768,15 +777,9 @@
 		51444A0B17719B230037570A /* Edit */ = {
 			isa = PBXGroup;
 			children = (
-				5189B2E615B395F300562DD0 /* ModifyStoryViewController.h */,
-				5189B2E715B395F300562DD0 /* ModifyStoryViewController.m */,
-				5189B2DD15B395F300562DD0 /* InvitedTableViewController.h */,
-				5189B2DE15B395F300562DD0 /* InvitedTableViewController.m */,
-				514CDF5918131F410098B0A9 /* InvitedFBFriendsViewController.h */,
-				514CDF5A18131F410098B0A9 /* InvitedFBFriendsViewController.m */,
-				51802BB417A6E8D900213090 /* StoryPickerViewController.h */,
-				51802BB517A6E8D900213090 /* StoryPickerViewController.m */,
-				517A01DB170BFA3700665F0F /* InviteFriendCell */,
+				51E9B2C8181F9E30004B35A5 /* Modify */,
+				51E9B2C9181F9E3E004B35A5 /* Invite */,
+				51E9B2CA181F9E4B004B35A5 /* StoryPicker */,
 			);
 			name = Edit;
 			sourceTree = "<group>";
@@ -1325,6 +1328,8 @@
 				511B421C17A6669100466A8B /* BNImageLabel */,
 				511B421D17A6669C00466A8B /* BNTableViewController */,
 				511B421E17A666B100466A8B /* BNTabBarController */,
+				51E9B2C3181F8DD8004B35A5 /* BNLabel */,
+				51E9B2C7181F8F8B004B35A5 /* BNTextField */,
 			);
 			name = "Custom Views and View Controllers";
 			path = ..;
@@ -1399,6 +1404,64 @@
 				51170B6A17F4262A0015B343 /* Profile View Controller */,
 			);
 			name = "SideNavigator View Controller";
+			sourceTree = "<group>";
+		};
+		51E9B2C3181F8DD8004B35A5 /* BNLabel */ = {
+			isa = PBXGroup;
+			children = (
+				51E9B2C0181F8DD3004B35A5 /* BNLabel.h */,
+				51E9B2C1181F8DD3004B35A5 /* BNLabel.m */,
+			);
+			name = BNLabel;
+			sourceTree = "<group>";
+		};
+		51E9B2C7181F8F8B004B35A5 /* BNTextField */ = {
+			isa = PBXGroup;
+			children = (
+				51E9B2C4181F8F88004B35A5 /* BNTextField.h */,
+				51E9B2C5181F8F88004B35A5 /* BNTextField.m */,
+			);
+			name = BNTextField;
+			sourceTree = "<group>";
+		};
+		51E9B2C8181F9E30004B35A5 /* Modify */ = {
+			isa = PBXGroup;
+			children = (
+				5189B2E615B395F300562DD0 /* ModifyStoryViewController.h */,
+				5189B2E715B395F300562DD0 /* ModifyStoryViewController.m */,
+			);
+			name = Modify;
+			sourceTree = "<group>";
+		};
+		51E9B2C9181F9E3E004B35A5 /* Invite */ = {
+			isa = PBXGroup;
+			children = (
+				5189B2DD15B395F300562DD0 /* InvitedTableViewController.h */,
+				5189B2DE15B395F300562DD0 /* InvitedTableViewController.m */,
+				514CDF5918131F410098B0A9 /* InvitedFBFriendsViewController.h */,
+				514CDF5A18131F410098B0A9 /* InvitedFBFriendsViewController.m */,
+				517A01DB170BFA3700665F0F /* InviteFriendCell */,
+			);
+			name = Invite;
+			sourceTree = "<group>";
+		};
+		51E9B2CA181F9E4B004B35A5 /* StoryPicker */ = {
+			isa = PBXGroup;
+			children = (
+				51E9B2BD181F8BCA004B35A5 /* StoryPickerViewController.h */,
+				51E9B2BE181F8BCA004B35A5 /* StoryPickerViewController.m */,
+				51E9B2CE181FA7A8004B35A5 /* StoryPickerCell */,
+			);
+			name = StoryPicker;
+			sourceTree = "<group>";
+		};
+		51E9B2CE181FA7A8004B35A5 /* StoryPickerCell */ = {
+			isa = PBXGroup;
+			children = (
+				51E9B2CF181FA90A004B35A5 /* StoryPickerCell.h */,
+				51E9B2D0181FA90A004B35A5 /* StoryPickerCell.m */,
+			);
+			name = StoryPickerCell;
 			sourceTree = "<group>";
 		};
 		51FAC0B9172C82A40046C2D6 /* Comment */ = {
@@ -1643,7 +1706,8 @@
 				5189B34615B395F300562DD0 /* Story+Stats.m in Sources */,
 				5189B34915B395F300562DD0 /* StoryListTableViewController.m in Sources */,
 				5189B34D15B395F300562DD0 /* UserLoginViewController.m in Sources */,
-				51802BB617A6E8DA00213090 /* StoryPickerViewController.m in Sources */,
+				51E9B2C2181F8DD3004B35A5 /* BNLabel.m in Sources */,
+				51E9B2BF181F8BCA004B35A5 /* StoryPickerViewController.m in Sources */,
 				51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */,
 				51CFD92915F1F260002926F9 /* SettingsTableViewController.m in Sources */,
 				51CFD93615F3E80B002926F9 /* FollowingFriendsViewController.m in Sources */,
@@ -1654,6 +1718,7 @@
 				51170B6217F3D73D0015B343 /* SideNavigatorViewController.m in Sources */,
 				51984D46176EEB5600CD6C3E /* SinglePieceView.m in Sources */,
 				51170B7817F906FF0015B343 /* BNHorizontalSwipeInteractionController.m in Sources */,
+				51E9B2D1181FA90A004B35A5 /* StoryPickerCell.m in Sources */,
 				51170B7317F4319C0015B343 /* AboutViewController.m in Sources */,
 				510787C8163A36A90042B436 /* UIImage+RoundedCornerAdditions.m in Sources */,
 				510787CF163A36D80042B436 /* AFBanyanAPIClient.m in Sources */,
@@ -1662,6 +1727,7 @@
 				514CDF68181509B70098B0A9 /* AVCamViewController.m in Sources */,
 				510787D5163A37190042B436 /* Activity.m in Sources */,
 				5157CD031650902900C22CCE /* BanyanConnection.m in Sources */,
+				51E9B2C6181F8F88004B35A5 /* BNTextField.m in Sources */,
 				514CDF5B18131F410098B0A9 /* InvitedFBFriendsViewController.m in Sources */,
 				5103FB9F166898960095B11F /* UIImage+Create.m in Sources */,
 				519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */,
