@@ -185,7 +185,6 @@ static NSString *CellIdentifier = @"StoryPickerCell";
 
 - (void) modifyStoryViewControllerDidDismiss:(ModifyStoryViewController *)viewController
 {
-    //    [self dismissStoryPickerViewControllerWithCompletionBlock:nil];
 }
 
 - (void) modifyStoryViewControllerDidSelectStory:(Story *)story

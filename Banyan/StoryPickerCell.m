@@ -50,7 +50,7 @@
         self.layer.shadowColor = [BANYAN_DARKGRAY_COLOR CGColor];
         
         _imageView = [[UIImageView alloc] initWithFrame:self.bounds];
-        _imageView.contentMode = UIViewContentModeScaleAspectFit;
+        _imageView.contentMode = UIViewContentModeScaleAspectFill;
         _imageView.clipsToBounds = YES;
         [self addSubview:_imageView];
         
@@ -102,7 +102,7 @@
         if ([imageMedia.remoteURL length]) {
             __weak UIImageView *wImageViewself = self.imageView;
             [self.imageView setImageWithURL:[NSURL URLWithString:imageMedia.remoteURL] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                UIImage *imageWithEffect = [image applyExtraLightEffect];
+                UIImage *imageWithEffect = [image applyLightEffect];
                 wImageViewself.image = imageWithEffect;
             }];
         } else if ([imageMedia.localURL length]) {
@@ -110,7 +110,7 @@
             [library assetForURL:[NSURL URLWithString:imageMedia.localURL] resultBlock:^(ALAsset *asset) {
                 ALAssetRepresentation *rep = [asset defaultRepresentation];
                 CGImageRef imageRef = [rep fullScreenImage];
-                UIImage *image = [[UIImage imageWithCGImage:imageRef] applyExtraLightEffect];
+                UIImage *image = [[UIImage imageWithCGImage:imageRef] applyLightEffect];
                 [self.imageView setImage:image];
             }
                     failureBlock:^(NSError *error) {

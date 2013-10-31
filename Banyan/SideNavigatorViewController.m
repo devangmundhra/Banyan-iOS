@@ -19,11 +19,13 @@
 
 @interface SideNavigatorViewController ()
 
+@property (strong, nonatomic) UIButton *actionButton;
+
 @end
 
 typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedIn) {
     SidePanelOptionLoggedInHome,
-//    SidePanelOptionLoggedInProfile,
+    SidePanelOptionLoggedInProfile,
 //    SidePanelOptionLoggedInFriends,
     SidePanelOptionLoggedInSettings,
     SidePanelOptionLoggedInFeedback,
@@ -40,6 +42,8 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
 };
 
 @implementation SideNavigatorViewController
+
+@synthesize actionButton;
 
 #define BACKGROUND_COLOR BANYAN_DARKBROWN_COLOR
 #define SEPERATOR_COLOR BANYAN_BROWN_COLOR
@@ -88,6 +92,26 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
     [self setNeedsStatusBarAppearanceUpdate];
     self.tableView.backgroundColor = BACKGROUND_COLOR;
     
+    // Assign the header/footer views
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), 65)];
+    view.backgroundColor = BACKGROUND_COLOR;
+    actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [actionButton.titleLabel setFont:[UIFont fontWithName:@"Roboto-Bold" size:18]];
+    actionButton.userInteractionEnabled = YES;
+    [actionButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
+    actionButton.showsTouchWhenHighlighted = YES;
+    actionButton.backgroundColor = [BANYAN_GREEN_COLOR colorWithAlphaComponent:0.5];
+
+    CALayer *layer = actionButton.layer;
+    [layer setCornerRadius:8.0f];
+    [layer setMasksToBounds:YES];
+    [layer setBorderWidth:1.0f];
+    layer.borderColor = BANYAN_GREEN_COLOR.CGColor;
+
+    [view addSubview:actionButton];
+    self.tableView.tableHeaderView = view;
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    
     self.tableView.separatorColor = SEPERATOR_COLOR;
     self.tableView.rowHeight = 40.0f;
 }
@@ -106,28 +130,12 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
 - (void) updateSignInOutButtons
 {
     BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), 65)];
-    view.backgroundColor = BACKGROUND_COLOR;
-    
+    UIView *view = self.tableView.tableHeaderView;
     
     if (![BanyanAppDelegate loggedIn]) {
-        UIButton *actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [actionButton.titleLabel setFont:[UIFont fontWithName:@"Roboto-Bold" size:18]];
-        actionButton.userInteractionEnabled = YES;
-        [actionButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
-        actionButton.showsTouchWhenHighlighted = YES;
-        
-        CALayer *layer = actionButton.layer;
-        [layer setCornerRadius:8.0f];
-        [layer setMasksToBounds:YES];
-        [layer setBorderWidth:1.0f];
-        
-        [view addSubview:actionButton];
-        
+        actionButton.hidden = NO;
         [actionButton setTitle:@"Sign in" forState:UIControlStateNormal];
         [actionButton addTarget:delegate action:@selector(login) forControlEvents:UIControlEventTouchUpInside];
-        actionButton.backgroundColor = [BANYAN_GREEN_COLOR colorWithAlphaComponent:0.5];
-        layer.borderColor = BANYAN_GREEN_COLOR.CGColor;
         
         NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
         paraStyle.lineBreakMode = NSLineBreakByTruncatingTail;
@@ -150,10 +158,8 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
         CGRect frame = view.frame;
         frame.size.height = 25;
         view.frame = frame;
+        actionButton.hidden = YES;
     }
-    
-    self.tableView.tableHeaderView = view;
-    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
 #pragma mark - Table view data source
@@ -190,9 +196,9 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
             case SidePanelOptionLoggedInHome:
                 cell.textLabel.text = @"Home";
                 break;
-//            case SidePanelOptionLoggedInProfile:
-//                cell.textLabel.text = @"Profile";
-//                break;
+            case SidePanelOptionLoggedInProfile:
+                cell.textLabel.text = @"Profile";
+                break;
 //            case SidePanelOptionLoggedInFriends:
 //                cell.textLabel.text = @"Friends";
 //                break;
@@ -248,11 +254,11 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
     if ([BanyanAppDelegate loggedIn]) {
         switch (indexPath.row) {
             case SidePanelOptionLoggedInHome:
-                self.sidePanelController.centerPanel = ((BanyanAppDelegate *)[[UIApplication sharedApplication] delegate]).storyListTableViewController;
+                self.sidePanelController.centerPanel = APP_DELEGATE.storyListTableViewController;
                 break;
-//            case SidePanelOptionLoggedInProfile:
-//                self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[ProfileViewController alloc] init]];
-//                break;
+            case SidePanelOptionLoggedInProfile:
+                self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[ProfileViewController alloc] init]];
+                break;
 //            case SidePanelOptionLoggedInFriends:
 //                self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[FollowingFriendsViewController alloc] init]];
 //                break;
@@ -271,7 +277,7 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
     } else {
         switch (indexPath.row) {
             case SidePanelOptionLoggedOutHome:
-                self.sidePanelController.centerPanel = ((BanyanAppDelegate *)[[UIApplication sharedApplication] delegate]).storyListTableViewController;
+                self.sidePanelController.centerPanel = APP_DELEGATE.storyListTableViewController;
                 break;
             case SidePanelOptionLoggedOutSettings:
                 self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[SettingsTableViewController alloc] init]];
