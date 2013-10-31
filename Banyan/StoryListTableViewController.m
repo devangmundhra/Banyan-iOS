@@ -287,6 +287,14 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self shareStoryAtIndexPath:myIndexPath];
 }
 
+- (void) hideStoryForSingleStoryCell:(SingleStoryCell *)cell
+{
+    NSIndexPath *myIndexPath = [self.tableView indexPathForCell:cell];
+    Story *story = [self.fetchedResultsController objectAtIndexPath:myIndexPath];
+//    [self tableView:self.tableView commitEditingStyle:UITableViewCellEditingStyleDelete forRowAtIndexPath:myIndexPath];
+    [story remove];
+}
+
 #pragma mark Data Source Loading / Reloading Methods
 - (void) refreshStoryList:(NSNotification *)notification
 {

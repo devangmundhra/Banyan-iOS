@@ -25,6 +25,7 @@
 - (void)deleteStory:(id)sender;
 - (void)addPiece:(id)sender;
 - (void)shareStory:(id)sender;
+- (void)hideStory:(id)sender;
 
 @end
 

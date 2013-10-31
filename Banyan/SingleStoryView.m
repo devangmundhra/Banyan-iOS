@@ -10,6 +10,7 @@
 #import "BanyanAppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
 #import "Story+Permissions.h"
+#import "User.h"
 
 @interface SingleStoryView ()
 
@@ -341,10 +342,15 @@ static BOOL _loggedIn;
         [self.topSwipeView.backView addSubview:addPieceButton];
         
         // Delete Story Button
-        UIButton *deleteStoryButton = [UIButton buttonWithType:UIButtonTypeCustom];        
+        UIButton *deleteStoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
         deleteStoryButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
-        [deleteStoryButton setImage:_deleteStoryImage forState:UIControlStateNormal];
-        [deleteStoryButton addTarget:self action:@selector(deleteStoryAlert:) forControlEvents:UIControlEventTouchUpInside];
+        if (self.story.author.userId == [BNSharedUser currentUser].userId) {
+            [deleteStoryButton setImage:_deleteStoryImage forState:UIControlStateNormal];
+            [deleteStoryButton addTarget:self action:@selector(deleteStoryAlert:) forControlEvents:UIControlEventTouchUpInside];
+        } else {
+            [deleteStoryButton setImage:_hideStoryImage forState:UIControlStateNormal];
+            [deleteStoryButton addTarget:self action:@selector(hideStoryAlert:) forControlEvents:UIControlEventTouchUpInside];
+        }
         
         CGRect deleteStoryButtonFrame = deleteStoryButton.bounds;
         deleteStoryButtonFrame.origin.x = floor(CGRectGetMaxX(addPieceButton.frame) + BUTTON_SPACING);
@@ -431,11 +437,23 @@ static BOOL _loggedIn;
     [alertView show];
 }
 
+- (void)hideStoryAlert:(UIButton *)button
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Hide Story"
+                                                        message:@"Do you want to hide this story from your feed?"
+                                                       delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+    
+    [alertView show];
+}
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if ([alertView.title isEqualToString:@"Delete Story"] && buttonIndex==1) {
         [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
         [self.delegate deleteStory:self];
+    } else if ([alertView.title isEqualToString:@"Hide Story"] && buttonIndex==1) {
+        [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
+        [self.delegate hideStory:self];
     }
 }
 @end

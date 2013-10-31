@@ -117,6 +117,11 @@
     [self.delegate shareStoryForSingleStoryCell:self];
 }
 
+- (void)hideStory:(id)sender
+{
+    [self.delegate hideStoryForSingleStoryCell:self];
+}
+
 - (void) redisplay
 {
     [self.storyView setNeedsDisplay];

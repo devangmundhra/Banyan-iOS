@@ -18,6 +18,7 @@
 - (void) addPieceForSingleStoryCell:(SingleStoryCell *)cell;
 - (void) deleteStoryForSingleStoryCell:(SingleStoryCell *)cell;
 - (void) shareStoryForSingleStoryCell:(SingleStoryCell *)cell;
+- (void) hideStoryForSingleStoryCell:(SingleStoryCell *)cell;
 
 @end
 
