@@ -26,6 +26,7 @@ static UIImage *_shareBlackImage;
 static UIImage *_shareWhiteImage;
 static UIImage *_addPieceImage;
 static UIImage *_deleteStoryImage;
+static UIImage *_hideStoryImage;
 static NSDateFormatter *_dateFormatter;
 static UIFont *_boldFont;
 static UIFont *_mediumFont;
@@ -48,6 +49,7 @@ static BOOL _loggedIn;
         _shareBlackImage = [UIImage imageNamed:@"shareButtonBlack"];
         _addPieceImage = [UIImage imageNamed:@"addPieceButton"];
         _deleteStoryImage = [UIImage imageNamed:@"deleteStoryButton"];
+        _hideStoryImage = [UIImage imageNamed:@"hideStoryButton"];
         _shareWhiteImage = [UIImage imageNamed:@"shareButtonWhite"];
         
         _dateFormatter = [[NSDateFormatter alloc] init];
@@ -107,6 +109,7 @@ static BOOL _loggedIn;
         
         self.storyFrontViewControl = [UIButton buttonWithType:UIButtonTypeCustom];
         self.storyFrontViewControl.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
+        self.storyFrontViewControl.showsTouchWhenHighlighted = YES;
         [self.topSwipeView.frontView addSubview:self.storyFrontViewControl];
         [self addSubview:self.topSwipeView];
 
@@ -309,10 +312,10 @@ static BOOL _loggedIn;
     [self.storyFrontViewControl setImage:frontViewControlImage forState:UIControlStateNormal];
     // Set the button's frame
     CGRect frontViewControlButtonFrame;
-    frontViewControlButtonFrame.origin.x = floor(CGRectGetWidth(self.topSwipeView.frame) - frontViewControlImage.size.width - TABLE_CELL_MARGIN);
+    frontViewControlButtonFrame.size.width = floor(frontViewControlImage.size.width) + 2*TABLE_CELL_MARGIN;
+    frontViewControlButtonFrame.origin.x = floor(CGRectGetWidth(self.topSwipeView.frame) - CGRectGetWidth(frontViewControlButtonFrame));
     frontViewControlButtonFrame.origin.y = floor(self.topSwipeView.frontView.frame.origin.y);
     frontViewControlButtonFrame.size.height = floor(self.topSwipeView.frontView.bounds.size.height);
-    frontViewControlButtonFrame.size.width = floor(frontViewControlImage.size.width);
     self.storyFrontViewControl.frame = frontViewControlButtonFrame;
 }
 

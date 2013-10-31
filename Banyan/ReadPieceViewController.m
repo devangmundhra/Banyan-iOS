@@ -132,7 +132,7 @@
     UIImage *backArrowImage = [UIImage imageNamed:@"backArrow"];
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [backButton setExclusiveTouch:YES];
-    CGFloat maxButtonDim = MAX(backArrowImage.size.width, backArrowImage.size.height) + BUTTON_SPACING*2;
+    CGFloat maxButtonDim = MAX(backArrowImage.size.width, backArrowImage.size.height) + BUTTON_SPACING*3;
     backButton.frame = CGRectMake(BUTTON_SPACING, statusBarOffset, floor(maxButtonDim), floor(maxButtonDim));
     [backButton setImage:backArrowImage forState:UIControlStateNormal];
     [backButton addTarget:self.delegate action:@selector(readPieceViewControllerDoneReading) forControlEvents:UIControlEventTouchUpInside];
@@ -143,7 +143,7 @@
     [self.storyInfoView addSubview:backButton];
     
     UIImage *settingsImage = [UIImage imageNamed:@"settingsButton"];
-    maxButtonDim = MAX(settingsImage.size.width, settingsImage.size.height) + BUTTON_SPACING*2;
+    maxButtonDim = MAX(settingsImage.size.width, settingsImage.size.height) + BUTTON_SPACING*3;
     UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [settingsButton setExclusiveTouch:YES];
     settingsButton.frame = CGRectMake(floor(self.view.frame.size.width - maxButtonDim - BUTTON_SPACING), statusBarOffset,

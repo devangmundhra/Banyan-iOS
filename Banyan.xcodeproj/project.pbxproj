@@ -208,6 +208,8 @@
 		51CFD94915F58337002926F9 /* buttonFollowingSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94115F58337002926F9 /* buttonFollowingSelected@2x.png */; };
 		51CFD94A15F58337002926F9 /* buttonFollowSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94215F58337002926F9 /* buttonFollowSelected.png */; };
 		51CFD94B15F58337002926F9 /* buttonFollowSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */; };
+		51D5E6E7182220A5005CA2F4 /* hideStoryButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51D5E6E5182220A5005CA2F4 /* hideStoryButton@2x.png */; };
+		51D5E6E8182220A5005CA2F4 /* hideStoryButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 51D5E6E6182220A5005CA2F4 /* hideStoryButton.png */; };
 		51E9B2BF181F8BCA004B35A5 /* StoryPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51E9B2BE181F8BCA004B35A5 /* StoryPickerViewController.m */; };
 		51E9B2C2181F8DD3004B35A5 /* BNLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 51E9B2C1181F8DD3004B35A5 /* BNLabel.m */; };
 		51E9B2C6181F8F88004B35A5 /* BNTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 51E9B2C5181F8F88004B35A5 /* BNTextField.m */; };
@@ -522,6 +524,8 @@
 		51CFD94115F58337002926F9 /* buttonFollowingSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFollowingSelected@2x.png"; sourceTree = "<group>"; };
 		51CFD94215F58337002926F9 /* buttonFollowSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFollowSelected.png; sourceTree = "<group>"; };
 		51CFD94315F58337002926F9 /* buttonFollowSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFollowSelected@2x.png"; sourceTree = "<group>"; };
+		51D5E6E5182220A5005CA2F4 /* hideStoryButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hideStoryButton@2x.png"; sourceTree = "<group>"; };
+		51D5E6E6182220A5005CA2F4 /* hideStoryButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hideStoryButton.png; sourceTree = "<group>"; };
 		51E9B2BD181F8BCA004B35A5 /* StoryPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryPickerViewController.h; path = Banyan/StoryPickerViewController.h; sourceTree = "<group>"; };
 		51E9B2BE181F8BCA004B35A5 /* StoryPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryPickerViewController.m; path = Banyan/StoryPickerViewController.m; sourceTree = "<group>"; };
 		51E9B2C0181F8DD3004B35A5 /* BNLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNLabel.h; path = Banyan/BNLabel.h; sourceTree = "<group>"; };
@@ -841,6 +845,8 @@
 				51B234E9171658BF004241C1 /* Roboto Font */,
 				518153461712A5FC006F73D3 /* Tab Symbols */,
 				5181535B1713F49F006F73D3 /* Swipeable View Symbols */,
+				51D5E6E5182220A5005CA2F4 /* hideStoryButton@2x.png */,
+				51D5E6E6182220A5005CA2F4 /* hideStoryButton.png */,
 				51F57C5517228DC200A76FA5 /* backArrow.png */,
 				51F57C5617228DC200A76FA5 /* backArrow@2x.png */,
 				51F57C5717228DC200A76FA5 /* settingsButton.png */,
@@ -1553,6 +1559,7 @@
 				5144EC6C1712277600F0B265 /* locationSymbol.png in Resources */,
 				5144EC6D1712277600F0B265 /* locationSymbol@2x.png in Resources */,
 				5144EC6E1712277600F0B265 /* readButtonSelected.png in Resources */,
+				51D5E6E7182220A5005CA2F4 /* hideStoryButton@2x.png in Resources */,
 				5144EC6F1712277600F0B265 /* readButtonSelected@2x.png in Resources */,
 				5144EC701712277600F0B265 /* writeButtonSelected.png in Resources */,
 				5144EC711712277600F0B265 /* writeButtonSelected@2x.png in Resources */,
@@ -1585,6 +1592,7 @@
 				51B234E217154C43004241C1 /* shareButtonBlack@2x.png in Resources */,
 				51B234E317154C43004241C1 /* shareButtonWhite.png in Resources */,
 				51B234E417154C43004241C1 /* shareButtonWhite@2x.png in Resources */,
+				51D5E6E8182220A5005CA2F4 /* hideStoryButton.png in Resources */,
 				51B234FB171658BF004241C1 /* Google Android License.txt in Resources */,
 				51B234FC171658BF004241C1 /* Roboto-Black.ttf in Resources */,
 				51B234FD171658BF004241C1 /* Roboto-BlackItalic.ttf in Resources */,
