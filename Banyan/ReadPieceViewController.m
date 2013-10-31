@@ -548,8 +548,8 @@
         actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                   delegate:self
                                          cancelButtonTitle:@"Cancel"
-                                    destructiveButtonTitle:nil
-                                         otherButtonTitles:@"Add a piece", @"Edit piece", @"Delete piece", @"Share via Facebook", nil];
+                                    destructiveButtonTitle:self.piece.author.userId == [BNSharedUser currentUser].userId ? @"Delete piece" : nil
+                                         otherButtonTitles:@"Add a piece", @"Edit piece", @"Share via Facebook", nil];
     } else {
         actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                   delegate:self
@@ -596,7 +596,9 @@
         // DO NOTHING ON CANCEL
     }
     else if (buttonIndex == actionSheet.destructiveButtonIndex) {
-        // delete story
+        // Delete piece
+        // Do this after a delay so that the action sheet can be dismissed
+        [self performSelector:@selector(deletePiece:) withObject:self.piece afterDelay:0.5];
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Add a piece"]) {
         Piece *piece = [Piece newPieceDraftForStory:self.piece.story];
@@ -612,10 +614,6 @@
         //    addSceneViewController.delegate = self;
         [navController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
         [self presentViewController:navController animated:YES completion:nil];
-    }
-    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Delete piece"]) {
-        // Do this after a delay so that the action sheet can be dismissed
-        [self performSelector:@selector(deletePiece:) withObject:self.piece afterDelay:0.5];
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share via Facebook"]) {
         // Share
