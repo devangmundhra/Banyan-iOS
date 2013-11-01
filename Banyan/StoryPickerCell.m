@@ -52,6 +52,7 @@
         _imageView = [[UIImageView alloc] initWithFrame:self.bounds];
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
         _imageView.clipsToBounds = YES;
+        _imageView.layer.cornerRadius = self.layer.cornerRadius;
         [self addSubview:_imageView];
         
         _titleLabel = [[BNLabel alloc] initWithFrame:CGRectZero];

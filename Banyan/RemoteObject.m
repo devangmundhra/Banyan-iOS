@@ -126,13 +126,14 @@
         }
     }
     
-    //    [request setEntity:[NSEntityDescription entityForName:kBNStoryClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
-    //    request.predicate = [NSPredicate predicateWithFormat:@"(ANY pieces.remoteStatusNumber != %@)",
-    //                         [NSNumber numberWithInt:RemoteObjectStatusSync]];;
-    //    array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
-    //    for (Story *story in array) {
-    //        story.uploadStatusNumber = story.uploadStatusNumber;
-    //    }
+    // It is possible that a clone of a piece was created and then the app crashed. So the clone is hanging around. Delete the clone.
+    // TO-DO: Check if this can really occur. If so, check how to handle it for stories.
+    [request setEntity:[NSEntityDescription entityForName:kBNPieceClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
+    request.predicate = [NSPredicate predicateWithFormat:@"(story = nil)"];
+    array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+    for (Piece *piece in array) {
+        [piece remove];
+    }
     
     [Media validateAllMedias];
 }
