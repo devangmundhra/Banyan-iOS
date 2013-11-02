@@ -11,9 +11,7 @@
 #import "SingleStoryCell.h"
 #import "StoryPickerViewController.h"
 
-@interface StoryListTableViewController : CoreDataTableViewController <SingleStoryCellDelegate, StoryPickerViewControllerDelegate> {
-	NSIndexPath * indexOfVisibleBackView;
-}
+@interface StoryListTableViewController : CoreDataTableViewController <SingleStoryCellDelegate, StoryPickerViewControllerDelegate>
 
 -(void) addPieceToStory:(Story *)story;
 

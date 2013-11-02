@@ -131,7 +131,7 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
 {
     BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
     UIView *view = self.tableView.tableHeaderView;
-    
+    view.frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), 65);
     if (![BanyanAppDelegate loggedIn]) {
         actionButton.hidden = NO;
         [actionButton setTitle:@"Sign in" forState:UIControlStateNormal];

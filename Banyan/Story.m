@@ -42,8 +42,8 @@
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:[NSEntityDescription entityForName:kBNStoryClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@) AND (bnObjectId != NULL)",
-							  [NSNumber numberWithInt:RemoteObjectStatusSync]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@) AND (bnObjectId != NULL)"/* AND (ALL pieces.remoteStatusNumber = %@)"*/,
+							  [NSNumber numberWithInt:RemoteObjectStatusSync]/*, [NSNumber numberWithInt:RemoteObjectStatusSync]*/];
     [request setPredicate:predicate];
     
     NSError *error = nil;

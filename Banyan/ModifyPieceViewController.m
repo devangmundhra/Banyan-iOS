@@ -180,7 +180,8 @@
     self.storyTitleButton = [[UIButton alloc] initWithFrame:frame];
     self.storyTitleButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:16];
     [self.storyTitleButton setAttributedTitle:[[NSAttributedString alloc] initWithString:self.piece.story.title
-                                                                              attributes:@{NSUnderlineStyleAttributeName: @1,
+                                                                              attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
+                                                                                           NSUnderlineStyleAttributeName: @1,
                                                                                            NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}]
                                      forState:UIControlStateNormal];
     self.storyTitleButton.titleLabel.textAlignment = NSTextAlignmentLeft;

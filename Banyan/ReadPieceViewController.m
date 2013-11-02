@@ -173,7 +173,8 @@
         titleButton.showsTouchWhenHighlighted = YES;
         [titleButton addTarget:self action:@selector(editStoryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
         titleButton.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:self.piece.story.title
-                                                                                attributes:@{NSUnderlineStyleAttributeName: @1}];
+                                                                                attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
+                                                                                             NSUnderlineStyleAttributeName: @1}];
     }
     [self.storyInfoView insertSubview:titleButton atIndex:0];
     

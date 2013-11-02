@@ -73,6 +73,8 @@ typedef enum {
                                                                         managedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext
                                                                           sectionNameKeyPath:nil
                                                                                    cacheName:nil]; // Adding cache causes issues in filtering after changing predicates
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(canView == YES) OR (canContribute == YES)"];
+    self.fetchedResultsController.fetchRequest.predicate = predicate;
     self.fetchedResultsController.delegate = self; // If nil, explicitly call perform fetch (via Notification) to update list
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
@@ -82,20 +84,28 @@ typedef enum {
     
     [self.tableView setRowHeight:TABLE_ROW_HEIGHT];
     
-    self.filterStoriesSegmentedControl = [[UISegmentedControl alloc]
-                                          initWithItems:[NSArray arrayWithObjects:@"Following", @"Popular", nil]];
-    [self.filterStoriesSegmentedControl addTarget:self
-                                           action:@selector(filterStories:)
-                                 forControlEvents:UIControlEventValueChanged];
-    self.filterStoriesSegmentedControl.tintColor = BANYAN_GREEN_COLOR;
-    self.filterStoriesSegmentedControl.selectedSegmentIndex = FilterStoriesSegmentIndexPopular;
-    [self.filterStoriesSegmentedControl setWidth:100 forSegmentAtIndex:FilterStoriesSegmentIndexFollowing];
-    [self.filterStoriesSegmentedControl setWidth:100 forSegmentAtIndex:FilterStoriesSegmentIndexPopular];
-    [self.filterStoriesSegmentedControl setContentOffset:CGSizeMake(5, 0) forSegmentAtIndex:FilterStoriesSegmentIndexFollowing];
-    [self.filterStoriesSegmentedControl setContentOffset:CGSizeMake(5, 0) forSegmentAtIndex:FilterStoriesSegmentIndexPopular];
-    self.filterStoriesSegmentedControl.apportionsSegmentWidthsByContent = YES;
+//    self.filterStoriesSegmentedControl = [[UISegmentedControl alloc]
+//                                          initWithItems:[NSArray arrayWithObjects:@"Following", @"Popular", nil]];
+//    [self.filterStoriesSegmentedControl addTarget:self
+//                                           action:@selector(filterStories:)
+//                                 forControlEvents:UIControlEventValueChanged];
+//    self.filterStoriesSegmentedControl.tintColor = BANYAN_GREEN_COLOR;
+//    self.filterStoriesSegmentedControl.selectedSegmentIndex = FilterStoriesSegmentIndexPopular;
+//    [self.filterStoriesSegmentedControl setWidth:100 forSegmentAtIndex:FilterStoriesSegmentIndexFollowing];
+//    [self.filterStoriesSegmentedControl setWidth:100 forSegmentAtIndex:FilterStoriesSegmentIndexPopular];
+//    [self.filterStoriesSegmentedControl setContentOffset:CGSizeMake(5, 0) forSegmentAtIndex:FilterStoriesSegmentIndexFollowing];
+//    [self.filterStoriesSegmentedControl setContentOffset:CGSizeMake(5, 0) forSegmentAtIndex:FilterStoriesSegmentIndexPopular];
+//    self.filterStoriesSegmentedControl.apportionsSegmentWidthsByContent = YES;
+//    
+//    [self.navigationItem setTitleView:self.filterStoriesSegmentedControl];
     
-    [self.navigationItem setTitleView:self.filterStoriesSegmentedControl];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, CGRectGetHeight(self.navigationController.navigationBar.frame))];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.backgroundColor = BANYAN_CLEAR_COLOR;
+    titleLabel.attributedText = [[NSAttributedString alloc] initWithString:@"Banyan"
+                                                                            attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:20]}];
+    
+    self.navigationItem.titleView = titleLabel;
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                                            target:self action:@selector(addStoryOrPieceButtonPressed:)];
@@ -319,38 +329,39 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 // Called by both data source updated notification and by clicking on the filter segmented control
 - (IBAction)filterStories:(id)sender
 {
-    [self filterStoriesForTableDataSource];
-}
-
-- (void) filterStoriesForTableDataSource
-{
     [self.refreshControl endRefreshing];
-    
-    NSPredicate *predicate = nil;
-    NSMutableArray *arrayOfUserIdsBeingFollowed = nil;
-    
-    switch (self.filterStoriesSegmentedControl.selectedSegmentIndex) {
-        case FilterStoriesSegmentIndexPopular:
-            predicate = [NSPredicate predicateWithFormat:@"(canView == YES) OR (canContribute == YES)"];
-            break;
-        case FilterStoriesSegmentIndexFollowing:
-            arrayOfUserIdsBeingFollowed = [NSMutableArray array];
-            for (NSMutableDictionary *user in [[NSUserDefaults standardUserDefaults]
-                                               arrayForKey:BNUserDefaultsBanyanUsersFacebookFriends]) {
-                if ([[user objectForKey:USER_BEING_FOLLOWED] boolValue]) {
-                    [arrayOfUserIdsBeingFollowed addObject:[user objectForKey:@"id"]];
-                }
-            }
-            // Create a predicate where author in arrayOfUserIdsBeingFollowed
-            predicate = [NSPredicate predicateWithFormat:@"((canView == YES) OR (canContribute == YES)) AND ((author.userId IN %@))", arrayOfUserIdsBeingFollowed];
-            break;
-        default:
-            break;
-    }
-    
-    self.fetchedResultsController.fetchRequest.predicate = predicate;
     [self performFetch];
 }
+
+//- (void) filterStoriesForTableDataSource
+//{
+//    [self.refreshControl endRefreshing];
+//    
+//    NSPredicate *predicate = nil;
+//    NSMutableArray *arrayOfUserIdsBeingFollowed = nil;
+//    
+//    switch (self.filterStoriesSegmentedControl.selectedSegmentIndex) {
+//        case FilterStoriesSegmentIndexPopular:
+//            predicate = [NSPredicate predicateWithFormat:@"(canView == YES) OR (canContribute == YES)"];
+//            break;
+//        case FilterStoriesSegmentIndexFollowing:
+//            arrayOfUserIdsBeingFollowed = [NSMutableArray array];
+//            for (NSMutableDictionary *user in [[NSUserDefaults standardUserDefaults]
+//                                               arrayForKey:BNUserDefaultsBanyanUsersFacebookFriends]) {
+//                if ([[user objectForKey:USER_BEING_FOLLOWED] boolValue]) {
+//                    [arrayOfUserIdsBeingFollowed addObject:[user objectForKey:@"id"]];
+//                }
+//            }
+//            // Create a predicate where author in arrayOfUserIdsBeingFollowed
+//            predicate = [NSPredicate predicateWithFormat:@"((canView == YES) OR (canContribute == YES)) AND ((author.userId IN %@))", arrayOfUserIdsBeingFollowed];
+//            break;
+//        default:
+//            break;
+//    }
+//    
+//    self.fetchedResultsController.fetchRequest.predicate = predicate;
+//    [self performFetch];
+//}
 
 -(void)foregroundRefresh:(NSNotification *)notification
 {
