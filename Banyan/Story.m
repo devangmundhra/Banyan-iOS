@@ -250,6 +250,10 @@
 #pragma mark share
 - (void) shareOnFacebook
 {
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Sharing not enabled yet" message:@"Oops.. sharing of stories is not enabled yet."
+                                                       delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alertView show];
+    
     NSArray *contributorsList = [self storyContributors];
     
     NSMutableArray *fbIds = [NSMutableArray arrayWithCapacity:1];

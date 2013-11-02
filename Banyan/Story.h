@@ -32,7 +32,6 @@
 @property (nonatomic, retain) NSString * primitiveSectionIdentifier;
 @property (nonatomic) BOOL newPiecesToView;
 
-+ (NSArray *)allStories;
 + (NSArray *)storiesFailedToBeUploaded;
 + (NSArray *)syncedStories;
 + (NSArray *)unsavedStories;

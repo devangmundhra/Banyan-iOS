@@ -344,7 +344,7 @@ static BOOL _loggedIn;
         // Delete Story Button
         UIButton *deleteStoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
         deleteStoryButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
-        if (self.story.author.userId != [BNSharedUser currentUser].userId) {
+        if (self.story.author.userId == [BNSharedUser currentUser].userId) {
             [deleteStoryButton setImage:_deleteStoryImage forState:UIControlStateNormal];
             [deleteStoryButton addTarget:self action:@selector(deleteStoryAlert:) forControlEvents:UIControlEventTouchUpInside];
         } else {
