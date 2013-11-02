@@ -97,12 +97,14 @@
         [self.galleryButton setTitle:@"Gallery" forState:UIControlStateNormal];
         [self.galleryButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
         [self.galleryButton setBackgroundColor:BANYAN_DARKGRAY_COLOR];
+        self.galleryButton.showsTouchWhenHighlighted = YES;
         [self addSubview:self.galleryButton];
     } else {
         self.galleryButton = [[UIButton alloc] initWithFrame:frame];
         [self.galleryButton setBackgroundColor:BANYAN_GREEN_COLOR];
         [self.galleryButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
         [self.galleryButton setTitle:@"Photos" forState:UIControlStateNormal];
+        self.galleryButton.showsTouchWhenHighlighted = YES;
         [self addSubview:self.galleryButton];
     }
     

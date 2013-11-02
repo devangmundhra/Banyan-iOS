@@ -18,6 +18,7 @@
 #import "CEFlipAnimationController.h"
 #import "BNHorizontalSwipeInteractionController.h"
 #import "ModifyPieceViewController.h"
+#import "User.h"
 
 typedef enum {
     FilterStoriesSegmentIndexFollowing = 0,
@@ -291,8 +292,19 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSIndexPath *myIndexPath = [self.tableView indexPathForCell:cell];
     Story *story = [self.fetchedResultsController objectAtIndexPath:myIndexPath];
-//    [self tableView:self.tableView commitEditingStyle:UITableViewCellEditingStyleDelete forRowAtIndexPath:myIndexPath];
-    [story remove];
+    BNSharedUser *currentUser = [BNSharedUser currentUser];
+
+    if (currentUser) {
+        [[AFBanyanAPIClient sharedClient] putPath:currentUser.resourceUri
+                                       parameters:@{@"stories_hidden":@[story.resourceUri]}
+                                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                              NSLog(@"Story successfully hidden");
+                                              [story remove];
+                                          }
+                                          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                              NSLog(@"An error occurred: %@", error.localizedRecoverySuggestion);
+                                          }];
+    }
 }
 
 #pragma mark Data Source Loading / Reloading Methods
