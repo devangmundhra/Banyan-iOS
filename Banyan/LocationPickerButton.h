@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <FacebookSDK/FacebookSDK.h>
+#import "GooglePlacesObject.h"
 
 @class LocationPickerButton;
 
@@ -20,8 +20,8 @@
 
 @interface LocationPickerButton : UIView
 @property (strong, nonatomic) id<LocationPickerButtonDelegate> delegate;
+@property (nonatomic, strong) BNDuckTypedObject<GooglePlacesObject>* location;
 
-- (void)locationPickerLocationUpdatedWithLocation:(id <FBGraphPlace>)newLocation;
 - (void)locationPickerLocationEnabled:(BOOL)enable;
 - (void)setLocationPickerTitle:(NSString *)locationString;
 - (void)setEnabled:(BOOL)enable;

@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
+#import "BNDuckTypedObject.h"
 
 #define	kAccounting	@"accounting"
 #define	kAirport	@"airport"
@@ -107,30 +108,20 @@
 #define	kVeterinaryCare	@"veterinary_care"
 #define	kZoo	@"zoo"
 
-#define kGOOGLE_API_KEY @"AIzaSyBwOBP068EO-Ubi0Qzu8uwFnZZHaIVwNyg"
+typedef void (^GooglePlacesQueryCompletionBlock)(NSArray *places);
 
-@interface GooglePlacesObject : NSObject
-{
-    NSString    *placesId;
-    NSString    *reference;
-    NSString    *name;
-    NSString    *icon;
-    NSString    *rating;
-    NSString    *vicinity;
-    NSArray     *type;
-    NSString    *url;
-    NSArray     *addressComponents;
-    NSString    *formattedAddress;
-    NSString    *formattedPhoneNumber;
-    NSString    *website;
-    NSString    *internationalPhoneNumber;
-    NSString    *searchTerms;
-    CLLocationCoordinate2D coordinate;
+@protocol GoogleLocationObject <BNDuckTypedObject>
 
-    NSString    *distanceInFeetString;
-    NSString    *distanceInMilesString;
-    
-}
+@property (strong, nonatomic) NSNumber *lat;
+@property (strong, nonatomic) NSNumber *lng;
+
+@end
+
+@protocol GoogleGeoObject <BNDuckTypedObject>
+@property (nonatomic, strong) id<GoogleLocationObject> location;
+@end
+
+@protocol GooglePlacesObject <BNDuckTypedObject>
 
 @property (nonatomic, strong) NSString    *placesId;
 @property (nonatomic, strong) NSString    *reference;
@@ -138,39 +129,23 @@
 @property (nonatomic, strong) NSString    *icon;
 @property (nonatomic, strong) NSString    *rating;
 @property (nonatomic, strong) NSString    *vicinity;
-@property (nonatomic, strong) NSArray     *type;
+@property (nonatomic, strong) NSArray     *types;
 @property (nonatomic, strong) NSString    *url;
-@property (nonatomic, strong) NSArray     *addressComponents;
-@property (nonatomic, strong) NSString    *formattedAddress;
-@property (nonatomic, strong) NSString    *formattedPhoneNumber;
+@property (nonatomic, strong) NSArray     *address_components;
+@property (nonatomic, strong) NSString    *formatted_address;
+@property (nonatomic, strong) NSString    *formatted_phone_number;
 @property (nonatomic, strong) NSString    *website;
-@property (nonatomic, strong) NSString    *internationalPhoneNumber;
-@property (nonatomic, strong) NSString      *searchTerms;
-@property (nonatomic, assign) CLLocationCoordinate2D    coordinate;
+@property (nonatomic, strong) NSString    *international_phone_number;
+@property (nonatomic, assign) id<GoogleGeoObject> geometry;
 
-@property (nonatomic, strong) NSString    *distanceInFeetString;
-@property (nonatomic, strong) NSString    *distanceInMilesString;
+@end
 
-- (id)initWithJsonResultDict:(NSDictionary *)jsonResultDict andUserCoordinates:(CLLocationCoordinate2D)userCoords;
-- (id)initWithJsonResultDict:(NSDictionary *)jsonResultDict searchTerms:(NSString *)terms andUserCoordinates:(CLLocationCoordinate2D)userCoords;
+@interface GooglePlacesObject : BNDuckTypedObject <GooglePlacesObject>
 
-- (id)initWithName:(NSString *)name
-          latitude:(double)lt
-         longitude:(double)lg
-         placeIcon:(NSString *)icn
-            rating:(NSString *)rate
-          vicinity:(NSString *)vic
-              type:(NSString *)typ
-         reference:(NSString *)ref
-               url:(NSString *)www
- addressComponents:(NSString *)addComp
-  formattedAddress:(NSArray *)fAddrss
-formattedPhoneNumber:(NSString *)fPhone
-           website:(NSString *)web
-internationalPhone:(NSString *)intPhone
-       searchTerms:(NSString *)search
-    distanceInFeet:(NSString *)distanceFeet
-   distanceInMiles:(NSString *)distanceMiles;
 - (NSString *)getFormattedName;
 
++ (void) getNearbyLocations:(CLLocation *)location withCompletion:(GooglePlacesQueryCompletionBlock)completionBlock;
++ (void) getGoogleObjectsWithQuery:(NSString *)query
+                  andCoordinates:(CLLocationCoordinate2D)coords
+                  withCompletion:(GooglePlacesQueryCompletionBlock)completionBlock;
 @end

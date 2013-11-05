@@ -12,14 +12,14 @@
 
 @property (nonatomic, strong) UIButton *nameButton;
 @property (nonatomic, strong) UIButton *onOffButton;
-@property (nonatomic, strong) id <FBGraphPlace> location;
 
 - (void)setup;
 
 @end
 
 @implementation LocationPickerButton
-@synthesize nameButton, delegate, location, onOffButton;
+@synthesize nameButton, delegate, onOffButton;
+@synthesize location = _location;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -58,12 +58,9 @@
     self.onOffButton = [UIButton buttonWithType:UIButtonTypeCustom];
     onOffButton.frame = CGRectMake(bounds.origin.x, bounds.origin.y, 35.0f, bounds.size.height);
     [onOffButton.titleLabel setFont:[UIFont boldSystemFontOfSize:15.0f]];
-    //    [onOffButton setBackgroundImage:[[UIImage imageNamed:@"SidebarToolbarButton"] stretchableImageWithLeftCapWidth:5.0 topCapHeight:0.0] forState:UIControlStateNormal];
-    //    [onOffButton setBackgroundImage:[[UIImage imageNamed:@"SidebarToolbarButtonHighlighted"] stretchableImageWithLeftCapWidth:5.0 topCapHeight:0.0] forState:UIControlStateHighlighted];
     [onOffButton setTitle:@"+" forState:UIControlStateNormal];
     [onOffButton addTarget:self action:@selector(handleOnOffButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     [onOffButton setBackgroundColor:BANYAN_GREEN_COLOR];
-    //    [nameButton setImage:[UIImage imageNamed:@"sidebar_camera"] forState:UIControlStateNormal];
     [onOffButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 12.0f, 0.0f, 10.0f)];
     [onOffButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, 8.0f, 0.0f, 0.0f)];
     [onOffButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
@@ -78,12 +75,9 @@
     nameButton.frame = CGRectMake(CGRectGetMaxX(onOffButton.frame), bounds.origin.y, bounds.size.width - CGRectGetWidth(onOffButton.frame), bounds.size.height);
     [nameButton.titleLabel setFont:[UIFont fontWithName:@"Roboto-Condensed" size:15]];
     nameButton.titleLabel.minimumScaleFactor = 0.8;
-//    [nameButton setBackgroundImage:[[UIImage imageNamed:@"SidebarToolbarButton"] stretchableImageWithLeftCapWidth:5.0 topCapHeight:0.0] forState:UIControlStateNormal];
-//    [nameButton setBackgroundImage:[[UIImage imageNamed:@"SidebarToolbarButtonHighlighted"] stretchableImageWithLeftCapWidth:5.0 topCapHeight:0.0] forState:UIControlStateHighlighted];
     [nameButton setTitle:@"Add Location" forState:UIControlStateNormal];
     [nameButton addTarget:self action:@selector(handleNameButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     [nameButton setBackgroundColor:BANYAN_LIGHT_GREEN_COLOR];
-//    [nameButton setImage:[UIImage imageNamed:@"sidebar_camera"] forState:UIControlStateNormal];
     [nameButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0f, 12.0f, 0.0f, 10.0f)];
     [nameButton setImageEdgeInsets:UIEdgeInsetsMake(0.0f, 8.0f, 0.0f, 0.0f)];
     [nameButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
@@ -92,6 +86,19 @@
     nameButton.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
     [self addSubview:nameButton];
+}
+
+#pragma mark-
+#pragma mark getters/setters
+- (BNDuckTypedObject<GooglePlacesObject>*)location
+{
+    return _location;
+}
+
+- (void)setLocation:(BNDuckTypedObject<GooglePlacesObject>*)location
+{
+    _location = location;
+    [nameButton setTitle:location.name forState:UIControlStateNormal];
 }
 
 #pragma mark -
@@ -107,12 +114,6 @@
     if (delegate) {
         [delegate locationPickerButtonToggleLocationEnable:self];
     }
-}
-
-- (void)locationPickerLocationUpdatedWithLocation:(id <FBGraphPlace>)newLocation
-{
-    location = newLocation;
-    [nameButton setTitle:location.name forState:UIControlStateNormal];
 }
 
 - (void)locationPickerLocationEnabled:(BOOL)enable

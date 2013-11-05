@@ -11,6 +11,7 @@
 #import "Media.h"
 #import "Story.h"
 #import "Piece.h"
+#import "GooglePlacesObject.h"
 
 @implementation RemoteObject
 
@@ -142,7 +143,7 @@
 #pragma mark RestKit dynamic mapping
 - (BOOL)validateLocation:(id *)ioValue error:(NSError **)outError
 {
-    *ioValue = [FBGraphObject graphObjectWrappingDictionary:*ioValue];
+    *ioValue = [BNDuckTypedObject duckTypedObjectWrappingDictionary:*ioValue];
     return YES;
 }
 

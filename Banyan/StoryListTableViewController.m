@@ -20,6 +20,8 @@
 #import "ModifyPieceViewController.h"
 #import "User.h"
 
+static NSString *CellIdentifier = @"SingleStoryCell";
+
 typedef enum {
     FilterStoriesSegmentIndexFollowing = 0,
     FilterStoriesSegmentIndexPopular
@@ -53,7 +55,7 @@ typedef enum {
     
     self.title = @"Stories";
     
-    [self.tableView registerClass:[SingleStoryCell class] forCellReuseIdentifier:@"SingleStoryCell"];
+    [self.tableView registerClass:[SingleStoryCell class] forCellReuseIdentifier:CellIdentifier];
     [self.view setBackgroundColor:BANYAN_LIGHTGRAY_COLOR];
     [self.tableView setSeparatorColor:BANYAN_LIGHTGRAY_COLOR];
     self.tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
@@ -161,7 +163,6 @@ typedef enum {
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"SingleStoryCell";
     SingleStoryCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     if (cell == nil) {
         cell = [[SingleStoryCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];

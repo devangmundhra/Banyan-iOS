@@ -8,7 +8,19 @@
 
 #import "LocationPickerTableViewController.h"
 
+static NSString *CellIdentifier = @"LocationCell";
+
+@interface LocationPickerTableViewController (CLLocationManagerDelegate) <CLLocationManagerDelegate>
+- (void) startUpdatingLocation;
+- (void) stopUpdatingLocation:(NSString *)state;
+@end
+
 @interface LocationPickerTableViewController ()
+@property (nonatomic, strong) NSMutableArray    *locationsFilterResults;
+@property (nonatomic, strong) NSMutableArray    *locations;
+@property (nonatomic, strong) CLLocationManager *locationManager;
+@property (nonatomic, retain) CLLocation *bestEffortAtLocation;
+
 //@property (strong, nonatomic) IBOutlet UISearchDisplayController *searchDisplayController;
 @property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
 @end
@@ -19,6 +31,8 @@
 //@synthesize searchDisplayController;
 @synthesize locations = _locations;
 @synthesize currentLocation = _currentLocation;
+@synthesize locationManager = _locationManager;
+@synthesize bestEffortAtLocation = _bestEffortAtLocation;
 
 - (void) setCurrentLocation:(CLLocation *)currentLocation
 {
@@ -31,7 +45,10 @@
     if (self) {
         // Custom initialization
         self.title = @"Select location";
-
+        self.locationManager = [[CLLocationManager alloc] init];
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;//kCLLocationAccuracyBest; // kCLLocationAccuracyNearestTenMeters;
+        [self startUpdatingLocation];
+        NSLog(@"%s Initialized shared location manager", __PRETTY_FUNCTION__);
     }
     return self;
 }
@@ -41,9 +58,11 @@
     [super viewDidLoad];
     
     UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                                   target:self.delegate
-                                                                                   action:@selector(locationPickerTableViewControllerDidCancel)];
+                                                                                   target:self
+                                                                                   action:@selector(cancelButtonPressed:)];
     [self.navigationItem setLeftBarButtonItem:newBackButton];
+    [self.tableView registerClass:[GooglePlacesCell class] forCellReuseIdentifier:CellIdentifier];
+
     
     // Search bar
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
@@ -66,6 +85,7 @@
     // Uncomment the following line to preserve selection between presentations.
     self.clearsSelectionOnViewWillAppear = NO;
     
+    [self.locationManager startUpdatingLocation];
 }
 
 - (void)didReceiveMemoryWarning
@@ -88,69 +108,51 @@
     return [self.locationsFilterResults count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-	static NSString *CellIdentifier = @"LocationCell";
-	
-	// Dequeue or create a cell of the appropriate type.
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    GooglePlacesCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     if (cell == nil) {
-        cell                = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell = [[GooglePlacesCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
     // Get the object to display and set the value in the cell.
     //UPDATED from locations to locationFilter results
-    GooglePlacesObject *place                       = [self.locationsFilterResults objectAtIndex:[indexPath row]];
-    
-    cell.textLabel.text                         = place.name;
-    cell.textLabel.adjustsFontSizeToFitWidth    = YES;
-	cell.textLabel.font                         = [UIFont systemFontOfSize:12.0];
-	cell.textLabel.minimumScaleFactor           = 0.9;
-	cell.textLabel.numberOfLines                = 4;
-	cell.textLabel.lineBreakMode                = NSLineBreakByWordWrapping;
-    cell.textLabel.textColor                    = [UIColor blackColor];
-    cell.textLabel.textAlignment                = NSTextAlignmentLeft;
-    
-    //You can use place.distanceInMilesString or place.distanceInFeetString.
-    //You can add logic that if distanceInMilesString starts with a 0. then use Feet otherwise use Miles.
-    cell.detailTextLabel.text                   = [NSString stringWithFormat:@"%@ - Distance %@ miles", place.vicinity, place.distanceInMilesString];
-    cell.detailTextLabel.textColor              = [UIColor darkGrayColor];
-    cell.detailTextLabel.font                   = [UIFont systemFontOfSize:10.0];
+    NSDictionary *dict                          = [self.locationsFilterResults objectAtIndex:[indexPath row]];
+    GooglePlacesObject<GooglePlacesObject>* place = (GooglePlacesObject<GooglePlacesObject>*)[BNDuckTypedObject duckTypedObjectWrappingDictionary:dict];
+    [cell setLocation:place andCurrentLocation:self.currentLocation];
     
     return cell;
-}
-
-- (void)locationManagerDidFinishLoadingWithGooglePlacesObjects:(NSMutableArray *)objects
-{
-    
-    if ([objects count] == 0) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No matches found near this location"
-                                                        message:@"Try another place name or address"
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles: nil];
-        [alert show];
-    } else {
-        self.locations = objects;
-        //UPDATED locationFilterResults for filtering later on
-        self.locationsFilterResults = objects;
-        [self.tableView reloadData];
-    }
 }
 
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self.delegate locationPickerTableViewControllerPickedLocation:[self.locationsFilterResults objectAtIndex:[indexPath row]]];
+    [self dismissViewControllerAnimated:YES completion:^{
+        NSDictionary *dict = [self.locationsFilterResults objectAtIndex:[indexPath row]];
+        [self.delegate locationPickerTableViewControllerPickedLocation:(BNDuckTypedObject<GooglePlacesObject>*)([BNDuckTypedObject duckTypedObjectWrappingDictionary:dict])];
+    }];
 }
 
 - (void)updateSearchString:(NSString*)aSearchString
 {
-    [self.delegate getGoogleObjectsWithQuery:aSearchString
-                              andCoordinates:CLLocationCoordinate2DMake(self.currentLocation.coordinate.latitude, self.currentLocation.coordinate.longitude)];
-    
-    [self.tableView reloadData];
+    [GooglePlacesObject getGoogleObjectsWithQuery:aSearchString
+                                   andCoordinates:CLLocationCoordinate2DMake(self.currentLocation.coordinate.latitude, self.currentLocation.coordinate.longitude)
+                                   withCompletion:^(NSArray *places) {
+                                       if ([places count] == 0) {
+                                           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No matches found near this location"
+                                                                                           message:@"Try another place name or address"
+                                                                                          delegate:nil
+                                                                                 cancelButtonTitle:@"OK"
+                                                                                 otherButtonTitles: nil];
+                                           [alert show];
+                                       } else {
+                                           self.locations = [NSMutableArray arrayWithArray:places];
+                                           //UPDATED locationFilterResults for filtering later on
+                                           self.locationsFilterResults = [NSMutableArray arrayWithArray:places];
+                                           [self.tableView reloadData];
+                                       }
+                                   }];
 }
 
 //Create an array by applying the search string
@@ -160,8 +162,10 @@
 	
 	self.locationsFilterResults = [[NSMutableArray alloc] init];
     
-	for (GooglePlacesObject *location in self.locations)
+	for (NSMutableDictionary *locationDict in self.locations)
 	{
+        BNDuckTypedObject<GooglePlacesObject>*location = (BNDuckTypedObject<GooglePlacesObject>*)[BNDuckTypedObject duckTypedObjectWrappingDictionary:locationDict];
+        
 		if ([matchString length] == 0)
 		{
 			[self.locationsFilterResults addObject:location];
@@ -218,4 +222,92 @@
     [self buildSearchArrayFrom:searchText];
 }
 
+#pragma mark
+#pragma target actions
+- (IBAction)cancelButtonPressed:(id)sender
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+@end
+
+@implementation LocationPickerTableViewController (CLLocationManagerDelegate)
+- (void) startUpdatingLocation
+{
+    self.locationManager.delegate = self;
+    [self.locationManager startUpdatingLocation];
+}
+
+- (void) stopUpdatingLocation:(NSString *)state
+{
+    [self.locationManager stopUpdatingLocation];
+    self.locationManager.delegate = nil;
+}
+
+/*
+ * We want to get and store a location measurement that meets the desired accuracy. For this example, we are
+ *      going to use horizontal accuracy as the deciding factor. In other cases, you may wish to use vertical
+ *      accuracy, or both together.
+ */
+- (void)locationManager:(CLLocationManager *)manager
+    didUpdateToLocation:(CLLocation *)newLocation
+           fromLocation:(CLLocation *)oldLocation
+{
+    // test the age of the location measurement to determine if the measurement is cached
+    // in most cases you will not want to rely on cached measurements
+    NSTimeInterval locationAge = -[newLocation.timestamp timeIntervalSinceNow];
+    if (locationAge > 5.0) return;
+    // test that the horizontal accuracy does not indicate an invalid measurement
+    if (newLocation.horizontalAccuracy < 0) return;
+    // test the measurement to see if it is more accurate than the previous measurement
+    if (self.bestEffortAtLocation == nil || self.bestEffortAtLocation.horizontalAccuracy > newLocation.horizontalAccuracy) {
+        // store the location as the "best effort"
+        self.bestEffortAtLocation = newLocation;
+        
+        // test the measurement to see if it meets the desired accuracy
+        // IMPORTANT!!! kCLLocationAccuracyBest should not be used for comparison with location coordinate or altitidue
+        // accuracy because it is a negative value. Instead, compare against some predetermined "real" measure of
+        // acceptable accuracy, or depend on the timeout to stop updating. This sample depends on a 50m acceptable accuracy
+        //
+        if (newLocation.horizontalAccuracy <= 50) {
+            // IMPORTANT!!! Minimize power usage by stopping the location manager as soon as possible.
+            [GooglePlacesObject getNearbyLocations:newLocation withCompletion:^(NSArray *places) {
+                if ([places count] == 0) {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No matches found near this location"
+                                                                    message:@"Try another place name or address"
+                                                                   delegate:nil
+                                                          cancelButtonTitle:@"OK"
+                                                          otherButtonTitles: nil];
+                    [alert show];
+                } else {
+                    self.locations = [NSMutableArray arrayWithArray:places];
+                    //UPDATED locationFilterResults for filtering later on
+                    self.locationsFilterResults = [NSMutableArray arrayWithArray:places];
+                    [self.tableView reloadData];
+                }
+            }];
+            self.currentLocation = newLocation;
+            [self stopUpdatingLocation:NSLocalizedString(@"Acquired Location", @"Acquired Location")];
+        }
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
+    // The location "unknown" error simply means the manager is currently unable to get the location.
+    // We can ignore this error for the scenario of getting a single location fix, because we already have a
+    // timeout that will stop the location manager to save power.
+    if ([error code] != kCLErrorLocationUnknown) {
+        switch ([error code]) {
+            case kCLErrorDenied:
+                [self stopUpdatingLocation:NSLocalizedString(@"Location Services Disabled by User", @"Location Services Disabled by User")];
+                break;
+            case kCLErrorNetwork:
+                [self stopUpdatingLocation:NSLocalizedString(@"Network Unavailable", @"Network Unavailable")];
+                break;
+            default:
+                [self stopUpdatingLocation:NSLocalizedString(@"Error finding location", @"Error finding location")];
+                break;
+        }
+    }
+}
 @end

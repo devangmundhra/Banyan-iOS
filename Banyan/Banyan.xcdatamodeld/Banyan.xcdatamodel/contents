@@ -40,7 +40,7 @@
         <attribute name="isLocationEnabled" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="lastSynced" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="likedByCurUser" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="location" optional="YES" attributeType="Transformable" valueTransformerName="FBGraphObjectToDataTransformer" syncable="YES"/>
+        <attribute name="location" optional="YES" attributeType="Transformable" valueTransformerName="GooglePlacesObjectToDataTransformer" syncable="YES"/>
         <attribute name="numberOfLikes" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="numberOfViews" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="permaLink" optional="YES" attributeType="String" syncable="YES"/>

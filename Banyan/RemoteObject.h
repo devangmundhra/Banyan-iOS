@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
-#import <FacebookSDK/FacebookSDK.h>
+#import "GooglePlacesObject.h"
 
 typedef enum {
     RemoteObjectStatusLocal,       // Only local version
@@ -26,7 +26,7 @@ typedef enum {
 @property (nonatomic, retain) NSDate * createdAt;
 @property (nonatomic) BOOL isLocationEnabled;
 @property (nonatomic, retain) NSDate * lastSynced;
-@property (nonatomic, retain) FBGraphObject<FBGraphPlace> * location;
+@property (nonatomic, retain) BNDuckTypedObject<GooglePlacesObject> * location;
 @property (nonatomic, retain) NSNumber * remoteStatusNumber;
 @property (nonatomic, retain) NSNumber * primitiveRemoteStatusNumber;
 @property (nonatomic, retain) NSDate * updatedAt;

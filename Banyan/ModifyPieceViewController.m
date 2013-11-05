@@ -18,6 +18,16 @@
 #import "AVCamViewController.h"
 #import "UIPlaceHolderTextView.h"
 #import "BNTextField.h"
+#import "LocationPickerTableViewController.h"
+#import "LocationPickerButton.h"
+
+@interface ModifyPieceViewController (LocationPickerButtonDelegate) <LocationPickerButtonDelegate>
+
+@end
+
+@interface ModifyPieceViewController (LocationPickerTableViewControllerDelegate) <LocationPickerTableViewControllerDelegate>
+
+@end
 
 @interface ModifyPieceViewController (AddPhotoButtonActions)
 - (IBAction)addPhotoButtonTappedForCamera:(id)sender;
@@ -45,8 +55,6 @@
 @property (strong, nonatomic) BNAudioRecorder *audioRecorder;
 @property (strong, nonatomic) IBOutlet UIView *audioPickerView;
 
-@property (strong, nonatomic) BNFBLocationManager *locationManager;
-
 @property (nonatomic) ModifyPieceViewControllerEditMode editMode;
 
 @property (strong, nonatomic) Piece *backupPiece_;
@@ -69,9 +77,7 @@
 @synthesize doneButton = _doneButton;
 @synthesize piece = _piece;
 @synthesize delegate = _delegate;
-@synthesize editMode = _editMode;
-@synthesize locationManager = _locationManager;
-@synthesize pieceCaptionView = _pieceCaptionView;
+@synthesize editMode = _editMode;@synthesize pieceCaptionView = _pieceCaptionView;
 @synthesize addLocationButton, addPhotoButton;
 @synthesize backupPiece_ = _backupPiece_;
 @synthesize audioPickerView = _audioPickerView;
@@ -124,14 +130,6 @@
 {
     [super viewWillDisappear:animated];
     [self unregisterForKeyboardNotifications];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && self.piece.story.isLocationEnabled) {
-        [self.locationManager stopUpdatingLocation:self.piece.location.name];
-    }
 }
 
 - (void)viewDidLoad
@@ -271,25 +269,13 @@
     frame.size.height = 44.0f;
     self.addLocationButton = [[LocationPickerButton alloc] initWithFrame:frame];
     [self.addLocationButton.layer setCornerRadius:CORNER_RADIUS];
+    if ([self.piece.location.name length]) {
+        [self.addLocationButton locationPickerLocationEnabled:YES];
+        [self.addLocationButton setLocationPickerTitle:self.piece.location.name];
+    }
+    [self.addLocationButton setBackgroundColor:[BANYAN_WHITE_COLOR colorWithAlphaComponent:SUBVIEW_OPACITY]];
+    self.addLocationButton.delegate = self;
     [self.scrollView addSubview:self.addLocationButton];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        self.locationManager = [[BNFBLocationManager alloc] init];
-        self.locationManager.delegate = self;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            // If story has location enabled, only then try to get the location
-            if (self.piece.story.isLocationEnabled) {
-                [self.locationManager beginUpdatingLocation];
-                self.locationManager.location = self.piece.location;
-            }
-            
-            if ([self.piece.location.name length]) {
-                [self.addLocationButton locationPickerLocationEnabled:YES];
-                [self.addLocationButton setLocationPickerTitle:self.piece.location.name];
-            }
-            [self.addLocationButton setBackgroundColor:[BANYAN_WHITE_COLOR colorWithAlphaComponent:SUBVIEW_OPACITY]];
-            self.addLocationButton.delegate = self;
-        });
-    });
     
     if (self.editMode == ModifyPieceViewControllerEditModeEditPiece)
     {
@@ -406,7 +392,7 @@
     if (![self.piece.shortText isEqualToString:self.pieceCaptionView.text])
         self.piece.shortText = self.pieceCaptionView.text;
     
-    self.piece.location = (FBGraphObject<FBGraphPlace> *)self.locationManager.location;
+    self.piece.location = self.addLocationButton.location;
     
     // Get the recording from audioRecorder
     NSURL *audioRecording = [self.audioRecorder getRecording];
@@ -552,32 +538,6 @@
     }
 }
 
-# pragma mark LocationPickerButtonDelegate
-- (void)locationPickerButtonTapped:(LocationPickerButton *)sender
-{
-    [self.addLocationButton locationPickerLocationEnabled:YES];
-    [self.locationManager showPlacePickerViewController];
-}
-
-- (void)locationPickerButtonToggleLocationEnable:(LocationPickerButton *)sender
-{
-    BOOL isLocationEnabled = sender.getEnabledState;
-    isLocationEnabled = !isLocationEnabled;
-    [self.addLocationButton locationPickerLocationEnabled:isLocationEnabled];
-    if (isLocationEnabled) {
-        [self locationPickerButtonTapped:sender];
-    } else {
-        [self.locationManager stopUpdatingLocation:nil];
-    }
-}
-
-# pragma mark BNLocationManagerDelegate
-- (void) locationUpdated
-{
-    [self.addLocationButton locationPickerLocationUpdatedWithLocation:self.locationManager.location];
-    [self.addLocationButton locationPickerLocationEnabled:YES];
-}
-
 # pragma mark StoryPickerViewControllerDelegate
 - (void) storyPickerViewControllerDidPickStory:(Story *)story
 {
@@ -586,7 +546,8 @@
     self.piece.story = story;
     [self.storyTitleButton setAttributedTitle:[[NSAttributedString alloc] initWithString:self.piece.story.title
                                                                               attributes:@{NSUnderlineStyleAttributeName: @1,
-                                                                                           NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}] forState:UIControlStateNormal];
+                                                                                           NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}]
+                                     forState:UIControlStateNormal];
 }
 
 # pragma mark - Keyboard notifications
@@ -870,6 +831,39 @@
     Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
     [mediaToDelete addObject:imageMedia];
     [self.addPhotoButton unsetImage];
+}
+
+@end
+
+@implementation ModifyPieceViewController (LocationPickerButtonDelegate)
+
+- (void)locationPickerButtonTapped:(LocationPickerButton *)sender
+{
+    [self.addLocationButton locationPickerLocationEnabled:YES];
+    // Create the navigation controller and present it.
+    LocationPickerTableViewController *locTv = [[LocationPickerTableViewController alloc] initWithStyle:UITableViewStylePlain];
+    locTv.delegate = self;
+    UINavigationController *navigationController = [[UINavigationController alloc]
+                                                    initWithRootViewController:locTv];
+    [self presentViewController:navigationController animated:YES completion:nil];
+}
+
+- (void)locationPickerButtonToggleLocationEnable:(LocationPickerButton *)sender
+{
+    BOOL isLocationEnabled = sender.getEnabledState;
+    isLocationEnabled = !isLocationEnabled;
+    [self.addLocationButton locationPickerLocationEnabled:isLocationEnabled];
+    if (isLocationEnabled) {
+        [self locationPickerButtonTapped:sender];
+    }
+}
+
+@end
+
+@implementation ModifyPieceViewController (LocationPickerTableViewControllerDelegate)
+- (void)locationPickerTableViewControllerPickedLocation:(BNDuckTypedObject<GooglePlacesObject>*)place
+{
+    self.addLocationButton.location = place;
 }
 
 @end

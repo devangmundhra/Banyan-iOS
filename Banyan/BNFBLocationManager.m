@@ -52,13 +52,14 @@ static CLLocationManager *_sharedLocationManager;
 }
 
 # pragma mark class methods
+
 + (void ) initialize
 {
     if (!_sharedLocationManager) {
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
             _sharedLocationManager = [[CLLocationManager alloc] init];
-            _sharedLocationManager.desiredAccuracy = kCLLocationAccuracyBest; // kCLLocationAccuracyNearestTenMeters;
+            _sharedLocationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters; //kCLLocationAccuracyBest; // kCLLocationAccuracyNearestTenMeters;
             NSLog(@"%s Initialized shared location manager", __PRETTY_FUNCTION__);
         });
     }
@@ -100,6 +101,7 @@ static CLLocationManager *_sharedLocationManager;
         //
         if (newLocation.horizontalAccuracy <= 10) {
             // IMPORTANT!!! Minimize power usage by stopping the location manager as soon as possible.
+            NSLog(@"Got location in manager");
             [self getNearbyLocations:newLocation];
             self.placePickerViewController.locationCoordinate = newLocation.coordinate;
             [self stopUpdatingLocation:nil];

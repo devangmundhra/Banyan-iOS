@@ -7,6 +7,10 @@
 //
 
 #import "GooglePlacesObject.h"
+#import "AFGoogleAPIClient.h"
+#import "BanyanAppDelegate.h"
+
+static NSString *radiusString = @"1000";
 
 @implementation GooglePlacesObject
 
@@ -16,109 +20,31 @@
 @synthesize icon;
 @synthesize rating;
 @synthesize vicinity;
-@synthesize type;
+@synthesize types;
 @synthesize url;
-@synthesize addressComponents;
-@synthesize formattedAddress;
-@synthesize formattedPhoneNumber;
+@synthesize address_components;
+@synthesize formatted_address;
+@synthesize formatted_phone_number;
 @synthesize website;
-@synthesize internationalPhoneNumber;
-@synthesize coordinate;
+@synthesize international_phone_number;
+@synthesize geometry;
 
-@synthesize distanceInFeetString;
-@synthesize distanceInMilesString;
-@synthesize searchTerms;
-
--(id)initWithName:(NSString *)theName
-         latitude:(double)lt
-        longitude:(double)lg
-        placeIcon:(NSString *)icn
-           rating:(NSString *)rate
-         vicinity:(NSString *)vic
-             type:(NSArray *)typ
-        reference:(NSString *)ref
-              url:(NSString *)www
-addressComponents:(NSArray *)addComp
- formattedAddress:(NSString *)fAddrss
-formattedPhoneNumber:(NSString *)fPhone
-          website:(NSString *)web
-internationalPhone:(NSString *)intPhone
-      searchTerms:(NSString *)search
-   distanceInFeet:(NSString *)distanceFeet
-  distanceInMiles:(NSString *)distanceMiles
++ (NSString *)placeTypesToConsider
 {
-    
-    if (self = [super init])
-    {
-        [self setName:theName];
-        [self setIcon:icn];
-        [self setRating:rate];
-        [self setVicinity:vic];
-        [self setType:typ];
-        [self setReference:ref];
-        [self setUrl:www];
-        [self setAddressComponents:addComp];
-        [self setFormattedAddress:fAddrss];
-        [self setFormattedPhoneNumber:fPhone];
-        [self setWebsite:web];
-        [self setInternationalPhoneNumber:intPhone];
-        [self setSearchTerms:search];
-        
-        [self setCoordinate:CLLocationCoordinate2DMake(lt, lg)];
-        
-        [self setDistanceInFeetString:distanceFeet];
-        [self setDistanceInMilesString:distanceMiles];
-        
-    }
-    return self;
-    
-}
-
-//UPDATED
--(id)initWithJsonResultDict:(NSDictionary *)jsonResultDict searchTerms:(NSString *)terms andUserCoordinates:(CLLocationCoordinate2D)userCoords
-{
-    
-    NSDictionary *geo = [jsonResultDict objectForKey:@"geometry"];
-    NSDictionary *loc = [geo objectForKey:@"location"];
-    
-    //Figure out Distance from POI and User
-    CLLocation *poi = [[CLLocation alloc] initWithLatitude:[[loc objectForKey:@"lat"] doubleValue]  longitude:[[loc objectForKey:@"lng"] doubleValue]];
-    CLLocation *user = [[CLLocation alloc] initWithLatitude:userCoords.latitude longitude:userCoords.longitude];
-    CLLocationDistance inFeet = ([user distanceFromLocation:poi]) * 3.2808;
-    
-    CLLocationDistance inMiles = ([user distanceFromLocation:poi]) * 0.000621371192;
-    
-    NSString *distanceInFeet = [NSString stringWithFormat:@"%.f", round(2.0f * inFeet) / 2.0f];
-    NSString *distanceInMiles = [NSString stringWithFormat:@"%.2f", inMiles];
-    
-    //NSLog(@"Total Distance %@ in feet, distance in files %@",distanceInFeet, distanceInMiles);
-    
-	return [self initWithName:[jsonResultDict objectForKey:@"name"]
-                     latitude:[[loc objectForKey:@"lat"] doubleValue]
-                    longitude:[[loc objectForKey:@"lng"] doubleValue]
-                    placeIcon:[jsonResultDict objectForKey:@"icon"]
-                       rating:[jsonResultDict objectForKey:@"rating"]
-                     vicinity:[jsonResultDict objectForKey:@"vicinity"]
-                         type:[jsonResultDict objectForKey:@"types"]
-                    reference:[jsonResultDict objectForKey:@"reference"]
-                          url:[jsonResultDict objectForKey:@"url"]
-            addressComponents:[jsonResultDict objectForKey:@"address_components"]
-             formattedAddress:[jsonResultDict objectForKey:@"formatted_address"]
-         formattedPhoneNumber:[jsonResultDict objectForKey:@"formatted_phone_number"]
-                      website:[jsonResultDict objectForKey:@"website"]
-           internationalPhone:[jsonResultDict objectForKey:@"international_phone_number"]
-                  searchTerms:[jsonResultDict objectForKey:terms]
-               distanceInFeet:distanceInFeet
-              distanceInMiles:distanceInMiles
-            ];
-    
-}
-
-//Updated
--(id) initWithJsonResultDict:(NSDictionary *)jsonResultDict andUserCoordinates:(CLLocationCoordinate2D)userCoords
-{
-    return [self initWithJsonResultDict:jsonResultDict searchTerms:@"" andUserCoordinates:userCoords];
-    
+    return [NSString stringWithFormat:@"%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@",
+            kBar,
+            kRestaurant,
+            kCafe,
+            kBakery,
+            kFood,
+            kLodging,
+            kMealDelivery,
+            kMealTakeaway,
+            kNightClub,
+            kEstablishment,
+            kGeocode,
+            kLodging,
+            kUniversity];
 }
 
 # pragma mark Helper functions
@@ -129,4 +55,65 @@ internationalPhone:(NSString *)intPhone
     return [NSString stringWithFormat:@"%@, %@", self.name, self.vicinity];
 }
 
+// Search
++ (void) getNearbyLocations:(CLLocation *)location withCompletion:(GooglePlacesQueryCompletionBlock)completionBlock
+{
+    NSString *coords = [NSString stringWithFormat:@"%f,%f", location.coordinate.latitude, location.coordinate.longitude];
+    
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    [parameters setObject:GOOGLE_API_KEY forKey:@"key"];
+    [parameters setObject:coords forKey:@"location"];
+    [parameters setObject:[GooglePlacesObject placeTypesToConsider] forKey:@"types"];
+    [parameters setObject:radiusString forKey:@"radius"];
+//    [parameters setObject:@"distance" forKey:@"rankby"];
+    [parameters setObject:@"true" forKey:@"sensor"];
+    
+    [[AFGoogleAPIClient sharedClient] getPath:GOOGLE_API_NEARBY_PLACES_URL()
+                                   parameters:parameters
+                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                          NSDictionary *results = (NSDictionary *)responseObject;
+                                          if (![[results objectForKey:@"status"] isEqualToString:GOOGLE_API_ERROR_STATUS]) {
+                                              if (![[results objectForKey:@"status"] isEqualToString:GOOGLE_API_NO_RESULTS_STATUS]) {
+                                                  NSArray *gResponseData  = [results objectForKey: @"results"];
+                                                  completionBlock(gResponseData);
+                                              }
+                                          } else {
+                                              [TestFlight passCheckpoint:[NSString stringWithFormat:@"Invalid Google Maps API request %@", operation]];
+                                          }
+                                      }
+                                      failure:AF_GOOGLE_ERROR_BLOCK()];
+    
+    return;
+}
+
++(void)getGoogleObjectsWithQuery:(NSString *)query
+                  andCoordinates:(CLLocationCoordinate2D)coords
+                  withCompletion:(GooglePlacesQueryCompletionBlock)completionBlock
+{
+    assert(coords.latitude!=0 && coords.longitude!=0);
+    NSString *coordsString = [NSString stringWithFormat:@"%f,%f", coords.latitude, coords.longitude];
+    
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    [parameters setObject:GOOGLE_API_KEY forKey:@"key"];
+    [parameters setObject:coordsString forKey:@"location"];
+    [parameters setObject:[GooglePlacesObject placeTypesToConsider] forKey:@"types"];
+    [parameters setObject:radiusString forKey:@"radius"];
+    [parameters setObject:@"true" forKey:@"sensor"];
+    [parameters setObject:query forKey:@"name"];
+    
+    [[AFGoogleAPIClient sharedClient] getPath:GOOGLE_API_SEARCH_PLACES_URL()
+                                   parameters:parameters
+                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                          NSDictionary *results = (NSDictionary *)responseObject;
+                                          if (![[results objectForKey:@"status"] isEqualToString:GOOGLE_API_ERROR_STATUS]) {
+                                              if (![[results objectForKey:@"status"] isEqualToString:GOOGLE_API_NO_RESULTS_STATUS]) {
+                                                  NSArray *gResponseData  = [results objectForKey: @"results"];
+                                                  completionBlock(gResponseData);
+                                              }
+                                          } else {
+                                              [TestFlight passCheckpoint:[NSString stringWithFormat:@"Invalid Google Maps API request %@", operation]];
+                                          }
+                                      }
+                                      failure:AF_GOOGLE_ERROR_BLOCK()];
+}
 @end
