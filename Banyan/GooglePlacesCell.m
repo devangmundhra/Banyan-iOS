@@ -64,10 +64,9 @@
     
     NSString *distanceInFeet = [NSString stringWithFormat:@"%.f", round(2.0f * inFeet) / 2.0f];
     NSString *distanceInMiles = [NSString stringWithFormat:@"%.2f", inMiles];
-    NSLog(@"Total Distance %@ in feet, distance in miles %@",distanceInFeet, distanceInMiles);
+//    NSLog(@"Total Distance %@ in feet, distance in miles %@",distanceInFeet, distanceInMiles);
     
-    //You can use place.distanceInMilesString or place.distanceInFeetString.
-    //You can add logic that if distanceInMilesString starts with a 0. then use Feet otherwise use Miles.
+    // If distanceInMilesString starts with a 0. then use Feet otherwise use Miles.
     if ([distanceInMiles hasPrefix:@"0."]) {
         self.addInfoLabel.text = [NSString stringWithFormat:@"%@ feet from current location", distanceInFeet];
     } else {
