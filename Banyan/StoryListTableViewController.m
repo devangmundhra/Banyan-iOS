@@ -27,12 +27,13 @@ typedef enum {
     FilterStoriesSegmentIndexPopular
 } FilterStoriesSegmentIndex;
 
-@interface StoryListTableViewController (StoryReaderControllerDelegate) <StoryReaderControllerDelegate>
+@interface StoryListTableViewController (MYIntroductionDelegate) <MYIntroductionDelegate>
+@end
 
+@interface StoryListTableViewController (StoryReaderControllerDelegate) <StoryReaderControllerDelegate>
 @end
 
 @interface StoryListTableViewController () <UIViewControllerTransitioningDelegate>
-@property (strong, nonatomic) IBOutlet UISegmentedControl *filterStoriesSegmentedControl;
 
 @property (strong, nonatomic) CEFlipAnimationController *animationController;
 @property (strong, nonatomic) BNHorizontalSwipeInteractionController *interactionController;
@@ -40,7 +41,6 @@ typedef enum {
 @end
 
 @implementation StoryListTableViewController
-@synthesize filterStoriesSegmentedControl = _filterStoriesSegmentedControl;
 
 -(UIStatusBarStyle)preferredStatusBarStyle
 {
@@ -90,21 +90,6 @@ typedef enum {
     
     [self.tableView setRowHeight:TABLE_ROW_HEIGHT];
     
-//    self.filterStoriesSegmentedControl = [[UISegmentedControl alloc]
-//                                          initWithItems:[NSArray arrayWithObjects:@"Following", @"Popular", nil]];
-//    [self.filterStoriesSegmentedControl addTarget:self
-//                                           action:@selector(filterStories:)
-//                                 forControlEvents:UIControlEventValueChanged];
-//    self.filterStoriesSegmentedControl.tintColor = BANYAN_GREEN_COLOR;
-//    self.filterStoriesSegmentedControl.selectedSegmentIndex = FilterStoriesSegmentIndexPopular;
-//    [self.filterStoriesSegmentedControl setWidth:100 forSegmentAtIndex:FilterStoriesSegmentIndexFollowing];
-//    [self.filterStoriesSegmentedControl setWidth:100 forSegmentAtIndex:FilterStoriesSegmentIndexPopular];
-//    [self.filterStoriesSegmentedControl setContentOffset:CGSizeMake(5, 0) forSegmentAtIndex:FilterStoriesSegmentIndexFollowing];
-//    [self.filterStoriesSegmentedControl setContentOffset:CGSizeMake(5, 0) forSegmentAtIndex:FilterStoriesSegmentIndexPopular];
-//    self.filterStoriesSegmentedControl.apportionsSegmentWidthsByContent = YES;
-//    
-//    [self.navigationItem setTitleView:self.filterStoriesSegmentedControl];
-    
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, CGRectGetHeight(self.navigationController.navigationBar.frame))];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.backgroundColor = BANYAN_CLEAR_COLOR;
@@ -133,6 +118,10 @@ typedef enum {
                                                  name:BNRefreshCurrentStoryListNotification
                                                object:nil];
     
+    BNIntroductionView *introductionView = [[BNIntroductionView alloc] initWithFrame:self.view.bounds];
+    introductionView.delegate = self;
+    [self.view addSubview:introductionView];
+    
     [TestFlight passCheckpoint:@"RootViewController loaded"];
 }
 
@@ -153,7 +142,6 @@ typedef enum {
     [super viewDidUnload];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self setFilterStoriesSegmentedControl:nil];
     self.fetchedResultsController = nil;
     NSLog(@"Root View Controller Unloaded");
 }
@@ -337,36 +325,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self.refreshControl endRefreshing];
     [self performFetch];
 }
-
-//- (void) filterStoriesForTableDataSource
-//{
-//    [self.refreshControl endRefreshing];
-//    
-//    NSPredicate *predicate = nil;
-//    NSMutableArray *arrayOfUserIdsBeingFollowed = nil;
-//    
-//    switch (self.filterStoriesSegmentedControl.selectedSegmentIndex) {
-//        case FilterStoriesSegmentIndexPopular:
-//            predicate = [NSPredicate predicateWithFormat:@"(canView == YES) OR (canContribute == YES)"];
-//            break;
-//        case FilterStoriesSegmentIndexFollowing:
-//            arrayOfUserIdsBeingFollowed = [NSMutableArray array];
-//            for (NSMutableDictionary *user in [[NSUserDefaults standardUserDefaults]
-//                                               arrayForKey:BNUserDefaultsBanyanUsersFacebookFriends]) {
-//                if ([[user objectForKey:USER_BEING_FOLLOWED] boolValue]) {
-//                    [arrayOfUserIdsBeingFollowed addObject:[user objectForKey:@"id"]];
-//                }
-//            }
-//            // Create a predicate where author in arrayOfUserIdsBeingFollowed
-//            predicate = [NSPredicate predicateWithFormat:@"((canView == YES) OR (canContribute == YES)) AND ((author.userId IN %@))", arrayOfUserIdsBeingFollowed];
-//            break;
-//        default:
-//            break;
-//    }
-//    
-//    self.fetchedResultsController.fetchRequest.predicate = predicate;
-//    [self performFetch];
-//}
 
 -(void)foregroundRefresh:(NSNotification *)notification
 {
@@ -567,6 +525,30 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if (nextStory) {
         NSIndexPath *currentIndexPath = [self.fetchedResultsController indexPathForObject:nextStory];
         [self readStoryForIndexPath:currentIndexPath];
+    }
+}
+
+@end
+
+@implementation StoryListTableViewController (MYIntroductionDelegate)
+
+-(void)introduction:(MYBlurIntroductionView *)introductionView didFinishWithType:(MYFinishType)finishType
+{
+    [introductionView removeFromSuperview];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+}
+
+-(void)introduction:(MYBlurIntroductionView *)introductionView didChangeToPanel:(MYIntroductionPanel *)panel withIndex:(NSInteger)panelIndex
+{
+    //You can edit introduction view properties right from the delegate method!
+    //If it is the first panel, change the color to green!
+    if (panelIndex == 0) {
+        [introductionView setBackgroundColor:[BANYAN_GREEN_COLOR colorWithAlphaComponent:0.65]];
+    }
+    //If it is the second panel, change the color to blue!
+    else if (panelIndex == 1){
+        [introductionView setBackgroundColor:[BANYAN_BROWN_COLOR colorWithAlphaComponent:0.65]];
     }
 }
 

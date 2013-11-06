@@ -101,6 +101,10 @@
     }
     
     self.storyListTableViewController = [[UINavigationController alloc] initWithRootViewController:[[StoryListTableViewController alloc] init]];
+    if ([BanyanAppDelegate isFirstTimeUser]) {
+        [self.storyListTableViewController setNavigationBarHidden:YES];
+        [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    }
     self.homeViewController = [[BNSidePanelController alloc] init];
     self.homeViewController.allowRightSwipe = NO;
     self.homeViewController.allowLeftSwipe = NO;
@@ -480,6 +484,11 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     }
     
     return topController;
+}
+
++ (BOOL) isFirstTimeUser
+{
+    return NO;
 }
 
 #pragma mark Background Timer to upload unsaved objects

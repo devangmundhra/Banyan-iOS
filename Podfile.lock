@@ -15,6 +15,7 @@ PODS:
   - libwebp/utils (0.3.0-rc7)
   - libwebp/webp (0.3.0-rc7)
   - MBProgressHUD (0.8)
+  - MYBlurIntroductionView (1.0.0)
   - RestKit (0.21.0):
     - RestKit/Core
   - RestKit/Core (0.21.0):
@@ -50,6 +51,7 @@ DEPENDENCIES:
   - BNSwipeableView (from `https://github.com/devangmundhra/BNSwipeableView.git`)
   - JASidePanels (from `https://github.com/ckassen/JASidePanels.git`, commit `1b3c1f461e2f03bb2b07ad003195f6eda511b660`)
   - MBProgressHUD (>= 0.7)
+  - MYBlurIntroductionView (~> 1.0.0)
   - RestKit (from `https://github.com/RestKit/RestKit.git`, branch `development`)
   - SDWebImage (from `https://github.com/rs/SDWebImage.git`, commit `282e8179193a49867575cd658ae64883aedbce7b`)
   - SMPageControl (~> 1.0)
@@ -80,6 +82,7 @@ SPEC CHECKSUMS:
   JASidePanels: c0e642a7311ec9cc9adfa616fa4a795e4e169f20
   libwebp: 40517fa1fd3716eded73b4696c45fc0b66e4b414
   MBProgressHUD: 2bbc6f470111daf7f3eaa4eb12b8cbf01c4c0622
+  MYBlurIntroductionView: 31aeb2e13ccc2965e661d2394eec03c17286f485
   RestKit: c11a30e7bc73513d9d2c2695672aba7697d24181
   RKValueTransformers: 01dc043fd853f6e40459b2e732dff545298a0f91
   SDWebImage: 79a8bac9ccf85b269100b294f7b43684dab8bf8a

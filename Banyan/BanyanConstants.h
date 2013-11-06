@@ -43,6 +43,8 @@ extern NSString *const BNUserDefaultsUserPageTurnAnimation;
 
 extern NSString *const BNUserDefaultsCurrentOngoingStoryToContribute;
 
+extern NSString *const BNUserDefaultsFirstTimeLoginV0_0;
+
 #pragma mark - PFObject Story Class
 // Class key
 extern NSString *const kBNStoryClassKey;
