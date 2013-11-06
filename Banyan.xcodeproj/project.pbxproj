@@ -192,6 +192,8 @@
 		51C4252D1826DFF100AF90C1 /* GooglePlacesObjectToDataTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C4252C1826DFF100AF90C1 /* GooglePlacesObjectToDataTransformer.m */; };
 		51C4253018270CF900AF90C1 /* BNDuckTypedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C4252F18270CF900AF90C1 /* BNDuckTypedObject.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		51C425351827991900AF90C1 /* GooglePlacesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C425341827991900AF90C1 /* GooglePlacesCell.m */; };
+		51C4253A1828E15100AF90C1 /* NextStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C425381828E15100AF90C1 /* NextStoryViewController.m */; };
+		51C4253B1828E15100AF90C1 /* NextStoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51C425391828E15100AF90C1 /* NextStoryViewController.xib */; };
 		51CCA1521732498D007616EA /* commentSymbolWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CCA1501732498D007616EA /* commentSymbolWhite.png */; };
 		51CCA1531732498D007616EA /* commentSymbolWhite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CCA1511732498D007616EA /* commentSymbolWhite@2x.png */; };
 		51CCA15617324998007616EA /* heartSymbolWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CCA15417324998007616EA /* heartSymbolWhite.png */; };
@@ -508,6 +510,9 @@
 		51C4252F18270CF900AF90C1 /* BNDuckTypedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNDuckTypedObject.m; path = Banyan/BNDuckTypedObject.m; sourceTree = "<group>"; };
 		51C425331827991900AF90C1 /* GooglePlacesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GooglePlacesCell.h; path = Banyan/GooglePlacesCell.h; sourceTree = "<group>"; };
 		51C425341827991900AF90C1 /* GooglePlacesCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GooglePlacesCell.m; path = Banyan/GooglePlacesCell.m; sourceTree = "<group>"; };
+		51C425371828E15100AF90C1 /* NextStoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NextStoryViewController.h; path = Banyan/NextStoryViewController.h; sourceTree = "<group>"; };
+		51C425381828E15100AF90C1 /* NextStoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NextStoryViewController.m; path = Banyan/NextStoryViewController.m; sourceTree = "<group>"; };
+		51C425391828E15100AF90C1 /* NextStoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = NextStoryViewController.xib; path = Banyan/NextStoryViewController.xib; sourceTree = "<group>"; };
 		51CCA1501732498D007616EA /* commentSymbolWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = commentSymbolWhite.png; sourceTree = "<group>"; };
 		51CCA1511732498D007616EA /* commentSymbolWhite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "commentSymbolWhite@2x.png"; sourceTree = "<group>"; };
 		51CCA15417324998007616EA /* heartSymbolWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = heartSymbolWhite.png; sourceTree = "<group>"; };
@@ -787,6 +792,9 @@
 			children = (
 				5189B30015B395F300562DD0 /* StoryReaderController.h */,
 				5189B30115B395F300562DD0 /* StoryReaderController.m */,
+				51C425371828E15100AF90C1 /* NextStoryViewController.h */,
+				51C425381828E15100AF90C1 /* NextStoryViewController.m */,
+				51C425391828E15100AF90C1 /* NextStoryViewController.xib */,
 			);
 			name = Read;
 			sourceTree = "<group>";
@@ -1613,6 +1621,7 @@
 				518153421712A5F1006F73D3 /* searchTabSymbol.png in Resources */,
 				518153431712A5F1006F73D3 /* searchTabSymbol@2x.png in Resources */,
 				518153441712A5F1006F73D3 /* userProfileTabSymbol.png in Resources */,
+				51C4253B1828E15100AF90C1 /* NextStoryViewController.xib in Resources */,
 				518153451712A5F1006F73D3 /* userProfileTabSymbol@2x.png in Resources */,
 				518153511713F474006F73D3 /* addPieceButton.png in Resources */,
 				518153521713F474006F73D3 /* addPieceButton@2x.png in Resources */,
@@ -1762,6 +1771,7 @@
 				5103FB9F166898960095B11F /* UIImage+Create.m in Sources */,
 				519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */,
 				5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */,
+				51C4253A1828E15100AF90C1 /* NextStoryViewController.m in Sources */,
 				519233331675305F009686E4 /* LocationPickerTableViewController.m in Sources */,
 				514CDF5418125BFF0098B0A9 /* BNPermissionsObject.m in Sources */,
 				51A8DC9116928A240017E86F /* Activity+Create.m in Sources */,

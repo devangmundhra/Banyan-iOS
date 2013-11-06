@@ -13,12 +13,18 @@
 
 @class StoryReaderController;
 
-#define HUD_STAY_DELAY 1.2 // amount of time HUD progress bar stays (in seconds)
+@protocol StoryReaderControllerDelegate <NSObject>
 
-@interface StoryReaderController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate, ReadPieceViewControllerDelegate, UIGestureRecognizerDelegate>
+- (void) storyReaderControllerReadNextStory:(Story *)nextStory;
+- (Story *) storyReaderControllerGetNextStory:(StoryReaderController *)storyReaderController;
+
+@end
+
+@interface StoryReaderController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (nonatomic, strong) Story *story;
 @property (nonatomic, strong) UIPageViewController *pageViewController;
+@property (weak, nonatomic) IBOutlet id<StoryReaderControllerDelegate> delegate;
 
 - (id)initWithPiece:(Piece *)piece;
 

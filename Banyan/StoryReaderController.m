@@ -11,10 +11,20 @@
 #import "Story+Permissions.h"
 #import "MBProgressHUD.h"
 #import "Piece+Create.h"
+#import "CEFlipAnimationController.h"
+#import "BNHorizontalSwipeInteractionController.h"
+#import "NextStoryViewController.h"
+#import "ModifyPieceViewController.h"
 
+@interface StoryReaderController (ModifyPieceViewControllerDelegate) <ModifyPieceViewControllerDelegate>
 
+@end
+@interface StoryReaderController (NextStoryViewControllerDelegate) <NextStoryViewControllerDelegate>
+@end
+@interface StoryReaderController (UIViewControllerTransitioningDelegate)<UIViewControllerTransitioningDelegate>
+@end
 
-@interface StoryReaderController ()
+@interface StoryReaderController () <ReadPieceViewControllerDelegate, UIGestureRecognizerDelegate>
 @property (strong, nonatomic) Piece *currentPiece;
 
 @property (strong, nonatomic) UIToolbar *toolbar;
@@ -22,7 +32,11 @@
 @property (strong, nonatomic) UIBarButtonItem *settingsButton;
 @property (strong, nonatomic) UIBarButtonItem *titleLabel;
 @property (nonatomic) BOOL transitionStyleScroll;
-@property (strong, nonatomic) UIPanGestureRecognizer *dismissPanGestureRecognizer;
+@property (strong, nonatomic) UIPanGestureRecognizer *dismissBackPanGestureRecognizer;
+@property (strong, nonatomic) UIPanGestureRecognizer *dismissAheadPanGestureRecognizer;
+
+@property (strong, nonatomic) CEFlipAnimationController *animationController;
+@property (strong, nonatomic) BNHorizontalSwipeInteractionController *interactionController;
 
 @end
 
@@ -35,7 +49,11 @@
 @synthesize settingsButton = _settingsButton;
 @synthesize titleLabel = _titleLabel;
 @synthesize transitionStyleScroll = _transitionStyleScroll;
-@synthesize dismissPanGestureRecognizer = _dismissPanGestureRecognizer;
+@synthesize dismissBackPanGestureRecognizer = _dismissPanGestureRecognizer;
+@synthesize dismissAheadPanGestureRecognizer = _dismissAheadPanGestureRecognizer;
+@synthesize animationController = _animationController;
+@synthesize interactionController = _interactionController;
+@synthesize delegate = _delegate;
 
 - (void)setCurrentPiece:(Piece *)currentPiece
 {
@@ -72,6 +90,13 @@
     
     self.title = self.story.title;
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
+    
+    // Animation between view controllers
+    self.animationController = [[CEFlipAnimationController alloc] init];
+    self.interactionController = [[BNHorizontalSwipeInteractionController alloc] init];
+    
+    self.dismissAheadPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(showOptionsForNextStory:)];
+    self.dismissAheadPanGestureRecognizer.delegate = self;
     
     [Story viewedStory:self.story];
     
@@ -121,6 +146,19 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+# pragma mark
+# pragma mark target-actions
+- (IBAction)showOptionsForNextStory:(UIGestureRecognizer *)gR
+{    
+    if (gR.state == UIGestureRecognizerStateBegan) {
+        NextStoryViewController *nextStoryVc = [[NextStoryViewController alloc] initWithNibName:@"NextStoryViewController" bundle:nil];
+        nextStoryVc.delegate = self;
+        nextStoryVc.nextStory = [self.delegate storyReaderControllerGetNextStory:self];
+        nextStoryVc.currentStory = self.story;
+        nextStoryVc.transitioningDelegate = self;
+        [self presentViewController:nextStoryVc animated:YES completion:nil];
+    }
+}
 
 # pragma mark - UIPageViewControllerDataSource
 // View controller to display after the current view controller has been turned ahead
@@ -215,23 +253,25 @@
     return false;
 }
 
-- (void) dismissReadView
+- (void) dismissReadViewAnimated:(BOOL)animated completion:(void (^)(void))completion
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:animated completion:completion];
 }
 
 - (void) readPieceViewControllerDoneReading
 {
-    [self dismissReadView];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+# pragma mark
+# pragma mark Interaction Controller methods
 - (void) interactionControllerDidWireToViewWithGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
 {
     gestureRecognizer.delegate = self;
     if (self.transitionStyleScroll) {
         // No interactive dismissal for Scroll type transition
         [self.view removeGestureRecognizer:gestureRecognizer];
-        self.dismissPanGestureRecognizer = (UIPanGestureRecognizer *)gestureRecognizer;
+        self.dismissBackPanGestureRecognizer = (UIPanGestureRecognizer *)gestureRecognizer;
         for (ReadPieceViewController *viewController in [self.pageViewController viewControllers]) {
             [viewController addGestureRecognizerToContentView:gestureRecognizer];
         }
@@ -242,19 +282,23 @@
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
     NSUInteger currentPieceNum = self.currentPiece.pieceNumber;
-    
+
     if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-        if ([(UIPanGestureRecognizer*)gestureRecognizer velocityInView:gestureRecognizer.view].x > 0.0f) {
+        UIPanGestureRecognizer *panGr = (UIPanGestureRecognizer*)gestureRecognizer;
+        if (   ([panGr velocityInView:gestureRecognizer.view].x > 0.0f)
+            && (!self.transitionStyleScroll || (panGr == self.dismissBackPanGestureRecognizer))
+            && (panGr != self.dismissAheadPanGestureRecognizer)) {
             // Going left
             Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum-1]];
             if (!piece)
                 return YES;
-        } else {
+        } else if (([panGr velocityInView:gestureRecognizer.view].x < 0.0f) && panGr == self.dismissAheadPanGestureRecognizer) {
             // Going right
             Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum+1]];
             if (!piece)
-                return NO; // For now
-        }
+                return YES;
+        } else
+            ;
     }
     
     return NO;
@@ -267,6 +311,69 @@
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc that aren't in use.
+}
+
+@end
+
+@implementation StoryReaderController (UIViewControllerTransitioningDelegate)
+
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source
+{
+    [self.interactionController wireToViewController:presented forOperation:CEInteractionOperationDismiss];
+    
+    self.animationController.reverse = YES;
+    return self.animationController;
+}
+
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed
+{
+    self.animationController.reverse = NO;
+    return self.animationController;
+}
+
+- (id<UIViewControllerInteractiveTransitioning>)interactionControllerForPresentation:(id<UIViewControllerAnimatedTransitioning>)animator
+{
+    return self.interactionController.interactionInProgress ? self.interactionController : nil;
+}
+
+- (id<UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id<UIViewControllerAnimatedTransitioning>)animator
+{
+    return self.interactionController.interactionInProgress ? self.interactionController : nil;
+}
+
+@end
+
+@implementation StoryReaderController (NextStoryViewControllerDelegate)
+
+- (void) nextStoryViewControllerGoToStoryList:(NextStoryViewController *)nextStoryViewController
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void) nextStoryViewControllerGoToStory:(Story *)nextStory
+{
+    [self dismissViewControllerAnimated:NO completion:^{
+        [self.delegate storyReaderControllerReadNextStory:nextStory];
+    }];
+}
+
+- (void)nextStoryViewControllerAddPieceToStory:(NextStoryViewController *)nextStoryViewController
+{
+    Piece *piece = [Piece newPieceDraftForStory:self.story];
+    ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
+    addPieceViewController.delegate = self;
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:addPieceViewController];
+    [navController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
+    [self presentViewController:navController animated:YES completion:nil];
+}
+
+@end
+
+@implementation StoryReaderController (ModifyPieceViewControllerDelegate)
+- (void) modifyPieceViewController:(ModifyPieceViewController *)controller
+              didFinishAddingPiece:(Piece *)piece
+{
+    [self readPieceViewControllerFlipToPiece:[NSNumber numberWithInt:piece.pieceNumber]];
 }
 
 @end

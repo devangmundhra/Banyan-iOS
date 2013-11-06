@@ -27,6 +27,10 @@ typedef enum {
     FilterStoriesSegmentIndexPopular
 } FilterStoriesSegmentIndex;
 
+@interface StoryListTableViewController (StoryReaderControllerDelegate) <StoryReaderControllerDelegate>
+
+@end
+
 @interface StoryListTableViewController () <UIViewControllerTransitioningDelegate>
 @property (strong, nonatomic) IBOutlet UISegmentedControl *filterStoriesSegmentedControl;
 
@@ -446,12 +450,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     }
     StoryReaderController *storyReaderController = [[StoryReaderController alloc] initWithPiece:pieceToShow];
     storyReaderController.story = story;
+    storyReaderController.delegate = self;
     storyReaderController.hidesBottomBarWhenPushed = YES;
     storyReaderController.transitioningDelegate = self;
     
-//    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:storyReaderController];
     [self presentViewController:storyReaderController animated:YES completion:nil];
-//    [self.navigationController pushViewController:storyReaderController animated:YES];
 }
 
 -(void) addPieceToStory:(Story *)story
@@ -534,6 +537,37 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc that aren't in use.
+}
+
+@end
+
+@implementation StoryListTableViewController (StoryReaderControllerDelegate)
+
+- (Story *) storyReaderControllerGetNextStory:(StoryReaderController *)storyReaderController
+{
+    Story *currentStory = storyReaderController.story;
+    NSIndexPath *currentIndexPath = [self.fetchedResultsController indexPathForObject:currentStory];
+    if (currentIndexPath) {
+        Story *nextStory = nil;
+        NSIndexPath *nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row+1 inSection:currentIndexPath.section];
+        @try {
+            nextStory = [self.fetchedResultsController objectAtIndexPath:nextIndexPath];
+            return nextStory;
+        }
+        @catch (NSException *exception) {
+            return nil;
+        }
+    } else {
+        return nil;
+    }
+}
+
+- (void)storyReaderControllerReadNextStory:(Story *)nextStory
+{
+    if (nextStory) {
+        NSIndexPath *currentIndexPath = [self.fetchedResultsController indexPathForObject:nextStory];
+        [self readStoryForIndexPath:currentIndexPath];
+    }
 }
 
 @end

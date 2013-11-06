@@ -270,8 +270,7 @@
 
 - (void) addGestureRecognizerToContentView:(UIGestureRecognizer *)gR
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if (![defaults boolForKey:BNUserDefaultsUserPageTurnAnimation] && [self.delegate dismissPanGestureRecognizer]) {
+    if (gR) {
         [self.contentView addGestureRecognizer:gR];
     }
 }
@@ -283,7 +282,8 @@
         [self.delegate performSelector:@selector(setCurrentPiece:) withObject:self.piece];
     }
     
-    [self addGestureRecognizerToContentView:[self.delegate dismissPanGestureRecognizer]];
+    [self addGestureRecognizerToContentView:[self.delegate dismissBackPanGestureRecognizer]];
+    [self addGestureRecognizerToContentView:[self.delegate dismissAheadPanGestureRecognizer]];
 }
 
 - (void)refreshUI

@@ -17,19 +17,20 @@
 
 @class ReadPieceViewController;
 
-@protocol ReadPieceViewControllerDelegate <NSObject, UIGestureRecognizerDelegate>
+@protocol ReadPieceViewControllerDelegate <NSObject>
 
 - (BOOL) readPieceViewControllerFlipToPiece:(NSNumber *)pieceNumber;
 - (void) setCurrentPiece:(Piece *)piece;
 - (void) readPieceViewControllerDoneReading;
-- (UIPanGestureRecognizer *) dismissPanGestureRecognizer;
+- (UIPanGestureRecognizer *) dismissBackPanGestureRecognizer;
+- (UIPanGestureRecognizer *) dismissAheadPanGestureRecognizer;
 
 @end
 
 @interface ReadPieceViewController : UIViewController <ASMediasFocusDelegate>
 
 @property (strong, nonatomic) Piece *piece;
-@property (weak, nonatomic) IBOutlet UIViewController<ReadPieceViewControllerDelegate> *delegate;
+@property (weak, nonatomic) IBOutlet id<ReadPieceViewControllerDelegate> delegate;
 
 - (id) initWithPiece:(Piece *)piece;
 - (void) addGestureRecognizerToContentView:(UIGestureRecognizer *)gR;
