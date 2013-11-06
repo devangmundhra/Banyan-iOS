@@ -23,6 +23,7 @@
 #import "ModifyStoryViewController.h"
 #import "ModifyPieceViewController.h"
 #import "BNLabel.h"
+#import "BNMisc.h"
 
 @interface ReadPieceViewController () <UIActionSheetDelegate, ModifyPieceViewControllerDelegate>
 
@@ -40,8 +41,7 @@
 @property (strong, nonatomic) IBOutlet UIButton *commentsButton;
 @property (strong, nonatomic) IBOutlet BNLabel *authorLabel;
 @property (strong, nonatomic) IBOutlet BNLabel *timeLabel;
-
-@property (strong, nonatomic) IBOutlet UILabel *locationLabel;
+@property (strong, nonatomic) IBOutlet BNLabel *locationLabel;
 
 @property (strong, nonatomic) SMPageControl *pageControl;
 
@@ -113,6 +113,8 @@
 
 #define INFOVIEW_HEIGHT 38.0f
 #define BUTTON_SPACING 5.0f
+#define TEXT_INSET_BIG 20.0f
+#define TEXT_INSET_SMALL 2.0f
 
 - (void)viewDidLoad
 {
@@ -190,6 +192,7 @@
     self.pieceInfoView = [[UIView alloc] initWithFrame:CGRectZero];
     self.authorLabel = [[BNLabel alloc] initWithFrame:CGRectZero];
     self.timeLabel = [[BNLabel alloc] initWithFrame:CGRectZero];
+    self.locationLabel = [[BNLabel alloc] initWithFrame:CGRectZero];
     self.commentsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.commentsButton.exclusiveTouch = YES;
     self.likesButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -199,6 +202,7 @@
     [self.pieceInfoView addSubview:self.timeLabel];
     [self.pieceInfoView addSubview:self.commentsButton];
     [self.pieceInfoView addSubview:self.likesButton];
+    [self.pieceInfoView addSubview:self.locationLabel];
     [self.contentView addSubview:self.pieceInfoView];
     
     // Media focus manager
@@ -227,7 +231,7 @@
     self.pieceCaptionView.font = [UIFont fontWithName:@"Roboto-BoldCondensed" size:26];
     self.pieceCaptionView.minimumScaleFactor = 0.7;
     self.pieceCaptionView.textAlignment = NSTextAlignmentLeft;
-    self.pieceCaptionView.textEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 20);
+    self.pieceCaptionView.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSET_BIG, 0, TEXT_INSET_BIG);
     self.pieceCaptionView.numberOfLines = 4;
     [self.contentView addSubview:self.pieceCaptionView];
     
@@ -329,7 +333,7 @@
         self.imageView.contentMode = hasDescription ? UIViewContentModeScaleAspectFit : UIViewContentModeScaleAspectFill;
         csize.height = CGRectGetMaxY(self.imageView.frame);
     }
-    // Add author/date/stats here
+    // Add author/date/location/stats here
     {
         frame = [UIScreen mainScreen].bounds;
         if (hasImage && !hasDescription) {
@@ -340,56 +344,66 @@
         self.pieceInfoView.frame = frame;
         [self.contentView bringSubviewToFront:self.pieceInfoView];
         // author label
-        CGSize maximumLabelSize = CGSizeMake(130, CGRectGetHeight(frame));
-        NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
-        paraStyle.lineBreakMode = NSLineBreakByTruncatingTail;
-        paraStyle.alignment = NSTextAlignmentLeft;
-        CGSize expectedLabelSize = [self.piece.author.name boundingRectWithSize:maximumLabelSize options:0
-                                                              attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:16],
-                                                                                                                 NSParagraphStyleAttributeName: paraStyle}
-                                                                 context:nil].size;
-
-        self.authorLabel.frame = CGRectMake(0, 0, expectedLabelSize.width+22/*for inset adjustment*/, CGRectGetHeight(frame));
-        self.authorLabel.textEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 2);
+        self.authorLabel.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSET_BIG, 0, TEXT_INSET_SMALL);
         self.authorLabel.text = self.piece.author.name;
         self.authorLabel.font = [UIFont fontWithName:@"Roboto" size:16];
         self.authorLabel.minimumScaleFactor = 0.8;
         self.authorLabel.backgroundColor= [UIColor clearColor];
         self.authorLabel.textAlignment = NSTextAlignmentLeft;
-        
-        // date label
-        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-        [dateFormat setDateStyle:NSDateFormatterShortStyle];
-        self.timeLabel.frame = CGRectMake(CGRectGetMaxX(self.authorLabel.frame), 0, 75, CGRectGetHeight(frame));
-        self.timeLabel.text = [NSString stringWithFormat:@"(%@)",[dateFormat stringFromDate:[self.piece.createdAt
-                                                                                             dateByAddingTimeInterval:[[NSTimeZone systemTimeZone] secondsFromGMT]]]];
-        self.timeLabel.textEdgeInsets = UIEdgeInsetsMake(0, 2, 0, 0);
-        self.timeLabel.font = [UIFont fontWithName:@"Roboto" size:16];
-        self.timeLabel.minimumScaleFactor = 0.8;
-        self.timeLabel.backgroundColor = [UIColor clearColor];
-        self.timeLabel.textAlignment = NSTextAlignmentLeft;
+        self.authorLabel.numberOfLines = 2;
+        [self.authorLabel sizeToFit];
         
         if ([BanyanAppDelegate loggedIn])
         {
+            frame = [UIScreen mainScreen].bounds;
             // comments button
             UIImage *commentImage = nil;
             if (hasDescription || !hasImage)
                 commentImage = [UIImage imageNamed:@"commentSymbolGray"];
             else
                 commentImage = [UIImage imageNamed:@"commentSymbolWhite"];
-            self.commentsButton.frame = CGRectMake(231/*152 for author + 77 for time + 2 buffer*/, 0, 35, floor(CGRectGetHeight(frame)));
+            self.commentsButton.frame = CGRectMake(CGRectGetMaxX(frame)-2*35 /*size of like and comment button */ -2*3*TEXT_INSET_SMALL /*Inset between the buttons*/,
+                                                   0, 35, floor(CGRectGetHeight(self.authorLabel.frame)));
             [self.commentsButton setImage:commentImage forState:UIControlStateNormal];
             self.commentsButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
             [self.commentsButton setTitle:[NSString stringWithFormat:@"%d", [self.piece.comments count]] forState:UIControlStateNormal];
-            [self.commentsButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
+            [self.commentsButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 3*TEXT_INSET_SMALL, 0, 0)];
             self.commentsButton.hidden = YES;
             // like button
-            self.likesButton.frame = CGRectMake(floor(CGRectGetMaxX(self.commentsButton.frame)+2), 0, 35, floor(CGRectGetHeight(frame)));
+            self.likesButton.frame = CGRectMake(CGRectGetMaxX(self.commentsButton.frame), 0, 35, floor(CGRectGetHeight(self.authorLabel.frame)));
             self.likesButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
-            [self.likesButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
+            [self.likesButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 3*TEXT_INSET_SMALL, 0, 0)];
             [self.likesButton setTitleColor:BANYAN_PINK_COLOR forState:UIControlStateNormal];
             [self togglePieceLikeButtonLabel];
         }
+        // date label
+        self.timeLabel.text = [NSString stringWithFormat:@"%@",[[BNMisc dateTimeFormatter] stringFromDate:[self.piece.createdAt
+                                                                                             dateByAddingTimeInterval:[[NSTimeZone systemTimeZone] secondsFromGMT]]]];
+        self.timeLabel.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSET_BIG, 0, TEXT_INSET_SMALL);
+        self.timeLabel.font = [UIFont fontWithName:@"Roboto" size:12];
+        self.timeLabel.minimumScaleFactor = 0.8;
+        self.timeLabel.backgroundColor = [UIColor clearColor];
+        self.timeLabel.textAlignment = NSTextAlignmentLeft;
+        [self.timeLabel sizeToFit];
+        frame = self.timeLabel.frame;
+        frame.origin = CGPointMake(0, CGRectGetMaxY(self.authorLabel.frame));
+        self.timeLabel.frame = frame;
+        
+        // location label
+        if ([self.piece.location.name length]) {
+            self.locationLabel.text = [NSString stringWithFormat:@"at %@", self.piece.location.name];
+            self.locationLabel.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSET_SMALL, 0, TEXT_INSET_SMALL);
+            self.locationLabel.font = [UIFont fontWithName:@"Roboto" size:12];
+            self.locationLabel.minimumScaleFactor = 0.8;
+            self.locationLabel.backgroundColor = [UIColor clearColor];
+            self.locationLabel.textAlignment = NSTextAlignmentLeft;
+            [self.locationLabel sizeToFit];
+            frame = self.locationLabel.frame;
+            frame.origin = CGPointMake(CGRectGetMaxX(self.timeLabel.frame), CGRectGetMaxY(self.authorLabel.frame));
+            frame.size.height = CGRectGetHeight(self.timeLabel.frame);
+            self.locationLabel.frame = frame;
+        }
+        [self.pieceInfoView sizeToFit];
     }
     if (hasCaption) {
         frame = [UIScreen mainScreen].bounds;
@@ -460,17 +474,16 @@
         self.pieceTextView.textColor = BANYAN_BLACK_COLOR;
         self.authorLabel.textColor =
         self.timeLabel.textColor = BANYAN_DARKGRAY_COLOR;
+        self.locationLabel.textColor = BANYAN_DARKGRAY_COLOR;
         [self.commentsButton setTitleColor:BANYAN_DARKGRAY_COLOR forState:UIControlStateNormal];
     } else {
         self.pieceCaptionView.textColor =
         self.pieceTextView.textColor = BANYAN_WHITE_COLOR;
         self.authorLabel.textColor =
         self.timeLabel.textColor = BANYAN_WHITE_COLOR;
+        self.locationLabel.textColor = BANYAN_WHITE_COLOR;
         [self.commentsButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
     }
-    
-    if ([self.piece.location.name length])
-        self.locationLabel.text = self.piece.location.name;
     
     self.pageControl.numberOfPages = self.piece.story.length;
     self.pageControl.currentPage = self.piece.pieceNumber-1;

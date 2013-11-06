@@ -33,16 +33,29 @@
 
 + (NSDateFormatter *) dateFormatterNoTimeMediumDateRelative
 {
-    static NSDateFormatter *_dateFormatter = nil;
+    static NSDateFormatter *_dateFormatterNoTimeMediumDateRelative = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _dateFormatter = [[NSDateFormatter alloc] init];
-        [_dateFormatter setTimeStyle:NSDateFormatterNoStyle];
-        [_dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-        [_dateFormatter setDoesRelativeDateFormatting:YES];
+        _dateFormatterNoTimeMediumDateRelative = [[NSDateFormatter alloc] init];
+        [_dateFormatterNoTimeMediumDateRelative setTimeStyle:NSDateFormatterNoStyle];
+        [_dateFormatterNoTimeMediumDateRelative setDateStyle:NSDateFormatterMediumStyle];
+        [_dateFormatterNoTimeMediumDateRelative setDoesRelativeDateFormatting:YES];
     });
     
-    return _dateFormatter;
+    return _dateFormatterNoTimeMediumDateRelative;
+}
+
++ (NSDateFormatter *) dateTimeFormatter
+{
+    static NSDateFormatter *_dateTimeFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateTimeFormatter = [[NSDateFormatter alloc] init];
+        [_dateTimeFormatter setTimeStyle:NSDateFormatterShortStyle];
+        [_dateTimeFormatter setDateStyle:NSDateFormatterMediumStyle];
+    });
+    
+    return _dateTimeFormatter;
 }
 
 + (NSString *) genRandStringLength: (int) len

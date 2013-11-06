@@ -79,6 +79,12 @@
                                                        NSParagraphStyleAttributeName: paraStyle}];
 }
 
+- (CGSize)sizeThatFits:(CGSize)size
+{
+    CGSize superSize = [super sizeThatFits:size];
+    return CGSizeMake(superSize.width+self.textEdgeInsets.left+self.textEdgeInsets.right,
+                      superSize.height+self.textEdgeInsets.top+self.textEdgeInsets.bottom);
+}
 
 #pragma mark - Private
 

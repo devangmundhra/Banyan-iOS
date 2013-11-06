@@ -54,10 +54,10 @@
     rect = UIEdgeInsetsInsetRect(rect, _textEdgeInsets);
     
     if (self.verticalTextAlignment == BNLabelVerticalTextAlignmentTop) {
-        CGSize sizeThatFits = [self sizeThatFits:rect.size];
+        CGSize sizeThatFits = [super sizeThatFits:rect.size];
         rect = CGRectMake(rect.origin.x, rect.origin.y, rect.size.width, sizeThatFits.height);
     } else if (self.verticalTextAlignment == BNLabelVerticalTextAlignmentBottom) {
-        CGSize sizeThatFits = [self sizeThatFits:rect.size];
+        CGSize sizeThatFits = [super sizeThatFits:rect.size];
         rect = CGRectMake(rect.origin.x, rect.origin.y + (rect.size.height - sizeThatFits.height), rect.size.width, sizeThatFits.height);
     }
     
@@ -65,10 +65,18 @@
 }
 
 
+- (CGSize)sizeThatFits:(CGSize)size
+{
+    CGSize superSize = [super sizeThatFits:size];
+    return CGSizeMake(superSize.width+self.textEdgeInsets.left+self.textEdgeInsets.right,
+                      superSize.height+self.textEdgeInsets.top+self.textEdgeInsets.bottom);
+}
+
 #pragma mark - Private
 
 - (void)_initialize {
     self.verticalTextAlignment = BNLabelVerticalTextAlignmentMiddle;
     self.textEdgeInsets = UIEdgeInsetsZero;
 }
+
 @end
