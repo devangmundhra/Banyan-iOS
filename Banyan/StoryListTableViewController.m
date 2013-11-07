@@ -90,7 +90,7 @@ typedef enum {
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.backgroundColor = BANYAN_CLEAR_COLOR;
     titleLabel.attributedText = [[NSAttributedString alloc] initWithString:@"Banyan"
-                                                                            attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:20]}];
+                                                                attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:20]}];
     
     self.navigationItem.titleView = titleLabel;
     

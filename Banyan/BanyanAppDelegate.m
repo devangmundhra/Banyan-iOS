@@ -487,7 +487,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSDate *lastLoginDate = [defaults objectForKey:BNUserDefaultsLastLogin];
     [defaults setObject:[NSDate date] forKey:BNUserDefaultsLastLogin];
-    return lastLoginDate?YES:NO;
+    return lastLoginDate?NO:YES;
 }
 
 #pragma mark Background Timer to upload unsaved objects
