@@ -39,7 +39,7 @@ NSString *const BNUserDefaultsUserPageTurnAnimation = @"io.banyan.Banyan.userDef
 
 NSString *const BNUserDefaultsCurrentOngoingStoryToContribute = @"io.banyan.Banyan.UserDefaults.currentOngoingStoryToContribute";
 
-NSString *const BNUserDefaultsFirstTimeLoginV0_0 = @"io.banyan.Banyan.UserDefaults.firstTimeLogin.V0.0";
+NSString *const BNUserDefaultsLastLogin = @"io.banyan.Banyan.UserDefaults.lastLogin";
 
 #pragma mark - ManagedObject Story Class
 // Class key

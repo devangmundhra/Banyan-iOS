@@ -22,7 +22,6 @@
 		5112D105181C61F0003E8C37 /* UIPlaceHolderTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5112D104181C61F0003E8C37 /* UIPlaceHolderTextView.m */; };
 		5112D106181E4EEA003E8C37 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 517A01BD17095F2100665F0F /* Accelerate.framework */; };
 		5112D109181E5DB9003E8C37 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 5112D108181E5DB9003E8C37 /* UIImage+ImageEffects.m */; };
-		5114F56817FBE839000CB875 /* libAviarySDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5114F56517FBE839000CB875 /* libAviarySDK.a */; };
 		5114F56917FBE839000CB875 /* AviarySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5114F56717FBE839000CB875 /* AviarySDKResources.bundle */; };
 		51170B5717F2D1E10015B343 /* BNSidePanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B5617F2D1E10015B343 /* BNSidePanelController.m */; };
 		51170B6217F3D73D0015B343 /* SideNavigatorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B6117F3D73D0015B343 /* SideNavigatorViewController.m */; };
@@ -195,6 +194,7 @@
 		51C4253A1828E15100AF90C1 /* NextStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C425381828E15100AF90C1 /* NextStoryViewController.m */; };
 		51C4253B1828E15100AF90C1 /* NextStoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51C425391828E15100AF90C1 /* NextStoryViewController.xib */; };
 		51C42541182A488F00AF90C1 /* BNIntroductionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C42540182A488F00AF90C1 /* BNIntroductionView.m */; };
+		51C42543182B799300AF90C1 /* libAviarySDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5114F56517FBE839000CB875 /* libAviarySDK.a */; };
 		51CCA1521732498D007616EA /* commentSymbolWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CCA1501732498D007616EA /* commentSymbolWhite.png */; };
 		51CCA1531732498D007616EA /* commentSymbolWhite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CCA1511732498D007616EA /* commentSymbolWhite@2x.png */; };
 		51CCA15617324998007616EA /* heartSymbolWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 51CCA15417324998007616EA /* heartSymbolWhite.png */; };
@@ -584,6 +584,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51C42543182B799300AF90C1 /* libAviarySDK.a in Frameworks */,
 				5112D106181E4EEA003E8C37 /* Accelerate.framework in Frameworks */,
 				5112D057181A4CE5003E8C37 /* CoreVideo.framework in Frameworks */,
 				512598BC17AB918D00FEFCF0 /* libsqlite3.dylib in Frameworks */,
@@ -601,7 +602,6 @@
 				5189B45715B3A38E00562DD0 /* QuartzCore.framework in Frameworks */,
 				5189B3C915B39BE700562DD0 /* AudioToolbox.framework in Frameworks */,
 				5189B3C715B39BE100562DD0 /* MobileCoreServices.framework in Frameworks */,
-				5114F56817FBE839000CB875 /* libAviarySDK.a in Frameworks */,
 				5189B2BC15B387E200562DD0 /* CoreGraphics.framework in Frameworks */,
 				514EEA8C17C5EF4700B4BCBF /* AWSRuntime.framework in Frameworks */,
 				5189B3C315B39BCC00562DD0 /* MapKit.framework in Frameworks */,
@@ -1238,8 +1238,7 @@
 				51984D42176EE10E00CD6C3E /* CoreDataTableViewController.m */,
 				5189B31715B395F300562DD0 /* StoryListTableViewController.h */,
 				5189B31815B395F300562DD0 /* StoryListTableViewController.m */,
-				51C4253F182A488F00AF90C1 /* BNIntroductionView.h */,
-				51C42540182A488F00AF90C1 /* BNIntroductionView.m */,
+				51C42542182B769D00AF90C1 /* IntroView */,
 				51170B7917F907090015B343 /* Interaction Controller for Story List */,
 			);
 			name = "Story List";
@@ -1404,6 +1403,15 @@
 				51C425341827991900AF90C1 /* GooglePlacesCell.m */,
 			);
 			name = GooglePlacesTableViewCell;
+			sourceTree = "<group>";
+		};
+		51C42542182B769D00AF90C1 /* IntroView */ = {
+			isa = PBXGroup;
+			children = (
+				51C4253F182A488F00AF90C1 /* BNIntroductionView.h */,
+				51C42540182A488F00AF90C1 /* BNIntroductionView.m */,
+			);
+			name = IntroView;
 			sourceTree = "<group>";
 		};
 		51CFD93015F3121C002926F9 /* Settings */ = {
@@ -1918,9 +1926,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\\\\\\\"$(SRCROOT)/Banyan/AviarySDK\\\\\\\"",
-					/Users/devangmundhra/Developer/Banyan/Banyan/AviarySDK,
 					/Users/devangmundhra/Developer/Banyan/Banyan/lib,
+					/Users/devangmundhra/Developer/Banyan/Banyan/AviarySDK,
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -1964,9 +1971,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\\\\\\\"$(SRCROOT)/Banyan/AviarySDK\\\\\\\"",
-					/Users/devangmundhra/Developer/Banyan/Banyan/AviarySDK,
 					/Users/devangmundhra/Developer/Banyan/Banyan/lib,
+					/Users/devangmundhra/Developer/Banyan/Banyan/AviarySDK,
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",

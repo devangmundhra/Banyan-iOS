@@ -42,20 +42,16 @@ typedef enum {
 
 @implementation StoryListTableViewController
 
--(UIStatusBarStyle)preferredStatusBarStyle
-{
-    return UIStatusBarStyleDefault;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    [self setNeedsStatusBarAppearanceUpdate];
-
     // Animation between view controllers
     self.animationController = [[CEFlipAnimationController alloc] init];
     self.interactionController = [[BNHorizontalSwipeInteractionController alloc] init];
+    
+    [self.navigationController.navigationBar setBarStyle:UIBarStyleDefault];
+    self.navigationController.navigationBar.translucent = YES;
     
     self.title = @"Stories";
     
@@ -118,9 +114,14 @@ typedef enum {
                                                  name:BNRefreshCurrentStoryListNotification
                                                object:nil];
     
-    BNIntroductionView *introductionView = [[BNIntroductionView alloc] initWithFrame:self.view.bounds];
-    introductionView.delegate = self;
-    [self.view addSubview:introductionView];
+    if ([BanyanAppDelegate isFirstTimeUser]) {
+        [self.navigationController setNavigationBarHidden:YES];
+        self.tableView.scrollEnabled = NO;
+        BNIntroductionView *introductionView = [[BNIntroductionView alloc] initWithFrame:self.view.bounds];
+        introductionView.delegate = self;
+        [self.view addSubview:introductionView];
+        [self setNeedsStatusBarAppearanceUpdate];
+    }
     
     [TestFlight passCheckpoint:@"RootViewController loaded"];
 }
@@ -537,6 +538,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [introductionView removeFromSuperview];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    self.tableView.scrollEnabled = YES;
 }
 
 -(void)introduction:(MYBlurIntroductionView *)introductionView didChangeToPanel:(MYIntroductionPanel *)panel withIndex:(NSInteger)panelIndex
@@ -544,11 +546,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     //You can edit introduction view properties right from the delegate method!
     //If it is the first panel, change the color to green!
     if (panelIndex == 0) {
-        [introductionView setBackgroundColor:[BANYAN_GREEN_COLOR colorWithAlphaComponent:0.65]];
+        [introductionView setBackgroundColor:BANYAN_GREEN_COLOR];
     }
     //If it is the second panel, change the color to blue!
     else if (panelIndex == 1){
-        [introductionView setBackgroundColor:[BANYAN_BROWN_COLOR colorWithAlphaComponent:0.65]];
+        [introductionView setBackgroundColor:BANYAN_BROWN_COLOR];
     }
 }
 

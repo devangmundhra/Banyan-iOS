@@ -26,22 +26,22 @@
 {
     //Create Stock Panel with header
     MYIntroductionPanel *panel1 = [[MYIntroductionPanel alloc] initWithFrame:frame
-                                                                       title:@"Title 1"
-                                                                 description:@"Description 1."];
+                                                                       title:@"Welcome to Banyan!"
+                                                                 description:@"Banyan is a tool to help you and people around you capture experiences together."];
     
     
     //Create Stock Panel With Image
     MYIntroductionPanel *panel2 = [[MYIntroductionPanel alloc] initWithFrame:frame
-                                                                       title:@"Title 2"
-                                                                 description:@"Desc 2"];
+                                                                       title:@"Thanks for helping out!"
+                                                                 description:@"Now that you know what Banyan is, we would really love it if you could keep letting us know what can be done to make it more useful for you. We want to be able to provide you the best way to create and share your stories with anyone."];
     
     //Add panels to an array
     NSArray *panels = @[panel1, panel2];
-    [self setBackgroundColor:[BANYAN_GREEN_COLOR colorWithAlphaComponent:0.65]];
     //introductionView.LanguageDirection = MYLanguageDirectionRightToLeft;
     
     //Build the introduction with desired panels
     [self buildIntroductionWithPanels:panels];
+    [self setBackgroundColor:BANYAN_GREEN_COLOR];
 }
 
 @end
