@@ -74,6 +74,9 @@ NSString *const AVCamCaptureManagerInfoImage = @"AVCamCaptureManagerInfoImage";
 - (void)deviceOrientationDidChange;
 @end
 
+@interface AVCamCaptureManager ()
+@property (strong, nonatomic) NSURL *imageURL;
+@end
 
 #pragma mark -
 @implementation AVCamCaptureManager
@@ -88,6 +91,7 @@ NSString *const AVCamCaptureManagerInfoImage = @"AVCamCaptureManagerInfoImage";
 @synthesize deviceDisconnectedObserver;
 @synthesize backgroundRecordingID;
 @synthesize delegate;
+@synthesize imageURL = _imageURL;
 
 - (id) init
 {
@@ -282,9 +286,15 @@ NSString *const AVCamCaptureManagerInfoImage = @"AVCamCaptureManagerInfoImage";
 															 if (imageDataSampleBuffer != NULL) {
 																 NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
                                                                  UIImage *image = [[UIImage alloc] initWithData:imageData];
-                                                                 AFPhotoEditorController *editorController = [[AFPhotoEditorController alloc] initWithImage:image];
-                                                                 [editorController setDelegate:self];
-                                                                 [APP_DELEGATE.topMostController presentViewController:editorController animated:NO completion:nil];
+                                                                 ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+                                                                 [library writeImageToSavedPhotosAlbum:[image CGImage]
+                                                                                           orientation:(ALAssetOrientation)[image imageOrientation]
+                                                                                       completionBlock:^(NSURL *assetURL, NSError *error) {
+                                                                                           self.imageURL = assetURL;
+                                                                                           AFPhotoEditorController *editorController = [[AFPhotoEditorController alloc] initWithImage:image];
+                                                                                           [editorController setDelegate:self];
+                                                                                            [APP_DELEGATE.topMostController presentViewController:editorController animated:NO completion:nil];
+                                                                                       }];
 															 }
 															 else
 																 completionBlock(nil, error);
@@ -544,10 +554,19 @@ bail:
         }
     };
     
-    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-    [library writeImageToSavedPhotosAlbum:[image CGImage]
-                              orientation:(ALAssetOrientation)[image imageOrientation]
-                          completionBlock:completionBlock];
+    AFPhotoEditorSession *afpSession = editor.session;
+    
+    if (afpSession.modified)
+    {
+        // If image was modified, save again)
+        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+        [library writeImageToSavedPhotosAlbum:[image CGImage]
+                                  orientation:(ALAssetOrientation)[image imageOrientation]
+                              completionBlock:completionBlock];
+        
+    } else {
+        completionBlock(self.imageURL, nil);
+    }
 }
 
 - (void)photoEditorCanceled:(AFPhotoEditorController *)editor
