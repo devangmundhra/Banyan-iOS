@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "BNMisc.h"
+#import "SDWebImage/SDWebImageDownloader.h"
 
 typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
     MediaRemoteStatusLocal,       // Only local version
@@ -52,8 +53,8 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
 - (void)save;
 - (void)cloneFrom:(Media *)source;
 
-- (void) getImageForMediaWithSuccess:(void (^)(UIImage *))success failure:(void (^)(NSError *error))failure;
-- (void) getImageWithContentMode:(UIViewContentMode)contentMode
+- (id<SDWebImageOperation>) getImageForMediaWithSuccess:(void (^)(UIImage *))success failure:(void (^)(NSError *error))failure;
+- (id<SDWebImageOperation>) getImageWithContentMode:(UIViewContentMode)contentMode
                           bounds:(CGSize)size
             interpolationQuality:(CGInterpolationQuality)quality
              forMediaWithSuccess:(void (^)(UIImage *))success

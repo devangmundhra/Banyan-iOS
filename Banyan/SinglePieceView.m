@@ -5,15 +5,18 @@
 //  Created by Devang Mundhra on 6/16/13.
 //
 //
-
+/* Note: The operationKey part has been copied from SDWebImage UIImageView category so that 
+ * the resizing part (done by the Media class method) can be used directly
+ */
 #import "SinglePieceView.h"
 #import "Media.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <QuartzCore/QuartzCore.h>
-#import "SDWebImage/UIImageView+WebCache.h"
+#import "objc/runtime.h"
 
 static UIFont *_boldCondensedFont;
 static UIFont *_regularFont;
+static char operationKey;
 
 @interface SinglePieceView ()
 @property (strong, nonatomic) UILabel *label;
@@ -67,29 +70,42 @@ static UIFont *_regularFont;
 
 - (void) loadPiece
 {
+    [self cancelCurrentImageLoad];
     if (self.piece) {
         Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
         
         if (imageMedia) {
-            if ([imageMedia.remoteURL length]) {
-                [self setImageWithURL:[NSURL URLWithString:imageMedia.remoteURL] placeholderImage:nil options:SDWebImageProgressiveDownload];
-            } else if ([imageMedia.localURL length]) {
-                ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
-                [library assetForURL:[NSURL URLWithString:imageMedia.localURL] resultBlock:^(ALAsset *asset) {
-                    ALAssetRepresentation *rep = [asset defaultRepresentation];
-                    CGImageRef imageRef = [rep fullScreenImage];
-                    UIImage *image = [UIImage imageWithCGImage:imageRef];
-                    [self setImage:image];
-                }
-                        failureBlock:^(NSError *error) {
-                            NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
-                        }
-                 ];
-            } else {
+            __weak UIImageView *wself = self;
+            id<SDWebImageOperation> operation = [imageMedia getImageWithContentMode:UIViewContentModeScaleAspectFill
+                                                                             bounds:self.bounds.size
+                                                               interpolationQuality:kCGInterpolationDefault
+                                                                forMediaWithSuccess:^(UIImage *image) {
+                                                                    if (!wself) return;
+                                                                    void (^block)(void) = ^
+                                                                    {
+                                                                        __strong UIImageView *sself = wself;
+                                                                        if (!sself) return;
+                                                                        if (image)
+                                                                        {
+                                                                            sself.image = image;
+                                                                            [sself setNeedsLayout];
+                                                                        }
+                                                                    };
+                                                                    if ([NSThread isMainThread])
+                                                                    {
+                                                                        block();
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        dispatch_sync(dispatch_get_main_queue(), block);
+                                                                    }
+                                                                }
+                                                                            failure:nil];
+            objc_setAssociatedObject(self, &operationKey, operation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        } else {
                 [self setImageWithURL:nil];
-            }
         }
-        
+
         CGRect frame = self.bounds;
         frame.origin.x += 5;
         frame.origin.y += CGRectGetHeight(frame)/2;
@@ -147,4 +163,14 @@ static UIFont *_regularFont;
     self.frame = CGRectZero;
 }
 
+- (void)cancelCurrentImageLoad
+{
+    // Cancel in progress downloader from queue
+    id<SDWebImageOperation> operation = objc_getAssociatedObject(self, &operationKey);
+    if (operation)
+    {
+        [operation cancel];
+        objc_setAssociatedObject(self, &operationKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+}
 @end
