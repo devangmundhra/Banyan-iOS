@@ -259,7 +259,6 @@ static void *AVCamFocusModeObserverContext = &AVCamFocusModeObserverContext;
 
 - (IBAction)cancel:(id)sender
 {
-    [self hideAVCamViewControllerControls];
     [delegate dismissAVCamViewController:self];
 }
 

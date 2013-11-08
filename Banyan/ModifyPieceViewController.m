@@ -739,7 +739,6 @@
     [self.scrollView addSubview:self.addPhotoButton];
     [self.scrollView addSubview:self.audioPickerView];
     [self.scrollView addSubview:self.addLocationButton];
-    
     [UIView animateWithDuration:1
                      animations:^{
                          self.storyTitleButton.alpha = 1;
@@ -749,6 +748,7 @@
                          self.audioPickerView.alpha = 1;
                          self.addLocationButton.alpha = 1;
                          self.scrollView.alpha = 1;
+                         [viewController hideAVCamViewControllerControls];
                      }
                      completion:^(BOOL finished){
                      }
