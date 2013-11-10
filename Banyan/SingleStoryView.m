@@ -223,7 +223,7 @@ static BOOL _loggedIn;
     // Time label
     point = CGPointMake(TABLE_CELL_MARGIN+_clockSymbolImage.size.width+SPACER_DISTANCE, TOP_VIEW_HEIGHT/2+SPACER_DISTANCE);
     [[UIColor grayColor] set];
-    string = [_dateFormatter stringFromDate:[self.story.createdAt dateByAddingTimeInterval:[[NSTimeZone systemTimeZone] secondsFromGMT]]];
+    string = [_dateFormatter stringFromDate:self.story.createdAt];
     size = CGSizeMake(CGRectGetWidth(self.frame)/2 - TABLE_CELL_MARGIN - BUTTON_SPACING, TOP_VIEW_HEIGHT/2);
     
     paraStyle = [[NSMutableParagraphStyle alloc] init];

@@ -377,8 +377,7 @@
             [self togglePieceLikeButtonLabel];
         }
         // date label
-        self.timeLabel.text = [NSString stringWithFormat:@"%@",[[BNMisc dateTimeFormatter] stringFromDate:[self.piece.createdAt
-                                                                                             dateByAddingTimeInterval:[[NSTimeZone systemTimeZone] secondsFromGMT]]]];
+        self.timeLabel.text = [NSString stringWithFormat:@"%@",[[BNMisc dateTimeFormatter] stringFromDate:self.piece.createdAt]];
         self.timeLabel.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSET_BIG, 0, TEXT_INSET_SMALL);
         self.timeLabel.font = [UIFont fontWithName:@"Roboto" size:12];
         self.timeLabel.minimumScaleFactor = 0.8;
