@@ -407,7 +407,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         [self.tableView reloadData];
         return;
     }
-    StoryReaderController *storyReaderController = [[StoryReaderController alloc] initWithPiece:pieceToShow];
+    [self storyReaderWithStory:story piece:pieceToShow];
+}
+
+- (void)storyReaderWithStory:(Story *)story piece:(Piece *)piece
+{
+    StoryReaderController *storyReaderController = [[StoryReaderController alloc] initWithPiece:piece];
     storyReaderController.story = story;
     storyReaderController.delegate = self;
     storyReaderController.hidesBottomBarWhenPushed = YES;
@@ -507,15 +512,21 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     Story *currentStory = storyReaderController.story;
     NSIndexPath *currentIndexPath = [self.fetchedResultsController indexPathForObject:currentStory];
     if (currentIndexPath) {
+        NSUInteger i = 1;
         Story *nextStory = nil;
-        NSIndexPath *nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row+1 inSection:currentIndexPath.section];
-        @try {
-            nextStory = [self.fetchedResultsController objectAtIndexPath:nextIndexPath];
-            return nextStory;
-        }
-        @catch (NSException *exception) {
-            return nil;
-        }
+        do {
+            NSIndexPath *nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row+1 inSection:currentIndexPath.section];
+            @try {
+                nextStory = [self.fetchedResultsController objectAtIndexPath:nextIndexPath];
+                if (nextStory.pieces.count)
+                    return nextStory;
+                else
+                    i++;
+            }
+            @catch (NSException *exception) {
+                return nil;
+            }
+        } while (TRUE && nextStory); // Get the next story that has some piece to read
     } else {
         return nil;
     }
@@ -524,8 +535,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (void)storyReaderControllerReadNextStory:(Story *)nextStory
 {
     if (nextStory) {
-        NSIndexPath *currentIndexPath = [self.fetchedResultsController indexPathForObject:nextStory];
-        [self readStoryForIndexPath:currentIndexPath];
+        Piece *piece = [Piece pieceForStory:nextStory withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:1]];
+        if (piece) {
+            [self storyReaderWithStory:nextStory piece:piece];
+        }
     }
 }
 

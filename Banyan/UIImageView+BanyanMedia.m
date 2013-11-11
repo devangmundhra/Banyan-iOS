@@ -19,7 +19,7 @@
         return;
     }
     
-    assert([media.mediaType isEqualToString:@"image"]);
+    assert([media.mediaType isEqualToString:@"image"] || [media.mediaType  isEqualToString:@"gif"]);
     
     __weak UIImageView *wself = self;
     if ([media.remoteURL length]) {

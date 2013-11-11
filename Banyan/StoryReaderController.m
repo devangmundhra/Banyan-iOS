@@ -123,10 +123,6 @@
     [self.view addSubview:self.pageViewController.view];
     self.pageViewController.view.frame = self.view.bounds;
     [self.pageViewController didMoveToParentViewController:self];
-    
-//    [self.pageViewController.gestureRecognizers enumerateObjectsUsingBlock:^(UIGestureRecognizer *gR, NSUInteger idx, BOOL *stop){
-//        gR.delegate = self;
-//    }];
 
     self.view.gestureRecognizers = self.pageViewController.gestureRecognizers;
     
