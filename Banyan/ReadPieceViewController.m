@@ -11,19 +11,18 @@
 #import "Story+Stats.h"
 #import <QuartzCore/QuartzCore.h>
 #import "AFBanyanAPIClient.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 #import "Piece+Edit.h"
 #import "Piece+Create.h"
 #import "SMPageControl.h"
 #import "NSObject+BlockObservation.h"
-#import "Media.h"
 #import "User.h"
-#import "SDWebImage/UIImageView+WebCache.h"
 #import "Piece+Delete.h"
 #import "ModifyStoryViewController.h"
 #import "ModifyPieceViewController.h"
 #import "BNLabel.h"
 #import "BNMisc.h"
+#import "Media.h"
+#import "UIImageView+BanyanMedia.h"
 
 @interface ReadPieceViewController () <UIActionSheetDelegate, ModifyPieceViewControllerDelegate>
 
@@ -449,23 +448,10 @@
     }
     
     if (hasImage) {
-        if ([imageMedia.remoteURL length]) {
-            [self.imageView setImageWithURL:[NSURL URLWithString:imageMedia.remoteURL] placeholderImage:nil options:SDWebImageProgressiveDownload];
-        } else {
-            ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
-            [library assetForURL:[NSURL URLWithString:imageMedia.localURL] resultBlock:^(ALAsset *asset) {
-                ALAssetRepresentation *rep = [asset defaultRepresentation];
-                CGImageRef imageRef = [rep fullScreenImage];
-                UIImage *image = [UIImage imageWithCGImage:imageRef];
-                [self.imageView setImage:image];
-            }
-                    failureBlock:^(NSError *error) {
-                        NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
-                    }
-             ];
-        }
+        [self.imageView showMedia:imageMedia withPostProcess:nil];
     } else {
         [self.imageView setImageWithURL:nil];
+        [self.imageView cancelCurrentImageLoad];
     }
     
     if (hasDescription || !hasImage) {

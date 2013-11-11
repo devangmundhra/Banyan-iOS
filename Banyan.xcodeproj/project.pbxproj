@@ -65,6 +65,7 @@
 		5158AE2B16F56F7F0089193E /* BNTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5158AE2916F56F7E0089193E /* BNTabBarController.m */; };
 		51596AB11744BAF7008F5276 /* BNMisc.m in Sources */ = {isa = PBXBuildFile; fileRef = 51596AB01744BAF7008F5276 /* BNMisc.m */; };
 		51596AB71745E285008F5276 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51596AB61745E284008F5276 /* CoreMedia.framework */; };
+		515DE02F183040C200B88596 /* UIImageView+BanyanMedia.m in Sources */ = {isa = PBXBuildFile; fileRef = 515DE02E183040C200B88596 /* UIImageView+BanyanMedia.m */; };
 		5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B615E75B420072749C /* buttonFacebook.png */; };
 		5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B715E75B420072749C /* buttonFacebook@2x.png */; };
 		5166B1BC15E75B420072749C /* buttonFacebookSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B815E75B420072749C /* buttonFacebookSelected.png */; };
@@ -336,6 +337,8 @@
 		51596AAF1744BAF7008F5276 /* BNMisc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNMisc.h; sourceTree = "<group>"; };
 		51596AB01744BAF7008F5276 /* BNMisc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNMisc.m; sourceTree = "<group>"; };
 		51596AB61745E284008F5276 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		515DE02D183040C200B88596 /* UIImageView+BanyanMedia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImageView+BanyanMedia.h"; path = "Banyan/UIImageView+BanyanMedia.h"; sourceTree = "<group>"; };
+		515DE02E183040C200B88596 /* UIImageView+BanyanMedia.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImageView+BanyanMedia.m"; path = "Banyan/UIImageView+BanyanMedia.m"; sourceTree = "<group>"; };
 		5166B1B615E75B420072749C /* buttonFacebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebook.png; sourceTree = "<group>"; };
 		5166B1B715E75B420072749C /* buttonFacebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFacebook@2x.png"; sourceTree = "<group>"; };
 		5166B1B815E75B420072749C /* buttonFacebookSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebookSelected.png; sourceTree = "<group>"; };
@@ -854,6 +857,15 @@
 			name = "Constants and Misc";
 			sourceTree = "<group>";
 		};
+		515DE030183040CE00B88596 /* UIImageView */ = {
+			isa = PBXGroup;
+			children = (
+				515DE02D183040C200B88596 /* UIImageView+BanyanMedia.h */,
+				515DE02E183040C200B88596 /* UIImageView+BanyanMedia.m */,
+			);
+			name = UIImageView;
+			sourceTree = "<group>";
+		};
 		5166B1B515E75B420072749C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -1250,6 +1262,7 @@
 			children = (
 				510F490F1727D13F005BC5ED /* NSObject */,
 				51979A7B15F08E6F008194AF /* UIImage Categories */,
+				515DE030183040CE00B88596 /* UIImageView */,
 			);
 			name = "Helpful Categories";
 			path = ..;
@@ -1801,6 +1814,7 @@
 				51B2351A17168C69004241C1 /* BNImageLabel.m in Sources */,
 				51F8F436176E43620056A308 /* SingleStoryCell.m in Sources */,
 				51B235211717DBA9004241C1 /* BNTableViewController.m in Sources */,
+				515DE02F183040C200B88596 /* UIImageView+BanyanMedia.m in Sources */,
 				51A8494A171CF4A500367039 /* BNPlacePickerViewController.m in Sources */,
 				51A8494D171D24E900367039 /* BNFBLocationManager.m in Sources */,
 				510F49171727D191005BC5ED /* NSObject+BlockObservation.m in Sources */,

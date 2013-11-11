@@ -11,11 +11,8 @@
 #import "User.h"
 #import "Story+Permissions.h"
 #import "BNLabel.h"
-#import "Media.h"
-#import "UIImageView+WebCache.h"
 #import "UIImage+ImageEffects.h"
-#import <AssetsLibrary/AssetsLibrary.h>
-#import "SDWebImage/SDWebImageDownloader.h"
+#import "UIImageView+BanyanMedia.h"
 
 @interface StoryPickerCell ()
 
@@ -99,29 +96,9 @@
     
     // Image
     Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:story.media];
-    if (imageMedia) {
-        if ([imageMedia.remoteURL length]) {
-            __weak UIImageView *wImageViewself = self.imageView;
-            [self.imageView setImageWithURL:[NSURL URLWithString:imageMedia.remoteURL] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                UIImage *imageWithEffect = [image applyLightEffect];
-                wImageViewself.image = imageWithEffect;
-            }];
-        } else if ([imageMedia.localURL length]) {
-            ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
-            [library assetForURL:[NSURL URLWithString:imageMedia.localURL] resultBlock:^(ALAsset *asset) {
-                ALAssetRepresentation *rep = [asset defaultRepresentation];
-                CGImageRef imageRef = [rep fullScreenImage];
-                UIImage *image = [[UIImage imageWithCGImage:imageRef] applyLightEffect];
-                [self.imageView setImage:image];
-            }
-                    failureBlock:^(NSError *error) {
-                        NSLog(@"***** ERROR IN FILE CREATE ***\nCan't find the asset library image");
-                    }
-             ];
-        } else {
-            [self.imageView setImageWithURL:nil];
-        }
-    }
+    [self.imageView showMedia:imageMedia withPostProcess:^UIImage *(UIImage *image) {
+        return [image applyLightEffect];
+    }];
     
     // Story title
     frame.origin = CGPointMake(TEXT_INSETS, VIEW_INSETS);
@@ -139,6 +116,11 @@
     frame.size.height = CGRectGetHeight(self.frame) - CGRectGetHeight(self.titleLabel.frame);
     self.authorLabel.frame = frame;
     self.authorLabel.text = [story shortStringOfContributors];
+}
+
+- (void)prepareForReuse
+{
+    [self.imageView cancelCurrentImageLoad];
 }
 
 - (void)displayAsAddStoryButton

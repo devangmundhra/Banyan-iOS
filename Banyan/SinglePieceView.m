@@ -9,14 +9,10 @@
  * the resizing part (done by the Media class method) can be used directly
  */
 #import "SinglePieceView.h"
-#import "Media.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 #import <QuartzCore/QuartzCore.h>
-#import "objc/runtime.h"
 
 static UIFont *_boldCondensedFont;
 static UIFont *_regularFont;
-static char operationKey;
 
 @interface SinglePieceView ()
 @property (strong, nonatomic) UILabel *label;
@@ -73,38 +69,7 @@ static char operationKey;
     [self cancelCurrentImageLoad];
     if (self.piece) {
         Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
-        
-        if (imageMedia) {
-            __weak UIImageView *wself = self;
-            id<SDWebImageOperation> operation = [imageMedia getImageWithContentMode:UIViewContentModeScaleAspectFill
-                                                                             bounds:self.bounds.size
-                                                               interpolationQuality:kCGInterpolationDefault
-                                                                forMediaWithSuccess:^(UIImage *image) {
-                                                                    if (!wself) return;
-                                                                    void (^block)(void) = ^
-                                                                    {
-                                                                        __strong UIImageView *sself = wself;
-                                                                        if (!sself) return;
-                                                                        if (image)
-                                                                        {
-                                                                            sself.image = image;
-                                                                            [sself setNeedsLayout];
-                                                                        }
-                                                                    };
-                                                                    if ([NSThread isMainThread])
-                                                                    {
-                                                                        block();
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        dispatch_sync(dispatch_get_main_queue(), block);
-                                                                    }
-                                                                }
-                                                                            failure:nil];
-            objc_setAssociatedObject(self, &operationKey, operation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        } else {
-                [self setImageWithURL:nil];
-        }
+        [self showMedia:imageMedia withPostProcess:nil];
 
         CGRect frame = self.bounds;
         frame.origin.x += 5;
@@ -161,16 +126,5 @@ static char operationKey;
     self.label.frame = CGRectZero;
     self.label.hidden = YES;
     self.frame = CGRectZero;
-}
-
-- (void)cancelCurrentImageLoad
-{
-    // Cancel in progress downloader from queue
-    id<SDWebImageOperation> operation = objc_getAssociatedObject(self, &operationKey);
-    if (operation)
-    {
-        [operation cancel];
-        objc_setAssociatedObject(self, &operationKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    }
 }
 @end

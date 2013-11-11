@@ -53,8 +53,8 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
 - (void)save;
 - (void)cloneFrom:(Media *)source;
 
-- (id<SDWebImageOperation>) getImageForMediaWithSuccess:(void (^)(UIImage *))success failure:(void (^)(NSError *error))failure;
-- (id<SDWebImageOperation>) getImageWithContentMode:(UIViewContentMode)contentMode
+- (void) getImageForMediaWithSuccess:(void (^)(UIImage *))success failure:(void (^)(NSError *error))failure;
+- (void) getImageWithContentMode:(UIViewContentMode)contentMode
                           bounds:(CGSize)size
             interpolationQuality:(CGInterpolationQuality)quality
              forMediaWithSuccess:(void (^)(UIImage *))success

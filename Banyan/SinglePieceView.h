@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "Piece.h"
+#import "UIImageView+BanyanMedia.h"
 
 @interface SinglePieceView : UIImageView
 @property (strong, nonatomic) Piece *piece;

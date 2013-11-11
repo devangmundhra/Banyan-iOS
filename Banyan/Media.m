@@ -9,6 +9,7 @@
 #import "Media.h"
 #import "RemoteObject.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "SDWebImage/SDWebImageDownloader.h"
 #import "UIImage+ResizeAdditions.h"
 #import "BNAWSS3Client.h"
 #import "User.h"
@@ -346,33 +347,33 @@
     return mediaMapping;
 }
 
-- (id<SDWebImageOperation>) getImageWithContentMode:(UIViewContentMode)contentMode
+- (void) getImageWithContentMode:(UIViewContentMode)contentMode
                           bounds:(CGSize)size
             interpolationQuality:(CGInterpolationQuality)quality
              forMediaWithSuccess:(void (^)(UIImage *))success
                          failure:(void (^)(NSError *error))failure
 {
-    return [self getImageForMediaWithSuccess:^(UIImage *image) {
+    [self getImageForMediaWithSuccess:^(UIImage *image) {
         success([image resizedImageWithContentMode:contentMode bounds:size interpolationQuality:quality]);
     }
                               failure:failure];
 }
 
-- (id<SDWebImageOperation>) getImageForMediaWithSuccess:(void (^)(UIImage *image))success failure:(void (^)(NSError *error))failure
+- (void) getImageForMediaWithSuccess:(void (^)(UIImage *image))success failure:(void (^)(NSError *error))failure
 {
     assert([self.mediaType isEqualToString:@"image"]);
     
     if ([self.remoteURL length]) {
-        return [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:self.remoteURL] options:SDWebImageDownloaderUseNSURLCache
-                                                                    progress:nil
-                                                                   completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
-                                                                       if (image) {
-                                                                           if (success) success(image);
-                                                                       }
-                                                                       else {
-                                                                           if (failure) failure(error);
-                                                                       }
-                                                                   }];
+        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:self.remoteURL] options:SDWebImageDownloaderUseNSURLCache
+                                                             progress:nil
+                                                            completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+                                                                if (image) {
+                                                                    if (success) success(image);
+                                                                }
+                                                                else {
+                                                                    if (failure) failure(error);
+                                                                }
+                                                            }];
     } else if ([self.localURL length]) {
         ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
         [library assetForURL:[NSURL URLWithString:self.localURL] resultBlock:^(ALAsset *asset) {
@@ -383,10 +384,7 @@
         }
                 failureBlock:failure
          ];
-        
-        return nil;
     }
-    return nil;
 }
 
 @end
