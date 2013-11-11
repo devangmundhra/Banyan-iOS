@@ -26,4 +26,5 @@
 - (void) enableWriteButton:(BOOL)set;
 - (void) canRead:(BOOL)set;
 - (void) canWrite:(BOOL)set;
+- (void) hideReadWriteButtons:(BOOL)hide;
 @end

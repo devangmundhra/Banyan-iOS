@@ -53,12 +53,17 @@
 
 - (void) setup
 {
+    nameLabel.font = [UIFont fontWithName:@"Roboto" size:14];
+    
     // Read button
     [readButton addTarget:self action:@selector(readButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    readButton.exclusiveTouch = YES;
     
     // Write button
     [writeButton addTarget:self action:@selector(writeButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    writeButton.exclusiveTouch = YES;
+    
+    self.selectionStyle = UITableViewCellSelectionStyleDefault;
 }
 
 - (void)enableReadButton:(BOOL)set
@@ -111,6 +116,12 @@
         [writeButton setImage:[UIImage imageNamed:@"writeButtonSelected"] forState:UIControlStateNormal];
     else
         [writeButton setImage:[UIImage imageNamed:@"writeButtonUnselected"] forState:UIControlStateNormal];
+}
+
+- (void) hideReadWriteButtons:(BOOL)hide
+{
+    writeButton.hidden = hide;
+    readButton.hidden = hide;
 }
 
 @end

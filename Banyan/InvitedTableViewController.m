@@ -268,7 +268,7 @@ typedef enum {
                         selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
                                                     currentUser.name, @"name",
                                                     currentUser.facebookId, @"id", nil];
-                        fbInvitees = self.viewerPermission.facebookInvitedList;
+                        fbInvitees = self.contributorPermission.facebookInvitedList;
                         
                         if (![fbInvitees containsObject:selfInvitation])
                             [fbInvitees addObject:selfInvitation];
@@ -339,6 +339,12 @@ typedef enum {
             if (![selectedViewers containsObject:selfInvitation])
                 [selectedViewers addObject:selfInvitation];
             
+        }
+    }
+    // Add the names of contributors to viewing as well
+    for (NSDictionary *friend in selectedContributors) {
+        if (![selectedViewers containsObject:friend]) {
+            [selectedViewers addObject:friend];
         }
     }
     self.viewerPermission.facebookInvitedList = selectedViewers;

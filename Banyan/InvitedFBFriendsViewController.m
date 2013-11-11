@@ -7,6 +7,7 @@
 //
 
 #import "InvitedFBFriendsViewController.h"
+#import "BNLabel.h"
 
 @interface InvitedFBFriendsViewController ()
 
@@ -49,10 +50,8 @@
     if (self) {
         // Custom initialization
         
-        searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+        searchBar = [[UISearchBar alloc] init];
         searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
-        searchDisplayController.delegate = self;
-        searchDisplayController.searchResultsDataSource = self;
         
         if (![viewerPermission.scope isEqualToString:kBNStoryPrivacyScopeInvited]) {
             self.allViewers = YES;
@@ -89,11 +88,12 @@
     for (NSDictionary *friend in self.listContacts)
     {
         // Get the first character of each name
-        char alphabet = [[friend objectForKey:@"name"] characterAtIndex:0];
-        NSString *uniChar = [NSString stringWithFormat:@"%c", alphabet];
+        unichar alphabet = [[friend objectForKey:@"name"] characterAtIndex:0];
+        NSString *uniChar = [NSString stringWithCharacters:&alphabet length:1];
         // add each letter to the index array
-        if (![_contactIndex containsObject:uniChar])
+        if (![_contactIndex containsObject:uniChar]) {
             [_contactIndex addObject:uniChar];
+        }
     }
 }
 
@@ -101,11 +101,25 @@
 {
     [super viewDidLoad];
     
+    self.searchBar.placeholder = @"Search for a friend";
+    self.searchDisplayController.delegate = self;
+    self.searchDisplayController.searchResultsDataSource = self;
+    self.searchDisplayController.searchResultsDelegate = self;
+    self.searchDisplayController.displaysSearchBarInNavigationBar = YES;
+    
     [self.tableView registerNib:[UINib nibWithNibName:@"InviteFriendCell" bundle:nil] forCellReuseIdentifier:@"InviteFriendCell"];
-    [[self tableView] setTableHeaderView:searchBar];
     self.searchDisplayController.searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
     self.tableView.scrollEnabled = YES;
-    self.navigationItem.title = @"Invitations";
+    
+    BNLabel *headerLabel = [[BNLabel alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 54)];
+    headerLabel.numberOfLines = 0;
+    headerLabel.textEdgeInsets = UIEdgeInsetsMake(5, 10, 5, 10);
+    headerLabel.textAlignment = NSTextAlignmentCenter;
+    headerLabel.text = @"Click on the read and write symbols to select the kind of permission for a friend.";
+    headerLabel.font = [UIFont fontWithName:@"Roboto" size:14];
+    headerLabel.textColor = BANYAN_BROWN_COLOR;
+    self.tableView.tableHeaderView = headerLabel;
+    self.tableView.tableFooterView = nil;
     
     [FBRequestConnection startForMyFriendsWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (!error) {
@@ -124,15 +138,15 @@
 #pragma mark - Table view data source
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
 {
-    if (tableView == self.searchDisplayController.searchResultsTableView)
+    if (self.searchDisplayController.isActive)
         return nil;
-    else
-        return [[NSArray arrayWithObject:UITableViewIndexSearch] arrayByAddingObjectsFromArray:self.contactIndex];
+	else
+        return self.contactIndex;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    if (tableView == self.searchDisplayController.searchResultsTableView)
+    if (self.searchDisplayController.isActive)
         return nil;
 	else
         return [self.contactIndex objectAtIndex:section];
@@ -140,9 +154,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index
 {
-    if (index == 0)
-        [self.tableView scrollRectToVisible:self.tableView.tableHeaderView.frame animated:NO];
-    return index-1;
+    return index;
 }
 
 - (NSArray *)getContactsForSection:(NSInteger)section
@@ -155,7 +167,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    if (tableView == self.searchDisplayController.searchResultsTableView)
+    if (self.searchDisplayController.isActive)
         return 1;
 	else
         return [self.contactIndex count];
@@ -238,7 +250,7 @@
     NSIndexPath * myIndexPath = [self.tableView indexPathForCell:cell];
     NSDictionary *friend = nil;
     
-    if ([cell superview] == self.searchDisplayController.searchResultsTableView) {
+    if (self.searchDisplayController.isActive) {
         friend = [self.filteredListContacts objectAtIndex:myIndexPath.row];
     } else {
         NSArray *contacts = [self getContactsForSection:myIndexPath.section];
@@ -252,16 +264,19 @@
         [self.selectedViewerContacts addObject:friend];
     }
     [cell canRead:[self hasReadPermission:friend]];
+    [self.searchDisplayController setActive:NO animated:YES];
 }
 
 - (void)inviteFriendCellWriteButtonTapped:(InviteFriendCell *)cell
 {
-    NSIndexPath * myIndexPath = [self.tableView indexPathForCell:cell];
+    NSIndexPath * myIndexPath = nil;
     NSDictionary *friend = nil;
     
-    if ([cell superview] == self.searchDisplayController.searchResultsTableView) {
+    if (self.searchDisplayController.isActive) {
+        myIndexPath = [self.searchDisplayController.searchResultsTableView indexPathForCell:cell];
         friend = [self.filteredListContacts objectAtIndex:myIndexPath.row];
     } else {
+        [self.tableView indexPathForCell:cell];
         NSArray *contacts = [self getContactsForSection:myIndexPath.section];
         friend = [contacts objectAtIndex:myIndexPath.row];
     }
@@ -275,14 +290,32 @@
     [cell canWrite:[self hasWritePermission:friend]];
     [cell canRead:[self hasReadPermission:friend]];
     [cell enableReadButton:![self hasWritePermission:friend]&&!self.allViewers];
+    [self.searchDisplayController setActive:NO animated:YES];
 }
 
 #pragma mark - Table view delegate
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Don't handle touch events here, let the tableviewcells take care of taps on read/write buttons
-    return nil;
+    return indexPath;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    InviteFriendCell *cell = (InviteFriendCell *)[tableView cellForRowAtIndexPath:indexPath];
+    [self inviteFriendCellWriteButtonTapped:cell];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    if (self.searchDisplayController.isActive)
+    {
+        // Scroll to the friend that was picked
+        NSDictionary *friend = [self.filteredListContacts objectAtIndex:indexPath.row];
+        unichar alphabet = [[friend objectForKey:@"name"] characterAtIndex:0];
+        NSString *uniChar = [NSString stringWithCharacters:&alphabet length:1];
+        NSUInteger section = [self.contactIndex indexOfObject:uniChar];
+        NSArray *contacts = [self getContactsForSection:section];
+        NSUInteger row = [contacts indexOfObject:friend];
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+    }
 }
 
 - (IBAction)doneInviting:(UIBarButtonItem *)sender
@@ -304,7 +337,7 @@
 	[self.filteredListContacts removeAllObjects]; // First clear the filtered array.
 	
     NSPredicate *resultPredicate = [NSPredicate
-                                    predicateWithFormat:@"name beginswith[cd] %@",
+                                    predicateWithFormat:@"name contains[cd] %@",
                                     searchText];
     self.filteredListContacts = [[self.listContacts filteredArrayUsingPredicate:resultPredicate] mutableCopy];
 }
@@ -329,8 +362,13 @@
     return YES;
 }
 
-- (void)searchDisplayController:(UISearchDisplayController *)controller didHideSearchResultsTableView:(UITableView *)tableView
-{
+- (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
+    [self.tableView reloadSectionIndexTitles];
+    [self.tableView reloadData];
+}
+
+- (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
+    [self.tableView reloadSectionIndexTitles];
     [self.tableView reloadData];
 }
 
