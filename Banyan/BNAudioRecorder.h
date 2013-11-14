@@ -8,9 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
+#import "BNAudioRecorderView.h"
 
-@interface BNAudioRecorder : UIViewController <AVAudioRecorderDelegate, AVAudioPlayerDelegate, AVAudioSessionDelegate>
+@interface BNAudioRecorder : NSObject
 
 - (NSURL *)getRecording;
+
+@end
+
+@interface BNAudioRecorder (BNAudioRecorderViewDelegate) <BNAudioRecorderViewDelegate>
 
 @end

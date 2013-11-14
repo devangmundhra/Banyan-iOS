@@ -20,6 +20,7 @@
 #import "BNTextField.h"
 #import "LocationPickerTableViewController.h"
 #import "LocationPickerButton.h"
+#import "BNAudioRecorderView.h"
 
 @interface ModifyPieceViewController (LocationPickerButtonDelegate) <LocationPickerButtonDelegate>
 
@@ -53,7 +54,7 @@
 @property (strong, nonatomic) IBOutlet SingleImagePickerButton *addPhotoButton;
 
 @property (strong, nonatomic) BNAudioRecorder *audioRecorder;
-@property (strong, nonatomic) IBOutlet UIView *audioPickerView;
+@property (strong, nonatomic) IBOutlet BNAudioRecorderView *audioPickerView;
 
 @property (nonatomic) ModifyPieceViewControllerEditMode editMode;
 
@@ -249,20 +250,14 @@
 
     frame.origin.y = CGRectGetMaxY(self.addPhotoButton.frame) + VIEW_INSETS;
     frame.size.height = 44.0f;
-    self.audioPickerView = [[UIView alloc] initWithFrame:frame];
+    self.audioPickerView = [[BNAudioRecorderView alloc] initWithFrame:frame];
     [self.audioPickerView.layer setCornerRadius:CORNER_RADIUS];
     self.audioPickerView.clipsToBounds = YES;
+    [self.audioPickerView setBackgroundColor:[BANYAN_BROWN_COLOR colorWithAlphaComponent:SUBVIEW_OPACITY]];
     [self.scrollView addSubview:self.audioPickerView];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         self.audioRecorder = [[BNAudioRecorder alloc] init];
-        [self.audioRecorder willMoveToParentViewController:self];
-        [self addChildViewController:self.audioRecorder];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.audioPickerView addSubview:self.audioRecorder.view];
-            [self.audioPickerView setBackgroundColor:[BANYAN_WHITE_COLOR colorWithAlphaComponent:SUBVIEW_OPACITY]];
-            self.audioRecorder.view.frame = self.audioPickerView.bounds;
-            [self.audioRecorder didMoveToParentViewController:self];
-        });
+        self.audioPickerView.delegate = self.audioRecorder;
     });
 
     frame.origin.y = CGRectGetMaxY(self.audioPickerView.frame) + VIEW_INSETS;

@@ -44,6 +44,7 @@
 		5128EB4F17472FF600393173 /* record.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128EB4317472FF600393173 /* record.png */; };
 		5128EB5417478B3D00393173 /* BNAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 5128EB5317478B3D00393173 /* BNAudioRecorder.m */; };
 		5128EB5717478B5500393173 /* BNAudioStreamingPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5128EB5617478B5500393173 /* BNAudioStreamingPlayer.m */; };
+		5130E1FE18335ECF00975068 /* BNAudioRecorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5130E1FD18335ECF00975068 /* BNAudioRecorderView.m */; };
 		5144EC6A1712277600F0B265 /* cameraSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC601712277600F0B265 /* cameraSymbol.png */; };
 		5144EC6B1712277600F0B265 /* cameraSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC611712277600F0B265 /* cameraSymbol@2x.png */; };
 		5144EC6C1712277600F0B265 /* locationSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC621712277600F0B265 /* locationSymbol.png */; };
@@ -307,6 +308,8 @@
 		5128EB5317478B3D00393173 /* BNAudioRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioRecorder.m; sourceTree = "<group>"; };
 		5128EB5517478B5500393173 /* BNAudioStreamingPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNAudioStreamingPlayer.h; sourceTree = "<group>"; };
 		5128EB5617478B5500393173 /* BNAudioStreamingPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioStreamingPlayer.m; sourceTree = "<group>"; };
+		5130E1FC18335ECF00975068 /* BNAudioRecorderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNAudioRecorderView.h; sourceTree = "<group>"; };
+		5130E1FD18335ECF00975068 /* BNAudioRecorderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioRecorderView.m; sourceTree = "<group>"; };
 		5144EC601712277600F0B265 /* cameraSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cameraSymbol.png; sourceTree = "<group>"; };
 		5144EC611712277600F0B265 /* cameraSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cameraSymbol@2x.png"; sourceTree = "<group>"; };
 		5144EC621712277600F0B265 /* locationSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = locationSymbol.png; sourceTree = "<group>"; };
@@ -1372,10 +1375,12 @@
 		51BDA26B1741E74F00BD2C19 /* Audio Manager */ = {
 			isa = PBXGroup;
 			children = (
-				5128EB5217478B3D00393173 /* BNAudioRecorder.h */,
-				5128EB5317478B3D00393173 /* BNAudioRecorder.m */,
 				5128EB5517478B5500393173 /* BNAudioStreamingPlayer.h */,
 				5128EB5617478B5500393173 /* BNAudioStreamingPlayer.m */,
+				5128EB5217478B3D00393173 /* BNAudioRecorder.h */,
+				5128EB5317478B3D00393173 /* BNAudioRecorder.m */,
+				5130E1FC18335ECF00975068 /* BNAudioRecorderView.h */,
+				5130E1FD18335ECF00975068 /* BNAudioRecorderView.m */,
 			);
 			name = "Audio Manager";
 			sourceTree = "<group>";
@@ -1802,6 +1807,7 @@
 				519233331675305F009686E4 /* LocationPickerTableViewController.m in Sources */,
 				514CDF5418125BFF0098B0A9 /* BNPermissionsObject.m in Sources */,
 				51A8DC9116928A240017E86F /* Activity+Create.m in Sources */,
+				5130E1FE18335ECF00975068 /* BNAudioRecorderView.m in Sources */,
 				51A8DC9516928AE00017E86F /* Banyan.xcdatamodeld in Sources */,
 				51A8DC981692C4490017E86F /* Story+Permissions.m in Sources */,
 				5158AE2B16F56F7F0089193E /* BNTabBarController.m in Sources */,
