@@ -140,13 +140,16 @@
     // Do any additional setup after loading the view from irts nib.
 //    if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
 //        self.edgesForExtendedLayout = UIRectEdgeNone;
-    
+
+    // Get a reference to weak self for use in blocks
+    __weak ModifyPieceViewController *wself = self;
+
     [self.view setBackgroundColor:BANYAN_WHITE_COLOR];
     
     self.doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done:)];
     [self.navigationItem setRightBarButtonItem:self.doneButton];
     [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
-    
+
     // Allocate the accessory view for the keyboard
     self.textViewInputAccessoryView = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 44.0f)];
     self.textViewInputAccessoryView.backgroundColor = [UIColor grayColor];
@@ -164,7 +167,7 @@
                                                                                action:@selector(dismissKeyboard:)];
     [toolbarItems addObject:disKbButton];
     [self.textViewInputAccessoryView setItems:toolbarItems];
-    
+
     CGRect frame = self.view.bounds;
     self.scrollView = [[UIScrollView alloc] initWithFrame:frame];
     [self.scrollView setContentSize:frame.size];
@@ -195,7 +198,7 @@
         self.storyTitleButton.userInteractionEnabled = NO;
     }
     [self.scrollView addSubview:self.storyTitleButton];
-    
+
     frame.origin.y = CGRectGetMaxY(self.storyTitleButton.frame) + VIEW_INSETS;
     frame.size.height = 44.0f;
     self.pieceCaptionView = [[BNTextField alloc] initWithFrame:frame];
@@ -222,21 +225,24 @@
     [self.pieceTextView.layer setCornerRadius:CORNER_RADIUS];
     self.pieceTextView.userInteractionEnabled = YES;
     [self.scrollView addSubview:self.pieceTextView];
-
+    
     // Set the camViewController below scrollView. Do this in a background thread as AVCamViewController
     // might take a long time to load and init
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        self.camViewController = [[AVCamViewController alloc] initWithNibName:@"AVCamViewController" bundle:nil];
-        self.camViewController.delegate = self;
-        [self.camViewController willMoveToParentViewController:self];
-        [self addChildViewController:self.camViewController];
+        if (!wself) return;
+        wself.camViewController = [[AVCamViewController alloc] initWithNibName:@"AVCamViewController" bundle:nil];
+        wself.camViewController.delegate = wself;
+        [wself.camViewController willMoveToParentViewController:wself];
+        [wself addChildViewController:wself.camViewController];
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.camViewController.view.frame = self.view.bounds;
-            [self.view insertSubview:self.camViewController.view belowSubview:self.scrollView];
-            [self.camViewController hideAVCamViewControllerControls];
-            [self.camViewController didMoveToParentViewController:self];
+            if (!wself) return;
+            wself.camViewController.view.frame = wself.view.bounds;
+            [wself.view insertSubview:wself.camViewController.view belowSubview:wself.scrollView];
+            [wself.camViewController hideAVCamViewControllerControls];
+            [wself.camViewController didMoveToParentViewController:wself];
         });
     });
+
     frame.origin.y = CGRectGetMaxY(self.pieceTextView.frame) + VIEW_INSETS;
     frame.size.height = 100.0f;
     self.addPhotoButton = [[SingleImagePickerButton alloc] initWithFrame:frame];
@@ -256,8 +262,9 @@
     [self.audioPickerView setBackgroundColor:[BANYAN_BROWN_COLOR colorWithAlphaComponent:SUBVIEW_OPACITY]];
     [self.scrollView addSubview:self.audioPickerView];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        self.audioRecorder = [[BNAudioRecorder alloc] init];
-        self.audioPickerView.delegate = self.audioRecorder;
+        if (!wself) return;
+        wself.audioRecorder = [[BNAudioRecorder alloc] init];
+        wself.audioPickerView.delegate = wself.audioRecorder;
     });
 
     frame.origin.y = CGRectGetMaxY(self.audioPickerView.frame) + VIEW_INSETS;
@@ -712,7 +719,7 @@
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     // Release any cached data, images, etc that aren't in use.
-    NSLog(@"Received memory warning in ReadPieceViewController");
+    NSLog(@"Received memory warning in ModifyPieceViewController");
 }
 
 #undef TEXT_INSETS

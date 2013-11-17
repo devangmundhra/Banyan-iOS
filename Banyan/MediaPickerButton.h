@@ -23,7 +23,7 @@
 @end
 
 @interface MediaPickerButton : UIView <UITableViewDelegate, UITableViewDataSource>
-@property (strong, nonatomic) id<MediaPickerButtonDelegate> delegate;
+@property (weak, nonatomic) id<MediaPickerButtonDelegate> delegate;
 
 - (void) reloadList;
 

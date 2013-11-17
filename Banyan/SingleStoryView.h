@@ -32,7 +32,7 @@
 @interface SingleStoryView : UIView <BNSwipeableViewDelegate, UIAlertViewDelegate>
 
 @property (strong, nonatomic) Story *story;
-@property (strong, nonatomic) id<SingleStoryViewDelegate> delegate;
+@property (weak, nonatomic) id<SingleStoryViewDelegate> delegate;
 
 - (void) hideSwipedViewAnimated:(BOOL)animated;
 - (void) revealSwipedViewAnimated:(BOOL)animated;

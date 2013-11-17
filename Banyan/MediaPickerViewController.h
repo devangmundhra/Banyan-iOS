@@ -28,7 +28,7 @@ extern NSString *const MediaPickerViewControllerInfoImage;
 
 @interface MediaPickerViewController : UIViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate, AFPhotoEditorControllerDelegate>
 
-@property (strong, nonatomic) id<MediaPickerViewControllerDelegate> delegate;
+@property (weak, nonatomic) id<MediaPickerViewControllerDelegate> delegate;
 
 - (BOOL) shouldStartCameraController;
 - (BOOL) shouldStartPhotoLibraryPickerController;

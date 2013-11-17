@@ -21,7 +21,7 @@
 
 @interface InvitedFBFriendsViewController : UITableViewController <UISearchBarDelegate, UISearchDisplayDelegate, InviteFriendCellDelegate>
 
-@property (nonatomic, strong) id<InvitedFBFriendsViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<InvitedFBFriendsViewControllerDelegate> delegate;
 
 - (id)initWithViewerPermissions:(BNPermissionsObject *)viewerPermission
           contributorPermission:(BNPermissionsObject *)contributorPermission;

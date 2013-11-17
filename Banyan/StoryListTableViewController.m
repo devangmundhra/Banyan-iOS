@@ -147,6 +147,12 @@ typedef enum {
     NSLog(@"Root View Controller Unloaded");
 }
 
+- (void)dealloc
+{
+    NSLog(@"StoryList View Controller Deallocated");
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);

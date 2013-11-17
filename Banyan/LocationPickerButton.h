@@ -19,7 +19,7 @@
 @end
 
 @interface LocationPickerButton : UIView
-@property (strong, nonatomic) id<LocationPickerButtonDelegate> delegate;
+@property (weak, nonatomic) id<LocationPickerButtonDelegate> delegate;
 @property (nonatomic, strong) BNDuckTypedObject<GooglePlacesObject>* location;
 
 - (void)locationPickerLocationEnabled:(BOOL)enable;

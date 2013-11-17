@@ -21,7 +21,7 @@
 
 @interface InvitedTableViewController : UITableViewController <InvitedFBFriendsViewControllerDelegate>
 
-@property (nonatomic, strong) id<InvitedTableViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<InvitedTableViewControllerDelegate> delegate;
 
 - (id)initWithViewerPermissions:(BNPermissionsObject *)viewerPermission contributorPermission:(BNPermissionsObject *)contributorPermission;
 

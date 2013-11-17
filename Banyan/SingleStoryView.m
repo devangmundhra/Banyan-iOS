@@ -322,6 +322,7 @@ static BOOL _loggedIn;
 
 - (void) setupBackView
 {
+    return;
     if (self.story.canContribute)
     {
         // Add Piece Button

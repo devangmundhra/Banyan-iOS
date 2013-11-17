@@ -24,7 +24,7 @@
 
 @interface FollowingUsersCell : UITableViewCell
 
-@property (nonatomic, strong) id<FollowingUsersCellDelegate> delegate;
+@property (nonatomic, weak) id<FollowingUsersCellDelegate> delegate;
 
 /*! The user represented in the cell */
 @property (nonatomic, strong) NSMutableDictionary *user;

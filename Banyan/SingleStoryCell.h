@@ -24,7 +24,7 @@
 
 @interface SingleStoryCell : UITableViewCell <SingleStoryViewDelegate, UIScrollViewDelegate>
 
-@property (nonatomic, strong) UITableViewController<SingleStoryCellDelegate> *delegate;
+@property (nonatomic, weak) UITableViewController<SingleStoryCellDelegate> *delegate;
 
 - (void) setStory:(Story *)story;
 - (Piece *) currentlyVisiblePiece;

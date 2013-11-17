@@ -42,6 +42,11 @@
     return self;
 }
 
+- (void)dealloc
+{
+    [self bnAudioRecorderViewToStop:nil];
+}
+
 - (void)setup
 {
     NSURL *docsDir = [BanyanAppDelegate applicationDocumentsDirectory];
@@ -70,7 +75,6 @@
     if (error) {
         NSLog(@"error: %@", [error localizedDescription]);
     } else {
-        [audioRecorder prepareToRecord];
         audioRecorder.delegate = self;
     }
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
@@ -176,7 +180,6 @@
 
 - (void) bnAudioRecorderViewToRecord:(BNAudioRecorderView *)aRView
 {
-    assert([NSThread isMainThread]);
     if (!audioRecorder.recording) {
         [audioRecorder recordForDuration:RECORD_DURATION+0.7]; // record for upto RECORD_DURATION seconds
         timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timerAction:) userInfo:aRView repeats:YES];
@@ -186,8 +189,6 @@
 
 - (void)bnAudioRecorderViewToPlay:(BNAudioRecorderView *)aRView
 {
-    assert([NSThread isMainThread]);
-    
     if (!audioRecorder.recording)
     {
         NSError *error = nil;
@@ -211,8 +212,6 @@
 
 - (void) bnAudioRecorderViewToStop:(BNAudioRecorderView *)aRView
 {
-    assert([NSThread isMainThread]);
-    
     if (audioRecorder.recording) {
         [audioRecorder stop];
     } else if (audioPlayer.playing) {
@@ -223,8 +222,6 @@
 
 - (void) bnAudioRecorderViewToDelete:(BNAudioRecorderView *)aRView
 {
-    assert([NSThread isMainThread]);
-    
     if (audioPlayer.playing) {
         [audioPlayer stop];
         [self invalidateTimer];

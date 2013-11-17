@@ -84,12 +84,14 @@ static UIFont *_regularFont;
             self.label.hidden = NO; // Show only if there is something to show to avoid unnecessary clearColor rendering
             self.label.font = _boldCondensedFont;
             self.label.text = self.piece.shortText;
+            [self.label sizeToFit];
             self.label.textColor = BANYAN_BLACK_COLOR;
             self.label.textAlignment = NSTextAlignmentLeft;
         } else if ([self.piece.longText length]) {
             self.label.hidden = NO;
             self.label.font = _regularFont;
             self.label.text = self.piece.longText;
+            [self.label sizeToFit];
             self.label.textColor = BANYAN_BLACK_COLOR;
             self.label.textAlignment = NSTextAlignmentLeft;
             // Add gradient
@@ -115,6 +117,7 @@ static UIFont *_regularFont;
     self.label.lineBreakMode = NSLineBreakByWordWrapping;
     self.label.textAlignment = NSTextAlignmentCenter;
     self.label.text = status;
+    [self.label sizeToFit];
 }
 
 - (void)resetView
@@ -127,4 +130,5 @@ static UIFont *_regularFont;
     self.label.hidden = YES;
     self.frame = CGRectZero;
 }
+
 @end

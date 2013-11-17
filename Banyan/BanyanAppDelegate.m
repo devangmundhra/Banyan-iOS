@@ -30,6 +30,14 @@
 @synthesize homeViewController = _homeViewController;
 @synthesize storyListTableViewController = _storyListTableViewController;
 
+- (UINavigationController *)storyListTableViewController
+{
+    if (!_storyListTableViewController) {
+        _storyListTableViewController = [[UINavigationController alloc] initWithRootViewController:[[StoryListTableViewController alloc] init]];
+    }
+    return _storyListTableViewController;
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -100,7 +108,6 @@
         [self logout];
     }
     
-    self.storyListTableViewController = [[UINavigationController alloc] initWithRootViewController:[[StoryListTableViewController alloc] init]];
     self.homeViewController = [[BNSidePanelController alloc] init];
     self.homeViewController.allowRightSwipe = NO;
     self.homeViewController.allowLeftSwipe = NO;
@@ -507,6 +514,16 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
 {
     [self.remoteObjectBackgroundTimer invalidate];
     self.remoteObjectBackgroundTimer = nil;
+}
+
+#pragma mark
+#pragma mark Memory Management
+- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application
+{
+    SDImageCache *imageCache = [SDImageCache sharedImageCache];
+    [imageCache clearMemory];
+    [imageCache clearDisk];
+    [imageCache cleanDisk];
 }
 
 @end

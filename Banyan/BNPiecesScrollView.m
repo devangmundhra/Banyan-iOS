@@ -48,8 +48,18 @@
         }
         
         self.contentSize = CGSizeZero;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleMemoryWarnings:)
+                                                     name:UIApplicationDidReceiveMemoryWarningNotification
+                                                   object:nil];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)setStory:(Story *)story
@@ -128,8 +138,9 @@
         return (!(obj.pieceNum >= pieceNum - floor(NUM_PIECES_WINDOW/2) && obj.pieceNum <= pieceNum + floor(NUM_PIECES_WINDOW/2)));
     }];
     
+    __weak BNPiecesScrollView *wself = self;
     [tempSet enumerateObjectsUsingBlock:^(SinglePieceView *obj, BOOL *stop){
-        [self removePieceSubview:obj];
+        [wself removePieceSubview:obj];
     }];
     
     // Load up all the pieces for and around the current piece number
@@ -165,8 +176,9 @@
 {
     // Release all the subviews which are outside the window
     NSArray *tempSet = [self.pieceSubviewsInuseList allObjects];
+    __weak BNPiecesScrollView *wself = self;
     [tempSet enumerateObjectsUsingBlock:^(SinglePieceView *obj, NSUInteger idx, BOOL *stop) {
-        [self removePieceSubview:obj];
+        [wself removePieceSubview:obj];
     }];
 }
 
@@ -207,6 +219,13 @@
                                                             NSForegroundColorAttributeName: BANYAN_BROWN_COLOR, NSParagraphStyleAttributeName: paraStyle}];
         }
     }
+}
+
+# pragma mark
+# pragma mark Memory management
+- (void) handleMemoryWarnings:(id)sender
+{
+//    [self.pieceSubviewsFreeList removeAllObjects];
 }
 
 @end

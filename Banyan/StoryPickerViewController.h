@@ -17,6 +17,6 @@
 
 @interface StoryPickerViewController : UICollectionViewController
 
-@property (strong, nonatomic) id <StoryPickerViewControllerDelegate> delegate;
+@property (weak, nonatomic) id <StoryPickerViewControllerDelegate> delegate;
 
 @end

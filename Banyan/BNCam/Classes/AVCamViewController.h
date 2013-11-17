@@ -71,7 +71,7 @@ extern NSString *const AVCamCaptureManagerInfoImage;
 @property (nonatomic,retain) IBOutlet UIBarButtonItem *recordButton;
 @property (nonatomic,retain) IBOutlet UIBarButtonItem *stillButton;
 @property (nonatomic,retain) IBOutlet UILabel *focusModeLabel;
-@property (nonatomic,retain) IBOutlet id<AVCamViewControllerDelegate> delegate;
+@property (nonatomic,weak) IBOutlet id<AVCamViewControllerDelegate> delegate;
 
 #pragma mark Toolbar Actions
 - (IBAction)toggleRecording:(id)sender;
