@@ -28,6 +28,5 @@
 
 - (void) setStory:(Story *)story;
 - (Piece *) currentlyVisiblePiece;
-- (void)redisplay;
 
 @end

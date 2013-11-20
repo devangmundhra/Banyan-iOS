@@ -19,7 +19,22 @@
 typedef enum {
     SettingsTableViewReadingOptionsSection,
     SettingsTableViewNotificationsSection,
+    SettingsTableViewSectionMax,
 } SettingsTableViewSection;
+
+typedef enum {
+    SettingsReadingOptionsPieceChangeTransition = 0,
+    SettingsReadingOptionsSectionsMax,
+} SettingsReadingOptionsSections;
+
+typedef enum {
+    SettingsNotificationSectionAddStoryContribute = 0,
+    SettingsNotificationSectionAddStoryView,
+//    SettingsNotificationSectionAddPiece,
+//    SettingsNotificationSectionPieceAction,
+//    SettingsNotificationSectionUserFollowing,
+    SettingsNotificationsSectionMax,
+} SettingsNotificationsSection;
 
 @implementation SettingsTableViewController
 
@@ -56,7 +71,7 @@ typedef enum {
     if (![BanyanAppDelegate loggedIn])
         return 1;
     else
-        return 2;
+        return SettingsTableViewSectionMax;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -64,11 +79,11 @@ typedef enum {
     // Return the number of rows in the section.
     switch (section) {
         case SettingsTableViewReadingOptionsSection:
-            return 1;
+            return SettingsReadingOptionsSectionsMax;
             break;
             
         case SettingsTableViewNotificationsSection:
-            return 5;
+            return SettingsNotificationsSectionMax;
             break;
 
         default:
@@ -148,9 +163,6 @@ typedef enum {
 }
 
 # pragma mark Reading Options Section
-typedef enum {
-    SettingsReadingOptionsPieceChangeTransition = 0,
-} SettingsReadingOptionsSections;
 
 - (NSString *) textForReadingOptionsSectionAtRow:(NSInteger)row
 {
@@ -204,14 +216,6 @@ typedef enum {
 }
 
 # pragma mark Notifications Section
-typedef enum {
-    SettingsNotificationSectionAddStoryContribute = 0,
-    SettingsNotificationSectionAddStoryView,
-    SettingsNotificationSectionAddPiece,
-    SettingsNotificationSectionPieceAction,
-    SettingsNotificationSectionUserFollowing,
-} SettingsNotificationsSection;
-
 - (NSString *) textForNotificationsSectionAtRow:(NSInteger)row
 {
     switch (row) {
@@ -221,15 +225,15 @@ typedef enum {
         case SettingsNotificationSectionAddStoryView:
             return @"Added as a spectator in a story";
             break;
-        case SettingsNotificationSectionAddPiece:
-            return @"Story I follow has a piece added";
-            break;
-        case SettingsNotificationSectionPieceAction:
-            return @"Piece I added is liked";
-            break;
-        case SettingsNotificationSectionUserFollowing:
-            return @"User starts following my stories";
-            break;
+//        case SettingsNotificationSectionAddPiece:
+//            return @"Story I follow has a piece added";
+//            break;
+//        case SettingsNotificationSectionPieceAction:
+//            return @"Piece I added is liked";
+//            break;
+//        case SettingsNotificationSectionUserFollowing:
+//            return @"User starts following my stories";
+//            break;
             
         default:
             assert(false);
@@ -261,18 +265,18 @@ typedef enum {
             [switchView addTarget:self action:@selector(addStoryViewNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
             on = [defaults boolForKey:BNUserDefaultsAddStoryInvitedViewPushNotification];
             break;
-        case SettingsNotificationSectionAddPiece:
-            [switchView addTarget:self action:@selector(addPieceNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
-            on = [defaults boolForKey:BNUserDefaultsAddPieceToContributedStoryPushNotification];
-            break;
-        case SettingsNotificationSectionPieceAction:
-            [switchView addTarget:self action:@selector(pieceActionNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
-            on = [defaults boolForKey:BNUserDefaultsPieceActionPushNotification];
-            break;
-        case SettingsNotificationSectionUserFollowing:
-            [switchView addTarget:self action:@selector(userFollowNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
-            on = [defaults boolForKey:BNUserDefaultsUserFollowingPushNotification];
-            break;
+//        case SettingsNotificationSectionAddPiece:
+//            [switchView addTarget:self action:@selector(addPieceNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
+//            on = [defaults boolForKey:BNUserDefaultsAddPieceToContributedStoryPushNotification];
+//            break;
+//        case SettingsNotificationSectionPieceAction:
+//            [switchView addTarget:self action:@selector(pieceActionNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
+//            on = [defaults boolForKey:BNUserDefaultsPieceActionPushNotification];
+//            break;
+//        case SettingsNotificationSectionUserFollowing:
+//            [switchView addTarget:self action:@selector(userFollowNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
+//            on = [defaults boolForKey:BNUserDefaultsUserFollowingPushNotification];
+//            break;
             
         default:
             assert(false);

@@ -122,12 +122,6 @@
     [self.delegate hideStoryForSingleStoryCell:self];
 }
 
-- (void) redisplay
-{
-    [self.storyView setNeedsDisplay];
-    [self.piecesScrollView setNeedsDisplay];
-}
-
 - (void) hideSwipedViewAnimated:(BOOL)animated
 {
     [self.storyView hideSwipedViewAnimated:animated];
