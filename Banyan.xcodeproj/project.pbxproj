@@ -66,6 +66,7 @@
 		5158AE2B16F56F7F0089193E /* BNTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5158AE2916F56F7E0089193E /* BNTabBarController.m */; };
 		51596AB11744BAF7008F5276 /* BNMisc.m in Sources */ = {isa = PBXBuildFile; fileRef = 51596AB01744BAF7008F5276 /* BNMisc.m */; };
 		51596AB71745E285008F5276 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51596AB61745E284008F5276 /* CoreMedia.framework */; };
+		515CF517183DF1650071C9B2 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F22889161A9DF2006B3AA7 /* StoreKit.framework */; };
 		515DE02F183040C200B88596 /* UIImageView+BanyanMedia.m in Sources */ = {isa = PBXBuildFile; fileRef = 515DE02E183040C200B88596 /* UIImageView+BanyanMedia.m */; };
 		5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B615E75B420072749C /* buttonFacebook.png */; };
 		5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B715E75B420072749C /* buttonFacebook@2x.png */; };
@@ -74,7 +75,6 @@
 		517A018C1706D92E00665F0F /* LocationPickerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 517A018B1706D92E00665F0F /* LocationPickerButton.m */; };
 		517A01BA17095EDC00665F0F /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 517A01B917095EDC00665F0F /* CoreText.framework */; };
 		517A01BC17095F0E00665F0F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 517A01BB17095F0E00665F0F /* OpenGLES.framework */; };
-		517A01BF17095F2E00665F0F /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F22889161A9DF2006B3AA7 /* StoreKit.framework */; };
 		517A01D4170983B400665F0F /* MediaPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 517A01D3170983B400665F0F /* MediaPickerViewController.m */; };
 		517A01D7170A7A9E00665F0F /* MediaPickerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 517A01D6170A7A9E00665F0F /* MediaPickerButton.m */; };
 		517A01DA170BFA3000665F0F /* InviteFriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 517A01D9170BFA2F00665F0F /* InviteFriendCell.m */; };
@@ -590,6 +590,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				515CF517183DF1650071C9B2 /* StoreKit.framework in Frameworks */,
 				51C42543182B799300AF90C1 /* libAviarySDK.a in Frameworks */,
 				5112D106181E4EEA003E8C37 /* Accelerate.framework in Frameworks */,
 				5112D057181A4CE5003E8C37 /* CoreVideo.framework in Frameworks */,
@@ -599,7 +600,6 @@
 				51BDA2701741EB4100BD2C19 /* AVFoundation.framework in Frameworks */,
 				51BDA25F173EEC1500BD2C19 /* ImageIO.framework in Frameworks */,
 				51F57C541721141D00A76FA5 /* MessageUI.framework in Frameworks */,
-				517A01BF17095F2E00665F0F /* StoreKit.framework in Frameworks */,
 				512598BB17AB916600FEFCF0 /* FacebookSDK.framework in Frameworks */,
 				517A01BC17095F0E00665F0F /* OpenGLES.framework in Frameworks */,
 				517A01BA17095EDC00665F0F /* CoreText.framework in Frameworks */,
@@ -858,6 +858,17 @@
 				51B5989D15EB31B300DF4D9D /* BanyanConstants.m */,
 			);
 			name = "Constants and Misc";
+			sourceTree = "<group>";
+		};
+		515CF515183D869B0071C9B2 /* PieceScrollView */ = {
+			isa = PBXGroup;
+			children = (
+				51984D3E176EDE1000CD6C3E /* BNPiecesScrollView.h */,
+				51984D3F176EDE1000CD6C3E /* BNPiecesScrollView.m */,
+				51984D44176EEB5600CD6C3E /* SinglePieceView.h */,
+				51984D45176EEB5600CD6C3E /* SinglePieceView.m */,
+			);
+			name = PieceScrollView;
 			sourceTree = "<group>";
 		};
 		515DE030183040CE00B88596 /* UIImageView */ = {
@@ -1448,10 +1459,7 @@
 				51F8F435176E43620056A308 /* SingleStoryCell.m */,
 				51F8F437176E6F640056A308 /* SingleStoryView.h */,
 				51F8F438176E6F640056A308 /* SingleStoryView.m */,
-				51984D3E176EDE1000CD6C3E /* BNPiecesScrollView.h */,
-				51984D3F176EDE1000CD6C3E /* BNPiecesScrollView.m */,
-				51984D44176EEB5600CD6C3E /* SinglePieceView.h */,
-				51984D45176EEB5600CD6C3E /* SinglePieceView.m */,
+				515CF515183D869B0071C9B2 /* PieceScrollView */,
 			);
 			name = UITableViewCell;
 			sourceTree = "<group>";

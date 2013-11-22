@@ -16,6 +16,7 @@
 #import "BNSidePanelController.h"
 #import "SideNavigatorViewController.h"
 #import "StoryListTableViewController.h"
+#import "SDWebImage/SDImageCache.h"
 
 @interface BanyanAppDelegate () <UserLoginViewControllerDelegate>
 @property (strong, nonatomic) NSTimer *remoteObjectBackgroundTimer;
@@ -48,65 +49,67 @@
     NSDictionary *defaultPreferences = [NSDictionary dictionaryWithContentsOfFile:defaultPrefsFile];
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultPreferences];
     
+    void (^nonMainBlock)(void) = ^{
 #define TESTING 1
 #ifdef TESTING
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if ([defaults objectForKey:@"UUID"]) {
-        [TestFlight setDeviceIdentifier:[defaults objectForKey:@"UUID"]];
-    } else {
-        CFUUIDRef theUUID = CFUUIDCreate(NULL);
-        CFStringRef string = CFUUIDCreateString(NULL, theUUID);
-        CFRelease(theUUID);
-        NSString *uuidString = (__bridge_transfer NSString *)string;
-        [defaults setObject:uuidString forKey:@"UUID"];
-        [defaults synchronize];
-        [TestFlight setDeviceIdentifier:uuidString];
-    }
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        if ([defaults objectForKey:@"UUID"]) {
+            [TestFlight setDeviceIdentifier:[defaults objectForKey:@"UUID"]];
+        } else {
+            CFUUIDRef theUUID = CFUUIDCreate(NULL);
+            CFStringRef string = CFUUIDCreateString(NULL, theUUID);
+            CFRelease(theUUID);
+            NSString *uuidString = (__bridge_transfer NSString *)string;
+            [defaults setObject:uuidString forKey:@"UUID"];
+            [defaults synchronize];
+            [TestFlight setDeviceIdentifier:uuidString];
+        }
 #endif
+        
+        [TestFlight takeOff:TESTFLIGHT_BANYAN_APP_TOKEN];
+        //let AFNetworking manage the activity indicator
+        [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
+        
+        if ([BanyanAppDelegate loggedIn] &&
+            [FBSession openActiveSessionWithAllowLoginUI:NO]) {
+            // User has Facebook ID.
+            // Update user details and get updates on FB friends
+            [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                if (!error) {
+                    [self updateUserCredentials:result];
+                } else {
+                    [self facebookRequest:connection didFailWithError:error];
+                }
+            }];
+        } else {
+            NSLog(@"User missing Facebook ID");
+            [self logout];
+        }
+        if (![[AFBanyanAPIClient sharedClient] isReachable])
+            NSLog(@"Banyan not reachable");
+    };
     
-    [TestFlight takeOff:TESTFLIGHT_BANYAN_APP_TOKEN];
-    
-    [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
-     UIRemoteNotificationTypeAlert];
-    
-    //let AFNetworking manage the activity indicator
-    [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
-    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        nonMainBlock();
+    });
     // RestKit initialization
     RKLogConfigureByName("RestKit/Network*", RKLogLevelWarning);
     RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelWarning);
     RKLogConfigureByName("RestKit/CoreData", RKLogLevelWarning);
     
-    [self restKitCoreDataInitialization];
+    [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
+     UIRemoteNotificationTypeAlert];
     
-    if (![[AFBanyanAPIClient sharedClient] isReachable])
-        NSLog(@"Banyan not reachable");
+    [self restKitCoreDataInitialization];
     
     // Create a location manager instance to determine if location services are enabled. This manager instance will be
     // immediately released afterwards.
     if ([CLLocationManager locationServicesEnabled] == NO) {
         UIAlertView *servicesDisabledAlert = [[UIAlertView alloc] initWithTitle:@"Location Services Disabled" message:@"You currently have all location services for this device disabled. If you proceed, you will be asked to confirm whether location services should be reenabled." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [servicesDisabledAlert show];
-        [TestFlight passCheckpoint:@"AppDelegate All location services disabled alert"];
     }
     
     [self appearances];
-    
-    if ([BanyanAppDelegate loggedIn] &&
-        [FBSession openActiveSessionWithAllowLoginUI:NO]) {
-        // User has Facebook ID.
-        // Update user details and get updates on FB friends
-        [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-            if (!error) {
-                [self updateUserCredentials:result];
-            } else {
-                [self facebookRequest:connection didFailWithError:error];
-            }
-        }];
-    } else {
-        NSLog(@"User missing Facebook ID");
-        [self logout];
-    }
     
     self.homeViewController = [[BNSidePanelController alloc] init];
     self.homeViewController.allowRightSwipe = NO;

@@ -10,19 +10,20 @@
  */
 #import "SinglePieceView.h"
 #import <QuartzCore/QuartzCore.h>
+#import "BNLabel.h"
 
 static UIFont *_boldCondensedFont;
 static UIFont *_regularFont;
 
 @interface SinglePieceView ()
-@property (strong, nonatomic) UILabel *label;
+@property (strong, nonatomic) UILabel *textLabel;
 @end
 
 @implementation SinglePieceView
 
 @synthesize piece = _piece;
 @synthesize pieceNum = _pieceNum;
-@synthesize label = _label;
+@synthesize textLabel = _textLabel;
 
 + (void)initialize
 {
@@ -43,10 +44,18 @@ static UIFont *_regularFont;
         self.contentMode = UIViewContentModeScaleAspectFill;
         self.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         
-        self.label = [[UILabel alloc] initWithFrame:CGRectZero];
-        self.label.hidden = YES;
-        self.label.backgroundColor = [UIColor clearColor];
-        [self addSubview:self.label];
+        CGRect localFrame = self.bounds;
+        localFrame.origin.x += 15;
+        localFrame.origin.y += CGRectGetHeight(localFrame)/2;
+        localFrame.size.width -= 30;
+        localFrame.size.height = CGRectGetHeight(localFrame)/2;
+        
+        self.textLabel = [[UILabel alloc] initWithFrame:localFrame];
+        self.textLabel.hidden = YES;
+        self.textLabel.backgroundColor = [UIColor clearColor];
+        self.textLabel.textColor = BANYAN_BLACK_COLOR;
+        self.textLabel.textAlignment = NSTextAlignmentLeft;
+        [self addSubview:self.textLabel];
     }
     return self;
 }
@@ -70,65 +79,36 @@ static UIFont *_regularFont;
     if (self.piece) {
         Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
         [self showMedia:imageMedia withPostProcess:nil];
-
-        CGRect frame = self.bounds;
-        frame.origin.x += 5;
-        frame.origin.y += CGRectGetHeight(frame)/2;
-        frame.size.width -= 10;
-        frame.size.height = CGRectGetHeight(frame)/2;
-        self.label.frame = frame;
         if ([self.piece.shortText length]) {
-            frame.origin.x += 5;
-            frame.size.width -= 10;
-            self.label.frame = frame;
-            self.label.hidden = NO; // Show only if there is something to show to avoid unnecessary clearColor rendering
-            self.label.font = _boldCondensedFont;
-            self.label.text = self.piece.shortText;
-            [self.label sizeToFit];
-            self.label.textColor = BANYAN_BLACK_COLOR;
-            self.label.textAlignment = NSTextAlignmentLeft;
+            self.textLabel.hidden = NO;
+            self.textLabel.font = _boldCondensedFont;
+            self.textLabel.text = self.piece.shortText;
         } else if ([self.piece.longText length]) {
-            self.label.hidden = NO;
-            self.label.font = _regularFont;
-            self.label.text = self.piece.longText;
-            [self.label sizeToFit];
-            self.label.textColor = BANYAN_BLACK_COLOR;
-            self.label.textAlignment = NSTextAlignmentLeft;
-            // Add gradient
+            self.textLabel.hidden = NO;
+            self.textLabel.text = self.piece.longText;
+            self.textLabel.font = _regularFont;
         }
     } else {
-        [self setStatusForView:@"Error in loading piece."];
+        [self setStatusForView:@"Error in loading piece." font:_regularFont];
     }
 }
 
-- (void) setStatusForView:(NSString *)status
+- (void) setStatusForView:(NSString *)status font:(UIFont *)font
 {
-    [self cancelCurrentImageLoad];
     self.image = nil;
-    CGRect frame = self.bounds;
-    frame.origin.x += 5;
-    frame.origin.y += 5;
-    frame.size.width -= 10;
-    frame.size.height -= 10;
-    self.label.frame = frame;
-    self.label.hidden = NO;
-    self.label.font = _regularFont;
-    self.label.textColor = BANYAN_BROWN_COLOR;
-    self.label.lineBreakMode = NSLineBreakByWordWrapping;
-    self.label.textAlignment = NSTextAlignmentCenter;
-    self.label.text = status;
-    [self.label sizeToFit];
+    self.textLabel.hidden = NO;
+    self.textLabel.text = status;
+    self.textLabel.font = font;
+    self.textLabel.textColor = BANYAN_BROWN_COLOR;
 }
 
 - (void)resetView
 {
-    self.piece = nil;
+    self.textLabel.hidden = YES;
+    _piece = nil;
     self.pieceNum = 0;
+    self.textLabel.textColor = BANYAN_BLACK_COLOR;
     [self cancelCurrentImageLoad];
-    self.image = nil;
-    self.label.frame = CGRectZero;
-    self.label.hidden = YES;
-    self.frame = CGRectZero;
 }
 
 @end

@@ -15,6 +15,6 @@
 @property (nonatomic) NSUInteger pieceNum;
 
 - (void) resetView;
-- (void) setStatusForView:(NSString *)status;
+- (void) setStatusForView:(NSString *)status font:(UIFont *)font;
 
 @end
