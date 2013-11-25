@@ -69,6 +69,7 @@ static UIFont *_regularFont;
                                                  selector:@selector(handleMemoryWarnings:)
                                                      name:UIApplicationDidReceiveMemoryWarningNotification
                                                    object:nil];
+        
     }
     return self;
 }

@@ -47,15 +47,14 @@
         else
             [media remove];
     }
-    
-    // For RunLoop
-    __block BOOL doneRun = NO;
-    __block BOOL success = NO;
 
     if (piece.remoteStatus != RemoteObjectStatusLocal && NUMBER_EXISTS(piece.bnObjectId)) {
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[APP_DELEGATE topMostController].view animated:YES];
         hud.labelText = @"Deleting piece";
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+     
+        // For RunLoop
+        __block BOOL doneRun = NO;
+        __block BOOL success = NO;
         
         [[AFBanyanAPIClient sharedClient] deletePath:BANYAN_API_OBJECT_URL(@"Piece", piece.bnObjectId)
                                           parameters:nil
@@ -75,6 +74,7 @@
                                                  doneRun = YES;
                                              }
          ];
+
         do
         {
             // Start the run loop but return after each source is handled.
