@@ -578,12 +578,13 @@
     } else { // This was the last piece
         turnToPage = [NSNumber numberWithUnsignedInteger:curPieceNum-1];
     }
-    [Piece deletePiece:self.piece];
-    
-    if (!self.piece.story.pieces.count) {
-        [self.delegate readPieceViewControllerDoneReading];
-    } else {
-        [self.delegate readPieceViewControllerFlipToPiece:turnToPage];
+    Story *story = self.piece.story;
+    if ([Piece deletePiece:self.piece]) {
+        if (!story.pieces.count) {
+            [self.delegate readPieceViewControllerDoneReading];
+        } else {
+            [self.delegate readPieceViewControllerFlipToPiece:turnToPage];
+        }
     }
 }
 

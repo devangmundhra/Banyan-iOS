@@ -14,7 +14,7 @@
 
 @implementation Story (Delete)
 
-+ (void) deleteStory:(Story *)story
++ (BOOL) deleteStory:(Story *)story
 {
     if (story.remoteStatus == RemoteObjectStatusPushing) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error in deleting story %@", story.title]
@@ -23,7 +23,7 @@
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];
         [alert show];
-        return;
+        return NO;
     }
     
     // Delete all media for the story
@@ -82,8 +82,10 @@
         }
         while (!doneRun);
         [hud hide:YES];
+        return success;
     } else {
         [story remove];
+        return NO;
     }    
 }
 

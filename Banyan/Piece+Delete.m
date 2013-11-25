@@ -25,7 +25,7 @@
     [Story updateLengthAndPieceNumbers:story];
 }
 
-+ (void) deletePiece:(Piece *)piece
++ (BOOL) deletePiece:(Piece *)piece
 {
     if (piece.remoteStatus == RemoteObjectStatusPushing) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in deleting piece"
@@ -34,7 +34,7 @@
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];
         [alert show];
-        return;
+        return NO;
     }
     
     // Delete all media for the piece
@@ -90,8 +90,10 @@
         }
         while (!doneRun);
         [hud hide:YES];
+        return success;
     } else {
         [piece removeWithStoryUpdate];
+        return YES;
     }
 }
 @end

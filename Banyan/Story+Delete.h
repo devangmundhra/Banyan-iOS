@@ -9,5 +9,5 @@
 #import "Story.h"
 
 @interface Story (Delete)
-+ (void) deleteStory:(Story *)story;
++ (BOOL) deleteStory:(Story *)story;
 @end
