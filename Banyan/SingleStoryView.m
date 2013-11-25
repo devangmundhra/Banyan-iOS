@@ -16,6 +16,8 @@
 
 @property (strong, nonatomic) BNSwipeableView *topSwipeView;
 @property (strong, nonatomic) UIButton *storyFrontViewControl;
+@property (strong, nonatomic) UILabel *storyAuthorsLabel;
+@property (strong, nonatomic) UILabel *storyStatusLabel;
 
 @end
 
@@ -93,6 +95,8 @@ static BOOL _loggedIn;
 
 - (id)initWithFrame:(CGRect)frame
 {
+#define SIZE_OF_STORY_STATUS_LABEL 50
+    
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
@@ -113,7 +117,28 @@ static BOOL _loggedIn;
         self.storyFrontViewControl.showsTouchWhenHighlighted = YES;
         [self.topSwipeView.frontView addSubview:self.storyFrontViewControl];
         [self addSubview:self.topSwipeView];
-
+        
+        self.storyAuthorsLabel = [[UILabel alloc] initWithFrame:CGRectMake(TABLE_CELL_MARGIN,
+                                                                           TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT,
+                                                                           CGRectGetWidth(frame) - 2*TABLE_CELL_MARGIN - SIZE_OF_STORY_STATUS_LABEL,
+                                                                           BOTTOM_VIEW_HEIGHT)];
+        self.storyAuthorsLabel.backgroundColor = BANYAN_WHITE_COLOR;
+        self.storyAuthorsLabel.textColor = [UIColor grayColor];
+        self.storyAuthorsLabel.textAlignment = NSTextAlignmentLeft;
+        self.storyAuthorsLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+        self.storyAuthorsLabel.font = _mediumFont;
+        [self addSubview:self.storyAuthorsLabel];
+        
+        self.storyStatusLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(frame) - TABLE_CELL_MARGIN,
+                                                                          TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT,
+                                                                          SIZE_OF_STORY_STATUS_LABEL, BOTTOM_VIEW_HEIGHT)];
+        self.storyStatusLabel.hidden = NO;
+        self.storyStatusLabel.backgroundColor = BANYAN_WHITE_COLOR;
+        self.storyStatusLabel.textColor = BANYAN_LIGHTGRAY_COLOR;
+        self.storyStatusLabel.textAlignment = NSTextAlignmentRight;
+        self.storyAuthorsLabel.lineBreakMode = NSLineBreakByClipping;
+        self.storyAuthorsLabel.font = _smallFont;
+        [self addSubview:self.storyStatusLabel];
     }
     return self;
 }
@@ -121,70 +146,22 @@ static BOOL _loggedIn;
 - (void)setStory:(Story *)story
 {
     _story = story;
-    [self setNeedsDisplay];
     [self.topSwipeView setNeedsDisplay];
+    [self updateStoryLabels];
     [self setupFrontView];
 }
 
-- (void)drawRect:(CGRect)rect
+- (void) updateStoryLabels
 {
-    CGPoint point;
-    
-    // Add the lines to seperate the different views
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetStrokeColorWithColor(context, BANYAN_LIGHTGRAY_COLOR.CGColor);
-    
-    // Draw them with a 2.0 stroke width so they are a bit more visible.
-    CGContextSetLineWidth(context, 2.0);
-    
-    CGContextMoveToPoint(context, 0, TOP_VIEW_HEIGHT); //start at this point
-    CGContextAddLineToPoint(context, CGRectGetMaxX(self.frame), TOP_VIEW_HEIGHT); //draw to this point
-    
-    CGContextMoveToPoint(context, 0, TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT); //start at this point
-    CGContextAddLineToPoint(context, CGRectGetMaxX(self.frame), TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT); //draw to this point
-    
-    // and now draw the Path!
-    CGContextStrokePath(context);
-
-    // Story authors
-    [[UIColor grayColor] set];
-    NSString *authorString = [NSString stringWithFormat:@"by %@", [self.story shortStringOfContributors]];
-    point.x = TABLE_CELL_MARGIN;
-    point.y = TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT + TABLE_CELL_MARGIN/2;
-    
-    NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
-    paraStyle.lineBreakMode = NSLineBreakByTruncatingTail;
-    
-    [authorString drawInRect:CGRectMake(point.x, point.y, CGRectGetWidth(self.frame) - 2*TABLE_CELL_MARGIN, BOTTOM_VIEW_HEIGHT)
-              withAttributes:@{NSFontAttributeName: _mediumFont,
-                               NSForegroundColorAttributeName: [UIColor grayColor],
-                               NSParagraphStyleAttributeName: paraStyle}];
-    
+    self.storyAuthorsLabel.text = [NSString stringWithFormat:@"by %@", [self.story shortStringOfContributors]];
     // If the uploadStatusNumber says not sync, confirm it by actually calculating the upload status number.
     // Sometimes, due to caching, the uploadStatusNumber does not reflect the latest value
     if ([self.story.uploadStatusNumber unsignedIntegerValue] != RemoteObjectStatusSync && [[self.story calculateUploadStatusNumber] unsignedIntegerValue] != RemoteObjectStatusSync) {
-        NSString *statusString = self.story.sectionIdentifier;
-        point.x = CGRectGetMaxX(self.frame) - TABLE_CELL_MARGIN;
-        point.y = TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT + TABLE_CELL_MARGIN/2;
-        CGSize size = CGSizeMake(CGRectGetWidth(self.frame)/2 - TABLE_CELL_MARGIN, BOTTOM_VIEW_HEIGHT);
-        paraStyle = [[NSMutableParagraphStyle alloc] init];
-        paraStyle.lineBreakMode = NSLineBreakByClipping;
-        
-        CGSize expectedSize = [statusString boundingRectWithSize:size
-                                                         options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin
-                                                      attributes:@{NSFontAttributeName: _smallFont,
-                                                                   NSParagraphStyleAttributeName: paraStyle}
-                                                         context:nil].size;
-        
-        point.x -= expectedSize.width;
-        
-        [BANYAN_LIGHTGRAY_COLOR set];
-        
-        [statusString drawInRect:CGRectMake(point.x, point.y, floor(expectedSize.width), BOTTOM_VIEW_HEIGHT)
-                  withAttributes:@{NSFontAttributeName: _smallFont,
-                                   NSForegroundColorAttributeName: BANYAN_LIGHTGRAY_COLOR,
-                                   NSParagraphStyleAttributeName: paraStyle}];
-    }    
+        self.storyStatusLabel.hidden = NO;
+        self.storyStatusLabel.text = self.story.sectionIdentifier;
+    } else {
+        self.storyStatusLabel.hidden = YES;
+    }
 }
 
 # pragma mark BNSwipeableView delegates

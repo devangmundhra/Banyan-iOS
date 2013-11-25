@@ -62,13 +62,7 @@ static UIFont *_regularFont;
 
 - (void)setPiece:(Piece *)piece
 {    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:BNRefreshCurrentStoryListNotification object:_piece];
     _piece = piece;
-    // Add a notification observer for this piece so that when this piece gets edited, the view can be refreshed
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(loadPiece)
-                                                 name:BNRefreshCurrentStoryListNotification
-                                               object:piece];
     
     [self loadPiece];
 }

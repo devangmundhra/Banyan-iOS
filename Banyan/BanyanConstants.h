@@ -26,8 +26,6 @@ extern NSString *const BNStoryListRefreshedNotification;
 // Notification called when some edit was done to the current list of stories (like delete/add piece)
 extern NSString *const BNRefreshCurrentStoryListNotification;
 
-#define UPDATE_STORY_LIST(_object_) [[NSNotificationCenter defaultCenter] postNotificationName:BNRefreshCurrentStoryListNotification object:_object_]
-
 #pragma mark - NSUserDefaults
 extern NSString *const BNUserDefaultsUserInfo;
 extern NSString *const BNUserDefaultsBanyanUsersFacebookFriends;

@@ -106,7 +106,6 @@
     [super remove];
     // This needs to be done because otherwise removing a piece does not update the story's uploadStatusNumber
     [story setUploadStatusNumber:[story calculateUploadStatusNumber]];
-    UPDATE_STORY_LIST(nil);
 }
 
 #pragma mark share

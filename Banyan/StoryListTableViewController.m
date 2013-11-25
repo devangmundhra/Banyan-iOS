@@ -129,22 +129,13 @@ typedef enum {
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    self.suspendAutomaticTrackingOfChangesInManagedObjectContext = YES;
+//    self.suspendAutomaticTrackingOfChangesInManagedObjectContext = YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    self.suspendAutomaticTrackingOfChangesInManagedObjectContext = NO;
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    self.fetchedResultsController = nil;
-    NSLog(@"Root View Controller Unloaded");
+//    self.suspendAutomaticTrackingOfChangesInManagedObjectContext = NO;
 }
 
 - (void)dealloc

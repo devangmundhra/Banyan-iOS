@@ -16,6 +16,7 @@
 #import "FollowingFriendsViewController.h"
 #import "ProfileViewController.h"
 #import "AboutViewController.h"
+#import "StoryListTableViewController.h"
 
 @interface SideNavigatorViewController ()
 
@@ -254,7 +255,7 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
     if ([BanyanAppDelegate loggedIn]) {
         switch (indexPath.row) {
             case SidePanelOptionLoggedInHome:
-                self.sidePanelController.centerPanel = APP_DELEGATE.storyListTableViewController;
+                self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[StoryListTableViewController alloc] init]];
                 break;
             case SidePanelOptionLoggedInProfile:
                 self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[ProfileViewController alloc] init]];
@@ -277,7 +278,7 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
     } else {
         switch (indexPath.row) {
             case SidePanelOptionLoggedOutHome:
-                self.sidePanelController.centerPanel = APP_DELEGATE.storyListTableViewController;
+                self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[StoryListTableViewController alloc] init]];
                 break;
             case SidePanelOptionLoggedOutSettings:
                 self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[SettingsTableViewController alloc] init]];

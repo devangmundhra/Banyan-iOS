@@ -67,6 +67,7 @@
 		51596AB11744BAF7008F5276 /* BNMisc.m in Sources */ = {isa = PBXBuildFile; fileRef = 51596AB01744BAF7008F5276 /* BNMisc.m */; };
 		51596AB71745E285008F5276 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51596AB61745E284008F5276 /* CoreMedia.framework */; };
 		515CF517183DF1650071C9B2 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F22889161A9DF2006B3AA7 /* StoreKit.framework */; };
+		515CF518183F3B1A0071C9B2 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F22884161A9DC1006B3AA7 /* AdSupport.framework */; };
 		515DE02F183040C200B88596 /* UIImageView+BanyanMedia.m in Sources */ = {isa = PBXBuildFile; fileRef = 515DE02E183040C200B88596 /* UIImageView+BanyanMedia.m */; };
 		5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B615E75B420072749C /* buttonFacebook.png */; };
 		5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B715E75B420072749C /* buttonFacebook@2x.png */; };
@@ -590,6 +591,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				515CF518183F3B1A0071C9B2 /* AdSupport.framework in Frameworks */,
 				515CF517183DF1650071C9B2 /* StoreKit.framework in Frameworks */,
 				51C42543182B799300AF90C1 /* libAviarySDK.a in Frameworks */,
 				5112D106181E4EEA003E8C37 /* Accelerate.framework in Frameworks */,

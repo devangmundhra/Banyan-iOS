@@ -29,15 +29,6 @@
 @synthesize window = _window;
 @synthesize remoteObjectBackgroundTimer = _remoteObjectBackgroundTimer;
 @synthesize homeViewController = _homeViewController;
-@synthesize storyListTableViewController = _storyListTableViewController;
-
-- (UINavigationController *)storyListTableViewController
-{
-    if (!_storyListTableViewController) {
-        _storyListTableViewController = [[UINavigationController alloc] initWithRootViewController:[[StoryListTableViewController alloc] init]];
-    }
-    return _storyListTableViewController;
-}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -70,21 +61,6 @@
         //let AFNetworking manage the activity indicator
         [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
         
-        if ([BanyanAppDelegate loggedIn] &&
-            [FBSession openActiveSessionWithAllowLoginUI:NO]) {
-            // User has Facebook ID.
-            // Update user details and get updates on FB friends
-            [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-                if (!error) {
-                    [self updateUserCredentials:result];
-                } else {
-                    [self facebookRequest:connection didFailWithError:error];
-                }
-            }];
-        } else {
-            NSLog(@"User missing Facebook ID");
-            [self logout];
-        }
         if (![[AFBanyanAPIClient sharedClient] isReachable])
             NSLog(@"Banyan not reachable");
     };
@@ -92,6 +68,23 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         nonMainBlock();
     });
+    
+    if ([BanyanAppDelegate loggedIn] &&
+        [FBSession openActiveSessionWithAllowLoginUI:NO]) {
+        // User has Facebook ID.
+        // Update user details and get updates on FB friends
+        [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+            if (!error) {
+                [self updateUserCredentials:result];
+            } else {
+                [self facebookRequest:connection didFailWithError:error];
+            }
+        }];
+    } else {
+        NSLog(@"User missing Facebook ID");
+        [self logout];
+    }
+    
     // RestKit initialization
     RKLogConfigureByName("RestKit/Network*", RKLogLevelWarning);
     RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelWarning);
@@ -115,7 +108,7 @@
     self.homeViewController.allowRightSwipe = NO;
     self.homeViewController.allowLeftSwipe = NO;
     self.homeViewController.shouldResizeLeftPanel = YES;
-    self.homeViewController.centerPanel = self.storyListTableViewController;
+    self.homeViewController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[StoryListTableViewController alloc] init]];
     self.homeViewController.leftPanel = [[SideNavigatorViewController alloc] init];
     self.homeViewController.pushesSidePanels = NO;
     self.window.rootViewController = self.homeViewController;
@@ -265,7 +258,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
                                                         object:nil];
     
     // Set the page to the home page
-    [self.homeViewController setCenterPanel:self.storyListTableViewController];
+    [self.homeViewController setCenterPanel:[[UINavigationController alloc] initWithRootViewController:[[StoryListTableViewController alloc] init]]];
     return;
 }
 

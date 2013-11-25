@@ -69,21 +69,29 @@ static UIFont *_regularFont;
                                                  selector:@selector(handleMemoryWarnings:)
                                                      name:UIApplicationDidReceiveMemoryWarningNotification
                                                    object:nil];
-        
-        CGRect localFrame = self.bounds;
-        localFrame.origin.x += 15;
-        localFrame.origin.y += 10;
-        localFrame.size.width -= 30;
-        localFrame.size.height -= 20;
-        self.statusLabel = [[UILabel alloc] initWithFrame:localFrame];
-        self.statusLabel.numberOfLines = 2;
-        self.statusLabel.backgroundColor = BANYAN_WHITE_COLOR;
-        self.statusLabel.font = _boldFont;
-        self.statusLabel.textAlignment = NSTextAlignmentCenter;
-        self.statusLabel.hidden = YES;
-        [self addSubview:self.statusLabel];
     }
     return self;
+}
+
+- (void) allocateStatusLabel
+{
+    CGRect localFrame = self.bounds;
+    localFrame.origin.x += 15;
+    localFrame.origin.y += 10;
+    localFrame.size.width -= 30;
+    localFrame.size.height -= 20;
+    self.statusLabel = [[UILabel alloc] initWithFrame:localFrame];
+    self.statusLabel.numberOfLines = 2;
+    self.statusLabel.backgroundColor = BANYAN_WHITE_COLOR;
+    self.statusLabel.font = _boldFont;
+    self.statusLabel.textAlignment = NSTextAlignmentCenter;
+    [self addSubview:self.statusLabel];
+}
+
+- (void) deallocateStatusLabel
+{
+    [self.statusLabel removeFromSuperview];
+    self.statusLabel = nil;
 }
 
 - (void)dealloc
@@ -218,7 +226,7 @@ static UIFont *_regularFont;
 
 - (void)resetView
 {
-    self.statusLabel.hidden = YES;
+    [self deallocateStatusLabel];
     // Release all the subviews which are outside the window
     NSArray *tempSet = [self.pieceSubviewsInuseList allObjects];
     __weak BNPiecesScrollView *wself = self;
@@ -230,7 +238,9 @@ static UIFont *_regularFont;
 - (void) addMsgOnPieceViewIfNeeded
 {
     if (self.story && !self.story.length) {
-        self.statusLabel.hidden = NO;
+        
+        [self allocateStatusLabel];
+        
         if ([BanyanAppDelegate loggedIn]) {
             if (self.story.canContribute) {
                 self.statusLabel.text = @"No pieces in the story.\nClick to add a piece!";
@@ -245,7 +255,7 @@ static UIFont *_regularFont;
             self.statusLabel.textColor = BANYAN_BROWN_COLOR;
         }
     } else {
-        self.statusLabel.hidden = YES;
+        [self deallocateStatusLabel];
     }
 }
 

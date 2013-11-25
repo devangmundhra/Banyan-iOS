@@ -51,12 +51,12 @@
     // For RunLoop
     __block BOOL doneRun = NO;
     __block BOOL success = NO;
-    
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[APP_DELEGATE topMostController].view animated:YES];
-    hud.labelText = @"Deleting piece";
-    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
 
     if (piece.remoteStatus != RemoteObjectStatusLocal && NUMBER_EXISTS(piece.bnObjectId)) {
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[APP_DELEGATE topMostController].view animated:YES];
+        hud.labelText = @"Deleting piece";
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+        
         [[AFBanyanAPIClient sharedClient] deletePath:BANYAN_API_OBJECT_URL(@"Piece", piece.bnObjectId)
                                           parameters:nil
                                              success:^(AFHTTPRequestOperation *operation, id responseObject) {
