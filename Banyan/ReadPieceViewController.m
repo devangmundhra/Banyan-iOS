@@ -24,6 +24,9 @@
 #import "Media.h"
 #import "UIImageView+BanyanMedia.h"
 
+@interface ReadPieceViewController (UIScrollViewDelegate) <UIScrollViewDelegate>
+@end
+
 @interface ReadPieceViewController () <UIActionSheetDelegate, ModifyPieceViewControllerDelegate>
 
 @property (strong, nonatomic) UIView *storyInfoView;
@@ -186,6 +189,7 @@
     frame.size.height -= CGRectGetMaxY(self.storyInfoView.frame);
     self.contentView = [[UIScrollView alloc] initWithFrame:frame];
     self.contentView.backgroundColor = BANYAN_WHITE_COLOR;
+    self.contentView.delegate = self;
     [self.view addSubview:self.contentView];
 
     self.pieceInfoView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -244,8 +248,8 @@
     [self.contentView addSubview:self.pieceTextView];
     
     // Page control
-    self.pageControl = [[SMPageControl alloc] initWithFrame:CGRectMake(100, 100, CGRectGetWidth(self.view.frame), 40)];
-    self.pageControl.center = CGPointMake(CGRectGetMidX(self.view.frame), CGRectGetMaxY(self.view.frame) - 40.0f);
+    self.pageControl = [[SMPageControl alloc] initWithFrame:CGRectMake(100, 100, CGRectGetWidth(self.view.frame), 20)];
+    self.pageControl.center = CGPointMake(CGRectGetMidX(self.view.frame), CGRectGetMaxY(self.view.frame) - 10.0f);
     self.pageControl.hidesForSinglePage = YES;
     self.pageControl.currentPageIndicatorTintColor = BANYAN_BROWN_COLOR;
     self.pageControl.pageIndicatorTintColor = [BANYAN_BROWN_COLOR colorWithAlphaComponent:0.5];
@@ -420,18 +424,23 @@
         csize.height = CGRectGetMaxY(self.pieceCaptionView.frame); // overwrite because caption will always be lower than image.
     }
     if (hasDescription) {
-        CGPoint descOrigin = CGPointMake(20, CGRectGetMaxY(frame));
+        CGPoint descOrigin;
+        if (hasCaption) {
+            descOrigin = CGPointMake(20, CGRectGetMaxY(self.pieceCaptionView.frame));
+        } else {
+            descOrigin = CGPointMake(20, CGRectGetMaxY(self.pieceInfoView.frame));
+        }
         NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
         paraStyle.alignment = NSTextAlignmentLeft;
         
-        frame = [self.piece.longText boundingRectWithSize:CGSizeMake(frame.size.width-2*20, FLT_MAX)
+        frame = [self.piece.longText boundingRectWithSize:CGSizeMake(CGRectGetWidth([UIScreen mainScreen].bounds)-2*20, FLT_MAX)
                                                   options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin
                                                attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:18],
                                                             NSParagraphStyleAttributeName: paraStyle}
                                                   context:nil];
         frame.origin = descOrigin;
-        frame.size.height += CGRectGetHeight([[UIApplication sharedApplication] statusBarFrame]); // Some correction otherwise the whole text isn't showing up
-        
+//        frame.size.height += CGRectGetHeight([[UIApplication sharedApplication] statusBarFrame]); // Some correction otherwise the whole text isn't showing up
+        frame.size.height += 2*TEXT_INSET_BIG;
         self.pieceTextView.frame = frame;
         self.pieceTextView.text = self.piece.longText;
         csize.height += CGRectGetHeight(self.pieceTextView.frame);
@@ -736,4 +745,22 @@
     
     // Release any cached data, images, etc that aren't in use.
 }
+@end
+
+@implementation ReadPieceViewController (UIScrollViewDelegate)
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    if (scrollView == self.contentView) {
+        self.pageControl.hidden = YES;
+    }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    if (scrollView == self.contentView) {
+        self.pageControl.hidden = NO;
+    }
+}
+
 @end
