@@ -23,6 +23,7 @@
 #import "BNMisc.h"
 #import "Media.h"
 #import "UIImageView+BanyanMedia.h"
+#import "URBMediaFocusViewController.h"
 
 @interface ReadPieceViewController (UIScrollViewDelegate) <UIScrollViewDelegate>
 @end
@@ -52,7 +53,7 @@
 @property (strong, nonatomic) AMBlockToken *pieceObserverToken3;
 @property (strong, nonatomic) AMBlockToken *pieceObserverToken4;
 
-@property (strong, nonatomic) ASMediaFocusManager *mediaFocusManager;
+@property (strong, nonatomic) URBMediaFocusViewController *mediaFocusManager;
 @end
 
 @implementation ReadPieceViewController
@@ -209,10 +210,8 @@
     [self.contentView addSubview:self.pieceInfoView];
     
     // Media focus manager
-    self.mediaFocusManager = [[ASMediaFocusManager alloc] init];
-    self.mediaFocusManager.delegate = self;
-    self.mediaFocusManager.backgroundColor = BANYAN_BLACK_COLOR;
-    self.mediaFocusManager.doneButtonFont = [UIFont fontWithName:@"Roboto" size:18];
+    self.mediaFocusManager = [[URBMediaFocusViewController alloc] init];
+    self.mediaFocusManager.shouldDismissOnTap = YES;
     
     // Audip player
     self.audioPlayer = [[BNAudioStreamingPlayer alloc] init];
@@ -222,7 +221,7 @@
     
     // Image view
     self.imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-    [self.mediaFocusManager installOnView:self.imageView];
+    [self addGestureRecognizerToFocusOnImageView:self.imageView];
     self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     self.imageView.backgroundColor = BANYAN_BLACK_COLOR;
     [self.contentView insertSubview:self.imageView belowSubview:self.audioPlayer.view];
@@ -273,6 +272,15 @@
                                              selector:@selector(userLoginStatusChanged) 
                                                  name:BNUserLogOutNotification
                                                object:nil];
+}
+
+- (void) addGestureRecognizerToFocusOnImageView:(UIImageView *)view
+{
+    UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFocusView:)];
+	tapRecognizer.numberOfTapsRequired = 1;
+	tapRecognizer.numberOfTouchesRequired = 1;
+	[view addGestureRecognizer:tapRecognizer];
+    view.userInteractionEnabled = YES;
 }
 
 - (void) addGestureRecognizerToContentView:(UIGestureRecognizer *)gR
@@ -679,6 +687,21 @@
     [TestFlight passCheckpoint:@"Piece shared"];
 }
 
+- (void)showFocusView:(UITapGestureRecognizer *)gestureRecognizer
+{
+    NSURL *url = nil;
+    Media *imageMedia = [Media getMediaOfType:@"gif" inMediaSet:self.piece.media];
+    if (![imageMedia.localURL length] && ![imageMedia.remoteURL length])
+        imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
+    
+    if ([imageMedia.remoteURL length])
+        url = [NSURL URLWithString:imageMedia.remoteURL];
+    else if ([imageMedia.localURL length])
+        url = [NSURL URLWithString:imageMedia.localURL];
+    
+    [self.mediaFocusManager showImage:((UIImageView*)(gestureRecognizer.view)).image fromView:gestureRecognizer.view];
+}
+
 #pragma mark UIPageControl
 - (IBAction)changePage:(id)sender
 {
@@ -692,49 +715,6 @@
 - (void)modifyPieceViewController:(ModifyPieceViewController *)controller didFinishAddingPiece:(Piece *)piece
 {
     [self.delegate readPieceViewControllerFlipToPiece:[NSNumber numberWithInt:piece.pieceNumber]];
-}
-
-#pragma mark - ASMediaFocusDelegate
-// Returns an image that represents the media view. This image is used in the focusing animation view.
-// It is usually a small image.
-- (UIImage *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager imageForView:(UIView *)view
-{
-    return ((UIImageView *)view).image;
-}
-
-// Returns the final focused frame for this media view. This frame is usually a full screen frame.
-- (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager finalFrameforView:(UIView *)view
-{
-    return self.view.bounds;
-}
-
-// Returns the view controller in which the focus controller is going to be added.
-// This can be any view controller, full screen or not.
-- (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager
-{
-    return self;
-}
-
-// Returns an URL where the image is stored. This URL is used to create an image at full screen. The URL may be local (file://) or distant (http://).
-- (NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view
-{
-    NSURL *url = nil;
-    Media *imageMedia = [Media getMediaOfType:@"gif" inMediaSet:self.piece.media];
-    if (![imageMedia.localURL length] && ![imageMedia.remoteURL length])
-        imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
-    
-    if ([imageMedia.remoteURL length])
-        url = [NSURL URLWithString:imageMedia.remoteURL];
-    else if ([imageMedia.localURL length])
-        url = [NSURL URLWithString:imageMedia.localURL];
-    
-    return url;
-}
-
-// Returns the title for this media view. Return nil if you don't want any title to appear.
-- (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager titleForView:(UIView *)view
-{
-    return nil;
 }
 
 #pragma Memory Management

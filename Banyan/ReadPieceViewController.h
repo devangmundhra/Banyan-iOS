@@ -12,7 +12,6 @@
 #import "Story+Edit.h"
 #import "BanyanAppDelegate.h"
 #import "User_Defines.h"
-#import "ASMediaFocusManager.h"
 #import "BNAudioStreamingPlayer.h"
 
 @class ReadPieceViewController;
@@ -27,7 +26,7 @@
 
 @end
 
-@interface ReadPieceViewController : UIViewController <ASMediasFocusDelegate>
+@interface ReadPieceViewController : UIViewController
 
 @property (strong, nonatomic) Piece *piece;
 @property (weak, nonatomic) IBOutlet id<ReadPieceViewControllerDelegate> delegate;
