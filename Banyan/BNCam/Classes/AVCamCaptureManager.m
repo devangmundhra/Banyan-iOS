@@ -97,7 +97,7 @@ NSString *const AVCamCaptureManagerInfoImage = @"AVCamCaptureManagerInfoImage";
 {
     self = [super init];
     if (self != nil) {
-		__block AVCamCaptureManager *weakSelf = self;
+		__weak AVCamCaptureManager *weakSelf = self;
         void (^deviceConnectedBlock)(NSNotification *) = ^(NSNotification *notification) {
 			AVCaptureDevice *device = [notification object];
 			
