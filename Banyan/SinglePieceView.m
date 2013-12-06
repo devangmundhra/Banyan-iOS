@@ -11,6 +11,7 @@
 #import "SinglePieceView.h"
 #import <QuartzCore/QuartzCore.h>
 #import "BNLabel.h"
+#import "Piece+Stats.h"
 
 static UIFont *_boldCondensedFont;
 static UIFont *_regularFont;
@@ -71,6 +72,9 @@ static UIFont *_regularFont;
 {
     [self cancelCurrentImageLoad];
     if (self.piece) {
+        // Update Stats
+        [Piece viewedPiece:self.piece];
+        
         Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
         [self showMedia:imageMedia withPostProcess:nil];
         if ([self.piece.shortText length]) {

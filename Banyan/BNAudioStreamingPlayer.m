@@ -149,7 +149,6 @@ void audioRouteChangeListenerCallback (
     toolBar.translucent = YES;
     toolBar.backgroundColor = BANYAN_BLACK_COLOR;
     [self.view addSubview:toolBar];
-    toolBar.exclusiveTouch = YES;
     
     audioTimeControl = [[UISlider alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(bounds), 44)];
     CGRect frame = audioTimeControl.frame;
@@ -176,13 +175,24 @@ void audioRouteChangeListenerCallback (
     [self disableScrubber];
     
     [self setupApplicationAudio];
+    
+    toolBar.exclusiveTouch = YES;
+    for(UIView *temp in toolBar.subviews)
+    {
+        [temp setExclusiveTouch:YES];
+    }
+}
+
+- (void)pause
+{
+    [self.player pause];
 }
 
 - (void)dealloc
 {
     [self removePlayerTimeObserver];
     
-    [player pause];
+    [self pause];
     
     [self.player removeObserver:self forKeyPath:kRateKey];
     [self.player removeObserver:self forKeyPath:kCurrentItemKey];

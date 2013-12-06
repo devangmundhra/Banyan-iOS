@@ -244,7 +244,7 @@
     self.pieceTextView.editable = NO;
     self.pieceTextView.backgroundColor = [UIColor clearColor];
     self.pieceTextView.font = [UIFont fontWithName:@"Roboto" size:18];
-    self.pieceTextView.textAlignment = NSTextAlignmentLeft;
+    self.pieceTextView.textAlignment = NSTextAlignmentJustified;
     self.pieceTextView.scrollEnabled = NO;
     [self.contentView addSubview:self.pieceTextView];
     
@@ -301,6 +301,12 @@
     
     [self addGestureRecognizerToContentView:[self.delegate dismissBackPanGestureRecognizer]];
     [self addGestureRecognizerToContentView:[self.delegate dismissAheadPanGestureRecognizer]];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [self.audioPlayer pause];
 }
 
 - (void)refreshUI
@@ -441,7 +447,7 @@
             descOrigin = CGPointMake(20, CGRectGetMaxY(self.pieceInfoView.frame));
         }
         NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
-        paraStyle.alignment = NSTextAlignmentLeft;
+        paraStyle.alignment = self.pieceTextView.textAlignment;
         
         frame = [self.piece.longText boundingRectWithSize:CGSizeMake(CGRectGetWidth([UIScreen mainScreen].bounds)-2*20, FLT_MAX)
                                                   options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin
@@ -449,8 +455,8 @@
                                                             NSParagraphStyleAttributeName: paraStyle}
                                                   context:nil];
         frame.origin = descOrigin;
-//        frame.size.height += CGRectGetHeight([[UIApplication sharedApplication] statusBarFrame]); // Some correction otherwise the whole text isn't showing up
         frame.size.height += 2*TEXT_INSET_BIG;
+        frame.size.width = CGRectGetWidth([UIScreen mainScreen].bounds)-2*20;
         self.pieceTextView.frame = frame;
         self.pieceTextView.text = self.piece.longText;
         csize.height += CGRectGetHeight(self.pieceTextView.frame);

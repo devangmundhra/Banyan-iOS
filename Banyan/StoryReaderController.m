@@ -100,15 +100,23 @@
     
     [Story viewedStory:self.story];
     
-    UIPageViewControllerTransitionStyle pageTurnAnimation = UIPageViewControllerTransitionStylePageCurl;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if (![defaults boolForKey:BNUserDefaultsUserPageTurnAnimation]) {
-        pageTurnAnimation = UIPageViewControllerTransitionStyleScroll;
-        self.transitionStyleScroll = YES;
-    } else {
-        self.transitionStyleScroll = NO;
-    }
+//    UIPageViewControllerTransitionStyle pageTurnAnimation = UIPageViewControllerTransitionStylePageCurl;
+//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//    if (![defaults boolForKey:BNUserDefaultsUserPageTurnAnimation]) {
+//        pageTurnAnimation = UIPageViewControllerTransitionStyleScroll;
+//        self.transitionStyleScroll = YES;
+//    } else {
+//        self.transitionStyleScroll = NO;
+//    }
     
+    // No page turn curl animation. This is because there are two unsolved problems in this so far-
+    // 1. App crashes when a piece is turned and the image of the previous piece is focussed
+    // 2. Audio play button can not be clicked because the page turns on tap
+    // Instead of devoting a lot of time on fixing it, removing this option for now.
+    // Also removing it from the settings menu
+    UIPageViewControllerTransitionStyle pageTurnAnimation = UIPageViewControllerTransitionStyleScroll;
+    self.transitionStyleScroll = YES;
+
     self.pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:pageTurnAnimation
                                                               navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
                                                                             options:nil];

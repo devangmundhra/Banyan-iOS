@@ -17,7 +17,7 @@
 @end
 
 typedef enum {
-    SettingsTableViewReadingOptionsSection,
+//    SettingsTableViewReadingOptionsSection,
     SettingsTableViewNotificationsSection,
     SettingsTableViewSectionMax,
 } SettingsTableViewSection;
@@ -78,9 +78,9 @@ typedef enum {
 {
     // Return the number of rows in the section.
     switch (section) {
-        case SettingsTableViewReadingOptionsSection:
-            return SettingsReadingOptionsSectionsMax;
-            break;
+//        case SettingsTableViewReadingOptionsSection:
+//            return SettingsReadingOptionsSectionsMax;
+//            break;
             
         case SettingsTableViewNotificationsSection:
             return SettingsNotificationsSectionMax;
@@ -95,9 +95,9 @@ typedef enum {
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     switch (section) {
-        case SettingsTableViewReadingOptionsSection:
-            return @"Reading Options";
-            break;
+//        case SettingsTableViewReadingOptionsSection:
+//            return @"Reading Options";
+//            break;
             
         case SettingsTableViewNotificationsSection:
             return @"Notifications";
@@ -121,10 +121,10 @@ typedef enum {
     
     // Configure the cell...
     switch (indexPath.section) {
-        case SettingsTableViewReadingOptionsSection:
-            cell.textLabel.text = [self textForReadingOptionsSectionAtRow:indexPath.row];
-            cell.accessoryView = [self accessoryViewForReadingOptionsSectionAtRow:indexPath.row];
-            break;
+//        case SettingsTableViewReadingOptionsSection:
+//            cell.textLabel.text = [self textForReadingOptionsSectionAtRow:indexPath.row];
+//            cell.accessoryView = [self accessoryViewForReadingOptionsSectionAtRow:indexPath.row];
+//            break;
             
         case SettingsTableViewNotificationsSection:
             cell.textLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:12];
@@ -149,9 +149,9 @@ typedef enum {
     // Navigation logic may go here. Create and push another view controller.
     
     switch (indexPath.section) {
-        case SettingsTableViewReadingOptionsSection:
-            [self actionForReadingOptionsSectionAtRow:indexPath.row];
-            break;
+//        case SettingsTableViewReadingOptionsSection:
+//            [self actionForReadingOptionsSectionAtRow:indexPath.row];
+//            break;
 
         case SettingsTableViewNotificationsSection:
             [self actionForNotificationsSectionAtRow:indexPath.row];
