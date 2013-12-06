@@ -120,11 +120,6 @@ static void *AVCamFocusModeObserverContext = &AVCamFocusModeObserverContext;
     [self removeObserver:self forKeyPath:@"captureManager.videoInput.device.focusMode"];
 }
 
-- (BOOL)prefersStatusBarHidden
-{
-    return YES;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -245,7 +240,7 @@ static void *AVCamFocusModeObserverContext = &AVCamFocusModeObserverContext;
     bottomActionToolbar.alpha = 1;
     cameraToggleButton.alpha = 1;
     focusModeLabel.alpha = 1;
-    [delegate setAVCamViewControllerCameraControlsVisible:YES];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
 }
 
 - (void) hideAVCamViewControllerControls
@@ -254,7 +249,7 @@ static void *AVCamFocusModeObserverContext = &AVCamFocusModeObserverContext;
     bottomActionToolbar.alpha = 0;
     cameraToggleButton.alpha = 0;
     focusModeLabel.alpha = 0;
-    [delegate setAVCamViewControllerCameraControlsVisible:NO];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 }
 
 - (IBAction)cancel:(id)sender

@@ -54,6 +54,7 @@
 @property (strong, nonatomic) AMBlockToken *pieceObserverToken4;
 
 @property (strong, nonatomic) URBMediaFocusViewController *mediaFocusManager;
+@property (nonatomic) BOOL mediaFocusVisible;
 @end
 
 @implementation ReadPieceViewController
@@ -76,6 +77,7 @@
 @synthesize mediaFocusManager = _mediaFocusManager;
 @synthesize audioPlayer = _audioPlayer;
 @synthesize storyInfoView = _storyInfoView;
+@synthesize mediaFocusVisible;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -699,7 +701,12 @@
     else if ([imageMedia.localURL length])
         url = [NSURL URLWithString:imageMedia.localURL];
     
-    [self.mediaFocusManager showImage:((UIImageView*)(gestureRecognizer.view)).image fromView:gestureRecognizer.view];
+    UIImage *image = ((UIImageView*)(gestureRecognizer.view)).image;
+    if (image) {
+        [self.mediaFocusManager showImage:image fromView:gestureRecognizer.view];
+    } else {
+        [self.mediaFocusManager showImageFromURL:url fromView:gestureRecognizer.view];
+    }
 }
 
 #pragma mark UIPageControl

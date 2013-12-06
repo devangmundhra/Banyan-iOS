@@ -131,6 +131,9 @@ void uncaughtExceptionHandler(NSException *exception)
 #pragma mark customize appearnaces
 - (void) appearances
 {
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+
     [self.window setTintColor:BANYAN_GREEN_COLOR];
     
     [[UISwitch appearance] setOnTintColor:BANYAN_GREEN_COLOR];

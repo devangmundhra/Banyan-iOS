@@ -120,7 +120,6 @@ typedef enum {
         BNIntroductionView *introductionView = [[BNIntroductionView alloc] initWithFrame:self.view.bounds];
         introductionView.delegate = self;
         [self.view addSubview:introductionView];
-        [self setNeedsStatusBarAppearanceUpdate];
     }
     
     [TestFlight passCheckpoint:@"RootViewController loaded"];

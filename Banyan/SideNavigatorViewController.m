@@ -76,11 +76,6 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
                                                object:nil];
 }
 
-- (UIStatusBarStyle)preferredStatusBarStyle
-{
-    return UIStatusBarStyleLightContent;
-}
-
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
@@ -90,7 +85,6 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setNeedsStatusBarAppearanceUpdate];
     self.tableView.backgroundColor = BACKGROUND_COLOR;
     
     // Assign the header/footer views

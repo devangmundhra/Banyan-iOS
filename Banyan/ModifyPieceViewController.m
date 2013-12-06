@@ -68,8 +68,6 @@
 @property (strong, nonatomic) AVCamViewController *camViewController;
 @property (nonatomic) CGSize kbSize;
 
-@property (nonatomic) BOOL aVCamViewControllerCameraControlsVisible;
-
 @end
 
 @implementation ModifyPieceViewController
@@ -89,7 +87,6 @@
 @synthesize textViewInputAccessoryView = _textViewInputAccessoryView;
 @synthesize camViewController = _camViewController;
 @synthesize kbSize;
-@synthesize aVCamViewControllerCameraControlsVisible = _aVCamViewControllerCameraControlsVisible;
 
 #define TEXT_INSETS 5
 #define VIEW_INSETS 8
@@ -100,7 +97,6 @@
 {
     if (self = [super init]) {
         self.piece = piece;
-        _aVCamViewControllerCameraControlsVisible = NO;
         if (self.piece.remoteStatus == RemoteObjectStatusLocal) {
             self.editMode = ModifyPieceViewControllerEditModeAddPiece;
         } else {
@@ -320,13 +316,6 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-#pragma mark getters/setters
-- (void)setAVCamViewControllerCameraControlsVisible:(BOOL)aVCamViewControllerCameraControlsVisible
-{
-    _aVCamViewControllerCameraControlsVisible = aVCamViewControllerCameraControlsVisible;
-    [self setNeedsStatusBarAppearanceUpdate];
-}
-
 #pragma mark target actions from navigation bar
 
 - (void)deleteBackupPiece
@@ -512,15 +501,6 @@
     vc.delegate = self;
     UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:vc];
     [self presentViewController:nvc animated:YES completion:nil];
-}
-
-- (UIViewController *)childViewControllerForStatusBarHidden
-{
-    if (_aVCamViewControllerCameraControlsVisible) {
-        return self.camViewController;
-    } else {
-        return nil;
-    }
 }
 
 #pragma mark UIAlertViewDelegate

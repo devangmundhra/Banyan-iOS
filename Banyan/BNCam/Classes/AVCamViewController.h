@@ -57,8 +57,6 @@ extern NSString *const AVCamCaptureManagerInfoImage;
 - (void) dismissAVCamViewController:(AVCamViewController *)viewController;
 - (void) avCamViewController:(AVCamViewController *)viewController finishedCapturingMediaWithInfo:(NSDictionary *)infoDict;
 
-@property (nonatomic) BOOL aVCamViewControllerCameraControlsVisible;
-
 @end
 
 @interface AVCamViewController : UIViewController <UIImagePickerControllerDelegate,UINavigationControllerDelegate> {

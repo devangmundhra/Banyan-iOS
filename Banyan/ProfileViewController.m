@@ -32,17 +32,10 @@
     return self;
 }
 
-- (UIStatusBarStyle)preferredStatusBarStyle
-{
-    return UIStatusBarStyleLightContent;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    [self setNeedsStatusBarAppearanceUpdate];
-
     // Do any additional setup after loading the view from its nib.
     self.title = [BNSharedUser currentUser].name;
     
