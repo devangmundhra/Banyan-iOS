@@ -57,15 +57,32 @@ static UIFont *_regularFont;
         self.textLabel.textColor = BANYAN_BLACK_COLOR;
         self.textLabel.textAlignment = NSTextAlignmentLeft;
         [self addSubview:self.textLabel];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleManagedObjectContextDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
     }
     return self;
 }
 
 - (void)setPiece:(Piece *)piece
-{    
+{
     _piece = piece;
     
     [self loadPiece];
+}
+
+- (void)handleManagedObjectContextDidSaveNotification:(NSNotification *)notification
+{
+    if (!self.piece) {
+        return;
+    }
+    
+    NSDictionary *userInfo = notification.userInfo;
+    NSSet *insertedObjects = [userInfo objectForKey:NSInsertedObjectsKey];
+    NSSet *updatedObjects = [userInfo objectForKey:NSUpdatedObjectsKey];
+    
+    if ([insertedObjects containsObject:self.piece] || [updatedObjects containsObject:self.piece]) {
+        [self loadPiece];
+    }
 }
 
 - (void) loadPiece
@@ -107,6 +124,11 @@ static UIFont *_regularFont;
     self.pieceNum = 0;
     self.textLabel.textColor = BANYAN_BLACK_COLOR;
     [self cancelCurrentImageLoad];
+}
+
+- (void) dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

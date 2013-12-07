@@ -66,10 +66,10 @@ typedef enum {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
 //    NSSortDescriptor *uploadStatusSD = [NSSortDescriptor sortDescriptorWithKey:@"uploadStatusNumber" ascending:YES];
     NSSortDescriptor *newPiecesSD = [NSSortDescriptor sortDescriptorWithKey:@"newPiecesToView" ascending:YES];
-//    NSSortDescriptor *dateSD = [NSSortDescriptor sortDescriptorWithKey:@"updatedAt"
-//                                                             ascending:NO
-//                                                              selector:@selector(compare:)];
-    request.sortDescriptors = [NSArray arrayWithObjects:/*uploadStatusSD, */newPiecesSD/*, dateSD*/, nil];
+    NSSortDescriptor *dateSD = [NSSortDescriptor sortDescriptorWithKey:@"updatedAt"
+                                                             ascending:NO
+                                                              selector:@selector(compare:)];
+    request.sortDescriptors = [NSArray arrayWithObjects:/*uploadStatusSD, */newPiecesSD, dateSD, nil];
     
     self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                         managedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext
@@ -97,22 +97,25 @@ typedef enum {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                                            target:self action:@selector(addStoryOrPieceButtonPressed:)];
     self.navigationItem.rightBarButtonItem.tintColor = BANYAN_GREEN_COLOR;
+
     // Notifications to refresh data
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(filterStories:)
-                                                 name:BNStoryListRefreshedNotification
-                                               object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(foregroundRefresh:)
                                                  name:AFNetworkingReachabilityDidChangeNotification
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(refreshStoryList:)
-                                                 name:BNRefreshCurrentStoryListNotification
+                                             selector:@selector(filterStories:)
+                                                 name:BNStoryListRefreshedNotification
                                                object:nil];
+    
+    // Don't need these notifications as FRC delegate will take care of it.
+    if (!self.fetchedResultsController.delegate) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(refreshStoryList:)
+                                                     name:BNRefreshCurrentStoryListNotification
+                                                   object:nil];
+    }
     
     if ([BanyanAppDelegate isFirstTimeUser]) {
         [self.navigationController setNavigationBarHidden:YES];
@@ -320,7 +323,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (IBAction)filterStories:(id)sender
 {
     [self.refreshControl endRefreshing];
-    [self performFetch];
+    if (!self.fetchedResultsController.delegate) {
+        [self performFetch];
+    }
 }
 
 -(void)foregroundRefresh:(NSNotification *)notification

@@ -36,40 +36,43 @@
 
 + (void) registerDeviceToken:(NSString *)deviceToken
 {
-    SNSCreatePlatformEndpointRequest *req = [[SNSCreatePlatformEndpointRequest alloc] init];
-    req.token = deviceToken;
-    SNSCreatePlatformEndpointResponse *resp = nil;
-    @try {
-        req.platformApplicationArn = AWS_APPARN_INVTOCONTRIBUTE;
-        resp = [[self sharedClient] createPlatformEndpoint:req];
-        [[self endpointsDict] setObject:resp.endpointArn forKey:@"InvitedToContribute"];
-        req.platformApplicationArn = AWS_APPARN_INVTOVIEW;
-        resp = [[self sharedClient] createPlatformEndpoint:req];
-        [[self endpointsDict] setObject:resp.endpointArn forKey:@"InvitedToView"];
-        req.platformApplicationArn = AWS_APPARN_PIECEACTION;
-        resp = [[self sharedClient] createPlatformEndpoint:req];
-        [[self endpointsDict] setObject:resp.endpointArn forKey:@"PieceAction"];
-        req.platformApplicationArn = AWS_APPARN_PIECEADDED;
-        resp = [[self sharedClient] createPlatformEndpoint:req];
-        [[self endpointsDict] setObject:resp.endpointArn forKey:@"PieceAdded"];
-        req.platformApplicationArn = AWS_APPARN_USERFOLLOWING;
-        resp = [[self sharedClient] createPlatformEndpoint:req];
-        [[self endpointsDict] setObject:resp.endpointArn forKey:@"UserFollowing"];
-        
-        BNSharedUser *currentUser = [BNSharedUser currentUser];
-
-        if (currentUser) {
-            [[AFBanyanAPIClient sharedClient] putPath:[NSString stringWithFormat:@"%@%@/", currentUser.resourceUri, @"installations"]
-                                           parameters:@{@"device_token":deviceToken, @"type":[UIDevice currentDevice].systemName, @"push_endpoints": @{@"apns": [self endpointsDict]}}
-                                              success:nil
-                                              failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                                  NSLog(@"An error occurred: %@", error.localizedDescription);
-                                              }];
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+    dispatch_async(queue, ^{
+        SNSCreatePlatformEndpointRequest *req = [[SNSCreatePlatformEndpointRequest alloc] init];
+        req.token = deviceToken;
+        SNSCreatePlatformEndpointResponse *resp = nil;
+        @try {
+            req.platformApplicationArn = AWS_APPARN_INVTOCONTRIBUTE;
+            resp = [[self sharedClient] createPlatformEndpoint:req];
+            [[self endpointsDict] setObject:resp.endpointArn forKey:@"InvitedToContribute"];
+            req.platformApplicationArn = AWS_APPARN_INVTOVIEW;
+            resp = [[self sharedClient] createPlatformEndpoint:req];
+            [[self endpointsDict] setObject:resp.endpointArn forKey:@"InvitedToView"];
+            req.platformApplicationArn = AWS_APPARN_PIECEACTION;
+            resp = [[self sharedClient] createPlatformEndpoint:req];
+            [[self endpointsDict] setObject:resp.endpointArn forKey:@"PieceAction"];
+            req.platformApplicationArn = AWS_APPARN_PIECEADDED;
+            resp = [[self sharedClient] createPlatformEndpoint:req];
+            [[self endpointsDict] setObject:resp.endpointArn forKey:@"PieceAdded"];
+            req.platformApplicationArn = AWS_APPARN_USERFOLLOWING;
+            resp = [[self sharedClient] createPlatformEndpoint:req];
+            [[self endpointsDict] setObject:resp.endpointArn forKey:@"UserFollowing"];
+            
+            BNSharedUser *currentUser = [BNSharedUser currentUser];
+            
+            if (currentUser) {
+                [[AFBanyanAPIClient sharedClient] putPath:[NSString stringWithFormat:@"%@%@/", currentUser.resourceUri, @"installations"]
+                                               parameters:@{@"device_token":deviceToken, @"type":[UIDevice currentDevice].systemName, @"push_endpoints": @{@"apns": [self endpointsDict]}}
+                                                  success:nil
+                                                  failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                                      NSLog(@"An error occurred: %@", error.localizedDescription);
+                                                  }];
+            }
         }
-    }
-    @catch (NSException *exception) {
-        NSLog(@"Exception is: %@", exception.description);
-    }
+        @catch (NSException *exception) {
+            NSLog(@"Exception is: %@", exception.description);
+        }
+    });
 }
 
 + (void) enableNotificationsFromChannel:(NSString *)channel forEndpointArn:(NSString *)arn

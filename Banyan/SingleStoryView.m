@@ -95,7 +95,7 @@ static BOOL _loggedIn;
 
 - (id)initWithFrame:(CGRect)frame
 {
-#define SIZE_OF_STORY_STATUS_LABEL 50
+#define SIZE_OF_STORY_STATUS_LABEL 72
     
     self = [super initWithFrame:frame];
     if (self) {
@@ -129,15 +129,15 @@ static BOOL _loggedIn;
         self.storyAuthorsLabel.font = _mediumFont;
         [self addSubview:self.storyAuthorsLabel];
         
-        self.storyStatusLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(frame) - TABLE_CELL_MARGIN,
+        self.storyStatusLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.storyAuthorsLabel.frame),
                                                                           TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT,
                                                                           SIZE_OF_STORY_STATUS_LABEL, BOTTOM_VIEW_HEIGHT)];
         self.storyStatusLabel.hidden = NO;
         self.storyStatusLabel.backgroundColor = BANYAN_WHITE_COLOR;
         self.storyStatusLabel.textColor = BANYAN_LIGHTGRAY_COLOR;
         self.storyStatusLabel.textAlignment = NSTextAlignmentRight;
-        self.storyAuthorsLabel.lineBreakMode = NSLineBreakByClipping;
-        self.storyAuthorsLabel.font = _smallFont;
+        self.storyStatusLabel.lineBreakMode = NSLineBreakByClipping;
+        self.storyStatusLabel.font = _smallFont;
         [self addSubview:self.storyStatusLabel];
     }
     return self;
