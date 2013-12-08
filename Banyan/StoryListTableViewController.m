@@ -66,10 +66,11 @@ typedef enum {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
 //    NSSortDescriptor *uploadStatusSD = [NSSortDescriptor sortDescriptorWithKey:@"uploadStatusNumber" ascending:YES];
     NSSortDescriptor *newPiecesSD = [NSSortDescriptor sortDescriptorWithKey:@"newPiecesToView" ascending:YES];
-    NSSortDescriptor *dateSD = [NSSortDescriptor sortDescriptorWithKey:@"updatedAt"
-                                                             ascending:NO
-                                                              selector:@selector(compare:)];
-    request.sortDescriptors = [NSArray arrayWithObjects:/*uploadStatusSD, */newPiecesSD, dateSD, nil];
+    NSSortDescriptor *timeStampSD = [NSSortDescriptor sortDescriptorWithKey:@"timeStamp" ascending:NO];
+//    NSSortDescriptor *dateSD = [NSSortDescriptor sortDescriptorWithKey:@"updatedAt"
+//                                                             ascending:NO
+//                                                              selector:@selector(compare:)];
+    request.sortDescriptors = [NSArray arrayWithObjects:/*uploadStatusSD, */timeStampSD, newPiecesSD, nil];
     
     self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                         managedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext

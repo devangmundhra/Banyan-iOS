@@ -27,8 +27,13 @@
             if (!wself) return;
             __strong UIImageView *sself = wself;
             if (!sself) return;
-            if (image && postProcess) {
-                sself.image = postProcess(image);
+            if (image) {
+                UIImage *pImage = nil;
+                if (postProcess)
+                    pImage = postProcess(image);
+                else
+                    pImage = image;
+                sself.image = pImage;
                 [sself setNeedsDisplay];
             }
         }];
@@ -46,6 +51,8 @@
                 UIImage *pImage = nil;
                 if (postProcess)
                     pImage = postProcess(image);
+                else
+                    pImage = image;
                 sself.image = pImage;
                 [sself setNeedsDisplay];
             };
