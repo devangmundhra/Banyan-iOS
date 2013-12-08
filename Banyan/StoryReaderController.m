@@ -246,12 +246,18 @@
     else
         return true; // Same piece as now, so not turning
     
+    BOOL animation;
+    if (self.transitionStyleScroll) {
+        animation = NO;
+    } else {
+        animation = YES;
+    }
     Piece *piece = [self.story.pieces objectAtIndex:newPieceNum-1];
     UIViewController *viewController = [self viewControllerWithPiece:piece];
     if (viewController) {
         // Get the previous piece
         NSArray *vc = [NSArray arrayWithObject:viewController];
-        [self.pageViewController setViewControllers:vc direction:direction animated:YES completion:nil];
+        [self.pageViewController setViewControllers:vc direction:direction animated:animation completion:nil];
         return true;
     }
     return false;

@@ -45,7 +45,6 @@
                          path:BANYAN_API_CLASS_URL(@"Activity")
                    parameters:nil
                       success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                          NSLog(@"Create activity successful %@", activity);
                           activity.initialized = YES;
                       }
                       failure:^(RKObjectRequestOperation *operation, NSError *error) {
