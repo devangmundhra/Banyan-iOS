@@ -476,24 +476,6 @@
     [alertView show];
 }
 
-- (IBAction)deletePieceAlert:(UIBarButtonItem *)sender
-{
-    UIAlertView *alertView = nil;
-    alertView = [[UIAlertView alloc] initWithTitle:@"Delete Piece"
-                                           message:@"Do you want to delete this piece?"
-                                          delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
-    
-    [alertView show];
-}
-
-- (void)deletePiece:(UIBarButtonItem *)sender
-{
-    NSLog(@"ModifyPieceViewController_Deleting piece");
-    [Piece deletePiece:self.piece];
-    [self dismissEditView];
-    [TestFlight passCheckpoint:@"Piece deleted"];
-}
-
 - (IBAction)storyChangeButtonPressed:(id)sender
 {
     NSLog(@"Current story is %@", self.piece.story.title);
@@ -506,10 +488,6 @@
 #pragma mark UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if ([alertView.title isEqualToString:@"Delete Piece"] && buttonIndex==1) {
-        [self deletePiece:nil];
-        return;
-    }
     if ([alertView.title isEqualToString:@"Delete Audio"] && buttonIndex==1) {
         Media *audioMedia = [Media getMediaOfType:@"audio" inMediaSet:self.piece.media];
         [mediaToDelete addObject:audioMedia];

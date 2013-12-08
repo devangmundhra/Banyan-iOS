@@ -243,7 +243,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
-        [Story deleteStory:story];
+        [Story deleteStory:story completion:nil];
         [TestFlight passCheckpoint:@"Story deleted by swipe"];
     }
 }

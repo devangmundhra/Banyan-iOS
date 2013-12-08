@@ -153,7 +153,7 @@
     
     if ([RemoteObject numRemoteObjectsWithPendingChanges]) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Cannot refresh stories"
-                                                        message:@"Some of the changes that you have done are still being uploaded. Please refresh the stories once all the changes have been synchronized."
+                                                        message:@"Some of the changes that you have done are still being uploaded.\rPlease refresh the stories once all the changes have been synchronized."
                                                        delegate:nil
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];

@@ -105,7 +105,7 @@
                              if ([[error localizedDescription] rangeOfString:@"got 400"].location != NSNotFound) {
                                  // The story is no longer available on the server. This is now a local copy
                                  story.remoteStatus = RemoteObjectStatusLocal;
-                                 [Story deleteStory:story];
+                                 [Story deleteStory:story completion:nil];
                              }
                              NSLog(@"Error in updating story");
                          }];

@@ -25,7 +25,7 @@
     [Story updateLengthAndPieceNumbers:story];
 }
 
-+ (BOOL) deletePiece:(Piece *)piece
++ (void) deletePiece:(Piece *)piece completion:(void (^)(void)) completion
 {
     if (piece.remoteStatus == RemoteObjectStatusPushing) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in deleting piece"
@@ -34,7 +34,7 @@
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];
         [alert show];
-        return NO;
+        return;
     }
     
     // Delete all media for the piece
@@ -51,49 +51,34 @@
     if (piece.remoteStatus != RemoteObjectStatusLocal && NUMBER_EXISTS(piece.bnObjectId)) {
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[APP_DELEGATE topMostController].view animated:YES];
         hud.labelText = @"Deleting piece";
-     
-        // For RunLoop
-        __block BOOL doneRun = NO;
-        __block BOOL success = NO;
         
         [[AFBanyanAPIClient sharedClient] deletePath:BANYAN_API_OBJECT_URL(@"Piece", piece.bnObjectId)
                                           parameters:nil
                                              success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                                  NSLog(@"Piece %@ DELETED", piece.bnObjectId);
                                                  [piece removeWithStoryUpdate];
-                                                 doneRun = YES;
-                                                 success = YES;
+                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                     [hud hide:YES];
+                                                     if (completion) completion();
+                                                 });
                                              }
                                              failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error in deleting piece %@", piece.shortText]
-                                                                                                 message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]
-                                                                                                delegate:nil
-                                                                                       cancelButtonTitle:@"OK"
-                                                                                       otherButtonTitles:nil];
-                                                 [alert show];
-                                                 doneRun = YES;
+                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                     [hud hide:YES];
+                                                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error in deleting piece %@", piece.shortText]
+                                                                                                     message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]
+                                                                                                    delegate:nil
+                                                                                           cancelButtonTitle:@"OK"
+                                                                                           otherButtonTitles:nil];
+                                                     [alert show];
+                                                 });
                                              }
          ];
-
-        do
-        {
-            // Start the run loop but return after each source is handled.
-            SInt32    result = CFRunLoopRunInMode(kCFRunLoopDefaultMode, 10, YES);
-            
-            // If a source explicitly stopped the run loop, or if there are no
-            // sources or timers, go ahead and exit.
-            if ((result == kCFRunLoopRunStopped) || (result == kCFRunLoopRunFinished))
-                doneRun = YES;
-            
-            // Check for any other exit conditions here and set the
-            // done variable as needed.
-        }
-        while (!doneRun);
-        [hud hide:YES];
-        return success;
     } else {
         [piece removeWithStoryUpdate];
-        return YES;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (completion) completion();
+        });
     }
 }
 @end

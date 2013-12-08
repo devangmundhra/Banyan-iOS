@@ -604,13 +604,15 @@
         turnToPage = [NSNumber numberWithUnsignedInteger:curPieceNum-1];
     }
     Story *story = self.piece.story;
-    if ([Piece deletePiece:self.piece]) {
+    
+    __weak ReadPieceViewController *wself = self;
+    [Piece deletePiece:self.piece completion:^{
         if (!story.pieces.count) {
-            [self.delegate readPieceViewControllerDoneReading];
+            [wself.delegate readPieceViewControllerDoneReading];
         } else {
-            [self.delegate readPieceViewControllerFlipToPiece:turnToPage];
+            [wself.delegate readPieceViewControllerFlipToPiece:turnToPage];
         }
-    }
+    }];
 }
 
 #pragma mark Action sheet delegate method.

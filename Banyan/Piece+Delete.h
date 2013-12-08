@@ -10,6 +10,6 @@
 
 @interface Piece (Delete)
 
-+ (BOOL) deletePiece:(Piece *)piece;
++ (void) deletePiece:(Piece *)piece completion:(void (^)(void)) completion;
 
 @end
