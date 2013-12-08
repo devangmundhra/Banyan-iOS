@@ -108,6 +108,20 @@
     [self save];
 }
 
++ (NSUInteger) numRemoteObjectsWithPendingChanges
+{
+    // If there are any remoteObjects which are not in sync state, return YES
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:[NSEntityDescription entityForName:@"RemoteObject" inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber != %@)",
+                              [NSNumber numberWithInt:RemoteObjectStatusSync]];
+    [request setPredicate:predicate];
+    
+    NSError *error = nil;
+    NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+    return [array count];
+}
+
 + (void)validateAllObjects
 {
     // Any objects which are in the Uploading state should be marked as failed

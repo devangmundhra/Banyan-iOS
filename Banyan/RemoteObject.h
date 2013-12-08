@@ -52,6 +52,7 @@ typedef enum {
 - (void)save;
 - (void) remove;
 + (void)validateAllObjects;
++ (NSUInteger) numRemoteObjectsWithPendingChanges;
 
 # pragma mark sharing
 - (void) shareOnFacebook;

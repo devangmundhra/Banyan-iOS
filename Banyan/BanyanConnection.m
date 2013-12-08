@@ -151,6 +151,20 @@
 //    [[self storiesPaginator] loadPage:1];
 //    return;
     
+    if ([RemoteObject numRemoteObjectsWithPendingChanges]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Cannot refresh stories"
+                                                        message:@"Some of the changes that you have done are still being uploaded. Please refresh the stories once all the changes have been synchronized."
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
+                                                            object:self];
+        NSLog(@"%s loadDataSource skipped", __PRETTY_FUNCTION__);
+
+        return;
+    }
+    
     NSLog(@"%s loadDataSource begin", __PRETTY_FUNCTION__);
     
     [BanyanConnection

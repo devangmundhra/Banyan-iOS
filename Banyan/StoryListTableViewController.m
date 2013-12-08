@@ -129,18 +129,6 @@ typedef enum {
     [TestFlight passCheckpoint:@"RootViewController loaded"];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-//    self.suspendAutomaticTrackingOfChangesInManagedObjectContext = YES;
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-//    self.suspendAutomaticTrackingOfChangesInManagedObjectContext = NO;
-}
-
 - (void)dealloc
 {
     NSLog(@"StoryList View Controller Deallocated");
@@ -340,8 +328,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         }
     }
     
-    [BanyanConnection loadDataSource];
     [self.refreshControl beginRefreshing];
+    [BanyanConnection loadDataSource];
 }
 
 
