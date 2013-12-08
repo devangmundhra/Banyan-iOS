@@ -37,19 +37,25 @@ inBackgroundWithBlock:(void (^)(bool succeeded, NSString *url, NSString *filenam
         por.contentType = contentType;
         por.data        = data;
         
-        // Put the image data into the specified s3 bucket and object.
-        S3PutObjectResponse *putObjectResponse = [self.sharedClient putObject:por];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (putObjectResponse.error != nil)
-            {
-                block(NO, nil, nil, putObjectResponse.error);
-            }
-            else
-            {
-                block(YES, [por.url absoluteString], filename, putObjectResponse.error);
-            }
-        });
+        @try {
+            // Put the image data into the specified s3 bucket and object.
+            S3PutObjectResponse *putObjectResponse = [self.sharedClient putObject:por];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (putObjectResponse.error != nil)
+                {
+                    block(NO, nil, nil, putObjectResponse.error);
+                }
+                else
+                {
+                    block(YES, [por.url absoluteString], filename, putObjectResponse.error);
+                }
+            });
+        }
+        @catch (NSException *exception) {
+            // Error here
+            block(NO, nil, nil, nil);
+        }
     });
 }
 
@@ -57,15 +63,21 @@ inBackgroundWithBlock:(void (^)(bool succeeded, NSString *url, NSString *filenam
 {
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
-        // Delete the object
-        S3DeleteObjectResponse *deleteObjectResponse = [self.sharedClient deleteObjectWithKey:filename withBucket:AWSS3BucketName];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (deleteObjectResponse.error != nil)
-                block(NO, deleteObjectResponse.error);
-            else
-                block(YES, nil);
-        });
+        @try {
+            // Delete the object
+            S3DeleteObjectResponse *deleteObjectResponse = [self.sharedClient deleteObjectWithKey:filename withBucket:AWSS3BucketName];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (deleteObjectResponse.error != nil)
+                    block(NO, deleteObjectResponse.error);
+                else
+                    block(YES, nil);
+            });
+        }
+        @catch (NSException *exception) {
+            // Error here
+            block(NO, nil);
+        }
     });
 }
 @end

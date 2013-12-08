@@ -252,7 +252,11 @@
     } else {
         animation = YES;
     }
-    Piece *piece = [self.story.pieces objectAtIndex:newPieceNum-1];
+    
+    Piece *piece = nil;
+    if (self.story.pieces.count <= newPieceNum) {
+        piece = [self.story.pieces objectAtIndex:newPieceNum-1];
+    }
     UIViewController *viewController = [self viewControllerWithPiece:piece];
     if (viewController) {
         // Get the previous piece

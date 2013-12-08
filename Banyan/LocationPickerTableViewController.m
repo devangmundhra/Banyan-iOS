@@ -136,6 +136,16 @@ static NSString *CellIdentifier = @"LocationCell";
 
 - (void)updateSearchString:(NSString*)aSearchString
 {
+    if (!self.currentLocation) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unable to find location"
+                                                        message:@"There was a problem getting your current location.\rPlease try again later."
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles: nil];
+        [alert show];
+        return;
+    }
+    
     [GooglePlacesObject getGoogleObjectsWithQuery:aSearchString
                                    andCoordinates:CLLocationCoordinate2DMake(self.currentLocation.coordinate.latitude, self.currentLocation.coordinate.longitude)
                                    withCompletion:^(NSArray *places) {
