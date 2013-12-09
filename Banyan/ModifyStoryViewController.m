@@ -17,13 +17,16 @@
 #import "BNLabel.h"
 #import "BNTextField.h"
 
+@interface ModifyStoryViewController (UITextFieldDelegate) <UITextFieldDelegate>
+@end
+
 @interface ModifyStoryViewController ()
 
 @property (strong, nonatomic) NSString *storyTitle;
 @property (strong, nonatomic) UIScrollView *scrollView;
 
 @property (strong, nonatomic) IBOutlet BNTextField *storyTitleTextField;
-
+@property (strong, nonatomic) UILabel *charCountLabel;
 @property (strong, nonatomic) IBOutlet UIView *invitationView;
 @property (strong, nonatomic) IBOutlet BNLabel *inviteeLabel;
 @property (strong, nonatomic) IBOutlet UIButton *inviteContactsButton;
@@ -50,7 +53,9 @@
 @synthesize inviteContactsButton = _inviteContactsButton;
 @synthesize scrollView = _scrollView;
 @synthesize invitationView = _invitationView;
+@synthesize charCountLabel = _charCountLabel;
 
+#define MAX_STORY_TITLE_LENGTH 20
 #define TEXT_INSETS 5
 #define VIEW_INSETS 8
 
@@ -88,13 +93,6 @@
 {
     [super viewDidAppear:animated];
     [self.view endEditing:YES];
-    [self registerForKeyboardNotifications];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    [self unregisterForKeyboardNotifications];
 }
 
 - (void)viewDidLoad
@@ -126,15 +124,24 @@
     self.storyTitleTextField.delegate = self;
     self.storyTitleTextField.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSETS, 0, TEXT_INSETS);
     self.storyTitleTextField.autocapitalizationType = UITextAutocapitalizationTypeWords;
-    self.storyTitleTextField.font = [UIFont fontWithName:@"Roboto-Bold" size:16];
+    self.storyTitleTextField.font = [UIFont fontWithName:@"Roboto-Bold" size:18];
     self.storyTitleTextField.returnKeyType = UIReturnKeyDone;
     [self.storyTitleTextField.layer setCornerRadius:8];
     [self.scrollView addSubview:self.storyTitleTextField];
     
+    frame.origin.y = CGRectGetMaxY(self.storyTitleTextField.frame) + 2;
+    frame.size.height = 12.0f;
+    self.charCountLabel = [[UILabel alloc] initWithFrame:frame];
+    self.charCountLabel.font = [UIFont fontWithName:@"Roboto" size:10];
+    self.charCountLabel.textColor = BANYAN_GRAY_COLOR;
+    self.charCountLabel.textAlignment = NSTextAlignmentRight;
+    self.charCountLabel.hidden = YES;
+    [self.scrollView addSubview:self.charCountLabel];
+    
     UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapAnywhere:)];
     [self.scrollView addGestureRecognizer:tapRecognizer];
 
-    frame.origin.y = CGRectGetMaxY(self.storyTitleTextField.frame) + 44 /* distance between caption and permission */;
+    frame.origin.y = CGRectGetMaxY(self.charCountLabel.frame) + 30 /* distance between char count label and permission */;
     self.invitationView = [[UIView alloc] initWithFrame:frame];
     self.invitationView.backgroundColor = [BANYAN_GREEN_COLOR colorWithAlphaComponent:0.1];
     [self.invitationView.layer setCornerRadius:8];
@@ -151,6 +158,7 @@
     self.inviteContactsButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [self.inviteContactsButton setTitle:@"Change permissions" forState:UIControlStateNormal];
     frame.origin.y = CGRectGetMaxY(self.inviteeLabel.frame);
+    frame.size.height = 44.0f;
     self.inviteContactsButton.frame = frame;
     [self.invitationView addSubview:self.inviteContactsButton];
     
@@ -303,48 +311,6 @@
     self.invitationView.frame = frame;
 }
 
-
-# pragma mark - Keyboard notifications
-- (void)registerForKeyboardNotifications
-{
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillBeShown:)
-                                                 name:UIKeyboardWillShowNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillBeHidden:)
-                                                 name:UIKeyboardWillHideNotification object:nil];
-    
-}
-
-- (void)unregisterForKeyboardNotifications
-{
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardWillShowNotification
-                                                  object:nil];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:UIKeyboardWillHideNotification
-                                                  object:nil];
-    
-}
-
-// Called when the UIKeyboardWillShowotification is sent.
-- (void)keyboardWillBeShown:(NSNotification*)aNotification
-{
-//    NSDictionary* info = [aNotification userInfo];
-//    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    
-//    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
-}
-
-// Called when the UIKeyboardWillBeHidden is sent
-- (void)keyboardWillBeHidden:(NSNotification*)aNotification
-{
-//    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
-}
-
 -(void)didTapAnywhere: (UITapGestureRecognizer*) recognizer
 {
     [self dismissKeyboard:NULL];
@@ -356,12 +322,9 @@
         [self.storyTitleTextField resignFirstResponder];
 }
 
-#pragma mark UITextFieldDelegate
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
+- (void) updateCharCountWithLength:(NSUInteger)len
 {
-    [textField resignFirstResponder];
-    return YES;
+    self.charCountLabel.text = [NSString stringWithFormat:@"%d charachers left", MAX_STORY_TITLE_LENGTH-len];
 }
 
 # pragma mark InvitedTableViewControllerDelegate
@@ -393,4 +356,34 @@ finishedInvitingForViewerPermissions:(BNPermissionsObject *)viewerPermissions
 #undef TEXT_INSETS
 #undef VIEW_INSETS
 
+@end
+
+@implementation ModifyStoryViewController (UITextFieldDelegate)
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    self.charCountLabel.hidden = NO;
+    [self updateCharCountWithLength:self.storyTitleTextField.text.length];
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    self.charCountLabel.hidden = YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    NSUInteger newLength = [textField.text length] + [string length] - range.length;
+    BOOL retValue = newLength <= MAX_STORY_TITLE_LENGTH;
+    if (retValue)
+        [self updateCharCountWithLength:newLength];
+    return retValue;
+}
+
+#undef MAX_STORY_TITLE_LENGTH
 @end

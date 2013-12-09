@@ -152,12 +152,12 @@
     self.textViewInputAccessoryView.translucent = YES;
     NSMutableArray *toolbarItems = [NSMutableArray array];
     [toolbarItems addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
-    UIBarButtonItem *tagButton = [[UIBarButtonItem alloc] initWithTitle:@"#tag"
-                                                                  style:UIBarButtonItemStyleBordered
-                                                                 target:self
-                                                                 action:@selector(addHashTag:)];
-    [toolbarItems addObject:tagButton];
-    [toolbarItems addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil]];
+//    UIBarButtonItem *tagButton = [[UIBarButtonItem alloc] initWithTitle:@"#tag"
+//                                                                  style:UIBarButtonItemStyleBordered
+//                                                                 target:self
+//                                                                 action:@selector(addHashTag:)];
+//    [toolbarItems addObject:tagButton];
+//    [toolbarItems addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil]];
     UIBarButtonItem *disKbButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                                target:self
                                                                                action:@selector(dismissKeyboard:)];

@@ -22,7 +22,7 @@
 
 typedef enum {ModifyStoryViewControllerEditModeAdd, ModifyStoryViewControllerEditModeEdit} ModifyStoryViewControllerEditMode;
 
-@interface ModifyStoryViewController : UIViewController <InvitedTableViewControllerDelegate, UITextFieldDelegate>
+@interface ModifyStoryViewController : UIViewController <InvitedTableViewControllerDelegate>
 
 @property (strong, nonatomic) Story *story;
 @property (strong, nonatomic) id <ModifyStoryViewControllerDelegate>delegate;

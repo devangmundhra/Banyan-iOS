@@ -13,7 +13,6 @@
 #import "AFBanyanAPIClient.h"
 #import "Piece+Edit.h"
 #import "Piece+Create.h"
-#import "SMPageControl.h"
 #import "NSObject+BlockObservation.h"
 #import "User.h"
 #import "Piece+Delete.h"
@@ -46,8 +45,6 @@
 @property (strong, nonatomic) IBOutlet BNLabel *timeLabel;
 @property (strong, nonatomic) IBOutlet BNLabel *locationLabel;
 
-@property (strong, nonatomic) SMPageControl *pageControl;
-
 @property (strong, nonatomic) AMBlockToken *pieceObserverToken1;
 @property (strong, nonatomic) AMBlockToken *pieceObserverToken2;
 @property (strong, nonatomic) AMBlockToken *pieceObserverToken3;
@@ -72,7 +69,6 @@
 @synthesize locationLabel = _locationLabel;
 @synthesize piece = _piece;
 @synthesize delegate = _delegate;
-@synthesize pageControl = _pageControl;
 @synthesize pieceObserverToken1, pieceObserverToken2, pieceObserverToken3, pieceObserverToken4;
 @synthesize mediaFocusManager = _mediaFocusManager;
 @synthesize audioPlayer = _audioPlayer;
@@ -169,19 +165,22 @@
     titleButton.frame = CGRectMake(CGRectGetMaxX(backButton.frame) + 2*BUTTON_SPACING, statusBarOffset,
                                    CGRectGetMinX(settingsButton.frame) - CGRectGetMaxX(backButton.frame) - 2*BUTTON_SPACING,
                                    CGRectGetHeight(self.storyInfoView.bounds)-statusBarOffset);
-    titleButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:16];
     titleButton.titleLabel.minimumScaleFactor = 0.7;
     titleButton.backgroundColor = [UIColor clearColor];
-    [titleButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     titleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    [titleButton setTitleShadowColor:[UIColor colorWithWhite:0.0 alpha:0.5] forState:UIControlStateNormal];
-    [titleButton setTitle:self.piece.story.title forState:UIControlStateNormal];
+    titleButton.titleLabel.numberOfLines = 2;
+    NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:self.piece.story.title
+                                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
+                                                                                   NSForegroundColorAttributeName: BANYAN_DARKGRAY_COLOR}];
+    NSAttributedString *pageString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\rpiece %d/%d", self.piece.pieceNumber, self.piece.story.length]
+                                                                     attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
+                                                                                  NSForegroundColorAttributeName: [UIColor grayColor]}];
+    NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithAttributedString:titleString];
+    [attrString appendAttributedString:pageString];
+    [titleButton setAttributedTitle:attrString forState:UIControlStateNormal];
     if (self.piece.story.canContribute) {
         titleButton.showsTouchWhenHighlighted = YES;
         [titleButton addTarget:self action:@selector(editStoryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        titleButton.titleLabel.attributedText = [[NSAttributedString alloc] initWithString:self.piece.story.title
-                                                                                attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
-                                                                                             NSUnderlineStyleAttributeName: @1}];
     }
     [self.storyInfoView insertSubview:titleButton atIndex:0];
     
@@ -247,16 +246,6 @@
     self.pieceTextView.textAlignment = NSTextAlignmentJustified;
     self.pieceTextView.scrollEnabled = NO;
     [self.contentView addSubview:self.pieceTextView];
-    
-    // Page control
-    self.pageControl = [[SMPageControl alloc] initWithFrame:CGRectMake(100, 100, CGRectGetWidth(self.view.frame), 20)];
-    self.pageControl.center = CGPointMake(CGRectGetMidX(self.view.frame), CGRectGetMaxY(self.view.frame) - 10.0f);
-    self.pageControl.hidesForSinglePage = YES;
-    self.pageControl.currentPageIndicatorTintColor = BANYAN_BROWN_COLOR;
-    self.pageControl.pageIndicatorTintColor = [BANYAN_BROWN_COLOR colorWithAlphaComponent:0.5];
-    self.pageControl.backgroundColor = [UIColor clearColor];
-    [self.pageControl addTarget:self action:@selector(changePage:) forControlEvents:UIControlEventValueChanged];
-    [self.view addSubview:self.pageControl];
 
     [self refreshUI];
     
@@ -495,9 +484,6 @@
         [self.commentsButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
     }
     
-    self.pageControl.numberOfPages = self.piece.story.length;
-    self.pageControl.currentPage = self.piece.pieceNumber-1;
-    
     [self.contributorsButton setTitle:@"Contributors" forState:UIControlStateNormal];
     [self.contributorsButton setEnabled:NO];
 }
@@ -515,30 +501,6 @@
     pieceObserverToken3 = [self.piece addObserverForKeyPath:@"media" task:^(id obj, NSDictionary *change) {
         [readPieceViewController refreshUI];
     }];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-    [self setLocationLabel:nil];
-    [self setContentView:nil];
-    [self setPieceInfoView:nil];
-    [self setImageView:nil];
-    [self setPieceTextView:nil];
-    [self setPieceCaptionView:nil];
-    [self setViewsButton:nil];
-    [self setLikesButton:nil];
-    [self setCommentsButton:nil];
-    [self setAuthorLabel:nil];
-    [self setTimeLabel:nil];
-    [self setContributorsButton:nil];
-    [self setPageControl:nil];
-    [self removePieceObserver];
-    [self setMediaFocusManager:nil];
-    [self setAudioPlayer:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)removePieceObserver
@@ -717,15 +679,6 @@
     }
 }
 
-#pragma mark UIPageControl
-- (IBAction)changePage:(id)sender
-{
-    NSInteger page = self.pageControl.currentPage;
-    if ([self.delegate respondsToSelector:@selector(readPieceViewControllerFlipToPiece:)]) {
-        [self.delegate performSelector:@selector(readPieceViewControllerFlipToPiece:) withObject:[NSNumber numberWithInteger:page+1]];
-    }
-}
-
 #pragma mark ModifyPieceViewControllerDelegate
 - (void)modifyPieceViewController:(ModifyPieceViewController *)controller didFinishAddingPiece:(Piece *)piece
 {
@@ -740,22 +693,10 @@
     
     // Release any cached data, images, etc that aren't in use.
 }
-@end
 
-@implementation ReadPieceViewController (UIScrollViewDelegate)
-
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+- (void)dealloc
 {
-    if (scrollView == self.contentView) {
-        self.pageControl.hidden = YES;
-    }
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-    if (scrollView == self.contentView) {
-        self.pageControl.hidden = NO;
-    }
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end
