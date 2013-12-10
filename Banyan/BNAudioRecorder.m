@@ -45,6 +45,8 @@
 - (void)dealloc
 {
     [self bnAudioRecorderViewToStop:nil];
+    NSError *activationError = nil;
+	[[AVAudioSession sharedInstance] setActive:NO error: &activationError];
 }
 
 - (void)setup
@@ -77,8 +79,7 @@
     } else {
         audioRecorder.delegate = self;
     }
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
-
+    
     currentProgress = 0;
     isRecordingAvailable = NO;
 }
@@ -124,11 +125,16 @@
     [self performSelectorOnMainThread:@selector(invalidateTimer) withObject:nil waitUntilDone:YES];
     [aRView setPlayControlButtons];
     [aRView setTextForTimeLabel:[NSString stringWithFormat:@"0/%ds", (int)floor([player duration])]];
+    NSError *activationError = nil;
+    [[AVAudioSession sharedInstance] setActive:NO error: &activationError];
+    player = nil; // Make this nil to release player memory
 }
 
 -(void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player
                                 error:(NSError *)error
 {
+    NSError *activationError = nil;
+    [[AVAudioSession sharedInstance] setActive:NO error: &activationError];
     NSLog(@"Decode Error occurred");
 }
 
@@ -152,6 +158,8 @@
     [aRView setPlayControlButtons];
     [aRView setDeleteButton];
     isRecordingAvailable = YES;
+    NSError *activationError = nil;
+    [[AVAudioSession sharedInstance] setActive:NO error: &activationError];
 }
 
 -(void)audioRecorderEncodeErrorDidOccur:(AVAudioRecorder *)recorder
@@ -181,6 +189,11 @@
 - (void) bnAudioRecorderViewToRecord:(BNAudioRecorderView *)aRView
 {
     if (!audioRecorder.recording) {
+        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryRecord error:nil];
+        // Activates the audio session.
+        NSError *activationError = nil;
+        [[AVAudioSession sharedInstance] setActive:YES error: &activationError];
+        
         [audioRecorder recordForDuration:RECORD_DURATION+0.7]; // record for upto RECORD_DURATION seconds
         timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timerAction:) userInfo:aRView repeats:YES];
         // The RunLoop will be the Main thread runloop since this is called in response to user event
@@ -202,6 +215,10 @@
                   [error localizedDescription]);
         }
         else {
+            [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+            // Activates the audio session.
+            NSError *activationError = nil;
+            [[AVAudioSession sharedInstance] setActive:YES error: &activationError];
             audioPlayer.delegate = self;
             timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timerAction:) userInfo:aRView repeats:YES];
             // The RunLoop will be the Main thread runloop since this is called in response to user event

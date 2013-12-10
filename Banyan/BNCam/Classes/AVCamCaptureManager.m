@@ -189,12 +189,15 @@ NSString *const AVCamCaptureManagerInfoImage = @"AVCamCaptureManagerInfoImage";
 			[[self backFacingCamera] unlockForConfiguration];
 		}
 	}
-	
+
+    /*
+     * Note: Commenting out the Audio/Video parts from this method because currently the app only uses still photos.
+     * As and when other media types are supported, use them (uncomment)
+     */
     // Init the device inputs
     AVCaptureDeviceInput *newVideoInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self backFacingCamera] error:nil];
-    AVCaptureDeviceInput *newAudioInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self audioDevice] error:nil];
+//    AVCaptureDeviceInput *newAudioInput = [[AVCaptureDeviceInput alloc] initWithDevice:[self audioDevice] error:nil];
     
-	
     // Setup the still image file output
     AVCaptureStillImageOutput *newStillImageOutput = [[AVCaptureStillImageOutput alloc] init];
     NSDictionary *outputSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
@@ -205,43 +208,42 @@ NSString *const AVCamCaptureManagerInfoImage = @"AVCamCaptureManagerInfoImage";
     // Create session (use default AVCaptureSessionPresetHigh)
     AVCaptureSession *newCaptureSession = [[AVCaptureSession alloc] init];
     
-    
     // Add inputs and output to the capture session
     if ([newCaptureSession canAddInput:newVideoInput]) {
         [newCaptureSession addInput:newVideoInput];
     }
-    if ([newCaptureSession canAddInput:newAudioInput]) {
-        [newCaptureSession addInput:newAudioInput];
-    }
+//    if ([newCaptureSession canAddInput:newAudioInput]) {
+//        [newCaptureSession addInput:newAudioInput];
+//    }
     if ([newCaptureSession canAddOutput:newStillImageOutput]) {
         [newCaptureSession addOutput:newStillImageOutput];
     }
-    
+
     [self setStillImageOutput:newStillImageOutput];
     [self setVideoInput:newVideoInput];
-    [self setAudioInput:newAudioInput];
+//    [self setAudioInput:newAudioInput];
     [self setSession:newCaptureSession];
     
-	// Set up the movie file output
-    NSURL *outputFileURL = [self tempFileURL];
-    AVCamRecorder *newRecorder = [[AVCamRecorder alloc] initWithSession:[self session] outputFileURL:outputFileURL];
-    [newRecorder setDelegate:self];
-	
-	// Send an error to the delegate if video recording is unavailable
-	if (![newRecorder recordsVideo] && [newRecorder recordsAudio]) {
-		NSString *localizedDescription = NSLocalizedString(@"Video recording unavailable", @"Video recording unavailable description");
-		NSString *localizedFailureReason = NSLocalizedString(@"Movies recorded on this device will only contain audio. They will be accessible through iTunes file sharing.", @"Video recording unavailable failure reason");
-		NSDictionary *errorDict = [NSDictionary dictionaryWithObjectsAndKeys:
-								   localizedDescription, NSLocalizedDescriptionKey, 
-								   localizedFailureReason, NSLocalizedFailureReasonErrorKey, 
-								   nil];
-		NSError *noVideoError = [NSError errorWithDomain:@"AVCam" code:0 userInfo:errorDict];
-		if ([[self delegate] respondsToSelector:@selector(captureManager:didFailWithError:)]) {
-			[[self delegate] captureManager:self didFailWithError:noVideoError];
-		}
-	}
-	
-	[self setRecorder:newRecorder];
+//	// Set up the movie file output
+//    NSURL *outputFileURL = [self tempFileURL];
+//    AVCamRecorder *newRecorder = [[AVCamRecorder alloc] initWithSession:[self session] outputFileURL:outputFileURL];
+//    [newRecorder setDelegate:self];
+//    
+//	// Send an error to the delegate if video recording is unavailable
+//	if (![newRecorder recordsVideo] && [newRecorder recordsAudio]) {
+//		NSString *localizedDescription = NSLocalizedString(@"Video recording unavailable", @"Video recording unavailable description");
+//		NSString *localizedFailureReason = NSLocalizedString(@"Movies recorded on this device will only contain audio. They will be accessible through iTunes file sharing.", @"Video recording unavailable failure reason");
+//		NSDictionary *errorDict = [NSDictionary dictionaryWithObjectsAndKeys:
+//								   localizedDescription, NSLocalizedDescriptionKey, 
+//								   localizedFailureReason, NSLocalizedFailureReasonErrorKey, 
+//								   nil];
+//		NSError *noVideoError = [NSError errorWithDomain:@"AVCam" code:0 userInfo:errorDict];
+//		if ([[self delegate] respondsToSelector:@selector(captureManager:didFailWithError:)]) {
+//			[[self delegate] captureManager:self didFailWithError:noVideoError];
+//		}
+//	}
+//	   
+//	[self setRecorder:newRecorder];
 	
     success = YES;
     

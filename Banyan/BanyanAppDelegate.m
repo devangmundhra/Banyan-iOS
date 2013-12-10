@@ -17,6 +17,7 @@
 #import "SideNavigatorViewController.h"
 #import "StoryListTableViewController.h"
 #import "SDWebImage/SDImageCache.h"
+#import <AVFoundation/AVFoundation.h>
 
 @interface BanyanAppDelegate () <UserLoginViewControllerDelegate>
 @property (strong, nonatomic) NSTimer *remoteObjectBackgroundTimer;

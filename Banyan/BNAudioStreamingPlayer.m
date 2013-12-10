@@ -45,80 +45,6 @@ NSString *kCurrentItemKey	= @"currentItem";
 
 @end
 
-#pragma mark Audio session callbacks_______________________
-
-// Audio session callback function for responding to audio route changes. If playing
-//		back application audio when the headset is unplugged, this callback pauses
-//		playback and displays an alert that allows the user to resume or stop playback.
-//
-//		The system takes care of iPod audio pausing during route changes--this callback
-//		is not involved with pausing playback of iPod audio.
-void audioRouteChangeListenerCallback (
-                                       void                      *inUserData,
-                                       AudioSessionPropertyID    inPropertyID,
-                                       UInt32                    inPropertyValueSize,
-                                       const void                *inPropertyValue
-                                       ) {
-	
-	// ensure that this callback was invoked for a route change
-	if (inPropertyID != kAudioSessionProperty_AudioRouteChange) return;
-    
-	// This callback, being outside the implementation block, needs a reference to the
-	//		MainViewController object, which it receives in the inUserData parameter.
-	//		You provide this reference when registering this callback (see the call to
-	//		AudioSessionAddPropertyListener).
-	BNAudioStreamingPlayer *controller = (__bridge BNAudioStreamingPlayer *) inUserData;
-	
-	// if application sound is not playing, there's nothing to do, so return.
-	if (![controller isPlaying]) {
-        
-		NSLog (@"Audio route change while application audio is stopped.");
-		return;
-		
-	} else {
-        
-		// Determines the reason for the route change, to ensure that it is not
-		//		because of a category change.
-		CFDictionaryRef	routeChangeDictionary = inPropertyValue;
-		
-		CFNumberRef routeChangeReasonRef =
-        CFDictionaryGetValue (
-                              routeChangeDictionary,
-                              CFSTR (kAudioSession_AudioRouteChangeKey_Reason)
-                              );
-        
-		SInt32 routeChangeReason;
-		
-		CFNumberGetValue (
-                          routeChangeReasonRef,
-                          kCFNumberSInt32Type,
-                          &routeChangeReason
-                          );
-		
-		// "Old device unavailable" indicates that a headset was unplugged, or that the
-		//	device was removed from a dock connector that supports audio output. This is
-		//	the recommended test for when to pause audio.
-		if (routeChangeReason == kAudioSessionRouteChangeReason_OldDeviceUnavailable) {
-            
-			[controller.player pause];
-			NSLog (@"Output device removed, so application audio was paused.");
-            
-			UIAlertView *routeChangeAlertView =
-            [[UIAlertView alloc]	initWithTitle: NSLocalizedString (@"Playback Paused", @"Title for audio hardware route-changed alert view")
-                                       message: NSLocalizedString (@"Audio output was changed", @"Explanation for route-changed alert view")
-                                      delegate: controller
-                             cancelButtonTitle: NSLocalizedString (@"StopPlaybackAfterRouteChange", @"Stop button title")
-                             otherButtonTitles: NSLocalizedString (@"ResumePlaybackAfterRouteChange", @"Play button title"), nil];
-			[routeChangeAlertView show];
-			// release takes place in alertView:clickedButtonAtIndex: method
-            
-		} else {
-            
-			NSLog (@"A route change occurred that does not require pausing of application audio.");
-		}
-	}
-}
-
 @implementation BNAudioStreamingPlayer
 
 @synthesize toolBar, audioTimeControl;
@@ -198,14 +124,7 @@ void audioRouteChangeListenerCallback (
     [self.player removeObserver:self forKeyPath:kCurrentItemKey];
     [self.playerItem removeObserver:self forKeyPath:kStatusKey];
     
-    // Unregister the audio route change listener callback function
-	AudioSessionRemovePropertyListenerWithUserData (kAudioSessionProperty_AudioRouteChange,
-                                                    audioRouteChangeListenerCallback,
-                                                    (__bridge void *)(self)
-                                                    );
-    
-	// Activates the audio session.
-	
+	// Deactivates the audio session.
 	NSError *activationError = nil;
 	[[AVAudioSession sharedInstance] setActive:NO error: &activationError];
     
@@ -256,6 +175,11 @@ void audioRouteChangeListenerCallback (
     NSMutableArray *toolbarItems = [NSMutableArray arrayWithArray:[toolBar items]];
     [toolbarItems replaceObjectAtIndex:0 withObject:stopButton];
     toolBar.items = toolbarItems;
+    // Activates the audio session.
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback
+                                           error:nil];
+	NSError *activationError = nil;
+	[[AVAudioSession sharedInstance] setActive:YES error: &activationError];
 }
 
 /* Show the play button in the audio player controller. */
@@ -264,6 +188,11 @@ void audioRouteChangeListenerCallback (
     NSMutableArray *toolbarItems = [NSMutableArray arrayWithArray:[toolBar items]];
     [toolbarItems replaceObjectAtIndex:0 withObject:playButton];
     toolBar.items = toolbarItems;
+    // Deactivates the audio session.
+	NSError *activationError = nil;
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient
+                                           error:nil];
+	[[AVAudioSession sharedInstance] setActive:NO error: &activationError];
 }
 
 /* If the media is playing, show the stop button; otherwise, show the play button. */
@@ -765,36 +694,64 @@ void audioRouteChangeListenerCallback (
 # pragma mark Audio Session delegates
 - (void) setupApplicationAudio
 {
-	// Registers this class as the delegate of the audio session.
-//	[[AVAudioSession sharedInstance] setDelegate: self];
-	
-	// The AmbientSound category allows application audio to mix with Media Player
-	// audio. The category also indicates that application audio should stop playing
-	// if the Ring/Siilent switch is set to "silent" or the screen locks.
-	[[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryAmbient error: nil];
-    /*
-     // Use this code instead to allow the app sound to continue to play when the screen is locked.
-     [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error: nil];
-     
-     UInt32 doSetProperty = 0;
-     AudioSessionSetProperty (
-     kAudioSessionProperty_OverrideCategoryMixWithOthers,
-     sizeof (doSetProperty),
-     &doSetProperty
-     );
-     */
-    
 	// Registers the audio route change listener callback function
-	AudioSessionAddPropertyListener (
-                                     kAudioSessionProperty_AudioRouteChange,
-                                     audioRouteChangeListenerCallback,
-                                     (__bridge void *)(self)
-                                     );
+    /* When the player item has played to its end time we'll toggle
+     the audio controller Pause button to be the Play button */
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(audioRouteChangeListener:)
+                                                 name:AVAudioSessionRouteChangeNotification
+                                               object:nil];
     
-	// Activates the audio session.
-	
-	NSError *activationError = nil;
-	[[AVAudioSession sharedInstance] setActive: YES error: &activationError];
+    // Audio Sessions
+    // The line [self setPlayer:[AVPlayer playerWithPlayerItem:self.playerItem]];
+    // uses the AudioSession category. So use the ambient category when setting up application.
+    // When the audio is played, change the category.
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient
+                                           error:nil];
+}
+
+// Audio session callback function for responding to audio route changes. If playing
+//		back application audio when the headset is unplugged, this callback pauses
+//		playback and displays an alert that allows the user to resume or stop playback.
+//
+//		The system takes care of iPod audio pausing during route changes--this callback
+//		is not involved with pausing playback of iPod audio.
+- (void) audioRouteChangeListener:(NSNotification *)notification
+{
+    NSDictionary *userInfo = notification.userInfo;
+    
+	// if application sound is not playing, there's nothing to do, so return.
+	if (![self isPlaying]) {
+        
+		NSLog (@"Audio route change while application audio is stopped.");
+		return;
+		
+	} else {
+        
+        NSNumber *routeChangeReasonNum = [userInfo objectForKey:AVAudioSessionRouteChangeReasonKey];
+        NSUInteger routeChangeReason = [routeChangeReasonNum unsignedIntegerValue];
+        
+		// "Old device unavailable" indicates that a headset was unplugged, or that the
+		//	device was removed from a dock connector that supports audio output. This is
+		//	the recommended test for when to pause audio.
+		if (routeChangeReason == AVAudioSessionRouteChangeReasonOldDeviceUnavailable) {
+            
+			[self.player pause];
+			NSLog (@"Output device removed, so application audio was paused.");
+            
+			UIAlertView *routeChangeAlertView =
+            [[UIAlertView alloc]	initWithTitle: NSLocalizedString (@"Playback Paused", @"Title for audio hardware route-changed alert view")
+                                       message: NSLocalizedString (@"Audio output was changed", @"Explanation for route-changed alert view")
+                                      delegate: self
+                             cancelButtonTitle: NSLocalizedString (@"StopPlaybackAfterRouteChange", @"Stop button title")
+                             otherButtonTitles: NSLocalizedString (@"ResumePlaybackAfterRouteChange", @"Play button title"), nil];
+			[routeChangeAlertView show];
+			// release takes place in alertView:clickedButtonAtIndex: method
+            
+		} else {
+			NSLog (@"A route change occurred that does not require pausing of application audio.");
+		}
+	}
 }
 
 - (void)didReceiveMemoryWarning
