@@ -177,12 +177,18 @@
     frame.size.width -= 2*VIEW_INSETS;
     self.storyTitleButton = [[UIButton alloc] initWithFrame:frame];
     self.storyTitleButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:16];
-    [self.storyTitleButton setAttributedTitle:[[NSAttributedString alloc] initWithString:self.piece.story.title
-                                                                              attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
-                                                                                           NSUnderlineStyleAttributeName: @1,
-                                                                                           NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}]
-                                     forState:UIControlStateNormal];
-    self.storyTitleButton.titleLabel.textAlignment = NSTextAlignmentLeft;
+    self.storyTitleButton.titleLabel.numberOfLines = 2;
+    NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:self.piece.story.title
+                                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
+                                                                                   NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}];
+    NSAttributedString *changeStoryString = [[NSAttributedString alloc] initWithString:@"\rTap to change the story"
+                                                                     attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
+                                                                                  NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}];
+    NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithAttributedString:titleString];
+    [attrString appendAttributedString:changeStoryString];
+    
+    [self.storyTitleButton setAttributedTitle:attrString forState:UIControlStateNormal];
+    self.storyTitleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     [self.storyTitleButton addTarget:self action:@selector(storyChangeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.storyTitleButton setBackgroundColor:[BANYAN_DARKGRAY_COLOR colorWithAlphaComponent:SUBVIEW_OPACITY]];
     [self.storyTitleButton.layer setCornerRadius:CORNER_RADIUS];

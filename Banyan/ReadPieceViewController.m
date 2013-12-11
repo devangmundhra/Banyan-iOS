@@ -174,7 +174,7 @@
                                                                                    NSForegroundColorAttributeName: BANYAN_DARKGRAY_COLOR}];
     NSAttributedString *pageString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\rpiece %d/%d", self.piece.pieceNumber, self.piece.story.length]
                                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
-                                                                                  NSForegroundColorAttributeName: [UIColor grayColor]}];
+                                                                                  NSForegroundColorAttributeName: BANYAN_GRAY_COLOR}];
     NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithAttributedString:titleString];
     [attrString appendAttributedString:pageString];
     [titleButton setAttributedTitle:attrString forState:UIControlStateNormal];
