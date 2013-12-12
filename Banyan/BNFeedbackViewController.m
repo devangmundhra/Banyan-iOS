@@ -8,8 +8,7 @@
 
 #import "BNFeedbackViewController.h"
 #import "UIPlaceHolderTextView.h"
-#import "UIViewController+JASidePanel.h"
-#import "BNSidePanelController.h"
+#import "UIViewController+BNSlidingViewControllerAdditions.h"
 
 @interface BNFeedbackViewController ()
 
@@ -49,7 +48,10 @@
     textView.scrollEnabled = YES;    
     [self.view addSubview:textView];
     [self registerForKeyboardNotifications];
+    
+    [self prepareForSlidingViewController];
     [textView becomeFirstResponder];
+
 }
 
 - (void)dealloc
@@ -108,7 +110,7 @@
     [TestFlight submitFeedback:textView.text];
     self.navigationItem.rightBarButtonItem.enabled = NO;
     textView.text = @"Thank you for your feedback!";
-    [self.sidePanelController showLeftPanelAnimated:YES];
+    [self.slidingViewController anchorTopViewToRightAnimated:YES];
 }
 
 - (void)didReceiveMemoryWarning

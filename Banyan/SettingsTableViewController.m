@@ -11,6 +11,7 @@
 #import "BNFeedbackViewController.h"
 #import "User.h"
 #import "BNAWSSNSClient.h"
+#import "UIViewController+BNSlidingViewControllerAdditions.h"
 
 @interface SettingsTableViewController ()
 
@@ -56,6 +57,7 @@ typedef enum {
     [self.tableView setTranslatesAutoresizingMaskIntoConstraints:NO];
     self.clearsSelectionOnViewWillAppear = YES;
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self prepareForSlidingViewController];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

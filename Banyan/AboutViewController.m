@@ -7,6 +7,7 @@
 //
 
 #import "AboutViewController.h"
+#import "UIViewController+BNSlidingViewControllerAdditions.h"
 
 @interface AboutViewController ()
 
@@ -27,6 +28,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    [self prepareForSlidingViewController];
     
     self.title = @"About Banyan";
 }

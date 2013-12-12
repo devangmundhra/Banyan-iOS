@@ -13,7 +13,7 @@
 #import "UserLoginViewController.h"
 #import "User.h"
 #import "BNAWSSNSClient.h"
-#import "BNSidePanelController.h"
+#import "ECSlidingViewController.h"
 #import "SideNavigatorViewController.h"
 #import "StoryListTableViewController.h"
 #import "SDWebImage/SDImageCache.h"
@@ -21,7 +21,7 @@
 
 @interface BanyanAppDelegate () <UserLoginViewControllerDelegate>
 @property (strong, nonatomic) NSTimer *remoteObjectBackgroundTimer;
-@property (strong, nonatomic) BNSidePanelController *homeViewController;
+@property (strong, nonatomic) ECSlidingViewController *homeViewController;
 
 @end
 
@@ -105,13 +105,8 @@
     
     [self appearances];
     
-    self.homeViewController = [[BNSidePanelController alloc] init];
-    self.homeViewController.allowRightSwipe = NO;
-    self.homeViewController.allowLeftSwipe = NO;
-    self.homeViewController.shouldResizeLeftPanel = YES;
-    self.homeViewController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[StoryListTableViewController alloc] init]];
-    self.homeViewController.leftPanel = [[SideNavigatorViewController alloc] init];
-    self.homeViewController.pushesSidePanels = NO;
+    self.homeViewController = [ECSlidingViewController slidingWithTopViewController:[[UINavigationController alloc] initWithRootViewController:[[StoryListTableViewController alloc] init]]];
+    self.homeViewController.underLeftViewController = [[SideNavigatorViewController alloc] init];
     self.window.rootViewController = self.homeViewController;
     [self.window makeKeyAndVisible];
     
@@ -262,7 +257,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo {
                                                         object:nil];
     
     // Set the page to the home page
-    [self.homeViewController setCenterPanel:[[UINavigationController alloc] initWithRootViewController:[[StoryListTableViewController alloc] init]]];
+    [self.homeViewController setTopViewController:[[UINavigationController alloc] initWithRootViewController:[[StoryListTableViewController alloc] init]]];
     return;
 }
 

@@ -19,6 +19,7 @@
 #import "BNHorizontalSwipeInteractionController.h"
 #import "ModifyPieceViewController.h"
 #import "User.h"
+#import "UIViewController+BNSlidingViewControllerAdditions.h"
 
 static NSString *CellIdentifier = @"SingleStoryCell";
 
@@ -92,13 +93,13 @@ typedef enum {
     titleLabel.backgroundColor = BANYAN_CLEAR_COLOR;
     titleLabel.attributedText = [[NSAttributedString alloc] initWithString:@"Banyan"
                                                                 attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:20]}];
-    
     self.navigationItem.titleView = titleLabel;
-    
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                                            target:self action:@selector(addStoryOrPieceButtonPressed:)];
     self.navigationItem.rightBarButtonItem.tintColor = BANYAN_GREEN_COLOR;
 
+    [self prepareForSlidingViewController];
+    
     // Notifications to refresh data
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(foregroundRefresh:)

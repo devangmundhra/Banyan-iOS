@@ -23,7 +23,6 @@
 		5112D106181E4EEA003E8C37 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 517A01BD17095F2100665F0F /* Accelerate.framework */; };
 		5112D109181E5DB9003E8C37 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 5112D108181E5DB9003E8C37 /* UIImage+ImageEffects.m */; };
 		5114F56917FBE839000CB875 /* AviarySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5114F56717FBE839000CB875 /* AviarySDKResources.bundle */; };
-		51170B5717F2D1E10015B343 /* BNSidePanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B5617F2D1E10015B343 /* BNSidePanelController.m */; };
 		51170B6217F3D73D0015B343 /* SideNavigatorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B6117F3D73D0015B343 /* SideNavigatorViewController.m */; };
 		51170B6E17F42CD50015B343 /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B6C17F42CD50015B343 /* ProfileViewController.m */; };
 		51170B6F17F42CD50015B343 /* ProfileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51170B6D17F42CD50015B343 /* ProfileViewController.xib */; };
@@ -232,6 +231,10 @@
 		51F57C5C17228DC200A76FA5 /* settingsButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F57C5817228DC200A76FA5 /* settingsButton@2x.png */; };
 		51F60EF816E8423E00F9715E /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F60EF616E8423E00F9715E /* Icon.png */; };
 		51F60EF916E8423E00F9715E /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F60EF716E8423E00F9715E /* Icon@2x.png */; };
+		51F8622D1858EA050037D576 /* UIViewController+BNSlidingViewControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F8622C1858EA050037D576 /* UIViewController+BNSlidingViewControllerAdditions.m */; };
+		51F862311859701F0037D576 /* slider_background.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F8622F1859701E0037D576 /* slider_background.png */; };
+		51F862321859701F0037D576 /* slider_background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F862301859701F0037D576 /* slider_background@2x.png */; };
+		51F862361859749A0037D576 /* BNZoomAnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F862351859749A0037D576 /* BNZoomAnimationController.m */; };
 		51F8F436176E43620056A308 /* SingleStoryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F8F435176E43620056A308 /* SingleStoryCell.m */; };
 		51F8F439176E6F640056A308 /* SingleStoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F8F438176E6F640056A308 /* SingleStoryView.m */; };
 		51FAC0B8172C829E0046C2D6 /* Comment.m in Sources */ = {isa = PBXBuildFile; fileRef = 51FAC0B7172C829E0046C2D6 /* Comment.m */; };
@@ -279,8 +282,6 @@
 		5114F56417FBE839000CB875 /* AFPhotoEditorSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPhotoEditorSession.h; sourceTree = "<group>"; };
 		5114F56517FBE839000CB875 /* libAviarySDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libAviarySDK.a; sourceTree = "<group>"; };
 		5114F56717FBE839000CB875 /* AviarySDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AviarySDKResources.bundle; sourceTree = "<group>"; };
-		51170B5517F2D1E10015B343 /* BNSidePanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNSidePanelController.h; sourceTree = "<group>"; };
-		51170B5617F2D1E10015B343 /* BNSidePanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNSidePanelController.m; sourceTree = "<group>"; };
 		51170B6017F3D73D0015B343 /* SideNavigatorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideNavigatorViewController.h; sourceTree = "<group>"; };
 		51170B6117F3D73D0015B343 /* SideNavigatorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SideNavigatorViewController.m; sourceTree = "<group>"; };
 		51170B6B17F42CD50015B343 /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileViewController.h; sourceTree = "<group>"; };
@@ -568,6 +569,12 @@
 		51F57C5817228DC200A76FA5 /* settingsButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settingsButton@2x.png"; sourceTree = "<group>"; };
 		51F60EF616E8423E00F9715E /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		51F60EF716E8423E00F9715E /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		51F8622B1858EA050037D576 /* UIViewController+BNSlidingViewControllerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIViewController+BNSlidingViewControllerAdditions.h"; path = "Banyan/UIViewController+BNSlidingViewControllerAdditions.h"; sourceTree = "<group>"; };
+		51F8622C1858EA050037D576 /* UIViewController+BNSlidingViewControllerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+BNSlidingViewControllerAdditions.m"; path = "Banyan/UIViewController+BNSlidingViewControllerAdditions.m"; sourceTree = "<group>"; };
+		51F8622F1859701E0037D576 /* slider_background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = slider_background.png; sourceTree = "<group>"; };
+		51F862301859701F0037D576 /* slider_background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider_background@2x.png"; sourceTree = "<group>"; };
+		51F862341859749A0037D576 /* BNZoomAnimationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNZoomAnimationController.h; sourceTree = "<group>"; };
+		51F862351859749A0037D576 /* BNZoomAnimationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNZoomAnimationController.m; sourceTree = "<group>"; };
 		51F8F434176E43620056A308 /* SingleStoryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SingleStoryCell.h; path = Banyan/SingleStoryCell.h; sourceTree = "<group>"; };
 		51F8F435176E43620056A308 /* SingleStoryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SingleStoryCell.m; path = Banyan/SingleStoryCell.m; sourceTree = "<group>"; };
 		51F8F437176E6F640056A308 /* SingleStoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SingleStoryView.h; path = Banyan/SingleStoryView.h; sourceTree = "<group>"; };
@@ -841,16 +848,6 @@
 			path = Classes;
 			sourceTree = "<group>";
 		};
-		5158AE2D16F56F850089193E /* BNSidePanelController */ = {
-			isa = PBXGroup;
-			children = (
-				51170B5517F2D1E10015B343 /* BNSidePanelController.h */,
-				51170B5617F2D1E10015B343 /* BNSidePanelController.m */,
-			);
-			name = BNSidePanelController;
-			path = Banyan;
-			sourceTree = "<group>";
-		};
 		51596AB21744BB0A008F5276 /* Constants and Misc */ = {
 			isa = PBXGroup;
 			children = (
@@ -885,6 +882,7 @@
 		5166B1B515E75B420072749C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				51F86233185970240037D576 /* Slider background */,
 				5128EB3917472FE300393173 /* Music player */,
 				51BDA27117434F1700BD2C19 /* Audio scrubber */,
 				51B234E9171658BF004241C1 /* Roboto Font */,
@@ -1276,6 +1274,7 @@
 		5189B35C15B397BD00562DD0 /* Helpful Categories */ = {
 			isa = PBXGroup;
 			children = (
+				51F8622E1858EA090037D576 /* SlidingViewControllerAdditions */,
 				510F490F1727D13F005BC5ED /* NSObject */,
 				51979A7B15F08E6F008194AF /* UIImage Categories */,
 				515DE030183040CE00B88596 /* UIImageView */,
@@ -1363,7 +1362,6 @@
 			isa = PBXGroup;
 			children = (
 				5112D102181C61B8003E8C37 /* UIPlaceHolderTextView */,
-				5158AE2D16F56F850089193E /* BNSidePanelController */,
 				511B421C17A6669100466A8B /* BNImageLabel */,
 				511B421D17A6669C00466A8B /* BNTableViewController */,
 				511B421E17A666B100466A8B /* BNTabBarController */,
@@ -1471,6 +1469,8 @@
 			children = (
 				51170B6017F3D73D0015B343 /* SideNavigatorViewController.h */,
 				51170B6117F3D73D0015B343 /* SideNavigatorViewController.m */,
+				51F862341859749A0037D576 /* BNZoomAnimationController.h */,
+				51F862351859749A0037D576 /* BNZoomAnimationController.m */,
 				51170B7517F431A00015B343 /* About View Controller */,
 				51170B6317F425D70015B343 /* FeedBackViewController */,
 				51170B6417F425E90015B343 /* Following Friend View Controller */,
@@ -1536,6 +1536,24 @@
 				51E9B2D0181FA90A004B35A5 /* StoryPickerCell.m */,
 			);
 			name = StoryPickerCell;
+			sourceTree = "<group>";
+		};
+		51F8622E1858EA090037D576 /* SlidingViewControllerAdditions */ = {
+			isa = PBXGroup;
+			children = (
+				51F8622B1858EA050037D576 /* UIViewController+BNSlidingViewControllerAdditions.h */,
+				51F8622C1858EA050037D576 /* UIViewController+BNSlidingViewControllerAdditions.m */,
+			);
+			name = SlidingViewControllerAdditions;
+			sourceTree = "<group>";
+		};
+		51F86233185970240037D576 /* Slider background */ = {
+			isa = PBXGroup;
+			children = (
+				51F8622F1859701E0037D576 /* slider_background.png */,
+				51F862301859701F0037D576 /* slider_background@2x.png */,
+			);
+			name = "Slider background";
 			sourceTree = "<group>";
 		};
 		51FAC0B9172C82A40046C2D6 /* Comment */ = {
@@ -1618,6 +1636,7 @@
 				51F60EF816E8423E00F9715E /* Icon.png in Resources */,
 				51F60EF916E8423E00F9715E /* Icon@2x.png in Resources */,
 				5189B2C215B387E200562DD0 /* InfoPlist.strings in Resources */,
+				51F862311859701F0037D576 /* slider_background.png in Resources */,
 				5189B34E15B395F300562DD0 /* UserLoginViewController.xib in Resources */,
 				5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */,
 				5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */,
@@ -1707,6 +1726,7 @@
 				51F57C5A17228DC200A76FA5 /* backArrow@2x.png in Resources */,
 				51F57C5B17228DC200A76FA5 /* settingsButton.png in Resources */,
 				51F57C5C17228DC200A76FA5 /* settingsButton@2x.png in Resources */,
+				51F862321859701F0037D576 /* slider_background@2x.png in Resources */,
 				51FAC0C41731131D0046C2D6 /* commentSymbolGray.png in Resources */,
 				51FAC0C51731131D0046C2D6 /* commentSymbolGray@2x.png in Resources */,
 				51FAC0C81731144F0046C2D6 /* heartSymbolPink.png in Resources */,
@@ -1787,6 +1807,7 @@
 				5189B34615B395F300562DD0 /* Story+Stats.m in Sources */,
 				5189B34915B395F300562DD0 /* StoryListTableViewController.m in Sources */,
 				5189B34D15B395F300562DD0 /* UserLoginViewController.m in Sources */,
+				51F8622D1858EA050037D576 /* UIViewController+BNSlidingViewControllerAdditions.m in Sources */,
 				51E9B2C2181F8DD3004B35A5 /* BNLabel.m in Sources */,
 				51E9B2BF181F8BCA004B35A5 /* StoryPickerViewController.m in Sources */,
 				51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */,
@@ -1801,6 +1822,7 @@
 				51170B7817F906FF0015B343 /* BNHorizontalSwipeInteractionController.m in Sources */,
 				51E9B2D1181FA90A004B35A5 /* StoryPickerCell.m in Sources */,
 				51170B7317F4319C0015B343 /* AboutViewController.m in Sources */,
+				51F862361859749A0037D576 /* BNZoomAnimationController.m in Sources */,
 				510787C8163A36A90042B436 /* UIImage+RoundedCornerAdditions.m in Sources */,
 				510787CF163A36D80042B436 /* AFBanyanAPIClient.m in Sources */,
 				514CDF66181509B70098B0A9 /* AVCamCaptureManager.m in Sources */,
@@ -1845,7 +1867,6 @@
 				5128EB5717478B5500393173 /* BNAudioStreamingPlayer.m in Sources */,
 				51AFD5F117607800008C7203 /* User.m in Sources */,
 				51AFD5F71765B64B008C7203 /* BNFeedbackViewController.m in Sources */,
-				51170B5717F2D1E10015B343 /* BNSidePanelController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

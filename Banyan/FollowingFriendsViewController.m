@@ -10,6 +10,7 @@
 #import "Activity+Create.h"
 #import <QuartzCore/QuartzCore.h>
 #import "User.h"
+#import "UIViewController+BNSlidingViewControllerAdditions.h"
 
 @interface FollowingFriendsViewController ()
 
@@ -63,10 +64,8 @@
     frame.size.height = 30;
     actionButton.frame = frame;
     self.tableView.tableHeaderView = view;
-    
     [view addSubview:actionButton];
-    
-    
+    [self prepareForSlidingViewController];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

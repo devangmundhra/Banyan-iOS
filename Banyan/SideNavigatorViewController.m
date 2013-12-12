@@ -9,9 +9,8 @@
 #import "SideNavigatorViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "BNFeedbackViewController.h"
-#import "UIViewController+JASidePanel.h"
+#import "UIViewController+ECSlidingViewController.h"
 #import "SettingsTableViewController.h"
-#import "BNSidePanelController.h"
 #import "BanyanAppDelegate.h"
 #import "FollowingFriendsViewController.h"
 #import "ProfileViewController.h"
@@ -46,8 +45,8 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
 
 @synthesize actionButton;
 
-#define BACKGROUND_COLOR BANYAN_DARKBROWN_COLOR
-#define SEPERATOR_COLOR BANYAN_BROWN_COLOR
+#define BACKGROUND_COLOR BANYAN_CLEAR_COLOR
+#define SEPERATOR_COLOR BANYAN_DARKBROWN_COLOR
 #define FOREGROUND_COLOR BANYAN_LIGHTGRAY_COLOR
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -86,6 +85,10 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
 {
     [super viewDidLoad];
     self.tableView.backgroundColor = BACKGROUND_COLOR;
+    UIImage *backgroundImage = [UIImage imageNamed:@"slider_background"]; // Image from http://flic.kr/p/7HxPc3
+    UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:backgroundImage];
+    backgroundImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.tableView.backgroundView = backgroundImageView;
     
     // Assign the header/footer views
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), 65)];
@@ -249,22 +252,22 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
     if ([BanyanAppDelegate loggedIn]) {
         switch (indexPath.row) {
             case SidePanelOptionLoggedInHome:
-                self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[StoryListTableViewController alloc] init]];
+                self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[StoryListTableViewController alloc] init]];
                 break;
             case SidePanelOptionLoggedInProfile:
-                self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[ProfileViewController alloc] init]];
+                self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[ProfileViewController alloc] init]];
                 break;
 //            case SidePanelOptionLoggedInFriends:
-//                self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[FollowingFriendsViewController alloc] init]];
+//                self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[FollowingFriendsViewController alloc] init]];
 //                break;
             case SidePanelOptionLoggedInSettings:
-                self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[SettingsTableViewController alloc] init]];
+                self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[SettingsTableViewController alloc] init]];
                 break;
             case SidePanelOptionLoggedInFeedback:
-                self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[BNFeedbackViewController alloc] init]];
+                self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[BNFeedbackViewController alloc] init]];
                 break;
             case SidePanelOptionLoggedInAbout:
-                self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[AboutViewController alloc] init]];
+                self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[AboutViewController alloc] init]];
                 break;
             default:
                 break;
@@ -272,21 +275,23 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
     } else {
         switch (indexPath.row) {
             case SidePanelOptionLoggedOutHome:
-                self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[StoryListTableViewController alloc] init]];
+                self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[StoryListTableViewController alloc] init]];
                 break;
             case SidePanelOptionLoggedOutSettings:
-                self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[SettingsTableViewController alloc] init]];
+                self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[SettingsTableViewController alloc] init]];
                 break;
             case SidePanelOptionLoggedOutFeedback:
-                self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[BNFeedbackViewController alloc] init]];
+                self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[BNFeedbackViewController alloc] init]];
                 break;
             case SidePanelOptionLoggedOutAbout:
-                self.sidePanelController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[AboutViewController alloc] init]];
+                self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[AboutViewController alloc] init]];
                 break;
             default:
                 break;
         }
     }
+    
+    [self.slidingViewController resetTopViewAnimated:YES];
 }
 
 #pragma Memory Management
