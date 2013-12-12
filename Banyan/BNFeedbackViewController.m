@@ -19,9 +19,9 @@
 @implementation BNFeedbackViewController
 @synthesize textView;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (id)init
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    self = [super init];
     if (self) {
         // Custom initialization
         self.title = @"Feedback";
@@ -40,7 +40,6 @@
     self.navigationItem.rightBarButtonItem = doneButton;
     
     CGRect frame = self.view.bounds;
-    frame.size.height -= CGRectGetHeight(self.navigationController.navigationBar.frame);
     textView = [[UIPlaceHolderTextView alloc] initWithFrame:frame];
     textView.font = [UIFont fontWithName:@"Roboto" size:18];
     textView.textAlignment = NSTextAlignmentLeft;
@@ -50,8 +49,18 @@
     [self registerForKeyboardNotifications];
     
     [self prepareForSlidingViewController];
-    [textView becomeFirstResponder];
+}
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:YES];
+    [textView becomeFirstResponder];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:YES];
+    [self resignFirstResponder];
 }
 
 - (void)dealloc
@@ -89,7 +98,8 @@
     NSDictionary* info = [aNotification userInfo];
     CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
+    UIEdgeInsets contentInsets = textView.contentInset;
+    contentInsets.bottom = kbSize.height;
     textView.contentInset = contentInsets;
     textView.scrollIndicatorInsets = contentInsets;    
 }
@@ -97,11 +107,10 @@
 // Called when the UIKeyboardWillHideNotification is sent
 - (void)keyboardWillHide:(NSNotification*)aNotification
 {
-    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
+    UIEdgeInsets contentInsets = textView.contentInset;
+    contentInsets.bottom = 0.0f;
     textView.contentInset = contentInsets;
     textView.scrollIndicatorInsets = contentInsets;
-    
-    [textView setContentOffset:CGPointZero animated:YES];
 }
 
 #pragma mark target actions
