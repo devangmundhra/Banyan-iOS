@@ -9,6 +9,7 @@ pod 'VCTransitionsLibrary', '~> 1.2.0'
 pod 'MYBlurIntroductionView', '~> 1.0.1'
 pod 'URBMediaFocusViewController'
 pod 'ECSlidingViewController', '~> 2.0.0-beta'
+pod 'MZFormSheetController', '~> 1.4.0'
 
 # Testing and Search are optional components
 # pod 'RestKit/Testing',  :git => 'https://github.com/RestKit/RestKit.git'

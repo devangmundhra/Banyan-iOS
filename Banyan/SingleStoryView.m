@@ -321,13 +321,15 @@ static BOOL _loggedIn;
         // Delete Story Button
         UIButton *deleteStoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
         deleteStoryButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
-        if (self.story.author.userId == [BNSharedUser currentUser].userId) {
-            [deleteStoryButton setImage:_deleteStoryImage forState:UIControlStateNormal];
-            [deleteStoryButton addTarget:self action:@selector(deleteStoryAlert:) forControlEvents:UIControlEventTouchUpInside];
-        } else {
+        
+        // Always hide story. Deletion done in storyOverview
+//        if (self.story.author.userId == [BNSharedUser currentUser].userId) {
+//            [deleteStoryButton setImage:_deleteStoryImage forState:UIControlStateNormal];
+//            [deleteStoryButton addTarget:self action:@selector(deleteStoryAlert:) forControlEvents:UIControlEventTouchUpInside];
+//        } else {
             [deleteStoryButton setImage:_hideStoryImage forState:UIControlStateNormal];
             [deleteStoryButton addTarget:self action:@selector(hideStoryAlert:) forControlEvents:UIControlEventTouchUpInside];
-        }
+//        }
         
         CGRect deleteStoryButtonFrame = deleteStoryButton.bounds;
         deleteStoryButtonFrame.origin.x = floor(CGRectGetMaxX(addPieceButton.frame) + BUTTON_SPACING);

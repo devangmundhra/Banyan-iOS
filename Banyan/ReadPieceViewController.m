@@ -16,15 +16,18 @@
 #import "NSObject+BlockObservation.h"
 #import "User.h"
 #import "Piece+Delete.h"
-#import "ModifyStoryViewController.h"
 #import "ModifyPieceViewController.h"
 #import "BNLabel.h"
 #import "BNMisc.h"
 #import "Media.h"
 #import "UIImageView+BanyanMedia.h"
 #import "URBMediaFocusViewController.h"
+#import "StoryOverviewController.h"
 
 @interface ReadPieceViewController (UIScrollViewDelegate) <UIScrollViewDelegate>
+@end
+
+@interface ReadPieceViewController (StoryOverviewControllerDelegate) <StoryOverviewControllerDelegate>
 @end
 
 @interface ReadPieceViewController () <UIActionSheetDelegate, ModifyPieceViewControllerDelegate>
@@ -178,10 +181,8 @@
     NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithAttributedString:titleString];
     [attrString appendAttributedString:pageString];
     [titleButton setAttributedTitle:attrString forState:UIControlStateNormal];
-    if (self.piece.story.canContribute) {
-        titleButton.showsTouchWhenHighlighted = YES;
-        [titleButton addTarget:self action:@selector(editStoryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    }
+    titleButton.showsTouchWhenHighlighted = YES;
+    [titleButton addTarget:self action:@selector(storyOverviewButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.storyInfoView insertSubview:titleButton atIndex:0];
     
     [self.view addSubview:self.storyInfoView];
@@ -488,18 +489,40 @@
     [self.contributorsButton setEnabled:NO];
 }
 
+- (void) updateStoryTitle
+{
+    if (!self.piece.story) {
+        // In case the story was deleted
+        return;
+    }
+    
+    UIButton *titleButton = [self.storyInfoView.subviews objectAtIndex:0];
+    NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:self.piece.story.title
+                                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
+                                                                                   NSForegroundColorAttributeName: BANYAN_DARKGRAY_COLOR}];
+    NSAttributedString *pageString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\rpiece %d/%d", self.piece.pieceNumber, self.piece.story.length]
+                                                                     attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
+                                                                                  NSForegroundColorAttributeName: BANYAN_GRAY_COLOR}];
+    NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithAttributedString:titleString];
+    [attrString appendAttributedString:pageString];
+    [titleButton setAttributedTitle:attrString forState:UIControlStateNormal];
+}
+
 #pragma mark notifications
 - (void)addPieceObserver
 {
-    __weak ReadPieceViewController *readPieceViewController = self;
+    __weak ReadPieceViewController *wself = self;
     pieceObserverToken1 = [self.piece addObserverForKeyPath:@"shortText" task:^(id obj, NSDictionary *change) {
-        [readPieceViewController refreshUI];
+        [wself refreshUI];
     }];
     pieceObserverToken2 = [self.piece addObserverForKeyPath:@"longText" task:^(id obj, NSDictionary *change) {
-        [readPieceViewController refreshUI];
+        [wself refreshUI];
     }];
     pieceObserverToken3 = [self.piece addObserverForKeyPath:@"media" task:^(id obj, NSDictionary *change) {
-        [readPieceViewController refreshUI];
+        [wself refreshUI];
+    }];
+    pieceObserverToken4 = [self.piece addObserverForKeyPath:@"story.title" task:^(id obj, NSDictionary *change) {
+        [wself updateStoryTitle];
     }];
 }
 
@@ -548,11 +571,12 @@
     [actionSheet showInView:self.contentView];
 }
 
-- (void)editStoryButtonPressed:(id)sender
+- (void)storyOverviewButtonPressed:(id)sender
 {
     self.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    ModifyStoryViewController *newStoryViewController = [[ModifyStoryViewController alloc] initWithStory:self.piece.story];
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:newStoryViewController];
+    StoryOverviewController *storyOverviewVC = [[StoryOverviewController alloc] initWithStory:self.piece.story];
+    storyOverviewVC.delegate = self;
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:storyOverviewVC];
     [self presentViewController:navController animated:YES completion:nil];
 }
 
@@ -697,6 +721,22 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self removePieceObserver];
+}
+
+@end
+
+@implementation ReadPieceViewController (StoryOverviewControllerDelegate)
+
+- (void)storyOverviewControllerSelectedPiece:(Piece *)piece
+{
+    [self.delegate readPieceViewControllerFlipToPiece:[NSNumber numberWithUnsignedInt:piece.pieceNumber]];
+}
+
+- (void)storyOverviewControllerDeletedStory
+{
+    // Just return from here
+    [self.delegate readPieceViewControllerDoneReading];
 }
 
 @end

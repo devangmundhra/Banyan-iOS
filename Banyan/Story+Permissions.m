@@ -11,6 +11,9 @@
 #import "User.h"
 #import "Piece.h"
 
+NSString *const kDictionaryInSortedArrayOfContributorsNameKey = @"name";
+NSString *const kDictionaryInSortedArrayOfContributorsCountKey = @"count";
+
 @implementation Story (Permissions)
 
 # pragma mark Permissions management
@@ -38,6 +41,7 @@
     return [self storyContributors].count;
 }
 
+// Array of all contributors having permissions
 - (NSArray *)storyContributors
 {
     if ([[self contributorPrivacyScope] isEqualToString:kBNStoryPrivacyScopeInvited]) {
@@ -59,10 +63,10 @@
 
 - (NSUInteger) numberOfViewers
 {
-
     return [self storyViewers].count;
 }
 
+// Array of all viewers given permission
 - (NSArray *) storyViewers
 {
     if ([[self viewerPrivacyScope] isEqualToString:kBNStoryPrivacyScopeInvited]) {
@@ -75,7 +79,8 @@
     return nil;
 }
 
-- (NSString *)shortStringOfContributors
+// Array of all contributors including author
+- (NSArray *) arrayOfPieceContributors
 {
     NSMutableArray *contributorArray = [NSMutableArray array];
     // Add author of story first
@@ -86,7 +91,42 @@
         [contributorArray addObject:piece.author.name];
     }
     
-    return [[NSOrderedSet orderedSetWithArray:contributorArray].array componentsJoinedByString:@", "];
+    return [NSOrderedSet orderedSetWithArray:contributorArray].array;
+}
+
+// String of contributors separated by comma including author
+- (NSString *)shortStringOfContributors
+{
+    return [[self arrayOfPieceContributors] componentsJoinedByString:@", "];
+}
+
+// Array of contributors sorted descending
+- (NSArray *) sortedArrayOfPieceContributorsWithCount
+{
+    NSCountedSet *countedSet = [[NSCountedSet alloc] initWithCapacity:1];
+    for (Piece *piece in self.pieces) {
+        [countedSet addObject:piece.author.name];
+    }
+    
+    NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:1];
+    NSEnumerator *enumerator = [countedSet objectEnumerator];
+    NSString *contributor = nil;
+    
+    while (contributor = [enumerator nextObject]) {
+        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+        [dict setValue:contributor forKey:kDictionaryInSortedArrayOfContributorsNameKey];
+        [dict setValue:[NSNumber numberWithUnsignedInteger:[countedSet countForObject:contributor]] forKey:kDictionaryInSortedArrayOfContributorsCountKey];
+        [array addObject:dict];
+    }
+    
+    NSSortDescriptor * countSortDescriptor = [[NSSortDescriptor alloc] initWithKey:kDictionaryInSortedArrayOfContributorsCountKey
+                                                 ascending:NO];
+    NSSortDescriptor * nameSortDescriptor = [[NSSortDescriptor alloc] initWithKey:kDictionaryInSortedArrayOfContributorsNameKey
+                                                                         ascending:YES];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:countSortDescriptor, nameSortDescriptor, nil];
+    NSArray *sortedArray = [array sortedArrayUsingDescriptors:sortDescriptors];
+    
+    return sortedArray;
 }
 
 @end

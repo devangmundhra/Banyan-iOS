@@ -92,7 +92,6 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
     
     // Assign the header/footer views
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), 65)];
-    view.backgroundColor = BACKGROUND_COLOR;
     actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [actionButton.titleLabel setFont:[UIFont fontWithName:@"Roboto-Bold" size:18]];
     actionButton.userInteractionEnabled = YES;

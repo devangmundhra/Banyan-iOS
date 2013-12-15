@@ -17,6 +17,9 @@ PODS:
   - libwebp/webp (0.3.1)
   - MBProgressHUD (0.8)
   - MYBlurIntroductionView (1.0.1)
+  - MZAppearance (1.1.1)
+  - MZFormSheetController (1.4.0):
+    - MZAppearance (~> 1.1.1)
   - RestKit (0.22.0):
     - RestKit/Core
   - RestKit/Core (0.22.0):
@@ -52,6 +55,7 @@ DEPENDENCIES:
   - ECSlidingViewController (~> 2.0.0-beta)
   - MBProgressHUD (>= 0.8)
   - MYBlurIntroductionView (~> 1.0.1)
+  - MZFormSheetController (~> 1.4.0)
   - RestKit (from `https://github.com/RestKit/RestKit.git`, branch `development`)
   - SDWebImage (from `https://github.com/rs/SDWebImage.git`, commit `282e8179193a49867575cd658ae64883aedbce7b`)
   - TestFlightSDK (>= 2.0.2)
@@ -69,13 +73,15 @@ EXTERNAL SOURCES:
     :git: https://github.com/rs/SDWebImage.git
 
 SPEC CHECKSUMS:
-  AFNetworking: 0700ec7a58c36ad217173e167f6e4df7270df66b
+  AFNetworking: 61fdd49e2ffe6380378df37b3b6e70630bb9dd66
   BNSwipeableView: f10ecb74337225b5659861e150b96e2b8464fc7a
   ECSlidingViewController: 097e5451e8628611f17ed27a6e0829fa705f7851
   ISO8601DateFormatterValueTransformer: d0af1f50a9df42db72d7418db31938b8473e0af8
   libwebp: 182c4c634df09dbd14b2ec6f8fdd43d53d7315ef
   MBProgressHUD: 2bbc6f470111daf7f3eaa4eb12b8cbf01c4c0622
   MYBlurIntroductionView: 5ba3472c3d858a10738761a086ad7446cc17ab08
+  MZAppearance: 8b02683f0019f725557ae9839ed6cab153fff669
+  MZFormSheetController: 6253af6f7c5baede40b8d2b02af5af9fe820fc39
   RestKit: dc107a0aa4f962575ad0385bac5b3c5e4f591f4e
   RKValueTransformers: 1562d458b9c9d59ce777bfc5982f2e1aef2e9182
   SDWebImage: 79a8bac9ccf85b269100b294f7b43684dab8bf8a

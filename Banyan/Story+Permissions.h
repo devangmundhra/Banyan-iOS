@@ -11,6 +11,7 @@
 
 @interface Story (Permissions)
 
+// Permissions
 - (NSString *)viewerPrivacyScope;
 - (NSUInteger) numberOfViewers;
 - (NSArray *) storyViewers;
@@ -19,9 +20,15 @@
 - (NSUInteger) numberOfContributors;
 - (NSArray *)storyContributors;
 
-- (NSString *)shortStringOfContributors;
-
 - (NSString *)contributorPermissions;
 - (NSString *)viewerPermissions;
+
+// Actual contributors
+- (NSString *)shortStringOfContributors;
+- (NSArray *) arrayOfPieceContributors;
+
+extern NSString *const kDictionaryInSortedArrayOfContributorsNameKey;
+extern NSString *const kDictionaryInSortedArrayOfContributorsCountKey;
+- (NSArray *) sortedArrayOfPieceContributorsWithCount;
 
 @end

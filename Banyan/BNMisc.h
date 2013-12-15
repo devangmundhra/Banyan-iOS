@@ -15,6 +15,8 @@
 + (NSString *) genRandStringLength: (int) len;
 + (NSDateFormatter *) dateFormatterNoTimeMediumDateRelative;
 + (NSDateFormatter *) dateTimeFormatter;
++ (NSDateFormatter *) longDateFormatter;
++ (NSDateFormatter *) shortDateFormatter;
 + (NSString *) gifFromArray:(NSArray *)imagesArray;
 
 @end

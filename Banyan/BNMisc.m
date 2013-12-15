@@ -17,18 +17,12 @@
 #pragma mark Dates
 + (NSString *)longCurrentDate
 {
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setTimeStyle:NSDateFormatterShortStyle];
-    [dateFormatter setDateStyle:NSDateFormatterLongStyle];
-    return [dateFormatter stringFromDate:[NSDate date]];
+    return [[self longDateFormatter] stringFromDate:[NSDate date]];
 }
 
 + (NSString *)shortCurrentDate
 {
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setTimeStyle:NSDateFormatterShortStyle];
-    [dateFormatter setDateStyle:NSDateFormatterShortStyle];
-    return [dateFormatter stringFromDate:[NSDate date]];
+    return [[self shortDateFormatter] stringFromDate:[NSDate date]];
 }
 
 + (NSDateFormatter *) dateFormatterNoTimeMediumDateRelative
@@ -53,6 +47,32 @@
         _dateTimeFormatter = [[NSDateFormatter alloc] init];
         [_dateTimeFormatter setTimeStyle:NSDateFormatterShortStyle];
         [_dateTimeFormatter setDateStyle:NSDateFormatterMediumStyle];
+    });
+    
+    return _dateTimeFormatter;
+}
+
++ (NSDateFormatter *) shortDateFormatter
+{
+    static NSDateFormatter *_dateTimeFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateTimeFormatter = [[NSDateFormatter alloc] init];
+        [_dateTimeFormatter setTimeStyle:NSDateFormatterShortStyle];
+        [_dateTimeFormatter setDateStyle:NSDateFormatterShortStyle];
+    });
+    
+    return _dateTimeFormatter;
+}
+
++ (NSDateFormatter *) longDateFormatter
+{
+    static NSDateFormatter *_dateTimeFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateTimeFormatter = [[NSDateFormatter alloc] init];
+        [_dateTimeFormatter setTimeStyle:NSDateFormatterShortStyle];
+        [_dateTimeFormatter setDateStyle:NSDateFormatterLongStyle];
     });
     
     return _dateTimeFormatter;

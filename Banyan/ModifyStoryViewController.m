@@ -299,7 +299,7 @@
                                              context:nil].size;
     
     CGRect frame = self.inviteeLabel.frame;
-    frame.size.height = roundf(expectedSize.height) + 2*TEXT_INSETS + 2*TEXT_INSETS;
+    frame.size.height = ceilf(expectedSize.height) + 2*TEXT_INSETS + 2*TEXT_INSETS;
     self.inviteeLabel.frame = frame;
     
     frame = self.inviteContactsButton.frame;

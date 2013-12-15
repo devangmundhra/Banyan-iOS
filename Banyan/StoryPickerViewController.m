@@ -12,11 +12,8 @@
 static NSString *CellIdentifier = @"StoryPickerCell";
 
 @interface StoryPickerViewController (ModifyStoryViewControllerDelegate)<ModifyStoryViewControllerDelegate>
-
 @end
-
 @interface StoryPickerViewController (UICollectionViewDelegateFlowLayout)<UICollectionViewDelegateFlowLayout>
-
 @end
 
 @interface StoryPickerViewController ()

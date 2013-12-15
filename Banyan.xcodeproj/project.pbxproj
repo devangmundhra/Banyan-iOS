@@ -235,6 +235,10 @@
 		51F862311859701F0037D576 /* slider_background.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F8622F1859701E0037D576 /* slider_background.png */; };
 		51F862321859701F0037D576 /* slider_background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F862301859701F0037D576 /* slider_background@2x.png */; };
 		51F862361859749A0037D576 /* BNZoomAnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F862351859749A0037D576 /* BNZoomAnimationController.m */; };
+		51F86242185A3A110037D576 /* StoryOverviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F86241185A3A110037D576 /* StoryOverviewController.m */; };
+		51F86245185AA25A0037D576 /* StoryOverviewPieceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F86244185AA25A0037D576 /* StoryOverviewPieceCell.m */; };
+		51F86251185C40E90037D576 /* StoryOverviewHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F86250185C40E90037D576 /* StoryOverviewHeaderView.m */; };
+		51F86255185D72870037D576 /* ContributorsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F86254185D72870037D576 /* ContributorsTableViewController.m */; };
 		51F8F436176E43620056A308 /* SingleStoryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F8F435176E43620056A308 /* SingleStoryCell.m */; };
 		51F8F439176E6F640056A308 /* SingleStoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F8F438176E6F640056A308 /* SingleStoryView.m */; };
 		51FAC0B8172C829E0046C2D6 /* Comment.m in Sources */ = {isa = PBXBuildFile; fileRef = 51FAC0B7172C829E0046C2D6 /* Comment.m */; };
@@ -575,6 +579,14 @@
 		51F862301859701F0037D576 /* slider_background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider_background@2x.png"; sourceTree = "<group>"; };
 		51F862341859749A0037D576 /* BNZoomAnimationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNZoomAnimationController.h; sourceTree = "<group>"; };
 		51F862351859749A0037D576 /* BNZoomAnimationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNZoomAnimationController.m; sourceTree = "<group>"; };
+		51F86240185A3A110037D576 /* StoryOverviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryOverviewController.h; path = Banyan/StoryOverviewController.h; sourceTree = "<group>"; };
+		51F86241185A3A110037D576 /* StoryOverviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryOverviewController.m; path = Banyan/StoryOverviewController.m; sourceTree = "<group>"; };
+		51F86243185AA25A0037D576 /* StoryOverviewPieceCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryOverviewPieceCell.h; path = Banyan/StoryOverviewPieceCell.h; sourceTree = "<group>"; };
+		51F86244185AA25A0037D576 /* StoryOverviewPieceCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryOverviewPieceCell.m; path = Banyan/StoryOverviewPieceCell.m; sourceTree = "<group>"; };
+		51F8624F185C40E90037D576 /* StoryOverviewHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryOverviewHeaderView.h; path = Banyan/StoryOverviewHeaderView.h; sourceTree = "<group>"; };
+		51F86250185C40E90037D576 /* StoryOverviewHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryOverviewHeaderView.m; path = Banyan/StoryOverviewHeaderView.m; sourceTree = "<group>"; };
+		51F86253185D72870037D576 /* ContributorsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContributorsTableViewController.h; path = Banyan/ContributorsTableViewController.h; sourceTree = "<group>"; };
+		51F86254185D72870037D576 /* ContributorsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ContributorsTableViewController.m; path = Banyan/ContributorsTableViewController.m; sourceTree = "<group>"; };
 		51F8F434176E43620056A308 /* SingleStoryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SingleStoryCell.h; path = Banyan/SingleStoryCell.h; sourceTree = "<group>"; };
 		51F8F435176E43620056A308 /* SingleStoryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SingleStoryCell.m; path = Banyan/SingleStoryCell.m; sourceTree = "<group>"; };
 		51F8F437176E6F640056A308 /* SingleStoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SingleStoryView.h; path = Banyan/SingleStoryView.h; sourceTree = "<group>"; };
@@ -1164,6 +1176,7 @@
 			children = (
 				51444A0D17719B5B0037570A /* Read */,
 				51444A0B17719B230037570A /* Edit */,
+				51F8623A185A31D10037D576 /* Story Overview */,
 			);
 			name = "Read and Edit Story";
 			path = ..;
@@ -1556,6 +1569,37 @@
 			name = "Slider background";
 			sourceTree = "<group>";
 		};
+		51F8623A185A31D10037D576 /* Story Overview */ = {
+			isa = PBXGroup;
+			children = (
+				51F86240185A3A110037D576 /* StoryOverviewController.h */,
+				51F86241185A3A110037D576 /* StoryOverviewController.m */,
+				51F86252185C42A80037D576 /* Story Overview Header view */,
+				51F86246185AA25D0037D576 /* StoryOverviewPieceCell */,
+			);
+			name = "Story Overview";
+			sourceTree = "<group>";
+		};
+		51F86246185AA25D0037D576 /* StoryOverviewPieceCell */ = {
+			isa = PBXGroup;
+			children = (
+				51F86243185AA25A0037D576 /* StoryOverviewPieceCell.h */,
+				51F86244185AA25A0037D576 /* StoryOverviewPieceCell.m */,
+			);
+			name = StoryOverviewPieceCell;
+			sourceTree = "<group>";
+		};
+		51F86252185C42A80037D576 /* Story Overview Header view */ = {
+			isa = PBXGroup;
+			children = (
+				51F8624F185C40E90037D576 /* StoryOverviewHeaderView.h */,
+				51F86250185C40E90037D576 /* StoryOverviewHeaderView.m */,
+				51F86253185D72870037D576 /* ContributorsTableViewController.h */,
+				51F86254185D72870037D576 /* ContributorsTableViewController.m */,
+			);
+			name = "Story Overview Header view";
+			sourceTree = "<group>";
+		};
 		51FAC0B9172C82A40046C2D6 /* Comment */ = {
 			isa = PBXGroup;
 			children = (
@@ -1786,8 +1830,10 @@
 				51170B6E17F42CD50015B343 /* ProfileViewController.m in Sources */,
 				5189B32B15B395F300562DD0 /* InvitedTableViewController.m in Sources */,
 				51984D40176EDE1000CD6C3E /* BNPiecesScrollView.m in Sources */,
+				51F86251185C40E90037D576 /* StoryOverviewHeaderView.m in Sources */,
 				5189B32F15B395F300562DD0 /* ModifyPieceViewController.m in Sources */,
 				5189B33115B395F300562DD0 /* ModifyStoryViewController.m in Sources */,
+				51F86245185AA25A0037D576 /* StoryOverviewPieceCell.m in Sources */,
 				5189B33515B395F300562DD0 /* ReadPieceViewController.m in Sources */,
 				51C4253018270CF900AF90C1 /* BNDuckTypedObject.m in Sources */,
 				5112D109181E5DB9003E8C37 /* UIImage+ImageEffects.m in Sources */,
@@ -1795,6 +1841,7 @@
 				5189B33815B395F300562DD0 /* Piece+Create.m in Sources */,
 				5189B33915B395F300562DD0 /* Piece+Delete.m in Sources */,
 				5189B33A15B395F300562DD0 /* Piece+Edit.m in Sources */,
+				51F86255185D72870037D576 /* ContributorsTableViewController.m in Sources */,
 				5189B33B15B395F300562DD0 /* Piece+Stats.m in Sources */,
 				51CE90B51796724500A2F7CB /* RemoteObject.m in Sources */,
 				51C425351827991900AF90C1 /* GooglePlacesCell.m in Sources */,
@@ -1830,6 +1877,7 @@
 				510787D5163A37190042B436 /* Activity.m in Sources */,
 				5157CD031650902900C22CCE /* BanyanConnection.m in Sources */,
 				51C4252D1826DFF100AF90C1 /* GooglePlacesObjectToDataTransformer.m in Sources */,
+				51F86242185A3A110037D576 /* StoryOverviewController.m in Sources */,
 				51E9B2C6181F8F88004B35A5 /* BNTextField.m in Sources */,
 				514CDF5B18131F410098B0A9 /* InvitedFBFriendsViewController.m in Sources */,
 				5103FB9F166898960095B11F /* UIImage+Create.m in Sources */,

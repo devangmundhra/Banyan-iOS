@@ -254,7 +254,7 @@
     }
     
     Piece *piece = nil;
-    if (self.story.pieces.count <= newPieceNum) {
+    if (self.story.pieces.count >= newPieceNum) {
         piece = [self.story.pieces objectAtIndex:newPieceNum-1];
     }
     UIViewController *viewController = [self viewControllerWithPiece:piece];
