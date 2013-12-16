@@ -172,19 +172,10 @@
     titleButton.backgroundColor = [UIColor clearColor];
     titleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     titleButton.titleLabel.numberOfLines = 2;
-    NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:self.piece.story.title
-                                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
-                                                                                   NSForegroundColorAttributeName: BANYAN_DARKGRAY_COLOR}];
-    NSAttributedString *pageString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\rpiece %d/%d", self.piece.pieceNumber, self.piece.story.length]
-                                                                     attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
-                                                                                  NSForegroundColorAttributeName: BANYAN_GRAY_COLOR}];
-    NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithAttributedString:titleString];
-    [attrString appendAttributedString:pageString];
-    [titleButton setAttributedTitle:attrString forState:UIControlStateNormal];
     titleButton.showsTouchWhenHighlighted = YES;
     [titleButton addTarget:self action:@selector(storyOverviewButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.storyInfoView insertSubview:titleButton atIndex:0];
-    
+    [self updateStoryTitle];
     [self.view addSubview:self.storyInfoView];
     
     frame = [UIScreen mainScreen].bounds;
@@ -503,9 +494,21 @@
     NSAttributedString *pageString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\rpiece %d/%d", self.piece.pieceNumber, self.piece.story.length]
                                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
                                                                                   NSForegroundColorAttributeName: BANYAN_GRAY_COLOR}];
-    NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithAttributedString:titleString];
-    [attrString appendAttributedString:pageString];
-    [titleButton setAttributedTitle:attrString forState:UIControlStateNormal];
+    NSMutableAttributedString *pageAttrString = [[NSMutableAttributedString alloc] initWithAttributedString:titleString];
+    [pageAttrString appendAttributedString:pageString];
+    
+    NSAttributedString *tapString = [[NSAttributedString alloc] initWithString:@"\rTap for story information"
+                                                                     attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
+                                                                                  NSForegroundColorAttributeName: BANYAN_GRAY_COLOR}];
+    
+    NSMutableAttributedString *tapAttrString = [[NSMutableAttributedString alloc] initWithAttributedString:titleString];
+    [tapAttrString appendAttributedString:tapString];
+    
+    // Delay execution of my block for 2 seconds.
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [titleButton setAttributedTitle:pageAttrString forState:UIControlStateNormal];
+    });
+    [titleButton setAttributedTitle:tapAttrString forState:UIControlStateNormal];
 }
 
 #pragma mark notifications

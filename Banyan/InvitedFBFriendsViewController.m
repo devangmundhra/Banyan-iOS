@@ -247,12 +247,14 @@
 # pragma mark InviteFriendCellDelegate methods
 - (void)inviteFriendCellReadButtonTapped:(InviteFriendCell *)cell
 {
-    NSIndexPath * myIndexPath = [self.tableView indexPathForCell:cell];
+    NSIndexPath * myIndexPath = nil;
     NSDictionary *friend = nil;
     
     if (self.searchDisplayController.isActive) {
+        myIndexPath = [self.searchDisplayController.searchResultsTableView indexPathForCell:cell];
         friend = [self.filteredListContacts objectAtIndex:myIndexPath.row];
     } else {
+        myIndexPath = [self.tableView indexPathForCell:cell];
         NSArray *contacts = [self getContactsForSection:myIndexPath.section];
         friend = [contacts objectAtIndex:myIndexPath.row];
     }
@@ -276,7 +278,7 @@
         myIndexPath = [self.searchDisplayController.searchResultsTableView indexPathForCell:cell];
         friend = [self.filteredListContacts objectAtIndex:myIndexPath.row];
     } else {
-        [self.tableView indexPathForCell:cell];
+        myIndexPath = [self.tableView indexPathForCell:cell];
         NSArray *contacts = [self getContactsForSection:myIndexPath.section];
         friend = [contacts objectAtIndex:myIndexPath.row];
     }

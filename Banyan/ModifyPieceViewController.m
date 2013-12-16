@@ -178,16 +178,6 @@
     self.storyTitleButton = [[UIButton alloc] initWithFrame:frame];
     self.storyTitleButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:16];
     self.storyTitleButton.titleLabel.numberOfLines = 2;
-    NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:self.piece.story.title
-                                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
-                                                                                   NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}];
-    NSAttributedString *changeStoryString = [[NSAttributedString alloc] initWithString:@"\rTap to change the story"
-                                                                     attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
-                                                                                  NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}];
-    NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithAttributedString:titleString];
-    [attrString appendAttributedString:changeStoryString];
-    
-    [self.storyTitleButton setAttributedTitle:attrString forState:UIControlStateNormal];
     self.storyTitleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     [self.storyTitleButton addTarget:self action:@selector(storyChangeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.storyTitleButton setBackgroundColor:[BANYAN_DARKGRAY_COLOR colorWithAlphaComponent:SUBVIEW_OPACITY]];
@@ -199,6 +189,7 @@
     } else {
         self.storyTitleButton.userInteractionEnabled = NO;
     }
+    [self updateStoryTitle];
     [self.scrollView addSubview:self.storyTitleButton];
 
     frame.origin.y = CGRectGetMaxY(self.storyTitleButton.frame) + VIEW_INSETS;
@@ -491,6 +482,19 @@
     [self presentViewController:nvc animated:YES completion:nil];
 }
 
+- (void) updateStoryTitle
+{
+    NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:self.piece.story.title
+                                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
+                                                                                   NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}];
+    NSAttributedString *changeStoryString = [[NSAttributedString alloc] initWithString:@"\rTap to change the story"
+                                                                            attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
+                                                                                         NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}];
+    NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithAttributedString:titleString];
+    [attrString appendAttributedString:changeStoryString];
+    [self.storyTitleButton setAttributedTitle:attrString forState:UIControlStateNormal];
+}
+
 #pragma mark UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -510,10 +514,7 @@
     // A new story was picked.
     // Change the story of this piece to the new story
     self.piece.story = story;
-    [self.storyTitleButton setAttributedTitle:[[NSAttributedString alloc] initWithString:self.piece.story.title
-                                                                              attributes:@{NSUnderlineStyleAttributeName: @1,
-                                                                                           NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}]
-                                     forState:UIControlStateNormal];
+    [self updateStoryTitle];
 }
 
 # pragma mark - Keyboard notifications
