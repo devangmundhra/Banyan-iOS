@@ -290,12 +290,6 @@
     [[RKObjectManager sharedManager] getObjectsAtPathForRouteNamed:@"get_stories" object:nil
                                                         parameters:nil
                                                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                                               //                                // Delete all unsaved stories
-                                                               //                                NSArray *unsavedStories = [Story unsavedStories];
-                                                               //                                for (Story *story in unsavedStories) {
-                                                               //                                    [story remove];
-                                                               //                                }
-                                                               
                                                                NSArray *stories = [mappingResult array];
                                                                // Delete stories that have been deleted on the server
                                                                NSArray *syncedStories =[Story syncedStories];
@@ -304,12 +298,6 @@
                                                                        [story remove];
                                                                }
                                                                [stories enumerateObjectsUsingBlock:^(Story *story, NSUInteger idx, BOOL *stop) {
-                                                                   NSArray *unsavedPieces = [Piece unsavedPiecesInStory:story];
-                                                                   if (unsavedPieces.count)
-                                                                       NSLog(@"%u unsaved pieces in story :%@", unsavedPieces.count, story.title);
-                                                                   //                                    for (Piece *piece in unsavedPieces) {
-                                                                   //                                        [piece remove];
-                                                                   //                                    }
                                                                    story.lastSynced = [NSDate date];
                                                                    story.currentPieceNum = MAX([Piece pieceForStory:story withAttribute:@"viewedByCurUser" asValue:[NSNumber numberWithBool:FALSE]].pieceNumber, 1);
                                                                }];
@@ -330,7 +318,7 @@
                                               success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                                   // Delete all unsaved pieces
                                                   NSArray *pieces = [mappingResult array];
-                                                  if ([story isDeleted] || story.managedObjectContext == nil ) // Don't bother doing anything if story was deleted while fetching pieces
+                                                  if ([story hasBeenDeleted] || story.managedObjectContext == nil ) // Don't bother doing anything if story was deleted while fetching pieces
                                                       return;
                                                   [pieces enumerateObjectsUsingBlock:^(Piece *piece, NSUInteger idx, BOOL *stop) {
                                                       piece.story = story;

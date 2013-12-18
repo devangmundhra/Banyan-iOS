@@ -169,7 +169,7 @@
     // This usually happens because there can be a mismatch between a GET request coming down from a server while another PUT/POST request is happening.
     // Consider the scenario where a piece with media failed to upload, and the app was closed. On the next open, the stories and pieces will be
     // GET from the backend, while a piece is being uploaded. It can well happen that the piece has been uploaded but the media hasn't been uploaded.
-    // Now if the upload of the media happens first, there will be a piece with the media. But later when the backend replies with the piece with
+    // Now if the upload of the media uplaod happens first, there will be a piece with the media. But later when the backend replies with the piece with
     // an empty media, the media gets disconnected from the remoteObject, and the piece has no media.
     predicate = [NSPredicate predicateWithFormat:@"remoteObject = nil"];
     [request setPredicate:predicate];

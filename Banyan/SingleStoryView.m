@@ -18,6 +18,7 @@
 @property (strong, nonatomic) UIButton *storyFrontViewControl;
 @property (strong, nonatomic) UILabel *storyAuthorsLabel;
 @property (strong, nonatomic) UILabel *storyStatusLabel;
+@property (strong, nonatomic) UIButton *addPcButton;
 
 @end
 
@@ -39,6 +40,8 @@ static BOOL _loggedIn;
 @implementation SingleStoryView
 @synthesize story = _story;
 @synthesize storyFrontViewControl = _storyFrontViewControl;
+@synthesize addPcButton = _addPcButton;
+@synthesize delegate = _delegate;
 
 + (void)initialize
 {
@@ -102,11 +105,10 @@ static BOOL _loggedIn;
         // Initialization code
         self.opaque = YES;
         self.backgroundColor = BANYAN_WHITE_COLOR;
-        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [self.layer setCornerRadius:10.0f];
         [self.layer setMasksToBounds:YES];
         
-        self.topSwipeView = [[BNSwipeableView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.frame), TOP_VIEW_HEIGHT)];
+        self.topSwipeView = [[BNSwipeableView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.bounds), TOP_VIEW_HEIGHT)];
         self.topSwipeView.delegate = self;
         self.topSwipeView.opaque = YES;
         self.topSwipeView.backgroundColor = self.topSwipeView.frontView.backgroundColor = BANYAN_WHITE_COLOR;
@@ -117,6 +119,8 @@ static BOOL _loggedIn;
         self.storyFrontViewControl.showsTouchWhenHighlighted = YES;
         [self.topSwipeView.frontView addSubview:self.storyFrontViewControl];
         [self addSubview:self.topSwipeView];
+        
+        [self setupFrontView];
         
         self.storyAuthorsLabel = [[UILabel alloc] initWithFrame:CGRectMake(TABLE_CELL_MARGIN,
                                                                            TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT,
@@ -132,13 +136,21 @@ static BOOL _loggedIn;
         self.storyStatusLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.storyAuthorsLabel.frame),
                                                                           TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT,
                                                                           SIZE_OF_STORY_STATUS_LABEL, BOTTOM_VIEW_HEIGHT)];
-        self.storyStatusLabel.hidden = NO;
         self.storyStatusLabel.backgroundColor = BANYAN_WHITE_COLOR;
         self.storyStatusLabel.textColor = BANYAN_LIGHTGRAY_COLOR;
         self.storyStatusLabel.textAlignment = NSTextAlignmentRight;
         self.storyStatusLabel.lineBreakMode = NSLineBreakByClipping;
         self.storyStatusLabel.font = _smallFont;
         [self addSubview:self.storyStatusLabel];
+        
+        CGFloat buttonWd = 14.0f;
+        self.addPcButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(frame)-buttonWd-BUTTON_SPACING, TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT, buttonWd, BOTTOM_VIEW_HEIGHT)];
+        [self.addPcButton setTintColor:BANYAN_GREEN_COLOR];
+        [self.addPcButton setTitle:@"+" forState:UIControlStateNormal];
+        [self.addPcButton setTitleColor:BANYAN_GREEN_COLOR forState:UIControlStateNormal];
+        self.addPcButton.showsTouchWhenHighlighted = YES;
+        self.addPcButton.exclusiveTouch = YES;
+        [self addSubview:self.addPcButton];
     }
     return self;
 }
@@ -148,7 +160,12 @@ static BOOL _loggedIn;
     _story = story;
     [self.topSwipeView setNeedsDisplay];
     [self updateStoryLabels];
-    [self setupFrontView];
+}
+
+- (void)setDelegate:(id<SingleStoryViewDelegate>)delegate
+{
+    _delegate = delegate;
+    [self.addPcButton addTarget:self.delegate action:@selector(addPiece:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void) updateStoryLabels
@@ -159,8 +176,13 @@ static BOOL _loggedIn;
     if ([self.story.uploadStatusNumber unsignedIntegerValue] != RemoteObjectStatusSync && [[self.story calculateUploadStatusNumber] unsignedIntegerValue] != RemoteObjectStatusSync) {
         self.storyStatusLabel.hidden = NO;
         self.storyStatusLabel.text = self.story.sectionIdentifier;
+        self.addPcButton.hidden = YES;
     } else {
         self.storyStatusLabel.hidden = YES;
+        if (self.story.canContribute && _loggedIn)
+            self.addPcButton.hidden = NO;
+        else
+            self.addPcButton.hidden = YES;
     }
 }
 
@@ -276,17 +298,9 @@ static BOOL _loggedIn;
 - (void) setupFrontView
 {
     UIImage *frontViewControlImage = nil;
-    if (self.story.canContribute && _loggedIn) {
-        // Have the reveal Backview button on front view
-        frontViewControlImage = _backViewShowImage;
-        [self.storyFrontViewControl removeTarget:self.delegate action:@selector(shareStory:) forControlEvents:UIControlEventTouchUpInside];
-        [self.storyFrontViewControl addTarget:self action:@selector(toggleBackView:) forControlEvents:UIControlEventTouchUpInside];
-    } else {
-        // Just have the share button in front view.
-        frontViewControlImage = _shareBlackImage;
-        [self.storyFrontViewControl removeTarget:self action:@selector(toggleBackView:) forControlEvents:UIControlEventTouchUpInside];
-        [self.storyFrontViewControl addTarget:self.delegate action:@selector(shareStory:) forControlEvents:UIControlEventTouchUpInside];
-    }
+    // Have the reveal Backview button on front view
+    frontViewControlImage = _backViewShowImage;
+    [self.storyFrontViewControl addTarget:self action:@selector(toggleBackView:) forControlEvents:UIControlEventTouchUpInside];
     [self.storyFrontViewControl setImage:frontViewControlImage forState:UIControlStateNormal];
     // Set the button's frame
     CGRect frontViewControlButtonFrame;
@@ -299,65 +313,72 @@ static BOOL _loggedIn;
 
 - (void) setupBackView
 {
-    if (self.story.canContribute)
-    {
-        // Add Piece Button
-        UIButton *addPieceButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        // Make sure the button ends up in the right place when the cell is resized
-        addPieceButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
-        [addPieceButton setImage:_addPieceImage forState:UIControlStateNormal];
-        [addPieceButton addTarget:self.delegate action:@selector(addPiece:) forControlEvents:UIControlEventTouchUpInside];
-        // Set the button's frame
-        CGRect addPieceButtonFrame = addPieceButton.bounds;
-        addPieceButtonFrame.origin.x = TABLE_CELL_MARGIN + BUTTON_SPACING;
-        addPieceButtonFrame.origin.y = floor(self.topSwipeView.backView.bounds.origin.y);
-        addPieceButtonFrame.size = _addPieceImage.size;
-        addPieceButtonFrame.size.height = floor(self.topSwipeView.backView.bounds.size.height);
-        addPieceButtonFrame.size.width = floor(addPieceButtonFrame.size.width);
-        addPieceButton.frame = addPieceButtonFrame;
-        
-        [self.topSwipeView.backView addSubview:addPieceButton];
-        
-        // Delete Story Button
-        UIButton *deleteStoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        deleteStoryButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
-        
-        // Always hide story. Deletion done in storyOverview
-//        if (self.story.author.userId == [BNSharedUser currentUser].userId) {
-//            [deleteStoryButton setImage:_deleteStoryImage forState:UIControlStateNormal];
-//            [deleteStoryButton addTarget:self action:@selector(deleteStoryAlert:) forControlEvents:UIControlEventTouchUpInside];
-//        } else {
-            [deleteStoryButton setImage:_hideStoryImage forState:UIControlStateNormal];
-            [deleteStoryButton addTarget:self action:@selector(hideStoryAlert:) forControlEvents:UIControlEventTouchUpInside];
-//        }
-        
-        CGRect deleteStoryButtonFrame = deleteStoryButton.bounds;
-        deleteStoryButtonFrame.origin.x = floor(CGRectGetMaxX(addPieceButton.frame) + BUTTON_SPACING);
-        deleteStoryButtonFrame.origin.y = floor(self.topSwipeView.backView.bounds.origin.y);
-        deleteStoryButtonFrame.size = _deleteStoryImage.size;
-        deleteStoryButtonFrame.size.height = floor(self.topSwipeView.backView.bounds.size.height);
-        deleteStoryButtonFrame.size.width = floor(deleteStoryButtonFrame.size.width);
-        deleteStoryButton.frame = deleteStoryButtonFrame;
-        
-        [self.topSwipeView.backView addSubview:deleteStoryButton];
-        // Share Button
-        UIButton *shareButton = [UIButton buttonWithType:UIButtonTypeCustom];        
-        shareButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
-        [shareButton setImage:_shareWhiteImage forState:UIControlStateNormal];
-        [shareButton addTarget:self.delegate action:@selector(shareStory:) forControlEvents:UIControlEventTouchUpInside];
-        
-        CGRect shareButtonFrame = shareButton.bounds;
-        shareButtonFrame.origin.x = floor(CGRectGetMaxX(deleteStoryButton.frame) + BUTTON_SPACING);
-        shareButtonFrame.origin.y = floor(self.topSwipeView.backView.bounds.origin.y);
-        shareButtonFrame.size = _shareWhiteImage.size;
-        shareButtonFrame.size.height = floor(self.topSwipeView.backView.bounds.size.height);
-        shareButtonFrame.size.width = floor(shareButtonFrame.size.width);
-        shareButton.frame = shareButtonFrame;
-        
-        [self.topSwipeView.backView addSubview:shareButton];
+    // Add Piece Button
+    UIButton *addPieceButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    // Make sure the button ends up in the right place when the cell is resized
+    addPieceButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
+    [addPieceButton setImage:_addPieceImage forState:UIControlStateNormal];
+    [addPieceButton addTarget:self.delegate action:@selector(addPiece:) forControlEvents:UIControlEventTouchUpInside];
+    // Set the button's frame
+    CGRect addPieceButtonFrame = addPieceButton.bounds;
+    addPieceButtonFrame.origin.x = TABLE_CELL_MARGIN + BUTTON_SPACING;
+    addPieceButtonFrame.origin.y = floor(self.topSwipeView.backView.bounds.origin.y);
+    addPieceButtonFrame.size = _addPieceImage.size;
+    addPieceButtonFrame.size.height = floor(self.topSwipeView.backView.bounds.size.height);
+    addPieceButtonFrame.size.width = floor(addPieceButtonFrame.size.width);
+    addPieceButton.frame = addPieceButtonFrame;
+    if (!(self.story.canContribute && _loggedIn)) {
+        addPieceButton.enabled = NO;
+        addPieceButton.alpha = 0.2;
     } else {
-        assert(false);
+        addPieceButton.enabled = YES;
+        addPieceButton.alpha = 1;
     }
+    [self.topSwipeView.backView addSubview:addPieceButton];
+    
+    // Delete Story Button
+    UIButton *deleteStoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    deleteStoryButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
+    
+    // Always hide story. Deletion done in storyOverview
+    //        if (self.story.author.userId == [BNSharedUser currentUser].userId) {
+    //            [deleteStoryButton setImage:_deleteStoryImage forState:UIControlStateNormal];
+    //            [deleteStoryButton addTarget:self action:@selector(deleteStoryAlert:) forControlEvents:UIControlEventTouchUpInside];
+    //        } else {
+    [deleteStoryButton setImage:_hideStoryImage forState:UIControlStateNormal];
+    [deleteStoryButton addTarget:self action:@selector(hideStoryAlert:) forControlEvents:UIControlEventTouchUpInside];
+    //        }
+    
+    CGRect deleteStoryButtonFrame = deleteStoryButton.bounds;
+    deleteStoryButtonFrame.origin.x = floor(CGRectGetMaxX(addPieceButton.frame) + BUTTON_SPACING);
+    deleteStoryButtonFrame.origin.y = floor(self.topSwipeView.backView.bounds.origin.y);
+    deleteStoryButtonFrame.size = _deleteStoryImage.size;
+    deleteStoryButtonFrame.size.height = floor(self.topSwipeView.backView.bounds.size.height);
+    deleteStoryButtonFrame.size.width = floor(deleteStoryButtonFrame.size.width);
+    deleteStoryButton.frame = deleteStoryButtonFrame;
+    if (!_loggedIn) {
+        deleteStoryButton.enabled = NO;
+        deleteStoryButton.alpha = 0.2;
+    } else {
+        deleteStoryButton.enabled = YES;
+        deleteStoryButton.alpha = 1;
+    }
+    [self.topSwipeView.backView addSubview:deleteStoryButton];
+    // Share Button
+    UIButton *shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    shareButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
+    [shareButton setImage:_shareWhiteImage forState:UIControlStateNormal];
+    [shareButton addTarget:self.delegate action:@selector(shareStory:) forControlEvents:UIControlEventTouchUpInside];
+    
+    CGRect shareButtonFrame = shareButton.bounds;
+    shareButtonFrame.origin.x = floor(CGRectGetMaxX(deleteStoryButton.frame) + BUTTON_SPACING);
+    shareButtonFrame.origin.y = floor(self.topSwipeView.backView.bounds.origin.y);
+    shareButtonFrame.size = _shareWhiteImage.size;
+    shareButtonFrame.size.height = floor(self.topSwipeView.backView.bounds.size.height);
+    shareButtonFrame.size.width = floor(shareButtonFrame.size.width);
+    shareButton.frame = shareButtonFrame;
+    
+    [self.topSwipeView.backView addSubview:shareButton];
 }
 
 - (void) toggleSwipeableViewAnimated:(BOOL)animated
@@ -398,7 +419,7 @@ static BOOL _loggedIn;
 
 - (BOOL)shouldSwipe
 {
-    return self.story.canContribute;
+    return YES;
 }
 
 - (void) toggleBackView:(UIButton *)button
