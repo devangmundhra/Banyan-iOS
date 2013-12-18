@@ -88,7 +88,8 @@ NSString *const kDictionaryInSortedArrayOfContributorsCountKey = @"count";
     
     // Add other pieces first
     for (Piece *piece in self.pieces) {
-        [contributorArray addObject:piece.author.name];
+        if (piece.author) // No author is possible for backup Piece when editing a piece
+            [contributorArray addObject:piece.author.name];
     }
     
     return [NSOrderedSet orderedSetWithArray:contributorArray].array;

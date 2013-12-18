@@ -351,7 +351,7 @@
 		[self.piece remove];
     
 	self.piece = nil; // Just in case
-    [self dismissEditView];
+    [self dismissEditViewWithCompletionBlock:nil];
 }
 
 // Done modifying piece. Now save all the changes.
@@ -454,13 +454,13 @@
         [Piece editPiece:self.piece];
     }
     else {
-        assert(false);
-        NSLog(@"ModifyPieceViewController_No valid edit mode");
+        NSAssert(false, @"ModifyPieceViewController_No valid edit mode");
     }
-    if (self.delegate)
-        [self.delegate modifyPieceViewController:self didFinishAddingPiece:self.piece];
     
-    [self dismissEditView];
+    [self dismissEditViewWithCompletionBlock:^{
+        if (self.delegate)
+            [self.delegate modifyPieceViewController:self didFinishAddingPiece:self.piece];
+    }];
 }
 
 - (IBAction)deleteAudioAlert:(UIButton *)sender
@@ -484,6 +484,9 @@
 
 - (void) updateStoryTitle
 {
+    if (!self.piece.story.title)
+        return;
+        
     NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:self.piece.story.title
                                                                       attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
                                                                                    NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}];
@@ -672,10 +675,10 @@
 }
 
 #pragma mark Methods to interface between views
-- (void) dismissEditView
+- (void) dismissEditViewWithCompletionBlock:(void (^)(void))completionBlock
 {
     [self deleteBackupPiece];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:completionBlock];
 }
 
 #pragma Memory Management
