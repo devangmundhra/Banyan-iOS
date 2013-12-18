@@ -53,7 +53,7 @@
     return user;
 }
 
-+ (RKEntityMapping *) UserMappingForRK
++ (RKEntityMapping *) UserMappingForRKGET
 {
     RKEntityMapping *userMapping = [RKEntityMapping mappingForEntityForName:kBNUserClassKey
                                                        inManagedObjectStore:[RKManagedObjectStore defaultStore]];

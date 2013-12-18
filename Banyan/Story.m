@@ -274,7 +274,7 @@
     [FBDialogs presentShareDialogWithParams:params clientState:nil handler:nil];
 }
 
-+ (RKEntityMapping *)storyMappingForRK
++ (RKEntityMapping *)storyMappingForRKGET
 {
     RKEntityMapping *storyMapping = [RKEntityMapping mappingForEntityForName:kBNStoryClassKey
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
@@ -294,11 +294,47 @@
     
     [storyMapping addAttributeMappingsFromArray:@[@"bnObjectId", STORY_TITLE, STORY_READ_ACCESS, STORY_WRITE_ACCESS, STORY_TAGS, STORY_LENGTH,
                                                   @"createdAt", @"updatedAt", @"isLocationEnabled", @"location"]];
-    [storyMapping addPropertyMappingsFromArray:@[[RKRelationshipMapping relationshipMappingFromKeyPath:@"pieces" toKeyPath:@"pieces" withMapping:[Piece pieceMappingForRK]],
-                                                 [RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:[Media mediaMappingForRK]],
-                                                 [RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:[User UserMappingForRK]]]];
+    [storyMapping addPropertyMappingsFromArray:@[[RKRelationshipMapping relationshipMappingFromKeyPath:@"pieces" toKeyPath:@"pieces" withMapping:[Piece pieceMappingForRKGET]],
+                                                 [RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:[Media mediaMappingForRKGET]],
+                                                 [RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:[User UserMappingForRKGET]]]];
     
     return storyMapping;
+}
+
++ (RKObjectMapping *)storyRequestMappingForRKPOST
+{
+    RKObjectMapping *storyRequestMapping = [RKObjectMapping requestMapping];
+    [storyRequestMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_WRITE_ACCESS, STORY_READ_ACCESS, STORY_TAGS, @"isLocationEnabled", @"timeStamp", @"location"]];
+    [storyRequestMapping addAttributeMappingsFromDictionary:@{@"author.resourceUri" : @"author"}];
+    return storyRequestMapping;
+}
+
++ (RKEntityMapping *)storyResponseMappingForRKPOST
+{
+    RKEntityMapping *storyResponseMapping = [RKEntityMapping mappingForEntityForName:kBNStoryClassKey
+                                                                inManagedObjectStore:[RKManagedObjectStore defaultStore]];
+    [storyResponseMapping addAttributeMappingsFromDictionary:@{@"resource_uri": @"resourceUri"}];
+    [storyResponseMapping addAttributeMappingsFromArray:@[@"createdAt", @"updatedAt", @"permaLink", @"bnObjectId"]];
+    storyResponseMapping.identificationAttributes = @[@"bnObjectId"];
+    return storyResponseMapping;
+}
+
++ (RKObjectMapping *)storyRequestMappingForRKPUT
+{
+    RKObjectMapping *storyRequestMapping = [RKObjectMapping requestMapping];
+    [storyRequestMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_WRITE_ACCESS, STORY_READ_ACCESS, STORY_TAGS, @"isLocationEnabled", @"location"]];
+    [storyRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:[Media mediaRequestMapping]]];
+    
+    return storyRequestMapping;
+}
+
++ (RKEntityMapping *)storyResponseMappingForRKPUT
+{
+    RKEntityMapping *storyResponseMapping = [RKEntityMapping mappingForEntityForName:kBNStoryClassKey
+                                                                inManagedObjectStore:[RKManagedObjectStore defaultStore]];
+    
+    [storyResponseMapping addAttributeMappingsFromArray:@[@"updatedAt"]];
+    return storyResponseMapping;
 }
 
 - (NSString *)getIdentifierForMediaFileName

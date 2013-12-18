@@ -62,7 +62,8 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
 
 + (Media *)getMediaOfType:(NSString *)type inMediaSet:(NSOrderedSet *)mediaSet;
 + (NSOrderedSet *)getAllMediaOfType:(NSString *)type inMediaSet:(NSOrderedSet *)mediaSet;
-+ (RKEntityMapping *)mediaMappingForRK;
++ (RKEntityMapping *)mediaMappingForRKGET;
++ (RKObjectMapping *)mediaRequestMapping;
 
 + (void)validateAllMedias;
 

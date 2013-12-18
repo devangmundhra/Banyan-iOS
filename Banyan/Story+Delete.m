@@ -44,7 +44,7 @@
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[APP_DELEGATE topMostController].view animated:YES];
         hud.labelText = @"Deleting story";
         
-        [[AFBanyanAPIClient sharedClient] deletePath:BANYAN_API_OBJECT_URL(@"Story", storyId)
+        [[AFBanyanAPIClient sharedClient] deletePath:[NSString stringWithFormat:@"story/%@/?format=json", storyId]
                                           parameters:nil
                                              success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                                  NSLog(@"Story with id %@ deleted", storyId);

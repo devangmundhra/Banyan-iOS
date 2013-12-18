@@ -52,7 +52,7 @@
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[APP_DELEGATE topMostController].view animated:YES];
         hud.labelText = @"Deleting piece";
         
-        [[AFBanyanAPIClient sharedClient] deletePath:BANYAN_API_OBJECT_URL(@"Piece", piece.bnObjectId)
+        [[AFBanyanAPIClient sharedClient] deletePath:[NSString stringWithFormat:@"piece/%@/?format=json", piece.bnObjectId]
                                           parameters:nil
                                              success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                                  NSLog(@"Piece %@ DELETED", piece.bnObjectId);

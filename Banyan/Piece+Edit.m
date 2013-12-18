@@ -9,7 +9,6 @@
 #import "Story.h"
 #import "Piece+Edit.h"
 #import "Story_Defines.h"
-#import "AFBanyanAPIClient.h"
 #import "Media.h"
 #import "BNMisc.h"
 #import "Story+Edit.h"
@@ -39,55 +38,20 @@
     // Block to upload the piece
     void (^updatePiece)(Piece *) = ^(Piece *piece) {
         NSLog(@"Update piece %@ for story %@", piece, piece.story);
-
-        RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
-        // For serializing
-        RKObjectMapping *pieceRequestMapping = [RKObjectMapping requestMapping];
-        [pieceRequestMapping addAttributeMappingsFromArray:@[PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled"]];
         
-        RKObjectMapping *locationMapping = [RKObjectMapping requestMapping];
-        [locationMapping addAttributeMappingsFromArray:@[@"id", @"category", @"name"]];
-        RKObjectMapping *locationLocationMapping = [RKObjectMapping requestMapping];
-        [locationLocationMapping addAttributeMappingsFromArray:@[@"street", @"city", @"state", @"country", @"zip", @"latitude", @"longitude"]];
-        [locationMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationLocationMapping]];
-        [pieceRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationMapping]];
-        
-        RKObjectMapping *mediaMapping = [RKObjectMapping requestMapping];
-        [mediaMapping addAttributeMappingsFromDictionary:@{@"remoteURL": @"url"}];
-        [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType"]];
-        
-        [pieceRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:mediaMapping]];
-        
-        RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
-                                                  requestDescriptorWithMapping:pieceRequestMapping
-                                                  objectClass:[Piece class]
-                                                  rootKeyPath:nil
-                                                  method:RKRequestMethodPUT];
-        RKEntityMapping *pieceResponseMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
-                                                                    inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-        [pieceResponseMapping addAttributeMappingsFromArray:@[@"updatedAt"]];
-        
-        RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:pieceResponseMapping
-                                                                                                method:RKRequestMethodPUT
-                                                                                           pathPattern:nil
-                                                                                               keyPath:nil
-                                                                                           statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
-        [objectManager addRequestDescriptor:requestDescriptor];
-        [objectManager addResponseDescriptor:responseDescriptor];
-        
-        [objectManager putObject:piece
-                             path:BANYAN_API_OBJECT_URL(@"Piece", piece.bnObjectId)
-                       parameters:nil
-                          success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                              NSLog(@"Update piece successful %@", piece);
-                              piece.remoteStatus = RemoteObjectStatusSync;
-                              [piece save];
-                          }
-                          failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                              NSLog(@"Error in updating piece");
-                              piece.remoteStatus = RemoteObjectStatusFailed;
-                              [piece save];
-                          }];
+        [[RKObjectManager sharedManager] putObject:piece
+                                              path:nil
+                                        parameters:nil
+                                           success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                               NSLog(@"Update piece successful %@", piece);
+                                               piece.remoteStatus = RemoteObjectStatusSync;
+                                               [piece save];
+                                           }
+                                           failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                               NSLog(@"Error in updating piece");
+                                               piece.remoteStatus = RemoteObjectStatusFailed;
+                                               [piece save];
+                                           }];
     };
     
     if ([piece.media count]) {

@@ -140,10 +140,21 @@
         }
     }
     
+    // Delete all remote objects which are local at start time
+    predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@)",
+                 [NSNumber numberWithInt:RemoteObjectStatusLocal]];
+    [request setPredicate:predicate];
+    error = nil;
+    array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+    for (RemoteObject *remoteObj in array) {
+        [remoteObj remove];
+    }
+    
     // It is possible that a clone of a piece was created and then the app crashed. So the clone is hanging around. Delete the clone.
     // TO-DO: Check if this can really occur. If so, check how to handle it for stories.
     [request setEntity:[NSEntityDescription entityForName:kBNPieceClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
     request.predicate = [NSPredicate predicateWithFormat:@"(story = nil)"];
+    error = nil;
     array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
     for (Piece *piece in array) {
         [piece remove];

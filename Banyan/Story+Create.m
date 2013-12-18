@@ -11,7 +11,6 @@
 #import "Story_Defines.h"
 #import "User_Defines.h"
 #import "BanyanDataSource.h"
-#import "AFBanyanAPIClient.h"
 #import "UIImage+ResizeAdditions.h"
 #import "Media.h"
 #import "User.h"
@@ -53,64 +52,24 @@
     
     NSLog(@"Adding story %@", story);
 
-    // Block to upload the story
-    void (^uploadStory)(Story *) = ^(Story *story) {
-        RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
-        objectManager.managedObjectStore = [RKManagedObjectStore defaultStore];
-        
-        // For serializing
-        RKObjectMapping *storyRequestMapping = [RKObjectMapping requestMapping];
-        [storyRequestMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_WRITE_ACCESS, STORY_READ_ACCESS, STORY_TAGS, @"isLocationEnabled", @"timeStamp"]];
-        [storyRequestMapping addAttributeMappingsFromDictionary:@{@"author.resourceUri" : @"author"}];
-        
-        RKObjectMapping *locationMapping = [RKObjectMapping requestMapping];
-        [locationMapping addAttributeMappingsFromArray:@[@"id", @"category", @"name"]];
-        RKObjectMapping *locationLocationMapping = [RKObjectMapping requestMapping];
-        [locationLocationMapping addAttributeMappingsFromArray:@[@"street", @"city", @"state", @"country", @"zip", @"latitude", @"longitude"]];
-        [locationMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationLocationMapping]];
-        [storyRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"location" toKeyPath:@"location" withMapping:locationMapping]];
-        
-        RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
-                                                  requestDescriptorWithMapping:storyRequestMapping
-                                                  objectClass:[Story class]
-                                                  rootKeyPath:nil
-                                                  method:RKRequestMethodPOST];
-        
-        RKEntityMapping *storyResponseMapping = [RKEntityMapping mappingForEntityForName:kBNStoryClassKey
-                                                                    inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-        [storyResponseMapping addAttributeMappingsFromDictionary:@{@"resource_uri": @"resourceUri"}];
-        [storyResponseMapping addAttributeMappingsFromArray:@[@"createdAt", @"updatedAt", @"permaLink", @"bnObjectId"]];
-        storyResponseMapping.identificationAttributes = @[@"bnObjectId"];
-        
-        RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:storyResponseMapping
-                                                                                                method:RKRequestMethodPOST
-                                                                                           pathPattern:nil
-                                                                                               keyPath:nil
-                                                                                           statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
-        [objectManager addRequestDescriptor:requestDescriptor];
-        [objectManager addResponseDescriptor:responseDescriptor];
-        
-        [objectManager postObject:story
-                             path:BANYAN_API_CLASS_URL(kBNStoryClassKey)
-                       parameters:nil
-                          success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                              NSLog(@"Create story successful %@", story);
-                              story.remoteStatus = RemoteObjectStatusSync;
-                              if ([story.media count]) {
-                                  // Media should be uploaded asynchronously.
-                                  // So edit the story now which will in turn upload the media.
-                                  [Story editStory:story];
-                              }
-                              [story save];
-                          }
-                          failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                              story.remoteStatus = RemoteObjectStatusFailed;
-                              [story save];
-                              NSLog(@"Error in create story");
-                          }];
-    };
-    
-    uploadStory(story);
+    [[RKObjectManager sharedManager] postObject:story
+                                           path:nil
+                                     parameters:nil
+                                        success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                            NSLog(@"Create story successful %@", story);
+                                            story.remoteStatus = RemoteObjectStatusSync;
+                                            if ([story.media count]) {
+                                                // Media should be uploaded asynchronously.
+                                                // So edit the story now which will in turn upload the media.
+                                                [Story editStory:story];
+                                            }
+                                            [story save];
+                                        }
+                                        failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                            story.remoteStatus = RemoteObjectStatusFailed;
+                                            [story save];
+                                            NSLog(@"Error in create story");
+                                        }];
 
     // Save this story in the UserDefaults so that next time the user will add a piece here.
     [story saveStoryMOIdToUserDefaults];

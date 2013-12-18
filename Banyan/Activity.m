@@ -61,4 +61,20 @@
             self.type, self.fromUser, self.toUser, self.piece, self.story];
 }
 
++ (RKObjectMapping *)activityRequestMappingForRKPOST
+{
+    RKObjectMapping *activityMapping = [RKObjectMapping requestMapping];
+    [activityMapping addAttributeMappingsFromArray:@[kBNActivityTypeKey, kBNActivityFromUserKey, kBNActivityToUserKey, kBNActivityPieceKey, kBNActivityStoryKey]];
+    
+    return activityMapping;
+}
+
++ (RKObjectMapping *)activityResponseMappingForRKPOST
+{
+    RKObjectMapping *activityResponseMapping = [RKObjectMapping mappingForClass:[Activity class]];
+    [activityResponseMapping addAttributeMappingsFromDictionary:@{@"id" : @"activityId"}];
+    
+    return activityResponseMapping;
+}
+
 @end

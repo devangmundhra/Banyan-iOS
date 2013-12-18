@@ -24,4 +24,7 @@
                           piece:(NSString *)piece
                           story:(NSString *)story;
 
++ (RKObjectMapping *)activityRequestMappingForRKPOST;
++ (RKObjectMapping *)activityResponseMappingForRKPOST;
+
 @end

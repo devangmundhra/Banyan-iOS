@@ -27,7 +27,7 @@
 @property (nonatomic, retain) NSString *resourceUri;
 
 + (User *)currentUser;
-+ (RKEntityMapping *) UserMappingForRK;
++ (RKEntityMapping *) UserMappingForRKGET;
 
 @end
 

@@ -342,7 +342,7 @@
     }];
 }
 
-+ (RKEntityMapping *)mediaMappingForRK
++ (RKEntityMapping *)mediaMappingForRKGET
 {
     RKEntityMapping *mediaMapping = [RKEntityMapping mappingForEntityForName:kBNMediaClassKey
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
@@ -351,6 +351,15 @@
     mediaMapping.identificationAttributes = @[@"filename", @"remoteURL"];
     return mediaMapping;
 }
+
++ (RKObjectMapping *)mediaRequestMapping
+{
+    RKObjectMapping *mediaMapping = [RKObjectMapping requestMapping];
+    [mediaMapping addAttributeMappingsFromDictionary:@{@"remoteURL": @"url"}];
+    [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType"]];
+    return mediaMapping;
+}
+
 
 - (void) getImageWithContentMode:(UIViewContentMode)contentMode
                           bounds:(CGSize)size

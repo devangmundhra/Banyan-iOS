@@ -195,7 +195,7 @@
     }
 }
 
-+ (RKEntityMapping *)pieceMappingForRK
++ (RKEntityMapping *)pieceMappingForRKGET
 {
     RKEntityMapping *pieceMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
@@ -213,11 +213,45 @@
     // Media
     [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media"
                                                                                  toKeyPath:@"media"
-                                                                               withMapping:[Media mediaMappingForRK]]];
+                                                                               withMapping:[Media mediaMappingForRKGET]]];
     
     // Author
-    [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:[User UserMappingForRK]]];
+    [pieceMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:[User UserMappingForRKGET]]];
     return pieceMapping;
+}
+
++ (RKObjectMapping *)pieceRequestMappingForRKPOST
+{
+    RKObjectMapping *pieceRequestMapping = [RKObjectMapping requestMapping];
+    [pieceRequestMapping addAttributeMappingsFromDictionary:@{@"author.resourceUri" : @"author", @"story.resourceUri" : PIECE_STORY}];
+    [pieceRequestMapping addAttributeMappingsFromArray:@[PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled", @"timeStamp", @"location"]];
+    return pieceRequestMapping;
+}
+
++ (RKEntityMapping *)pieceResponseMappingForRKPOST
+{
+    RKEntityMapping *pieceResponseMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
+                                                                inManagedObjectStore:[RKManagedObjectStore defaultStore]];
+    [pieceResponseMapping addAttributeMappingsFromDictionary:@{@"resource_uri": @"resourceUri"}];
+    [pieceResponseMapping addAttributeMappingsFromArray:@[@"createdAt", @"updatedAt", PIECE_NUMBER, @"permaLink", @"bnObjectId"]];
+    pieceResponseMapping.identificationAttributes = @[@"bnObjectId"];
+    return pieceResponseMapping;
+}
+
++ (RKObjectMapping *)pieceRequestMappingForRKPUT
+{
+    RKObjectMapping *pieceRequestMapping = [RKObjectMapping requestMapping];
+    [pieceRequestMapping addAttributeMappingsFromArray:@[PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled", @"location"]];
+    [pieceRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:[Media mediaRequestMapping]]];
+    return pieceRequestMapping;
+}
+
++ (RKEntityMapping *)pieceResponseMappingForRKPUT
+{
+    RKEntityMapping *pieceResponseMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
+                                                                inManagedObjectStore:[RKManagedObjectStore defaultStore]];
+    [pieceResponseMapping addAttributeMappingsFromArray:@[@"updatedAt"]];
+    return pieceResponseMapping;
 }
 
 - (NSString *)getIdentifierForMediaFileName

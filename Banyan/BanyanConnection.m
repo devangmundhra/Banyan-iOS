@@ -15,6 +15,7 @@
 #import "Media.h"
 #import "Story+Create.h"
 #import "Piece+Create.h"
+#import "Activity.h"
 
 @implementation BanyanConnection
 
@@ -29,11 +30,101 @@
                                              selector:@selector(userLoginStatusChanged:)
                                                  name:BNUserLogOutNotification
                                                object:nil];
+    [self restkitRouteInitializations];
 }
 
 + (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
++ (void) restkitRouteInitializations
+{
+    RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
+    objectManager.managedObjectStore = [RKManagedObjectStore defaultStore];
+    [RKObjectManager setSharedManager:objectManager];
+    
+    // Story routes
+    [objectManager.router.routeSet addRoute:[RKRoute routeWithClass:[Story class] pathPattern:@"story/" method:RKRequestMethodPOST]];
+    [objectManager.router.routeSet addRoute:[RKRoute routeWithClass:[Story class] pathPattern:@"story/:bnObjectId/?format=json" method:RKRequestMethodPUT]];
+    [objectManager.router.routeSet addRoute:[RKRoute routeWithClass:[Story class] pathPattern:@"story/:bnObjectId/?format=json" method:RKRequestMethodDELETE]];
+    
+    // Piece routes
+    [objectManager.router.routeSet addRoute:[RKRoute routeWithClass:[Piece class] pathPattern:@"piece/" method:RKRequestMethodPOST]];
+    [objectManager.router.routeSet addRoute:[RKRoute routeWithClass:[Piece class] pathPattern:@"piece/:bnObjectId/?format=json" method:RKRequestMethodPUT]];
+    [objectManager.router.routeSet addRoute:[RKRoute routeWithClass:[Piece class] pathPattern:@"piece/:bnObjectId/?format=json" method:RKRequestMethodDELETE]];
+    
+    // Activity routes
+    [objectManager.router.routeSet addRoute:[RKRoute routeWithClass:[Activity class] pathPattern:@"activity/" method:RKRequestMethodPOST]];
+    
+    // Named routes
+    [objectManager.router.routeSet addRoute:[RKRoute routeWithName:@"get_stories" pathPattern:@"story/?format=json" method:RKRequestMethodGET]];
+    
+    // Story descriptors
+    [objectManager addResponseDescriptor:[RKResponseDescriptor responseDescriptorWithMapping:[Story storyMappingForRKGET]
+                                                                                      method:RKRequestMethodGET
+                                                                                 pathPattern:@"story/"
+                                                                                     keyPath:@"objects"
+                                                                                 statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)]];
+    [objectManager addRequestDescriptor:[RKRequestDescriptor
+                                         requestDescriptorWithMapping:[Story storyRequestMappingForRKPOST]
+                                         objectClass:[Story class]
+                                         rootKeyPath:nil
+                                         method:RKRequestMethodPOST]];
+    [objectManager addResponseDescriptor:[RKResponseDescriptor responseDescriptorWithMapping:[Story storyResponseMappingForRKPOST]
+                                                                                      method:RKRequestMethodPOST
+                                                                                 pathPattern:@"story/"
+                                                                                     keyPath:nil
+                                                                                 statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)]];
+    [objectManager addRequestDescriptor:[RKRequestDescriptor
+                                         requestDescriptorWithMapping:[Story storyRequestMappingForRKPUT]
+                                         objectClass:[Story class]
+                                         rootKeyPath:nil
+                                         method:RKRequestMethodPUT]];
+    [objectManager addResponseDescriptor:[RKResponseDescriptor responseDescriptorWithMapping:[Story storyResponseMappingForRKPUT]
+                                                                                      method:RKRequestMethodPUT
+                                                                                 pathPattern:@"story/:bnObjectId/"
+                                                                                     keyPath:nil
+                                                                                 statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)]];
+
+    // Piece descriptors
+    [objectManager addResponseDescriptor:[RKResponseDescriptor responseDescriptorWithMapping:[Piece pieceMappingForRKGET]
+                                                                                      method:RKRequestMethodGET
+                                                                                 pathPattern:nil
+                                                                                     keyPath:@"result.pieces"
+                                                                                 statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)]];
+    [objectManager addRequestDescriptor:[RKRequestDescriptor
+                                         requestDescriptorWithMapping:[Piece pieceRequestMappingForRKPOST]
+                                         objectClass:[Piece class]
+                                         rootKeyPath:nil
+                                         method:RKRequestMethodPOST]];
+    [objectManager addResponseDescriptor:[RKResponseDescriptor responseDescriptorWithMapping:[Piece pieceResponseMappingForRKPOST]
+                                                                                      method:RKRequestMethodPOST
+                                                                                 pathPattern:@"piece/"
+                                                                                     keyPath:nil
+                                                                                 statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)]];
+    [objectManager addRequestDescriptor:[RKRequestDescriptor
+                                         requestDescriptorWithMapping:[Piece pieceRequestMappingForRKPUT]
+                                         objectClass:[Piece class]
+                                         rootKeyPath:nil
+                                         method:RKRequestMethodPUT]];
+    [objectManager addResponseDescriptor:[RKResponseDescriptor responseDescriptorWithMapping:[Piece pieceResponseMappingForRKPUT]
+                                                                                      method:RKRequestMethodPUT
+                                                                                 pathPattern:@"piece/:bnObjectId/"
+                                                                                     keyPath:nil
+                                                                                 statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)]];
+    
+    // Activity descriptors
+    [objectManager addRequestDescriptor:[RKRequestDescriptor
+                                         requestDescriptorWithMapping:[Activity activityRequestMappingForRKPOST]
+                                         objectClass:[Activity class]
+                                         rootKeyPath:nil
+                                         method:RKRequestMethodPOST]];
+    [objectManager addResponseDescriptor:[RKResponseDescriptor responseDescriptorWithMapping:[Activity activityResponseMappingForRKPOST]
+                                                                                      method:RKRequestMethodPOST
+                                                                                 pathPattern:@"activity/"
+                                                                                     keyPath:nil
+                                                                                 statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)]];
 }
 
 # pragma Storing the stories for this app
@@ -60,7 +151,7 @@
         objectManager.managedObjectStore = [RKManagedObjectStore defaultStore];
         
         // Response
-        RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:[Story storyMappingForRK]
+        RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:[Story storyMappingForRKGET]
                                                                                                 method:RKRequestMethodGET
                                                                                            pathPattern:nil
                                                                                                keyPath:@"objects"
@@ -196,88 +287,63 @@
 
 + (void)loadStoriesFromBanyanWithSuccessBlock:(void (^)())successBlock errorBlock:(void (^)(NSError *error))errorBlock
 {
-    NSString *getPath = BANYAN_API_GET_STORIES();
-    
-    // Initialize RestKit
-    RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
-    objectManager.managedObjectStore = [RKManagedObjectStore defaultStore];
-    
-    // Response
-    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:[Story storyMappingForRK]
-                                                                                            method:RKRequestMethodGET
-                                                                                       pathPattern:nil
-                                                                                           keyPath:@"objects"
-                                                                                       statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
-    [objectManager addResponseDescriptor:responseDescriptor];
-    
-    [objectManager getObjectsAtPath:getPath
-                         parameters:nil
-                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-//                                // Delete all unsaved stories
-//                                NSArray *unsavedStories = [Story unsavedStories];
-//                                for (Story *story in unsavedStories) {
-//                                    [story remove];
-//                                }
-                                
-                                NSArray *stories = [mappingResult array];
-                                // Delete stories that have been deleted on the server
-                                NSArray *syncedStories =[Story syncedStories];
-                                for (Story *story in syncedStories) {
-                                    if (![stories containsObject:story])
-                                        [story remove];
-                                }
-                                [stories enumerateObjectsUsingBlock:^(Story *story, NSUInteger idx, BOOL *stop) {
-                                    NSArray *unsavedPieces = [Piece unsavedPiecesInStory:story];
-                                    if (unsavedPieces.count)
-                                        NSLog(@"%u unsaved pieces in story :%@", unsavedPieces.count, story.title);
-//                                    for (Piece *piece in unsavedPieces) {
-//                                        [piece remove];
-//                                    }
-                                    story.lastSynced = [NSDate date];
-                                    story.currentPieceNum = MAX([Piece pieceForStory:story withAttribute:@"viewedByCurUser" asValue:[NSNumber numberWithBool:FALSE]].pieceNumber, 1);
-                                }];
-                                if (successBlock)
-                                    successBlock();                            }
-                            failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                if (errorBlock)
-                                    errorBlock(error);
-                            }];
+    [[RKObjectManager sharedManager] getObjectsAtPathForRouteNamed:@"get_stories" object:nil
+                                                        parameters:nil
+                                                           success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                                               //                                // Delete all unsaved stories
+                                                               //                                NSArray *unsavedStories = [Story unsavedStories];
+                                                               //                                for (Story *story in unsavedStories) {
+                                                               //                                    [story remove];
+                                                               //                                }
+                                                               
+                                                               NSArray *stories = [mappingResult array];
+                                                               // Delete stories that have been deleted on the server
+                                                               NSArray *syncedStories =[Story syncedStories];
+                                                               for (Story *story in syncedStories) {
+                                                                   if (![stories containsObject:story])
+                                                                       [story remove];
+                                                               }
+                                                               [stories enumerateObjectsUsingBlock:^(Story *story, NSUInteger idx, BOOL *stop) {
+                                                                   NSArray *unsavedPieces = [Piece unsavedPiecesInStory:story];
+                                                                   if (unsavedPieces.count)
+                                                                       NSLog(@"%u unsaved pieces in story :%@", unsavedPieces.count, story.title);
+                                                                   //                                    for (Piece *piece in unsavedPieces) {
+                                                                   //                                        [piece remove];
+                                                                   //                                    }
+                                                                   story.lastSynced = [NSDate date];
+                                                                   story.currentPieceNum = MAX([Piece pieceForStory:story withAttribute:@"viewedByCurUser" asValue:[NSNumber numberWithBool:FALSE]].pieceNumber, 1);
+                                                               }];
+                                                               if (successBlock)
+                                                                   successBlock();
+                                                           }
+                                                           failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                                               if (errorBlock)
+                                                                   errorBlock(error);
+                                                           }];
 }
 
 + (void)loadPiecesForStory:(Story *)story withParams:(NSDictionary *)params completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *))errorBlock
 {
-    // Initialize RestKit
-    RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
-    objectManager.managedObjectStore = [RKManagedObjectStore defaultStore];
-    
-    // Response
-    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:[Piece pieceMappingForRK]
-                                                                                            method:RKRequestMethodGET
-                                                                                       pathPattern:nil
-                                                                                           keyPath:@"result.pieces"
-                                                                                       statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
-    
-    [objectManager addResponseDescriptor:responseDescriptor];
-    
-    [objectManager getObjectsAtPath:BANYAN_API_OBJECT_URL(kBNStoryClassKey, story.bnObjectId)
-                         parameters:params
-                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                // Delete all unsaved pieces
-                                NSArray *pieces = [mappingResult array];
-                                if ([story isDeleted] || story.managedObjectContext == nil ) // Don't bother doing anything if story was deleted while fetching pieces
-                                    return;
-                                [pieces enumerateObjectsUsingBlock:^(Piece *piece, NSUInteger idx, BOOL *stop) {
-                                    piece.story = story;
-                                    piece.remoteStatus = RemoteObjectStatusSync;
-                                    piece.lastSynced = [NSDate date];
-                                }];
-                                if (completionBlock)
-                                    completionBlock();
-                            }
-                            failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                if (errorBlock)
-                                    errorBlock(error);
-                            }];
+    NSAssert(false, @"Not implemented yet");
+    [[RKObjectManager sharedManager] getObjectsAtPath:nil
+                                           parameters:params
+                                              success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                                  // Delete all unsaved pieces
+                                                  NSArray *pieces = [mappingResult array];
+                                                  if ([story isDeleted] || story.managedObjectContext == nil ) // Don't bother doing anything if story was deleted while fetching pieces
+                                                      return;
+                                                  [pieces enumerateObjectsUsingBlock:^(Piece *piece, NSUInteger idx, BOOL *stop) {
+                                                      piece.story = story;
+                                                      piece.remoteStatus = RemoteObjectStatusSync;
+                                                      piece.lastSynced = [NSDate date];
+                                                  }];
+                                                  if (completionBlock)
+                                                      completionBlock();
+                                              }
+                                              failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                                  if (errorBlock)
+                                                      errorBlock(error);
+                                              }];
 }
 
 + (void) loadPiecesForStory:(Story *)story completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *error))errorBlock

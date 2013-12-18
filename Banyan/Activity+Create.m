@@ -7,7 +7,6 @@
 //
 
 #import "Activity+Create.h"
-#import "AFBanyanAPIClient.h"
 #import "Story_Defines.h"
 
 @implementation Activity (Create)
@@ -18,38 +17,16 @@
         !([activity.type isEqualToString:kBNActivityTypeFollowUser] || [activity.type isEqualToString:kBNActivityTypeUnfollowUser])) {
         return;
     }
-    RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
-    // For serializing
-    RKObjectMapping *activityMapping = [RKObjectMapping requestMapping];
-    [activityMapping addAttributeMappingsFromArray:@[kBNActivityTypeKey, kBNActivityFromUserKey, kBNActivityToUserKey, kBNActivityPieceKey, kBNActivityStoryKey]];
-    
-    RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor
-                                              requestDescriptorWithMapping:activityMapping
-                                              objectClass:[Activity class]
-                                              rootKeyPath:nil
-                                              method:RKRequestMethodPOST];
-    
-    RKObjectMapping *activityResponseMapping = [RKObjectMapping mappingForClass:[Activity class]];
-    [activityResponseMapping addAttributeMappingsFromDictionary:@{@"id" : @"activityId"}];
-    
-    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:activityResponseMapping
-                                                                                            method:RKRequestMethodPOST
-                                                                                       pathPattern:nil
-                                                                                           keyPath:nil
-                                                                                       statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
-    
-    [objectManager addRequestDescriptor:requestDescriptor];
-    [objectManager addResponseDescriptor:responseDescriptor];
-    
-    [objectManager postObject:activity
-                         path:BANYAN_API_CLASS_URL(@"Activity")
-                   parameters:nil
-                      success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                          activity.initialized = YES;
-                      }
-                      failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                          NSLog(@"Error in create activity");
-                      }];
+
+    [[RKObjectManager sharedManager] postObject:activity
+                                           path:nil
+                                     parameters:nil
+                                        success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                            activity.initialized = YES;
+                                        }
+                                        failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                            NSLog(@"Error in create activity");
+                                        }];
 }
 
 @end
