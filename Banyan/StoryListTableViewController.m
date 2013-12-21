@@ -83,7 +83,7 @@ typedef enum {
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     refreshControl.tintColor = BANYAN_GREEN_COLOR;
-    [refreshControl addTarget:[BanyanConnection class] action:@selector(loadDataSource) forControlEvents:UIControlEventValueChanged];
+    [refreshControl addTarget:[BanyanConnection class] action:@selector(loadDataSource:) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refreshControl;
     
     [self.tableView setRowHeight:TABLE_ROW_HEIGHT];
@@ -100,15 +100,13 @@ typedef enum {
 
     [self prepareForSlidingViewController];
     
-    // Notifications to refresh data
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(foregroundRefresh:)
-                                                 name:AFNetworkingReachabilityDidChangeNotification
-                                               object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(filterStories:)
                                                  name:BNStoryListRefreshedNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:[BanyanConnection class] selector:@selector(loadDataSource:)
+                                                 name:UIApplicationDidBecomeActiveNotification
                                                object:nil];
     
     // Don't need these notifications as FRC delegate will take care of it.
@@ -317,22 +315,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         [self performFetch];
     }
 }
-
--(void)foregroundRefresh:(NSNotification *)notification
-{
-    if ([notification.name isEqualToString:AFNetworkingReachabilityDidChangeNotification]) {
-        // This is only for the initial part when the status of reachability is Unknown.
-        // We don't want to keep getting this notification and refreshing the story table.
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:AFNetworkingReachabilityDidChangeNotification object:nil];
-        if (![[AFBanyanAPIClient sharedClient] isReachable]) {
-            return;
-        }
-    }
-    
-    [self.refreshControl beginRefreshing];
-    [BanyanConnection loadDataSource];
-}
-
 
 #pragma mark Story Manipulations
 - (void) updateStoryInBackgroud:(Story *)story

@@ -26,7 +26,7 @@ typedef enum {
 @property (nonatomic, retain) NSDate * createdAt;
 @property (nonatomic) BOOL isLocationEnabled;
 @property (nonatomic, retain) NSDate * lastSynced;
-@property (nonatomic, retain) BNDuckTypedObject<GooglePlacesObject> * location;
+@property (nonatomic, retain) GooglePlacesObject<GooglePlacesObject> * location;
 @property (nonatomic, retain) NSNumber * remoteStatusNumber;
 @property (nonatomic, retain) NSNumber * primitiveRemoteStatusNumber;
 @property (nonatomic, retain) NSDate * updatedAt;

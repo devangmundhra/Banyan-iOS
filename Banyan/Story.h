@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "RemoteObject.h"
+#import "BNPermissionsObject.h"
 
 @class Piece;
 
@@ -19,12 +20,12 @@
 @property (nonatomic, retain) id contributors;
 @property (nonatomic) BOOL isInvited;
 @property (nonatomic) int16_t length;
-@property (nonatomic, retain) id readAccess;
+@property (nonatomic, retain) BNPermissionsObject<BNPermissionsObject> * readAccess;
 @property (nonatomic) int16_t currentPieceNum;
 @property (nonatomic, retain) NSString * tags;
 @property (nonatomic, retain) NSString * category;
 @property (nonatomic, retain) NSString * title;
-@property (nonatomic, retain) id writeAccess;
+@property (nonatomic, retain) BNPermissionsObject<BNPermissionsObject> * writeAccess;
 @property (nonatomic, retain) NSOrderedSet *pieces;
 @property (nonatomic, retain) NSNumber * uploadStatusNumber;
 @property (nonatomic, retain) NSNumber * primitiveUploadStatusNumber;

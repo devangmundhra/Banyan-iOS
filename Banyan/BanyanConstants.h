@@ -48,14 +48,9 @@ extern NSString *const BNUserDefaultsLastLogin;
 extern NSString *const kBNStoryClassKey;
 
 // Dictionary keys for invitees
-extern NSString *const kBNPermssionsVersion;
-extern NSString *const kBNStoryPrivacyScope;
 extern NSString *const kBNStoryPrivacyScopeInvited;
 extern NSString *const kBNStoryPrivacyScopeLimited;
 extern NSString *const kBNStoryPrivacyScopePublic;
-extern NSString *const kBNStoryPrivacyInviteeList;
-extern NSString *const kBNStoryPrivacyInvitedFacebookFriends;
-extern NSString *const kBNStoryPrivacyInvitedBanyanFriends;
 
 #pragma mark - ManagedObject Piece Class
 // Class key

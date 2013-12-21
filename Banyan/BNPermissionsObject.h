@@ -7,16 +7,34 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BNDuckTypedObject.h"
 
-@interface BNPermissionsObject : NSObject <NSCopying>
 
-+ (BNPermissionsObject *)permissionObject;
-+ (BNPermissionsObject *)permissionObjectWithDictionary:(NSDictionary *)dictionary;
-- (NSString *)stringifyPermissionObject;
-- (NSDictionary *) permissionsDictionary;
+@protocol BNPermissionsInviteeListObject <BNDuckTypedObject>
+@property (assign, nonatomic) NSNumber *isPublic;
+@property (strong, nonatomic) NSMutableArray *facebookFriends;
+@property (strong, nonatomic) NSMutableArray *allFacebookFriendsOf;
+@end
+@interface BNPermissionsInviteeListObject : BNDuckTypedObject <BNPermissionsInviteeListObject>
++ (BNPermissionsInviteeListObject <BNPermissionsInviteeListObject> *)permissionsInviteeListObject;
+@end
 
-@property (nonatomic, retain) NSString *scope;
-@property (nonatomic, retain) NSMutableDictionary *inviteeList;
-@property (nonatomic, retain) NSMutableArray *facebookInvitedList;
+@protocol BNPermissionsObject <BNDuckTypedObject>
+@property (strong, nonatomic) NSNumber *permissionsVersion;
+@property (strong, nonatomic) BNPermissionsInviteeListObject<BNPermissionsInviteeListObject> *inviteeList;
+@end
+
+typedef enum {
+    BNPermissionObjectInvitationLevelAll,
+    BNPermissionObjectInvitationLevelPublic,
+    BNPermissionObjectInvitationLevelFacebookFriendsOf,
+    BNPermissionObjectInvitationLevelSelectedFacebookFriends,
+} BNPermissionObjectInvitationLevel;
+
+@interface BNPermissionsObject : BNDuckTypedObject <BNPermissionsObject>
+
++ (BNPermissionsObject <BNPermissionsObject> *)permissionsObject;
++ (NSString *)longFormattedPermissionObject:(BNPermissionsObject <BNPermissionsObject>*)obj level:(BNPermissionObjectInvitationLevel)level list:(BOOL)list;
++ (NSString *)shortFormattedPermissionObject:(BNPermissionsObject <BNPermissionsObject>*)obj level:(BNPermissionObjectInvitationLevel)level;
 
 @end

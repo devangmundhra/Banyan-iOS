@@ -8,6 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@interface GooglePlacesObjectToDataTransformer : NSValueTransformer
+@interface BNDuckTypedObjectToDataTransformer : NSValueTransformer
 
 @end

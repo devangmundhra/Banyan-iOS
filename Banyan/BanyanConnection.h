@@ -14,7 +14,7 @@
 @interface BanyanConnection : NSObject
 
 + (RKPaginator *) storiesPaginator;
-+ (void) loadDataSource;
++ (void) loadDataSource:(id)sender;
 + (void) loadPiecesForStory:(Story *)story completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *error))errorBlock;
 + (void) loadPiecesForStory:(Story *)story atPieceNumbers:(NSArray *)pieceNumbers completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *error))errorBlock;
 + (void) uploadFailedObjects;

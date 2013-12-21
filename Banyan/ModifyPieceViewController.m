@@ -380,7 +380,7 @@
     if (![self.piece.shortText isEqualToString:self.pieceCaptionView.text])
         self.piece.shortText = self.pieceCaptionView.text;
     
-    self.piece.location = self.addLocationButton.location;
+    self.piece.location = (GooglePlacesObject<GooglePlacesObject>*)self.addLocationButton.location;
     
     // Get the recording from audioRecorder
     NSURL *audioRecording = [self.audioRecorder getRecording];
@@ -442,7 +442,8 @@
     {
         [Piece createNewPiece:self.piece];
         NSUInteger currentPieceNum = [self.piece.story.pieces indexOfObject:self.piece];
-        assert(currentPieceNum != NSNotFound);
+        if (currentPieceNum == NSNotFound)
+            currentPieceNum = self.piece.story.pieces.count;
         self.piece.story.currentPieceNum = currentPieceNum+1;
 
         NSLog(@"New piece %@ saved", self.piece);

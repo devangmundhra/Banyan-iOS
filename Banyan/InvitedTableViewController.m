@@ -13,14 +13,16 @@
 
 @interface InvitedTableViewController () <InvitedFBFriendsViewControllerDelegate>
 
-@property (nonatomic, strong) BNPermissionsObject *viewerPermission;
-@property (nonatomic, strong) BNPermissionsObject *contributorPermission;
+@property (nonatomic, copy) BNPermissionsObject<BNPermissionsObject> *viewerPermission;
+@property (nonatomic, copy) BNPermissionsObject<BNPermissionsObject> *contributorPermission;
+@property (nonatomic, strong) NSDictionary *selfInvitation;
 
 @end
 
 @implementation InvitedTableViewController
 @synthesize viewerPermission = _viewerPermission;
 @synthesize contributorPermission = _contributorPermission;
+@synthesize selfInvitation = _selfInvitation;
 
 typedef enum {
     InvitedTableViewSectionContributor,
@@ -50,7 +52,8 @@ typedef enum {
     return self;
 }
 
-- (id)initWithViewerPermissions:(BNPermissionsObject *)viewerPermission contributorPermission:(BNPermissionsObject *)contributorPermission
+- (id)initWithViewerPermissions:(BNPermissionsObject<BNPermissionsObject> *)viewerPermission
+          contributorPermission:(BNPermissionsObject<BNPermissionsObject> *)contributorPermission
 {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
@@ -59,6 +62,12 @@ typedef enum {
         _contributorPermission = contributorPermission;
         
         self.title = @"Permissions for story";
+        
+        BNSharedUser *currentUser = [BNSharedUser currentUser];
+        NSAssert(currentUser, @"No Current user available when modifying story");
+        self.selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
+                               currentUser.name, @"name",
+                               currentUser.facebookId, @"id", nil];
     }
     return self;
 }
@@ -86,6 +95,54 @@ typedef enum {
 {
     // Return the number of sections.
     return InvitedTableViewSectionMax;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+#define DEFAULT_CELL_HEIGHT 45.0
+#define DEFAULT_SIZE_PER_TEXT_LINE 14.0
+    CGFloat extraRowHeight = 0.0;
+    
+    switch (indexPath.section) {
+        case InvitedTableViewSectionContributor:
+            switch (indexPath.row) {
+                case InvitedTableViewContributorsRowPublic:
+                    break;
+                case InvitedTableViewContributorsRowSelectedFB:
+                    extraRowHeight = self.contributorPermission.inviteeList.facebookFriends.count * DEFAULT_SIZE_PER_TEXT_LINE;
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+            
+        case InvitedTableViewSectionViewer:
+            switch (indexPath.row) {
+                case InvitedTableViewViewersRowPublic:
+                    break;
+                    
+                case InvitedTableViewViewersRowLimitedFB:
+                    extraRowHeight = self.viewerPermission.inviteeList.allFacebookFriendsOf.count * DEFAULT_SIZE_PER_TEXT_LINE;
+                    break;
+                    
+                case InvitedTableViewViewersRowSelectedFB:
+                    extraRowHeight = self.viewerPermission.inviteeList.facebookFriends.count * DEFAULT_SIZE_PER_TEXT_LINE;
+                    break;
+                default:
+                    break;
+            }
+            break;
+            
+        default:
+            break;
+    }
+    
+    // 2009 value below is because of a note in the documentation:
+    // Important: Due to an underlying implementation detail, you should not return values greater than 2009.
+    return MIN(DEFAULT_CELL_HEIGHT + extraRowHeight, 2009);
+#undef DEFAULT_CELL_HEIGHT
+#undef DEFAULT_SIZE_PER_TEXT_LINE
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -137,23 +194,17 @@ typedef enum {
             switch (indexPath.row) {
                 case InvitedTableViewContributorsRowPublic:
                     cell.textLabel.text = @"Public";
-                    if ([self.contributorPermission.scope isEqualToString:kBNStoryPrivacyScopePublic]) {
+                    cell.detailTextLabel.text = [BNPermissionsObject longFormattedPermissionObject:self.contributorPermission level:BNPermissionObjectInvitationLevelPublic list:YES];
+                    if ([self.contributorPermission.inviteeList.isPublic boolValue]) {
                         cell.accessoryType = UITableViewCellAccessoryCheckmark;
-                        cell.detailTextLabel.text = [self.contributorPermission stringifyPermissionObject];
                     } else {
                         cell.accessoryType = UITableViewCellAccessoryNone;
-                        cell.detailTextLabel.text = @"";
                     }
                     break;
                 case InvitedTableViewContributorsRowSelectedFB:
                     cell.textLabel.text = @"Selected Facebook friends";
-                    if ([self.contributorPermission.scope isEqualToString:kBNStoryPrivacyScopeInvited]) {
-                        cell.accessoryType = UITableViewCellAccessoryCheckmark;
-                        cell.detailTextLabel.text = [self.contributorPermission stringifyPermissionObject];
-                    } else {
-                        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                        cell.detailTextLabel.text = @"";
-                    }
+                    cell.detailTextLabel.text = [BNPermissionsObject longFormattedPermissionObject:self.contributorPermission level:BNPermissionObjectInvitationLevelSelectedFacebookFriends list:YES];
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
                     
                 default:
@@ -165,35 +216,28 @@ typedef enum {
             switch (indexPath.row) {
                 case InvitedTableViewViewersRowPublic:
                     cell.textLabel.text = @"Public";
-                    if ([self.viewerPermission.scope isEqualToString:kBNStoryPrivacyScopePublic]) {
+                    cell.detailTextLabel.text = [BNPermissionsObject longFormattedPermissionObject:self.viewerPermission level:BNPermissionObjectInvitationLevelPublic list:YES];
+                    if ([self.viewerPermission.inviteeList.isPublic boolValue]) {
                         cell.accessoryType = UITableViewCellAccessoryCheckmark;
-                        cell.detailTextLabel.text = [self.viewerPermission stringifyPermissionObject];
                     } else {
                         cell.accessoryType = UITableViewCellAccessoryNone;
-                        cell.detailTextLabel.text = @"";
                     }
                     break;
                     
                 case InvitedTableViewViewersRowLimitedFB:
                     cell.textLabel.text = @"All friends on Facebook";
-                    if ([self.viewerPermission.scope isEqualToString:kBNStoryPrivacyScopeLimited]) {
+                    cell.detailTextLabel.text = [BNPermissionsObject longFormattedPermissionObject:self.viewerPermission level:BNPermissionObjectInvitationLevelFacebookFriendsOf list:YES];
+                    if ([self.viewerPermission.inviteeList.allFacebookFriendsOf containsObject:self.selfInvitation]) {
                         cell.accessoryType = UITableViewCellAccessoryCheckmark;
-                        cell.detailTextLabel.text = [self.viewerPermission stringifyPermissionObject];
                     } else {
                         cell.accessoryType = UITableViewCellAccessoryNone;
-                        cell.detailTextLabel.text = @"";
                     }
                     break;
                     
                 case InvitedTableViewViewersRowSelectedFB:
                     cell.textLabel.text = @"Selected Facebook friends";
-                    if ([self.viewerPermission.scope isEqualToString:kBNStoryPrivacyScopeInvited]) {
-                        cell.accessoryType = UITableViewCellAccessoryCheckmark;
-                        cell.detailTextLabel.text = [self.viewerPermission stringifyPermissionObject];
-                    } else {
-                        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                        cell.detailTextLabel.text = @"";
-                    }
+                    cell.detailTextLabel.text = [BNPermissionsObject longFormattedPermissionObject:self.viewerPermission level:BNPermissionObjectInvitationLevelSelectedFacebookFriends list:YES];
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
                 default:
                     break;
@@ -205,13 +249,16 @@ typedef enum {
     }
     cell.textLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:20];
     cell.detailTextLabel.font = [UIFont fontWithName:@"Roboto" size:12];
-    
+    cell.detailTextLabel.textColor = BANYAN_GRAY_COLOR;
+    cell.detailTextLabel.numberOfLines = 0;
+
     // Disable view permissions button if contributor permissions is Public
-    if ([self.contributorPermission.scope isEqualToString:kBNStoryPrivacyScopePublic] && indexPath.section == InvitedTableViewSectionViewer) {
+    if ([self.contributorPermission.inviteeList.isPublic boolValue] && indexPath.section == InvitedTableViewSectionViewer) {
         cell.contentView.alpha = 0.5;
     } else {
         cell.contentView.alpha = 1.0;
     }
+    
     return cell;
 }
 
@@ -220,7 +267,7 @@ typedef enum {
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Disable view permissions button if contributor permissions is Public
-    if ([self.contributorPermission.scope isEqualToString:kBNStoryPrivacyScopePublic] && indexPath.section == InvitedTableViewSectionViewer) {
+    if ([self.contributorPermission.inviteeList.isPublic boolValue] && indexPath.section == InvitedTableViewSectionViewer) {
         return nil;
     }
     return indexPath;
@@ -229,20 +276,18 @@ typedef enum {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     InvitedFBFriendsViewController *vc = nil;
-    BNSharedUser *currentUser = nil;
-    NSDictionary *selfInvitation = nil;
-    NSMutableArray *fbInvitees = nil;
     
     switch (indexPath.section) {
         case InvitedTableViewSectionContributor:
             switch (indexPath.row) {
                 case InvitedTableViewContributorsRowPublic:
-                    self.contributorPermission.scope = kBNStoryPrivacyScopePublic;
-                    self.viewerPermission.scope = kBNStoryPrivacyScopePublic;
+                    self.contributorPermission.inviteeList.isPublic = [NSNumber numberWithBool:!([self.contributorPermission.inviteeList.isPublic boolValue])];
+                    if ([self.contributorPermission.inviteeList.isPublic boolValue]) {
+                        self.viewerPermission.inviteeList.isPublic = [NSNumber numberWithBool:YES];
+                    }
                     break;
                     
                 case InvitedTableViewContributorsRowSelectedFB:
-                    self.contributorPermission.scope = kBNStoryPrivacyScopeInvited;
                     vc = [[InvitedFBFriendsViewController alloc] initWithViewerPermissions:self.viewerPermission contributorPermission:self.contributorPermission];
                     vc.delegate = self;
                     [self.navigationController pushViewController:vc animated:YES];
@@ -256,42 +301,17 @@ typedef enum {
         case InvitedTableViewSectionViewer:
             switch (indexPath.row) {
                 case InvitedTableViewViewersRowPublic:
-                    self.viewerPermission.scope = kBNStoryPrivacyScopePublic;
+                    self.viewerPermission.inviteeList.isPublic  = [NSNumber numberWithBool:![self.viewerPermission.inviteeList.isPublic boolValue]];
                     break;
                     
                 case InvitedTableViewViewersRowLimitedFB:
-                    self.viewerPermission.scope = kBNStoryPrivacyScopeLimited;
-                    currentUser = [BNSharedUser currentUser];
-                    if (HAVE_ASSERTS)
-                        NSAssert(currentUser, @"No Current user available when modifying story");
-                    if (currentUser) {
-                        selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                    currentUser.name, @"name",
-                                                    currentUser.facebookId, @"id", nil];
-                        fbInvitees = self.contributorPermission.facebookInvitedList;
-                        
-                        if (![fbInvitees containsObject:selfInvitation])
-                            [fbInvitees addObject:selfInvitation];
-                        self.viewerPermission.facebookInvitedList = fbInvitees;
-                    }
-
+                    if (![self.viewerPermission.inviteeList.allFacebookFriendsOf containsObject:self.selfInvitation])
+                        [self.viewerPermission.inviteeList.allFacebookFriendsOf addObject:self.selfInvitation];
+                    else
+                        [self.viewerPermission.inviteeList.allFacebookFriendsOf removeObject:self.selfInvitation];
                     break;
                     
                 case InvitedTableViewViewersRowSelectedFB:
-                    self.viewerPermission.scope = kBNStoryPrivacyScopeInvited;
-                    // Remove the self invitation from the list if here
-                    currentUser = [BNSharedUser currentUser];
-                    if (HAVE_ASSERTS)
-                        NSAssert(currentUser, @"No Current user available when modifying story");
-                    if (currentUser) {
-                        selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
-                                          currentUser.name, @"name",
-                                          currentUser.facebookId, @"id", nil];
-                        fbInvitees = self.viewerPermission.facebookInvitedList;
-                        
-                        [fbInvitees removeObject:selfInvitation];
-                        self.viewerPermission.facebookInvitedList = fbInvitees;
-                    }
                     vc = [[InvitedFBFriendsViewController alloc] initWithViewerPermissions:self.viewerPermission
                                                                      contributorPermission:self.contributorPermission];
                     vc.delegate = self;
@@ -328,27 +348,14 @@ typedef enum {
              finishedInvitingForViewers:(NSMutableArray *)selectedViewers
                            contributors:(NSMutableArray *)selectedContributors
 {
-    if ([self.viewerPermission.scope isEqualToString:kBNStoryPrivacyScopeLimited]) {
-        BNSharedUser *currentUser = [BNSharedUser currentUser];
-        if (HAVE_ASSERTS)
-            NSAssert(currentUser, @"No Current user available when modifying story");
-        if (currentUser) {
-            NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
-                                            currentUser.name, @"name",
-                                            currentUser.facebookId, @"id", nil];
-            if (![selectedViewers containsObject:selfInvitation])
-                [selectedViewers addObject:selfInvitation];
-            
-        }
-    }
     // Add the names of contributors to viewing as well
     for (NSDictionary *friend in selectedContributors) {
         if (![selectedViewers containsObject:friend]) {
             [selectedViewers addObject:friend];
         }
     }
-    self.viewerPermission.facebookInvitedList = selectedViewers;
-    self.contributorPermission.facebookInvitedList = selectedContributors;
+    self.viewerPermission.inviteeList.facebookFriends = selectedViewers;
+    self.contributorPermission.inviteeList.facebookFriends = selectedContributors;
     [self.tableView reloadData];
 }
 

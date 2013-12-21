@@ -6,10 +6,10 @@
 //
 //
 
-#import "GooglePlacesObjectToDataTransformer.h"
-#import "GooglePlacesObject.h"
+#import "BNDuckTypedObjectToDataTransformer.h"
+#import "BNDuckTypedObject.h"
 
-@implementation GooglePlacesObjectToDataTransformer
+@implementation BNDuckTypedObjectToDataTransformer
 
 + (BOOL)allowsReverseTransformation
 {

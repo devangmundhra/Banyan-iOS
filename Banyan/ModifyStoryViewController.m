@@ -32,8 +32,8 @@
 @property (strong, nonatomic) IBOutlet UIButton *inviteContactsButton;
 
 
-@property (strong, nonatomic) BNPermissionsObject *writeAccessList;
-@property (strong, nonatomic) BNPermissionsObject *readAccessList;
+@property (strong, nonatomic) BNPermissionsObject<BNPermissionsObject> *writeAccessList;
+@property (strong, nonatomic) BNPermissionsObject<BNPermissionsObject> *readAccessList;
 
 @property (nonatomic) ModifyStoryViewControllerEditMode editMode;
 @property (strong, nonatomic) Story *backupStory_;
@@ -66,8 +66,7 @@
         // Custom initialization
         // this should never be called directly.
         // initWithStory should be called instead
-        if (HAVE_ASSERTS)
-            assert(false);
+        NSAssert(false, @"Use initWithStory");
     }
     return self;
 }
@@ -100,16 +99,15 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
-    if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
-        self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     
     [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done:)]];
     [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
     
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
-    [self.scrollView setContentSize:self.view.bounds.size];
-    self.scrollView.scrollEnabled = NO;
+    self.scrollView.scrollEnabled = YES;
+    self.scrollView.showsVerticalScrollIndicator = NO;
     [self.view addSubview:self.scrollView];
     
     CGRect frame = self.scrollView.bounds;
@@ -163,12 +161,10 @@
     [self.invitationView addSubview:self.inviteContactsButton];
     
     // Default is selected permissions for writers
-    self.writeAccessList = [BNPermissionsObject permissionObject];
-    self.writeAccessList.scope = kBNStoryPrivacyScopeInvited;
+    self.writeAccessList = [BNPermissionsObject permissionsObject];
 
     // Default is limited permissions for viewers
-    self.readAccessList = [BNPermissionsObject permissionObject];
-    self.readAccessList.scope = kBNStoryPrivacyScopeLimited;
+    self.readAccessList = [BNPermissionsObject permissionsObject];
     BNSharedUser *currentUser = [BNSharedUser currentUser];
     if (HAVE_ASSERTS)
         NSAssert(currentUser, @"No Current user available when modifying story");
@@ -176,16 +172,16 @@
         NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
                                         currentUser.name, @"name",
                                         currentUser.facebookId, @"id", nil];
-        self.readAccessList.facebookInvitedList = [NSMutableArray arrayWithObject:selfInvitation];
+        [self.readAccessList.inviteeList.allFacebookFriendsOf addObject:selfInvitation];
     }
-
+    
     if (self.editMode == ModifyStoryViewControllerEditModeEdit) {
         // Set the title and permissions
         self.storyTitleTextField.text = self.story.title;
         // Contributors
-        self.writeAccessList = [BNPermissionsObject permissionObjectWithDictionary:self.story.writeAccess];
+        self.writeAccessList = self.story.writeAccess;
         // Viewers
-        self.readAccessList = [BNPermissionsObject permissionObjectWithDictionary:self.story.readAccess];
+        self.readAccessList = self.story.readAccess;
         
         self.title = @"Edit Story";
     } else {
@@ -205,8 +201,8 @@
 
 - (void) inviteContacts:(id)sender
 {
-    InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] initWithViewerPermissions:[self.readAccessList copy]
-                                                                                                     contributorPermission:[self.writeAccessList copy]];
+    InvitedTableViewController *invitedTableViewController = [[InvitedTableViewController alloc] initWithViewerPermissions:self.readAccessList
+                                                                                                     contributorPermission:self.writeAccessList];
     invitedTableViewController.delegate = self;
     [self presentViewController:[[UINavigationController alloc] initWithRootViewController:invitedTableViewController] animated:YES completion:nil];
 }
@@ -233,8 +229,8 @@
     self.story.title = (self.storyTitleTextField.text && ![self.storyTitleTextField.text isEqualToString:@""]) ? self.storyTitleTextField.text : [BNMisc longCurrentDate];
     
     // Story Privacy
-    self.story.writeAccess = [self.writeAccessList permissionsDictionary];
-    self.story.readAccess = [self.readAccessList permissionsDictionary];
+    self.story.writeAccess = self.writeAccessList;
+    self.story.readAccess = self.readAccessList;
     
     // Upload Story
     if (self.editMode == ModifyStoryViewControllerEditModeAdd) {
@@ -275,8 +271,10 @@
 # pragma mark Instance methods
 - (void) updatePermissionTextInView
 {
-    NSString *permStr = [NSString stringWithFormat:@"%@ can contribute to the story.\r%@ can view the story.",
-                         [self.writeAccessList stringifyPermissionObject], [self.readAccessList stringifyPermissionObject]];
+    NSString *writeAccessStr = [BNPermissionsObject shortFormattedPermissionObject:self.writeAccessList level:BNPermissionObjectInvitationLevelAll];
+    NSString *readAccessStr = [BNPermissionsObject shortFormattedPermissionObject:self.readAccessList level:BNPermissionObjectInvitationLevelAll];
+    
+    NSString *permStr = [NSString stringWithFormat:@"%@ can contribute to this story.\r%@ can view this story.", writeAccessStr, readAccessStr];
     NSMutableAttributedString *labelStr =[[NSMutableAttributedString alloc] initWithString:@"Who can contribute or view the story?"
                                                                                 attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
                                                                                              NSForegroundColorAttributeName: [UIColor grayColor]}];
@@ -287,19 +285,19 @@
     NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] initWithString:permStr
                                                                              attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:12]}];
     [attr setAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:14]}
-                  range:[permStr rangeOfString:[self.writeAccessList stringifyPermissionObject]]];
+                  range:[permStr rangeOfString:writeAccessStr]];
     [attr setAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:14]}
-                  range:[permStr rangeOfString:[NSString stringWithFormat:@"\r%@", [self.readAccessList stringifyPermissionObject]]]];
+                  range:[permStr rangeOfString:[NSString stringWithFormat:@"\r%@", readAccessStr]]];
 
     [labelStr appendAttributedString:attr];
     [self.inviteeLabel setAttributedText:labelStr];
 
-    CGSize expectedSize = [labelStr boundingRectWithSize:self.scrollView.bounds.size
+    CGSize expectedSize = [labelStr boundingRectWithSize:CGSizeMake(CGRectGetWidth(self.inviteeLabel.frame)-2*TEXT_INSETS, CGFLOAT_MAX)
                                              options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin
                                              context:nil].size;
     
     CGRect frame = self.inviteeLabel.frame;
-    frame.size.height = ceilf(expectedSize.height) + 2*TEXT_INSETS + 2*TEXT_INSETS;
+    frame.size.height = ceilf(expectedSize.height) + 2*TEXT_INSETS;
     self.inviteeLabel.frame = frame;
     
     frame = self.inviteContactsButton.frame;
@@ -309,6 +307,11 @@
     frame = self.invitationView.frame;
     frame.size.height = CGRectGetHeight(self.inviteeLabel.frame) + CGRectGetHeight(self.inviteContactsButton.frame);
     self.invitationView.frame = frame;
+    
+    CGSize scrollSize = self.view.bounds.size;
+    frame = [self.invitationView convertRect:self.invitationView.bounds toView:self.view];
+    scrollSize.height = CGRectGetMaxY(frame) + CGRectGetMaxY(self.navigationController.navigationBar.frame);
+    self.scrollView.contentSize = scrollSize;
 }
 
 -(void)didTapAnywhere: (UITapGestureRecognizer*) recognizer

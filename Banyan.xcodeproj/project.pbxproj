@@ -190,7 +190,7 @@
 		51BDA27817434F4600BD2C19 /* progressBar.png in Resources */ = {isa = PBXBuildFile; fileRef = 51BDA27617434F4600BD2C19 /* progressBar.png */; };
 		51BDA27917434F4600BD2C19 /* progressBar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51BDA27717434F4600BD2C19 /* progressBar@2x.png */; };
 		51BDA27F1743821400BD2C19 /* Media.m in Sources */ = {isa = PBXBuildFile; fileRef = 51BDA27E1743821400BD2C19 /* Media.m */; };
-		51C4252D1826DFF100AF90C1 /* GooglePlacesObjectToDataTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C4252C1826DFF100AF90C1 /* GooglePlacesObjectToDataTransformer.m */; };
+		51C4252D1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C4252C1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.m */; };
 		51C4253018270CF900AF90C1 /* BNDuckTypedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C4252F18270CF900AF90C1 /* BNDuckTypedObject.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		51C425351827991900AF90C1 /* GooglePlacesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C425341827991900AF90C1 /* GooglePlacesCell.m */; };
 		51C4253A1828E15100AF90C1 /* NextStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C425381828E15100AF90C1 /* NextStoryViewController.m */; };
@@ -517,8 +517,8 @@
 		51BDA27717434F4600BD2C19 /* progressBar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progressBar@2x.png"; sourceTree = "<group>"; };
 		51BDA27D1743821400BD2C19 /* Media.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Media.h; path = Banyan/Media.h; sourceTree = "<group>"; };
 		51BDA27E1743821400BD2C19 /* Media.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Media.m; path = Banyan/Media.m; sourceTree = "<group>"; };
-		51C4252B1826DFF100AF90C1 /* GooglePlacesObjectToDataTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GooglePlacesObjectToDataTransformer.h; path = Banyan/GooglePlacesObjectToDataTransformer.h; sourceTree = "<group>"; };
-		51C4252C1826DFF100AF90C1 /* GooglePlacesObjectToDataTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GooglePlacesObjectToDataTransformer.m; path = Banyan/GooglePlacesObjectToDataTransformer.m; sourceTree = "<group>"; };
+		51C4252B1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNDuckTypedObjectToDataTransformer.h; path = Banyan/BNDuckTypedObjectToDataTransformer.h; sourceTree = "<group>"; };
+		51C4252C1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNDuckTypedObjectToDataTransformer.m; path = Banyan/BNDuckTypedObjectToDataTransformer.m; sourceTree = "<group>"; };
 		51C4252E18270CF900AF90C1 /* BNDuckTypedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNDuckTypedObject.h; path = Banyan/BNDuckTypedObject.h; sourceTree = "<group>"; };
 		51C4252F18270CF900AF90C1 /* BNDuckTypedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNDuckTypedObject.m; path = Banyan/BNDuckTypedObject.m; sourceTree = "<group>"; };
 		51C425331827991900AF90C1 /* GooglePlacesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GooglePlacesCell.h; path = Banyan/GooglePlacesCell.h; sourceTree = "<group>"; };
@@ -1618,8 +1618,8 @@
 				5189B2DC15B395F300562DD0 /* ImageToDataTransformer.m */,
 				51FAC0BA172F8C500046C2D6 /* FBGraphObjectToDataTransformer.h */,
 				51FAC0BB172F8C500046C2D6 /* FBGraphObjectToDataTransformer.m */,
-				51C4252B1826DFF100AF90C1 /* GooglePlacesObjectToDataTransformer.h */,
-				51C4252C1826DFF100AF90C1 /* GooglePlacesObjectToDataTransformer.m */,
+				51C4252B1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.h */,
+				51C4252C1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.m */,
 			);
 			name = "Value Transformers";
 			sourceTree = "<group>";
@@ -1876,7 +1876,7 @@
 				514CDF68181509B70098B0A9 /* AVCamViewController.m in Sources */,
 				510787D5163A37190042B436 /* Activity.m in Sources */,
 				5157CD031650902900C22CCE /* BanyanConnection.m in Sources */,
-				51C4252D1826DFF100AF90C1 /* GooglePlacesObjectToDataTransformer.m in Sources */,
+				51C4252D1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.m in Sources */,
 				51F86242185A3A110037D576 /* StoryOverviewController.m in Sources */,
 				51E9B2C6181F8F88004B35A5 /* BNTextField.m in Sources */,
 				514CDF5B18131F410098B0A9 /* InvitedFBFriendsViewController.m in Sources */,

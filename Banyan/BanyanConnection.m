@@ -131,9 +131,9 @@
 + (void) userLoginStatusChanged:(NSNotification *)notification
 {
     if ([[notification name] isEqualToString:BNUserLogOutNotification]) {
-        [self loadDataSource];
+        [self loadDataSource:notification];
     } else if ([[notification name] isEqualToString:BNUserLogInNotification]) {
-        [self loadDataSource];
+        [self loadDataSource:notification];
     } else {
         NSLog(@"%s Unknown notification %@", __PRETTY_FUNCTION__, [notification name]);
     }
@@ -237,18 +237,23 @@
     return _storiesPaginator;
 }
 
-+ (void) loadDataSource
+//if ([notification.name isEqualToString:AFNetworkingReachabilityDidChangeNotification]) {
+
++ (void) loadDataSource:(id)sender
 {
 //    [[self storiesPaginator] loadPage:1];
 //    return;
     
     if ([RemoteObject numRemoteObjectsWithPendingChanges]) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Cannot refresh stories"
-                                                        message:@"Some of the changes that you have done are still being uploaded.\rPlease refresh the stories once all the changes have been synchronized."
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
+        // If the notification is through any kind of notification, ignore showing the alert
+        if (![sender isKindOfClass:[NSNotification class]]) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Cannot refresh stories"
+                                                            message:@"Some of the changes that you have done are still being uploaded.\rPlease refresh the stories once all the changes have been synchronized."
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+        }
         [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
                                                             object:self];
         NSLog(@"%s loadDataSource skipped", __PRETTY_FUNCTION__);

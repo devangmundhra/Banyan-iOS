@@ -15,14 +15,15 @@
 @protocol InvitedTableViewControllerDelegate <NSObject>
 
 - (void) invitedTableViewController:(InvitedTableViewController *)invitedTableViewController
-         finishedInvitingForViewerPermissions:(BNPermissionsObject *)viewerPermissions
-                       contributorPermissions:(BNPermissionsObject *)contributorPermissions;
+         finishedInvitingForViewerPermissions:(BNPermissionsObject<BNPermissionsObject> *)viewerPermissions
+                       contributorPermissions:(BNPermissionsObject<BNPermissionsObject> *)contributorPermissions;
 @end
 
 @interface InvitedTableViewController : UITableViewController <InvitedFBFriendsViewControllerDelegate>
 
 @property (nonatomic, weak) id<InvitedTableViewControllerDelegate> delegate;
 
-- (id)initWithViewerPermissions:(BNPermissionsObject *)viewerPermission contributorPermission:(BNPermissionsObject *)contributorPermission;
+- (id)initWithViewerPermissions:(BNPermissionsObject<BNPermissionsObject> *)viewerPermission
+          contributorPermission:(BNPermissionsObject<BNPermissionsObject> *)contributorPermission;
 
 @end

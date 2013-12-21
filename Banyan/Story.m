@@ -254,7 +254,7 @@
                                                        delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     [alertView show];
     
-    NSArray *contributorsList = [self storyContributors];
+    NSArray *contributorsList = self.writeAccess.inviteeList.facebookFriends;
     
     NSMutableArray *fbIds = [NSMutableArray arrayWithCapacity:1];
     for (NSDictionary *contributor in contributorsList)
@@ -345,6 +345,18 @@
         return [BNMisc genRandStringLength:10];
 }
 
+#pragma mark-
+#pragma mark RestKit dynamic mapping
+- (BOOL)validateReadAccess:(id *)ioValue error:(NSError **)outError
+{
+    *ioValue = [BNDuckTypedObject duckTypedObjectWrappingDictionary:*ioValue];
+    return YES;
+}
+- (BOOL)validateWriteAccess:(id *)ioValue error:(NSError **)outError
+{
+    *ioValue = [BNDuckTypedObject duckTypedObjectWrappingDictionary:*ioValue];
+    return YES;
+}
 @end
 
 @implementation Story (CoreDataGeneratedAccessors)

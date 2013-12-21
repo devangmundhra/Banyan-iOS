@@ -8,143 +8,281 @@
 
 #import "BNPermissionsObject.h"
 
-#define permissionVersionString @"1.0"
+#define permissionVersionNumber @1
 
-@interface BNPermissionsObject ()
-@property (strong, nonatomic) NSMutableDictionary *dataObj;
+@interface BNPermissionsObject (InternalMethods)
+
++ (NSString *)formattedPermissionObjectForPublic:(BNPermissionsObject <BNPermissionsObject>*)obj;
++ (NSString *)longFormattedPermissionObjectForAllFBFriendsOf:(BNPermissionsObject <BNPermissionsObject>*)obj
+                                         middleSeperator:(NSString *)middleSeperator lastItemSeperator:(NSString *)lastItemSeperator;
++ (NSString *)longFormattedPermissionObjectForFBFriends:(BNPermissionsObject <BNPermissionsObject>*)obj
+                                    middleSeperator:(NSString *)middleSeperator lastItemSeperator:(NSString *)lastItemSeperator;
++ (NSString *)shortFormattedPermissionObjectForAllFBFriendsOf:(BNPermissionsObject <BNPermissionsObject>*)obj;
++ (NSString *)shortFormattedPermissionObjectForFBFriends:(BNPermissionsObject <BNPermissionsObject>*)obj;
 @end
 
 @implementation BNPermissionsObject
-@synthesize dataObj = _dataObj;
+@synthesize inviteeList;
+@synthesize permissionsVersion;
+
++ (BNPermissionsObject <BNPermissionsObject> *)permissionsObject
+{
+    BNPermissionsObject<BNPermissionsObject> *obj = (BNPermissionsObject<BNPermissionsObject> *)[BNDuckTypedObject duckTypedObject];
+    obj.permissionsVersion = permissionVersionNumber;
+    obj.inviteeList = [BNPermissionsInviteeListObject permissionsInviteeListObject];
+    return obj;
+}
 
 - (id)init
 {
     self = [super init];
     if (self) {
-        _dataObj = [NSMutableDictionary dictionary];
+        NSAssert(false, @"User [BNPermissionsObject permissionObject for new objects");
     }
     return self;
 }
 
-+ (BNPermissionsObject *)permissionObject
-{
-    BNPermissionsObject *permObj = [[BNPermissionsObject alloc] init];
-    [permObj.dataObj setObject:permissionVersionString forKey:kBNPermssionsVersion];
-    return permObj;
-}
 
-+ (BNPermissionsObject *)permissionObjectWithDictionary:(NSDictionary *)dictionary
++ (NSString *)longFormattedPermissionObject:(BNPermissionsObject <BNPermissionsObject>*)obj level:(BNPermissionObjectInvitationLevel)level list:(BOOL)list
 {
-    BNPermissionsObject *permObj = [[BNPermissionsObject alloc] init];
-    [permObj.dataObj setDictionary:dictionary];
-    [permObj.dataObj setObject:permissionVersionString forKey:kBNPermssionsVersion];
-    return permObj;
-}
-
-- (NSDictionary *)permissionsDictionary
-{
-    return [self.dataObj copy];
-}
-
-- (NSString *)scope
-{
-    return [self.dataObj objectForKey:kBNStoryPrivacyScope];
-}
-
-- (void)setScope:(NSString *)scope
-{
-    [self.dataObj setObject:scope forKey:kBNStoryPrivacyScope];
-}
-
-- (NSMutableDictionary *)inviteeList
-{
-    if ([[self.dataObj allKeys] containsObject:kBNStoryPrivacyInviteeList])
-        return [[self.dataObj objectForKey:kBNStoryPrivacyInviteeList] mutableCopy];
-    else
-        return [NSMutableDictionary dictionary];
-}
-
-- (void)setInviteeList:(NSMutableDictionary *)inviteeList
-{
-    if (inviteeList)
-        [self.dataObj setObject:inviteeList forKey:kBNStoryPrivacyInviteeList];
-    else
-        [self.dataObj removeObjectForKey:kBNStoryPrivacyInviteeList];
-}
-
-- (NSMutableArray *)facebookInvitedList
-{
-    if ([[self.inviteeList allKeys] containsObject:kBNStoryPrivacyInvitedFacebookFriends])
-        return [[self.inviteeList objectForKey:kBNStoryPrivacyInvitedFacebookFriends] mutableCopy];
-    else
-        return [NSMutableArray array];
-}
-
-- (void)setFacebookInvitedList:(NSMutableArray *)facebookInvitedList
-{
-    NSMutableDictionary *inviteeList = self.inviteeList;
-    if (facebookInvitedList)
-        [inviteeList setObject:facebookInvitedList forKey:kBNStoryPrivacyInvitedFacebookFriends];
-    else
-        [inviteeList removeObjectForKey:kBNStoryPrivacyInvitedFacebookFriends];
-    self.inviteeList = inviteeList;
-}
-
-- (NSString *)stringifyPermissionObject
-{
-    if ([self.scope isEqualToString:kBNStoryPrivacyScopePublic]) {
-        return @"Any one";
-    } else if ([self.scope isEqualToString:kBNStoryPrivacyScopeLimited]) {
-        // We invite friends of people in the invitee list
-        NSUInteger lenghtOfFBInviteeList = self.facebookInvitedList.count;
-        if (!lenghtOfFBInviteeList)
-            return @"No one";
-        
-        NSMutableString *permissionStr = [NSMutableString stringWithFormat:@"Facebook friends of "];
-        [self.facebookInvitedList enumerateObjectsUsingBlock:^(NSDictionary *invitee, NSUInteger idx, BOOL *stop) {
-            [permissionStr appendString:[invitee objectForKey:@"name"]];
-            if (lenghtOfFBInviteeList > 1) {
-                if (idx + 1 == lenghtOfFBInviteeList - 1) {
-                    [permissionStr appendString:@" and "];
-                } else if (idx < lenghtOfFBInviteeList - 1) {
-                    [permissionStr appendString:@" , "];
-                }
-            }
-        }];
-        return permissionStr;
-    } else if ([self.scope isEqualToString:kBNStoryPrivacyScopeInvited]) {
-        // We invite the people in the invite list
-        NSUInteger lenghtOfFBInviteeList = self.facebookInvitedList.count;
-        if (!lenghtOfFBInviteeList)
-            return @"No one";
-        
-        NSMutableString *permissionStr = [NSMutableString string];
-        [self.facebookInvitedList enumerateObjectsUsingBlock:^(NSDictionary *invitee, NSUInteger idx, BOOL *stop) {
-            [permissionStr appendString:[invitee objectForKey:@"name"]];
-            if (lenghtOfFBInviteeList > 1) {
-                if (idx + 1 == lenghtOfFBInviteeList - 1) {
-                    [permissionStr appendString:@" and "];
-                } else if (idx < lenghtOfFBInviteeList - 1) {
-                    [permissionStr appendString:@" , "];
-                }
-            }
-        }];
-        return permissionStr;
+    NSString *middleSeperator = nil;
+    NSString *lastSeperator = nil;
+    NSString *localPermissionsStrPublic = nil;
+    NSString *localPermissionStrAllFbOf = nil;
+    NSString *localPermissionStrSelectedFb = nil;
+    NSMutableString *permissionStr = nil;
+    
+    if (list) {
+        middleSeperator = @"\r";
+        lastSeperator = @"\r";
     } else {
-        NSLog(@"Unknown story permission scope");
+        middleSeperator = @", ";
+        lastSeperator = @" and ";
     }
-    return @"No one";
+
+    switch (level) {
+        case BNPermissionObjectInvitationLevelPublic:
+            return [self formattedPermissionObjectForPublic:obj];
+            break;
+            
+        case BNPermissionObjectInvitationLevelFacebookFriendsOf:
+            return [self longFormattedPermissionObjectForAllFBFriendsOf:obj middleSeperator:middleSeperator lastItemSeperator:lastSeperator];
+            break;
+            
+        case BNPermissionObjectInvitationLevelSelectedFacebookFriends:
+            return [self longFormattedPermissionObjectForFBFriends:obj middleSeperator:middleSeperator lastItemSeperator:lastSeperator];
+            break;
+            
+        case BNPermissionObjectInvitationLevelAll:
+            localPermissionsStrPublic = [self formattedPermissionObjectForPublic:obj];
+            
+            if (localPermissionsStrPublic) {
+                return localPermissionsStrPublic;
+            }
+            
+            localPermissionStrAllFbOf = [self longFormattedPermissionObjectForAllFBFriendsOf:obj middleSeperator:middleSeperator lastItemSeperator:lastSeperator];
+            localPermissionStrSelectedFb = [self longFormattedPermissionObjectForFBFriends:obj middleSeperator:middleSeperator lastItemSeperator:lastSeperator];
+            if (localPermissionStrAllFbOf || localPermissionStrSelectedFb) {
+                if (localPermissionStrSelectedFb && localPermissionStrAllFbOf) {
+                    permissionStr = [NSMutableString stringWithFormat:@"%@ including %@", localPermissionStrAllFbOf, localPermissionStrSelectedFb];
+                } else if (localPermissionStrAllFbOf) {
+                    permissionStr = [NSMutableString stringWithString:localPermissionStrAllFbOf];
+                } else if (localPermissionStrSelectedFb) {
+                    permissionStr = [NSMutableString stringWithString:localPermissionStrSelectedFb];
+                } else {
+                    NSAssert(false, @"There should have been atleast some one with permission if we are here");
+                }
+            } else {
+                permissionStr = [NSMutableString stringWithFormat:@"No one"];
+            }
+            return [permissionStr copy];
+            break;
+            
+        default:
+            return @"No one";
+            break;
+    }
 }
 
-- (NSString *)description
++ (NSString *)shortFormattedPermissionObject:(BNPermissionsObject <BNPermissionsObject>*)obj level:(BNPermissionObjectInvitationLevel)level
 {
-    return [self stringifyPermissionObject];
+    // Logic of shortFormatting: If there is 1 or 2 names, list them, otherwise list the two names and then say "and n others"
+    
+    // If there is public permission, then just show that
+    NSString *localPermissionsStrPublic = nil;
+    NSString *localPermissionStrAllFbOf = nil;
+    NSString *localPermissionStrSelectedFb = nil;
+    NSMutableString *permissionStr = nil;
+    
+    switch (level) {
+        case BNPermissionObjectInvitationLevelPublic:
+            return [self formattedPermissionObjectForPublic:obj];
+            break;
+            
+        case BNPermissionObjectInvitationLevelFacebookFriendsOf:
+            return [self shortFormattedPermissionObjectForAllFBFriendsOf:obj];
+            break;
+            
+        case BNPermissionObjectInvitationLevelSelectedFacebookFriends:
+            return [self shortFormattedPermissionObjectForFBFriends:obj];
+            break;
+            
+        case BNPermissionObjectInvitationLevelAll:
+            localPermissionsStrPublic = [self formattedPermissionObjectForPublic:obj];
+            
+            if (localPermissionsStrPublic) {
+                return localPermissionsStrPublic;
+            }
+            
+            localPermissionStrAllFbOf = [self shortFormattedPermissionObjectForAllFBFriendsOf:obj];
+            localPermissionStrSelectedFb = [self shortFormattedPermissionObjectForFBFriends:obj];
+            if (localPermissionStrAllFbOf || localPermissionStrSelectedFb) {
+                if (localPermissionStrSelectedFb && localPermissionStrAllFbOf) {
+                    permissionStr = [NSMutableString stringWithFormat:@"%@ including %@", localPermissionStrAllFbOf, localPermissionStrSelectedFb];
+                } else if (localPermissionStrAllFbOf) {
+                    permissionStr = [NSMutableString stringWithString:localPermissionStrAllFbOf];
+                } else if (localPermissionStrSelectedFb) {
+                    permissionStr = [NSMutableString stringWithString:localPermissionStrSelectedFb];
+                } else {
+                    NSAssert(false, @"There should have been atleast some one with permission if we are here");
+                }
+            } else {
+                permissionStr = [NSMutableString stringWithFormat:@"No one"];
+            }
+            return [permissionStr copy];
+            break;
+            
+        default:
+            return @"No one";
+            break;
+    }
 }
 
-# pragma mark NSCopying Protocol
-- (id)copyWithZone:(NSZone *)zone
+@end
+
+@implementation BNPermissionsObject (InternalMethods)
+
++ (NSString *)formattedPermissionObjectForPublic:(BNPermissionsObject <BNPermissionsObject>*)obj
 {
-    id copy = [BNPermissionsObject permissionObjectWithDictionary:self.dataObj];
-    return copy;
+    if ([obj.inviteeList.isPublic boolValue]) {
+        return @"Any one";
+    } else {
+        return nil;
+    }
 }
+
++ (NSString *)longFormattedPermissionObjectForAllFBFriendsOf:(BNPermissionsObject <BNPermissionsObject>*)obj
+                                         middleSeperator:(NSString *)middleSeperator lastItemSeperator:(NSString *)lastItemSeperator
+{
+    NSUInteger lenghtOfFBInviteeList;
+    if ((lenghtOfFBInviteeList = obj.inviteeList.allFacebookFriendsOf.count) > 0) {
+        NSMutableString *localPermissionStrAllFbOf = nil;
+        localPermissionStrAllFbOf = [NSMutableString stringWithFormat:@"Facebook friends of "];
+        [obj.inviteeList.allFacebookFriendsOf enumerateObjectsUsingBlock:^(NSDictionary *invitee, NSUInteger idx, BOOL *stop) {
+            [localPermissionStrAllFbOf appendString:[invitee objectForKey:@"name"]];
+            if (lenghtOfFBInviteeList > 1) {
+                if (idx + 1 == lenghtOfFBInviteeList - 1) {
+                    [localPermissionStrAllFbOf appendString:lastItemSeperator];
+                } else if (idx < lenghtOfFBInviteeList - 1) {
+                    [localPermissionStrAllFbOf appendString:middleSeperator];
+                }
+            }
+        }];
+        return [localPermissionStrAllFbOf copy];
+    } else {
+        return nil;
+    }
+}
+
++ (NSString *)longFormattedPermissionObjectForFBFriends:(BNPermissionsObject <BNPermissionsObject>*)obj
+                                    middleSeperator:(NSString *)middleSeperator lastItemSeperator:(NSString *)lastItemSeperator
+{
+    NSUInteger lenghtOfFBInviteeList;
+    if ((lenghtOfFBInviteeList = obj.inviteeList.facebookFriends.count) > 0) {
+        NSMutableString *localPermissionStrSelectedFb = nil;
+        localPermissionStrSelectedFb = [NSMutableString string];
+        [obj.inviteeList.facebookFriends enumerateObjectsUsingBlock:^(NSDictionary *invitee, NSUInteger idx, BOOL *stop) {
+            [localPermissionStrSelectedFb appendString:[invitee objectForKey:@"name"]];
+            if (lenghtOfFBInviteeList > 1) {
+                if (idx + 1 == lenghtOfFBInviteeList - 1) {
+                    [localPermissionStrSelectedFb appendString:lastItemSeperator];
+                } else if (idx < lenghtOfFBInviteeList - 1) {
+                    [localPermissionStrSelectedFb appendString:middleSeperator];
+                }
+            }
+        }];
+        return [localPermissionStrSelectedFb copy];
+    } else {
+        return nil;
+    }
+}
+
+
++ (NSString *)shortFormattedPermissionObjectForAllFBFriendsOf:(BNPermissionsObject <BNPermissionsObject>*)obj
+{
+    NSUInteger lenghtOfFBInviteeList;
+    if ((lenghtOfFBInviteeList = obj.inviteeList.allFacebookFriendsOf.count) > 0) {
+        NSMutableString *localPermissionStrAllFbOf = nil;
+        localPermissionStrAllFbOf = [NSMutableString stringWithFormat:@"Facebook friends of "];
+        [obj.inviteeList.allFacebookFriendsOf enumerateObjectsUsingBlock:^(NSDictionary *invitee, NSUInteger idx, BOOL *stop) {
+            [localPermissionStrAllFbOf appendString:[invitee objectForKey:@"name"]];
+            if ((lenghtOfFBInviteeList == 2) && (idx == 0)) {
+                [localPermissionStrAllFbOf appendString:@" and "];
+            } else if ((lenghtOfFBInviteeList > 2) && (idx == 0)) {
+                [localPermissionStrAllFbOf appendString:@", "];
+            } else if ((lenghtOfFBInviteeList > 2) && (idx == 1)) {
+                [localPermissionStrAllFbOf appendString:[NSString stringWithFormat:@" and %d more", lenghtOfFBInviteeList-idx-1]];
+                *stop = YES;
+            } else {
+                // The length was one, so nothing to do
+            }
+        }];
+        return [localPermissionStrAllFbOf copy];
+    } else {
+        return nil;
+    }
+}
+
++ (NSString *)shortFormattedPermissionObjectForFBFriends:(BNPermissionsObject <BNPermissionsObject>*)obj
+{
+    NSUInteger lenghtOfFBInviteeList;
+    if ((lenghtOfFBInviteeList = obj.inviteeList.facebookFriends.count) > 0) {
+        NSMutableString *localPermissionStrSelectedFb = nil;
+        localPermissionStrSelectedFb = [NSMutableString string];
+        [obj.inviteeList.facebookFriends enumerateObjectsUsingBlock:^(NSDictionary *invitee, NSUInteger idx, BOOL *stop) {
+            [localPermissionStrSelectedFb appendString:[invitee objectForKey:@"name"]];
+            if ((lenghtOfFBInviteeList == 2) && (idx == 0)) {
+                [localPermissionStrSelectedFb appendString:@" and "];
+            } else if ((lenghtOfFBInviteeList > 2) && (idx == 0)) {
+                [localPermissionStrSelectedFb appendString:@", "];
+            } else if ((lenghtOfFBInviteeList > 2) && (idx == 1)) {
+                [localPermissionStrSelectedFb appendString:[NSString stringWithFormat:@" and %d more", lenghtOfFBInviteeList-idx-1]];
+                *stop = YES;
+            } else {
+                // The length was one, so nothing to do
+            }
+        }];
+        return [localPermissionStrSelectedFb copy];
+    } else {
+        return nil;
+    }
+}
+
+
+@end
+
+@implementation BNPermissionsInviteeListObject
+@synthesize facebookFriends;
+@synthesize allFacebookFriendsOf;
+@synthesize isPublic;
+
++ (BNPermissionsInviteeListObject <BNPermissionsInviteeListObject> *)permissionsInviteeListObject
+{
+    BNPermissionsInviteeListObject<BNPermissionsInviteeListObject> *obj = (BNPermissionsInviteeListObject<BNPermissionsInviteeListObject> *)[BNDuckTypedObject duckTypedObject];
+    obj.facebookFriends = [NSMutableArray array];
+    obj.allFacebookFriendsOf = [NSMutableArray array];
+    obj.isPublic = [NSNumber numberWithBool:NO];
+    return obj;
+}
+
 @end

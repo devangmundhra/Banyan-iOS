@@ -11,18 +11,6 @@
 
 @interface Story (Permissions)
 
-// Permissions
-- (NSString *)viewerPrivacyScope;
-- (NSUInteger) numberOfViewers;
-- (NSArray *) storyViewers;
-
-- (NSString *)contributorPrivacyScope;
-- (NSUInteger) numberOfContributors;
-- (NSArray *)storyContributors;
-
-- (NSString *)contributorPermissions;
-- (NSString *)viewerPermissions;
-
 // Actual contributors
 - (NSString *)shortStringOfContributors;
 - (NSArray *) arrayOfPieceContributors;

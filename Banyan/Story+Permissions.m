@@ -16,69 +16,6 @@ NSString *const kDictionaryInSortedArrayOfContributorsCountKey = @"count";
 
 @implementation Story (Permissions)
 
-# pragma mark Permissions management
-- (NSString *)contributorPermissions
-{
-    BNPermissionsObject *permissionObj = [BNPermissionsObject permissionObjectWithDictionary:self.writeAccess];
-    return [NSString stringWithFormat:@"%@ can contribute to the story", [permissionObj stringifyPermissionObject]];
-}
-
-- (NSString *)viewerPermissions
-{
-    BNPermissionsObject *permissionObj = [BNPermissionsObject permissionObjectWithDictionary:self.readAccess];
-    return [NSString stringWithFormat:@"%@ can view the story", [permissionObj stringifyPermissionObject]];
-}
-
-- (NSString *)contributorPrivacyScope
-{
-    NSDictionary *scopeDict = self.writeAccess;
-    NSString *privacyScope = [scopeDict objectForKey:kBNStoryPrivacyScope];
-    return privacyScope;
-}
-
-- (NSUInteger) numberOfContributors
-{
-    return [self storyContributors].count;
-}
-
-// Array of all contributors having permissions
-- (NSArray *)storyContributors
-{
-    if ([[self contributorPrivacyScope] isEqualToString:kBNStoryPrivacyScopeInvited]) {
-        NSDictionary *scopeDict = self.writeAccess;
-        NSDictionary *contributorsInvited = [scopeDict objectForKey:kBNStoryPrivacyInviteeList];
-        NSArray *invitedToContFBList = [contributorsInvited objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
-        NSArray *invitedToContBNList = [contributorsInvited objectForKey:kBNStoryPrivacyInvitedBanyanFriends];
-        return [invitedToContFBList arrayByAddingObjectsFromArray:invitedToContBNList];
-    }
-    return nil;
-}
-
-- (NSString *)viewerPrivacyScope
-{
-    NSDictionary *scopeDict = self.readAccess;
-    NSString *privacyScope = [scopeDict objectForKey:kBNStoryPrivacyScope];
-    return privacyScope;
-}
-
-- (NSUInteger) numberOfViewers
-{
-    return [self storyViewers].count;
-}
-
-// Array of all viewers given permission
-- (NSArray *) storyViewers
-{
-    if ([[self viewerPrivacyScope] isEqualToString:kBNStoryPrivacyScopeInvited]) {
-        NSDictionary *scopeDict = self.readAccess;
-        NSDictionary *viewersInvited = [scopeDict objectForKey:kBNStoryPrivacyInviteeList];
-        NSArray *invitedToViewFBList = [viewersInvited objectForKey:kBNStoryPrivacyInvitedFacebookFriends];
-        NSArray *invitedToViewBNList = [viewersInvited objectForKey:kBNStoryPrivacyInvitedBanyanFriends];
-        return [invitedToViewFBList arrayByAddingObjectsFromArray:invitedToViewBNList];
-    }
-    return nil;
-}
-
 // Array of all contributors including author
 - (NSArray *) arrayOfPieceContributors
 {
@@ -98,7 +35,28 @@ NSString *const kDictionaryInSortedArrayOfContributorsCountKey = @"count";
 // String of contributors separated by comma including author
 - (NSString *)shortStringOfContributors
 {
-    return [[self arrayOfPieceContributors] componentsJoinedByString:@", "];
+    NSUInteger lengthOfContributors;
+    NSArray *pieceContributorsArray = [self arrayOfPieceContributors];
+    if ((lengthOfContributors = pieceContributorsArray.count) > 0) {
+        NSMutableString *contributorStr = nil;
+        contributorStr = [NSMutableString string];
+        [pieceContributorsArray enumerateObjectsUsingBlock:^(NSString *contributorName, NSUInteger idx, BOOL *stop) {
+            [contributorStr appendString:contributorName];
+            if ((lengthOfContributors == 2) && (idx == 0)) {
+                [contributorStr appendString:@" and "];
+            } else if ((lengthOfContributors > 2) && (idx == 0)) {
+                [contributorStr appendString:@", "];
+            } else if ((lengthOfContributors > 2) && (idx == 1)) {
+                [contributorStr appendString:[NSString stringWithFormat:@" and %d more", lengthOfContributors-idx-1]];
+                *stop = YES;
+            } else {
+                // The length was one, so nothing to do
+            }
+        }];
+        return [contributorStr copy];
+    } else {
+        return nil;
+    }
 }
 
 // Array of contributors sorted descending

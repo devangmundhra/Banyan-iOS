@@ -46,14 +46,9 @@ NSString *const BNUserDefaultsLastLogin = @"io.banyan.Banyan.UserDefaults.lastLo
 NSString *const kBNStoryClassKey   = @"Story";
 
 // Dictionary keys for invitees
-NSString *const kBNPermssionsVersion = @"PermissionsVersion";
-NSString *const kBNStoryPrivacyScope = @"Scope";
 NSString *const kBNStoryPrivacyScopeInvited = @"Invited";
 NSString *const kBNStoryPrivacyScopeLimited = @"Limited";
 NSString *const kBNStoryPrivacyScopePublic = @"Public";
-NSString *const kBNStoryPrivacyInviteeList = @"InviteeList";
-NSString *const kBNStoryPrivacyInvitedFacebookFriends = @"InvitedFacebookFriends";
-NSString *const kBNStoryPrivacyInvitedBanyanFriends = @"InvitedBanyanFriends";
 
 #pragma mark - ManagedObject Piece Class
 // Class key

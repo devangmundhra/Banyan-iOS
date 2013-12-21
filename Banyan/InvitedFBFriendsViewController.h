@@ -23,7 +23,7 @@
 
 @property (nonatomic, weak) id<InvitedFBFriendsViewControllerDelegate> delegate;
 
-- (id)initWithViewerPermissions:(BNPermissionsObject *)viewerPermission
-          contributorPermission:(BNPermissionsObject *)contributorPermission;
+- (id)initWithViewerPermissions:(BNPermissionsObject<BNPermissionsObject> *)viewerPermission
+          contributorPermission:(BNPermissionsObject<BNPermissionsObject> *)contributorPermission;
 
 @end

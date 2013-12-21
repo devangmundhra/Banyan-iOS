@@ -8,6 +8,7 @@
 
 #import "InvitedFBFriendsViewController.h"
 #import "BNLabel.h"
+#import "User.h"
 
 @interface InvitedFBFriendsViewController ()
 
@@ -53,19 +54,25 @@
         searchBar = [[UISearchBar alloc] init];
         searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
         
-        if (![viewerPermission.scope isEqualToString:kBNStoryPrivacyScopeInvited]) {
+        BNSharedUser *currentUser = [BNSharedUser currentUser];
+        NSAssert(currentUser, @"No Current user available when modifying story");
+        NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
+                               currentUser.name, @"name",
+                               currentUser.facebookId, @"id", nil];
+        
+        self.selectedViewerContacts = [NSMutableArray arrayWithArray:viewerPermission.inviteeList.facebookFriends];
+        self.selectedContributorContacts = [NSMutableArray arrayWithArray:contributorPermission.inviteeList.facebookFriends];
+        
+        if ([viewerPermission.inviteeList.isPublic boolValue] || [viewerPermission.inviteeList.allFacebookFriendsOf containsObject:selfInvitation]) {
             self.allViewers = YES;
-            self.selectedViewerContacts = [NSMutableArray array];
         } else {
             self.allViewers = NO;
-            self.selectedViewerContacts = [NSMutableArray arrayWithArray:viewerPermission.facebookInvitedList];
         }
-        if (![contributorPermission.scope isEqualToString:kBNStoryPrivacyScopeInvited]) {
+        
+        if ([contributorPermission.inviteeList.isPublic boolValue]) {
             self.allContributors = YES;
-            self.selectedContributorContacts = [NSMutableArray array];
         } else {
             self.allContributors = NO;
-            self.selectedContributorContacts = [NSMutableArray arrayWithArray:contributorPermission.facebookInvitedList];
         }
     }
     return self;
@@ -121,6 +128,19 @@
     self.tableView.tableHeaderView = headerLabel;
     self.tableView.tableFooterView = nil;
     
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self action:@selector(loadFacebookFriendsListAndRefresh) forControlEvents:UIControlEventValueChanged];
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Load friends from facebook"];
+    refreshControl.tintColor = BANYAN_GREEN_COLOR;
+    self.refreshControl = refreshControl;
+    
+    [self loadFacebookFriendsListAndRefresh];
+    
+    [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneInviting:)]];
+}
+
+- (void)loadFacebookFriendsListAndRefresh
+{
     [FBRequestConnection startForMyFriendsWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (!error) {
             NSArray *array = [result objectForKey:@"data"];
@@ -129,10 +149,9 @@
         } else {
             // TODO: Handle error
         }
+        [self.refreshControl endRefreshing];
         [self.tableView reloadData];
     }];
-    
-    [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneInviting:)]];
 }
 
 #pragma mark - Table view data source
@@ -210,10 +229,10 @@
     // Set the name
     [cell setName:[friend objectForKey:@"name"]];
     
-    // Set/disable write button. If write is enabled, read is automatically enabled.
+    // Set/disable write button. If write is allowed, read is automatically allowed.
     
     // Set/disable read button
-    [cell enableReadButton:!self.allViewers];
+    [cell enableReadButton:!self.allViewers && ![self hasWritePermission:friend]];
     [cell enableWriteButton:!self.allContributors];
     
     [cell canRead:[self hasReadPermission:friend]];
@@ -290,7 +309,8 @@
         [self.selectedContributorContacts addObject:friend];
     }
     [cell canWrite:[self hasWritePermission:friend]];
-    [cell canRead:[self hasReadPermission:friend]];
+    if (!self.allViewers)
+        [cell canRead:[self hasReadPermission:friend]];
     [cell enableReadButton:![self hasWritePermission:friend]&&!self.allViewers];
     [self.searchDisplayController setActive:NO animated:YES];
 }
