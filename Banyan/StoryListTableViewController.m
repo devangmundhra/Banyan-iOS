@@ -94,8 +94,13 @@ typedef enum {
     titleLabel.attributedText = [[NSAttributedString alloc] initWithString:@"Banyan"
                                                                 attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:20]}];
     self.navigationItem.titleView = titleLabel;
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                                                           target:self action:@selector(addStoryOrPieceButtonPressed:)];
+    if ([BanyanAppDelegate loggedIn]) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                                                               target:self action:@selector(addStoryOrPieceButtonPressed:)];
+    } else {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Sign in" style:UIBarButtonItemStylePlain target:self action:@selector(addStoryOrPieceButtonPressed:)];
+    }
+
     self.navigationItem.rightBarButtonItem.tintColor = BANYAN_GREEN_COLOR;
 
     [self prepareForSlidingViewController];
@@ -107,6 +112,15 @@ typedef enum {
     
     [[NSNotificationCenter defaultCenter] addObserver:[BanyanConnection class] selector:@selector(loadDataSource:)
                                                  name:UIApplicationDidBecomeActiveNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userLoginStatusChanged:)
+                                                 name:BNUserLogInNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userLoginStatusChanged:)
+                                                 name:BNUserLogOutNotification
                                                object:nil];
     
     // Don't need these notifications as FRC delegate will take care of it.
@@ -137,6 +151,19 @@ typedef enum {
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void) userLoginStatusChanged:(NSNotification *)notification
+{
+    if ([[notification name] isEqualToString:BNUserLogOutNotification]) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Sign in" style:UIBarButtonItemStylePlain target:self action:@selector(addStoryOrPieceButtonPressed:)];
+    } else if ([[notification name] isEqualToString:BNUserLogInNotification]) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                                                               target:self action:@selector(addStoryOrPieceButtonPressed:)];
+    } else {
+        NSLog(@"%s Unknown notification %@", __PRETTY_FUNCTION__, [notification name]);
+    }
+    self.navigationItem.rightBarButtonItem.tintColor = BANYAN_GREEN_COLOR;
 }
 
 #pragma mark - Table view data source

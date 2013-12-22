@@ -31,7 +31,7 @@ typedef enum {
 typedef enum {
     SettingsNotificationSectionAddStoryContribute = 0,
     SettingsNotificationSectionAddStoryView,
-//    SettingsNotificationSectionAddPiece,
+    SettingsNotificationSectionAddPiece,
 //    SettingsNotificationSectionPieceAction,
 //    SettingsNotificationSectionUserFollowing,
     SettingsNotificationsSectionMax,
@@ -48,8 +48,6 @@ typedef enum {
     }
     return self;
 }
-
-
 
 - (void)viewDidLoad
 {
@@ -227,9 +225,9 @@ typedef enum {
         case SettingsNotificationSectionAddStoryView:
             return @"Added as a spectator in a story";
             break;
-//        case SettingsNotificationSectionAddPiece:
-//            return @"Story I follow has a piece added";
-//            break;
+        case SettingsNotificationSectionAddPiece:
+            return @"Story I follow has a piece added";
+            break;
 //        case SettingsNotificationSectionPieceAction:
 //            return @"Piece I added is liked";
 //            break;
@@ -267,10 +265,10 @@ typedef enum {
             [switchView addTarget:self action:@selector(addStoryViewNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
             on = [defaults boolForKey:BNUserDefaultsAddStoryInvitedViewPushNotification];
             break;
-//        case SettingsNotificationSectionAddPiece:
-//            [switchView addTarget:self action:@selector(addPieceNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
-//            on = [defaults boolForKey:BNUserDefaultsAddPieceToContributedStoryPushNotification];
-//            break;
+        case SettingsNotificationSectionAddPiece:
+            [switchView addTarget:self action:@selector(addPieceNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
+            on = [defaults boolForKey:BNUserDefaultsAddPieceToContributedStoryPushNotification];
+            break;
 //        case SettingsNotificationSectionPieceAction:
 //            [switchView addTarget:self action:@selector(pieceActionNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
 //            on = [defaults boolForKey:BNUserDefaultsPieceActionPushNotification];

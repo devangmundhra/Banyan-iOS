@@ -99,7 +99,7 @@ static BOOL _loggedIn;
 - (id)initWithFrame:(CGRect)frame
 {
 #define SIZE_OF_STORY_STATUS_LABEL 72
-    
+#define SIZE_OF_ADD_PC_BUTTON 10
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
@@ -124,7 +124,7 @@ static BOOL _loggedIn;
         
         self.storyAuthorsLabel = [[UILabel alloc] initWithFrame:CGRectMake(TABLE_CELL_MARGIN,
                                                                            TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT,
-                                                                           CGRectGetWidth(frame) - 2*TABLE_CELL_MARGIN - SIZE_OF_STORY_STATUS_LABEL,
+                                                                           CGRectGetWidth(frame) - 2*TABLE_CELL_MARGIN - SIZE_OF_STORY_STATUS_LABEL - SIZE_OF_ADD_PC_BUTTON,
                                                                            BOTTOM_VIEW_HEIGHT)];
         self.storyAuthorsLabel.backgroundColor = BANYAN_WHITE_COLOR;
         self.storyAuthorsLabel.textColor = [UIColor grayColor];
@@ -141,10 +141,12 @@ static BOOL _loggedIn;
         self.storyStatusLabel.textAlignment = NSTextAlignmentRight;
         self.storyStatusLabel.lineBreakMode = NSLineBreakByClipping;
         self.storyStatusLabel.font = _smallFont;
+        self.storyStatusLabel.minimumScaleFactor = 0.5;
         [self addSubview:self.storyStatusLabel];
         
-        CGFloat buttonWd = 14.0f;
-        self.addPcButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(frame)-buttonWd-BUTTON_SPACING, TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT, buttonWd, BOTTOM_VIEW_HEIGHT)];
+        self.addPcButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.storyStatusLabel.frame),
+                                                                      TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT,
+                                                                      SIZE_OF_ADD_PC_BUTTON, BOTTOM_VIEW_HEIGHT)];
         [self.addPcButton setTintColor:BANYAN_GREEN_COLOR];
         [self.addPcButton setTitle:@"+" forState:UIControlStateNormal];
         [self.addPcButton setTitleColor:BANYAN_GREEN_COLOR forState:UIControlStateNormal];
@@ -176,14 +178,13 @@ static BOOL _loggedIn;
     if ([self.story.uploadStatusNumber unsignedIntegerValue] != RemoteObjectStatusSync && [[self.story calculateUploadStatusNumber] unsignedIntegerValue] != RemoteObjectStatusSync) {
         self.storyStatusLabel.hidden = NO;
         self.storyStatusLabel.text = self.story.sectionIdentifier;
-        self.addPcButton.hidden = YES;
     } else {
         self.storyStatusLabel.hidden = YES;
-        if (self.story.canContribute && _loggedIn)
-            self.addPcButton.hidden = NO;
-        else
-            self.addPcButton.hidden = YES;
     }
+    if (self.story.canContribute && _loggedIn)
+        self.addPcButton.hidden = NO;
+    else
+        self.addPcButton.hidden = YES;
 }
 
 # pragma mark BNSwipeableView delegates

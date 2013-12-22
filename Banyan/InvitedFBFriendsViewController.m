@@ -285,7 +285,13 @@
         [self.selectedViewerContacts addObject:friend];
     }
     [cell canRead:[self hasReadPermission:friend]];
-    [self.searchDisplayController setActive:NO animated:YES];
+    if (self.searchDisplayController.isActive) {
+        // Scroll to the selected cell
+        [self.searchDisplayController setActive:NO animated:YES];
+        [self.tableView scrollToRowAtIndexPath:[self indexPathForFriendInTableView:friend]
+                              atScrollPosition:UITableViewScrollPositionNone
+                                      animated:NO];
+    }
 }
 
 - (void)inviteFriendCellWriteButtonTapped:(InviteFriendCell *)cell
@@ -312,7 +318,13 @@
     if (!self.allViewers)
         [cell canRead:[self hasReadPermission:friend]];
     [cell enableReadButton:![self hasWritePermission:friend]&&!self.allViewers];
-    [self.searchDisplayController setActive:NO animated:YES];
+    if (self.searchDisplayController.isActive) {
+        // Scroll to the selected cell
+        [self.searchDisplayController setActive:NO animated:YES];
+        [self.tableView scrollToRowAtIndexPath:[self indexPathForFriendInTableView:friend]
+                              atScrollPosition:UITableViewScrollPositionNone
+                                      animated:NO];
+    }
 }
 
 #pragma mark - Table view delegate
@@ -327,16 +339,10 @@
     InviteFriendCell *cell = (InviteFriendCell *)[tableView cellForRowAtIndexPath:indexPath];
     [self inviteFriendCellWriteButtonTapped:cell];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    if (self.searchDisplayController.isActive)
-    {
+    if (self.searchDisplayController.isActive) {
         // Scroll to the friend that was picked
         NSDictionary *friend = [self.filteredListContacts objectAtIndex:indexPath.row];
-        unichar alphabet = [[friend objectForKey:@"name"] characterAtIndex:0];
-        NSString *uniChar = [NSString stringWithCharacters:&alphabet length:1];
-        NSUInteger section = [self.contactIndex indexOfObject:uniChar];
-        NSArray *contacts = [self getContactsForSection:section];
-        NSUInteger row = [contacts indexOfObject:friend];
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+        [self.tableView scrollToRowAtIndexPath:[self indexPathForFriendInTableView:friend] atScrollPosition:UITableViewScrollPositionNone animated:NO];
     }
 }
 
@@ -346,6 +352,16 @@
                        finishedInvitingForViewers:self.selectedViewerContacts
                                      contributors:self.selectedContributorContacts];
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (NSIndexPath *)indexPathForFriendInTableView:(NSDictionary *)friend
+{
+    unichar alphabet = [[friend objectForKey:@"name"] characterAtIndex:0];
+    NSString *uniChar = [NSString stringWithCharacters:&alphabet length:1];
+    NSUInteger section = [self.contactIndex indexOfObject:uniChar];
+    NSArray *contacts = [self getContactsForSection:section];
+    NSUInteger row = [contacts indexOfObject:friend];
+    return [NSIndexPath indexPathForRow:row inSection:section];
 }
 
 #pragma mark Content Filtering

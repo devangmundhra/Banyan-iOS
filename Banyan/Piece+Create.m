@@ -25,6 +25,9 @@
     
     piece.story = story;
     
+    if (![piece.story.pieces containsObject:piece]) {
+        NSLog(@"Something is wrong here");
+    }
     return piece;
 }
 
@@ -67,9 +70,9 @@
                                            path:nil
                                      parameters:nil
                                         success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                            NSLog(@"Create piece successful %@", piece);
                                             piece.remoteStatus = RemoteObjectStatusSync;
-                                            [piece save];
+                                            NSLog(@"Create piece successful %@", piece);
+//                                            [piece save];
                                             if ([piece.media count]) {
                                                 // Media should be uploaded asynchronously.
                                                 // So edit the piece now which will in turn upload the media.
@@ -78,7 +81,7 @@
                                         }
                                         failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                             piece.remoteStatus = RemoteObjectStatusFailed;
-                                            [piece save];
+//                                            [piece save];
                                             NSLog(@"Error in create piece");
                                         }];
     
