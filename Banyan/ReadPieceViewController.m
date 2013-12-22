@@ -13,7 +13,6 @@
 #import "AFBanyanAPIClient.h"
 #import "Piece+Edit.h"
 #import "Piece+Create.h"
-#import "NSObject+BlockObservation.h"
 #import "User.h"
 #import "Piece+Delete.h"
 #import "ModifyPieceViewController.h"
@@ -48,11 +47,6 @@
 @property (strong, nonatomic) IBOutlet BNLabel *timeLabel;
 @property (strong, nonatomic) IBOutlet BNLabel *locationLabel;
 
-@property (strong, nonatomic) AMBlockToken *pieceObserverToken1;
-@property (strong, nonatomic) AMBlockToken *pieceObserverToken2;
-@property (strong, nonatomic) AMBlockToken *pieceObserverToken3;
-@property (strong, nonatomic) AMBlockToken *pieceObserverToken4;
-
 @property (strong, nonatomic) URBMediaFocusViewController *mediaFocusManager;
 @property (nonatomic) BOOL mediaFocusVisible;
 @end
@@ -72,7 +66,6 @@
 @synthesize locationLabel = _locationLabel;
 @synthesize piece = _piece;
 @synthesize delegate = _delegate;
-@synthesize pieceObserverToken1, pieceObserverToken2, pieceObserverToken3, pieceObserverToken4;
 @synthesize mediaFocusManager = _mediaFocusManager;
 @synthesize audioPlayer = _audioPlayer;
 @synthesize storyInfoView = _storyInfoView;
@@ -106,6 +99,8 @@
     if (self) {
         // Custom initialization
         self.piece = piece;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleManagedObjectContextDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
+
     }
     return self;
 }
@@ -244,8 +239,6 @@
     // Do any additional setup after loading the view from its nib.
     // Update Stats
     [Piece viewedPiece:self.piece];
-
-    [self addPieceObserver];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(userLoginStatusChanged) 
@@ -512,40 +505,22 @@
 }
 
 #pragma mark notifications
-- (void)addPieceObserver
+- (void)handleManagedObjectContextDidSaveNotification:(NSNotification *)notification
 {
-    __weak ReadPieceViewController *wself = self;
-    pieceObserverToken1 = [self.piece addObserverForKeyPath:@"shortText" task:^(id obj, NSDictionary *change) {
-        [wself refreshUI];
-    }];
-    pieceObserverToken2 = [self.piece addObserverForKeyPath:@"longText" task:^(id obj, NSDictionary *change) {
-        [wself refreshUI];
-    }];
-    pieceObserverToken3 = [self.piece addObserverForKeyPath:@"media" task:^(id obj, NSDictionary *change) {
-        [wself refreshUI];
-    }];
-    pieceObserverToken4 = [self.piece addObserverForKeyPath:@"story.title" task:^(id obj, NSDictionary *change) {
-        [wself updateStoryTitle];
-    }];
-}
-
-- (void)removePieceObserver
-{
-    if (pieceObserverToken1) {
-        [self.piece removeObserverWithBlockToken:pieceObserverToken1];
-        pieceObserverToken1 = nil;
+    if (!self.piece) {
+        return;
     }
-    if (pieceObserverToken2) {
-        [self.piece removeObserverWithBlockToken:pieceObserverToken2];
-        pieceObserverToken2 = nil;
+    
+    NSDictionary *userInfo = notification.userInfo;
+    NSSet *insertedObjects = [userInfo objectForKey:NSInsertedObjectsKey];
+    NSSet *updatedObjects = [userInfo objectForKey:NSUpdatedObjectsKey];
+    
+    if ([insertedObjects containsObject:self.piece] || [updatedObjects containsObject:self.piece]) {
+        [self refreshUI];
     }
-    if (pieceObserverToken3) {
-        [self.piece removeObserverWithBlockToken:pieceObserverToken3];
-        pieceObserverToken3 = nil;
-    }
-    if (pieceObserverToken4) {
-        [self.piece removeObserverWithBlockToken:pieceObserverToken4];
-        pieceObserverToken4 = nil;
+    
+    if (self.piece.story && [updatedObjects containsObject:self.piece.story]) {
+        [self updateStoryTitle];
     }
 }
 
@@ -724,7 +699,6 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self removePieceObserver];
 }
 
 @end

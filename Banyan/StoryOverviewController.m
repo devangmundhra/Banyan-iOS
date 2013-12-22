@@ -13,7 +13,6 @@
 #import "BanyanAppDelegate.h"
 #import "User.h"
 #import "Story+Delete.h"
-#import "NSObject+BlockObservation.h"
 #import "StoryOverviewHeaderView.h"
 
 static NSString *CellIdentifier = @"StoryOverview_PieceCell";
@@ -31,17 +30,11 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
 @property (strong, nonatomic) Story *story;
 @property (strong, nonatomic) IBOutlet UICollectionView *piecesCollectionView;
 
-@property (strong, nonatomic) AMBlockToken *storyObserverToken1;
-@property (strong, nonatomic) AMBlockToken *storyObserverToken2;
-@property (strong, nonatomic) AMBlockToken *storyObserverToken3;
-@property (strong, nonatomic) AMBlockToken *storyObserverToken4;
-
 @end
 
 @implementation StoryOverviewController
 @synthesize story = _story;
 @synthesize piecesCollectionView = _piecesCollectionView;
-@synthesize storyObserverToken1, storyObserverToken2, storyObserverToken3, storyObserverToken4;
 @synthesize delegate = _delegate;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -59,6 +52,8 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
     if (self) {
         // Custom initialization
         self.story = story;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleManagedObjectContextDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
+
     }
     return self;
 }
@@ -102,44 +97,21 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
     [self.piecesCollectionView registerClass:[StoryOverviewHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:HeaderIdentifier];
     
     [self.view addSubview:self.piecesCollectionView];
-    [self addStoryObserver];
 }
 
 #pragma mark notifications
-- (void)addStoryObserver
+- (void)handleManagedObjectContextDidSaveNotification:(NSNotification *)notification
 {
-    __weak StoryOverviewController *wself = self;
-    storyObserverToken1 = [self.story addObserverForKeyPath:@"title" task:^(id obj, NSDictionary *change) {
-        [wself refreshUI];
-    }];
-    storyObserverToken2 = [self.story addObserverForKeyPath:@"writeAccess" task:^(id obj, NSDictionary *change) {
-        [wself refreshUI];
-    }];
-    storyObserverToken3 = [self.story addObserverForKeyPath:@"readAccess" task:^(id obj, NSDictionary *change) {
-        [wself refreshUI];
-    }];
-    storyObserverToken3 = [self.story addObserverForKeyPath:@"pieces" task:^(id obj, NSDictionary *change) {
-        [wself refreshUI];
-    }];
-}
-
-- (void)removeStoryObserver
-{
-    if (storyObserverToken1) {
-        [self.story removeObserverWithBlockToken:storyObserverToken1];
-        storyObserverToken1 = nil;
+    if (!self.story) {
+        return;
     }
-    if (storyObserverToken2) {
-        [self.story removeObserverWithBlockToken:storyObserverToken2];
-        storyObserverToken2 = nil;
-    }
-    if (storyObserverToken3) {
-        [self.story removeObserverWithBlockToken:storyObserverToken3];
-        storyObserverToken3 = nil;
-    }
-    if (storyObserverToken4) {
-        [self.story removeObserverWithBlockToken:storyObserverToken4];
-        storyObserverToken4 = nil;
+    
+    NSDictionary *userInfo = notification.userInfo;
+    NSSet *insertedObjects = [userInfo objectForKey:NSInsertedObjectsKey];
+    NSSet *updatedObjects = [userInfo objectForKey:NSUpdatedObjectsKey];
+    
+    if ([insertedObjects containsObject:self.story] || [updatedObjects containsObject:self.story]) {
+        [self refreshUI];
     }
 }
 
@@ -176,7 +148,7 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
 
 - (void)dealloc
 {
-    [self removeStoryObserver];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end
