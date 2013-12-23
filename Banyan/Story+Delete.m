@@ -33,8 +33,6 @@
             [media deleteWitSuccess:nil
                             failure:nil]; // ignore errors for now
         }
-        else
-            [media remove];
     }
     
     if (story.remoteStatus != RemoteObjectStatusLocal && NUMBER_EXISTS(story.bnObjectId)) {

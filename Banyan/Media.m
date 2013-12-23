@@ -223,10 +223,6 @@
             if (errorBlock) errorBlock(error);
         }
     }];
-    
-    self.remoteObject = nil;
-    [self remove];
-    
 }
 
 + (Media *)getMediaOfType:(NSString *)type inMediaSet:(NSOrderedSet *)mediaSet

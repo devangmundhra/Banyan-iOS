@@ -396,7 +396,9 @@
     for (Media *media in mediaToDelete) {
         // If its a local image, don't delete it
         if ([media.remoteURL length]) {
-            [media deleteWitSuccess:nil
+            [media deleteWitSuccess:^{
+                [media remove];
+            }
                             failure:^(NSError *error) {
                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error deleting %@ when editing piece %@", media.mediaTypeName, self.piece.shortText.length ? self.piece.shortText : @""]
                                                                 message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]
@@ -424,7 +426,9 @@
         Media *gifMedia = [Media getMediaOfType:@"gif" inMediaSet:self.piece.media];
         if (gifMedia) {
             if ([gifMedia.remoteURL length]) {
-                [gifMedia deleteWitSuccess:nil
+                [gifMedia deleteWitSuccess:^{
+                    [gifMedia remove];
+                }
                                    failure:^(NSError *error) {
                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error deleting %@ when editing piece %@", gifMedia.mediaTypeName, self.piece.shortText.length ? self.piece.shortText : @""]
                                                                                        message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]
