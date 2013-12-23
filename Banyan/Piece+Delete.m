@@ -37,8 +37,9 @@
         return;
     }
     
+    NSOrderedSet *mediaSet = piece.media;
     // Delete all media for the piece
-    for (Media *media in piece.media) {
+    for (Media *media in mediaSet) {
         // If its a local image, don't delete it
         if ([media.remoteURL length]) {
             [media deleteWitSuccess:nil

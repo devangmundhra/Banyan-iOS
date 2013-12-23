@@ -86,12 +86,12 @@ static NSString *CellIdentifier = @"LocationCell";
     self.clearsSelectionOnViewWillAppear = NO;
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-    [refreshControl addTarget:self.locationManager action:@selector(startUpdatingLocation) forControlEvents:UIControlEventValueChanged];
-    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Loading nearby locations"];
+    [refreshControl addTarget:self action:@selector(startUpdatingLocation) forControlEvents:UIControlEventValueChanged];
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Fetching nearby locations"];
     refreshControl.tintColor = BANYAN_GREEN_COLOR;
     self.refreshControl = refreshControl;
     
-    [self.locationManager startUpdatingLocation];
+    [self startUpdatingLocation];
 }
 
 - (void)didReceiveMemoryWarning
@@ -281,32 +281,31 @@ static NSString *CellIdentifier = @"LocationCell";
     if (self.bestEffortAtLocation == nil || self.bestEffortAtLocation.horizontalAccuracy > newLocation.horizontalAccuracy) {
         // store the location as the "best effort"
         self.bestEffortAtLocation = newLocation;
-        
-        // test the measurement to see if it meets the desired accuracy
-        // IMPORTANT!!! kCLLocationAccuracyBest should not be used for comparison with location coordinate or altitidue
-        // accuracy because it is a negative value. Instead, compare against some predetermined "real" measure of
-        // acceptable accuracy, or depend on the timeout to stop updating. This sample depends on a 50m acceptable accuracy
-        //
-        if (newLocation.horizontalAccuracy <= 50) {
-            // IMPORTANT!!! Minimize power usage by stopping the location manager as soon as possible.
-            [GooglePlacesObject getNearbyLocations:newLocation withCompletion:^(NSArray *places) {
-                if ([places count] == 0) {
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No matches found near this location"
-                                                                    message:@"Try another place name or address"
-                                                                   delegate:nil
-                                                          cancelButtonTitle:@"OK"
-                                                          otherButtonTitles: nil];
-                    [alert show];
-                } else {
-                    self.locations = [NSMutableArray arrayWithArray:places];
-                    //UPDATED locationFilterResults for filtering later on
-                    self.locationsFilterResults = [NSMutableArray arrayWithArray:places];
-                    [self.tableView reloadData];
-                }
-            }];
-            self.currentLocation = newLocation;
-            [self stopUpdatingLocation:NSLocalizedString(@"Acquired Location", @"Acquired Location")];
-        }
+    }
+    // test the measurement to see if it meets the desired accuracy
+    // IMPORTANT!!! kCLLocationAccuracyBest should not be used for comparison with location coordinate or altitidue
+    // accuracy because it is a negative value. Instead, compare against some predetermined "real" measure of
+    // acceptable accuracy, or depend on the timeout to stop updating. This sample depends on a 50m acceptable accuracy
+    //
+    if (newLocation.horizontalAccuracy <= 50) {
+        // IMPORTANT!!! Minimize power usage by stopping the location manager as soon as possible.
+        [GooglePlacesObject getNearbyLocations:newLocation withCompletion:^(NSArray *places) {
+            if ([places count] == 0) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No matches found near this location"
+                                                                message:@"Try another place name or address"
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles: nil];
+                [alert show];
+            } else {
+                self.locations = [NSMutableArray arrayWithArray:places];
+                //UPDATED locationFilterResults for filtering later on
+                self.locationsFilterResults = [NSMutableArray arrayWithArray:places];
+                [self.tableView reloadData];
+            }
+        }];
+        self.currentLocation = newLocation;
+        [self stopUpdatingLocation:NSLocalizedString(@"Acquired Location", @"Acquired Location")];
     }
 }
 

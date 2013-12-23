@@ -72,7 +72,7 @@
 - (void)cloneFrom:(Media *)source
 {
     for (NSString *key in [[[source entity] attributesByName] allKeys]) {
-        if ([key isEqualToString:@"filename"]) {
+        if ([key isEqualToString:@"filename"] || [key isEqualToString:@"thumbnail"]) {
             NSLog(@"Skipping attribute %@", key);
             continue;
         }
