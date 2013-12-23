@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Media.h"
 
 @class SingleImagePickerButton;
 
@@ -16,6 +17,7 @@
 - (void) addTargetForPhotoGallery:(id)target action:(SEL)action;
 - (void) addTargetToDeleteImage:(id)target action:(SEL)action;
 - (void) setImage:(UIImage *)image;
+- (void) setThumbnail:(UIImage *)image forMedia:(Media *)media;
 - (void) unsetImage;
 
 @end

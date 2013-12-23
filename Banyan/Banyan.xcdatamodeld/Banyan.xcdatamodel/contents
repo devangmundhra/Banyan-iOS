@@ -20,7 +20,8 @@
         <attribute name="progress" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="remoteStatusNumber" optional="YES" attributeType="Integer 16" defaultValueString="3" indexed="YES" syncable="YES"/>
         <attribute name="remoteURL" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="thumbnail" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="thumbnail" optional="YES" attributeType="Transformable" valueTransformerName="ImageToDataTransformer" syncable="YES"/>
+        <attribute name="thumbnailURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="width" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="remoteObject" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="RemoteObject" inverseName="media" inverseEntity="RemoteObject" syncable="YES"/>

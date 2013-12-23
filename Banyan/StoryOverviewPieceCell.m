@@ -58,7 +58,7 @@
     // Image
     Media *media = nil;
     if ((media = [Media getMediaOfType:@"image" inMediaSet:piece.media])) {
-        [self.imageView showMedia:media withPostProcess:nil];
+        [self.imageView showThumbnailOfMedia:media withPostProcess:nil];
     }
     else if (piece.shortText.length) {
         self.pieceLabel.text = piece.shortText;

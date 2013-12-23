@@ -140,6 +140,8 @@
 		519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 519232A01671CC57009686E4 /* AFGoogleAPIClient.m */; };
 		5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 5192332616743F02009686E4 /* GooglePlacesObject.m */; };
 		519233331675305F009686E4 /* LocationPickerTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 519233311675305F009686E4 /* LocationPickerTableViewController.m */; };
+		51929D601867B7940061BD6C /* BNImageCropperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51929D5E1867B7940061BD6C /* BNImageCropperViewController.m */; };
+		51929D611867B7940061BD6C /* BNImageCropperViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51929D5F1867B7940061BD6C /* BNImageCropperViewController.xib */; };
 		51984D40176EDE1000CD6C3E /* BNPiecesScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 51984D3F176EDE1000CD6C3E /* BNPiecesScrollView.m */; };
 		51984D43176EE10E00CD6C3E /* CoreDataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51984D42176EE10E00CD6C3E /* CoreDataTableViewController.m */; };
 		51984D46176EEB5600CD6C3E /* SinglePieceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 51984D45176EEB5600CD6C3E /* SinglePieceView.m */; };
@@ -453,6 +455,9 @@
 		5192332616743F02009686E4 /* GooglePlacesObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GooglePlacesObject.m; path = Banyan/GooglePlacesObject.m; sourceTree = "<group>"; };
 		519233301675305F009686E4 /* LocationPickerTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationPickerTableViewController.h; path = Banyan/LocationPickerTableViewController.h; sourceTree = "<group>"; };
 		519233311675305F009686E4 /* LocationPickerTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationPickerTableViewController.m; path = Banyan/LocationPickerTableViewController.m; sourceTree = "<group>"; };
+		51929D5D1867B7940061BD6C /* BNImageCropperViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNImageCropperViewController.h; sourceTree = "<group>"; };
+		51929D5E1867B7940061BD6C /* BNImageCropperViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNImageCropperViewController.m; sourceTree = "<group>"; };
+		51929D5F1867B7940061BD6C /* BNImageCropperViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BNImageCropperViewController.xib; sourceTree = "<group>"; };
 		51984D3E176EDE1000CD6C3E /* BNPiecesScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNPiecesScrollView.h; path = Banyan/BNPiecesScrollView.h; sourceTree = "<group>"; };
 		51984D3F176EDE1000CD6C3E /* BNPiecesScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNPiecesScrollView.m; path = Banyan/BNPiecesScrollView.m; sourceTree = "<group>"; };
 		51984D41176EE10E00CD6C3E /* CoreDataTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreDataTableViewController.h; path = Banyan/CoreDataTableViewController.h; sourceTree = "<group>"; };
@@ -972,6 +977,9 @@
 				517A01D6170A7A9E00665F0F /* MediaPickerButton.m */,
 				512598BD17B0D5C500FEFCF0 /* SingleImagePickerButton.h */,
 				512598BE17B0D5C500FEFCF0 /* SingleImagePickerButton.m */,
+				51929D5D1867B7940061BD6C /* BNImageCropperViewController.h */,
+				51929D5E1867B7940061BD6C /* BNImageCropperViewController.m */,
+				51929D5F1867B7940061BD6C /* BNImageCropperViewController.xib */,
 			);
 			name = "Media Picker";
 			sourceTree = "<group>";
@@ -1704,6 +1712,7 @@
 				5144EC6B1712277600F0B265 /* cameraSymbol@2x.png in Resources */,
 				5144EC6C1712277600F0B265 /* locationSymbol.png in Resources */,
 				5144EC6D1712277600F0B265 /* locationSymbol@2x.png in Resources */,
+				51929D611867B7940061BD6C /* BNImageCropperViewController.xib in Resources */,
 				5144EC6E1712277600F0B265 /* readButtonSelected.png in Resources */,
 				51D5E6E7182220A5005CA2F4 /* hideStoryButton@2x.png in Resources */,
 				5144EC6F1712277600F0B265 /* readButtonSelected@2x.png in Resources */,
@@ -1850,6 +1859,7 @@
 				5189B34415B395F300562DD0 /* Story+Delete.m in Sources */,
 				5112D105181C61F0003E8C37 /* UIPlaceHolderTextView.m in Sources */,
 				5189B34515B395F300562DD0 /* Story+Edit.m in Sources */,
+				51929D601867B7940061BD6C /* BNImageCropperViewController.m in Sources */,
 				514CDF67181509B70098B0A9 /* AVCamRecorder.m in Sources */,
 				5189B34615B395F300562DD0 /* Story+Stats.m in Sources */,
 				5189B34915B395F300562DD0 /* StoryListTableViewController.m in Sources */,

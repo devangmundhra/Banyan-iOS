@@ -21,6 +21,7 @@
 #import "LocationPickerTableViewController.h"
 #import "LocationPickerButton.h"
 #import "BNAudioRecorderView.h"
+#import "UIImage+ResizeAdditions.h"
 
 @interface ModifyPieceViewController (LocationPickerButtonDelegate) <LocationPickerButtonDelegate>
 
@@ -133,9 +134,8 @@
 {
     [super viewDidLoad];
     
-    // Do any additional setup after loading the view from irts nib.
-//    if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
-//        self.edgesForExtendedLayout = UIRectEdgeNone;
+    // Do any additional setup after loading the view
+    self.edgesForExtendedLayout = UIRectEdgeNone;
 
     // Get a reference to weak self for use in blocks
     __weak ModifyPieceViewController *wself = self;
@@ -734,7 +734,11 @@
     Media *media = [Media newMediaForObject:self.piece];
     media.mediaType = @"image";
     media.localURL = [(NSURL *)[infoDict objectForKey:AVCamCaptureManagerInfoURL] absoluteString];
-    [self.addPhotoButton setImage:[infoDict objectForKey:AVCamCaptureManagerInfoImage]];
+    UIImage *image = [infoDict objectForKey:AVCamCaptureManagerInfoImage];
+    [self.addPhotoButton setImage:image];
+    image = [image thumbnailImage:MEDIA_THUMBNAIL_SIZE transparentBorder:1 cornerRadius:5 interpolationQuality:kCGInterpolationHigh];
+    media.thumbnail = image;
+    [self.addPhotoButton setThumbnail:image forMedia:media];
     self.doneButton.enabled = [self checkForChanges];
 }
 
@@ -749,7 +753,11 @@
     Media *media = [Media newMediaForObject:self.piece];
     media.mediaType = @"image";
     media.localURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
-    [self.addPhotoButton setImage:[info objectForKey:MediaPickerViewControllerInfoImage]];
+    UIImage *image = [info objectForKey:MediaPickerViewControllerInfoImage];
+    [self.addPhotoButton setImage:image];
+    image = [image thumbnailImage:MEDIA_THUMBNAIL_SIZE transparentBorder:1 cornerRadius:5 interpolationQuality:kCGInterpolationHigh];
+    media.thumbnail = image;
+    [self.addPhotoButton setThumbnail:image forMedia:media];
     self.doneButton.enabled = [self checkForChanges];
 }
 

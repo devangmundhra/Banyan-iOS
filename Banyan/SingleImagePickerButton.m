@@ -7,15 +7,19 @@
 //
 
 #import "SingleImagePickerButton.h"
+#import "BNImageCropperViewController.h"
+#import "BanyanAppDelegate.h"
+#import "UIImage+ResizeAdditions.h"
 
 @interface SingleImagePickerButton ()
 @property (nonatomic, strong) UIButton *button;
-@property (strong, nonatomic) UIImageView *imageView;
+@property (strong, nonatomic) UIView *imageView;
 @property (strong, nonatomic) UIButton *imageDeleteButton;
 @property (strong, nonatomic) UIButton *galleryButton;
+@property (strong, nonatomic) UIImageView *imageDisplayView;
+@property (strong, nonatomic) UIButton *thumbnailButton;
 @property (nonatomic) BOOL imageLoaded;
-
-- (void) setup;
+@property (strong, nonatomic) Media *media;
 @end
 
 @implementation SingleImagePickerButton
@@ -25,6 +29,9 @@
 @synthesize imageDeleteButton = _imageDeleteButton;
 @synthesize galleryButton = _galleryButton;
 @synthesize imageLoaded = _imageLoaded;
+@synthesize media = _media;
+@synthesize imageDisplayView = _imageDisplayView;
+@synthesize thumbnailButton = _thumbnailButton;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -68,6 +75,8 @@
         self.galleryButton.hidden = NO;
         self.imageView.hidden = YES;
         self.imageDeleteButton.hidden = YES;
+        [self.thumbnailButton removeFromSuperview];
+        self.thumbnailButton = nil;
     }
 }
 
@@ -110,7 +119,7 @@
     
     // Image view
     frame = self.bounds;
-    self.imageView = [[UIImageView alloc] initWithFrame:frame];
+    self.imageView = [[UIView alloc] initWithFrame:frame];
     self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     self.imageView.userInteractionEnabled = YES;
     [self addSubview:imageView];
@@ -125,6 +134,15 @@
     [self.imageDeleteButton.layer setCornerRadius:10.0f];
     self.imageDeleteButton.userInteractionEnabled = YES;
     [self.imageView addSubview:self.imageDeleteButton];
+    
+    frame = self.bounds;
+    frame.origin.x = CGRectGetMaxX(self.imageDeleteButton.frame);
+    frame.size.width -= frame.origin.x;
+    self.imageDisplayView = [[UIImageView alloc] initWithFrame:frame];
+    self.imageDisplayView.userInteractionEnabled = YES;
+    self.imageDisplayView.contentMode = UIViewContentModeScaleAspectFit;
+    [self.imageDisplayView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(editThumbnailButtonPressed:)]];
+    [self.imageView addSubview:self.imageDisplayView];
     
     self.imageLoaded = NO;
 }
@@ -147,17 +165,82 @@
     [self.imageDeleteButton addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
 }
 
+- (IBAction)editThumbnailButtonPressed:(id)sender
+{
+    BNImageCropperViewController *imageEditorVc = [[BNImageCropperViewController alloc] initWithNibName:@"BNImageCropperViewController" bundle:nil];
+    imageEditorVc.sourceImage = self.imageDisplayView.image;
+    imageEditorVc.previewImage = imageEditorVc.sourceImage;
+    imageEditorVc.checkBounds = YES;
+    imageEditorVc.rotateEnabled = NO;
+    [imageEditorVc reset:NO];
+    __weak BNImageCropperViewController *wImageEditorVc = imageEditorVc;
+    imageEditorVc.doneCallback = ^(UIImage *editedImage, BOOL canceled){
+        if (!canceled) {
+            UIImage *image = [editedImage thumbnailImage:MEDIA_THUMBNAIL_SIZE
+                                 transparentBorder:1
+                                      cornerRadius:5
+                              interpolationQuality:kCGInterpolationHigh];
+            [self.thumbnailButton setBackgroundImage:image forState:UIControlStateNormal];
+            self.media.thumbnail = image;
+        }
+        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+        [wImageEditorVc dismissViewControllerAnimated:YES completion:nil];
+    };
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+    [[APP_DELEGATE topMostController] presentViewController:imageEditorVc animated:YES completion:nil];
+}
+
+- (void) setThumbnail:(UIImage *)image forMedia:(Media *)media
+{
+    NSAssert(self.imageDisplayView.image, @"No image when setting thumbnail");
+    self.media = media;
+    
+#define BUTTON_SPACING 10
+    CGRect frame = self.imageView.bounds;
+    frame.origin.x = CGRectGetMaxX(self.imageDeleteButton.frame) + BUTTON_SPACING;
+    frame.size.width = CGRectGetWidth(self.imageView.frame) - 2*BUTTON_SPACING - MEDIA_THUMBNAIL_SIZE - frame.origin.x;
+    self.imageDisplayView.frame = frame;
+    
+    self.thumbnailButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    frame = self.imageDisplayView.frame;
+    frame.origin.x = CGRectGetMaxX(self.imageDisplayView.frame)+BUTTON_SPACING;
+    frame.size.width = MEDIA_THUMBNAIL_SIZE;
+    self.thumbnailButton.frame = frame;
+    
+    [self.thumbnailButton setBackgroundImage:image forState:UIControlStateNormal];
+    self.thumbnailButton.imageEdgeInsets = UIEdgeInsetsMake(-10, 0, 0, 0);
+    [self.thumbnailButton addTarget:self action:@selector(editThumbnailButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.thumbnailButton.titleEdgeInsets = UIEdgeInsetsMake(100, 0, 0, 0);
+    self.thumbnailButton.titleLabel.numberOfLines = 2;
+    NSAttributedString *attrString = [[NSAttributedString alloc]
+                                      initWithString:@"Edit thumbnail"
+                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
+                                                   NSForegroundColorAttributeName: BANYAN_GRAY_COLOR}];
+    [self.thumbnailButton setAttributedTitle:attrString
+                                    forState:UIControlStateNormal];
+    [self.thumbnailButton sizeToFit];
+    [self.imageView addSubview:self.thumbnailButton];
+#undef BUTTON_SPACING
+}
+
 - (void) setImage:(UIImage *)image
 {
-    [self.imageView cancelImageRequestOperation];
-    [self.imageView setImage:image];
+    CGRect frame = self.imageView.bounds;
+    frame.origin.x = CGRectGetMaxX(self.imageDeleteButton.frame);
+    frame.size.width -= frame.origin.x;
+    self.imageDisplayView.frame = frame;
+    
+    [self.imageDisplayView cancelImageRequestOperation];
+    [self.imageDisplayView setImage:image];
     self.imageLoaded = YES;
 }
 
 - (void) unsetImage
 {
-    [self.imageView cancelImageRequestOperation];
-    [self.imageView setImageWithURL:nil];
+    [self.imageDisplayView cancelImageRequestOperation];
+    [self.imageDisplayView setImageWithURL:nil];
+    self.media = nil;
     self.imageLoaded = NO;
 }
 

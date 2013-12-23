@@ -29,6 +29,7 @@
 @dynamic remoteStatusNumber;
 @dynamic remoteURL;
 @dynamic thumbnail;
+@dynamic thumbnailURL;
 @dynamic title;
 @dynamic width;
 @dynamic remoteObject;
@@ -282,6 +283,12 @@
 
 - (void) uploadImageWithSuccess:(void (^)())successBlock failure:(void (^)(NSError *error))errorBlock
 {
+    if (self.remoteURL.length) {
+        // This means the bigger image was uploaded fine but the thumbnail could not be uploaded.
+        // Upload only the thumbnail
+        [self uploadThumbnailImageWithSuccess:successBlock failure:errorBlock];
+    }
+    
     self.remoteStatus = MediaRemoteStatusProcessing;
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     
@@ -305,7 +312,8 @@
             if (succeeded) {
                 self.remoteURL = url;
                 self.filename = filename;
-                successBlock();
+                // Bigger image has been successfully uploaded. Upload the thumbnail now
+                [self uploadThumbnailImageWithSuccess:successBlock failure:errorBlock];
             } else {
                 errorBlock(error);
             }
@@ -315,6 +323,26 @@
                 errorBlock(error);
             }
      ];
+}
+
+- (void) uploadThumbnailImageWithSuccess:(void (^)())successBlock failure:(void (^)(NSError *error))errorBlock
+{
+    if (!self.thumbnail) {
+        successBlock();
+        return;
+    }
+    
+    [BNAWSS3Client uploadData:UIImageJPEGRepresentation(self.thumbnail, 1) withContentType:@"image/jpeg"
+                  forFileName:[NSString stringWithFormat:@"%@/%@_%@_80x80.jpg", [BNSharedUser currentUser].userId, [self.remoteObject getIdentifierForMediaFileName], self.filename]
+        inBackgroundWithBlock:^(bool succeeded, NSString *url, NSString *filename, NSError *error) {
+            if (succeeded) {
+                self.thumbnail = nil;
+                self.thumbnailURL = url;
+                successBlock();
+            } else {
+                errorBlock(error);
+            }
+        }];
 }
 
 - (void) uploadGifWithSuccess:(void (^)())successBlock failure:(void (^)(NSError *error))errorBlock
@@ -347,7 +375,7 @@
     RKEntityMapping *mediaMapping = [RKEntityMapping mappingForEntityForName:kBNMediaClassKey
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
     [mediaMapping addAttributeMappingsFromDictionary:@{@"url": @"remoteURL"}];
-    [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType"]];
+    [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType", @"thumbnailURL"]];
     mediaMapping.identificationAttributes = @[@"filename", @"remoteURL"];
     return mediaMapping;
 }
@@ -356,7 +384,7 @@
 {
     RKObjectMapping *mediaMapping = [RKObjectMapping requestMapping];
     [mediaMapping addAttributeMappingsFromDictionary:@{@"remoteURL": @"url"}];
-    [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType"]];
+    [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType", @"thumbnailURL"]];
     return mediaMapping;
 }
 

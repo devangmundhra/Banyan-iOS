@@ -45,10 +45,6 @@ static NSString *CellIdentifier = @"LocationCell";
     if (self) {
         // Custom initialization
         self.title = @"Select location";
-        self.locationManager = [[CLLocationManager alloc] init];
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;//kCLLocationAccuracyBest; // kCLLocationAccuracyNearestTenMeters;
-        [self startUpdatingLocation];
-        NSLog(@"%s Initialized shared location manager", __PRETTY_FUNCTION__);
     }
     return self;
 }
@@ -56,6 +52,10 @@ static NSString *CellIdentifier = @"LocationCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.locationManager = [[CLLocationManager alloc] init];
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;//kCLLocationAccuracyBest; // kCLLocationAccuracyNearestTenMeters;
+    NSLog(@"%s Initialized shared location manager", __PRETTY_FUNCTION__);
     
     UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                    target:self
@@ -84,6 +84,12 @@ static NSString *CellIdentifier = @"LocationCell";
     
     // Uncomment the following line to preserve selection between presentations.
     self.clearsSelectionOnViewWillAppear = NO;
+    
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self.locationManager action:@selector(startUpdatingLocation) forControlEvents:UIControlEventValueChanged];
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Loading nearby locations"];
+    refreshControl.tintColor = BANYAN_GREEN_COLOR;
+    self.refreshControl = refreshControl;
     
     [self.locationManager startUpdatingLocation];
 }
@@ -246,12 +252,14 @@ static NSString *CellIdentifier = @"LocationCell";
 {
     self.locationManager.delegate = self;
     [self.locationManager startUpdatingLocation];
+    [self.refreshControl beginRefreshing];
 }
 
 - (void) stopUpdatingLocation:(NSString *)state
 {
     [self.locationManager stopUpdatingLocation];
     self.locationManager.delegate = nil;
+    [self.refreshControl endRefreshing];
 }
 
 /*
