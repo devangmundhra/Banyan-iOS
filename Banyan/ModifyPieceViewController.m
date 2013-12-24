@@ -740,7 +740,7 @@
     media.localURL = [(NSURL *)[infoDict objectForKey:AVCamCaptureManagerInfoURL] absoluteString];
     UIImage *image = [infoDict objectForKey:AVCamCaptureManagerInfoImage];
     [self.addPhotoButton setImage:image];
-    image = [image thumbnailImage:MEDIA_THUMBNAIL_SIZE transparentBorder:1 cornerRadius:5 interpolationQuality:kCGInterpolationHigh];
+    image = [image thumbnailImage:MEDIA_THUMBNAIL_SIZE transparentBorder:0 cornerRadius:2 interpolationQuality:kCGInterpolationHigh];
     media.thumbnail = image;
     [self.addPhotoButton setThumbnail:image forMedia:media];
     self.doneButton.enabled = [self checkForChanges];
@@ -759,7 +759,7 @@
     media.localURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
     UIImage *image = [info objectForKey:MediaPickerViewControllerInfoImage];
     [self.addPhotoButton setImage:image];
-    image = [image thumbnailImage:MEDIA_THUMBNAIL_SIZE transparentBorder:1 cornerRadius:5 interpolationQuality:kCGInterpolationHigh];
+    image = [image thumbnailImage:MEDIA_THUMBNAIL_SIZE transparentBorder:0 cornerRadius:2 interpolationQuality:kCGInterpolationHigh];
     media.thumbnail = image;
     [self.addPhotoButton setThumbnail:image forMedia:media];
     self.doneButton.enabled = [self checkForChanges];

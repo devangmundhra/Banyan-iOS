@@ -177,8 +177,8 @@
     imageEditorVc.doneCallback = ^(UIImage *editedImage, BOOL canceled){
         if (!canceled) {
             UIImage *image = [editedImage thumbnailImage:MEDIA_THUMBNAIL_SIZE
-                                 transparentBorder:1
-                                      cornerRadius:5
+                                 transparentBorder:0
+                                      cornerRadius:2
                               interpolationQuality:kCGInterpolationHigh];
             [self.thumbnailButton setBackgroundImage:image forState:UIControlStateNormal];
             self.media.thumbnail = image;
