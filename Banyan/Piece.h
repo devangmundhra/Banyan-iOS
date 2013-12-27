@@ -25,10 +25,12 @@
 + (NSArray *)oldPiecesInStory:(Story *)story;
 + (NSArray *)unsavedPiecesInStory:(Story *)story;
 + (Piece *)pieceForStory:(Story *)story withAttribute:(NSString *)attribute asValue:(id)value;
+@end
+
+@interface Piece (RestKitMappings)
 + (RKEntityMapping *)pieceMappingForRKGET;
 + (RKObjectMapping *)pieceRequestMappingForRKPOST;
 + (RKEntityMapping *)pieceResponseMappingForRKPOST;
 + (RKObjectMapping *)pieceRequestMappingForRKPUT;
 + (RKEntityMapping *)pieceResponseMappingForRKPUT;
-
 @end

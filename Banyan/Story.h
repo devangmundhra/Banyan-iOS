@@ -40,6 +40,9 @@
 - (void) saveStoryMOIdToUserDefaults;
 + (Story *)getCurrentOngoingStoryToContribute;
 + (NSArray *)getStoriesUserCanContributeTo;
+@end
+
+@interface Story (RestKitMappings)
 + (RKEntityMapping *)storyMappingForRKGET;
 + (RKObjectMapping *)storyRequestMappingForRKPOST;
 + (RKEntityMapping *)storyResponseMappingForRKPOST;

@@ -20,6 +20,7 @@
 #import "ModifyPieceViewController.h"
 #import "User.h"
 #import "UIViewController+BNSlidingViewControllerAdditions.h"
+#import "Story+Share.h"
 
 static NSString *CellIdentifier = @"SingleStoryCell";
 
@@ -284,7 +285,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [story shareOnFacebook];
-    NSLog(@"Sharing story: %@", story);
 }
 
 #pragma mark StoryListCellDelegate

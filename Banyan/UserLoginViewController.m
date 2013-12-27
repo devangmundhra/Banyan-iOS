@@ -34,7 +34,7 @@
     [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
 
 	// Do any additional setup after loading the view, typically from a nib.
-    self.fbLoginView.readPermissions = [NSArray arrayWithObjects: @"email", @"user_about_me", nil];
+    self.fbLoginView.readPermissions = [NSArray arrayWithObjects: @"email", @"user_about_me", @"user_photos", nil];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

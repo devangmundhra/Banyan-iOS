@@ -14,6 +14,7 @@
 #import "User.h"
 #import "Story+Delete.h"
 #import "StoryOverviewHeaderView.h"
+#import "Story+Share.h"
 
 static NSString *CellIdentifier = @"StoryOverview_PieceCell";
 static NSString *HeaderIdentifier = @"StoryOverview_Header";
@@ -71,6 +72,10 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
     if (self.story.canContribute) {
         UIImage *settingsImage = [UIImage imageNamed:@"settingsButton"];
         UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithImage:settingsImage style:UIBarButtonItemStyleBordered target:self action:@selector(settingsPopup:)];
+        [self.navigationItem setRightBarButtonItem:rightButton];
+    } else {
+        // Share button
+        UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Share" style:UIBarButtonItemStyleBordered target:self.story action:@selector(shareOnFacebook)];
         [self.navigationItem setRightBarButtonItem:rightButton];
     }
     

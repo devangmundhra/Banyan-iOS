@@ -146,6 +146,9 @@
 		51984D43176EE10E00CD6C3E /* CoreDataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51984D42176EE10E00CD6C3E /* CoreDataTableViewController.m */; };
 		51984D46176EEB5600CD6C3E /* SinglePieceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 51984D45176EEB5600CD6C3E /* SinglePieceView.m */; };
 		519AFA7215C26F5D00F68F3C /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */; };
+		51A1E0A3186C30BB00162BD6 /* RemoteObject+Share.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A1E0A2186C30BB00162BD6 /* RemoteObject+Share.m */; };
+		51A1E0A9186C318000162BD6 /* Story+Share.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A1E0A8186C318000162BD6 /* Story+Share.m */; };
+		51A1E0AC186C350E00162BD6 /* Piece+Share.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A1E0AB186C350E00162BD6 /* Piece+Share.m */; };
 		51A8494A171CF4A500367039 /* BNPlacePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A84949171CF4A500367039 /* BNPlacePickerViewController.m */; };
 		51A8494D171D24E900367039 /* BNFBLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8494C171D24E900367039 /* BNFBLocationManager.m */; };
 		51A8DC9116928A240017E86F /* Activity+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC9016928A240017E86F /* Activity+Create.m */; };
@@ -465,6 +468,12 @@
 		51984D44176EEB5600CD6C3E /* SinglePieceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SinglePieceView.h; path = Banyan/SinglePieceView.h; sourceTree = "<group>"; };
 		51984D45176EEB5600CD6C3E /* SinglePieceView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SinglePieceView.m; path = Banyan/SinglePieceView.m; sourceTree = "<group>"; };
 		519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		51A1E0A1186C30BB00162BD6 /* RemoteObject+Share.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "RemoteObject+Share.h"; path = "Banyan/RemoteObject+Share.h"; sourceTree = "<group>"; };
+		51A1E0A2186C30BB00162BD6 /* RemoteObject+Share.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "RemoteObject+Share.m"; path = "Banyan/RemoteObject+Share.m"; sourceTree = "<group>"; };
+		51A1E0A7186C318000162BD6 /* Story+Share.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Story+Share.h"; path = "Banyan/Story+Share.h"; sourceTree = "<group>"; };
+		51A1E0A8186C318000162BD6 /* Story+Share.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Story+Share.m"; path = "Banyan/Story+Share.m"; sourceTree = "<group>"; };
+		51A1E0AA186C350E00162BD6 /* Piece+Share.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Piece+Share.h"; path = "Banyan/Piece+Share.h"; sourceTree = "<group>"; };
+		51A1E0AB186C350E00162BD6 /* Piece+Share.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Piece+Share.m"; path = "Banyan/Piece+Share.m"; sourceTree = "<group>"; };
 		51A84948171CF4A500367039 /* BNPlacePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNPlacePickerViewController.h; path = Banyan/BNPlacePickerViewController.h; sourceTree = "<group>"; };
 		51A84949171CF4A500367039 /* BNPlacePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNPlacePickerViewController.m; path = Banyan/BNPlacePickerViewController.m; sourceTree = "<group>"; };
 		51A8494B171D24E900367039 /* BNFBLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNFBLocationManager.h; path = Banyan/BNFBLocationManager.h; sourceTree = "<group>"; };
@@ -1164,6 +1173,8 @@
 			children = (
 				51CE90B31796392800A2F7CB /* RemoteObject.h */,
 				51CE90B41796392800A2F7CB /* RemoteObject.m */,
+				51A1E0A1186C30BB00162BD6 /* RemoteObject+Share.h */,
+				51A1E0A2186C30BB00162BD6 /* RemoteObject+Share.m */,
 				51FAC0C1172FB8390046C2D6 /* Value Transformers */,
 				51FAC0B9172C82A40046C2D6 /* Comment */,
 				51B598A315EB451600DF4D9D /* Activity */,
@@ -1233,6 +1244,8 @@
 				5189B2F915B395F300562DD0 /* Piece+Edit.m */,
 				51A8DC72169141B90017E86F /* Piece+Stats.h */,
 				5189B2FB15B395F300562DD0 /* Piece+Stats.m */,
+				51A1E0AA186C350E00162BD6 /* Piece+Share.h */,
+				51A1E0AB186C350E00162BD6 /* Piece+Share.m */,
 			);
 			name = Piece;
 			sourceTree = "<group>";
@@ -1273,6 +1286,8 @@
 				5189B31015B395F300562DD0 /* Story+Edit.m */,
 				5189B31115B395F300562DD0 /* Story+Stats.h */,
 				5189B31215B395F300562DD0 /* Story+Stats.m */,
+				51A1E0A7186C318000162BD6 /* Story+Share.h */,
+				51A1E0A8186C318000162BD6 /* Story+Share.m */,
 			);
 			name = Story;
 			sourceTree = "<group>";
@@ -1838,6 +1853,7 @@
 				51C42541182A488F00AF90C1 /* BNIntroductionView.m in Sources */,
 				51170B6E17F42CD50015B343 /* ProfileViewController.m in Sources */,
 				5189B32B15B395F300562DD0 /* InvitedTableViewController.m in Sources */,
+				51A1E0A9186C318000162BD6 /* Story+Share.m in Sources */,
 				51984D40176EDE1000CD6C3E /* BNPiecesScrollView.m in Sources */,
 				51F86251185C40E90037D576 /* StoryOverviewHeaderView.m in Sources */,
 				5189B32F15B395F300562DD0 /* ModifyPieceViewController.m in Sources */,
@@ -1887,6 +1903,7 @@
 				510787D5163A37190042B436 /* Activity.m in Sources */,
 				5157CD031650902900C22CCE /* BanyanConnection.m in Sources */,
 				51C4252D1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.m in Sources */,
+				51A1E0AC186C350E00162BD6 /* Piece+Share.m in Sources */,
 				51F86242185A3A110037D576 /* StoryOverviewController.m in Sources */,
 				51E9B2C6181F8F88004B35A5 /* BNTextField.m in Sources */,
 				514CDF5B18131F410098B0A9 /* InvitedFBFriendsViewController.m in Sources */,
@@ -1914,6 +1931,7 @@
 				51A8494A171CF4A500367039 /* BNPlacePickerViewController.m in Sources */,
 				51A8494D171D24E900367039 /* BNFBLocationManager.m in Sources */,
 				510F49171727D191005BC5ED /* NSObject+BlockObservation.m in Sources */,
+				51A1E0A3186C30BB00162BD6 /* RemoteObject+Share.m in Sources */,
 				510F4920172A5B86005BC5ED /* Piece.m in Sources */,
 				510F4923172A5C17005BC5ED /* Story.m in Sources */,
 				51984D43176EE10E00CD6C3E /* CoreDataTableViewController.m in Sources */,

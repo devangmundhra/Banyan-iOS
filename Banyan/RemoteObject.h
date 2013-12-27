@@ -54,13 +54,6 @@ typedef enum {
 + (void)validateAllObjects;
 + (NSUInteger) numRemoteObjectsWithPendingChanges;
 
-# pragma mark sharing
-- (void) shareOnFacebook;
-- (void) performFacebookPublishAction:(void (^)(void)) action;
-- (void)showAlert:(NSString *)message
-           result:(id)result
-            error:(NSError *)error;
-
 // Misc methods
 - (NSString *)getIdentifierForMediaFileName;
 @end

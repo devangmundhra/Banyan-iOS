@@ -206,33 +206,6 @@
 //    }];
 }
 
-- (void) share
-{
-    if (self.remoteStatus != RemoteObjectStatusSync) {
-        NSLog(@"%s Can't share yet as story with title %@ is not sync'ed", __PRETTY_FUNCTION__, self.title);
-        return;
-    }
-    
-    [[FBSession activeSession] requestNewPublishPermissions:[NSArray arrayWithObject:@"publish_stream"]
-                                            defaultAudience:FBSessionDefaultAudienceFriends
-                                          completionHandler:^(FBSession *session, NSError *error) {
-                                              if (error) {
-                                                  NSLog(@"Error %@ in getting permissions to publish", [error localizedDescription]);
-                                              }
-                                          }];
-    
-    UIImage *image = nil;
-    // TO DO: Add image
-    
-    [FBDialogs presentOSIntegratedShareDialogModallyFrom:[UIApplication sharedApplication].keyWindow.rootViewController
-                                             initialText:self.title
-                                                   image:image
-                                                     url:[NSURL URLWithString:self.permaLink]
-                                                 handler:nil];
-    
-    [TestFlight passCheckpoint:@"Story shared"];
-}
-
 - (void) saveStoryMOIdToUserDefaults
 {
     // Save this story in the UserDefaults so that next time the user will add a piece here.
@@ -247,32 +220,29 @@
     }
 }
 
-#pragma mark share
-- (void) shareOnFacebook
+- (NSString *)getIdentifierForMediaFileName
 {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Sharing not enabled yet" message:@"Oops.. sharing of stories is not enabled yet."
-                                                       delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [alertView show];
-    
-    NSArray *contributorsList = self.writeAccess.inviteeList.facebookFriends;
-    
-    NSMutableArray *fbIds = [NSMutableArray arrayWithCapacity:1];
-    for (NSDictionary *contributor in contributorsList)
-    {
-        if (![[contributor objectForKey:@"id"] isEqualToString:[BNSharedUser currentUser].facebookId])
-            [fbIds addObject:[contributor objectForKey:@"id"]];
-    }
-    
-    FBShareDialogParams *params = [[FBShareDialogParams alloc] init];
-    params.dataFailuresFatal = NO;
-    params.caption = self.title;
-    params.description = @"Check this new story out!";
-    params.friends = fbIds;
-    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.media];
-    params.picture = [NSURL URLWithString:imageMedia.remoteURL];
-    params.ref = @"Story";
-    [FBDialogs presentShareDialogWithParams:params clientState:nil handler:nil];
+    if (self.title.length)
+        return [self.title substringToIndex:MIN(10, self.title.length)];
+    else
+        return [BNMisc genRandStringLength:10];
 }
+
+#pragma mark-
+#pragma mark RestKit dynamic mapping
+- (BOOL)validateReadAccess:(id *)ioValue error:(NSError **)outError
+{
+    *ioValue = [BNDuckTypedObject duckTypedObjectWrappingDictionary:*ioValue];
+    return YES;
+}
+- (BOOL)validateWriteAccess:(id *)ioValue error:(NSError **)outError
+{
+    *ioValue = [BNDuckTypedObject duckTypedObjectWrappingDictionary:*ioValue];
+    return YES;
+}
+@end
+
+@implementation Story (RestKitMappings)
 
 + (RKEntityMapping *)storyMappingForRKGET
 {
@@ -337,26 +307,7 @@
     return storyResponseMapping;
 }
 
-- (NSString *)getIdentifierForMediaFileName
-{
-    if (self.title.length)
-        return [self.title substringToIndex:MIN(10, self.title.length)];
-    else
-        return [BNMisc genRandStringLength:10];
-}
 
-#pragma mark-
-#pragma mark RestKit dynamic mapping
-- (BOOL)validateReadAccess:(id *)ioValue error:(NSError **)outError
-{
-    *ioValue = [BNDuckTypedObject duckTypedObjectWrappingDictionary:*ioValue];
-    return YES;
-}
-- (BOOL)validateWriteAccess:(id *)ioValue error:(NSError **)outError
-{
-    *ioValue = [BNDuckTypedObject duckTypedObjectWrappingDictionary:*ioValue];
-    return YES;
-}
 @end
 
 @implementation Story (CoreDataGeneratedAccessors)
