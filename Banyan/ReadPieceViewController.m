@@ -638,30 +638,6 @@
     [TestFlight passCheckpoint:@"Like piece"];
 }
 
-
-- (IBAction)share:(UIBarButtonItem *)sender 
-{    
-    if (self.piece.story.remoteStatus != RemoteObjectStatusSync) {
-        NSLog(@"%s Can't share yet as story with title %@ is not sync'ed", __PRETTY_FUNCTION__, self.piece.story.title);
-        return;
-    }
-    
-    [[FBSession activeSession] requestNewPublishPermissions:[NSArray arrayWithObject:@"publish_stream"]
-                                            defaultAudience:FBSessionDefaultAudienceFriends
-                                          completionHandler:^(FBSession *session, NSError *error) {
-                                              if (error) {
-                                                  NSLog(@"Error %@ in getting permissions to publish", [error localizedDescription]);
-                                              }
-                                          }];
-    [FBDialogs presentOSIntegratedShareDialogModallyFrom:self
-                                             initialText:self.piece.story.title
-                                                   image:self.imageView.image
-                                                     url:[NSURL URLWithString:self.piece.permaLink]
-                                                 handler:nil];
-    
-    [TestFlight passCheckpoint:@"Piece shared"];
-}
-
 - (void)showFocusView:(UITapGestureRecognizer *)gestureRecognizer
 {
     NSURL *url = nil;
