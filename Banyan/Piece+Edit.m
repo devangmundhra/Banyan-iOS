@@ -55,8 +55,8 @@
     };
     
     if ([piece.media count]) {
-        if (![piece createGifFileIfReqdAndShouldContinue])
-            return;
+//        if (![piece createGifFileIfReqdAndShouldContinue])
+//            return;
         
         // If all the media haven't been uploaded yet, don't edit the piece
         
