@@ -96,6 +96,8 @@ static BOOL _loggedIn;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+#define SPACER_DISTANCE 3.0f
+
 - (id)initWithFrame:(CGRect)frame
 {
 #define SIZE_OF_STORY_STATUS_LABEL 72
@@ -144,7 +146,7 @@ static BOOL _loggedIn;
         self.storyStatusLabel.minimumScaleFactor = 0.5;
         [self addSubview:self.storyStatusLabel];
         
-        self.addPcButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.storyStatusLabel.frame),
+        self.addPcButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.storyStatusLabel.frame)+SPACER_DISTANCE,
                                                                       TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT,
                                                                       SIZE_OF_ADD_PC_BUTTON, BOTTOM_VIEW_HEIGHT)];
         [self.addPcButton setTintColor:BANYAN_GREEN_COLOR];
@@ -190,8 +192,6 @@ static BOOL _loggedIn;
 # pragma mark BNSwipeableView delegates
 - (void)drawFrontView:(CGRect)rect
 {
-#define SPACER_DISTANCE 3.0f
-
     // Add the lines to seperate the different views
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetStrokeColorWithColor(context, BANYAN_LIGHTGRAY_COLOR.CGColor);
