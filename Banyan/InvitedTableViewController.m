@@ -13,8 +13,8 @@
 
 @interface InvitedTableViewController () <InvitedFBFriendsViewControllerDelegate>
 
-@property (nonatomic, copy) BNPermissionsObject<BNPermissionsObject> *viewerPermission;
-@property (nonatomic, copy) BNPermissionsObject<BNPermissionsObject> *contributorPermission;
+@property (nonatomic, strong) BNPermissionsObject<BNPermissionsObject> *viewerPermission;
+@property (nonatomic, strong) BNPermissionsObject<BNPermissionsObject> *contributorPermission;
 @property (nonatomic, strong) NSDictionary *selfInvitation;
 
 @end
@@ -58,8 +58,17 @@ typedef enum {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         
-        _viewerPermission = viewerPermission;
-        _contributorPermission = contributorPermission;
+        NSDictionary *copyViewerPermission =
+        (__bridge NSDictionary *)(CFPropertyListCreateDeepCopy(kCFAllocatorDefault,
+                                                               (__bridge CFPropertyListRef)(viewerPermission),
+                                                               kCFPropertyListImmutable));
+        NSDictionary *copyContributorPermission =
+        (__bridge NSDictionary *)(CFPropertyListCreateDeepCopy(kCFAllocatorDefault,
+                                                               (__bridge CFPropertyListRef)(contributorPermission),
+                                                               kCFPropertyListImmutable));
+        
+        self.viewerPermission = (BNPermissionsObject<BNPermissionsObject> *)[BNDuckTypedObject duckTypedObjectWrappingDictionary:copyViewerPermission];
+        self.contributorPermission = (BNPermissionsObject<BNPermissionsObject> *)[BNDuckTypedObject duckTypedObjectWrappingDictionary:copyContributorPermission];
         
         self.title = @"Permissions for story";
         
