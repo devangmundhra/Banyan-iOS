@@ -96,6 +96,8 @@
     
     [self restKitCoreDataInitialization];
     
+    [RemoteObject validateAllObjects];
+
     // Create a location manager instance to determine if location services are enabled. This manager instance will be
     // immediately released afterwards.
     if ([CLLocationManager locationServicesEnabled] == NO) {
@@ -174,6 +176,10 @@ void uncaughtExceptionHandler(NSException *exception)
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    NSError *error = nil;
+    if (![[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:&error]) {
+        NSAssert2(false, @"Unresolved Core Data Save error %@", error, [error userInfo]);
+    }
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -186,7 +192,6 @@ void uncaughtExceptionHandler(NSException *exception)
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     // We need to properly handle activation of the application with regards to SSO
     // (e.g., returning from iOS 6.0 authorization dialog or from fast app switching).
-    [RemoteObject validateAllObjects];
 
     [FBSession.activeSession handleDidBecomeActive];
     

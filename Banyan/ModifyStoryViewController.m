@@ -226,7 +226,7 @@
 {
     [self dismissKeyboard:nil];
     // Title
-    self.story.title = (self.storyTitleTextField.text && ![self.storyTitleTextField.text isEqualToString:@""]) ? self.storyTitleTextField.text : [BNMisc longCurrentDate];
+    self.story.title = (self.storyTitleTextField.text && ![self.storyTitleTextField.text isEqualToString:@""]) ? self.storyTitleTextField.text : [BNMisc shortCurrentDate];
     
     // Story Privacy
     self.story.writeAccess = self.writeAccessList;

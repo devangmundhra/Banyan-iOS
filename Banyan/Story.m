@@ -291,8 +291,9 @@
 
 + (RKObjectMapping *)storyRequestMappingForRKPUT
 {
-    RKObjectMapping *storyRequestMapping = [RKObjectMapping requestMapping];
-    [storyRequestMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_WRITE_ACCESS, STORY_READ_ACCESS, STORY_TAGS, @"isLocationEnabled", @"location"]];
+    // We start with the request mapping for POST because it is possible that while the piece is being updated, somebody deletes the piece.
+    // In that case, it we start with the request mapping for POST, then the piece will atleast get recreated.
+    RKObjectMapping *storyRequestMapping = [Story storyRequestMappingForRKPOST];
     [storyRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:[Media mediaRequestMapping]]];
     
     return storyRequestMapping;

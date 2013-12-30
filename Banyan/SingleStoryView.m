@@ -140,7 +140,7 @@ static BOOL _loggedIn;
                                                                           SIZE_OF_STORY_STATUS_LABEL, BOTTOM_VIEW_HEIGHT)];
         self.storyStatusLabel.backgroundColor = BANYAN_WHITE_COLOR;
         self.storyStatusLabel.textColor = BANYAN_LIGHTGRAY_COLOR;
-        self.storyStatusLabel.textAlignment = NSTextAlignmentRight;
+        self.storyStatusLabel.textAlignment = NSTextAlignmentCenter;
         self.storyStatusLabel.lineBreakMode = NSLineBreakByClipping;
         self.storyStatusLabel.font = _smallFont;
         self.storyStatusLabel.minimumScaleFactor = 0.5;

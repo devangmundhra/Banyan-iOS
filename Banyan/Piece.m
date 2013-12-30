@@ -166,8 +166,9 @@
 
 + (RKObjectMapping *)pieceRequestMappingForRKPUT
 {
-    RKObjectMapping *pieceRequestMapping = [RKObjectMapping requestMapping];
-    [pieceRequestMapping addAttributeMappingsFromArray:@[PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled", @"location"]];
+    // We start with the request mapping for POST because it is possible that while the piece is being updated, somebody deletes the piece.
+    // In that case, it we start with the request mapping for POST, then the piece will atleast get recreated.
+    RKObjectMapping *pieceRequestMapping = [Piece pieceRequestMappingForRKPOST];
     [pieceRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:[Media mediaRequestMapping]]];
     return pieceRequestMapping;
 }
