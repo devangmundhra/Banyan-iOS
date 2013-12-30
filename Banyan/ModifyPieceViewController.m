@@ -357,28 +357,24 @@
 // Done modifying piece. Now save all the changes.
 - (IBAction)done:(UIBarButtonItem *)sender 
 {
-    // So that ReadPieceVC's KVO are not fired unnecessarily
-    if (![self.piece.longText isEqualToString:self.pieceTextView.text]) {
-        self.piece.longText = self.pieceTextView.text;
-        
-        // Extract the tags
-        NSMutableArray *substrings = [NSMutableArray array];
-        NSScanner *scanner = [NSScanner scannerWithString:self.piece.longText];
-        [scanner scanUpToString:@"#" intoString:nil]; // Scan all characters before #
-        while(![scanner isAtEnd]) {
-            NSString *substring = nil;
-            [scanner scanString:@"#" intoString:nil]; // Scan the # character
-            if([scanner scanUpToString:@" " intoString:&substring]) {
-                // If the space immediately followed the #, this will be skipped
-                [substrings addObject:substring];
-            }
-            [scanner scanUpToString:@"#" intoString:nil]; // Scan all characters before next #
-        }
-        self.piece.tags = [substrings componentsJoinedByString:@", "];
-    }
+    self.piece.longText = self.pieceTextView.text;
     
-    if (![self.piece.shortText isEqualToString:self.pieceCaptionView.text])
-        self.piece.shortText = self.pieceCaptionView.text;
+//    // Extract the tags
+//    NSMutableArray *substrings = [NSMutableArray array];
+//    NSScanner *scanner = [NSScanner scannerWithString:self.piece.longText];
+//    [scanner scanUpToString:@"#" intoString:nil]; // Scan all characters before #
+//    while(![scanner isAtEnd]) {
+//        NSString *substring = nil;
+//        [scanner scanString:@"#" intoString:nil]; // Scan the # character
+//        if([scanner scanUpToString:@" " intoString:&substring]) {
+//            // If the space immediately followed the #, this will be skipped
+//            [substrings addObject:substring];
+//        }
+//        [scanner scanUpToString:@"#" intoString:nil]; // Scan all characters before next #
+//    }
+//    self.piece.tags = [substrings componentsJoinedByString:@", "];
+    
+    self.piece.shortText = self.pieceCaptionView.text;
     
     self.piece.location = (GooglePlacesObject<GooglePlacesObject>*)self.addLocationButton.location;
     
@@ -600,11 +596,21 @@
 #pragma mark UITextFieldDelegate / UITextViewDelegate
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
+    if (textField == self.pieceCaptionView) {
+        [UIView animateWithDuration:0.5 animations:^{
+            textField.backgroundColor = BANYAN_WHITE_COLOR;
+        }];
+    }
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
     self.doneButton.enabled = [self checkForChanges];
+    if (textField == self.pieceCaptionView) {
+        [UIView animateWithDuration:0.5 animations:^{
+            textField.backgroundColor = [BANYAN_WHITE_COLOR colorWithAlphaComponent:SUBVIEW_OPACITY];
+        }];
+    }
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField

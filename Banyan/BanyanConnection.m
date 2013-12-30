@@ -237,12 +237,22 @@
     return _storiesPaginator;
 }
 
-//if ([notification.name isEqualToString:AFNetworkingReachabilityDidChangeNotification]) {
-
 + (void) loadDataSource:(id)sender
 {
 //    [[self storiesPaginator] loadPage:1];
 //    return;
+    
+    // If this refresh is by a notification, only do it if it has been atleast 15 seconds since the last refresh
+    if ([sender isKindOfClass:[NSNotification class]]) {
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        NSDate *lastSyncDate = [userDefaults objectForKey:BNUserDefaultsLastSuccessfulStoryUpdateTime];
+        if (lastSyncDate && [[NSDate date] timeIntervalSinceDate:lastSyncDate]<15) {
+            NSLog(@"%s loadDataSource skipped because last sync date (%@) - now (%@) < 15", __PRETTY_FUNCTION__, lastSyncDate, [NSDate date]);
+            [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
+                                                                object:self];
+            return;
+        }
+    }
     
     if ([RemoteObject numRemoteObjectsWithPendingChanges]) {
         // If the notification is through any kind of notification, ignore showing the alert
@@ -256,7 +266,7 @@
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
                                                             object:self];
-        NSLog(@"%s loadDataSource skipped", __PRETTY_FUNCTION__);
+        NSLog(@"%s loadDataSource skipped because upload in progress", __PRETTY_FUNCTION__);
 
         return;
     }
