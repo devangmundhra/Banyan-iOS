@@ -72,7 +72,8 @@
 - (void)cloneFrom:(Media *)source
 {
     for (NSString *key in [[[source entity] attributesByName] allKeys]) {
-        if ([key isEqualToString:@"filename"] || [key isEqualToString:@"thumbnail"]) {
+        // Skip filename to avoid getting multiple media object when mapping through restkit identificationAttributes
+        if ([key isEqualToString:@"filename"]) {
             NSLog(@"Skipping attribute %@", key);
             continue;
         }
