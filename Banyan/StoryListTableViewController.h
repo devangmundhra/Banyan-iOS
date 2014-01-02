@@ -14,6 +14,7 @@
 
 @interface StoryListTableViewController : CoreDataTableViewController <SingleStoryCellDelegate, StoryPickerViewControllerDelegate>
 
--(void) addPieceToStory:(Story *)story;
+- (void) addPieceToStory:(Story *)story;
+- (void)storyReaderWithStory:(Story *)story piece:(Piece *)piece;
 
 @end

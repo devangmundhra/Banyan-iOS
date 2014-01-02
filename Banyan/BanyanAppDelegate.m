@@ -91,7 +91,9 @@
     RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelWarning);
     RKLogConfigureByName("RestKit/CoreData", RKLogLevelWarning);
     
-    [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
+    [application registerForRemoteNotificationTypes:
+     UIRemoteNotificationTypeBadge |
+     UIRemoteNotificationTypeSound |
      UIRemoteNotificationTypeAlert];
     
     [self restKitCoreDataInitialization];
@@ -113,8 +115,9 @@
     [self.window makeKeyAndVisible];
     
     // Extract the notification data
-    NSDictionary *notificationPayload = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
-    [BanyanAppDelegate handlePush:notificationPayload];
+    if (launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]) {
+        [self application:application didReceiveRemoteNotification:launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]];
+    }
     
     return YES;
 }
@@ -224,14 +227,59 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
 }
 
 - (void)application:(UIApplication *)application
-didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    [BanyanAppDelegate handlePush:userInfo];
-}
-
-+ (void) handlePush:(NSDictionary *)userInfo
+didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
     NSLog(@"Handling push with info: %@", userInfo);
+    
+    NSDictionary *dataDict = [userInfo objectForKey:@"data"];
+    NSString *storyId = [dataDict objectForKey:@"story"];
+    NSString *pieceId = [dataDict objectForKey:@"piece"];
+    NSDate *opStartDate = [NSDate date];
+    if (storyId) {
+        // There was a new story. Get the story and launch it
+        [[RKObjectManager sharedManager] getObjectsAtPath:[NSString stringWithFormat:@"story/%@/?format=json", storyId]
+                                               parameters:nil
+                                                  success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                                      NSTimeInterval opInterval = [opStartDate timeIntervalSinceNow];
+                                                      if (opInterval<-5) {
+                                                          // We give 5 seconds from the app launch for the story to be successfully
+                                                          // received and opened, so that if a user starts another operation, he/she is not
+                                                          // interrupted by some random story being opened
+                                                          NSLog(@"Ignoring action from notificaiton as operation interval was %f seconds", opInterval);
+                                                          return;
+                                                      }
+                                                      NSArray *stories = [mappingResult array];
+                                                      NSAssert1(stories.count <= 1, @"Error in getting a single story from remote notificaiton", storyId);
+                                                      Story *story = [stories lastObject];
+                                                      if (story) {
+                                                          Piece *piece = nil;
+                                                          if (pieceId) {
+                                                              // Open the story with the specific piece
+                                                              piece = [Piece pieceForStory:story withAttribute:@"bnObjectId" asValue:pieceId];
+                                                          } else {
+                                                              // Open the story from the first piece
+                                                              piece = [story.pieces objectAtIndex:0];
+                                                          }
+                                                          // Story reader, open piece
+                                                          if ([self.homeViewController.topViewController isKindOfClass:[UINavigationController class]]) {
+                                                              UINavigationController *topNavController = (UINavigationController *)self.homeViewController.topViewController;
+                                                              // If the top view controller is a StoryListController, then read the story, otherwise nothing
+                                                              if ([topNavController.topViewController isKindOfClass:[StoryListTableViewController class]]) {
+                                                                  StoryListTableViewController *topStoryListVC = (StoryListTableViewController *)topNavController.topViewController;
+                                                                  [topStoryListVC storyReaderWithStory:story piece:piece];
+                                                              } else {
+                                                                  NSLog(@"Not displaying story as some other view controller is open");
+                                                              }
+                                                          }
+                                                      }
+                                                  }
+                                                  failure:nil];
+        
+    } else {
+        // Do nothing
+    }
 }
+
 
 # pragma mark User Account Management
 - (void)login

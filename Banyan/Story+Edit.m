@@ -14,7 +14,7 @@
 
 @implementation Story (Edit)
 
-+ (void) updateLengthAndPieceNumbers:(Story *)story
++ (void) syncStoryAttributeWithItsPIeces:(Story *)story
 {
     // Update the length
     story.length = story.pieces.count;
@@ -24,6 +24,9 @@
     else {
         [story.pieces enumerateObjectsUsingBlock:^(Piece *localPiece, NSUInteger idx, BOOL *stop) {
             localPiece.pieceNumber = idx+1;
+            if (story.timeStamp < localPiece.timeStamp) {
+                story.timeStamp = localPiece.timeStamp;
+            }
         }];
     }
     

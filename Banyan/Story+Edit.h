@@ -11,7 +11,7 @@
 
 @interface Story (Edit)
 
-+ (void) updateLengthAndPieceNumbers:(Story *)story;
++ (void) syncStoryAttributeWithItsPIeces:(Story *)story;
 + (void) editStory:(Story *)story;
 - (void) updateMediaIfRequiredWithMediaSet:(NSOrderedSet *)mediaSet;
 

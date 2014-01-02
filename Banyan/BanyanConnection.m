@@ -61,10 +61,17 @@
     [objectManager.router.routeSet addRoute:[RKRoute routeWithName:@"get_stories" pathPattern:@"story/?format=json" method:RKRequestMethodGET]];
     
     // Story descriptors
+    // GET response descriptor for the route named "get_stories"
     [objectManager addResponseDescriptor:[RKResponseDescriptor responseDescriptorWithMapping:[Story storyMappingForRKGET]
                                                                                       method:RKRequestMethodGET
                                                                                  pathPattern:@"story/"
                                                                                      keyPath:@"objects"
+                                                                                 statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)]];
+    // GET response descriptor for GETting single stories
+    [objectManager addResponseDescriptor:[RKResponseDescriptor responseDescriptorWithMapping:[Story storyMappingForRKGET]
+                                                                                      method:RKRequestMethodGET
+                                                                                 pathPattern:@"story/:bnObjectId/"
+                                                                                     keyPath:nil
                                                                                  statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)]];
     [objectManager addRequestDescriptor:[RKRequestDescriptor
                                          requestDescriptorWithMapping:[Story storyRequestMappingForRKPOST]
@@ -243,7 +250,7 @@
 //    return;
     
     // If this refresh is by a notification, only do it if it has been atleast 15 seconds since the last refresh
-    if ([sender isKindOfClass:[NSNotification class]]) {
+    if ([sender isKindOfClass:[NSNotification class]] && ([[(NSNotification *)sender name] isEqualToString:UIApplicationDidBecomeActiveNotification])) {
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         NSDate *lastSyncDate = [userDefaults objectForKey:BNUserDefaultsLastSuccessfulStoryUpdateTime];
         if (lastSyncDate && [[NSDate date] timeIntervalSinceDate:lastSyncDate]<15) {

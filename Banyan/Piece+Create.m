@@ -49,7 +49,7 @@
     assert(!NUMBER_EXISTS(piece.bnObjectId));
     
     if (piece.remoteStatus == RemoteObjectStatusLocal) {
-        [Story updateLengthAndPieceNumbers:piece.story];
+        [Story syncStoryAttributeWithItsPIeces:piece.story];
     }
     
     piece.remoteStatus = RemoteObjectStatusPushing;
