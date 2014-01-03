@@ -265,8 +265,10 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                                                               UINavigationController *topNavController = (UINavigationController *)self.homeViewController.topViewController;
                                                               // If the top view controller is a StoryListController, then read the story, otherwise nothing
                                                               if ([topNavController.topViewController isKindOfClass:[StoryListTableViewController class]]) {
-                                                                  StoryListTableViewController *topStoryListVC = (StoryListTableViewController *)topNavController.topViewController;
-                                                                  [topStoryListVC storyReaderWithStory:story piece:piece];
+                                                                  [self.homeViewController resetTopViewAnimated:YES onComplete:^{
+                                                                      StoryListTableViewController *topStoryListVC = (StoryListTableViewController *)topNavController.topViewController;
+                                                                      [topStoryListVC storyReaderWithStory:story piece:piece];
+                                                                  }];
                                                               } else {
                                                                   NSLog(@"Not displaying story as some other view controller is open");
                                                               }
