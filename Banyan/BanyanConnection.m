@@ -291,8 +291,6 @@
              
              [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
                                                                  object:self];
-             NSError *error = nil;
-             [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:&error];
          });
      } errorBlock:^(NSError *error) {
          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in fetching stories."

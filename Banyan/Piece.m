@@ -25,7 +25,7 @@
 + (NSArray *)oldPiecesInStory:(Story *)story
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    [request setEntity:[NSEntityDescription entityForName:kBNPieceClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
+    [request setEntity:[NSEntityDescription entityForName:kBNPieceClassKey inManagedObjectContext:story.managedObjectContext]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@) AND (bnObjectId != NULL) AND (story = %@) AND (lastSynced <= %@)",
 							  [NSNumber numberWithInt:RemoteObjectStatusSync], story, [NSDate dateWithTimeIntervalSinceNow:-60*2]];
     [request setPredicate:predicate];
@@ -33,7 +33,7 @@
     [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
     
     NSError *error = nil;
-    NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+    NSArray *array = [story.managedObjectContext executeFetchRequest:request error:&error];
     if (array == nil) {
         array = [NSArray array];
     }
@@ -43,13 +43,13 @@
 + (NSArray *)unsavedPiecesInStory:(Story *)story
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    [request setEntity:[NSEntityDescription entityForName:kBNPieceClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
+    [request setEntity:[NSEntityDescription entityForName:kBNPieceClassKey inManagedObjectContext:story.managedObjectContext]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@) AND (bnObjectId == NULL) AND (story = %@)",
 							  [NSNumber numberWithInt:RemoteObjectStatusLocal], story];
     [request setPredicate:predicate];
     
     NSError *error = nil;
-    NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+    NSArray *array = [story.managedObjectContext executeFetchRequest:request error:&error];
     if (array == nil) {
         array = [NSArray array];
     }
@@ -77,7 +77,7 @@
 + (Piece *)pieceForStory:(Story *)story withAttribute:(NSString *)attribute asValue:(id)value
 {
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    [request setEntity:[NSEntityDescription entityForName:kBNPieceClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
+    [request setEntity:[NSEntityDescription entityForName:kBNPieceClassKey inManagedObjectContext:story.managedObjectContext]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(%K == %@) AND (story = %@)",
 							  attribute, value, story];
     [request setPredicate:predicate];
@@ -86,7 +86,7 @@
     [request setFetchLimit:1];
     
     NSError *error = nil;
-    NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+    NSArray *array = [story.managedObjectContext executeFetchRequest:request error:&error];
     
     return array.count ? [array objectAtIndex:0] : nil;
 }
