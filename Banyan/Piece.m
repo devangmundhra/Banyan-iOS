@@ -20,7 +20,6 @@
 @dynamic shortText;
 @dynamic story;
 @dynamic tags;
-@dynamic creatingGifFromMedia;
 
 + (NSArray *)oldPiecesInStory:(Story *)story
 {
@@ -178,6 +177,7 @@
     RKEntityMapping *pieceResponseMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
                                                                 inManagedObjectStore:[RKManagedObjectStore defaultStore]];
     [pieceResponseMapping addAttributeMappingsFromArray:@[@"updatedAt"]];
+    pieceResponseMapping.identificationAttributes = @[@"bnObjectId"];
     return pieceResponseMapping;
 }
 

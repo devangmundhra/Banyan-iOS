@@ -65,12 +65,17 @@
                                              failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                                  dispatch_async(dispatch_get_main_queue(), ^{
                                                      [hud hide:YES];
-                                                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error in deleting piece %@", piece.shortText]
-                                                                                                     message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]
-                                                                                                    delegate:nil
-                                                                                           cancelButtonTitle:@"OK"
-                                                                                           otherButtonTitles:nil];
-                                                     [alert show];
+                                                     if (operation.response.statusCode == 404) {
+                                                         // The story is no longer available on the server. Delete it
+                                                         [piece remove];
+                                                         if (completion) completion();
+                                                         return;
+                                                     }
+                                                     [[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error in deleting piece %@", piece.shortText]
+                                                                                 message:error.localizedDescription
+                                                                                delegate:nil
+                                                                       cancelButtonTitle:@"OK"
+                                                                       otherButtonTitles:nil] show];
                                                  });
                                              }
          ];

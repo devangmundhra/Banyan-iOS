@@ -118,7 +118,7 @@
     if (launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]) {
         [self application:application didReceiveRemoteNotification:launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]];
     }
-    
+
     return YES;
 }
 
@@ -258,10 +258,12 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                                                               piece = [Piece pieceForStory:story withAttribute:@"bnObjectId" asValue:pieceId];
                                                           } else {
                                                               // Open the story from the first piece
-                                                              piece = [story.pieces objectAtIndex:0];
+                                                              if (story.pieces.count > 0) {
+                                                                  piece = [story.pieces objectAtIndex:0];
+                                                              }
                                                           }
                                                           // Story reader, open piece
-                                                          if ([self.homeViewController.topViewController isKindOfClass:[UINavigationController class]]) {
+                                                          if (piece && [self.homeViewController.topViewController isKindOfClass:[UINavigationController class]]) {
                                                               UINavigationController *topNavController = (UINavigationController *)self.homeViewController.topViewController;
                                                               // If the top view controller is a StoryListController, then read the story, otherwise nothing
                                                               if ([topNavController.topViewController isKindOfClass:[StoryListTableViewController class]]) {
@@ -514,7 +516,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     }
     
     NSAssert(persistentStore, @"Failed to add persistent store with error: %@", error);
-    
+
     // Create the managed object contexts
     [managedObjectStore createManagedObjectContexts];
     
@@ -525,6 +527,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     managedObjectStore.mainQueueManagedObjectContext.undoManager = nil;
     
     [RKManagedObjectStore setDefaultStore:managedObjectStore];
+    
+    NSLog(@"\rPersistent Store Ctx: %@\rMain Ctx: %@", managedObjectStore.persistentStoreManagedObjectContext, managedObjectStore.mainQueueManagedObjectContext);
 }
 
 #pragma mark MISCELLANEOUS METHODS

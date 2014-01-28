@@ -57,7 +57,7 @@
 {
     RKEntityMapping *userMapping = [RKEntityMapping mappingForEntityForName:kBNUserClassKey
                                                        inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-    [userMapping addAttributeMappingsFromDictionary:@{@"id": @"userId"}];
+    [userMapping addAttributeMappingsFromDictionary:@{@"id": @"userId", @"resource_uri":@"resourceUri"}];
     [userMapping addAttributeMappingsFromArray:@[@"username", @"name", @"firstName", @"lastName", @"facebookId", @"email"]];
 //    userMapping.identificationAttributes = @[@"userId"];
     

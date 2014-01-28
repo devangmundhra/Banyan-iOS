@@ -3,7 +3,7 @@
 //  Storied
 //
 //  Created by Devang Mundhra on 3/21/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Banyan. All rights reserved.
 //
 
 #import "Story+Edit.h"
@@ -72,6 +72,12 @@
                                                    // The story is no longer available on the server. This is now a local copy
                                                    story.remoteStatus = RemoteObjectStatusLocal;
                                                    [Story deleteStory:story completion:nil];
+                                                   [[[UIAlertView alloc] initWithTitle:@"Error in story update"
+                                                                               message:@"This story has already been deleted and so the changes to the story will be dropped"
+                                                                              delegate:nil
+                                                                     cancelButtonTitle:@"OK"
+                                                                     otherButtonTitles:nil]
+                                                    show];
                                                }
                                                NSLog(@"Error in updating story");
                                            }];

@@ -315,7 +315,7 @@ typedef enum {
 - (IBAction)addPieceNotificationsSwitchChanged:(UISwitch *)switchControl
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setBool:switchControl.on forKey:BNAddPieceToContributedStoryPushNotification];
+    [defaults setBool:switchControl.on forKey:BNUserDefaultsAddPieceToContributedStoryPushNotification];
     [defaults synchronize];
     
     if (switchControl.on) {

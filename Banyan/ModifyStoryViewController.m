@@ -31,13 +31,12 @@
 @property (strong, nonatomic) IBOutlet BNLabel *inviteeLabel;
 @property (strong, nonatomic) IBOutlet UIButton *inviteContactsButton;
 
-
 @property (strong, nonatomic) BNPermissionsObject<BNPermissionsObject> *writeAccessList;
 @property (strong, nonatomic) BNPermissionsObject<BNPermissionsObject> *readAccessList;
 
 @property (nonatomic) ModifyStoryViewControllerEditMode editMode;
-@property (strong, nonatomic) Story *backupStory_;
 
+@property (strong, nonatomic) NSManagedObjectContext *scratchMOC;;
 @end
 
 @implementation ModifyStoryViewController
@@ -46,7 +45,6 @@
 @synthesize storyTitleTextField = _storyTitleTextField;
 @synthesize writeAccessList = _writeAccessList;
 @synthesize readAccessList = _readAccessList;
-@synthesize backupStory_ = _backupStory_;
 @synthesize editMode = _editMode;
 @synthesize delegate = _delegate;
 @synthesize inviteeLabel = _inviteeLabel;
@@ -54,6 +52,7 @@
 @synthesize scrollView = _scrollView;
 @synthesize invitationView = _invitationView;
 @synthesize charCountLabel = _charCountLabel;
+@synthesize scratchMOC = _scratchMOC;
 
 #define MAX_STORY_TITLE_LENGTH 20
 #define TEXT_INSETS 5
@@ -75,16 +74,15 @@
 {
     if (self = [super init]) {
         self.hidesBottomBarWhenPushed = YES;
-        self.story = story;
+        self.scratchMOC = [[RKManagedObjectStore defaultStore] newChildManagedObjectContextWithConcurrencyType:NSPrivateQueueConcurrencyType tracksChanges:YES];
+        self.story = (Story *)[story cloneIntoNSManagedObjectContext:self.scratchMOC];
         if (self.story.remoteStatus == RemoteObjectStatusLocal) {
             self.editMode = ModifyStoryViewControllerEditModeAdd;
         } else {
             self.editMode = ModifyStoryViewControllerEditModeEdit;
-            self.backupStory_ = [NSEntityDescription insertNewObjectForEntityForName:[[story entity] name] inManagedObjectContext:[story managedObjectContext]];
-            [self.backupStory_ cloneFrom:story];
         }
-        
     }
+    
     return self;
 }
 
@@ -208,22 +206,21 @@
 }
 
 // Update the story
-- (void)deleteBackupStory
-{
-    if (self.backupStory_) {
-        [self.backupStory_ remove];
-        self.backupStory_ = nil;
-    }
-}
-
-- (void)restoreBackupStory:(BOOL)upload
-{
-    if (self.backupStory_)
-        [self.story cloneFrom:self.backupStory_];
-}
-
 - (IBAction)done:(UIBarButtonItem *)sender
 {
+    // If the story was already deleted while it was being edited in the view controller,
+    // just inform the user and exit. Something more sophiticated might be needed later.
+    if (self.story.isDeleted || self.story.hasBeenDeleted) {
+        [[[UIAlertView alloc] initWithTitle:@"This story has been deleted"
+                                    message:[NSString stringWithFormat:@"The story \"%@\" was deleted in the server and it can not be edited", self.story.title]
+                                   delegate:nil
+                          cancelButtonTitle:@"OK"
+                          otherButtonTitles:nil]
+         show];
+        [self cancel:nil];
+        return;
+    }
+    
     [self dismissKeyboard:nil];
     // Title
     self.story.title = (self.storyTitleTextField.text && ![self.storyTitleTextField.text isEqualToString:@""]) ? self.storyTitleTextField.text : [BNMisc shortCurrentDate];
@@ -231,6 +228,8 @@
     // Story Privacy
     self.story.writeAccess = self.writeAccessList;
     self.story.readAccess = self.readAccessList;
+
+    self.story = (Story *)[self.story cloneIntoNSManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
     
     // Upload Story
     if (self.editMode == ModifyStoryViewControllerEditModeAdd) {
@@ -252,12 +251,8 @@
 
 - (IBAction)cancel:(id)sender
 {
-    if (self.editMode == ModifyStoryViewControllerEditModeEdit) {
-        [self restoreBackupStory:NO];
-    }
-    
 	//remove the original piece in case of local draft unsaved
-	if (self.editMode == ModifyStoryViewControllerEditModeAdd)
+	if (self.editMode == ModifyStoryViewControllerEditModeAdd || self.story.remoteStatus == RemoteObjectStatusLocal)
 		[self.story remove];
     
 	self.story = nil; // Just in case
@@ -343,7 +338,6 @@ finishedInvitingForViewerPermissions:(BNPermissionsObject *)viewerPermissions
 #pragma mark Methods to interface between views
 - (void) dismissEditViewWithCompletionBlock:(void (^)(void))completionBlock
 {
-    [self deleteBackupStory];
     [self dismissViewControllerAnimated:YES completion:completionBlock];
 }
 
@@ -354,6 +348,11 @@ finishedInvitingForViewerPermissions:(BNPermissionsObject *)viewerPermissions
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc that aren't in use.
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #undef TEXT_INSETS

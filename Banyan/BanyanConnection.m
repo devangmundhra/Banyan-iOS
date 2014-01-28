@@ -16,6 +16,7 @@
 #import "Story+Create.h"
 #import "Piece+Create.h"
 #import "Activity.h"
+#import "BanyanAppDelegate.h"
 
 @implementation BanyanConnection
 
@@ -132,6 +133,26 @@
                                                                                  pathPattern:@"activity/"
                                                                                      keyPath:nil
                                                                                  statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)]];
+    
+    // Fetch request blocks for deleting orphaned objects
+    [objectManager addFetchRequestBlock:^NSFetchRequest *(NSURL *URL) {
+        RKPathMatcher *pathMatcher = [RKPathMatcher pathMatcherWithPath:@"story"];
+        
+        NSDictionary *argsDict = nil;
+        BOOL match = [pathMatcher matchesPattern:[URL relativePath] tokenizeQueryStrings:YES parsedArguments:&argsDict];
+        if (match) {
+            NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
+//            // Don't delete stories or pieces that have not yet been uploaded completely.
+//            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@) AND (SUBQUERY(pieces, $piece, $piece.remoteStatusNumber != %@).@count = 0)",
+//                                      [NSNumber numberWithInt:RemoteObjectStatusSync], [NSNumber numberWithInt:RemoteObjectStatusSync]];
+            // Don't delete stories or pieces that have not yet been uploaded completely.
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@)", [NSNumber numberWithInt:RemoteObjectStatusSync]];
+            [fetchRequest setPredicate:predicate];
+            return fetchRequest;
+        }
+        
+        return nil;
+    }];
 }
 
 # pragma Storing the stories for this app
@@ -261,22 +282,22 @@
         }
     }
     
-    if ([RemoteObject numRemoteObjectsWithPendingChanges]) {
-        // If the notification is through any kind of notification, ignore showing the alert
-        if (![sender isKindOfClass:[NSNotification class]]) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Cannot refresh stories"
-                                                            message:@"Some of the changes that you have done are still being uploaded.\rPlease refresh the stories once all the changes have been synchronized."
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
-            [alert show];
-        }
-        [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
-                                                            object:self];
-        NSLog(@"%s loadDataSource skipped because upload in progress", __PRETTY_FUNCTION__);
-
-        return;
-    }
+//    if ([RemoteObject numRemoteObjectsWithPendingChanges]) {
+//        // If the notification is through any kind of notification, ignore showing the alert
+//        if (![sender isKindOfClass:[NSNotification class]]) {
+//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Cannot refresh stories"
+//                                                            message:@"Some of the changes that you have done are still being uploaded.\rPlease refresh the stories once all the changes have been synchronized."
+//                                                           delegate:nil
+//                                                  cancelButtonTitle:@"OK"
+//                                                  otherButtonTitles:nil];
+//            [alert show];
+//        }
+//        [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
+//                                                            object:self];
+//        NSLog(@"%s loadDataSource skipped because upload in progress", __PRETTY_FUNCTION__);
+//
+//        return;
+//    }
     
     NSLog(@"%s loadDataSource begin", __PRETTY_FUNCTION__);
     
@@ -293,6 +314,20 @@
                                                                  object:self];
          });
      } errorBlock:^(NSError *error) {
+         if ([[error localizedDescription] rangeOfString:@"Cocoa error 1600"].location != NSNotFound) {
+             /*
+              * If this is a Cocoa error 1600 error, just bail out of the app.
+              * This error happens because of the following scenario, but no solution seems to be able to fix this-
+              * 1. Create a story in the simulator
+              * 2. Refresh the story list on the device so that you get the story
+              * 3. Delete the story from the simulator, so that the story is deleted from the backend
+              * 4. Refresh the story list on the device. While the story list is being refreshed, open the "addAPiece" view controller
+              * 5. When the story list refresh completes, we get the Cocoa error 1600. Doing any kind of CoreData operation after that crashes the app
+              * This is supposed to be fairly rare, so it is OK for now to do this until the users behaviors dictate otherwise
+              */
+             NSAssert(false, @"Got Unresolved Cocoa error 1600");
+         }
+         
          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in fetching stories."
                                                          message:[error localizedDescription]
                                                         delegate:nil
@@ -311,12 +346,6 @@
                                                         parameters:nil
                                                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                                                NSArray *stories = [mappingResult array];
-                                                               // Delete stories that have been deleted on the server
-                                                               NSArray *syncedStories =[Story syncedStories];
-                                                               for (Story *story in syncedStories) {
-                                                                   if (![stories containsObject:story])
-                                                                       [story remove];
-                                                               }
                                                                [stories enumerateObjectsUsingBlock:^(Story *story, NSUInteger idx, BOOL *stop) {
                                                                    story.lastSynced = [NSDate date];
                                                                    story.currentPieceNum = MAX([Piece pieceForStory:story withAttribute:@"viewedByCurUser" asValue:[NSNumber numberWithBool:FALSE]].pieceNumber, 1);
@@ -381,18 +410,22 @@
 {
     NSArray *failedStories = [Story storiesFailedToBeUploaded];
     for (Story *story in failedStories) {
-        if (NUMBER_EXISTS(story.bnObjectId))
+        if (NUMBER_EXISTS(story.bnObjectId)) {
             [Story editStory:story];
-        else
+        }
+        else {
             [Story createNewStory:story];
+        }
     }
     
     NSArray *failedPieces = [Piece piecesFailedToBeUploaded];
     for (Piece *piece in failedPieces) {
-        if (NUMBER_EXISTS(piece.bnObjectId))
+        if (NUMBER_EXISTS(piece.bnObjectId)) {
             [Piece editPiece:piece];
-        else
+        }
+        else {
             [Piece createNewPiece:piece];
+        }
     }
 }
 

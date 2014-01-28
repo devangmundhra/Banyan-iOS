@@ -305,6 +305,7 @@
                                                                 inManagedObjectStore:[RKManagedObjectStore defaultStore]];
     
     [storyResponseMapping addAttributeMappingsFromArray:@[@"updatedAt"]];
+    storyResponseMapping.identificationAttributes = @[@"bnObjectId"];
     return storyResponseMapping;
 }
 

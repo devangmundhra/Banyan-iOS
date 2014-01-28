@@ -46,6 +46,7 @@ typedef enum {
 @property (nonatomic, retain) NSOrderedSet * media;
 
 // Revision management
+- (RemoteObject *) cloneIntoNSManagedObjectContext:(NSManagedObjectContext *)newContext;
 - (void)cloneFrom:(RemoteObject *)source;
 
 #pragma mark Data management

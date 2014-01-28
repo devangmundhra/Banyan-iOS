@@ -32,6 +32,17 @@
 
 #pragma mark -
 #pragma mark Revision management
+
+- (RemoteObject *) cloneIntoNSManagedObjectContext:(NSManagedObjectContext *)newContext
+{
+    [self save];
+    NSError *error = nil;
+    RemoteObject *obj = (RemoteObject *)[newContext existingObjectWithID:self.objectID error:&error];
+    NSAssert1(obj, @"cloneIntoNSManagedObjectContext_object", error.localizedDescription);
+    [newContext refreshObject:obj mergeChanges:YES];
+    return obj;
+}
+
 - (void)cloneFrom:(RemoteObject *)source
 {
     for (NSString *key in [[[source entity] attributesByName] allKeys]) {
@@ -134,23 +145,20 @@
     NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
     for (RemoteObject *obj in array) {
         obj.remoteStatus = RemoteObjectStatusFailed;
-        if ([obj isKindOfClass:[Piece class]]) {
-            ((Piece *)obj).creatingGifFromMedia = NO;
-        }
     }
     
     // Delete all remote objects which are local at start time
-    predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@)",
-                 [NSNumber numberWithInt:RemoteObjectStatusLocal]];
-    [request setPredicate:predicate];
-    error = nil;
-    array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
-    for (RemoteObject *remoteObj in array) {
-        [remoteObj remove];
-    }
-    
-    // It is possible that a clone of a piece was created and then the app crashed. So the clone is hanging around. Delete the clone.
-    // TO-DO: Check if this can really occur. If so, check how to handle it for stories.
+//    predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@)",
+//                 [NSNumber numberWithInt:RemoteObjectStatusLocal]];
+//    [request setPredicate:predicate];
+//    error = nil;
+//    array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+//    for (RemoteObject *remoteObj in array) {
+//        [remoteObj remove];
+//    }
+
+    // This is possible when there is a piece cached in core-data and that piece is deleted in the server. Therefore when the story arrives, the connection between
+    // this piece and the story is broken and the piece is left hanging around. So the next time this method is called, all such pieces get deleted from the local cache
     [request setEntity:[NSEntityDescription entityForName:kBNPieceClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
     request.predicate = [NSPredicate predicateWithFormat:@"(story = nil)"];
     error = nil;

@@ -3,7 +3,7 @@
 //  Storied
 //
 //  Created by Devang Mundhra on 3/17/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Banyan. All rights reserved.
 //
 
 #import "ModifyPieceViewController.h"
@@ -59,15 +59,15 @@
 
 @property (nonatomic) ModifyPieceViewControllerEditMode editMode;
 
-@property (strong, nonatomic) Piece *backupPiece_;
-@property (nonatomic, strong) NSOrderedSet *backupMedia_;
-
 @property (strong, nonatomic) NSMutableSet *mediaToDelete;
+@property (strong, nonatomic) NSManagedObjectContext *scratchMOC;;
 
 @property (strong, nonatomic) IBOutlet UIToolbar *textViewInputAccessoryView;
 
 @property (strong, nonatomic) AVCamViewController *camViewController;
 @property (nonatomic) CGSize kbSize;
+
+@property (strong, nonatomic) NSManagedObjectID *storyID;
 
 @end
 
@@ -77,17 +77,18 @@
 @synthesize doneButton = _doneButton;
 @synthesize piece = _piece;
 @synthesize delegate = _delegate;
-@synthesize editMode = _editMode;@synthesize pieceCaptionView = _pieceCaptionView;
+@synthesize editMode = _editMode;
+@synthesize pieceCaptionView = _pieceCaptionView;
 @synthesize addLocationButton, addPhotoButton;
-@synthesize backupPiece_ = _backupPiece_;
 @synthesize audioPickerView = _audioPickerView;
 @synthesize audioRecorder = _audioRecorder;
 @synthesize mediaToDelete;
 @synthesize storyTitleButton = _storyTitleButton;
-@synthesize backupMedia_ = _backupMedia_;
 @synthesize textViewInputAccessoryView = _textViewInputAccessoryView;
 @synthesize camViewController = _camViewController;
 @synthesize kbSize;
+@synthesize scratchMOC = _scratchMOC;
+@synthesize storyID = _storyID;
 
 #define TEXT_INSETS 5
 #define VIEW_INSETS 8
@@ -97,14 +98,25 @@
 - (id) initWithPiece:(Piece *)piece
 {
     if (self = [super init]) {
-        self.piece = piece;
+        // Use the NSPrivateQueueConcurrencyType MOC here. This is because if we use the NSMainQueueConcurrencyType and the piece is deleted from
+        // the PersistentStoreCoord MOC, it results in a Cocoa Error 1600. For example, in this scenario-
+        // 1. Create a story and a piece (say from simulator)
+        // 2. Refresh the story list to get the story and piece from server
+        // 3. Delete the story from the simulator
+        // 4. Refrsh the story list from the server on the device, and while refreshing, open the "addAPiece" VC.
+        // 5. When the refresh compeltes, there will be a CocoaError 1600.
+        // This does not happen in NSPrivateQueueConcurrencyType
+        self.scratchMOC = [[RKManagedObjectStore defaultStore] newChildManagedObjectContextWithConcurrencyType:NSMainQueueConcurrencyType tracksChanges:YES];
+        NSLog(@"Scratch MOC for modify piece vc: %@", self.scratchMOC);
+        self.piece = (Piece *)[piece cloneIntoNSManagedObjectContext:self.scratchMOC];
+        // Just in case the connection between the piece and story is lost (say because the piece is currently being created and the story is refreshed),
+        // this context will still have the correct relationship
+        [piece.story cloneIntoNSManagedObjectContext:self.scratchMOC];
+        self.storyID = piece.story.objectID;
         if (self.piece.remoteStatus == RemoteObjectStatusLocal) {
             self.editMode = ModifyPieceViewControllerEditModeAddPiece;
         } else {
             self.editMode = ModifyPieceViewControllerEditModeEditPiece;
-            self.backupPiece_ = [NSEntityDescription insertNewObjectForEntityForName:[[piece entity] name] inManagedObjectContext:[piece managedObjectContext]];
-            self.backupMedia_ = [NSOrderedSet orderedSetWithOrderedSet:self.piece.media];
-            [self.backupPiece_ cloneFrom:piece];
         }
     }
     
@@ -315,39 +327,10 @@
 
 #pragma mark target actions from navigation bar
 
-- (void)deleteBackupPiece
-{
-    if (self.backupPiece_) {
-        [self.backupPiece_ remove];
-        self.backupPiece_ = nil;
-    }
-}
-
-- (void)restoreBackupPiece:(BOOL)upload {    
-    if (self.backupPiece_) {
-        [self.piece cloneFrom:self.backupPiece_];
-        
-        // Restore the media
-        if (![self.backupMedia_ isEqualToOrderedSet:self.piece.media]) {
-            // Remove any new media that might have been added
-            NSMutableOrderedSet *mediaToRemove = [NSMutableOrderedSet orderedSetWithOrderedSet:self.piece.media];
-            [mediaToRemove minusOrderedSet:self.backupMedia_];
-            for (Media *media in mediaToRemove) {
-                [media remove];
-            }
-            assert([self.piece.media intersectsOrderedSet:self.backupMedia_] && [self.backupMedia_ intersectsOrderedSet:self.piece.media]);
-            // Set the old media back again in case the ordering was changed
-            [self.piece setMedia:self.backupMedia_];
-        }
-    }
-}
-
 - (IBAction)cancel:(UIBarButtonItem *)sender
 {
-    [self restoreBackupPiece:NO];
-    
 	//remove the original piece in case of local draft unsaved
-	if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
+	if (self.editMode == ModifyPieceViewControllerEditModeAddPiece || self.piece.remoteStatus == RemoteObjectStatusLocal)
 		[self.piece remove];
     
 	self.piece = nil; // Just in case
@@ -357,6 +340,37 @@
 // Done modifying piece. Now save all the changes.
 - (IBAction)done:(UIBarButtonItem *)sender 
 {
+    // This is needed because it is possible that a piece creation was just started while the
+    // stories were being refreshed, in which case piece.story would be nil (since the refreshed
+    // story will not have the piece being created). In this case, the original story
+    // should be refetched and joined with the piece
+    if (!self.piece.story) {
+        Story *story = (Story *)[self.scratchMOC objectWithID:self.storyID];
+        if (story.isDeleted || story.hasBeenDeleted) {
+            [[[UIAlertView alloc] initWithTitle:@"This story has been deleted"
+                                        message:[NSString stringWithFormat:@"The story \"%@\" was deleted in the server and it can not be edited", story.title]
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil]
+             show];
+            [self cancel:nil];
+            return;
+        }
+        self.piece.story = story;
+    }
+    
+    if (self.piece.isDeleted || self.piece.hasBeenDeleted) {
+        [[[UIAlertView alloc] initWithTitle:@"This piece has been deleted"
+                                    message:[NSString stringWithFormat:@"The piece \"%@\" was deleted in the server and it can not be edited",
+                                             self.piece.shortText?:self.piece.longText?:@""]
+                                   delegate:nil
+                          cancelButtonTitle:@"OK"
+                          otherButtonTitles:nil]
+         show];
+        [self cancel:nil];
+        return;
+    }
+    
     self.piece.longText = self.pieceTextView.text;
     
 //    // Extract the tags
@@ -385,58 +399,24 @@
         media.mediaType = @"audio";
         media.localURL = [audioRecording absoluteString];
     }
-    
-    BOOL anyMediaDeleted = mediaToDelete.count;
-    
+
     // Delete any media that were indicated to be deleted
     for (Media *media in mediaToDelete) {
         // If its a local image, don't delete it
         if ([media.remoteURL length]) {
-            [media deleteWitSuccess:^{
-                [media remove];
-            }
+            [media deleteWitSuccess:nil
                             failure:^(NSError *error) {
-                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error deleting %@ when editing piece %@", media.mediaTypeName, self.piece.shortText.length ? self.piece.shortText : @""]
-                                                                message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]
-                                                               delegate:nil
-                                                      cancelButtonTitle:@"OK"
-                                                      otherButtonTitles:nil];
-                [alert show];
+                                NSLog(@"Error %@ deleting %@ when editing piece %@", error.localizedDescription, media.mediaTypeName, self.piece.shortText.length ? self.piece.shortText : @"");
             }];
         }
-        else
-            [media remove];
+        [media remove];
     }
     
-    // If there are multiple image media, convert them into a gif
-    NSOrderedSet *imageMediaSet = [Media getAllMediaOfType:@"image" inMediaSet:self.piece.media];
-    NSOrderedSet *backupImageMediaSet = [Media getAllMediaOfType:@"image" inMediaSet:self.backupMedia_];
-    // Gif should be created only if number if images is greater than 2
-    // And if we are adding a new piece
-    //   Or the images and order of images are not the same
-    //   Or any media should not have been deleted when the piece is being edited
-    BOOL shouldCreateNewGif = (imageMediaSet.count > 1) && (self.editMode == ModifyPieceViewControllerEditModeAddPiece || ![imageMediaSet isEqualToOrderedSet:backupImageMediaSet] || (self.editMode == ModifyPieceViewControllerEditModeEditPiece && anyMediaDeleted));
+    self.piece = (Piece *)[self.piece cloneIntoNSManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
     
-    // If a new gif should be deleted or if there is only 1 or 0 images so that a previous gif should be deleted
-    if (shouldCreateNewGif || imageMediaSet.count <= 1) {
-        Media *gifMedia = [Media getMediaOfType:@"gif" inMediaSet:self.piece.media];
-        if (gifMedia) {
-            if ([gifMedia.remoteURL length]) {
-                [gifMedia deleteWitSuccess:^{
-                    [gifMedia remove];
-                }
-                                   failure:^(NSError *error) {
-                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error deleting %@ when editing piece %@", gifMedia.mediaTypeName, self.piece.shortText.length ? self.piece.shortText : @""]
-                                                                                       message:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]
-                                                                                      delegate:nil
-                                                                             cancelButtonTitle:@"OK"
-                                                                             otherButtonTitles:nil];
-                                       [alert show];
-                                   }];
-            } else
-                [gifMedia remove];
-        }
-    }
+    // Refresh the story with the updated piece relationship in main context
+    // This is because refresh object does not refresh the relationships (only attributes)
+    [self.piece.story cloneIntoNSManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
     
     if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
     {
@@ -517,7 +497,8 @@
 {
     // A new story was picked.
     // Change the story of this piece to the new story
-    self.piece.story = story;
+    self.piece.story = (Story *)[story cloneIntoNSManagedObjectContext:self.scratchMOC];
+    self.storyID = story.objectID;
     [self updateStoryTitle];
 }
 
@@ -688,7 +669,6 @@
 #pragma mark Methods to interface between views
 - (void) dismissEditViewWithCompletionBlock:(void (^)(void))completionBlock
 {
-    [self deleteBackupPiece];
     [self dismissViewControllerAnimated:YES completion:completionBlock];
 }
 

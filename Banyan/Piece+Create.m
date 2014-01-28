@@ -8,6 +8,7 @@
 
 #import "Piece+Create.h"
 #import "Piece+Edit.h"
+#import "Piece+Delete.h"
 #import "Piece_Defines.h"
 #import "Story_Defines.h"
 #import "Media.h"
@@ -38,9 +39,7 @@
     piece.author = [User currentUser];
     piece.createdAt = piece.updatedAt = [NSDate date];
     piece.timeStamp = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSinceReferenceDate]];
-    
-//    [piece save];
-    
+
     return piece;
 }
 
@@ -81,7 +80,19 @@
                                         }
                                         failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                             piece.remoteStatus = RemoteObjectStatusFailed;
-//                                            [piece save];
+                                            if ([[error localizedDescription] rangeOfString:@"got 400"].location != NSNotFound) {
+                                                if ([[error localizedRecoverySuggestion] rangeOfString:piece.story.resourceUri].location != NSNotFound) {
+                                                    // The story is no longer available on the server. This is now a local copy
+                                                    piece.remoteStatus = RemoteObjectStatusLocal;
+                                                    [[[UIAlertView alloc] initWithTitle:@"Error in creating piece"
+                                                                                message:[NSString stringWithFormat:@"The story has already been deleted by someone so the piece \"%@\" will be dropped", piece.shortText?:piece.longText?:@""]
+                                                                               delegate:nil
+                                                                      cancelButtonTitle:@"OK"
+                                                                      otherButtonTitles:nil]
+                                                     show];
+                                                    [Piece deletePiece:piece completion:nil];
+                                                }
+                                            }
                                             NSLog(@"Error in create piece");
                                         }];
     
