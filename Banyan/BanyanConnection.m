@@ -282,22 +282,30 @@
         }
     }
     
-//    if ([RemoteObject numRemoteObjectsWithPendingChanges]) {
-//        // If the notification is through any kind of notification, ignore showing the alert
-//        if (![sender isKindOfClass:[NSNotification class]]) {
-//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Cannot refresh stories"
-//                                                            message:@"Some of the changes that you have done are still being uploaded.\rPlease refresh the stories once all the changes have been synchronized."
-//                                                           delegate:nil
-//                                                  cancelButtonTitle:@"OK"
-//                                                  otherButtonTitles:nil];
-//            [alert show];
-//        }
-//        [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
-//                                                            object:self];
-//        NSLog(@"%s loadDataSource skipped because upload in progress", __PRETTY_FUNCTION__);
-//
-//        return;
-//    }
+    /*
+     * We don't want to refresh the story list while there are any pending changes.
+     * Consider the following scenario:
+     * 1. A piece is created while device is offline
+     * 2. App is suspended, device goes online
+     * 3. App is opened, and the story refresh completes before the new piece has begun to be uploaded.
+     * 4. In this case, the new piece will have story = nil (since the story received from the server will not have the new piece)
+     */
+    if ([RemoteObject numRemoteObjectsWithPendingChanges]) {
+        // If the notification is through any kind of notification, ignore showing the alert
+        if (![sender isKindOfClass:[NSNotification class]]) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Cannot refresh stories"
+                                                            message:@"Some of the changes that you have done are still being uploaded.\rPlease refresh the stories once all the changes have been synchronized."
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
+                                                            object:self];
+        NSLog(@"%s loadDataSource skipped because upload in progress", __PRETTY_FUNCTION__);
+
+        return;
+    }
     
     NSLog(@"%s loadDataSource begin", __PRETTY_FUNCTION__);
     
@@ -408,25 +416,27 @@
 
 + (void) uploadFailedObjects
 {
-    NSArray *failedStories = [Story storiesFailedToBeUploaded];
-    for (Story *story in failedStories) {
-        if (NUMBER_EXISTS(story.bnObjectId)) {
-            [Story editStory:story];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        NSArray *failedStories = [Story storiesFailedToBeUploaded];
+        for (Story *story in failedStories) {
+            if (NUMBER_EXISTS(story.bnObjectId)) {
+                [Story editStory:story];
+            }
+            else {
+                [Story createNewStory:story];
+            }
         }
-        else {
-            [Story createNewStory:story];
+        
+        NSArray *failedPieces = [Piece piecesFailedToBeUploaded];
+        for (Piece *piece in failedPieces) {
+            if (NUMBER_EXISTS(piece.bnObjectId)) {
+                [Piece editPiece:piece];
+            }
+            else {
+                [Piece createNewPiece:piece];
+            }
         }
-    }
-    
-    NSArray *failedPieces = [Piece piecesFailedToBeUploaded];
-    for (Piece *piece in failedPieces) {
-        if (NUMBER_EXISTS(piece.bnObjectId)) {
-            [Piece editPiece:piece];
-        }
-        else {
-            [Piece createNewPiece:piece];
-        }
-    }
+    });
 }
 
 @end
