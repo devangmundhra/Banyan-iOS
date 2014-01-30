@@ -73,7 +73,7 @@
     // Name Button
     self.nameButton = [UIButton buttonWithType:UIButtonTypeCustom];
     nameButton.frame = CGRectMake(CGRectGetMaxX(onOffButton.frame), bounds.origin.y, bounds.size.width - CGRectGetWidth(onOffButton.frame), bounds.size.height);
-    [nameButton.titleLabel setFont:[UIFont fontWithName:@"Roboto-Condensed" size:15]];
+    [nameButton.titleLabel setFont:[UIFont fontWithName:@"Roboto-Condensed" size:14]];
     nameButton.titleLabel.minimumScaleFactor = 0.8;
     [nameButton setTitle:@"Add Location" forState:UIControlStateNormal];
     [nameButton addTarget:self action:@selector(handleNameButtonTapped:) forControlEvents:UIControlEventTouchUpInside];

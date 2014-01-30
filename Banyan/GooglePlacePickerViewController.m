@@ -125,15 +125,16 @@ static NSString *PlacesDetailCellIdentifier = @"GooglePlacesCell";
     [self.mapView addAnnotation:selectedPlaceAnnotation];
 }
 
-- (void)dismissSearchControllerWhileStayingActive {
+- (void)dismissSearchController {
     // Animate out the table view.
     NSTimeInterval animationDuration = 0.3;
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:animationDuration];
-    self.searchDisplayController.searchResultsTableView.alpha = 0.0;
-    [UIView commitAnimations];
-    
-    [self.searchDisplayController setActive:NO];
+    [UIView animateWithDuration:animationDuration animations:^{
+        self.searchDisplayController.searchResultsTableView.alpha = 0.0;
+
+    } completion:^(BOOL finished) {
+        [self.searchDisplayController setActive:NO];
+
+    }];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -154,7 +155,7 @@ static NSString *PlacesDetailCellIdentifier = @"GooglePlacesCell";
             
             [self addPlacemarkAnnotationToMap:placemark place:gpoPlace];
             [self recenterMapToPlacemark:placemark];
-            [self dismissSearchControllerWhileStayingActive];
+            [self dismissSearchController];
             [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:indexPath animated:NO];
         }
     }];

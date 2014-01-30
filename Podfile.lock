@@ -61,7 +61,7 @@ DEPENDENCIES:
   - MZFormSheetController
   - RestKit (from `https://github.com/RestKit/RestKit.git`, branch `development`)
   - SDWebImage (from `https://github.com/rs/SDWebImage.git`, commit `282e8179193a49867575cd658ae64883aedbce7b`)
-  - SPGooglePlacesAutocomplete
+  - SPGooglePlacesAutocomplete (from `https://github.com/devangmundhra/SPGooglePlacesAutocomplete.git`, commit `24c94888a1892e7be7cc16275821663ec9fce8dd`)
   - TestFlightSDK (>= 2.0.2)
   - URBMediaFocusViewController
   - VCTransitionsLibrary
@@ -75,6 +75,9 @@ EXTERNAL SOURCES:
   SDWebImage:
     :commit: 282e8179193a49867575cd658ae64883aedbce7b
     :git: https://github.com/rs/SDWebImage.git
+  SPGooglePlacesAutocomplete:
+    :commit: 24c94888a1892e7be7cc16275821663ec9fce8dd
+    :git: https://github.com/devangmundhra/SPGooglePlacesAutocomplete.git
 
 SPEC CHECKSUMS:
   AFNetworking: 61fdd49e2ffe6380378df37b3b6e70630bb9dd66
@@ -91,7 +94,7 @@ SPEC CHECKSUMS:
   RKValueTransformers: 1562d458b9c9d59ce777bfc5982f2e1aef2e9182
   SDWebImage: 79a8bac9ccf85b269100b294f7b43684dab8bf8a
   SOCKit: 2f3bc4d07910de12dcc202815e07db68a3802581
-  SPGooglePlacesAutocomplete: b8fc4dfdd33b0b07aaab635e6d9255ef9e9277e8
+  SPGooglePlacesAutocomplete: 363dea30ebb697be8c88412a0ce8fb9d00dcb4be
   TestFlightSDK: 64f333f91ab9d11985e6c4c188a71b22cc528097
   TransitionKit: 433284465abacdc07852d7db6dd0cc075010059a
   URBMediaFocusViewController: b841d6ca429c8a25c29da4ffbb097dd7cb739cd5
