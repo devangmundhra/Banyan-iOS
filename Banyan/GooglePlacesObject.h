@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 #import "BNDuckTypedObject.h"
+#import "SPGooglePlacesAutoComplete.h"
+#import "SPGooglePlacesPlaceDetailQuery.h"
 
 #define	kAccounting	@"accounting"
 #define	kAirport	@"airport"
@@ -108,7 +110,11 @@
 #define	kVeterinaryCare	@"veterinary_care"
 #define	kZoo	@"zoo"
 
+@protocol GooglePlacesObject;
+@class GooglePlacesObject;
+
 typedef void (^GooglePlacesQueryCompletionBlock)(NSArray *places);
+typedef void (^GooglePlacesPlacemarkResultBlock)(CLPlacemark *placemark, GooglePlacesObject<GooglePlacesObject>* place, NSError *error);
 
 @protocol GoogleLocationObject <BNDuckTypedObject>
 
@@ -145,6 +151,7 @@ typedef void (^GooglePlacesQueryCompletionBlock)(NSArray *places);
 - (NSString *)getFormattedName;
 
 + (void) getNearbyLocations:(CLLocation *)location withCompletion:(GooglePlacesQueryCompletionBlock)completionBlock;
++ (void) getPlacemarkForCLLocation:(CLLocation *)location withCompletion:(GooglePlacesPlacemarkResultBlock)block;
 + (void) getGoogleObjectsWithQuery:(NSString *)query
                   andCoordinates:(CLLocationCoordinate2D)coords
                   withCompletion:(GooglePlacesQueryCompletionBlock)completionBlock;

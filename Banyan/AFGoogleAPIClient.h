@@ -11,6 +11,7 @@
 
 #define GOOGLE_API_NEARBY_PLACES_URL() @"nearbysearch/json"
 #define GOOGLE_API_SEARCH_PLACES_URL() @"search/json"
+#define GOOGLE_API_RADAR_SEARCH_PLACES_URL() @"radarsearch/json"
 
 #define GOOGLE_API_ERROR_STATUS @"INVALID_REQUEST"
 #define GOOGLE_API_NO_RESULTS_STATUS @"ZERO_RESULTS"

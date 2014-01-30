@@ -11,6 +11,7 @@ pod 'URBMediaFocusViewController'
 pod 'ECSlidingViewController'
 pod 'MZFormSheetController'
 pod 'ios-image-editor'
+pod 'SPGooglePlacesAutocomplete'
 
 # Testing and Search are optional components
 # pod 'RestKit/Testing',  :git => 'https://github.com/RestKit/RestKit.git'

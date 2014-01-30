@@ -31,15 +31,13 @@ static NSString *radiusString = @"1000";
 
 + (NSString *)placeTypesToConsider
 {
-    return [NSString stringWithFormat:@"%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@",
+    return [NSString stringWithFormat:@"%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@",
             kBar,
             kRestaurant,
             kCafe,
             kBakery,
             kFood,
             kLodging,
-            kMealDelivery,
-            kMealTakeaway,
             kNightClub,
             kEstablishment,
             kGeocode,
@@ -63,7 +61,7 @@ static NSString *radiusString = @"1000";
     NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
     [parameters setObject:GOOGLE_API_KEY forKey:@"key"];
     [parameters setObject:coords forKey:@"location"];
-    [parameters setObject:[GooglePlacesObject placeTypesToConsider] forKey:@"types"];
+    [parameters setObject:[self placeTypesToConsider] forKey:@"types"];
     [parameters setObject:radiusString forKey:@"radius"];
 //    [parameters setObject:@"distance" forKey:@"rankby"];
     [parameters setObject:@"true" forKey:@"sensor"];
@@ -84,6 +82,21 @@ static NSString *radiusString = @"1000";
                                       failure:AF_GOOGLE_ERROR_BLOCK()];
     
     return;
+}
+
++ (void) getPlacemarkForCLLocation:(CLLocation *)location withCompletion:(GooglePlacesPlacemarkResultBlock)block
+{
+    [[[CLGeocoder alloc] init] reverseGeocodeLocation:location
+                                    completionHandler:^(NSArray *placemarks, NSError *error) {
+                                        if (!error) {
+                                            CLPlacemark *placemark = [placemarks onlyObject];
+                                            GooglePlacesObject<GooglePlacesObject>* place = (GooglePlacesObject<GooglePlacesObject>*)[GooglePlacesObject duckTypedObject];
+                                            place.name = [NSString stringWithFormat:@"%@, %@", placemark.subLocality, placemark.locality];;
+                                            place.geometry.location.lat = [NSNumber numberWithDouble:placemark.location.coordinate.latitude];
+                                            place.geometry.location.lng = [NSNumber numberWithDouble:placemark.location.coordinate.longitude];
+                                            block(placemark, place, error);
+                                        }
+                                    }];
 }
 
 +(void)getGoogleObjectsWithQuery:(NSString *)query

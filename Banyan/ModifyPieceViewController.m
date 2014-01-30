@@ -18,16 +18,16 @@
 #import "AVCamViewController.h"
 #import "UIPlaceHolderTextView.h"
 #import "BNTextField.h"
-#import "LocationPickerTableViewController.h"
 #import "LocationPickerButton.h"
 #import "BNAudioRecorderView.h"
 #import "UIImage+ResizeAdditions.h"
+#import "GooglePlacePickerViewController.h"
 
 @interface ModifyPieceViewController (LocationPickerButtonDelegate) <LocationPickerButtonDelegate>
 
 @end
 
-@interface ModifyPieceViewController (LocationPickerTableViewControllerDelegate) <LocationPickerTableViewControllerDelegate>
+@interface ModifyPieceViewController (GooglePlacesViewControllerDelegate) <GooglePlacesViewControllerDelegate>
 
 @end
 
@@ -810,11 +810,9 @@
 {
     [self.addLocationButton locationPickerLocationEnabled:YES];
     // Create the navigation controller and present it.
-    LocationPickerTableViewController *locTv = [[LocationPickerTableViewController alloc] initWithStyle:UITableViewStylePlain];
-    locTv.delegate = self;
-    UINavigationController *navigationController = [[UINavigationController alloc]
-                                                    initWithRootViewController:locTv];
-    [self presentViewController:navigationController animated:YES completion:nil];
+    GooglePlacePickerViewController *gppVC = [[GooglePlacePickerViewController alloc] initWithNibName:@"GooglePlacePickerViewController" bundle:nil];
+    gppVC.delegate = self;
+    [self presentViewController:gppVC animated:YES completion:nil];
 }
 
 - (void)locationPickerButtonToggleLocationEnable:(LocationPickerButton *)sender
@@ -829,8 +827,8 @@
 
 @end
 
-@implementation ModifyPieceViewController (LocationPickerTableViewControllerDelegate)
-- (void)locationPickerTableViewControllerPickedLocation:(BNDuckTypedObject<GooglePlacesObject>*)place
+@implementation ModifyPieceViewController (GooglePlacesViewControllerDelegate)
+- (void)googlePlacesViewControllerPickedLocation:(BNDuckTypedObject<GooglePlacesObject>*)place
 {
     self.addLocationButton.location = place;
 }

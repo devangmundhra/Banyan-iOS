@@ -46,6 +46,7 @@ PODS:
   - SDWebImage/MapKit (3.3):
     - libwebp
   - SOCKit (1.1)
+  - SPGooglePlacesAutocomplete (1.0.2)
   - TestFlightSDK (2.2.0-noadid-beta)
   - TransitionKit (2.0.0)
   - URBMediaFocusViewController (0.5.1)
@@ -60,6 +61,7 @@ DEPENDENCIES:
   - MZFormSheetController
   - RestKit (from `https://github.com/RestKit/RestKit.git`, branch `development`)
   - SDWebImage (from `https://github.com/rs/SDWebImage.git`, commit `282e8179193a49867575cd658ae64883aedbce7b`)
+  - SPGooglePlacesAutocomplete
   - TestFlightSDK (>= 2.0.2)
   - URBMediaFocusViewController
   - VCTransitionsLibrary
@@ -89,6 +91,7 @@ SPEC CHECKSUMS:
   RKValueTransformers: 1562d458b9c9d59ce777bfc5982f2e1aef2e9182
   SDWebImage: 79a8bac9ccf85b269100b294f7b43684dab8bf8a
   SOCKit: 2f3bc4d07910de12dcc202815e07db68a3802581
+  SPGooglePlacesAutocomplete: b8fc4dfdd33b0b07aaab635e6d9255ef9e9277e8
   TestFlightSDK: 64f333f91ab9d11985e6c4c188a71b22cc528097
   TransitionKit: 433284465abacdc07852d7db6dd0cc075010059a
   URBMediaFocusViewController: b841d6ca429c8a25c29da4ffbb097dd7cb739cd5

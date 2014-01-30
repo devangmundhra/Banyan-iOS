@@ -139,7 +139,6 @@
 		518CAA2A17DBA23500D641A6 /* BNAWSSNSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 518CAA2917DBA23500D641A6 /* BNAWSSNSClient.m */; };
 		519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 519232A01671CC57009686E4 /* AFGoogleAPIClient.m */; };
 		5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 5192332616743F02009686E4 /* GooglePlacesObject.m */; };
-		519233331675305F009686E4 /* LocationPickerTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 519233311675305F009686E4 /* LocationPickerTableViewController.m */; };
 		51929D601867B7940061BD6C /* BNImageCropperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51929D5E1867B7940061BD6C /* BNImageCropperViewController.m */; };
 		51929D611867B7940061BD6C /* BNImageCropperViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51929D5F1867B7940061BD6C /* BNImageCropperViewController.xib */; };
 		51984D40176EDE1000CD6C3E /* BNPiecesScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 51984D3F176EDE1000CD6C3E /* BNPiecesScrollView.m */; };
@@ -185,6 +184,13 @@
 		51B2351717168BF9004241C1 /* locationSymbolSmall@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B2351117168BF9004241C1 /* locationSymbolSmall@2x.png */; };
 		51B2351A17168C69004241C1 /* BNImageLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2351917168C68004241C1 /* BNImageLabel.m */; };
 		51B235211717DBA9004241C1 /* BNTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B235201717DBA9004241C1 /* BNTableViewController.m */; };
+		51B49A131898E8620073F184 /* GooglePlacePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B49A111898E8620073F184 /* GooglePlacePickerViewController.m */; };
+		51B49A141898E8620073F184 /* GooglePlacePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A121898E8620073F184 /* GooglePlacePickerViewController.xib */; };
+		51B49A1A1898E8DF0073F184 /* locateButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A161898E8DF0073F184 /* locateButton.png */; };
+		51B49A1B1898E8DF0073F184 /* locateButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A171898E8DF0073F184 /* locateButton@2x.png */; };
+		51B49A1C1898E8DF0073F184 /* location.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A181898E8DF0073F184 /* location.png */; };
+		51B49A1D1898E8DF0073F184 /* location@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A191898E8DF0073F184 /* location@2x.png */; };
+		51B49A2018996FCF0073F184 /* GooglePlacesAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B49A1F18996FCF0073F184 /* GooglePlacesAnnotation.m */; };
 		51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B5989D15EB31B300DF4D9D /* BanyanConstants.m */; };
 		51BDA1E1173B788F00BD2C19 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 51BDA1E0173B788F00BD2C19 /* Default.png */; };
 		51BDA1E3173B789600BD2C19 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51BDA1E2173B789600BD2C19 /* Default@2x.png */; };
@@ -197,7 +203,6 @@
 		51BDA27F1743821400BD2C19 /* Media.m in Sources */ = {isa = PBXBuildFile; fileRef = 51BDA27E1743821400BD2C19 /* Media.m */; };
 		51C4252D1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C4252C1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.m */; };
 		51C4253018270CF900AF90C1 /* BNDuckTypedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C4252F18270CF900AF90C1 /* BNDuckTypedObject.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		51C425351827991900AF90C1 /* GooglePlacesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C425341827991900AF90C1 /* GooglePlacesCell.m */; };
 		51C4253A1828E15100AF90C1 /* NextStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C425381828E15100AF90C1 /* NextStoryViewController.m */; };
 		51C4253B1828E15100AF90C1 /* NextStoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51C425391828E15100AF90C1 /* NextStoryViewController.xib */; };
 		51C42541182A488F00AF90C1 /* BNIntroductionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C42540182A488F00AF90C1 /* BNIntroductionView.m */; };
@@ -456,8 +461,6 @@
 		519232A01671CC57009686E4 /* AFGoogleAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFGoogleAPIClient.m; path = Banyan/AFGoogleAPIClient.m; sourceTree = "<group>"; };
 		5192332516743F02009686E4 /* GooglePlacesObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GooglePlacesObject.h; path = Banyan/GooglePlacesObject.h; sourceTree = "<group>"; };
 		5192332616743F02009686E4 /* GooglePlacesObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GooglePlacesObject.m; path = Banyan/GooglePlacesObject.m; sourceTree = "<group>"; };
-		519233301675305F009686E4 /* LocationPickerTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationPickerTableViewController.h; path = Banyan/LocationPickerTableViewController.h; sourceTree = "<group>"; };
-		519233311675305F009686E4 /* LocationPickerTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationPickerTableViewController.m; path = Banyan/LocationPickerTableViewController.m; sourceTree = "<group>"; };
 		51929D5D1867B7940061BD6C /* BNImageCropperViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNImageCropperViewController.h; sourceTree = "<group>"; };
 		51929D5E1867B7940061BD6C /* BNImageCropperViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNImageCropperViewController.m; sourceTree = "<group>"; };
 		51929D5F1867B7940061BD6C /* BNImageCropperViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BNImageCropperViewController.xib; sourceTree = "<group>"; };
@@ -519,6 +522,15 @@
 		51B2351917168C68004241C1 /* BNImageLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNImageLabel.m; path = Banyan/BNImageLabel.m; sourceTree = "<group>"; };
 		51B2351F1717DBA9004241C1 /* BNTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNTableViewController.h; path = Banyan/BNTableViewController.h; sourceTree = "<group>"; };
 		51B235201717DBA9004241C1 /* BNTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNTableViewController.m; path = Banyan/BNTableViewController.m; sourceTree = "<group>"; };
+		51B49A101898E8620073F184 /* GooglePlacePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GooglePlacePickerViewController.h; path = Banyan/GooglePlacePickerViewController.h; sourceTree = "<group>"; };
+		51B49A111898E8620073F184 /* GooglePlacePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GooglePlacePickerViewController.m; path = Banyan/GooglePlacePickerViewController.m; sourceTree = "<group>"; };
+		51B49A121898E8620073F184 /* GooglePlacePickerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = GooglePlacePickerViewController.xib; path = Banyan/GooglePlacePickerViewController.xib; sourceTree = "<group>"; };
+		51B49A161898E8DF0073F184 /* locateButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = locateButton.png; sourceTree = "<group>"; };
+		51B49A171898E8DF0073F184 /* locateButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "locateButton@2x.png"; sourceTree = "<group>"; };
+		51B49A181898E8DF0073F184 /* location.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = location.png; sourceTree = "<group>"; };
+		51B49A191898E8DF0073F184 /* location@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "location@2x.png"; sourceTree = "<group>"; };
+		51B49A1E18996FCF0073F184 /* GooglePlacesAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GooglePlacesAnnotation.h; path = Banyan/GooglePlacesAnnotation.h; sourceTree = "<group>"; };
+		51B49A1F18996FCF0073F184 /* GooglePlacesAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GooglePlacesAnnotation.m; path = Banyan/GooglePlacesAnnotation.m; sourceTree = "<group>"; };
 		51B5989C15EB31B300DF4D9D /* BanyanConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BanyanConstants.h; sourceTree = "<group>"; };
 		51B5989D15EB31B300DF4D9D /* BanyanConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BanyanConstants.m; sourceTree = "<group>"; };
 		51BDA1E0173B788F00BD2C19 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = ../../Default.png; sourceTree = "<group>"; };
@@ -535,8 +547,6 @@
 		51C4252C1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNDuckTypedObjectToDataTransformer.m; path = Banyan/BNDuckTypedObjectToDataTransformer.m; sourceTree = "<group>"; };
 		51C4252E18270CF900AF90C1 /* BNDuckTypedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNDuckTypedObject.h; path = Banyan/BNDuckTypedObject.h; sourceTree = "<group>"; };
 		51C4252F18270CF900AF90C1 /* BNDuckTypedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNDuckTypedObject.m; path = Banyan/BNDuckTypedObject.m; sourceTree = "<group>"; };
-		51C425331827991900AF90C1 /* GooglePlacesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GooglePlacesCell.h; path = Banyan/GooglePlacesCell.h; sourceTree = "<group>"; };
-		51C425341827991900AF90C1 /* GooglePlacesCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GooglePlacesCell.m; path = Banyan/GooglePlacesCell.m; sourceTree = "<group>"; };
 		51C425371828E15100AF90C1 /* NextStoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NextStoryViewController.h; path = Banyan/NextStoryViewController.h; sourceTree = "<group>"; };
 		51C425381828E15100AF90C1 /* NextStoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NextStoryViewController.m; path = Banyan/NextStoryViewController.m; sourceTree = "<group>"; };
 		51C425391828E15100AF90C1 /* NextStoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = NextStoryViewController.xib; path = Banyan/NextStoryViewController.xib; sourceTree = "<group>"; };
@@ -908,6 +918,7 @@
 		5166B1B515E75B420072749C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				51B49A151898E8C90073F184 /* Location */,
 				51F86233185970240037D576 /* Slider background */,
 				5128EB3917472FE300393173 /* Music player */,
 				51BDA27117434F1700BD2C19 /* Audio scrubber */,
@@ -1351,9 +1362,10 @@
 		51A8494E171D24F000367039 /* Location using Google */ = {
 			isa = PBXGroup;
 			children = (
-				519233301675305F009686E4 /* LocationPickerTableViewController.h */,
-				519233311675305F009686E4 /* LocationPickerTableViewController.m */,
-				51C425361827992100AF90C1 /* GooglePlacesTableViewCell */,
+				51B49A101898E8620073F184 /* GooglePlacePickerViewController.h */,
+				51B49A111898E8620073F184 /* GooglePlacePickerViewController.m */,
+				51B49A121898E8620073F184 /* GooglePlacePickerViewController.xib */,
+				51B49A2118996FD30073F184 /* GooglePlacesAnnotation */,
 			);
 			name = "Location using Google";
 			sourceTree = "<group>";
@@ -1408,6 +1420,26 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
+		51B49A151898E8C90073F184 /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				51B49A161898E8DF0073F184 /* locateButton.png */,
+				51B49A171898E8DF0073F184 /* locateButton@2x.png */,
+				51B49A181898E8DF0073F184 /* location.png */,
+				51B49A191898E8DF0073F184 /* location@2x.png */,
+			);
+			name = Location;
+			sourceTree = "<group>";
+		};
+		51B49A2118996FD30073F184 /* GooglePlacesAnnotation */ = {
+			isa = PBXGroup;
+			children = (
+				51B49A1E18996FCF0073F184 /* GooglePlacesAnnotation.h */,
+				51B49A1F18996FCF0073F184 /* GooglePlacesAnnotation.m */,
+			);
+			name = GooglePlacesAnnotation;
+			sourceTree = "<group>";
+		};
 		51B598A315EB451600DF4D9D /* Activity */ = {
 			isa = PBXGroup;
 			children = (
@@ -1459,15 +1491,6 @@
 				5192332616743F02009686E4 /* GooglePlacesObject.m */,
 			);
 			name = GooglePlacesObject;
-			sourceTree = "<group>";
-		};
-		51C425361827992100AF90C1 /* GooglePlacesTableViewCell */ = {
-			isa = PBXGroup;
-			children = (
-				51C425331827991900AF90C1 /* GooglePlacesCell.h */,
-				51C425341827991900AF90C1 /* GooglePlacesCell.m */,
-			);
-			name = GooglePlacesTableViewCell;
 			sourceTree = "<group>";
 		};
 		51C42542182B769D00AF90C1 /* IntroView */ = {
@@ -1711,6 +1734,7 @@
 				5166B1BD15E75B420072749C /* buttonFacebookSelected@2x.png in Resources */,
 				51CFD94415F58337002926F9 /* buttonFollow.png in Resources */,
 				51CFD94515F58337002926F9 /* buttonFollow@2x.png in Resources */,
+				51B49A1C1898E8DF0073F184 /* location.png in Resources */,
 				51CFD94615F58337002926F9 /* buttonFollowing.png in Resources */,
 				51CFD94715F58337002926F9 /* buttonFollowing@2x.png in Resources */,
 				51CFD94815F58337002926F9 /* buttonFollowingSelected.png in Resources */,
@@ -1740,6 +1764,7 @@
 				5181533017129F83006F73D3 /* addUserSymbol.png in Resources */,
 				5181533117129F83006F73D3 /* addUserSymbol@2x.png in Resources */,
 				5181533C1712A5F1006F73D3 /* addTabSymbol.png in Resources */,
+				51B49A1D1898E8DF0073F184 /* location@2x.png in Resources */,
 				5181533D1712A5F1006F73D3 /* addTabSymbol@2x.png in Resources */,
 				5181533E1712A5F1006F73D3 /* homeTabSymbol.png in Resources */,
 				5181533F1712A5F1006F73D3 /* homeTabSymbol@2x.png in Resources */,
@@ -1749,6 +1774,7 @@
 				518153421712A5F1006F73D3 /* searchTabSymbol.png in Resources */,
 				518153431712A5F1006F73D3 /* searchTabSymbol@2x.png in Resources */,
 				518153441712A5F1006F73D3 /* userProfileTabSymbol.png in Resources */,
+				51B49A1B1898E8DF0073F184 /* locateButton@2x.png in Resources */,
 				51C4253B1828E15100AF90C1 /* NextStoryViewController.xib in Resources */,
 				518153451712A5F1006F73D3 /* userProfileTabSymbol@2x.png in Resources */,
 				518153511713F474006F73D3 /* addPieceButton.png in Resources */,
@@ -1767,8 +1793,10 @@
 				51B234FB171658BF004241C1 /* Google Android License.txt in Resources */,
 				51B234FC171658BF004241C1 /* Roboto-Black.ttf in Resources */,
 				51B234FD171658BF004241C1 /* Roboto-BlackItalic.ttf in Resources */,
+				51B49A141898E8620073F184 /* GooglePlacePickerViewController.xib in Resources */,
 				51B234FE171658BF004241C1 /* Roboto-Bold.ttf in Resources */,
 				51B234FF171658BF004241C1 /* Roboto-BoldCondensed.ttf in Resources */,
+				51B49A1A1898E8DF0073F184 /* locateButton.png in Resources */,
 				51B23500171658BF004241C1 /* Roboto-BoldCondensedItalic.ttf in Resources */,
 				5114F56917FBE839000CB875 /* AviarySDKResources.bundle in Resources */,
 				51B23501171658BF004241C1 /* Roboto-BoldItalic.ttf in Resources */,
@@ -1869,8 +1897,8 @@
 				51F86255185D72870037D576 /* ContributorsTableViewController.m in Sources */,
 				5189B33B15B395F300562DD0 /* Piece+Stats.m in Sources */,
 				51CE90B51796724500A2F7CB /* RemoteObject.m in Sources */,
-				51C425351827991900AF90C1 /* GooglePlacesCell.m in Sources */,
 				5189B33E15B395F300562DD0 /* StoryReaderController.m in Sources */,
+				51B49A2018996FCF0073F184 /* GooglePlacesAnnotation.m in Sources */,
 				5189B34315B395F300562DD0 /* Story+Create.m in Sources */,
 				5189B34415B395F300562DD0 /* Story+Delete.m in Sources */,
 				5112D105181C61F0003E8C37 /* UIPlaceHolderTextView.m in Sources */,
@@ -1883,6 +1911,7 @@
 				51F8622D1858EA050037D576 /* UIViewController+BNSlidingViewControllerAdditions.m in Sources */,
 				51E9B2C2181F8DD3004B35A5 /* BNLabel.m in Sources */,
 				51E9B2BF181F8BCA004B35A5 /* StoryPickerViewController.m in Sources */,
+				51B49A131898E8620073F184 /* GooglePlacePickerViewController.m in Sources */,
 				51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */,
 				51CFD92915F1F260002926F9 /* SettingsTableViewController.m in Sources */,
 				51CFD93615F3E80B002926F9 /* FollowingFriendsViewController.m in Sources */,
@@ -1911,7 +1940,6 @@
 				519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */,
 				5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */,
 				51C4253A1828E15100AF90C1 /* NextStoryViewController.m in Sources */,
-				519233331675305F009686E4 /* LocationPickerTableViewController.m in Sources */,
 				514CDF5418125BFF0098B0A9 /* BNPermissionsObject.m in Sources */,
 				51A8DC9116928A240017E86F /* Activity+Create.m in Sources */,
 				5130E1FE18335ECF00975068 /* BNAudioRecorderView.m in Sources */,
