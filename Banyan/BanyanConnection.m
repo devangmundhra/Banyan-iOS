@@ -313,6 +313,10 @@
      loadStoriesFromBanyanWithSuccessBlock:^ {
          NSLog(@"%s loadDataSource completed", __PRETTY_FUNCTION__);
          dispatch_async(dispatch_get_main_queue(), ^{
+             NSError *error = nil;
+             if (![[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:&error]) {
+                 NSAssert2(false, @"Unresolved Core Data Save error %@, %@ in saving stories after story fetch", error, [error userInfo]);
+             }
              [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
              NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
              [userDefaults setObject:[NSDate date] forKey:BNUserDefaultsLastSuccessfulStoryUpdateTime];
@@ -356,7 +360,9 @@
                                                                NSArray *stories = [mappingResult array];
                                                                [stories enumerateObjectsUsingBlock:^(Story *story, NSUInteger idx, BOOL *stop) {
                                                                    story.lastSynced = [NSDate date];
-                                                                   story.currentPieceNum = MAX([Piece pieceForStory:story withAttribute:@"viewedByCurUser" asValue:[NSNumber numberWithBool:FALSE]].pieceNumber, 1);
+                                                                   Piece *unseenPiece = [Piece pieceForStory:story withAttribute:@"viewedByCurUser" asValue:[NSNumber numberWithBool:FALSE]];
+                                                                   story.currentPieceNum = MAX(unseenPiece.pieceNumber, 1);
+                                                                   story.newPiecesToView = !story.viewedByCurUser || (unseenPiece != nil);
                                                                }];
                                                                if (successBlock)
                                                                    successBlock();

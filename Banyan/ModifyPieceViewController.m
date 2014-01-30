@@ -471,7 +471,7 @@
     NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:self.piece.story.title
                                                                       attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
                                                                                    NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}];
-    NSAttributedString *changeStoryString = [[NSAttributedString alloc] initWithString:@"\rTap to change the story"
+    NSAttributedString *changeStoryString = [[NSAttributedString alloc] initWithString:@"\rtap to change the story"
                                                                             attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
                                                                                          NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}];
     NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithAttributedString:titleString];

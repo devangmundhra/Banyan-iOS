@@ -491,7 +491,7 @@
     NSMutableAttributedString *pageAttrString = [[NSMutableAttributedString alloc] initWithAttributedString:titleString];
     [pageAttrString appendAttributedString:pageString];
     
-    NSAttributedString *tapString = [[NSAttributedString alloc] initWithString:@"\rTap for story information"
+    NSAttributedString *tapString = [[NSAttributedString alloc] initWithString:@"\rtap for story information"
                                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
                                                                                   NSForegroundColorAttributeName: BANYAN_GRAY_COLOR}];
     

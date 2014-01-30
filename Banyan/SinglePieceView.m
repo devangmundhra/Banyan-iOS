@@ -12,6 +12,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "BNLabel.h"
 #import "Piece+Stats.h"
+#import "Story.h"
 
 static UIFont *_boldCondensedFont;
 static UIFont *_regularFont;
@@ -105,6 +106,11 @@ static UIFont *_regularFont;
         }
     } else {
         [self setStatusForView:@"Error in loading piece." font:_regularFont];
+    }
+    if (!self.piece.story.newPiecesToView) {
+        self.alpha = ALPHA_OF_READ_STORY;
+    } else {
+        self.alpha = 1;
     }
 }
 
