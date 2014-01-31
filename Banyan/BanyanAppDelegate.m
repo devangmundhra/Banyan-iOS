@@ -18,6 +18,7 @@
 #import "StoryListTableViewController.h"
 #import "SDWebImage/SDImageCache.h"
 #import <AVFoundation/AVFoundation.h>
+#import "UserVoice.h"
 
 @interface BanyanAppDelegate () <UserLoginViewControllerDelegate>
 @property (strong, nonatomic) NSTimer *remoteObjectBackgroundTimer;
@@ -64,6 +65,14 @@
         
         if (![[AFBanyanAPIClient sharedClient] isReachable])
             NSLog(@"Banyan not reachable");
+        
+        UVConfig *config = [UVConfig configWithSite:@"banyan.uservoice.com"];
+        [UVStyleSheet instance].tintColor = BANYAN_GREEN_COLOR;
+        BNSharedUser *currentUser = [BNSharedUser currentUser];
+        if (currentUser) {
+            [config identifyUserWithEmail:currentUser.email name:currentUser.name guid:[NSString stringWithFormat:@"%@", currentUser.userId]];
+        }
+        [UserVoice initialize:config];
     };
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{

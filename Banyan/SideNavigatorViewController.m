@@ -8,7 +8,6 @@
 
 #import "SideNavigatorViewController.h"
 #import <QuartzCore/QuartzCore.h>
-#import "BNFeedbackViewController.h"
 #import "UIViewController+ECSlidingViewController.h"
 #import "SettingsTableViewController.h"
 #import "BanyanAppDelegate.h"
@@ -16,6 +15,7 @@
 #import "ProfileViewController.h"
 #import "AboutViewController.h"
 #import "StoryListTableViewController.h"
+#import "UserVoice.h"
 
 @interface SideNavigatorViewController ()
 
@@ -263,7 +263,8 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
                 self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[SettingsTableViewController alloc] init]];
                 break;
             case SidePanelOptionLoggedInFeedback:
-                self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[BNFeedbackViewController alloc] init]];
+                 [UserVoice presentUserVoiceInterfaceForParentViewController:self.slidingViewController];
+//                self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[BNFeedbackViewController alloc] init]];
                 break;
             case SidePanelOptionLoggedInAbout:
                 self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[AboutViewController alloc] init]];
@@ -280,7 +281,8 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
                 self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[SettingsTableViewController alloc] init]];
                 break;
             case SidePanelOptionLoggedOutFeedback:
-                self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[BNFeedbackViewController alloc] init]];
+                [UserVoice presentUserVoiceInterfaceForParentViewController:self.slidingViewController];
+//                self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[BNFeedbackViewController alloc] init]];
                 break;
             case SidePanelOptionLoggedOutAbout:
                 self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[AboutViewController alloc] init]];

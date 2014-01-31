@@ -12,6 +12,7 @@ pod 'ECSlidingViewController'
 pod 'MZFormSheetController'
 pod 'ios-image-editor'
 pod 'SPGooglePlacesAutocomplete', :git => 'https://github.com/devangmundhra/SPGooglePlacesAutocomplete.git', :commit => '24c94888a1892e7be7cc16275821663ec9fce8dd'
+pod 'uservoice-iphone-sdk', '~> 3.0'
 
 # Testing and Search are optional components
 # pod 'RestKit/Testing',  :git => 'https://github.com/RestKit/RestKit.git'
