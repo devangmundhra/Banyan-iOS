@@ -86,6 +86,7 @@ static UIFont *_regularFont;
     self.statusLabel.backgroundColor = BANYAN_WHITE_COLOR;
     self.statusLabel.font = _boldFont;
     self.statusLabel.textAlignment = NSTextAlignmentCenter;
+    
     [self addSubview:self.statusLabel];
 }
 
@@ -108,6 +109,12 @@ static UIFont *_regularFont;
     [self scrollRectToVisible:[self calculateFrameForPieceNum:story.currentPieceNum] animated:NO];
     [self scrollToPieceNumber:story.currentPieceNum];
     [self addMsgOnPieceViewIfNeeded];
+    
+    if (!story.newPiecesToView) {
+        self.alpha = ALPHA_OF_READ_STORY;
+    } else {
+        self.alpha = 1;
+    }
 }
 
 - (SinglePieceView *) addPieceSubviewAtFrame:(CGRect)frame forPieceNum:(NSUInteger)pieceNum

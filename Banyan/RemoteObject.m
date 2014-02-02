@@ -148,14 +148,16 @@
     }
     
     // Delete all remote objects which are local at start time
-//    predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@)",
-//                 [NSNumber numberWithInt:RemoteObjectStatusLocal]];
-//    [request setPredicate:predicate];
-//    error = nil;
-//    array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
-//    for (RemoteObject *remoteObj in array) {
-//        [remoteObj remove];
-//    }
+    // Suppose a crash happens while a piece/story was being created. Since the next time the app starts, those objects
+    // will be in 'Drafts' state, the story refresh will be cancelled. And the local remote object won't get deleted.
+    predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@)",
+                 [NSNumber numberWithInt:RemoteObjectStatusLocal]];
+    [request setPredicate:predicate];
+    error = nil;
+    array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+    for (RemoteObject *remoteObj in array) {
+        [remoteObj remove];
+    }
 
     // This is possible when there is a piece cached in core-data and that piece is deleted in the server. Therefore when the story arrives, the connection between
     // this piece and the story is broken and the piece is left hanging around. So the next time this method is called, all such pieces get deleted from the local cache
