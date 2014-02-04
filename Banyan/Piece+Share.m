@@ -10,8 +10,22 @@
 #import "Media.h"
 #import "Story.h"
 
+@interface Piece (UIActionSheetDelegate) <UIActionSheetDelegate>
+@end
+
 @implementation Piece (Share)
+
 - (void) shareOnFacebook
+{
+    UIActionSheet *shareSheet = [[UIActionSheet alloc] initWithTitle:@"How would you like to share this piece" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Share as a picture on facebook", @"Copy link to piece", nil];
+    
+    [shareSheet showInView:APP_DELEGATE.topMostController.view];
+    
+    [TestFlight passCheckpoint:@"Piece shared"];
+}
+
+
+- (void) shareAsPictureOnFacebook
 {
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:APP_DELEGATE.topMostController.view animated:YES];
     hud.labelText = @"Sharing piece";
@@ -41,4 +55,29 @@
         [self shareOnFacebookWithName:self.story.title caption:self.shortText description:self.longText image:nil pictureURL:nil shareLink:self.permaLink completionHandler:completionHandler];
     }
 }
+@end
+
+@implementation Piece (UIActionSheetDelegate)
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share as a picture on facebook"]) {
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [self shareAsPictureOnFacebook];
+        });
+    } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Copy link to piece"]) {
+        UIPasteboard *pb = [UIPasteboard generalPasteboard];
+        [pb setString:self.permaLink];
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:APP_DELEGATE.topMostController.view animated:YES];
+            hud.labelText = self.permaLink ? @"Link copied" : @"Error copying link";
+            if (!self.permaLink) {
+                hud.detailsLabelText = @"Make sure the piece has been uploaded";
+            }
+            [hud hide:YES afterDelay:1];
+        });
+    }
+}
+
 @end

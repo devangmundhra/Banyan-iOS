@@ -18,7 +18,7 @@
 
 - (void) shareOnFacebook
 {
-    UIActionSheet *shareSheet = [[UIActionSheet alloc] initWithTitle:@"How would you like to share this story on Facebook" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Share as a link", @"Share as a new album", nil];
+    UIActionSheet *shareSheet = [[UIActionSheet alloc] initWithTitle:@"How would you like to share this story" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Share as a link on Facebook", @"Share as a new album on Facebook", @"Copy link to story", nil];
     
     [shareSheet showInView:APP_DELEGATE.topMostController.view];
     
@@ -168,15 +168,27 @@
 @implementation Story (UIActionSheetDelegate)
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share as a new album"]) {
+    if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share as a new album on Facebook"]) {
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             [self shareAsAlbumOnFacebook];
         });
-    } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share as a link"]) {
+    } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share as a link on Facebook"]) {
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             [self shareAsLinkOnFacebook];
+        });
+    } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Copy link to story"]) {
+        UIPasteboard *pb = [UIPasteboard generalPasteboard];
+        [pb setString:self.permaLink];
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:APP_DELEGATE.topMostController.view animated:YES];
+            hud.labelText = self.permaLink ? @"Link copied" : @"Error copying link";
+            if (!self.permaLink) {
+                hud.detailsLabelText = @"Make sure the story has been uploaded";
+            }
+            [hud hide:YES afterDelay:1];
         });
     }
 }
