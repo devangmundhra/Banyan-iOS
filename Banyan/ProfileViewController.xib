@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4510" systemVersion="13A603" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4510" systemVersion="13B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1792" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
@@ -7,8 +7,14 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProfileViewController">
             <connections>
+                <outlet property="coverImageView" destination="RCY-V1-fnR" id="4sR-kD-ZrX"/>
+                <outlet property="globeImage" destination="cvX-J2-52v" id="xhW-wD-LCQ"/>
+                <outlet property="locationLabel" destination="pvE-Oq-sbM" id="6RH-0A-1ta"/>
+                <outlet property="nameLabel" destination="Kig-Fu-bXq" id="fHC-NS-3xJ"/>
+                <outlet property="numPiecesLabel" destination="ASs-Pa-xR1" id="OnT-mq-MOU"/>
+                <outlet property="numStoriesLabel" destination="lR4-gE-x6U" id="htP-PC-huQ"/>
+                <outlet property="profileImageView" destination="qna-0O-acA" id="16G-wV-GjA"/>
                 <outlet property="scrollView" destination="qpm-W7-bB5" id="15g-1D-yHc"/>
-                <outlet property="signOutButton" destination="Vuh-YW-8an" id="7FC-TH-ojb"/>
                 <outlet property="view" destination="1" id="3"/>
             </connections>
         </placeholder>
@@ -17,55 +23,57 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qpm-W7-bB5">
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="qpm-W7-bB5">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vuh-YW-8an">
-                            <rect key="frame" x="64" y="250" width="192" height="30"/>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="RCY-V1-fnR">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="167"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <color key="backgroundColor" red="0.17254902420000001" green="0.49803921579999999" blue="0.34117648010000001" alpha="0.5" colorSpace="calibratedRGB"/>
+                        </imageView>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="qna-0O-acA">
+                            <rect key="frame" x="51" y="45" width="70" height="70"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="30" id="Ck7-bo-LzF"/>
-                                <constraint firstAttribute="width" constant="192" id="WMd-7q-Eu2"/>
-                            </constraints>
-                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                            <state key="normal" title="Button">
-                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
-                        </button>
-                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Profile pages coming soon!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="202" translatesAutoresizingMaskIntoConstraints="NO" id="IMO-R0-v39">
-                            <rect key="frame" x="64" y="50" width="202" height="100"/>
+                        </imageView>
+                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Kig-Fu-bXq">
+                            <rect key="frame" x="135" y="57" width="165" height="22"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="202" id="2Xb-JY-mt7"/>
-                                <constraint firstAttribute="height" constant="100" id="WTa-5d-Yxl"/>
-                            </constraints>
-                            <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="17"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                             <nil key="highlightedColor"/>
                         </label>
+                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="pvE-Oq-sbM">
+                            <rect key="frame" x="151" y="73" width="149" height="21"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="lR4-gE-x6U">
+                            <rect key="frame" x="0.0" y="166" width="160" height="35"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ASs-Pa-xR1">
+                            <rect key="frame" x="160" y="166" width="160" height="35"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="globe_white.png" id="cvX-J2-52v">
+                            <rect key="frame" x="133" y="77" width="12" height="13"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        </imageView>
                     </subviews>
-                    <color key="backgroundColor" red="0.17254902420000001" green="0.49803921579999999" blue="0.34117648010000001" alpha="1" colorSpace="calibratedRGB"/>
-                    <constraints>
-                        <constraint firstItem="IMO-R0-v39" firstAttribute="leading" secondItem="qpm-W7-bB5" secondAttribute="leading" constant="64" id="DZM-4z-pTX"/>
-                        <constraint firstAttribute="trailing" secondItem="IMO-R0-v39" secondAttribute="trailing" constant="54" id="Dqr-u5-6Na"/>
-                        <constraint firstItem="Vuh-YW-8an" firstAttribute="top" secondItem="IMO-R0-v39" secondAttribute="bottom" constant="100" id="Hbk-Sq-DZg"/>
-                        <constraint firstAttribute="centerX" secondItem="Vuh-YW-8an" secondAttribute="centerX" id="WXS-sB-5Wk"/>
-                        <constraint firstAttribute="bottom" secondItem="Vuh-YW-8an" secondAttribute="bottom" constant="80" id="anF-nj-Nla"/>
-                        <constraint firstItem="IMO-R0-v39" firstAttribute="top" secondItem="qpm-W7-bB5" secondAttribute="top" constant="50" id="l4A-oB-b5n"/>
-                    </constraints>
                 </scrollView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-            <constraints>
-                <constraint firstAttribute="trailing" secondItem="qpm-W7-bB5" secondAttribute="trailing" id="4t0-bJ-uUP"/>
-                <constraint firstItem="qpm-W7-bB5" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="jh7-wT-9iO"/>
-                <constraint firstItem="qpm-W7-bB5" firstAttribute="top" secondItem="1" secondAttribute="top" id="rTB-hl-PHS"/>
-                <constraint firstAttribute="bottom" secondItem="qpm-W7-bB5" secondAttribute="bottom" id="wV2-kt-3CT"/>
-            </constraints>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
-            <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
         </view>
     </objects>
+    <resources>
+        <image name="globe_white.png" width="14" height="14"/>
+    </resources>
 </document>

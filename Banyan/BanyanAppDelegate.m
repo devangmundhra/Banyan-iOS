@@ -61,7 +61,7 @@
         
         [TestFlight takeOff:TESTFLIGHT_BANYAN_APP_TOKEN];
         //let AFNetworking manage the activity indicator
-        [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
+//        [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
         
         if (![[AFBanyanAPIClient sharedClient] isReachable])
             NSLog(@"Banyan not reachable");

@@ -63,6 +63,11 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
     [super viewDidAppear:animated];
     
     [self updateSignInOutButtons];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
     
     // Notifications to handle permission controls
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -73,17 +78,7 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
                                              selector:@selector(userLoginStatusChanged:)
                                                  name:BNUserLogOutNotification
                                                object:nil];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
+    
     self.tableView.backgroundColor = BACKGROUND_COLOR;
     UIImage *backgroundImage = [UIImage imageNamed:@"slider_background"]; // Image from http://flic.kr/p/7HxPc3
     UIImageView *backgroundImageView = [[UIImageView alloc] initWithImage:backgroundImage];
@@ -264,7 +259,6 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
                 break;
             case SidePanelOptionLoggedInFeedback:
                  [UserVoice presentUserVoiceInterfaceForParentViewController:self.slidingViewController];
-//                self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[BNFeedbackViewController alloc] init]];
                 break;
             case SidePanelOptionLoggedInAbout:
                 self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[AboutViewController alloc] init]];
@@ -282,7 +276,6 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
                 break;
             case SidePanelOptionLoggedOutFeedback:
                 [UserVoice presentUserVoiceInterfaceForParentViewController:self.slidingViewController];
-//                self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[BNFeedbackViewController alloc] init]];
                 break;
             case SidePanelOptionLoggedOutAbout:
                 self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[AboutViewController alloc] init]];
@@ -302,6 +295,11 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc that aren't in use.
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

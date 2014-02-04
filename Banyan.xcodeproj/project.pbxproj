@@ -191,6 +191,8 @@
 		51B49A1C1898E8DF0073F184 /* location.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A181898E8DF0073F184 /* location.png */; };
 		51B49A1D1898E8DF0073F184 /* location@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A191898E8DF0073F184 /* location@2x.png */; };
 		51B49A2018996FCF0073F184 /* GooglePlacesAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B49A1F18996FCF0073F184 /* GooglePlacesAnnotation.m */; };
+		51B49A2418A0C0CE0073F184 /* globe_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A2218A0C0CD0073F184 /* globe_white.png */; };
+		51B49A2518A0C0CE0073F184 /* globe_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A2318A0C0CE0073F184 /* globe_white@2x.png */; };
 		51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B5989D15EB31B300DF4D9D /* BanyanConstants.m */; };
 		51BDA1E1173B788F00BD2C19 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 51BDA1E0173B788F00BD2C19 /* Default.png */; };
 		51BDA1E3173B789600BD2C19 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51BDA1E2173B789600BD2C19 /* Default@2x.png */; };
@@ -531,6 +533,8 @@
 		51B49A191898E8DF0073F184 /* location@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "location@2x.png"; sourceTree = "<group>"; };
 		51B49A1E18996FCF0073F184 /* GooglePlacesAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GooglePlacesAnnotation.h; path = Banyan/GooglePlacesAnnotation.h; sourceTree = "<group>"; };
 		51B49A1F18996FCF0073F184 /* GooglePlacesAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GooglePlacesAnnotation.m; path = Banyan/GooglePlacesAnnotation.m; sourceTree = "<group>"; };
+		51B49A2218A0C0CD0073F184 /* globe_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = globe_white.png; sourceTree = "<group>"; };
+		51B49A2318A0C0CE0073F184 /* globe_white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "globe_white@2x.png"; sourceTree = "<group>"; };
 		51B5989C15EB31B300DF4D9D /* BanyanConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BanyanConstants.h; sourceTree = "<group>"; };
 		51B5989D15EB31B300DF4D9D /* BanyanConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BanyanConstants.m; sourceTree = "<group>"; };
 		51BDA1E0173B788F00BD2C19 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = ../../Default.png; sourceTree = "<group>"; };
@@ -925,6 +929,8 @@
 				51B234E9171658BF004241C1 /* Roboto Font */,
 				518153461712A5FC006F73D3 /* Tab Symbols */,
 				5181535B1713F49F006F73D3 /* Swipeable View Symbols */,
+				51B49A2218A0C0CD0073F184 /* globe_white.png */,
+				51B49A2318A0C0CE0073F184 /* globe_white@2x.png */,
 				51D5E6E5182220A5005CA2F4 /* hideStoryButton@2x.png */,
 				51D5E6E6182220A5005CA2F4 /* hideStoryButton.png */,
 				51F57C5517228DC200A76FA5 /* backArrow.png */,
@@ -1791,6 +1797,7 @@
 				51B234E417154C43004241C1 /* shareButtonWhite@2x.png in Resources */,
 				51D5E6E8182220A5005CA2F4 /* hideStoryButton.png in Resources */,
 				51B234FB171658BF004241C1 /* Google Android License.txt in Resources */,
+				51B49A2518A0C0CE0073F184 /* globe_white@2x.png in Resources */,
 				51B234FC171658BF004241C1 /* Roboto-Black.ttf in Resources */,
 				51B234FD171658BF004241C1 /* Roboto-BlackItalic.ttf in Resources */,
 				51B49A141898E8620073F184 /* GooglePlacePickerViewController.xib in Resources */,
@@ -1843,6 +1850,7 @@
 				5128EB4717472FF600393173 /* delete.png in Resources */,
 				5128EB4817472FF600393173 /* stop@2x.png in Resources */,
 				5128EB4917472FF600393173 /* stop.png in Resources */,
+				51B49A2418A0C0CE0073F184 /* globe_white.png in Resources */,
 				5128EB4C17472FF600393173 /* play@2x.png in Resources */,
 				5128EB4D17472FF600393173 /* play.png in Resources */,
 				5128EB4E17472FF600393173 /* record@2x.png in Resources */,
