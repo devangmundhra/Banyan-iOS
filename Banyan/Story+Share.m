@@ -184,6 +184,7 @@
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:APP_DELEGATE.topMostController.view animated:YES];
+            hud.mode = MBProgressHUDModeText;
             hud.labelText = self.permaLink ? @"Link copied" : @"Error copying link";
             if (!self.permaLink) {
                 hud.detailsLabelText = @"Make sure the story has been uploaded";

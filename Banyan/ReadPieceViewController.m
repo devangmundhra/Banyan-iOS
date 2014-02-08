@@ -282,6 +282,7 @@
 {
     [super viewDidDisappear:animated];
     [self.audioPlayer pause];
+    [self.mediaFocusManager cancelURLConnectionIfAny];
 }
 
 - (void)refreshUI
@@ -537,13 +538,13 @@
                                                   delegate:self
                                          cancelButtonTitle:@"Cancel"
                                     destructiveButtonTitle:self.piece.author.userId == [BNSharedUser currentUser].userId ? @"Delete piece" : nil
-                                         otherButtonTitles:@"Add a piece", @"Edit piece", @"Share via Facebook", nil];
+                                         otherButtonTitles:@"Add a piece", @"Edit piece", @"Share", nil];
     } else {
         actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                   delegate:self
                                          cancelButtonTitle:@"Cancel"
                                     destructiveButtonTitle:nil
-                                         otherButtonTitles:@"Share via Facebook", nil];
+                                         otherButtonTitles:@"Share", nil];
     }
     
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
@@ -608,7 +609,7 @@
         [navController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
         [self presentViewController:navController animated:YES completion:nil];
     }
-    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share via Facebook"]) {
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share"]) {
         // Share
         [self.piece shareOnFacebook];
     }

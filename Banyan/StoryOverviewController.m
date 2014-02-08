@@ -134,7 +134,7 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
                                               delegate:self
                                      cancelButtonTitle:@"Cancel"
                                 destructiveButtonTitle:self.story.author.userId == [BNSharedUser currentUser].userId ? @"Delete story" : nil
-                                     otherButtonTitles:@"Edit story", @"Share via Facebook", nil];
+                                     otherButtonTitles:@"Edit story", @"Share", nil];
     
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
     [actionSheet showInView:self.view];
@@ -231,7 +231,7 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
         UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:newStoryViewController];
         [self presentViewController:navController animated:YES completion:nil];
     }
-    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share via Facebook"]) {
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share"]) {
         // Share
         [self.story shareOnFacebook];
     }
