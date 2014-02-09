@@ -135,6 +135,7 @@
     self.view.gestureRecognizers = self.pageViewController.gestureRecognizers;
     
     [TestFlight passCheckpoint:@"Story started to be read"];
+    NSLog(@"Reading story with objectId %@ and title %@", REPLACE_NIL_WITH_EMPTY_STRING(self.story.bnObjectId), REPLACE_NIL_WITH_EMPTY_STRING(self.story.title));
 }
 
 - (void)viewDidUnload

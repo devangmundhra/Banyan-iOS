@@ -249,6 +249,8 @@
                                              selector:@selector(userLoginStatusChanged) 
                                                  name:BNUserLogOutNotification
                                                object:nil];
+    
+    NSLog(@"Reading piece with objectId %@ and shortText %@", REPLACE_NIL_WITH_EMPTY_STRING(self.piece.bnObjectId), REPLACE_NIL_WITH_EMPTY_STRING(self.piece.shortText));
 }
 
 - (void) addGestureRecognizerToFocusOnImageView:(UIImageView *)view

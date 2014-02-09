@@ -80,15 +80,18 @@
     if (!arn)
         return;
 
-    SNSSetEndpointAttributesRequest *req = [[SNSSetEndpointAttributesRequest alloc] init];
-    req.endpointArn = arn;
-    [req setAttributesValue:@"true" forKey:@"Enabled"];
-    @try {
-        [[self sharedClient] setEndpointAttributes:req];
-    }
-    @catch (NSException *exception) {
-        NSLog(@"Exception is: %@", exception.description);
-    }
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+    dispatch_async(queue, ^{
+        SNSSetEndpointAttributesRequest *req = [[SNSSetEndpointAttributesRequest alloc] init];
+        req.endpointArn = arn;
+        [req setAttributesValue:@"true" forKey:@"Enabled"];
+        @try {
+            [[self sharedClient] setEndpointAttributes:req];
+        }
+        @catch (NSException *exception) {
+            NSLog(@"Exception is: %@", exception.description);
+        }
+    });
 }
 
 + (void) disableNotificationsFromChannel:(NSString *)channel forEndpointArn:(NSString *)arn
@@ -96,15 +99,18 @@
     if (!arn)
         return;
 
-    SNSSetEndpointAttributesRequest *req = [[SNSSetEndpointAttributesRequest alloc] init];
-    req.endpointArn = arn;
-    [req setAttributesValue:@"false" forKey:@"Enabled"];
-    @try {
-        [[self sharedClient] setEndpointAttributes:req];
-    }
-    @catch (NSException *exception) {
-        NSLog(@"Exception is: %@", exception.description);
-    }
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+    dispatch_async(queue, ^{
+        SNSSetEndpointAttributesRequest *req = [[SNSSetEndpointAttributesRequest alloc] init];
+        req.endpointArn = arn;
+        [req setAttributesValue:@"false" forKey:@"Enabled"];
+        @try {
+            [[self sharedClient] setEndpointAttributes:req];
+        }
+        @catch (NSException *exception) {
+            NSLog(@"Exception is: %@", exception.description);
+        }
+    });
 }
 
 @end

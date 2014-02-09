@@ -193,6 +193,7 @@
 		51B49A2018996FCF0073F184 /* GooglePlacesAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B49A1F18996FCF0073F184 /* GooglePlacesAnnotation.m */; };
 		51B49A2418A0C0CE0073F184 /* globe_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A2218A0C0CD0073F184 /* globe_white.png */; };
 		51B49A2518A0C0CE0073F184 /* globe_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A2318A0C0CE0073F184 /* globe_white@2x.png */; };
+		51B49A3318A3596A0073F184 /* Thats-Font-Folks.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A3218A358A70073F184 /* Thats-Font-Folks.ttf */; };
 		51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B5989D15EB31B300DF4D9D /* BanyanConstants.m */; };
 		51BDA1E1173B788F00BD2C19 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 51BDA1E0173B788F00BD2C19 /* Default.png */; };
 		51BDA1E3173B789600BD2C19 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51BDA1E2173B789600BD2C19 /* Default@2x.png */; };
@@ -535,6 +536,7 @@
 		51B49A1F18996FCF0073F184 /* GooglePlacesAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GooglePlacesAnnotation.m; path = Banyan/GooglePlacesAnnotation.m; sourceTree = "<group>"; };
 		51B49A2218A0C0CD0073F184 /* globe_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = globe_white.png; sourceTree = "<group>"; };
 		51B49A2318A0C0CE0073F184 /* globe_white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "globe_white@2x.png"; sourceTree = "<group>"; };
+		51B49A3218A358A70073F184 /* Thats-Font-Folks.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Thats-Font-Folks.ttf"; sourceTree = "<group>"; };
 		51B5989C15EB31B300DF4D9D /* BanyanConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BanyanConstants.h; sourceTree = "<group>"; };
 		51B5989D15EB31B300DF4D9D /* BanyanConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BanyanConstants.m; sourceTree = "<group>"; };
 		51BDA1E0173B788F00BD2C19 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = ../../Default.png; sourceTree = "<group>"; };
@@ -982,6 +984,7 @@
 				51BDA1E0173B788F00BD2C19 /* Default.png */,
 				51F60EF616E8423E00F9715E /* Icon.png */,
 				51F60EF716E8423E00F9715E /* Icon@2x.png */,
+				51B49A3218A358A70073F184 /* Thats-Font-Folks.ttf */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1728,6 +1731,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51B49A3318A3596A0073F184 /* Thats-Font-Folks.ttf in Resources */,
 				5105364F17A5AD720046D969 /* defaultPerfs.plist in Resources */,
 				51F60EF816E8423E00F9715E /* Icon.png in Resources */,
 				51F60EF916E8423E00F9715E /* Icon@2x.png in Resources */,

@@ -19,6 +19,14 @@
 #import "SDWebImage/SDImageCache.h"
 #import <AVFoundation/AVFoundation.h>
 #import "UserVoice.h"
+#import "MBProgressHUD.h"
+#import "TWMessageBarManager.h"
+
+@interface BanyanAppDelegateTWMessageBarStyleSheet : NSObject <TWMessageBarStyleSheet>
+
++ (BanyanAppDelegateTWMessageBarStyleSheet *)styleSheet;
+
+@end
 
 @interface BanyanAppDelegate () <UserLoginViewControllerDelegate>
 @property (strong, nonatomic) NSTimer *remoteObjectBackgroundTimer;
@@ -43,8 +51,8 @@
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultPreferences];
     
     void (^nonMainBlock)(void) = ^{
-#define TESTING 1
-#ifdef TESTING
+#define DEBUG 1
+#ifdef DEBUG
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         if ([defaults objectForKey:@"UUID"]) {
             [TestFlight setDeviceIdentifier:[defaults objectForKey:@"UUID"]];
@@ -61,7 +69,7 @@
         
         [TestFlight takeOff:TESTFLIGHT_BANYAN_APP_TOKEN];
         //let AFNetworking manage the activity indicator
-//        [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
+        [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
         
         if (![[AFBanyanAPIClient sharedClient] isReachable])
             NSLog(@"Banyan not reachable");
@@ -96,19 +104,21 @@
     }
     
     // RestKit initialization
-    RKLogConfigureByName("RestKit/Network*", RKLogLevelWarning);
-    RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelWarning);
-    RKLogConfigureByName("RestKit/CoreData", RKLogLevelWarning);
-    
-    [application registerForRemoteNotificationTypes:
-     UIRemoteNotificationTypeBadge |
-     UIRemoteNotificationTypeSound |
-     UIRemoteNotificationTypeAlert];
+    RKLogConfigureByName("RestKit", RKLogLevelWarning);
+    RKLogConfigureByName("RestKit/*", RKLogLevelWarning);
+//    RKLogConfigureByName("RestKit/Network*", RKLogLevelWarning);
+//    RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelWarning);
+//    RKLogConfigureByName("RestKit/CoreData", RKLogLevelWarning);
     
     [self restKitCoreDataInitialization];
     
     [RemoteObject validateAllObjects];
 
+    [application registerForRemoteNotificationTypes:
+     UIRemoteNotificationTypeBadge |
+     UIRemoteNotificationTypeSound |
+     UIRemoteNotificationTypeAlert];
+    
     // Create a location manager instance to determine if location services are enabled. This manager instance will be
     // immediately released afterwards.
     if ([CLLocationManager locationServicesEnabled] == NO) {
@@ -149,6 +159,8 @@ void uncaughtExceptionHandler(NSException *exception)
     [[UISwitch appearance] setOnTintColor:BANYAN_GREEN_COLOR];
     
     [[UITabBar appearance] setSelectedImageTintColor:BANYAN_BROWN_COLOR];
+    
+    [TWMessageBarManager sharedInstance].styleSheet = [BanyanAppDelegateTWMessageBarStyleSheet styleSheet];
 }
 
 #pragma mark Application's documents directory
@@ -226,6 +238,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
                                stringByReplacingOccurrencesOfString: @">" withString: @""]
                              stringByReplacingOccurrencesOfString: @" " withString: @""];
     // Tell AWS SNS about the device token.
+    NSLog(@"Now registering device token information with Amazon");
     [BNAWSSNSClient registerDeviceToken:[NSString stringWithFormat:@"%@", deviceToken]];
 }
 
@@ -240,23 +253,45 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
     NSLog(@"Handling push with info: %@", userInfo);
     
+    UIApplicationState state = [application applicationState];
+    if (state == UIApplicationStateActive) {
+        NSDictionary *aps = [userInfo objectForKey:@"aps"];
+        [[TWMessageBarManager sharedInstance] showMessageWithTitle:nil description:[aps objectForKey:@"alert"] type:TWMessageBarMessageTypeInfo];
+        [self loadRemoteObjectFromUserInfo:userInfo displayIfPossible:NO];
+    } else {
+        //Do stuff that you would do if the application was not active
+        [self loadRemoteObjectFromUserInfo:userInfo displayIfPossible:YES];
+    }
+}
+
+- (void) loadRemoteObjectFromUserInfo:(NSDictionary *)userInfo displayIfPossible:(BOOL)display
+{
     NSDictionary *dataDict = [userInfo objectForKey:@"data"];
     NSString *storyId = [dataDict objectForKey:@"story"];
     NSString *pieceId = [dataDict objectForKey:@"piece"];
-    NSDate *opStartDate = [NSDate date];
+    
     if (storyId) {
+        UINavigationController *topNavController = nil;
+        StoryListTableViewController *topStoryListVC = nil;
+        MBProgressHUD *hud = nil;
+        
+        if ([[self topMostController] isKindOfClass:[ECSlidingViewController class]] && [self.homeViewController.topViewController isKindOfClass:[UINavigationController class]]) {
+            topNavController = (UINavigationController *)self.homeViewController.topViewController;
+            
+            if ([topNavController.topViewController isKindOfClass:[StoryListTableViewController class]]) {
+                topStoryListVC = (StoryListTableViewController *)topNavController.topViewController;
+                hud = [MBProgressHUD showHUDAddedTo:APP_DELEGATE.topMostController.view animated:YES];
+                hud.mode = MBProgressHUDModeIndeterminate;
+            }
+        }
+        
         // There was a new story. Get the story and launch it
         [[RKObjectManager sharedManager] getObjectsAtPath:[NSString stringWithFormat:@"story/%@/?format=json", storyId]
                                                parameters:nil
                                                   success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                                      NSTimeInterval opInterval = [opStartDate timeIntervalSinceNow];
-                                                      if (opInterval<-5) {
-                                                          // We give 5 seconds from the app launch for the story to be successfully
-                                                          // received and opened, so that if a user starts another operation, he/she is not
-                                                          // interrupted by some random story being opened
-                                                          NSLog(@"Ignoring action from notificaiton as operation interval was %f seconds", opInterval);
-                                                          return;
-                                                      }
+                                                      // Reset the badge to zero
+                                                      [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+                                                      
                                                       NSArray *stories = [mappingResult array];
                                                       NSAssert1(stories.count <= 1, @"Error in getting a single story from remote notificaiton", storyId);
                                                       Story *story = [stories lastObject];
@@ -272,27 +307,23 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                                                               }
                                                           }
                                                           // Story reader, open piece
-                                                          if (piece && [self.homeViewController.topViewController isKindOfClass:[UINavigationController class]]) {
-                                                              UINavigationController *topNavController = (UINavigationController *)self.homeViewController.topViewController;
+                                                          if (piece && topStoryListVC && display) {
                                                               // If the top view controller is a StoryListController, then read the story, otherwise nothing
-                                                              if ([topNavController.topViewController isKindOfClass:[StoryListTableViewController class]]) {
-                                                                  [self.homeViewController resetTopViewAnimated:YES onComplete:^{
-                                                                      StoryListTableViewController *topStoryListVC = (StoryListTableViewController *)topNavController.topViewController;
-                                                                      [topStoryListVC storyReaderWithStory:story piece:piece];
-                                                                  }];
-                                                              } else {
-                                                                  NSLog(@"Not displaying story as some other view controller is open");
-                                                              }
+                                                              [self.homeViewController resetTopViewAnimated:NO onComplete:nil];
+                                                              StoryListTableViewController *topStoryListVC = (StoryListTableViewController *)topNavController.topViewController;
+                                                              [topStoryListVC storyReaderWithStory:story piece:piece];
                                                           }
                                                       }
+                                                      [hud hide:YES];
                                                   }
-                                                  failure:nil];
+                                                  failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                                      [hud hide:YES];
+                                                  }];
         
     } else {
         // Do nothing
     }
 }
-
 
 # pragma mark User Account Management
 - (void)login
@@ -366,7 +397,9 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                                            // Set the header authorizations so that the api knows who the user is
                                            NSString *email = [userInfo objectForKey:@"email"];
                                            NSString *apikey = [userInfo objectForKey:@"api_key"];
-                                           [[AFBanyanAPIClient sharedClient] setAuthorizationHeaderWithUsername:email apikey:apikey];
+                                           [[ RKObjectManager sharedManager].HTTPClient
+                                            setAuthorizationHeaderWithTastyPieUsername:email
+                                            andToken:apikey];
                                            
                                            [self subscribeToPushNotifications];
                                            
@@ -583,11 +616,65 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 #pragma mark Memory Management
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application
 {
-    SDImageCache *imageCache = [SDImageCache sharedImageCache];
-    [imageCache clearMemory];
-    [imageCache clearDisk];
-    [imageCache cleanDisk];
+
 }
 
 @end
 
+@implementation BanyanAppDelegateTWMessageBarStyleSheet
+
+#pragma mark - Alloc/Init
+
++ (BanyanAppDelegateTWMessageBarStyleSheet *)styleSheet
+{
+    return [[BanyanAppDelegateTWMessageBarStyleSheet alloc] init];
+}
+
+#pragma mark - TWMessageBarStyleSheet
+
+- (UIColor *)backgroundColorForMessageType:(TWMessageBarMessageType)type
+{
+    UIColor *backgroundColor = nil;
+    switch (type)
+    {
+        case TWMessageBarMessageTypeError:
+            backgroundColor = BANYAN_RED_COLOR;
+            break;
+        case TWMessageBarMessageTypeSuccess:
+            backgroundColor = BANYAN_GREEN_COLOR;
+            break;
+        case TWMessageBarMessageTypeInfo:
+            backgroundColor = [BANYAN_DARKGRAY_COLOR colorWithAlphaComponent:0.7];
+            break;
+        default:
+            break;
+    }
+    return backgroundColor;
+}
+
+- (UIColor *)strokeColorForMessageType:(TWMessageBarMessageType)type
+{
+    UIColor *strokeColor = nil;
+    switch (type)
+    {
+        case TWMessageBarMessageTypeError:
+            strokeColor = BANYAN_RED_COLOR;
+            break;
+        case TWMessageBarMessageTypeSuccess:
+            strokeColor = BANYAN_GREEN_COLOR;
+            break;
+        case TWMessageBarMessageTypeInfo:
+            strokeColor = [BANYAN_DARKGRAY_COLOR colorWithAlphaComponent:0.7];
+            break;
+        default:
+            break;
+    }
+    return strokeColor;
+}
+
+- (UIImage *)iconImageForMessageType:(TWMessageBarMessageType)type
+{
+    return nil;
+}
+
+@end

@@ -42,8 +42,7 @@ static NSString * const kAFBanyanAPIBaseURLString = @"http://www.banyan.io/api/v
         NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] dictionaryForKey:BNUserDefaultsUserInfo];
         NSString *email = [userInfo objectForKey:@"email"];
         NSString *apikey = [userInfo objectForKey:@"api_key"];
-        [self setAuthorizationHeaderWithUsername:email apikey:apikey];
-    }
+        [self setAuthorizationHeaderWithTastyPieUsername:email andToken:apikey];    }
     [self setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus isNetworkReachable) {
         if (isNetworkReachable == AFNetworkReachabilityStatusReachableViaWiFi || isNetworkReachable == AFNetworkReachabilityStatusReachableViaWWAN) {
             [((BanyanAppDelegate *)[UIApplication sharedApplication].delegate) fireRemoteObjectTimer];
@@ -63,12 +62,6 @@ static NSString * const kAFBanyanAPIBaseURLString = @"http://www.banyan.io/api/v
     } else {
         return NO;
     }
-}
-
-- (void)setAuthorizationHeaderWithUsername:(NSString *)username apikey:(NSString *)apikey
-{
-	NSString *basicAuthCredentials = [NSString stringWithFormat:@"%@:%@", username, apikey];
-    [self setDefaultHeader:@"Authorization" value:[NSString stringWithFormat:@"ApiKey %@", basicAuthCredentials]];
 }
 
 @end

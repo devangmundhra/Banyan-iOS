@@ -330,7 +330,7 @@
     }
     
     [BNAWSS3Client uploadData:UIImageJPEGRepresentation(self.thumbnail, 1) withContentType:@"image/jpeg"
-                  forFileName:[NSString stringWithFormat:@"%@/%@_%@_80x80.jpg", [BNSharedUser currentUser].userId, [self.remoteObject getIdentifierForMediaFileName], self.filename]
+                  forFileName:[NSString stringWithFormat:@"%@/%@_%@_80x80.jpg", [BNSharedUser currentUser].userId, [self.remoteObject getIdentifierForMediaFileName], [BNMisc genRandStringLength:10]]
         inBackgroundWithBlock:^(bool succeeded, NSString *url, NSString *filename, NSError *error) {
             if (succeeded) {
                 self.thumbnail = nil;

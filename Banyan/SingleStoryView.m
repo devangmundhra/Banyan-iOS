@@ -8,7 +8,6 @@
 
 #import "SingleStoryView.h"
 #import "BanyanAppDelegate.h"
-#import <QuartzCore/QuartzCore.h>
 #import "Story+Permissions.h"
 #import "User.h"
 

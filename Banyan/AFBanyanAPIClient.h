@@ -8,11 +8,11 @@
 
 #import "AFHTTPClient.h"
 #import "AFHTTPRequestOperation.h"
+#import "AFNetworking+ApiKeyAuthentication.h"
 
 @interface AFBanyanAPIClient : AFHTTPClient
 
 + (AFBanyanAPIClient *)sharedClient;
 - (BOOL) isReachable;
-- (void)setAuthorizationHeaderWithUsername:(NSString *)username apikey:(NSString *)apikey;
 
 @end

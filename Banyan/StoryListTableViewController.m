@@ -39,10 +39,14 @@ typedef enum {
 
 @property (strong, nonatomic) CEFlipAnimationController *animationController;
 @property (strong, nonatomic) BNHorizontalSwipeInteractionController *interactionController;
-
+@property (strong, nonatomic) UIButton *endOfStoryButton;
+@property (strong, nonatomic) UIActivityIndicatorView *activityView;
 @end
 
 @implementation StoryListTableViewController
+
+@synthesize endOfStoryButton = _endOfStoryButton;
+@synthesize activityView = _activityView;
 
 - (void)viewDidLoad
 {
@@ -80,7 +84,7 @@ typedef enum {
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     refreshControl.tintColor = BANYAN_GREEN_COLOR;
-    [refreshControl addTarget:[BanyanConnection class] action:@selector(loadDataSource:) forControlEvents:UIControlEventValueChanged];
+    [refreshControl addTarget:self action:@selector(refreshStoryList:) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refreshControl;
     
     [self.tableView setRowHeight:TABLE_ROW_HEIGHT];
@@ -100,6 +104,19 @@ typedef enum {
 
     self.navigationItem.rightBarButtonItem.tintColor = BANYAN_GREEN_COLOR;
 
+    self.endOfStoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.endOfStoryButton.frame = CGRectMake(0, 10, CGRectGetWidth(self.view.frame), 100);
+    self.endOfStoryButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    [self.endOfStoryButton setTitleColor:BANYAN_BLACK_COLOR forState:UIControlStateNormal];
+    self.endOfStoryButton.exclusiveTouch = YES;
+    self.endOfStoryButton.titleLabel.minimumScaleFactor = 0.7;
+    [self.endOfStoryButton addTarget:self action:@selector(endOfStoryButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    [self.activityView startAnimating];
+    
+    self.tableView.tableFooterView = self.activityView;
+    
     [self prepareForSlidingViewController];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -107,7 +124,7 @@ typedef enum {
                                                  name:BNStoryListRefreshedNotification
                                                object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:[BanyanConnection class] selector:@selector(loadDataSource:)
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshStoryList:)
                                                  name:UIApplicationDidBecomeActiveNotification
                                                object:nil];
     
@@ -321,19 +338,38 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     }
 }
 
-#pragma mark Data Source Loading / Reloading Methods
-- (void) refreshStoryList:(NSNotification *)notification
+#pragma mark target/actions
+- (IBAction)endOfStoryButtonPressed:(id)sender
 {
-    if (!self.fetchedResultsController.delegate)
-        [self performFetch];
-    else
-        [self.tableView reloadData];
+    [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+}
+
+- (void) refreshStoryList:(id)sender
+{
+    [self.activityView startAnimating];
+    self.tableView.tableFooterView = self.activityView;
+    [BanyanConnection loadDataSource:sender];
 }
 
 // Called by both data source updated notification and by clicking on the filter segmented control
 - (IBAction)filterStories:(id)sender
 {
     [self.refreshControl endRefreshing];
+    [self.activityView stopAnimating];
+    
+    // Update the footer view
+    if ([[BanyanConnection storiesPaginator] isLoaded] && ![[BanyanConnection storiesPaginator] hasNextPage]) {
+        self.endOfStoryButton.titleLabel.numberOfLines = 1;
+        [self.endOfStoryButton setTitle:@"That's all folks!" forState:UIControlStateNormal];
+        self.endOfStoryButton.titleLabel.font = [UIFont fontWithName:@"ThatsFontFolksItalic" size:40];;
+        self.tableView.tableFooterView = self.endOfStoryButton;
+    }
+    if ([[BanyanConnection storiesPaginator].objectRequestOperation isFinished] && [BanyanConnection storiesPaginator].objectRequestOperation.HTTPRequestOperation.error) {
+        self.endOfStoryButton.titleLabel.numberOfLines = 2;
+        [self.endOfStoryButton setTitle:@"Error in loading the new stories.\rPlease try again." forState:UIControlStateNormal];
+        self.endOfStoryButton.titleLabel.font = [UIFont fontWithName:@"Roboto" size:16];;
+        self.tableView.tableFooterView = self.endOfStoryButton;
+    }
     if (!self.fetchedResultsController.delegate) {
         [self performFetch];
     }
@@ -483,9 +519,13 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 #pragma mark UIScrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    if (scrollView.contentSize.height - scrollView.contentOffset.y < (self.view.bounds.size.height)) {
-        if (![BanyanConnection storiesPaginator].objectRequestOperation && [[BanyanConnection storiesPaginator] isLoaded] && [[BanyanConnection storiesPaginator] hasNextPage]) {
+//    NSLog(@"contentSize.height(%f) - contentOffset.y(%f)", scrollView.contentSize.height, scrollView.contentOffset.y);
+    if (scrollView.contentSize.height - scrollView.contentOffset.y < 1130 /* ~ 2*CGRectGetHeight(self.view.bounds */) {
+        if ([[BanyanConnection storiesPaginator] objectRequestOperation].isFinished && [[BanyanConnection storiesPaginator] isLoaded] && [[BanyanConnection storiesPaginator] hasNextPage]) {
             [[BanyanConnection storiesPaginator] loadNextPage];
+            NSLog(@"StoryListTableViewController loadDataSource BEGIN for page %d", [BanyanConnection storiesPaginator].currentPage);
+            [self.activityView startAnimating];
+            self.tableView.tableFooterView = self.activityView;
         }
     }
 }

@@ -54,6 +54,7 @@
 	<true/>
 	<key>UIAppFonts</key>
 	<array>
+		<string>Thats-Font-Folks.ttf</string>
 		<string>Roboto-Regular.ttf</string>
 		<string>Roboto-Thin.ttf</string>
 		<string>Roboto-Medium.ttf</string>

@@ -142,17 +142,29 @@
         BOOL match = [pathMatcher matchesPattern:[URL relativePath] tokenizeQueryStrings:YES parsedArguments:&argsDict];
         if (match) {
             NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
-//            // Don't delete stories or pieces that have not yet been uploaded completely.
-//            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@) AND (SUBQUERY(pieces, $piece, $piece.remoteStatusNumber != %@).@count = 0)",
-//                                      [NSNumber numberWithInt:RemoteObjectStatusSync], [NSNumber numberWithInt:RemoteObjectStatusSync]];
             // Don't delete stories or pieces that have not yet been uploaded completely.
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@)", [NSNumber numberWithInt:RemoteObjectStatusSync]];
+            // We can't delete stories that are being edited or in Draft. This is because say when the app starts, we start to edit the last story.
+            // Not the story list refreshes and we get the first page of stories. Now if we delete the story with the piece being deleted, we will get
+            // Cocoa error 1600. So better not to delete the story even if we don't have the latest updated story when the piece is being edited.
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@) AND (SUBQUERY(pieces, $piece, $piece.remoteStatusNumber != %@).@count = 0)",
+                                      [NSNumber numberWithInt:RemoteObjectStatusSync], [NSNumber numberWithInt:RemoteObjectStatusSync]];
+            // Don't delete stories or pieces that have not yet been uploaded completely.
+//            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@)", [NSNumber numberWithInt:RemoteObjectStatusSync]];
             [fetchRequest setPredicate:predicate];
             return fetchRequest;
         }
         
         return nil;
     }];
+    
+    // Paginator
+    RKObjectMapping *paginationMapping = [RKObjectMapping mappingForClass:[RKPaginator class]];
+    [paginationMapping addAttributeMappingsFromDictionary:@{
+                                                            @"meta.limit": @"perPage",
+                                                            @"meta.offset": @"pageCount",
+                                                            @"meta.total_count": @"objectCount",
+                                                            }];
+    [objectManager setPaginationMapping:paginationMapping];
 }
 
 # pragma Storing the stories for this app
@@ -169,87 +181,56 @@
 
 + (RKPaginator *) storiesPaginator
 {
-    return nil;
-    
     static RKPaginator *_storiesPaginator = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        RKObjectManager *objectManager = [[RKObjectManager alloc] initWithHTTPClient:[AFBanyanAPIClient sharedClient]];
-        [RKObjectManager setSharedManager:objectManager];
-        objectManager.managedObjectStore = [RKManagedObjectStore defaultStore];
+        NSString *requestString = [NSString stringWithFormat:@"/api/v1/story/?offset=:offset&limit=:perPage&order_by=-timeStamp&format=json"];
         
-        // Response
-        RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:[Story storyMappingForRKGET]
-                                                                                                method:RKRequestMethodGET
-                                                                                           pathPattern:nil
-                                                                                               keyPath:@"objects"
-                                                                                           statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
-        [objectManager addResponseDescriptor:responseDescriptor];
-        
-        RKObjectMapping *paginationMapping = [RKObjectMapping mappingForClass:[RKPaginator class]];
-        [paginationMapping addAttributeMappingsFromDictionary:@{
-                                                                @"meta.limit": @"perPage",
-                                                                @"meta.offset": @"pageCount",
-                                                                @"meta.total_count": @"objectCount",
-                                                                }];
-        [objectManager setPaginationMapping:paginationMapping];
-        
-        NSString *requestString = [NSString stringWithFormat:@"/api/v1/story/?offset=:offset&limit=:perPage&format=json"];
-        
-        _storiesPaginator = [objectManager paginatorWithPathPattern:requestString];
-        _storiesPaginator.perPage = 2; // this will request /posts?page=N&per_page=2
+        _storiesPaginator = [[RKObjectManager sharedManager] paginatorWithPathPattern:requestString];
+        _storiesPaginator.perPage = 6; // this will request /posts?page=N&per_page=6
         
         [_storiesPaginator setCompletionBlockWithSuccess:^(RKPaginator *paginator, NSArray *objects, NSUInteger page) {
+            NSLog(@"BanyanConnection loadDataSource COMPLETE for page %d", page);
+            NSArray *stories = objects;
+            [stories enumerateObjectsUsingBlock:^(Story *story, NSUInteger idx, BOOL *stop) {
+                story.lastSynced = [NSDate date];
+                Piece *unseenPiece = [Piece pieceForStory:story withAttribute:@"viewedByCurUser" asValue:[NSNumber numberWithBool:FALSE]];
+                story.currentPieceNum = MAX(unseenPiece.pieceNumber, 1);
+                story.newPiecesToView = !story.viewedByCurUser || (unseenPiece != nil);
+            }];
             
-//            // Delete all unsaved stories
-//            NSArray *unsavedStories = [Story unsavedStories];
-//            for (Story *story in unsavedStories) {
-//                [story remove];
-//            }
-            
-            // Delete all stories if this is the first load
-            if (page == 1) {
-                NSFetchRequest * allStories = [[NSFetchRequest alloc] init];
-                [allStories setEntity:[NSEntityDescription entityForName:kBNStoryClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
-                [allStories setIncludesPropertyValues:NO]; //only fetch the managedObjectID
-                
-                NSError * error = nil;
-                NSArray * stories = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:allStories error:&error];
-                //error handling goes here
-                for (Story * story in stories) {
-                    if ([objects containsObject:story])
-                        continue;
-                    [story remove];
-                }
-                error = nil;
+            [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
+                                                                object:self];
+            [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSError *error = nil;
                 if (![[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:&error]) {
-                    NSLog(@"Unresolved Core Data Save error %@, %@ in saving remote object", error, [error userInfo]);
-                    exit(-1);
+                    NSAssert2(false, @"Unresolved Core Data Save error %@, %@ in saving stories after story fetch", error, [error userInfo]);
                 }
+                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+                NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                [userDefaults setObject:[NSDate date] forKey:BNUserDefaultsLastSuccessfulStoryUpdateTime];
+                [userDefaults synchronize];
+            });
+        } failure:^(RKPaginator *paginator, NSError *error) {
+            if ([[error localizedDescription] rangeOfString:@"Cocoa error 1600"].location != NSNotFound) {
+                /*
+                 * If this is a Cocoa error 1600 error, just bail out of the app.
+                 * This error happens because of the following scenario, but no solution seems to be able to fix this-
+                 * 1. Create a story in the simulator
+                 * 2. Refresh the story list on the device so that you get the story
+                 * 3. Delete the story from the simulator, so that the story is deleted from the backend
+                 * 4. Refresh the story list on the device. While the story list is being refreshed, open the "addAPiece" view controller
+                 * 5. When the story list refresh completes, we get the Cocoa error 1600. Doing any kind of CoreData operation after that crashes the app
+                 * This is supposed to be fairly rare, so it is OK for now to do this until the users behaviors dictate otherwise
+                 */
+                NSAssert(false, @"Got Unresolved Cocoa error 1600");
             }
             
-            NSArray *stories = objects;
-//            // Delete stories that have been deleted on the server
-//            NSArray *syncedStories =[Story syncedStories];
-//            for (Story *story in syncedStories) {
-//                if (![stories containsObject:story])
-//                    [story remove];
-//            }
-            [stories enumerateObjectsUsingBlock:^(Story *story, NSUInteger idx, BOOL *stop) {
-                NSArray *unsavedPieces = [Piece unsavedPiecesInStory:story];
-                if (unsavedPieces.count)
-                    NSLog(@"%u unsaved pieces in story :%@", unsavedPieces.count, story.title);
-                for (Piece *piece in unsavedPieces) {
-                    [piece remove];
-                }
-                story.lastSynced = [NSDate date];
-                story.currentPieceNum = MAX([Piece pieceForStory:story withAttribute:@"viewedByCurUser" asValue:[NSNumber numberWithBool:FALSE]].pieceNumber, 1);
-            }];
-            if (page==1)
-                [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
-                                                                    object:self];
-            
-        } failure:^(RKPaginator *paginator, NSError *error) {
+            if ([[error localizedDescription] rangeOfString:@"(NSURLErrorDomain error -999.)"].location != NSNotFound) {
+                /* This operation was cancelled before it could be completed. So just ignore this error */
+                return;
+            }
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in fetching stories."
                                                             message:[error localizedDescription]
                                                            delegate:nil
@@ -267,15 +248,12 @@
 
 + (void) loadDataSource:(id)sender
 {
-//    [[self storiesPaginator] loadPage:1];
-//    return;
-    
     // If this refresh is by a notification, only do it if it has been atleast 15 seconds since the last refresh
     if ([sender isKindOfClass:[NSNotification class]] && ([[(NSNotification *)sender name] isEqualToString:UIApplicationDidBecomeActiveNotification])) {
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         NSDate *lastSyncDate = [userDefaults objectForKey:BNUserDefaultsLastSuccessfulStoryUpdateTime];
         if (lastSyncDate && [[NSDate date] timeIntervalSinceDate:lastSyncDate]<15) {
-            NSLog(@"%s loadDataSource skipped because last sync date (%@) - now (%@) < 15", __PRETTY_FUNCTION__, lastSyncDate, [NSDate date]);
+            NSLog(@"%s loadDataSource SKIPPED because last sync date (%@) - now (%@) < 15", __PRETTY_FUNCTION__, lastSyncDate, [NSDate date]);
             [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
                                                                 object:self];
             return;
@@ -302,75 +280,16 @@
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
                                                             object:self];
-        NSLog(@"%s loadDataSource skipped because upload in progress", __PRETTY_FUNCTION__);
+        NSLog(@"%s loadDataSource SKIPPED because upload in progress", __PRETTY_FUNCTION__);
 
         return;
     }
     
-    NSLog(@"%s loadDataSource begin", __PRETTY_FUNCTION__);
-    
-    [BanyanConnection
-     loadStoriesFromBanyanWithSuccessBlock:^ {
-         NSLog(@"%s loadDataSource completed", __PRETTY_FUNCTION__);
-         dispatch_async(dispatch_get_main_queue(), ^{
-             NSError *error = nil;
-             if (![[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:&error]) {
-                 NSAssert2(false, @"Unresolved Core Data Save error %@, %@ in saving stories after story fetch", error, [error userInfo]);
-             }
-             [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
-             NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-             [userDefaults setObject:[NSDate date] forKey:BNUserDefaultsLastSuccessfulStoryUpdateTime];
-             [userDefaults synchronize];
-             
-             [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
-                                                                 object:self];
-         });
-     } errorBlock:^(NSError *error) {
-         if ([[error localizedDescription] rangeOfString:@"Cocoa error 1600"].location != NSNotFound) {
-             /*
-              * If this is a Cocoa error 1600 error, just bail out of the app.
-              * This error happens because of the following scenario, but no solution seems to be able to fix this-
-              * 1. Create a story in the simulator
-              * 2. Refresh the story list on the device so that you get the story
-              * 3. Delete the story from the simulator, so that the story is deleted from the backend
-              * 4. Refresh the story list on the device. While the story list is being refreshed, open the "addAPiece" view controller
-              * 5. When the story list refresh completes, we get the Cocoa error 1600. Doing any kind of CoreData operation after that crashes the app
-              * This is supposed to be fairly rare, so it is OK for now to do this until the users behaviors dictate otherwise
-              */
-             NSAssert(false, @"Got Unresolved Cocoa error 1600");
-         }
-         
-         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in fetching stories."
-                                                         message:[error localizedDescription]
-                                                        delegate:nil
-                                               cancelButtonTitle:@"OK"
-                                               otherButtonTitles:nil];
-         [alert show];
-         [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
-                                                             object:self];
-         NSLog(@"Hit error: %@", error);
-     }];
-}
+    [[self storiesPaginator] cancel];
 
-+ (void)loadStoriesFromBanyanWithSuccessBlock:(void (^)())successBlock errorBlock:(void (^)(NSError *error))errorBlock
-{
-    [[RKObjectManager sharedManager] getObjectsAtPathForRouteNamed:@"get_stories" object:nil
-                                                        parameters:nil
-                                                           success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                                               NSArray *stories = [mappingResult array];
-                                                               [stories enumerateObjectsUsingBlock:^(Story *story, NSUInteger idx, BOOL *stop) {
-                                                                   story.lastSynced = [NSDate date];
-                                                                   Piece *unseenPiece = [Piece pieceForStory:story withAttribute:@"viewedByCurUser" asValue:[NSNumber numberWithBool:FALSE]];
-                                                                   story.currentPieceNum = MAX(unseenPiece.pieceNumber, 1);
-                                                                   story.newPiecesToView = !story.viewedByCurUser || (unseenPiece != nil);
-                                                               }];
-                                                               if (successBlock)
-                                                                   successBlock();
-                                                           }
-                                                           failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                                               if (errorBlock)
-                                                                   errorBlock(error);
-                                                           }];
+    NSLog(@"BanyanConnection loadDataSource BEGIN for page 1");
+    [[self storiesPaginator] loadPage:1];
+    return;
 }
 
 + (void)loadPiecesForStory:(Story *)story withParams:(NSDictionary *)params completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *))errorBlock

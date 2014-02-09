@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Story.h"
 #import "BNSwipeableView.h"
+#import <QuartzCore/QuartzCore.h>
 
 #define TABLE_CELL_MARGIN 10.0
 #define TOP_VIEW_HEIGHT 50
