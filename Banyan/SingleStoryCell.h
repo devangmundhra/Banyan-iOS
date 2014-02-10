@@ -15,10 +15,10 @@
 
 @protocol SingleStoryCellDelegate <NSObject>
 
-- (void) addPieceForSingleStoryCell:(SingleStoryCell *)cell;
-- (void) deleteStoryForSingleStoryCell:(SingleStoryCell *)cell;
-- (void) shareStoryForSingleStoryCell:(SingleStoryCell *)cell;
-- (void) hideStoryForSingleStoryCell:(SingleStoryCell *)cell;
+- (void) addPieceForStory:(Story *)story;
+- (void) deleteStory:(Story *)story;
+- (void) shareStory:(Story *)story;
+- (void) hideStory:(Story *)story;
 
 @end
 

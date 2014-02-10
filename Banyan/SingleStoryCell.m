@@ -111,22 +111,22 @@
 #pragma SingleStoryView delegate
 - (void)deleteStory:(id)sender
 {
-    [self.delegate deleteStoryForSingleStoryCell:self];
+    [self.delegate deleteStory:self.story];
 }
 
 - (void)addPiece:(id)sender
 {
-    [self.delegate addPieceForSingleStoryCell:self];
+    [self.delegate addPieceForStory:self.story];
 }
 
 - (void)shareStory:(id)sender
 {
-    [self.delegate shareStoryForSingleStoryCell:self];
+    [self.delegate shareStory:self.story];
 }
 
 - (void)hideStory:(id)sender
 {
-    [self.delegate hideStoryForSingleStoryCell:self];
+    [self.delegate hideStory:self.story];
 }
 
 - (void) hideSwipedViewAnimated:(BOOL)animated

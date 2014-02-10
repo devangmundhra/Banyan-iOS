@@ -288,41 +288,26 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     }
 }
 
-- (void)addPieceForRowAtIndexPath:(NSIndexPath *)indexPath
+#pragma mark StoryListCellDelegate
+- (void) addPieceForStory:(Story *)story
 {
-    Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [self addPieceToStory:story];
 }
 
-- (void) shareStoryAtIndexPath:(NSIndexPath *)indexPath
+- (void) deleteStory:(Story *)story
 {
-    Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [self.fetchedResultsController indexPathForObject:story];
+    NSIndexPath *myIndexPath = [self.fetchedResultsController indexPathForObject:story];
+    if (myIndexPath) [self tableView:self.tableView commitEditingStyle:UITableViewCellEditingStyleDelete forRowAtIndexPath:myIndexPath];
+}
+
+- (void) shareStory:(Story *)story
+{
     [story shareOnFacebook];
 }
 
-#pragma mark StoryListCellDelegate
-- (void) addPieceForSingleStoryCell:(SingleStoryCell *)cell
+- (void) hideStory:(Story *)story
 {
-    NSIndexPath *myIndexPath = [self.tableView indexPathForCell:cell];
-    [self addPieceForRowAtIndexPath:myIndexPath];
-}
-
-- (void) deleteStoryForSingleStoryCell:(SingleStoryCell *)cell
-{
-    NSIndexPath *myIndexPath = [self.tableView indexPathForCell:cell];
-    [self tableView:self.tableView commitEditingStyle:UITableViewCellEditingStyleDelete forRowAtIndexPath:myIndexPath];
-}
-
-- (void) shareStoryForSingleStoryCell:(SingleStoryCell *)cell
-{
-    NSIndexPath *myIndexPath = [self.tableView indexPathForCell:cell];
-    [self shareStoryAtIndexPath:myIndexPath];
-}
-
-- (void) hideStoryForSingleStoryCell:(SingleStoryCell *)cell
-{
-    NSIndexPath *myIndexPath = [self.tableView indexPathForCell:cell];
-    Story *story = [self.fetchedResultsController objectAtIndexPath:myIndexPath];
     BNSharedUser *currentUser = [BNSharedUser currentUser];
 
     if (currentUser) {
