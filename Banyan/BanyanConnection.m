@@ -226,17 +226,25 @@
                  */
                 NSAssert(false, @"Got Unresolved Cocoa error 1600");
             }
-            
-            if ([[error localizedDescription] rangeOfString:@"(NSURLErrorDomain error -999.)"].location != NSNotFound) {
+            else if ([[error localizedDescription] rangeOfString:@"(NSURLErrorDomain error -999.)"].location != NSNotFound) {
                 /* This operation was cancelled before it could be completed. So just ignore this error */
-                return;
             }
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in fetching stories."
-                                                            message:[error localizedDescription]
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
-            [alert show];
+            else if ([[error localizedDescription] rangeOfString:@"org.restkit.RestKit.ErrorDomain error 2"].location != NSNotFound) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in fetching stories."
+                                                                message:@"Please try again."
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+                [alert show];
+            }
+            else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in fetching stories."
+                                                                message:[error localizedDescription]
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+                [alert show];
+            }
             [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
                                                                 object:self];
             NSLog(@"Hit error: %@", error);

@@ -451,7 +451,7 @@
     }
     
     if (hasImage) {
-        [self.imageView showMedia:imageMedia withPostProcess:nil];
+        [self.imageView showMedia:imageMedia includeThumbnail:NO withPostProcess:nil];
     } else {
         [self.imageView setImageWithURL:nil];
         [self.imageView cancelCurrentImageLoad];

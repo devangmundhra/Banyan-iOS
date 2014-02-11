@@ -94,7 +94,7 @@ static UIFont *_regularFont;
         [Piece viewedPiece:self.piece];
         
         Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
-        [self showThumbnailOfMedia:imageMedia withPostProcess:nil];
+        [self showMedia:imageMedia includeThumbnail:YES withPostProcess:nil];
         if ([self.piece.shortText length]) {
             self.textLabel.hidden = NO;
             self.textLabel.font = _boldCondensedFont;

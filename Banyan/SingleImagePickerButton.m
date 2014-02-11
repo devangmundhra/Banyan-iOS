@@ -196,15 +196,17 @@
     self.media = media;
     
 #define BUTTON_SPACING 10
+#define THUMBNAIL_BUTTON_SIZE 80
     CGRect frame = self.imageView.bounds;
     frame.origin.x = CGRectGetMaxX(self.imageDeleteButton.frame) + BUTTON_SPACING;
-    frame.size.width = CGRectGetWidth(self.imageView.frame) - 2*BUTTON_SPACING - MEDIA_THUMBNAIL_SIZE - frame.origin.x;
+    frame.size.width = CGRectGetWidth(self.imageView.frame) - 2*BUTTON_SPACING - THUMBNAIL_BUTTON_SIZE - frame.origin.x;
     self.imageDisplayView.frame = frame;
     
     self.thumbnailButton = [UIButton buttonWithType:UIButtonTypeCustom];
     frame = self.imageDisplayView.frame;
     frame.origin.x = CGRectGetMaxX(self.imageDisplayView.frame)+BUTTON_SPACING;
-    frame.size.width = MEDIA_THUMBNAIL_SIZE;
+    frame.size.width = THUMBNAIL_BUTTON_SIZE;
+    frame.size.height = THUMBNAIL_BUTTON_SIZE;
     self.thumbnailButton.frame = frame;
     
     [self.thumbnailButton setBackgroundImage:image forState:UIControlStateNormal];
@@ -219,9 +221,9 @@
                                                    NSForegroundColorAttributeName: BANYAN_GRAY_COLOR}];
     [self.thumbnailButton setAttributedTitle:attrString
                                     forState:UIControlStateNormal];
-    [self.thumbnailButton sizeToFit];
     [self.imageView addSubview:self.thumbnailButton];
 #undef BUTTON_SPACING
+#undef THUMBNAIL_BUTTON_SIZE
 }
 
 - (void) setImage:(UIImage *)image

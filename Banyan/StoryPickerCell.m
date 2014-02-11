@@ -96,7 +96,7 @@
     
     // Image
     Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:story.media];
-    [self.imageView showThumbnailOfMedia:imageMedia withPostProcess:^UIImage *(UIImage *image) {
+    [self.imageView showMedia:imageMedia includeThumbnail:YES withPostProcess:^UIImage *(UIImage *image) {
         return [image applyLightEffect];
     }];
     

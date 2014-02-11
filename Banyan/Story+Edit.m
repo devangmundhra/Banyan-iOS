@@ -13,7 +13,7 @@
 
 @implementation Story (Edit)
 
-+ (void) syncStoryAttributeWithItsPIeces:(Story *)story
++ (void) syncStoryAttributeWithItsPieces:(Story *)story
 {
     // Update the length
     story.length = story.pieces.count;

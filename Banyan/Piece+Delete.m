@@ -22,7 +22,7 @@
     self.story = nil;
     [self remove];
     
-    [Story syncStoryAttributeWithItsPIeces:story];
+    [Story syncStoryAttributeWithItsPieces:story];
 }
 
 + (void) deletePiece:(Piece *)piece completion:(void (^)(void)) completion

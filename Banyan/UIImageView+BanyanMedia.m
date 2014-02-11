@@ -8,6 +8,7 @@
 
 #import "UIImageView+BanyanMedia.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "MBProgressHUD.h"
 
 #define PROCESS_IMAGE(__image__) \
 void (^block)(void) = ^\
@@ -35,8 +36,10 @@ else\
 
 @implementation UIImageView (BanyanMedia)
 
-- (void) showMedia:(Media *)media withPostProcess:(UIImage *(^)(UIImage *image))postProcess
+- (void) showMedia:(Media *)media includeThumbnail:(BOOL)includeThumbnail withPostProcess:(UIImage *(^)(UIImage *image))postProcess
 {
+    // If we are just showing thumbnails, then no need to show a progress indicator.
+    // Just show a placeholder image
     if (!media) {
         [self cancelCurrentImageLoad];
         [self setImageWithURL:nil];
@@ -45,57 +48,49 @@ else\
     
     assert([media.mediaType isEqualToString:@"image"] || [media.mediaType  isEqualToString:@"gif"]);
     
-    __weak UIImageView *wself = self;
-    if ([media.remoteURL length]) {
-        [self setImageWithURL:[NSURL URLWithString:media.remoteURL] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-            PROCESS_IMAGE(image);
-        }];
-    } else if ([media.localURL length]) {
-        ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
-        [library assetForURL:[NSURL URLWithString:media.localURL] resultBlock:^(ALAsset *asset) {
-            ALAssetRepresentation *rep = [asset defaultRepresentation];
-            CGImageRef imageRef = [rep fullResolutionImage];
-            UIImage *image = [UIImage imageWithCGImage:imageRef];
-            PROCESS_IMAGE(image);
+    if (includeThumbnail) {
+        UIImage *image = media.thumbnail;
+        UIImage *pImage = nil;
+        if (image) {
+            if (postProcess)
+                pImage = postProcess(image);
+            else
+                pImage = image;
+            self.image = pImage;
+            [self setNeedsDisplay];
+            return;
         }
-                failureBlock:nil
-         ];
-    }
-}
-
-- (void) showThumbnailOfMedia:(Media *)media withPostProcess:(UIImage *(^)(UIImage *image))postProcess
-{
-    if (!media) {
-        [self cancelCurrentImageLoad];
-        [self setImageWithURL:nil];
-        return;
     }
     
-    assert([media.mediaType isEqualToString:@"image"] || [media.mediaType  isEqualToString:@"gif"]);
-    
-    UIImage *image = media.thumbnail;
-    UIImage *pImage = nil;
-    if (image) {
-        if (postProcess)
-            pImage = postProcess(image);
-        else
-            pImage = image;
-        self.image = pImage;
-        [self setNeedsDisplay];
-        return;
-    }
-    
-    // If there is no thumbnail in the media-
-    // Check first for the thumbnailURL, else the remoteURL, else the localURL
+    UIImage *placeHolderImage = nil;
     __weak UIImageView *wself = self;
-    if ([media.thumbnailURL length]) {
-        [self setImageWithURL:[NSURL URLWithString:media.thumbnailURL] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-            PROCESS_IMAGE(image);
-        }];
+    if (includeThumbnail && [media.thumbnailURL length]) {
+        [self setImageWithURL:[NSURL URLWithString:media.thumbnailURL]
+             placeholderImage:placeHolderImage
+                    completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+                        PROCESS_IMAGE(image);
+                    }];
     } else if ([media.remoteURL length]) {
-        [self setImageWithURL:[NSURL URLWithString:media.remoteURL] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-            PROCESS_IMAGE(image);
-        }];
+        void (^fetchImageBlock)(void) = ^{
+            MBProgressHUD *hud = nil;
+            if (!includeThumbnail) {
+                // Don't show progress view if thumbnail is included
+                hud = [MBProgressHUD showHUDAddedTo:wself animated:YES];
+                hud.mode = MBProgressHUDModeDeterminate;
+            }
+            [self setImageWithURL:[NSURL URLWithString:media.remoteURL]
+                 placeholderImage:placeHolderImage
+                          options:0
+                         progress:^(NSUInteger receivedSize, long long expectedSize) {
+                             hud.progress = (float)receivedSize/expectedSize;
+                         }
+                        completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+                            dispatch_async(dispatch_get_main_queue(), ^{[hud hide:YES];});
+                            PROCESS_IMAGE(image);
+                        }];
+        };
+        if ([NSThread isMainThread]) fetchImageBlock();
+        else dispatch_async(dispatch_get_main_queue(), fetchImageBlock);
     } else if ([media.localURL length]) {
         ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
         [library assetForURL:[NSURL URLWithString:media.localURL] resultBlock:^(ALAsset *asset) {

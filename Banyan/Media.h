@@ -23,7 +23,7 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
 @class RemoteObject;
 
 @interface Media : NSManagedObject
-#define MEDIA_THUMBNAIL_SIZE 80
+#define MEDIA_THUMBNAIL_SIZE 160
 
 @property (nonatomic, retain) NSDate * createdAt;
 @property (nonatomic, retain) NSString * filename;

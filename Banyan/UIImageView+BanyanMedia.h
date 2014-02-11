@@ -14,7 +14,6 @@
 
 @interface UIImageView (BanyanMedia)
 
-- (void) showMedia:(Media *)media withPostProcess:(UIImage *(^)(UIImage *image))postProcess;
-- (void) showThumbnailOfMedia:(Media *)media withPostProcess:(UIImage *(^)(UIImage *image))postProcess;
+- (void) showMedia:(Media *)media includeThumbnail:(BOOL)includeThumbnail withPostProcess:(UIImage *(^)(UIImage *image))postProcess;
 
 @end
