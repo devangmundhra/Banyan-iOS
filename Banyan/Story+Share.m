@@ -180,7 +180,7 @@
         });
     } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Copy link to story"]) {
         UIPasteboard *pb = [UIPasteboard generalPasteboard];
-        [pb setString:self.permaLink];
+        [pb setString:REPLACE_NIL_WITH_EMPTY_STRING(self.permaLink)];
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:APP_DELEGATE.topMostController.view animated:YES];

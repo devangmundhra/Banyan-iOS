@@ -256,7 +256,12 @@
     
     Piece *piece = nil;
     if (self.story.pieces.count >= newPieceNum) {
-        piece = [self.story.pieces objectAtIndex:newPieceNum-1];
+        @try {
+            piece = [self.story.pieces objectAtIndex:newPieceNum-1];
+        }
+        @catch (NSException *exception) {
+            return false;
+        }
     }
     UIViewController *viewController = [self viewControllerWithPiece:piece];
     if (viewController) {

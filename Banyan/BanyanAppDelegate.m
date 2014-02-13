@@ -256,7 +256,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     UIApplicationState state = [application applicationState];
     if (state == UIApplicationStateActive) {
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
-        [[TWMessageBarManager sharedInstance] showMessageWithTitle:nil description:[aps objectForKey:@"alert"] type:TWMessageBarMessageTypeInfo];
+        [[TWMessageBarManager sharedInstance] showMessageWithTitle:@"Banyan" description:[aps objectForKey:@"alert"] type:TWMessageBarMessageTypeInfo];
         [self loadRemoteObjectFromUserInfo:userInfo displayIfPossible:NO];
     } else {
         //Do stuff that you would do if the application was not active
@@ -644,7 +644,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
             backgroundColor = BANYAN_GREEN_COLOR;
             break;
         case TWMessageBarMessageTypeInfo:
-            backgroundColor = [BANYAN_DARKGRAY_COLOR colorWithAlphaComponent:0.7];
+            backgroundColor = [BANYAN_DARKGRAY_COLOR colorWithAlphaComponent:0.9];
             break;
         default:
             break;
@@ -664,7 +664,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
             strokeColor = BANYAN_GREEN_COLOR;
             break;
         case TWMessageBarMessageTypeInfo:
-            strokeColor = [BANYAN_DARKGRAY_COLOR colorWithAlphaComponent:0.7];
+            strokeColor = [BANYAN_DARKGRAY_COLOR colorWithAlphaComponent:0.9];
             break;
         default:
             break;
