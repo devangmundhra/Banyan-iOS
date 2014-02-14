@@ -256,6 +256,16 @@
     
     Piece *piece = nil;
     if (self.story.pieces.count >= newPieceNum) {
+        /*
+         * Use exception handling here. [self.story.pieces objectAtIndex:*] has always been
+         * an unstable piece of code. The latest crash here happens when
+         * 1. A story is fetched from the backend
+         * 2. The story is deleted in the backend
+         * 3. On the phone, the story is opened and a piece inserted in the middle
+         * 4. Since the story has been deleted, createPiece will delete this piece
+         * 5. Meanwhile the completion handler will try to flip to the newly added piece and crash
+         *    since piece will be nil so pieceNumber passed here would be 0
+         */
         @try {
             piece = [self.story.pieces objectAtIndex:newPieceNum-1];
         }
@@ -280,7 +290,7 @@
 
 - (void) readPieceViewControllerDoneReading
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissReadViewAnimated:YES completion:nil];
 }
 
 # pragma mark
