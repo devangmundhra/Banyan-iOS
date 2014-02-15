@@ -44,6 +44,7 @@
 		5128EB5417478B3D00393173 /* BNAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 5128EB5317478B3D00393173 /* BNAudioRecorder.m */; };
 		5128EB5717478B5500393173 /* BNAudioStreamingPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5128EB5617478B5500393173 /* BNAudioStreamingPlayer.m */; };
 		5130E1FE18335ECF00975068 /* BNAudioRecorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5130E1FD18335ECF00975068 /* BNAudioRecorderView.m */; };
+		513203AA18AE9C15007A53FD /* BNNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 513203A918AE9C15007A53FD /* BNNavigationController.m */; };
 		5144EC6A1712277600F0B265 /* cameraSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC601712277600F0B265 /* cameraSymbol.png */; };
 		5144EC6B1712277600F0B265 /* cameraSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC611712277600F0B265 /* cameraSymbol@2x.png */; };
 		5144EC6C1712277600F0B265 /* locationSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC621712277600F0B265 /* locationSymbol.png */; };
@@ -329,6 +330,8 @@
 		5128EB5617478B5500393173 /* BNAudioStreamingPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioStreamingPlayer.m; sourceTree = "<group>"; };
 		5130E1FC18335ECF00975068 /* BNAudioRecorderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNAudioRecorderView.h; sourceTree = "<group>"; };
 		5130E1FD18335ECF00975068 /* BNAudioRecorderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioRecorderView.m; sourceTree = "<group>"; };
+		513203A818AE9C15007A53FD /* BNNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNNavigationController.h; path = Banyan/BNNavigationController.h; sourceTree = "<group>"; };
+		513203A918AE9C15007A53FD /* BNNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNNavigationController.m; path = Banyan/BNNavigationController.m; sourceTree = "<group>"; };
 		5144EC601712277600F0B265 /* cameraSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cameraSymbol.png; sourceTree = "<group>"; };
 		5144EC611712277600F0B265 /* cameraSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cameraSymbol@2x.png"; sourceTree = "<group>"; };
 		5144EC621712277600F0B265 /* locationSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = locationSymbol.png; sourceTree = "<group>"; };
@@ -835,6 +838,15 @@
 				5128EB4317472FF600393173 /* record.png */,
 			);
 			name = "Music player";
+			sourceTree = "<group>";
+		};
+		513203AB18AE9C1A007A53FD /* BNNavigationController */ = {
+			isa = PBXGroup;
+			children = (
+				513203A818AE9C15007A53FD /* BNNavigationController.h */,
+				513203A918AE9C15007A53FD /* BNNavigationController.m */,
+			);
+			name = BNNavigationController;
 			sourceTree = "<group>";
 		};
 		51444A0B17719B230037570A /* Edit */ = {
@@ -1424,6 +1436,7 @@
 				511B421E17A666B100466A8B /* BNTabBarController */,
 				51E9B2C3181F8DD8004B35A5 /* BNLabel */,
 				51E9B2C7181F8F8B004B35A5 /* BNTextField */,
+				513203AB18AE9C1A007A53FD /* BNNavigationController */,
 			);
 			name = "Custom Views and View Controllers";
 			path = ..;
@@ -1945,6 +1958,7 @@
 				5157CD031650902900C22CCE /* BanyanConnection.m in Sources */,
 				51C4252D1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.m in Sources */,
 				51A1E0AC186C350E00162BD6 /* Piece+Share.m in Sources */,
+				513203AA18AE9C15007A53FD /* BNNavigationController.m in Sources */,
 				51F86242185A3A110037D576 /* StoryOverviewController.m in Sources */,
 				51E9B2C6181F8F88004B35A5 /* BNTextField.m in Sources */,
 				514CDF5B18131F410098B0A9 /* InvitedFBFriendsViewController.m in Sources */,
