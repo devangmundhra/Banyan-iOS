@@ -75,6 +75,18 @@
 
 + (Piece *)pieceForStory:(Story *)story withAttribute:(NSString *)attribute asValue:(id)value
 {
+    NSArray *array = [self piecesForStory:story withAttribute:attribute asValue:value];
+    return array.count ? [array objectAtIndex:0] : nil;
+}
+
++ (NSUInteger)numPiecesForStory:(Story *)story withAttribute:(NSString *)attribute asValue:(id)value
+{
+    NSArray *array = [self piecesForStory:story withAttribute:attribute asValue:value];
+    return array.count;
+}
+
++ (NSArray *)piecesForStory:(Story *)story withAttribute:(NSString *)attribute asValue:(id)value
+{
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:[NSEntityDescription entityForName:kBNPieceClassKey inManagedObjectContext:story.managedObjectContext]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(%K == %@) AND (story = %@)",
@@ -87,7 +99,7 @@
     NSError *error = nil;
     NSArray *array = [story.managedObjectContext executeFetchRequest:request error:&error];
     
-    return array.count ? [array objectAtIndex:0] : nil;
+    return array;
 }
 
 -(void)setRemoteStatusNumber:(NSNumber *)remoteStatusNumber

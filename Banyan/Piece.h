@@ -24,6 +24,7 @@
 + (NSArray *)oldPiecesInStory:(Story *)story;
 + (NSArray *)unsavedPiecesInStory:(Story *)story;
 + (Piece *)pieceForStory:(Story *)story withAttribute:(NSString *)attribute asValue:(id)value;
++ (NSUInteger)numPiecesForStory:(Story *)story withAttribute:(NSString *)attribute asValue:(id)value;
 @end
 
 @interface Piece (RestKitMappings)

@@ -10,7 +10,6 @@
 #import "Piece.h"
 #import "UIImageView+BanyanMedia.h"
 
-#define ALPHA_OF_READ_STORY 0.6
 @interface SinglePieceView : UIImageView
 @property (strong, nonatomic) Piece *piece;
 @property (nonatomic) NSUInteger pieceNum;

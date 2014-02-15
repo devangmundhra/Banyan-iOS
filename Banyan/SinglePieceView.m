@@ -107,11 +107,6 @@ static UIFont *_regularFont;
     } else {
         [self setStatusForView:@"Error in loading piece." font:_regularFont];
     }
-    if (!self.piece.story.newPiecesToView) {
-        self.alpha = ALPHA_OF_READ_STORY;
-    } else {
-        self.alpha = 1;
-    }
 }
 
 - (void) setStatusForView:(NSString *)status font:(UIFont *)font

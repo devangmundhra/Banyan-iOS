@@ -77,13 +77,6 @@
     _story = story;
     [self.storyView setStory:story];
     [self.piecesScrollView setStory:story];
-    
-    // If all the pieces of the story have been read, change alpha to 0.5
-    if (!story.newPiecesToView) {
-        self.contentView.alpha = ALPHA_OF_READ_STORY;
-    } else {
-        self.contentView.alpha = 1;
-    }
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
