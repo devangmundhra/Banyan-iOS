@@ -70,9 +70,8 @@ typedef enum {
     
     // Fetched results controller
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
-    NSSortDescriptor *newPiecesSD = [NSSortDescriptor sortDescriptorWithKey:@"newPiecesToView" ascending:YES];
     NSSortDescriptor *timeStampSD = [NSSortDescriptor sortDescriptorWithKey:@"timeStamp" ascending:NO];
-    request.sortDescriptors = [NSArray arrayWithObjects:timeStampSD, newPiecesSD, nil];
+    request.sortDescriptors = [NSArray arrayWithObjects:timeStampSD, nil];
     
     self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                         managedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext

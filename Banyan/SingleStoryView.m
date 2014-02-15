@@ -278,7 +278,7 @@ static BOOL _loggedIn;
         point.x = TABLE_CELL_MARGIN+_clockSymbolImage.size.width+SPACER_DISTANCE+clockStringSize.width+2*SPACER_DISTANCE+_locationSymbolImage.size.width+SPACER_DISTANCE+locationStringSize.width+SPACER_DISTANCE;
         point.y = TOP_VIEW_HEIGHT/2+SPACER_DISTANCE;
         [[UIColor grayColor] set];
-        NSUInteger unseenPieces = [Piece numPiecesForStory:self.story withAttribute:@"viewedByCurUser" asValue:[NSNumber numberWithBool:FALSE]];
+        NSUInteger unseenPieces = self.story.numNewPiecesToView;
         string = [NSString stringWithFormat:@"#%d pcs %@", self.story.pieces.count, unseenPieces == 0 ? @"" : [NSString stringWithFormat:@"(%d unread)", unseenPieces]];
         
         size = CGSizeMake(CGRectGetWidth(self.frame)/2 - TABLE_CELL_MARGIN - BUTTON_SPACING, TOP_VIEW_HEIGHT/2);

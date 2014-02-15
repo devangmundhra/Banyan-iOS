@@ -3,7 +3,7 @@
 //  Storied
 //
 //  Created by Devang Mundhra on 4/26/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Banyan. All rights reserved.
 //
 
 #import "Piece.h"
@@ -12,10 +12,10 @@
 
 @interface Piece (Stats)
 
-+ (void) viewedPiece:(Piece *)scene;
++ (void) viewedPiece:(Piece *)piece;
 
-+ (void) toggleLikedPiece:(Piece *)scene;
++ (void) toggleLikedPiece:(Piece *)piece;
 
-+ (void) toggleFavouritedPiece:(Piece *)scene;
++ (void) toggleFavouritedPiece:(Piece *)piece;
 
 @end

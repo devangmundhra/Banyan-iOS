@@ -41,6 +41,7 @@
     
     piece.viewedByCurUser = YES;
     piece.numberOfViews += 1;
+    piece.story.numNewPiecesToView = [Piece numPiecesForStory:piece.story withAttribute:@"viewedByCurUser" asValue:[NSNumber numberWithBool:FALSE]];
     return;
 }
 

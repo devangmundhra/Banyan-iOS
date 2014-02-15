@@ -90,9 +90,6 @@ static UIFont *_regularFont;
 {
     [self cancelCurrentImageLoad];
     if (self.piece) {
-        // Update Stats
-        [Piece viewedPiece:self.piece];
-        
         Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
         [self showMedia:imageMedia includeThumbnail:YES withPostProcess:nil];
         if ([self.piece.shortText length]) {

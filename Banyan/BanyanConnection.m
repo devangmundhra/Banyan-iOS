@@ -194,9 +194,10 @@
             NSArray *stories = objects;
             [stories enumerateObjectsUsingBlock:^(Story *story, NSUInteger idx, BOOL *stop) {
                 story.lastSynced = [NSDate date];
-                Piece *unseenPiece = [Piece pieceForStory:story withAttribute:@"viewedByCurUser" asValue:[NSNumber numberWithBool:FALSE]];
+                NSArray *unseenPieceArray = [Piece piecesForStory:story withAttribute:@"viewedByCurUser" asValue:[NSNumber numberWithBool:FALSE]];
+                Piece *unseenPiece = unseenPieceArray.count > 0 ? [unseenPieceArray firstObject] : nil;
                 story.currentPieceNum = MAX(unseenPiece.pieceNumber, 1);
-                story.newPiecesToView = !story.viewedByCurUser || (unseenPiece != nil);
+                story.numNewPiecesToView = unseenPieceArray.count;
             }];
             
             [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification

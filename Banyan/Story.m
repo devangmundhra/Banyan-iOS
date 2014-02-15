@@ -28,7 +28,7 @@
 @dynamic pieces;
 @dynamic uploadStatusNumber, primitiveUploadStatusNumber;
 @dynamic sectionIdentifier, primitiveSectionIdentifier;
-@dynamic newPiecesToView;
+@dynamic numNewPiecesToView;
 
 - (void)awakeFromFetch
 {
@@ -114,12 +114,8 @@
 							  [NSNumber numberWithInt:RemoteObjectStatusFailed]];
     [request setPredicate:predicate];
     
-    NSSortDescriptor *uploadStatusSD = [NSSortDescriptor sortDescriptorWithKey:@"uploadStatusNumber" ascending:YES];
-    NSSortDescriptor *newPiecesSD = [NSSortDescriptor sortDescriptorWithKey:@"newPiecesToView" ascending:YES];
-    NSSortDescriptor *dateSD = [NSSortDescriptor sortDescriptorWithKey:@"updatedAt"
-                                                             ascending:NO
-                                                              selector:@selector(compare:)];
-    request.sortDescriptors = [NSArray arrayWithObjects:uploadStatusSD, newPiecesSD, dateSD, nil];
+    NSSortDescriptor *timeStampSD = [NSSortDescriptor sortDescriptorWithKey:@"timeStamp" ascending:NO];
+    request.sortDescriptors = [NSArray arrayWithObjects:timeStampSD, nil];
     
     NSError *error = nil;
     NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
@@ -200,9 +196,6 @@
     [self didChangeValueForKey:@"uploadStatusNumber"];
     
     [self setPrimitiveSectionIdentifier:nil];
-//    [self.managedObjectContext performBlock:^{
-//        [self.managedObjectContext refreshObject:self mergeChanges:YES];
-//    }];
 }
 
 - (void) saveStoryMOIdToUserDefaults

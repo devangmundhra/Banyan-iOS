@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3396" systemVersion="13A603" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3396" systemVersion="13B42" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Comment" representedClassName="Comment" syncable="YES">
         <attribute name="author" attributeType="Transformable" syncable="YES"/>
         <attribute name="commentID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -61,7 +61,7 @@
         <attribute name="currentPieceNum" optional="YES" attributeType="Integer 16" defaultValueString="1" indexed="YES" syncable="YES"/>
         <attribute name="isInvited" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="length" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="newPiecesToView" optional="YES" attributeType="Boolean" defaultValueString="NO" indexed="YES" syncable="YES"/>
+        <attribute name="numNewPiecesToView" optional="YES" attributeType="Integer 16" defaultValueString="NO" indexed="YES" syncable="YES"/>
         <attribute name="readAccess" optional="YES" attributeType="Transformable" valueTransformerName="BNDuckTypedObjectToDataTransformer" syncable="YES"/>
         <attribute name="sectionIdentifier" optional="YES" transient="YES" attributeType="String" defaultValueString="Drafts" indexed="YES" syncable="YES"/>
         <attribute name="tags" optional="YES" attributeType="String" syncable="YES"/>
