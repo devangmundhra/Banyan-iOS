@@ -30,6 +30,7 @@ extern NSString *const BNRefreshCurrentStoryListNotification;
 extern NSString *const BNUserDefaultsUserInfo;
 extern NSString *const BNUserDefaultsBanyanUsersFacebookFriends;
 extern NSString *const BNUserDefaultsLastSuccessfulStoryUpdateTime;
+extern NSString *const BNUserDefaultsLastGetRequestTime;
 
 extern NSString *const BNUserDefaultsAddStoryInvitedContributePushNotification;
 extern NSString *const BNUserDefaultsAddStoryInvitedViewPushNotification;

@@ -28,6 +28,7 @@ NSString *const BNRefreshCurrentStoryListNotification = @"io.banyan.Banyan:Refre
 NSString *const BNUserDefaultsUserInfo = @"io.banyan.Banyan.userDefaults.userInfo";
 NSString *const BNUserDefaultsBanyanUsersFacebookFriends = @"io.banyan.Banyan.userDefaults.banyanUsersFacebookFriends";
 NSString *const BNUserDefaultsLastSuccessfulStoryUpdateTime = @"io.banyan.Banyan.userDefaults.banyanLastSuccessfulUpdatedTime";
+NSString *const BNUserDefaultsLastGetRequestTime = @"io.banyan.Banyan.userDefaults.banyanLastGetRequestTime";
 
 NSString *const BNUserDefaultsAddStoryInvitedContributePushNotification = @"io.banyan.Banyan.userDefaults.addStoryInvitedContrPushNotification";
 NSString *const BNUserDefaultsAddStoryInvitedViewPushNotification = @"io.banyan.Banyan.userDefaults.addStoryInvitedViewPushNotification";
