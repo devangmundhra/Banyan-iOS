@@ -135,6 +135,10 @@
                                                                                  statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)]];
     
     // Fetch request blocks for deleting orphaned objects
+    // All entities returned by the fetch request are candidates for deletion. If a managedObject should not be deleted, they should not
+    // be returned by the fetch request
+    // The fetch requests are executed LIFO, so pieces should be deleted before stories are deleted
+    // Delete the stories not in the fetch request
     [objectManager addFetchRequestBlock:^NSFetchRequest *(NSURL *URL) {
         RKPathMatcher *pathMatcher = [RKPathMatcher pathMatcherWithPath:@"story"];
         
@@ -150,6 +154,22 @@
                                       [NSNumber numberWithInt:RemoteObjectStatusSync], [NSNumber numberWithInt:RemoteObjectStatusSync]];
             // Don't delete stories or pieces that have not yet been uploaded completely.
 //            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@)", [NSNumber numberWithInt:RemoteObjectStatusSync]];
+            [fetchRequest setPredicate:predicate];
+            return fetchRequest;
+        }
+        
+        return nil;
+    }];
+    
+    // Delete the piece of the stories not in the fetch request
+    [objectManager addFetchRequestBlock:^NSFetchRequest *(NSURL *URL) {
+        RKPathMatcher *pathMatcher = [RKPathMatcher pathMatcherWithPath:@"story"];
+        
+        NSDictionary *argsDict = nil;
+        BOOL match = [pathMatcher matchesPattern:[URL relativePath] tokenizeQueryStrings:YES parsedArguments:&argsDict];
+        if (match) {
+            NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:kBNPieceClassKey];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@)", [NSNumber numberWithInt:RemoteObjectStatusSync]];
             [fetchRequest setPredicate:predicate];
             return fetchRequest;
         }
