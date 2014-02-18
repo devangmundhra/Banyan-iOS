@@ -47,6 +47,13 @@
 		513203AA18AE9C15007A53FD /* BNNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 513203A918AE9C15007A53FD /* BNNavigationController.m */; };
 		513203AF18B3593D007A53FD /* powered-by-google-on-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 513203AD18B3593D007A53FD /* powered-by-google-on-white.png */; };
 		513203B018B3593D007A53FD /* powered-by-google-on-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 513203AE18B3593D007A53FD /* powered-by-google-on-white@2x.png */; };
+		513203B918B35FEE007A53FD /* Icon-60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 513203B218B35FEE007A53FD /* Icon-60@2x.png */; };
+		513203BA18B35FEE007A53FD /* Icon-76.png in Resources */ = {isa = PBXBuildFile; fileRef = 513203B318B35FEE007A53FD /* Icon-76.png */; };
+		513203BB18B35FEE007A53FD /* Icon-76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 513203B418B35FEE007A53FD /* Icon-76@2x.png */; };
+		513203BC18B35FEE007A53FD /* Icon-Small-40.png in Resources */ = {isa = PBXBuildFile; fileRef = 513203B518B35FEE007A53FD /* Icon-Small-40.png */; };
+		513203BD18B35FEE007A53FD /* Icon-Small-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 513203B618B35FEE007A53FD /* Icon-Small-40@2x.png */; };
+		513203BE18B35FEE007A53FD /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 513203B718B35FEE007A53FD /* Icon-Small.png */; };
+		513203BF18B35FEE007A53FD /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 513203B818B35FEE007A53FD /* Icon-Small@2x.png */; };
 		5144EC6A1712277600F0B265 /* cameraSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC601712277600F0B265 /* cameraSymbol.png */; };
 		5144EC6B1712277600F0B265 /* cameraSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC611712277600F0B265 /* cameraSymbol@2x.png */; };
 		5144EC6C1712277600F0B265 /* locationSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC621712277600F0B265 /* locationSymbol.png */; };
@@ -245,8 +252,6 @@
 		51F57C5A17228DC200A76FA5 /* backArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F57C5617228DC200A76FA5 /* backArrow@2x.png */; };
 		51F57C5B17228DC200A76FA5 /* settingsButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F57C5717228DC200A76FA5 /* settingsButton.png */; };
 		51F57C5C17228DC200A76FA5 /* settingsButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F57C5817228DC200A76FA5 /* settingsButton@2x.png */; };
-		51F60EF816E8423E00F9715E /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F60EF616E8423E00F9715E /* Icon.png */; };
-		51F60EF916E8423E00F9715E /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F60EF716E8423E00F9715E /* Icon@2x.png */; };
 		51F8622D1858EA050037D576 /* UIViewController+BNSlidingViewControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F8622C1858EA050037D576 /* UIViewController+BNSlidingViewControllerAdditions.m */; };
 		51F862311859701F0037D576 /* slider_background.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F8622F1859701E0037D576 /* slider_background.png */; };
 		51F862321859701F0037D576 /* slider_background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F862301859701F0037D576 /* slider_background@2x.png */; };
@@ -336,6 +341,13 @@
 		513203A918AE9C15007A53FD /* BNNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNNavigationController.m; path = Banyan/BNNavigationController.m; sourceTree = "<group>"; };
 		513203AD18B3593D007A53FD /* powered-by-google-on-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "powered-by-google-on-white.png"; sourceTree = "<group>"; };
 		513203AE18B3593D007A53FD /* powered-by-google-on-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "powered-by-google-on-white@2x.png"; sourceTree = "<group>"; };
+		513203B218B35FEE007A53FD /* Icon-60@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-60@2x.png"; sourceTree = "<group>"; };
+		513203B318B35FEE007A53FD /* Icon-76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-76.png"; sourceTree = "<group>"; };
+		513203B418B35FEE007A53FD /* Icon-76@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-76@2x.png"; sourceTree = "<group>"; };
+		513203B518B35FEE007A53FD /* Icon-Small-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-40.png"; sourceTree = "<group>"; };
+		513203B618B35FEE007A53FD /* Icon-Small-40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-40@2x.png"; sourceTree = "<group>"; };
+		513203B718B35FEE007A53FD /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
+		513203B818B35FEE007A53FD /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
 		5144EC601712277600F0B265 /* cameraSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cameraSymbol.png; sourceTree = "<group>"; };
 		5144EC611712277600F0B265 /* cameraSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cameraSymbol@2x.png"; sourceTree = "<group>"; };
 		5144EC621712277600F0B265 /* locationSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = locationSymbol.png; sourceTree = "<group>"; };
@@ -608,8 +620,6 @@
 		51F57C5617228DC200A76FA5 /* backArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backArrow@2x.png"; sourceTree = "<group>"; };
 		51F57C5717228DC200A76FA5 /* settingsButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = settingsButton.png; sourceTree = "<group>"; };
 		51F57C5817228DC200A76FA5 /* settingsButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settingsButton@2x.png"; sourceTree = "<group>"; };
-		51F60EF616E8423E00F9715E /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
-		51F60EF716E8423E00F9715E /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		51F8622B1858EA050037D576 /* UIViewController+BNSlidingViewControllerAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIViewController+BNSlidingViewControllerAdditions.h"; path = "Banyan/UIViewController+BNSlidingViewControllerAdditions.h"; sourceTree = "<group>"; };
 		51F8622C1858EA050037D576 /* UIViewController+BNSlidingViewControllerAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+BNSlidingViewControllerAdditions.m"; path = "Banyan/UIViewController+BNSlidingViewControllerAdditions.m"; sourceTree = "<group>"; };
 		51F8622F1859701E0037D576 /* slider_background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = slider_background.png; sourceTree = "<group>"; };
@@ -862,6 +872,20 @@
 			name = "Powered by Google logo";
 			sourceTree = "<group>";
 		};
+		513203B118B35D86007A53FD /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				513203B218B35FEE007A53FD /* Icon-60@2x.png */,
+				513203B318B35FEE007A53FD /* Icon-76.png */,
+				513203B418B35FEE007A53FD /* Icon-76@2x.png */,
+				513203B518B35FEE007A53FD /* Icon-Small-40.png */,
+				513203B618B35FEE007A53FD /* Icon-Small-40@2x.png */,
+				513203B718B35FEE007A53FD /* Icon-Small.png */,
+				513203B818B35FEE007A53FD /* Icon-Small@2x.png */,
+			);
+			name = Icons;
+			sourceTree = "<group>";
+		};
 		51444A0B17719B230037570A /* Edit */ = {
 			isa = PBXGroup;
 			children = (
@@ -957,6 +981,7 @@
 				51B234E9171658BF004241C1 /* Roboto Font */,
 				518153461712A5FC006F73D3 /* Tab Symbols */,
 				5181535B1713F49F006F73D3 /* Swipeable View Symbols */,
+				513203B118B35D86007A53FD /* Icons */,
 				51B49A2218A0C0CD0073F184 /* globe_white.png */,
 				51B49A2318A0C0CE0073F184 /* globe_white@2x.png */,
 				51D5E6E5182220A5005CA2F4 /* hideStoryButton@2x.png */,
@@ -1008,8 +1033,6 @@
 				51F2288B161A9E22006B3AA7 /* Default-568h@2x.png */,
 				51BDA1E2173B789600BD2C19 /* Default@2x.png */,
 				51BDA1E0173B788F00BD2C19 /* Default.png */,
-				51F60EF616E8423E00F9715E /* Icon.png */,
-				51F60EF716E8423E00F9715E /* Icon@2x.png */,
 				51B49A3218A358A70073F184 /* Thats-Font-Folks.ttf */,
 			);
 			path = Resources;
@@ -1765,9 +1788,9 @@
 			files = (
 				51B49A3318A3596A0073F184 /* Thats-Font-Folks.ttf in Resources */,
 				5105364F17A5AD720046D969 /* defaultPerfs.plist in Resources */,
-				51F60EF816E8423E00F9715E /* Icon.png in Resources */,
-				51F60EF916E8423E00F9715E /* Icon@2x.png in Resources */,
 				5189B2C215B387E200562DD0 /* InfoPlist.strings in Resources */,
+				513203BD18B35FEE007A53FD /* Icon-Small-40@2x.png in Resources */,
+				513203BE18B35FEE007A53FD /* Icon-Small.png in Resources */,
 				51F862311859701F0037D576 /* slider_background.png in Resources */,
 				513203B018B3593D007A53FD /* powered-by-google-on-white@2x.png in Resources */,
 				5189B34E15B395F300562DD0 /* UserLoginViewController.xib in Resources */,
@@ -1777,6 +1800,7 @@
 				5166B1BD15E75B420072749C /* buttonFacebookSelected@2x.png in Resources */,
 				51CFD94415F58337002926F9 /* buttonFollow.png in Resources */,
 				51CFD94515F58337002926F9 /* buttonFollow@2x.png in Resources */,
+				513203BC18B35FEE007A53FD /* Icon-Small-40.png in Resources */,
 				51B49A1C1898E8DF0073F184 /* location.png in Resources */,
 				51CFD94615F58337002926F9 /* buttonFollowing.png in Resources */,
 				51CFD94715F58337002926F9 /* buttonFollowing@2x.png in Resources */,
@@ -1792,6 +1816,7 @@
 				517A01DD170BFA5B00665F0F /* InviteFriendCell.xib in Resources */,
 				5144EC6A1712277600F0B265 /* cameraSymbol.png in Resources */,
 				5144EC6B1712277600F0B265 /* cameraSymbol@2x.png in Resources */,
+				513203BA18B35FEE007A53FD /* Icon-76.png in Resources */,
 				5144EC6C1712277600F0B265 /* locationSymbol.png in Resources */,
 				5144EC6D1712277600F0B265 /* locationSymbol@2x.png in Resources */,
 				51929D611867B7940061BD6C /* BNImageCropperViewController.xib in Resources */,
@@ -1827,11 +1852,13 @@
 				518153541713F474006F73D3 /* backViewHideButton@2x.png in Resources */,
 				518153551713F474006F73D3 /* backViewShowButton.png in Resources */,
 				518153561713F474006F73D3 /* backViewShowButton@2x.png in Resources */,
+				513203B918B35FEE007A53FD /* Icon-60@2x.png in Resources */,
 				518153571713F474006F73D3 /* deleteStoryButton.png in Resources */,
 				518153581713F474006F73D3 /* deleteStoryButton@2x.png in Resources */,
 				51B234E117154C43004241C1 /* shareButtonBlack.png in Resources */,
 				51B234E217154C43004241C1 /* shareButtonBlack@2x.png in Resources */,
 				51B234E317154C43004241C1 /* shareButtonWhite.png in Resources */,
+				513203BB18B35FEE007A53FD /* Icon-76@2x.png in Resources */,
 				51B234E417154C43004241C1 /* shareButtonWhite@2x.png in Resources */,
 				51D5E6E8182220A5005CA2F4 /* hideStoryButton.png in Resources */,
 				51B234FB171658BF004241C1 /* Google Android License.txt in Resources */,
@@ -1852,6 +1879,7 @@
 				51B23506171658BF004241C1 /* Roboto-LightItalic.ttf in Resources */,
 				51B23507171658BF004241C1 /* Roboto-Medium.ttf in Resources */,
 				51B23508171658BF004241C1 /* Roboto-MediumItalic.ttf in Resources */,
+				513203BF18B35FEE007A53FD /* Icon-Small@2x.png in Resources */,
 				51B23509171658BF004241C1 /* Roboto-Regular.ttf in Resources */,
 				51B2350A171658BF004241C1 /* Roboto-Thin.ttf in Resources */,
 				51B2350B171658BF004241C1 /* Roboto-ThinItalic.ttf in Resources */,
