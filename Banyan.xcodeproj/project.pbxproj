@@ -45,6 +45,8 @@
 		5128EB5717478B5500393173 /* BNAudioStreamingPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5128EB5617478B5500393173 /* BNAudioStreamingPlayer.m */; };
 		5130E1FE18335ECF00975068 /* BNAudioRecorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5130E1FD18335ECF00975068 /* BNAudioRecorderView.m */; };
 		513203AA18AE9C15007A53FD /* BNNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 513203A918AE9C15007A53FD /* BNNavigationController.m */; };
+		513203AF18B3593D007A53FD /* powered-by-google-on-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 513203AD18B3593D007A53FD /* powered-by-google-on-white.png */; };
+		513203B018B3593D007A53FD /* powered-by-google-on-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 513203AE18B3593D007A53FD /* powered-by-google-on-white@2x.png */; };
 		5144EC6A1712277600F0B265 /* cameraSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC601712277600F0B265 /* cameraSymbol.png */; };
 		5144EC6B1712277600F0B265 /* cameraSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC611712277600F0B265 /* cameraSymbol@2x.png */; };
 		5144EC6C1712277600F0B265 /* locationSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC621712277600F0B265 /* locationSymbol.png */; };
@@ -332,6 +334,8 @@
 		5130E1FD18335ECF00975068 /* BNAudioRecorderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioRecorderView.m; sourceTree = "<group>"; };
 		513203A818AE9C15007A53FD /* BNNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNNavigationController.h; path = Banyan/BNNavigationController.h; sourceTree = "<group>"; };
 		513203A918AE9C15007A53FD /* BNNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNNavigationController.m; path = Banyan/BNNavigationController.m; sourceTree = "<group>"; };
+		513203AD18B3593D007A53FD /* powered-by-google-on-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "powered-by-google-on-white.png"; sourceTree = "<group>"; };
+		513203AE18B3593D007A53FD /* powered-by-google-on-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "powered-by-google-on-white@2x.png"; sourceTree = "<group>"; };
 		5144EC601712277600F0B265 /* cameraSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cameraSymbol.png; sourceTree = "<group>"; };
 		5144EC611712277600F0B265 /* cameraSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cameraSymbol@2x.png"; sourceTree = "<group>"; };
 		5144EC621712277600F0B265 /* locationSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = locationSymbol.png; sourceTree = "<group>"; };
@@ -849,6 +853,15 @@
 			name = BNNavigationController;
 			sourceTree = "<group>";
 		};
+		513203AC18B35928007A53FD /* Powered by Google logo */ = {
+			isa = PBXGroup;
+			children = (
+				513203AD18B3593D007A53FD /* powered-by-google-on-white.png */,
+				513203AE18B3593D007A53FD /* powered-by-google-on-white@2x.png */,
+			);
+			name = "Powered by Google logo";
+			sourceTree = "<group>";
+		};
 		51444A0B17719B230037570A /* Edit */ = {
 			isa = PBXGroup;
 			children = (
@@ -936,6 +949,7 @@
 		5166B1B515E75B420072749C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				513203AC18B35928007A53FD /* Powered by Google logo */,
 				51B49A151898E8C90073F184 /* Location */,
 				51F86233185970240037D576 /* Slider background */,
 				5128EB3917472FE300393173 /* Music player */,
@@ -1755,6 +1769,7 @@
 				51F60EF916E8423E00F9715E /* Icon@2x.png in Resources */,
 				5189B2C215B387E200562DD0 /* InfoPlist.strings in Resources */,
 				51F862311859701F0037D576 /* slider_background.png in Resources */,
+				513203B018B3593D007A53FD /* powered-by-google-on-white@2x.png in Resources */,
 				5189B34E15B395F300562DD0 /* UserLoginViewController.xib in Resources */,
 				5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */,
 				5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */,
@@ -1784,6 +1799,7 @@
 				51D5E6E7182220A5005CA2F4 /* hideStoryButton@2x.png in Resources */,
 				5144EC6F1712277600F0B265 /* readButtonSelected@2x.png in Resources */,
 				5144EC701712277600F0B265 /* writeButtonSelected.png in Resources */,
+				513203AF18B3593D007A53FD /* powered-by-google-on-white.png in Resources */,
 				5144EC711712277600F0B265 /* writeButtonSelected@2x.png in Resources */,
 				51815328171230AB006F73D3 /* readButtonUnselected.png in Resources */,
 				51815329171230AB006F73D3 /* readButtonUnselected@2x.png in Resources */,

@@ -202,7 +202,7 @@ void uncaughtExceptionHandler(NSException *exception)
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     
     // Cancel GET requests for fetching stories when app is going in background
-    [[RKObjectManager sharedManager] cancelAllObjectRequestOperationsWithMethod:RKRequestMethodGET matchingPathPattern:@"story"];
+    [[RKObjectManager sharedManager] cancelAllObjectRequestOperationsWithMethod:RKRequestMethodGET matchingPathPattern:@"story/"];
     NSError *error = nil;
     if (![[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:&error]) {
         NSAssert2(false, @"Unresolved Core Data Save error %@", error, [error userInfo]);

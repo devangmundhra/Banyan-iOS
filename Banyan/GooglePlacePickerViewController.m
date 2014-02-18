@@ -220,6 +220,9 @@ static NSString *PlacesDetailCellIdentifier = @"GooglePlacesCell";
         [UIView commitAnimations];
         
         [self.searchDisplayController.searchBar setShowsCancelButton:YES animated:YES];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"powered-by-google-on-white"]];
+        imageView.contentMode = UIViewContentModeRight;
+        self.searchDisplayController.searchResultsTableView.tableFooterView = imageView;
     }
     BOOL boolToReturn = shouldBeginEditing;
     shouldBeginEditing = YES;
