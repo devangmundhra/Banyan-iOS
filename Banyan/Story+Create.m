@@ -13,7 +13,7 @@
 #import "UIImage+ResizeAdditions.h"
 #import "Media.h"
 #import "User.h"
-#import <CoreData/CoreData.h>
+#import "Story+Stats.h"
 
 @implementation Story (Create)
 
@@ -54,7 +54,7 @@
                                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                                 NSLog(@"Create story successful %@", story);
                                                 story.remoteStatus = RemoteObjectStatusSync;
-                                                [story save];
+                                                [Story viewedStory:story];
                                             }
                                             failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                                 story.remoteStatus = RemoteObjectStatusFailed;

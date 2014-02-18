@@ -14,6 +14,7 @@
 #import "User.h"
 #import "User_Defines.h"
 #import "Story+Permissions.h"
+#import "Piece+Stats.h"
 
 @implementation Piece (Create)
 
@@ -72,7 +73,7 @@
                                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                                 piece.remoteStatus = RemoteObjectStatusSync;
                                                 NSLog(@"Create piece successful %@", piece);
-                                                [piece save];
+                                                [Piece viewedPiece:piece];
                                             }
                                             failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                                 piece.remoteStatus = RemoteObjectStatusFailed;

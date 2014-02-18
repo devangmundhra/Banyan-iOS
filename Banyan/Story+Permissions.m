@@ -26,7 +26,7 @@ NSString *const kDictionaryInSortedArrayOfContributorsCountKey = @"count";
     // Add other pieces first
     for (Piece *piece in self.pieces) {
         if (piece.author) // No author is possible for backup Piece when editing a piece
-            [contributorArray addObject:piece.author.name];
+            [contributorArray addObject:[piece.author.name copy]];
     }
     
     return [NSOrderedSet orderedSetWithArray:contributorArray].array;
@@ -64,7 +64,7 @@ NSString *const kDictionaryInSortedArrayOfContributorsCountKey = @"count";
 {
     NSCountedSet *countedSet = [[NSCountedSet alloc] initWithCapacity:1];
     for (Piece *piece in self.pieces) {
-        [countedSet addObject:piece.author.name];
+        [countedSet addObject:[piece.author.name copy]];
     }
     
     NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:1];
