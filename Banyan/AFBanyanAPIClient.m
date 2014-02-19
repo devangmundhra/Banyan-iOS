@@ -45,9 +45,9 @@ static NSString * const kAFBanyanAPIBaseURLString = @"http://www.banyan.io/api/v
         [self setAuthorizationHeaderWithTastyPieUsername:email andToken:apikey];    }
     [self setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus isNetworkReachable) {
         if (isNetworkReachable == AFNetworkReachabilityStatusReachableViaWiFi || isNetworkReachable == AFNetworkReachabilityStatusReachableViaWWAN) {
-            [((BanyanAppDelegate *)[UIApplication sharedApplication].delegate) fireRemoteObjectTimer];
+            [APP_DELEGATE fireRemoteObjectTimer];
         } else {
-            [((BanyanAppDelegate *)[UIApplication sharedApplication].delegate) invalidateRemoteObjectTimer];
+            [APP_DELEGATE invalidateRemoteObjectTimer];
         }
     }];
     

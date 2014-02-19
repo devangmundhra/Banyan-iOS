@@ -39,7 +39,7 @@
     // If the object has not been created yet, don't ask for editing it on the server.
     if (!NUMBER_EXISTS(story.bnObjectId)) {
         // TODO: There is still a race condition here when the story is being created
-        // and an edit comes in
+        // and an edit comes in, in which case the edit will be lost.
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Can't synchronize the story with the server."
                                                         message:@"A previous synchronization is going on. Try in a bit!"
                                                        delegate:nil

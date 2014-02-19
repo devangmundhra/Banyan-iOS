@@ -290,6 +290,7 @@
         // This means the bigger image was uploaded fine but the thumbnail could not be uploaded.
         // Upload only the thumbnail
         [self uploadThumbnailImageWithSuccess:successBlock failure:errorBlock];
+        return;
     }
     
     self.remoteStatus = MediaRemoteStatusProcessing;

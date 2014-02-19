@@ -73,14 +73,6 @@
         
         if (![[AFBanyanAPIClient sharedClient] isReachable])
             NSLog(@"Banyan not reachable");
-        
-        UVConfig *config = [UVConfig configWithSite:@"banyan.uservoice.com"];
-        [UVStyleSheet instance].tintColor = BANYAN_GREEN_COLOR;
-        BNSharedUser *currentUser = [BNSharedUser currentUser];
-        if (currentUser) {
-            [config identifyUserWithEmail:currentUser.email name:currentUser.name guid:[NSString stringWithFormat:@"%@", currentUser.userId]];
-        }
-        [UserVoice initialize:config];
     };
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -114,6 +106,17 @@
     
     [RemoteObject validateAllObjects];
 
+    [Crashlytics startWithAPIKey:@"2af776d8f9dd545aa2bcb6afef1d780cfc5a1ee0"];
+    
+    UVConfig *config = [UVConfig configWithSite:@"banyan.uservoice.com"];
+    [UVStyleSheet instance].tintColor = BANYAN_GREEN_COLOR;
+    BNSharedUser *currentUser = [BNSharedUser currentUser];
+    if (currentUser) {
+        [config identifyUserWithEmail:currentUser.email name:currentUser.name guid:[NSString stringWithFormat:@"%@", currentUser.userId]];
+        [Crashlytics setUserIdentifier:[NSString stringWithFormat:@"%@", currentUser.userId]];
+    }
+    [UserVoice initialize:config];
+    
     [application registerForRemoteNotificationTypes:
      UIRemoteNotificationTypeBadge |
      UIRemoteNotificationTypeSound |

@@ -218,6 +218,8 @@ static UIFont *_regularFont;
         }
         if (piece) {
             [view setPiece:piece];
+        } else {
+            [view setStatusForView:@"There was a problem in fetching this piece" font:_regularFont];
         }
     }
     @catch (NSException *exception) {

@@ -54,6 +54,8 @@
 		513203BD18B35FEE007A53FD /* Icon-Small-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 513203B618B35FEE007A53FD /* Icon-Small-40@2x.png */; };
 		513203BE18B35FEE007A53FD /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 513203B718B35FEE007A53FD /* Icon-Small.png */; };
 		513203BF18B35FEE007A53FD /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 513203B818B35FEE007A53FD /* Icon-Small@2x.png */; };
+		513203C118B365A0007A53FD /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 513203C018B365A0007A53FD /* Images.xcassets */; };
+		513203C518B3DF48007A53FD /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 513203C418B3DF48007A53FD /* Crashlytics.framework */; };
 		5144EC6A1712277600F0B265 /* cameraSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC601712277600F0B265 /* cameraSymbol.png */; };
 		5144EC6B1712277600F0B265 /* cameraSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC611712277600F0B265 /* cameraSymbol@2x.png */; };
 		5144EC6C1712277600F0B265 /* locationSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC621712277600F0B265 /* locationSymbol.png */; };
@@ -348,6 +350,8 @@
 		513203B618B35FEE007A53FD /* Icon-Small-40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-40@2x.png"; sourceTree = "<group>"; };
 		513203B718B35FEE007A53FD /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
 		513203B818B35FEE007A53FD /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
+		513203C018B365A0007A53FD /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		513203C418B3DF48007A53FD /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		5144EC601712277600F0B265 /* cameraSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cameraSymbol.png; sourceTree = "<group>"; };
 		5144EC611712277600F0B265 /* cameraSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cameraSymbol@2x.png"; sourceTree = "<group>"; };
 		5144EC621712277600F0B265 /* locationSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = locationSymbol.png; sourceTree = "<group>"; };
@@ -677,6 +681,7 @@
 				5189B3C915B39BE700562DD0 /* AudioToolbox.framework in Frameworks */,
 				5189B3C715B39BE100562DD0 /* MobileCoreServices.framework in Frameworks */,
 				5189B2BC15B387E200562DD0 /* CoreGraphics.framework in Frameworks */,
+				513203C518B3DF48007A53FD /* Crashlytics.framework in Frameworks */,
 				514EEA8C17C5EF4700B4BCBF /* AWSRuntime.framework in Frameworks */,
 				5189B3C315B39BCC00562DD0 /* MapKit.framework in Frameworks */,
 				5189B3C115B39BC500562DD0 /* CFNetwork.framework in Frameworks */,
@@ -1164,6 +1169,7 @@
 				519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */,
 				5189B3C815B39BE700562DD0 /* AudioToolbox.framework */,
 				5189B3C615B39BE100562DD0 /* MobileCoreServices.framework */,
+				513203C418B3DF48007A53FD /* Crashlytics.framework */,
 				5189B3C415B39BD100562DD0 /* QuartzCore.framework */,
 				5189B3C215B39BCC00562DD0 /* MapKit.framework */,
 				5189B3C015B39BC500562DD0 /* CFNetwork.framework */,
@@ -1195,16 +1201,17 @@
 				5192332416743EB7009686E4 /* Location */,
 				5189B35115B3964000562DD0 /* Networking Extensions */,
 				5189B35815B396FA00562DD0 /* Data handling */,
-				5189B35C15B397BD00562DD0 /* Helpful Categories */,
 				51596AB21744BB0A008F5276 /* Constants and Misc */,
 				5189B2C615B387E200562DD0 /* BanyanAppDelegate.h */,
 				5189B2C715B387E200562DD0 /* BanyanAppDelegate.m */,
 				5189B35B15B3976700562DD0 /* Story List */,
 				51CFD93B15F57F75002926F9 /* SideNavigator View Controller */,
+				5189B35C15B397BD00562DD0 /* Helpful Categories */,
 				51B2351B17168C6D004241C1 /* Custom Views and View Controllers */,
 				5189B2BE15B387E200562DD0 /* Supporting Files */,
 				5166B1B515E75B420072749C /* Resources */,
 				517A01AA1709539800665F0F /* Vendors */,
+				513203C018B365A0007A53FD /* Images.xcassets */,
 			);
 			path = Banyan;
 			sourceTree = "<group>";
@@ -1740,6 +1747,7 @@
 				5189B2B015B387E200562DD0 /* Frameworks */,
 				5189B2B115B387E200562DD0 /* Resources */,
 				2D5405292D86407695C95372 /* Copy Pods Resources */,
+				513203C218B3DE90007A53FD /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1758,11 +1766,6 @@
 			attributes = {
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "";
-				TargetAttributes = {
-					5189B2B215B387E200562DD0 = {
-						DevelopmentTeam = 3M2XNZPFR5;
-					};
-				};
 			};
 			buildConfigurationList = 5189B2AD15B387E100562DD0 /* Build configuration list for PBXProject "Banyan" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1899,6 +1902,7 @@
 				51FAC0C41731131D0046C2D6 /* commentSymbolGray.png in Resources */,
 				51FAC0C51731131D0046C2D6 /* commentSymbolGray@2x.png in Resources */,
 				51FAC0C81731144F0046C2D6 /* heartSymbolPink.png in Resources */,
+				513203C118B365A0007A53FD /* Images.xcassets in Resources */,
 				51FAC0C91731144F0046C2D6 /* heartSymbolPink@2x.png in Resources */,
 				51CCA1521732498D007616EA /* commentSymbolWhite.png in Resources */,
 				51CCA1531732498D007616EA /* commentSymbolWhite@2x.png in Resources */,
@@ -1940,6 +1944,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+		};
+		513203C218B3DE90007A53FD /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Crashlytics.framework/run 2af776d8f9dd545aa2bcb6afef1d780cfc5a1ee0 7166483ae7f542948e899fb8961475f5bca9ff46e0430c6e5d2850889482296a";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2145,11 +2162,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8ED9F22B0C2B4CE9B82B3621 /* Pods.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(SRCROOT)/../../Documents/FacebookSDK",
+					/Users/devangmundhra/Developer/Banyan,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Banyan/Banyan-Prefix.pch";
@@ -2191,11 +2211,14 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8ED9F22B0C2B4CE9B82B3621 /* Pods.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(SRCROOT)/../../Documents/FacebookSDK",
+					/Users/devangmundhra/Developer/Banyan,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Banyan/Banyan-Prefix.pch";
