@@ -140,14 +140,14 @@ static NSString *PlacesDetailCellIdentifier = @"GooglePlacesCell";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     SPGooglePlacesAutocompletePlace *place = [self placeAtIndexPath:indexPath];
     [place resolveToPlacemark:^(CLPlacemark *placemark, NSString *addressString, NSError *error) {
-        if (error) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could not map selected Place"
+        if (error || !placemark) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could not map selected place"
                                                             message:error.localizedDescription
                                                            delegate:nil
                                                   cancelButtonTitle:@"OK"
                                                   otherButtonTitles:nil, nil];
             [alert show];
-        } else if (placemark) {
+        } else {
             GooglePlacesObject<GooglePlacesObject>* gpoPlace = (GooglePlacesObject<GooglePlacesObject>*)[GooglePlacesObject duckTypedObject];
             gpoPlace.name = addressString;
             gpoPlace.geometry.location.lat = [NSNumber numberWithDouble:placemark.location.coordinate.latitude];
