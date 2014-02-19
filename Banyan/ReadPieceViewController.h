@@ -1,17 +1,14 @@
 //
 //  ReadSceneViewController.h
-//  Storied
+//  Banyan
 //
 //  Created by Devang Mundhra on 3/31/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Banyan. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-#import "Piece_Defines.h"
-#import "Story_Defines.h"
 #import "Story+Edit.h"
 #import "BanyanAppDelegate.h"
-#import "User_Defines.h"
 #import "BNAudioStreamingPlayer.h"
 
 @class ReadPieceViewController;

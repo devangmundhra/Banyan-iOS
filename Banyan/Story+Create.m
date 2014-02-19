@@ -1,15 +1,13 @@
 //
 //  Story+Create.m
-//  Storied
+//  Banyan
 //
 //  Created by Devang Mundhra on 3/9/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Banyan. All rights reserved.
 //
 
 #import "Story+Create.h"
 #import "Story+Permissions.h"
-#import "Story_Defines.h"
-#import "User_Defines.h"
 #import "UIImage+ResizeAdditions.h"
 #import "Media.h"
 #import "User.h"

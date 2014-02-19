@@ -7,7 +7,6 @@
 //
 
 #import "Activity+Create.h"
-#import "Story_Defines.h"
 
 @implementation Activity (Create)
 

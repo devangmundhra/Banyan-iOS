@@ -11,7 +11,6 @@
 #import "Media.h"
 #import "Story+Permissions.h"
 #import "User.h"
-#import "Story_Defines.h"
 
 @implementation Story
 
@@ -254,7 +253,7 @@
                                                        }];
     storyMapping.identificationAttributes = @[@"bnObjectId"];
     
-    [storyMapping addAttributeMappingsFromArray:@[@"bnObjectId", STORY_TITLE, STORY_READ_ACCESS, STORY_WRITE_ACCESS, STORY_TAGS, STORY_LENGTH,
+    [storyMapping addAttributeMappingsFromArray:@[@"bnObjectId", @"title", @"readAccess", @"writeAccess", @"tags", @"length",
                                                   @"createdAt", @"updatedAt", @"isLocationEnabled", @"location", @"timeStamp"]];
     [storyMapping addPropertyMappingsFromArray:@[[RKRelationshipMapping relationshipMappingFromKeyPath:@"pieces" toKeyPath:@"pieces" withMapping:[Piece pieceMappingForRKGET]],
                                                  [RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:[Media mediaMappingForRKGET]],
@@ -266,7 +265,7 @@
 + (RKObjectMapping *)storyRequestMappingForRKPOST
 {
     RKObjectMapping *storyRequestMapping = [RKObjectMapping requestMapping];
-    [storyRequestMapping addAttributeMappingsFromArray:@[STORY_TITLE, STORY_WRITE_ACCESS, STORY_READ_ACCESS, STORY_TAGS, @"isLocationEnabled", @"timeStamp", @"location"]];
+    [storyRequestMapping addAttributeMappingsFromArray:@[@"title", @"writeAccess", @"readAccess", @"tags", @"isLocationEnabled", @"timeStamp", @"location"]];
     [storyRequestMapping addAttributeMappingsFromDictionary:@{@"author.resourceUri" : @"author"}];
     [storyRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:[Media mediaRequestMapping]]];
     return storyRequestMapping;

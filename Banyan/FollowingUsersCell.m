@@ -97,12 +97,12 @@
     
     // Set name
     
-    NSString *nameString = [NSString stringWithFormat:@"%@ %@", [_user objectForKey:USER_FIRSTNAME], [_user objectForKey:USER_LASTNAME]];
+    NSString *nameString = [NSString stringWithFormat:@"%@ %@", [_user objectForKey:@"first_name"], [_user objectForKey:@"last_name"]];
     if (!nameString.length) {
-        nameString = [_user objectForKey:USER_NAME];
+        nameString = [_user objectForKey:@"name"];
     }
     if (!nameString.length) {
-        nameString = [_user objectForKey:USER_USERNAME];
+        nameString = [_user objectForKey:@"username"];
     }
     
     NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];

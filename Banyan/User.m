@@ -8,7 +8,6 @@
 
 #import "User.h"
 #import "RemoteObject.h"
-#import "User_Defines.h"
 #import "BanyanAppDelegate.h"
 
 @implementation User
@@ -41,11 +40,11 @@
     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] dictionaryForKey:BNUserDefaultsUserInfo];
     User *user = [User newUser];
     
-    user.username = [userInfo objectForKey:USER_USERNAME];
-    user.email = [userInfo objectForKey:USER_EMAIL];
-    user.firstName = [userInfo objectForKey:USER_FIRSTNAME];
-    user.lastName = [userInfo objectForKey:USER_LASTNAME];
-    user.name = [userInfo objectForKey:USER_NAME];
+    user.username = [userInfo objectForKey:@"username"];
+    user.email = [userInfo objectForKey:@"email"];
+    user.firstName = [userInfo objectForKey:@"first_name"];
+    user.lastName = [userInfo objectForKey:@"last_name"];
+    user.name = [userInfo objectForKey:@"name"];
     user.facebookId = [[userInfo objectForKey:@"facebook"] objectForKey:@"id"];
     user.userId = [userInfo objectForKey:@"id"];
     user.resourceUri = [userInfo objectForKey:@"resource_uri"];
@@ -87,11 +86,11 @@
     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] dictionaryForKey:BNUserDefaultsUserInfo];
     BNSharedUser *user = [[BNSharedUser alloc] init];
     
-    user.username = [userInfo objectForKey:USER_USERNAME];
-    user.email = [userInfo objectForKey:USER_EMAIL];
-    user.firstName = [userInfo objectForKey:USER_FIRSTNAME];
-    user.lastName = [userInfo objectForKey:USER_LASTNAME];
-    user.name = [userInfo objectForKey:USER_NAME];
+    user.username = [userInfo objectForKey:@"username"];
+    user.email = [userInfo objectForKey:@"email"];
+    user.firstName = [userInfo objectForKey:@"first_name"];
+    user.lastName = [userInfo objectForKey:@"last_name"];
+    user.name = [userInfo objectForKey:@"name"];
     user.facebookId = [[userInfo objectForKey:@"facebook"] objectForKey:@"facebookId"];
     user.userId = [userInfo objectForKey:@"id"];
     user.resourceUri = [userInfo objectForKey:@"resource_uri"];

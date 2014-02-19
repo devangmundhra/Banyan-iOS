@@ -1,6 +1,6 @@
 //
-//  Scene+Edit.m
-//  Storied
+//  Piece+Edit.m
+//  Banyan
 //
 //  Created by Devang Mundhra on 3/18/12.
 //  Copyright (c) 2012 Banyan. All rights reserved.
@@ -8,7 +8,6 @@
 
 #import "Story.h"
 #import "Piece+Edit.h"
-#import "Story_Defines.h"
 #import "Media.h"
 #import "BNMisc.h"
 #import "Story+Edit.h"

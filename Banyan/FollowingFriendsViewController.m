@@ -29,8 +29,8 @@
         
         // Get friends being followed
         NSArray *facebookFriendsOnBanyan = [[NSUserDefaults standardUserDefaults] arrayForKey:BNUserDefaultsBanyanUsersFacebookFriends];
-        NSSortDescriptor *followingSortDescriptor =[NSSortDescriptor sortDescriptorWithKey:USER_BEING_FOLLOWED ascending:NO];
-        NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:USER_NAME ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
+        NSSortDescriptor *followingSortDescriptor =[NSSortDescriptor sortDescriptorWithKey:@"userBeingFollowed" ascending:NO];
+        NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
         NSArray *sortArray = [NSArray arrayWithObjects:followingSortDescriptor, nameSortDescriptor, nil];
         NSArray *sortedFriendsOnBanyan = [facebookFriendsOnBanyan sortedArrayUsingDescriptors:sortArray];
         self.dataSource = sortedFriendsOnBanyan;
@@ -97,7 +97,7 @@
     }
     // Configure the cell...
     [cell setUser:[self.dataSource objectAtIndex:indexPath.row]];
-    cell.followButton.selected = [[cell.user objectForKey:USER_BEING_FOLLOWED] boolValue];
+    cell.followButton.selected = [[cell.user objectForKey:@"userBeingFollowed"] boolValue];
     
     return cell;
 }
@@ -162,9 +162,9 @@
                                                 objectForKey:BNUserDefaultsBanyanUsersFacebookFriends] mutableCopy];
     NSMutableDictionary *newCellUser = [user mutableCopy];
     // This is needed since for matching, the USER_BEING_FOLLOWED in both the array and "user" should be same
-    [newCellUser setObject:[NSNumber numberWithBool:!status] forKey:USER_BEING_FOLLOWED];
+    [newCellUser setObject:[NSNumber numberWithBool:!status] forKey:@"userBeingFollowed"];
     NSUInteger index = [facebookFriendsOnBanyan indexOfObject:newCellUser];
-    [newCellUser setObject:[NSNumber numberWithBool:status] forKey:USER_BEING_FOLLOWED];
+    [newCellUser setObject:[NSNumber numberWithBool:status] forKey:@"userBeingFollowed"];
     [facebookFriendsOnBanyan replaceObjectAtIndex:index withObject:newCellUser];
     [[NSUserDefaults standardUserDefaults] setObject:facebookFriendsOnBanyan forKey:BNUserDefaultsBanyanUsersFacebookFriends];
     [[NSUserDefaults standardUserDefaults] synchronize];

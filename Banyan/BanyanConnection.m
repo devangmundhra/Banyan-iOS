@@ -345,29 +345,6 @@
                                               }];
 }
 
-+ (void) loadPiecesForStory:(Story *)story completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *error))errorBlock
-{
-    [self loadPiecesForStory:story
-                  withParams:@{@"attributes" : @[@"pieces"]}
-             completionBlock:^{
-                 // By now we have got all the pieces for the story.
-                 // Remove pieces which did not come as a part of this story (meaning they were deleted from the server)
-                 NSArray *oldPieces =[Piece oldPiecesInStory:story];
-                 for (Piece *piece in oldPieces) {
-                     [piece remove];
-                 }
-                 completionBlock();
-             }
-                  errorBlock:errorBlock];
-}
-
-+ (void) loadPiecesForStory:(Story *)story atPieceNumbers:(NSArray *)pieceNumbers completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *error))errorBlock
-{
-    [self loadPiecesForStory:story withParams:@{@"pieces" : pieceNumbers}
-             completionBlock:completionBlock
-                  errorBlock:errorBlock];
-}
-
 + (void) uploadFailedObjects
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{

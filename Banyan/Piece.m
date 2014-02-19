@@ -10,7 +10,6 @@
 #import "Story.h"
 #import "User.h"
 #import "Media.h"
-#import "Piece_Defines.h"
 #import "RemoteObject+Share.h"
 
 @implementation Piece
@@ -136,7 +135,7 @@
 {
     RKEntityMapping *pieceMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-    [pieceMapping addAttributeMappingsFromArray:@[@"bnObjectId", PIECE_NUMBER, PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled", @"location",
+    [pieceMapping addAttributeMappingsFromArray:@[@"bnObjectId", @"pieceNumber", @"longText", @"shortText", @"isLocationEnabled", @"location",
                                                   @"createdAt", @"updatedAt", @"timeStamp"]];
     [pieceMapping addAttributeMappingsFromDictionary:@{@"stats.numViews" : @"numberOfViews",
                                                        @"stats.numLikes" : @"numberOfLikes",
@@ -160,8 +159,8 @@
 + (RKObjectMapping *)pieceRequestMappingForRKPOST
 {
     RKObjectMapping *pieceRequestMapping = [RKObjectMapping requestMapping];
-    [pieceRequestMapping addAttributeMappingsFromDictionary:@{@"author.resourceUri" : @"author", @"story.resourceUri" : PIECE_STORY}];
-    [pieceRequestMapping addAttributeMappingsFromArray:@[PIECE_LONGTEXT, PIECE_SHORTTEXT, @"isLocationEnabled", @"timeStamp", @"location"]];
+    [pieceRequestMapping addAttributeMappingsFromDictionary:@{@"author.resourceUri" : @"author", @"story.resourceUri" : @"story"}];
+    [pieceRequestMapping addAttributeMappingsFromArray:@[@"longText", @"shortText", @"isLocationEnabled", @"timeStamp", @"location"]];
     [pieceRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:[Media mediaRequestMapping]]];
     return pieceRequestMapping;
 }
@@ -171,7 +170,7 @@
     RKEntityMapping *pieceResponseMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
                                                                 inManagedObjectStore:[RKManagedObjectStore defaultStore]];
     [pieceResponseMapping addAttributeMappingsFromDictionary:@{@"resource_uri": @"resourceUri"}];
-    [pieceResponseMapping addAttributeMappingsFromArray:@[@"createdAt", @"updatedAt", PIECE_NUMBER, @"permaLink", @"bnObjectId"]];
+    [pieceResponseMapping addAttributeMappingsFromArray:@[@"createdAt", @"updatedAt", @"pieceNumber", @"permaLink", @"bnObjectId"]];
     pieceResponseMapping.identificationAttributes = @[@"bnObjectId"];
     return pieceResponseMapping;
 }

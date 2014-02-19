@@ -1,6 +1,6 @@
 //
 //  ModifyPieceViewController.m
-//  Storied
+//  Banyan
 //
 //  Created by Devang Mundhra on 3/17/12.
 //  Copyright (c) 2012 Banyan. All rights reserved.
@@ -12,8 +12,6 @@
 #import "Piece+Delete.h"
 #import "Story+Delete.h"
 #import "Story+Edit.h"
-#import "Piece_Defines.h"
-#import "Story_Defines.h"
 #import "Media.h"
 #import "AVCamViewController.h"
 #import "UIPlaceHolderTextView.h"

@@ -400,7 +400,6 @@
 		517A01D8170BFA2F00665F0F /* InviteFriendCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InviteFriendCell.h; path = Banyan/InviteFriendCell.h; sourceTree = "<group>"; };
 		517A01D9170BFA2F00665F0F /* InviteFriendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InviteFriendCell.m; path = Banyan/InviteFriendCell.m; sourceTree = "<group>"; };
 		517A01DC170BFA5A00665F0F /* InviteFriendCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = InviteFriendCell.xib; path = Banyan/InviteFriendCell.xib; sourceTree = "<group>"; };
-		517A01DE170EB02900665F0F /* User_Defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = User_Defines.h; path = Banyan/User_Defines.h; sourceTree = "<group>"; };
 		51815326171230AB006F73D3 /* readButtonUnselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = readButtonUnselected.png; sourceTree = "<group>"; };
 		51815327171230AB006F73D3 /* readButtonUnselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "readButtonUnselected@2x.png"; sourceTree = "<group>"; };
 		5181532A17123412006F73D3 /* writeButtonUnselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = writeButtonUnselected.png; sourceTree = "<group>"; };
@@ -447,7 +446,6 @@
 		5189B2E715B395F300562DD0 /* ModifyStoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ModifyStoryViewController.m; path = Banyan/ModifyStoryViewController.m; sourceTree = "<group>"; };
 		5189B2EE15B395F300562DD0 /* ReadPieceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReadPieceViewController.h; path = Banyan/ReadPieceViewController.h; sourceTree = "<group>"; };
 		5189B2EF15B395F300562DD0 /* ReadPieceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReadPieceViewController.m; path = Banyan/ReadPieceViewController.m; sourceTree = "<group>"; };
-		5189B2F115B395F300562DD0 /* Piece_Defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Piece_Defines.h; path = Banyan/Piece_Defines.h; sourceTree = "<group>"; };
 		5189B2F415B395F300562DD0 /* Piece+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Piece+Create.h"; path = "Banyan/Piece+Create.h"; sourceTree = "<group>"; };
 		5189B2F515B395F300562DD0 /* Piece+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Piece+Create.m"; path = "Banyan/Piece+Create.m"; sourceTree = "<group>"; };
 		5189B2F615B395F300562DD0 /* Piece+Delete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Piece+Delete.h"; path = "Banyan/Piece+Delete.h"; sourceTree = "<group>"; };
@@ -457,7 +455,6 @@
 		5189B2FB15B395F300562DD0 /* Piece+Stats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Piece+Stats.m"; path = "Banyan/Piece+Stats.m"; sourceTree = "<group>"; };
 		5189B30015B395F300562DD0 /* StoryReaderController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StoryReaderController.h; path = Banyan/StoryReaderController.h; sourceTree = "<group>"; };
 		5189B30115B395F300562DD0 /* StoryReaderController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StoryReaderController.m; path = Banyan/StoryReaderController.m; sourceTree = "<group>"; };
-		5189B30815B395F300562DD0 /* Story_Defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Story_Defines.h; path = Banyan/Story_Defines.h; sourceTree = "<group>"; };
 		5189B30B15B395F300562DD0 /* Story+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Story+Create.h"; path = "Banyan/Story+Create.h"; sourceTree = "<group>"; };
 		5189B30C15B395F300562DD0 /* Story+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Story+Create.m"; path = "Banyan/Story+Create.m"; sourceTree = "<group>"; };
 		5189B30D15B395F300562DD0 /* Story+Delete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Story+Delete.h"; path = "Banyan/Story+Delete.h"; sourceTree = "<group>"; };
@@ -1082,7 +1079,6 @@
 			children = (
 				51AFD5EF17607800008C7203 /* User.h */,
 				51AFD5F017607800008C7203 /* User.m */,
-				517A01DE170EB02900665F0F /* User_Defines.h */,
 			);
 			name = User;
 			sourceTree = "<group>";
@@ -1311,7 +1307,6 @@
 			children = (
 				510F491E172A5B85005BC5ED /* Piece.h */,
 				510F491F172A5B86005BC5ED /* Piece.m */,
-				5189B2F115B395F300562DD0 /* Piece_Defines.h */,
 				5189B2F415B395F300562DD0 /* Piece+Create.h */,
 				5189B2F515B395F300562DD0 /* Piece+Create.m */,
 				5189B2F615B395F300562DD0 /* Piece+Delete.h */,
@@ -1351,7 +1346,6 @@
 			children = (
 				510F4921172A5C17005BC5ED /* Story.h */,
 				510F4922172A5C17005BC5ED /* Story.m */,
-				5189B30815B395F300562DD0 /* Story_Defines.h */,
 				51A8DC961692C4490017E86F /* Story+Permissions.h */,
 				51A8DC971692C4490017E86F /* Story+Permissions.m */,
 				5189B30B15B395F300562DD0 /* Story+Create.h */,

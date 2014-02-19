@@ -360,59 +360,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 #pragma mark Story Manipulations
-- (void) updateStoryInBackgroud:(Story *)story
-{
-    [BanyanConnection loadPiecesForStory:story completionBlock:^{
-        NSLog(@"Pieces updated for story: %@ with title %@", story.bnObjectId, story.title);
-    } errorBlock:^(NSError *error){
-        NSLog(@"Error %@ when fetching pieces for story: %@ with title %@", [error localizedDescription], story.bnObjectId, story.title);
-    }];
-}
-
-- (BOOL) updateStoryInForeground:(Story *)story
-{
-    // For RunLoop
-    __block BOOL doneRun = NO;
-    __block BOOL success = NO;
-    
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    hud.labelText = @"Fetching pieces for the story";
-    hud.detailsLabelText = story.title;
-    NSLog(@"Loading story pieces");
-    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
-    [BanyanConnection loadPiecesForStory:story completionBlock:^{
-        doneRun = YES;
-        success = YES;
-    } errorBlock:^(NSError *error){
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unable to load the pieces for this story."
-                                                        message:[error localizedDescription]
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
-        doneRun = YES;
-        NSLog(@"Hit error: %@", error);
-    }];
-    
-    do
-    {
-        // Start the run loop but return after each source is handled.
-        SInt32    result = CFRunLoopRunInMode(kCFRunLoopDefaultMode, 10, YES);
-        
-        // If a source explicitly stopped the run loop, or if there are no
-        // sources or timers, go ahead and exit.
-        if ((result == kCFRunLoopRunStopped) || (result == kCFRunLoopRunFinished))
-            doneRun = YES;
-        
-        // Check for any other exit conditions here and set the
-        // done variable as needed.
-    }
-    while (!doneRun);
-    [hud hide:YES];
-    
-    return success;
-}
-
 -(void) readStoryForIndexPath:(NSIndexPath *)indexPath
 {
     Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];

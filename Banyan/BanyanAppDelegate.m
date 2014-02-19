@@ -7,7 +7,6 @@
 //
 
 #import "BanyanAppDelegate.h"
-#import "User_Defines.h"
 #import "AFBanyanAPIClient.h"
 #import "BanyanConnection.h"
 #import "UserLoginViewController.h"

@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "User_Defines.h"
 
 @class FollowingUsersCell;
 

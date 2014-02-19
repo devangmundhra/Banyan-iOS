@@ -7,7 +7,6 @@
 //
 
 #import "Piece.h"
-#import "Piece_Defines.h"
 
 @interface Piece (Edit)
 + (void) editPiece:(Piece *)piece;
