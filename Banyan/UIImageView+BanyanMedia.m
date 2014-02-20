@@ -72,7 +72,7 @@ else\
                     }];
     } else if ([media.remoteURL length]) {
         void (^fetchImageBlock)(void) = ^{
-            MBProgressHUD *hud = nil;
+            __block MBProgressHUD *hud = nil;
             if (!includeThumbnail) {
                 // Don't show progress view if thumbnail is included
                 hud = [MBProgressHUD showHUDAddedTo:wself animated:YES];
@@ -85,7 +85,10 @@ else\
                              hud.progress = (float)receivedSize/expectedSize;
                          }
                         completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                            dispatch_async(dispatch_get_main_queue(), ^{[hud hide:YES];});
+                            if ([NSThread isMainThread])
+                                [hud hide:YES];
+                            else
+                                dispatch_sync(dispatch_get_main_queue(), ^{[hud hide:YES];});
                             PROCESS_IMAGE(image);
                         }];
         };
