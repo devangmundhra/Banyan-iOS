@@ -43,7 +43,6 @@
 @property (strong, nonatomic) IBOutlet UIButton *contributorsButton;
 @property (strong, nonatomic) IBOutlet UIButton *viewsButton;
 @property (strong, nonatomic) IBOutlet UIButton *likesButton;
-@property (strong, nonatomic) IBOutlet UIButton *commentsButton;
 @property (strong, nonatomic) IBOutlet BNLabel *authorLabel;
 @property (strong, nonatomic) IBOutlet BNLabel *timeLabel;
 @property (strong, nonatomic) IBOutlet BNLabel *locationLabel;
@@ -61,7 +60,6 @@
 @synthesize contributorsButton = _contributorsButton;
 @synthesize viewsButton = _viewsButton;
 @synthesize likesButton = _likesButton;
-@synthesize commentsButton = _commentsButton;
 @synthesize authorLabel = _authorLabel;
 @synthesize timeLabel = _timeLabel;
 @synthesize locationLabel = _locationLabel;
@@ -131,20 +129,20 @@
     self.storyInfoView = [[UIView alloc] initWithFrame:frame];
     self.storyInfoView.backgroundColor = [UIColor clearColor];
     
-    UIImage *backArrowImage = [UIImage imageNamed:@"backArrow"];
+    UIImage *backArrowImage = [UIImage imageNamed:@"Previous"];
+    UIImage *backArrowImageSelected = [UIImage imageNamed:@"Previous_selected"];
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [backButton setExclusiveTouch:YES];
     CGFloat maxButtonDim = MAX(backArrowImage.size.width, backArrowImage.size.height) + BUTTON_SPACING*3;
     backButton.frame = CGRectMake(BUTTON_SPACING, statusBarOffset, floor(maxButtonDim), floor(maxButtonDim));
     [backButton setImage:backArrowImage forState:UIControlStateNormal];
+    [backButton setImage:backArrowImageSelected forState:UIControlStateHighlighted];
     [backButton addTarget:self.delegate action:@selector(readPieceViewControllerDoneReading) forControlEvents:UIControlEventTouchUpInside];
     backButton.showsTouchWhenHighlighted = YES;
-    [backButton.layer setBorderWidth:0.5f];
-    [backButton.layer setBorderColor:BANYAN_LIGHTGRAY_COLOR.CGColor];
-    [backButton.layer setCornerRadius:4];
     [self.storyInfoView addSubview:backButton];
     
-    UIImage *settingsImage = [UIImage imageNamed:@"settingsButton"];
+    UIImage *settingsImage = [UIImage imageNamed:@"Cog"];
+    UIImage *settingsImageSelected = [UIImage imageNamed:@"Cog_selected"];
     maxButtonDim = MAX(settingsImage.size.width, settingsImage.size.height) + BUTTON_SPACING*3;
     UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [settingsButton setExclusiveTouch:YES];
@@ -152,11 +150,9 @@
                                       floor(maxButtonDim), floor(maxButtonDim));
     
     [settingsButton setImage:settingsImage forState:UIControlStateNormal];
+    [settingsButton setImage:settingsImageSelected forState:UIControlStateHighlighted];
     [settingsButton addTarget:self action:@selector(settingsPopup:) forControlEvents:UIControlEventTouchUpInside];
     settingsButton.showsTouchWhenHighlighted = YES;
-    [settingsButton.layer setBorderWidth:0.5f];
-    [settingsButton.layer setBorderColor:BANYAN_LIGHTGRAY_COLOR.CGColor];
-    [settingsButton.layer setCornerRadius:4];
     [self.storyInfoView addSubview:settingsButton];
     
     UIButton *titleButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -186,14 +182,12 @@
     self.authorLabel = [[BNLabel alloc] initWithFrame:CGRectZero];
     self.timeLabel = [[BNLabel alloc] initWithFrame:CGRectZero];
     self.locationLabel = [[BNLabel alloc] initWithFrame:CGRectZero];
-    self.commentsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.commentsButton.exclusiveTouch = YES;
+
     self.likesButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.likesButton.exclusiveTouch = YES;
     [self.likesButton addTarget:self action:@selector(likeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.pieceInfoView addSubview:self.authorLabel];
     [self.pieceInfoView addSubview:self.timeLabel];
-    [self.pieceInfoView addSubview:self.commentsButton];
     [self.pieceInfoView addSubview:self.likesButton];
     [self.pieceInfoView addSubview:self.locationLabel];
     [self.contentView addSubview:self.pieceInfoView];
@@ -353,22 +347,10 @@
         if ([BanyanAppDelegate loggedIn])
         {
             frame = [UIScreen mainScreen].bounds;
-            // comments button
-            UIImage *commentImage = nil;
-            if (hasDescription || !hasImage)
-                commentImage = [UIImage imageNamed:@"commentSymbolGray"];
-            else
-                commentImage = [UIImage imageNamed:@"commentSymbolWhite"];
-            self.commentsButton.frame = CGRectMake(CGRectGetMaxX(frame)-2*35 /*size of like and comment button */ -2*3*TEXT_INSET_SMALL /*Inset between the buttons*/,
-                                                   0, 35, floor(CGRectGetHeight(self.authorLabel.frame)));
-            [self.commentsButton setImage:commentImage forState:UIControlStateNormal];
-            self.commentsButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
-            [self.commentsButton setTitle:[NSString stringWithFormat:@"%d", [self.piece.comments count]] forState:UIControlStateNormal];
-            [self.commentsButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 3*TEXT_INSET_SMALL, 0, 0)];
-            self.commentsButton.hidden = YES;
             // like button
-            self.likesButton.frame = CGRectMake(CGRectGetMaxX(self.commentsButton.frame), 0, 35, floor(CGRectGetHeight(self.authorLabel.frame)));
+            self.likesButton.frame = CGRectMake(CGRectGetMaxX(frame)-35-3*TEXT_INSET_SMALL, 0, 35, floor(CGRectGetHeight(self.authorLabel.frame)));
             self.likesButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
+            [self.likesButton setImageEdgeInsets:UIEdgeInsetsMake(5, 4, 5, 4)];
             [self.likesButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 3*TEXT_INSET_SMALL, 0, 0)];
             [self.likesButton setTitleColor:BANYAN_PINK_COLOR forState:UIControlStateNormal];
             [self togglePieceLikeButtonLabel];
@@ -463,14 +445,12 @@
         self.authorLabel.textColor =
         self.timeLabel.textColor = BANYAN_DARKGRAY_COLOR;
         self.locationLabel.textColor = BANYAN_DARKGRAY_COLOR;
-        [self.commentsButton setTitleColor:BANYAN_DARKGRAY_COLOR forState:UIControlStateNormal];
     } else {
         self.pieceCaptionView.textColor =
         self.pieceTextView.textColor = BANYAN_WHITE_COLOR;
         self.authorLabel.textColor =
         self.timeLabel.textColor = BANYAN_WHITE_COLOR;
         self.locationLabel.textColor = BANYAN_WHITE_COLOR;
-        [self.commentsButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
     }
     
     [self.contributorsButton setTitle:@"Contributors" forState:UIControlStateNormal];

@@ -102,7 +102,6 @@
     [request setPredicate:predicate];
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"timeStamp" ascending:NO];
     [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
-    [request setFetchLimit:1];
     
     NSError *error = nil;
     NSArray *array = [story.managedObjectContext executeFetchRequest:request error:&error];

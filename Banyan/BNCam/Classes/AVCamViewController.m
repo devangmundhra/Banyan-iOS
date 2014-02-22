@@ -78,6 +78,7 @@ static void *AVCamFocusModeObserverContext = &AVCamFocusModeObserverContext;
 @synthesize captureVideoPreviewLayer;
 @synthesize delegate;
 @synthesize bottomActionToolbar;
+@synthesize flashToggleButton;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -124,9 +125,10 @@ static void *AVCamFocusModeObserverContext = &AVCamFocusModeObserverContext;
 {
     [super viewDidLoad];
 
-    [[self cameraToggleButton] setTitle:NSLocalizedString(@"Camera", @"Toggle camera button title") forState:UIControlStateNormal];
-    [[self recordButton] setTitle:NSLocalizedString(@"Record", @"Toggle recording button record title")];
-    [[self stillButton] setTitle:NSLocalizedString(@"Photo", @"Capture still image button title")];
+    [self.cameraToggleButton setImage:[UIImage imageNamed:@"Camera_Rotate"] forState:UIControlStateNormal];
+    [self.stillButton setImage:[UIImage imageNamed:@"Camera"]];
+    [self.flashToggleButton setImage:[UIImage imageNamed:@"Lightening"] forState:UIControlStateNormal];
+    [self.flashToggleButton setImage:[UIImage imageNamed:@"Lightening_selected"] forState:UIControlStateSelected];
     
 	if ([self captureManager] == nil) {
 		AVCamCaptureManager *manager = [[AVCamCaptureManager alloc] init];
@@ -159,6 +161,10 @@ static void *AVCamFocusModeObserverContext = &AVCamFocusModeObserverContext;
 			
             // Create the focus mode UI overlay
 			UILabel *newFocusModeLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, viewLayer.bounds.size.width - 20, 20)];
+            CGPoint center = self.view.center;
+            center.y = newFocusModeLabel.center.y;
+            newFocusModeLabel.center = center;
+            newFocusModeLabel.textAlignment = NSTextAlignmentCenter;
 			[newFocusModeLabel setBackgroundColor:[UIColor clearColor]];
 			[newFocusModeLabel setTextColor:[UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.50]];
 			AVCaptureFocusMode initialFocusMode = [[[captureManager videoInput] device] focusMode];
@@ -203,6 +209,13 @@ static void *AVCamFocusModeObserverContext = &AVCamFocusModeObserverContext;
     [[self captureManager] continuousFocusAtPoint:CGPointMake(.5f, .5f)];
 }
 
+- (IBAction)toggleFlash:(id)sender
+{
+    BOOL shouldFlash = self.flashToggleButton.selected;
+    [[self captureManager] toggleFlash:!shouldFlash];
+    [self.flashToggleButton setSelected:!shouldFlash];
+}
+
 - (IBAction)toggleRecording:(id)sender
 {
     // Start recording if there isn't a recording running. Stop recording if there is.
@@ -240,6 +253,7 @@ static void *AVCamFocusModeObserverContext = &AVCamFocusModeObserverContext;
     bottomActionToolbar.alpha = 1;
     cameraToggleButton.alpha = 1;
     focusModeLabel.alpha = 1;
+    flashToggleButton.alpha = 1;
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
 }
 
@@ -249,6 +263,7 @@ static void *AVCamFocusModeObserverContext = &AVCamFocusModeObserverContext;
     bottomActionToolbar.alpha = 0;
     cameraToggleButton.alpha = 0;
     focusModeLabel.alpha = 0;
+    flashToggleButton.alpha = 0;
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 }
 

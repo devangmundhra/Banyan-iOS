@@ -65,12 +65,12 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
 	// Do any additional setup after loading the view.
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
-    UIImage *backArrowImage = [UIImage imageNamed:@"backArrow"];
+    UIImage *backArrowImage = [UIImage imageNamed:@"Previous"];
     UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithImage:backArrowImage style:UIBarButtonItemStyleBordered target:self action:@selector(cancel:)];
     [self.navigationItem setLeftBarButtonItem:leftButton];
     
     if (self.story.canContribute) {
-        UIImage *settingsImage = [UIImage imageNamed:@"settingsButton"];
+        UIImage *settingsImage = [UIImage imageNamed:@"Cog"];
         UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithImage:settingsImage style:UIBarButtonItemStyleBordered target:self action:@selector(settingsPopup:)];
         [self.navigationItem setRightBarButtonItem:rightButton];
     } else {

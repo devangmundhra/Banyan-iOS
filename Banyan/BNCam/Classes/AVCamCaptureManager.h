@@ -73,6 +73,7 @@ extern NSString *const AVCamCaptureManagerInfoImage;
 - (void) stopRecording;
 - (void) captureStillImage;
 - (BOOL) toggleCamera;
+- (BOOL) toggleFlash:(BOOL)flash;
 - (NSUInteger) cameraCount;
 - (NSUInteger) micCount;
 - (void) autoFocusAtPoint:(CGPoint)point;

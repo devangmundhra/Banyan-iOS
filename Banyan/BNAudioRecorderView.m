@@ -67,12 +67,12 @@
 - (void) setup
 {    
     _controlButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_controlButton setImage:[UIImage imageNamed:@"record"] forState:UIControlStateNormal];
+    [_controlButton setImage:[UIImage imageNamed:@"Microphone"] forState:UIControlStateNormal];
     [_controlButton addTarget:self action:@selector(recordAudio:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_controlButton];
     
     _deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_deleteButton setImage:[UIImage imageNamed:@"delete"] forState:UIControlStateNormal];
+    [_deleteButton setImage:[UIImage imageNamed:@"Trash"] forState:UIControlStateNormal];
     [_deleteButton addTarget:self action:@selector(deleteRecording:) forControlEvents:UIControlEventTouchUpInside];
     _deleteButton.enabled = NO; _deleteButton.hidden = YES;
     [self addSubview:_deleteButton];
@@ -132,7 +132,7 @@
 #pragma mark target actions
 - (IBAction) recordAudio:(id)sender
 {
-    [self.controlButton setImage:[UIImage imageNamed:@"stop"] forState:UIControlStateNormal];
+    [self.controlButton setImage:[UIImage imageNamed:@"Stop"] forState:UIControlStateNormal];
     [self.controlButton removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
     [self.controlButton addTarget:self action:@selector(stop:) forControlEvents:UIControlEventTouchUpInside];
     [self.delegate bnAudioRecorderViewToRecord:self];
@@ -141,7 +141,7 @@
 - (IBAction) playAudio:(id)sender
 {
     [self.delegate bnAudioRecorderViewToPlay:self];
-    [self.controlButton setImage:[UIImage imageNamed:@"stop"] forState:UIControlStateNormal];
+    [self.controlButton setImage:[UIImage imageNamed:@"Stop"] forState:UIControlStateNormal];
     [self.controlButton removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
     [self.controlButton addTarget:self action:@selector(stop:) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -149,7 +149,7 @@
 - (IBAction) stop:(id)sender
 {
     [self.delegate bnAudioRecorderViewToStop:self];
-    [self.controlButton setImage:[UIImage imageNamed:@"play"] forState:UIControlStateNormal];
+    [self.controlButton setImage:[UIImage imageNamed:@"Play"] forState:UIControlStateNormal];
     [self.controlButton removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
     [self.controlButton addTarget:self action:@selector(playAudio:) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -158,7 +158,7 @@
 {
     [self.delegate bnAudioRecorderViewToDelete:self];
     self.deleteButton.enabled = NO; self.deleteButton.hidden = YES;
-    [self.controlButton setImage:[UIImage imageNamed:@"record"] forState:UIControlStateNormal];
+    [self.controlButton setImage:[UIImage imageNamed:@"Microphone"] forState:UIControlStateNormal];
     [self.controlButton removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
     [self.controlButton addTarget:self action:@selector(recordAudio:) forControlEvents:UIControlEventTouchUpInside];
     self.timeLabel.text = [NSString stringWithFormat:@"0/%ds", [self.delegate bnAudioRecorderAudioRecordDuration]];
@@ -166,7 +166,7 @@
 
 - (void)setPlayControlButtons
 {
-    [self.controlButton setImage:[UIImage imageNamed:@"play"] forState:UIControlStateNormal];
+    [self.controlButton setImage:[UIImage imageNamed:@"Play"] forState:UIControlStateNormal];
     [self.controlButton removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
     [self.controlButton addTarget:self action:@selector(playAudio:) forControlEvents:UIControlEventTouchUpInside];
 }

@@ -173,22 +173,23 @@ NSString *const AVCamCaptureManagerInfoImage = @"AVCamCaptureManagerInfoImage";
     BOOL success = NO;
     
 	// Set torch and flash mode to auto
-	if ([[self backFacingCamera] hasFlash]) {
-		if ([[self backFacingCamera] lockForConfiguration:nil]) {
-			if ([[self backFacingCamera] isFlashModeSupported:AVCaptureFlashModeAuto]) {
-				[[self backFacingCamera] setFlashMode:AVCaptureFlashModeAuto];
-			}
-			[[self backFacingCamera] unlockForConfiguration];
-		}
-	}
-	if ([[self backFacingCamera] hasTorch]) {
-		if ([[self backFacingCamera] lockForConfiguration:nil]) {
-			if ([[self backFacingCamera] isTorchModeSupported:AVCaptureTorchModeAuto]) {
-				[[self backFacingCamera] setTorchMode:AVCaptureTorchModeAuto];
-			}
-			[[self backFacingCamera] unlockForConfiguration];
-		}
-	}
+    // Don't set camera or flash mode automatically
+//	if ([[self backFacingCamera] hasFlash]) {
+//		if ([[self backFacingCamera] lockForConfiguration:nil]) {
+//			if ([[self backFacingCamera] isFlashModeSupported:AVCaptureFlashModeAuto]) {
+//				[[self backFacingCamera] setFlashMode:AVCaptureFlashModeAuto];
+//			}
+//			[[self backFacingCamera] unlockForConfiguration];
+//		}
+//	}
+//	if ([[self backFacingCamera] hasTorch]) {
+//		if ([[self backFacingCamera] lockForConfiguration:nil]) {
+//			if ([[self backFacingCamera] isTorchModeSupported:AVCaptureTorchModeAuto]) {
+//				[[self backFacingCamera] setTorchMode:AVCaptureTorchModeAuto];
+//			}
+//			[[self backFacingCamera] unlockForConfiguration];
+//		}
+//	}
 
     /*
      * Note: Commenting out the Audio/Video parts from this method because currently the app only uses still photos.
@@ -342,6 +343,23 @@ bail:
     return success;
 }
 
+- (BOOL)toggleFlash:(BOOL)flash
+{
+    if ([[self backFacingCamera] hasFlash]) {
+		if ([[self backFacingCamera] lockForConfiguration:nil]) {
+            AVCaptureFlashMode flashMode = flash ? AVCaptureFlashModeOn : AVCaptureFlashModeOff;
+			if ([[self backFacingCamera] isFlashModeSupported:flashMode]) {
+				[[self backFacingCamera] setFlashMode:flashMode];
+			}
+			[[self backFacingCamera] unlockForConfiguration];
+		}
+	}
+    else {
+        return NO;
+    }
+	
+    return YES;
+}
 
 #pragma mark Device Counts
 - (NSUInteger) cameraCount

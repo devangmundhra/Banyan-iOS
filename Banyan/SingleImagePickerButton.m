@@ -103,7 +103,8 @@
         frame.size = CGSizeMake(100.0f, 44.0f);
         frame.origin = CGPointMake(CGRectGetMaxX(self.bounds)-CGRectGetWidth(frame), CGRectGetMidY(self.bounds)-CGRectGetHeight(frame)/2);
         self.galleryButton = [[UIButton alloc] initWithFrame:frame];
-        [self.galleryButton setTitle:@"Gallery" forState:UIControlStateNormal];
+        [self.galleryButton setImage:[UIImage imageNamed:@"Picture_iOS"] forState:UIControlStateNormal];
+        [self.galleryButton setImage:[UIImage imageNamed:@"Picture_iOS_selected"] forState:UIControlStateHighlighted];
         [self.galleryButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
         [self.galleryButton setBackgroundColor:BANYAN_DARKGRAY_COLOR];
         self.galleryButton.showsTouchWhenHighlighted = YES;

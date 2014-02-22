@@ -65,10 +65,11 @@ extern NSString *const AVCamCaptureManagerInfoImage;
 @property (nonatomic,retain) AVCamCaptureManager *captureManager;
 @property (nonatomic,retain) IBOutlet UIView *videoPreviewView;
 @property (nonatomic,retain) AVCaptureVideoPreviewLayer *captureVideoPreviewLayer;
-@property (nonatomic,retain) IBOutlet UIButton *cameraToggleButton;
-@property (nonatomic,retain) IBOutlet UIBarButtonItem *recordButton;
-@property (nonatomic,retain) IBOutlet UIBarButtonItem *stillButton;
-@property (nonatomic,retain) IBOutlet UILabel *focusModeLabel;
+@property (nonatomic,weak) IBOutlet UIButton *cameraToggleButton;
+@property (weak, nonatomic) IBOutlet UIButton *flashToggleButton;
+@property (nonatomic,weak) IBOutlet UIBarButtonItem *recordButton;
+@property (nonatomic,weak) IBOutlet UIBarButtonItem *stillButton;
+@property (nonatomic,weak) IBOutlet UILabel *focusModeLabel;
 @property (nonatomic,weak) IBOutlet id<AVCamViewControllerDelegate> delegate;
 
 #pragma mark Toolbar Actions

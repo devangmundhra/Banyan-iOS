@@ -105,17 +105,17 @@
 - (void) canRead:(BOOL)set
 {
     if (set)
-        [readButton setImage:[UIImage imageNamed:@"readButtonSelected"] forState:UIControlStateNormal];
+        [readButton setImage:[UIImage imageNamed:@"Scroll_selected"] forState:UIControlStateNormal];
     else
-        [readButton setImage:[UIImage imageNamed:@"readButtonUnselected"] forState:UIControlStateNormal];
+        [readButton setImage:[UIImage imageNamed:@"Scroll"] forState:UIControlStateNormal];
 }
 
 - (void) canWrite:(BOOL)set
 {
     if (set)
-        [writeButton setImage:[UIImage imageNamed:@"writeButtonSelected"] forState:UIControlStateNormal];
+        [writeButton setImage:[UIImage imageNamed:@"Pencil_selected"] forState:UIControlStateNormal];
     else
-        [writeButton setImage:[UIImage imageNamed:@"writeButtonUnselected"] forState:UIControlStateNormal];
+        [writeButton setImage:[UIImage imageNamed:@"Pencil"] forState:UIControlStateNormal];
 }
 
 - (void) hideReadWriteButtons:(BOOL)hide
