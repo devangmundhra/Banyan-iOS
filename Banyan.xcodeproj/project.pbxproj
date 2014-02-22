@@ -242,6 +242,10 @@
 		51F032A618B9574500FFA71E /* Trash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F032A418B9574500FFA71E /* Trash@2x.png */; };
 		51F032B118B959B600FFA71E /* progressBar.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F032AF18B959B600FFA71E /* progressBar.png */; };
 		51F032B218B959B600FFA71E /* progressBar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F032B018B959B600FFA71E /* progressBar@2x.png */; };
+		51F032B718B95C2200FFA71E /* Play.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F032B318B95C2200FFA71E /* Play.png */; };
+		51F032B818B95C2200FFA71E /* Play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F032B418B95C2200FFA71E /* Play@2x.png */; };
+		51F032B918B95C2200FFA71E /* Stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F032B518B95C2200FFA71E /* Stop.png */; };
+		51F032BA18B95C2200FFA71E /* Stop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F032B618B95C2200FFA71E /* Stop@2x.png */; };
 		51F2288C161A9E22006B3AA7 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F2288B161A9E22006B3AA7 /* Default-568h@2x.png */; };
 		51F57C541721141D00A76FA5 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F57C531721141D00A76FA5 /* MessageUI.framework */; };
 		51F8622D1858EA050037D576 /* UIViewController+BNSlidingViewControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F8622C1858EA050037D576 /* UIViewController+BNSlidingViewControllerAdditions.m */; };
@@ -592,6 +596,10 @@
 		51F032A418B9574500FFA71E /* Trash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Trash@2x.png"; sourceTree = "<group>"; };
 		51F032AF18B959B600FFA71E /* progressBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = progressBar.png; sourceTree = "<group>"; };
 		51F032B018B959B600FFA71E /* progressBar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "progressBar@2x.png"; sourceTree = "<group>"; };
+		51F032B318B95C2200FFA71E /* Play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Play.png; sourceTree = "<group>"; };
+		51F032B418B95C2200FFA71E /* Play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Play@2x.png"; sourceTree = "<group>"; };
+		51F032B518B95C2200FFA71E /* Stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Stop.png; sourceTree = "<group>"; };
+		51F032B618B95C2200FFA71E /* Stop@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Stop@2x.png"; sourceTree = "<group>"; };
 		51F22884161A9DC1006B3AA7 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		51F22887161A9DE4006B3AA7 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		51F22889161A9DF2006B3AA7 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -787,6 +795,10 @@
 				51F032A018B955FD00FFA71E /* Microphone@2x.png */,
 				51F032A318B9574500FFA71E /* Trash.png */,
 				51F032A418B9574500FFA71E /* Trash@2x.png */,
+				51F032B318B95C2200FFA71E /* Play.png */,
+				51F032B418B95C2200FFA71E /* Play@2x.png */,
+				51F032B518B95C2200FFA71E /* Stop.png */,
+				51F032B618B95C2200FFA71E /* Stop@2x.png */,
 			);
 			name = "Music player";
 			sourceTree = "<group>";
@@ -1775,6 +1787,7 @@
 			files = (
 				51B49A3318A3596A0073F184 /* Thats-Font-Folks.ttf in Resources */,
 				5105364F17A5AD720046D969 /* defaultPerfs.plist in Resources */,
+				51F032B918B95C2200FFA71E /* Stop.png in Resources */,
 				5189B2C215B387E200562DD0 /* InfoPlist.strings in Resources */,
 				51E2145D18B9185000619150 /* Camera_Rotate.png in Resources */,
 				51F032A218B955FD00FFA71E /* Microphone@2x.png in Resources */,
@@ -1794,6 +1807,7 @@
 				51F2288C161A9E22006B3AA7 /* Default-568h@2x.png in Resources */,
 				51FD96ED1665E6C7001A1709 /* dotted-pattern.png in Resources */,
 				51FD96EE1665E6C7001A1709 /* dotted-pattern@2x.png in Resources */,
+				51F032BA18B95C2200FFA71E /* Stop@2x.png in Resources */,
 				51E2146918B91B6200619150 /* Pencil_selected.png in Resources */,
 				514CDF65181509B70098B0A9 /* AVCamViewController.xib in Resources */,
 				517A01DD170BFA5B00665F0F /* InviteFriendCell.xib in Resources */,
@@ -1827,6 +1841,7 @@
 				518153521713F474006F73D3 /* addPieceButton@2x.png in Resources */,
 				518153531713F474006F73D3 /* backViewHideButton.png in Resources */,
 				518153541713F474006F73D3 /* backViewHideButton@2x.png in Resources */,
+				51F032B718B95C2200FFA71E /* Play.png in Resources */,
 				518153551713F474006F73D3 /* backViewShowButton.png in Resources */,
 				518153561713F474006F73D3 /* backViewShowButton@2x.png in Resources */,
 				51F0328018B94BE700FFA71E /* heartSmallPink@2x.png in Resources */,
@@ -1858,6 +1873,7 @@
 				51E2146A18B91B6200619150 /* Pencil_selected@2x.png in Resources */,
 				51B23502171658BF004241C1 /* Roboto-Condensed.ttf in Resources */,
 				51B23503171658BF004241C1 /* Roboto-CondensedItalic.ttf in Resources */,
+				51F032B818B95C2200FFA71E /* Play@2x.png in Resources */,
 				51F0328218B94BE700FFA71E /* heartSymbolHollow@2x.png in Resources */,
 				51F0328118B94BE700FFA71E /* heartSymbolHollow.png in Resources */,
 				51B23504171658BF004241C1 /* Roboto-Italic.ttf in Resources */,
