@@ -12,7 +12,7 @@
 
 @interface SinglePieceView : UIImageView
 @property (strong, nonatomic) Piece *piece;
-@property (nonatomic) NSUInteger pieceNum;
+@property (nonatomic) NSUInteger pieceIndexNum;
 
 - (void) resetView;
 - (void) setStatusForView:(NSString *)status font:(UIFont *)font;

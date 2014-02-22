@@ -58,7 +58,7 @@
 - (void)setCurrentPiece:(Piece *)currentPiece
 {
     _currentPiece = currentPiece;
-    currentPiece.story.currentPieceNum = currentPiece.pieceNumber;
+    currentPiece.story.currentPieceIndexNum = [currentPiece.story.pieces indexOfObject:currentPiece];
 }
 
 - (id)init
@@ -170,17 +170,16 @@
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController 
        viewControllerAfterViewController:(UIViewController *)viewController
 {
+    NSUInteger pieceIndexNum = [self pieceIndexNumberForViewController:(ReadPieceViewController *)viewController];
     
-    NSUInteger pieceNum = [self pieceNumberForViewController:(ReadPieceViewController *)viewController];
-    
-    if (pieceNum >= self.story.length) {
+    if (pieceIndexNum > self.story.length) {
         // Go to next story or go to Story List
         // Interaction gesture recognizer will take care of it
         return nil;
     }
     else {
-        pieceNum++;
-        ReadPieceViewController *nextVC = [self viewControllerAtPieceNumber:pieceNum];
+        pieceIndexNum++;
+        ReadPieceViewController *nextVC = [self viewControllerAtPieceIndexNumber:pieceIndexNum];
         return nextVC;
     }
 }
@@ -189,31 +188,31 @@
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController 
       viewControllerBeforeViewController:(UIViewController *)viewController
 {
-    NSUInteger pieceNum = [self pieceNumberForViewController:(ReadPieceViewController *)viewController];
+    NSUInteger pieceIndexNum = [self pieceIndexNumberForViewController:(ReadPieceViewController *)viewController];
     
-    if (pieceNum <= 1) {
+    if (pieceIndexNum <= 0) {
         // Go to story list
         // Interaction gesture recognizer will take care of it
         return nil;
     }
     else {
-        pieceNum--;
-        ReadPieceViewController *previousVC = [self viewControllerAtPieceNumber:pieceNum];
+        pieceIndexNum--;
+        ReadPieceViewController *previousVC = [self viewControllerAtPieceIndexNumber:pieceIndexNum];
         return previousVC;
     }
 }
 
-- (NSUInteger)pieceNumberForViewController:(ReadPieceViewController *)viewController
+- (NSUInteger)pieceIndexNumberForViewController:(ReadPieceViewController *)viewController
 {
     Piece *piece = viewController.piece;
-    return piece.pieceNumber;
+    return [piece.story.pieces indexOfObject:piece];
 }
 
-- (ReadPieceViewController *)viewControllerAtPieceNumber:(NSUInteger)pieceNum
+- (ReadPieceViewController *)viewControllerAtPieceIndexNumber:(NSUInteger)pieceIndexNum
 {
-    if ([self.story.pieces count] >= pieceNum)
+    if (pieceIndexNum < [self.story.pieces count])
     {
-        Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:pieceNum]];
+        Piece *piece = [self.story.pieces objectAtIndex:pieceIndexNum];
         if (!piece)
             return nil;
         return [self viewControllerWithPiece:piece];
@@ -235,17 +234,14 @@
 }
 
 #pragma mark ReadPieceViewControllerDelegate
-- (BOOL)readPieceViewControllerFlipToPiece:(NSNumber *)pieceNumber
+-(BOOL)readPieceViewControllerFlipToPieceAtIndex:(NSUInteger)newPieceIndexNum
 {
-    NSUInteger oldPieceNum = self.currentPiece.pieceNumber;
-    NSUInteger newPieceNum = [pieceNumber unsignedIntegerValue];
+    NSUInteger oldPieceIndexNum = [self.currentPiece.story.pieces indexOfObject:self.currentPiece];
     UIPageViewControllerNavigationDirection direction;
-    if (oldPieceNum < newPieceNum)
+    if (oldPieceIndexNum <= newPieceIndexNum)
         direction = UIPageViewControllerNavigationDirectionForward;
-    else if (oldPieceNum > newPieceNum)
-        direction = UIPageViewControllerNavigationDirectionReverse;
     else
-        return true; // Same piece as now, so not turning
+        direction = UIPageViewControllerNavigationDirectionReverse;
     
     BOOL animation;
     if (self.transitionStyleScroll) {
@@ -253,25 +249,10 @@
     } else {
         animation = YES;
     }
-    
+
     Piece *piece = nil;
-    if (self.story.pieces.count >= newPieceNum) {
-        /*
-         * Use exception handling here. [self.story.pieces objectAtIndex:*] has always been
-         * an unstable piece of code. The latest crash here happens when
-         * 1. A story is fetched from the backend
-         * 2. The story is deleted in the backend
-         * 3. On the phone, the story is opened and a piece inserted in the middle
-         * 4. Since the story has been deleted, createPiece will delete this piece
-         * 5. Meanwhile the completion handler will try to flip to the newly added piece and crash
-         *    since piece will be nil so pieceNumber passed here would be 0
-         */
-        @try {
-            piece = [self.story.pieces objectAtIndex:newPieceNum-1];
-        }
-        @catch (NSException *exception) {
-            return false;
-        }
+    if (newPieceIndexNum < self.story.pieces.count) {
+        piece = [self.story.pieces objectAtIndex:newPieceIndexNum];
     }
     UIViewController *viewController = [self viewControllerWithPiece:piece];
     if (viewController) {
@@ -311,7 +292,7 @@
 #pragma mark UIGestureRecognizerDelegate
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
-    NSUInteger currentPieceNum = self.currentPiece.pieceNumber;
+    NSUInteger currentPieceIndexNum = [self.currentPiece.story.pieces indexOfObject:self.currentPiece];
 
     if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
         UIPanGestureRecognizer *panGr = (UIPanGestureRecognizer*)gestureRecognizer;
@@ -319,13 +300,11 @@
             && (!self.transitionStyleScroll || (panGr == self.dismissBackPanGestureRecognizer))
             && (panGr != self.dismissAheadPanGestureRecognizer)) {
             // Going left
-            Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum-1]];
-            if (!piece)
+            if (currentPieceIndexNum < 1)
                 return YES;
         } else if (([panGr velocityInView:gestureRecognizer.view].x < 0.0f) && panGr == self.dismissAheadPanGestureRecognizer) {
             // Going right
-            Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:currentPieceNum+1]];
-            if (!piece)
+            if (currentPieceIndexNum >= self.currentPiece.story.pieces.count-1)
                 return YES;
         } else
             ;
@@ -403,7 +382,7 @@
 - (void) modifyPieceViewController:(ModifyPieceViewController *)controller
               didFinishAddingPiece:(Piece *)piece
 {
-    [self readPieceViewControllerFlipToPiece:[NSNumber numberWithInt:piece.pieceNumber]];
+    [self readPieceViewControllerFlipToPieceAtIndex:[piece.story.pieces indexOfObject:piece]];
 }
 
 @end

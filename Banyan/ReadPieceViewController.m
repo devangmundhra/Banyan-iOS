@@ -484,11 +484,13 @@
         return;
     }
     
+    NSUInteger currentPieceNum = [self.piece.story.pieces indexOfObject:self.piece];
+
     UIButton *titleButton = [self.storyInfoView.subviews objectAtIndex:0];
     NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:self.piece.story.title
                                                                       attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
                                                                                    NSForegroundColorAttributeName: BANYAN_DARKGRAY_COLOR}];
-    NSAttributedString *pageString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\rpiece %d/%d", self.piece.pieceNumber, self.piece.story.length]
+    NSAttributedString *pageString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\rpiece %d/%d", currentPieceNum+1, self.piece.story.length]
                                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
                                                                                   NSForegroundColorAttributeName: BANYAN_GRAY_COLOR}];
     NSMutableAttributedString *pageAttrString = [[NSMutableAttributedString alloc] initWithAttributedString:titleString];
@@ -564,21 +566,21 @@
 
 - (void) deletePiece:(Piece *)piece
 {
-    NSUInteger curPieceNum = self.piece.pieceNumber;
-    NSNumber *turnToPage = nil;
-    if (curPieceNum != [self.piece.story.pieces count]) {
-        turnToPage = [NSNumber numberWithUnsignedInteger:curPieceNum];
-    } else { // This was the last piece
-        turnToPage = [NSNumber numberWithUnsignedInteger:curPieceNum-1];
-    }
     Story *story = self.piece.story;
+    NSUInteger curPieceIndexNum = [story.pieces indexOfObject:self.piece];
+    NSUInteger turnToPieceAtIndex = NSNotFound;
+    if (curPieceIndexNum != [self.piece.story.pieces count]-1) {
+        turnToPieceAtIndex = curPieceIndexNum;
+    } else { // This was the last piece
+        turnToPieceAtIndex = curPieceIndexNum - 1;
+    }
     
     __weak ReadPieceViewController *wself = self;
     [Piece deletePiece:self.piece completion:^{
         if (!story.pieces.count) {
             [wself.delegate readPieceViewControllerDoneReading];
         } else {
-            [wself.delegate readPieceViewControllerFlipToPiece:turnToPage];
+            [wself.delegate readPieceViewControllerFlipToPieceAtIndex:turnToPieceAtIndex];
         }
     }];
 }
@@ -643,28 +645,23 @@
 
 - (void)showFocusView:(UITapGestureRecognizer *)gestureRecognizer
 {
-    NSURL *url = nil;
-    Media *imageMedia = [Media getMediaOfType:@"gif" inMediaSet:self.piece.media];
-    if (![imageMedia.localURL length] && ![imageMedia.remoteURL length])
-        imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
+    NSAssert1([gestureRecognizer.view isKindOfClass:[UIImageView class]], @"gestureRecognizer not on imageView", [gestureRecognizer.view class]);
+    UIImageView *imageView = (UIImageView *)gestureRecognizer.view;
+    UIImage *image = imageView.image;
     
-    if ([imageMedia.remoteURL length])
-        url = [NSURL URLWithString:imageMedia.remoteURL];
-    else if ([imageMedia.localURL length])
-        url = [NSURL URLWithString:imageMedia.localURL];
+    if (!image)
+        return;
     
-    UIImage *image = ((UIImageView*)(gestureRecognizer.view)).image;
-    if (image) {
-        [self.mediaFocusManager showImage:image fromView:gestureRecognizer.view];
-    } else {
-        [self.mediaFocusManager showImageFromURL:url fromView:gestureRecognizer.view];
-    }
+    // Don't try to get image from the network. That code seems to be a little fragile.
+    // In any case, the pie completion UI of image downloading is pretty good. So just wait till the image
+    // actually downloads before doing anything
+    [self.mediaFocusManager showImage:image fromView:imageView];
 }
 
 #pragma mark ModifyPieceViewControllerDelegate
 - (void)modifyPieceViewController:(ModifyPieceViewController *)controller didFinishAddingPiece:(Piece *)piece
 {
-    [self.delegate readPieceViewControllerFlipToPiece:[NSNumber numberWithInt:piece.pieceNumber]];
+    [self.delegate readPieceViewControllerFlipToPieceAtIndex:[piece.story.pieces indexOfObject:piece]];
 }
 
 #pragma Memory Management
@@ -687,7 +684,7 @@
 
 - (void)storyOverviewControllerSelectedPiece:(Piece *)piece
 {
-    [self.delegate readPieceViewControllerFlipToPiece:[NSNumber numberWithUnsignedInt:piece.pieceNumber]];
+    [self.delegate readPieceViewControllerFlipToPieceAtIndex:[piece.story.pieces indexOfObject:piece]];
 }
 
 - (void)storyOverviewControllerDeletedStory

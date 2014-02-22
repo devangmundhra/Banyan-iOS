@@ -30,7 +30,7 @@ static UIFont *_regularFont;
 @synthesize pieceSubviewsInuseList = _pieceSubviewsInuseList;
 @synthesize pieceSubviewsFreeList = _pieceSubviewsFreeList;
 @synthesize story = _story;
-@synthesize currentPieceNum = _currentPieceNum;
+@synthesize currentPieceIndexNum = _currentPieceIndexNum;
 @synthesize allPieces = _allPieces;
 @synthesize statusLabel = _statusLabel;
 
@@ -106,18 +106,18 @@ static UIFont *_regularFont;
     _story = story;
     self.allPieces = _story.pieces;
     self.contentSize = CGSizeMake(story.length*self.frame.size.width, self.frame.size.height);
-    [self scrollRectToVisible:[self calculateFrameForPieceNum:story.currentPieceNum] animated:NO];
-    [self scrollToPieceNumber:story.currentPieceNum];
+    [self scrollRectToVisible:[self calculateFrameForPieceIndexNum:story.currentPieceIndexNum] animated:NO];
+    [self scrollToPieceIndexNumber:story.currentPieceIndexNum];
     [self addMsgOnPieceViewIfNeeded];
 }
 
-- (SinglePieceView *) addPieceSubviewAtFrame:(CGRect)frame forPieceNum:(NSUInteger)pieceNum
+- (SinglePieceView *) addPieceSubviewAtFrame:(CGRect)frame forPieceIndexNum:(NSUInteger)pieceIndexNum
 {
     __block SinglePieceView *view = nil;
     
     // If a view already exists for that piece, use that view
     [self.pieceSubviewsInuseList enumerateObjectsUsingBlock:^(SinglePieceView *obj, BOOL *stop) {
-        if (obj.pieceNum == pieceNum) {
+        if (obj.pieceIndexNum == pieceIndexNum) {
             view = obj;
             *stop = YES;
         }
@@ -135,7 +135,7 @@ static UIFont *_regularFont;
         view.frame = frame;
     }
 
-    view.pieceNum = pieceNum;
+    view.pieceIndexNum = pieceIndexNum;
     [self.pieceSubviewsInuseList addObject:view];
     // A view in use should not be hidden
     view.hidden = NO;
@@ -158,30 +158,38 @@ static UIFont *_regularFont;
     }
 }
 
-// Force option is so that we can create a view even when the stories don't have any pieces
-- (CGRect) calculateFrameForPieceNum:(NSUInteger)pieceNum
+- (CGRect) calculateFrameForPieceIndexNum:(NSUInteger)pieceIndexNum
 {
-    if (!pieceNum || pieceNum > self.story.length)
+    if (pieceIndexNum == NSNotFound || pieceIndexNum >= self.story.length) {
+#ifdef DEBUG
         return CGRectZero;
-    
+#else
+        pieceIndexNum = 0;
+#endif
+    }
+
     CGRect frame = self.frame;
-    frame.origin.x = (pieceNum - 1)*self.frame.size.width;
+    frame.origin.x = pieceIndexNum*self.frame.size.width;
     frame.origin.y = 0;
     frame.size = self.frame.size;
     return frame;
 }
 
-- (void) scrollToPieceNumber:(NSUInteger)pieceNum
+- (void) scrollToPieceIndexNumber:(NSUInteger)pieceIndexNum
 {
-    if (!pieceNum || pieceNum > self.story.length)
+    if (pieceIndexNum == NSNotFound || pieceIndexNum >= self.story.length) {
+#ifdef DEBUG
         return;
+#else
+        pieceIndexNum = 0;
+#endif
+    }
     
-    
-    self.currentPieceNum = pieceNum;
+    self.currentPieceIndexNum = pieceIndexNum;
     
     // Release rest of the subviews which are outside the window
     NSSet *tempSet = [self.pieceSubviewsInuseList objectsPassingTest:^BOOL(SinglePieceView *obj, BOOL *stop) {
-        return (!(obj.pieceNum >= pieceNum - floor(NUM_PIECES_WINDOW/2) && obj.pieceNum <= pieceNum + floor(NUM_PIECES_WINDOW/2)));
+        return (!(obj.pieceIndexNum >= pieceIndexNum - floor(NUM_PIECES_WINDOW/2) && obj.pieceIndexNum <= pieceIndexNum + floor(NUM_PIECES_WINDOW/2)));
     }];
     
     __weak BNPiecesScrollView *wself = self;
@@ -190,18 +198,18 @@ static UIFont *_regularFont;
     }];
     
     // Load up all the pieces for and around the current piece number
-    for (int i = pieceNum - floor(NUM_PIECES_WINDOW/2); i <= pieceNum + floor(NUM_PIECES_WINDOW/2); i++) {
-        CGRect frame = [self calculateFrameForPieceNum:i];
+    for (int i = pieceIndexNum - floor(NUM_PIECES_WINDOW/2); i <= pieceIndexNum + floor(NUM_PIECES_WINDOW/2); i++) {
+        CGRect frame = [self calculateFrameForPieceIndexNum:i];
         if (!CGRectEqualToRect(CGRectZero, frame)) {
-            SinglePieceView *pv = [self addPieceSubviewAtFrame:frame forPieceNum:i];
-            [self loadPieceWithNumber:i atView:pv];
+            SinglePieceView *pv = [self addPieceSubviewAtFrame:frame forPieceIndexNum:i];
+            [self loadPieceWithIndexNum:i atView:pv];
         }
     }
 }
 
-- (void) loadPieceWithNumber:(NSUInteger)pieceNum atView:(SinglePieceView *)view
+- (void) loadPieceWithIndexNum:(NSUInteger)pieceIndexNum atView:(SinglePieceView *)view
 {
-    if (view.piece.pieceNumber == pieceNum && [view.piece.story isEqual:self.story]) {
+    if ([self.allPieces indexOfObject:view.piece] == pieceIndexNum && [view.piece.story isEqual:self.story]) {
         return;
     }
     
@@ -209,12 +217,8 @@ static UIFont *_regularFont;
         Piece *piece = nil;
         
         // First try to get it from the local cache
-        if (pieceNum <= self.allPieces.count) {
-            piece = [self.allPieces objectAtIndex:pieceNum-1];
-        }
-        // If that didn't work out, get it from the backend
-        if (!piece || piece.pieceNumber != pieceNum) {
-            piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:pieceNum]];
+        if (pieceIndexNum < self.allPieces.count) {
+            piece = [self.allPieces objectAtIndex:pieceIndexNum];
         }
         if (piece) {
             [view setPiece:piece];
@@ -224,7 +228,7 @@ static UIFont *_regularFont;
     }
     @catch (NSException *exception) {
         [view setStatusForView:@"There was a problem in fetching this piece" font:_regularFont];
-        NSLog(@"%s Error in setting piece: Exception name: %@, reason: %@", __PRETTY_FUNCTION__, exception.name, exception.reason);
+        NSLog(@"Error in setting piece: Exception name: %@, reason: %@, userinfo: %@", exception.name, exception.reason, exception.userInfo);
     }
 }
 

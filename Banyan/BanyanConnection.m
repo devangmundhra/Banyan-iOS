@@ -216,7 +216,7 @@
                 story.lastSynced = [NSDate date];
                 NSArray *unseenPieceArray = [Piece piecesForStory:story withAttribute:@"viewedByCurUser" asValue:[NSNumber numberWithBool:FALSE]];
                 Piece *unseenPiece = unseenPieceArray.count > 0 ? [unseenPieceArray firstObject] : nil;
-                story.currentPieceNum = MAX(unseenPiece.pieceNumber, 1);
+                story.currentPieceIndexNum = [story.pieces indexOfObject:unseenPiece] != NSNotFound ?: 0;
                 story.numNewPiecesToView = unseenPieceArray.count;
             }];
             

@@ -419,10 +419,10 @@
     if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
     {
         [Piece createNewPiece:self.piece];
-        NSUInteger currentPieceNum = [self.piece.story.pieces indexOfObject:self.piece];
-        if (currentPieceNum == NSNotFound)
-            currentPieceNum = self.piece.story.pieces.count;
-        self.piece.story.currentPieceNum = currentPieceNum+1;
+        NSUInteger currentPieceIndexNum = [self.piece.story.pieces indexOfObject:self.piece];
+        if (currentPieceIndexNum == NSNotFound)
+            currentPieceIndexNum = self.piece.story.pieces.count-1;
+        self.piece.story.currentPieceIndexNum = currentPieceIndexNum;
 
         NSLog(@"New piece %@ saved", self.piece);
         [TestFlight passCheckpoint:@"New piece created successfully"];

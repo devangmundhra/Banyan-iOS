@@ -86,12 +86,21 @@
 
 + (NSArray *)piecesForStory:(Story *)story withAttribute:(NSString *)attribute asValue:(id)value
 {
+    if (!story) {
+        /* This is possible in the following scenario:
+         * 1. Story list refresh is occuring
+         * 2. A new piece is created
+         * 3. Story refresh completes before the new piece is fully uploaded, so the connection to the story of the piece is deleted
+         * 4. piece.story is nil, so calling this method after that will return here
+         */
+        return nil;
+    }
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:[NSEntityDescription entityForName:kBNPieceClassKey inManagedObjectContext:story.managedObjectContext]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(%K == %@) AND (story = %@)",
 							  attribute, value, story];
     [request setPredicate:predicate];
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"pieceNumber" ascending:YES];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"timeStamp" ascending:NO];
     [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
     [request setFetchLimit:1];
     

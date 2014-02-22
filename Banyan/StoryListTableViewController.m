@@ -501,8 +501,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void)storyReaderControllerReadNextStory:(Story *)nextStory
 {
-    if (nextStory) {
-        Piece *piece = [Piece pieceForStory:nextStory withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:1]];
+    if (nextStory && nextStory.pieces.count) {
+        Piece *piece = [nextStory.pieces objectAtIndex:0];
         if (piece) {
             [self storyReaderWithStory:nextStory piece:piece];
         }

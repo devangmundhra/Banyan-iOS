@@ -17,12 +17,25 @@
 {
     // Update the length
     story.length = story.pieces.count;
+    
+    if (story.currentPieceIndexNum >= story.length)
+    /*
+     * Correct the story currentPieceIndexNum if required.
+     * This can be needed if for example a piece was deleted but the currentPieceNumber of the story
+     * wasn't updated. For example,
+     * 1. A story is fetched from the backend
+     * 2. The story is deleted in the backend
+     * 3. On the phone, the story is opened and a piece inserted in the middle
+     * 4. Since the story has been deleted, createPiece will delete this piece after it has updated story.currentPueceNumber
+     * 5. So the currentPieceIndexNum might be more than the number of objects in story.pieces
+     */
+        story.currentPieceIndexNum = 0;
+    
     // Update the value for the piece numbers
     if (!story.length)
         story.pieces = nil;
     else {
         [story.pieces enumerateObjectsUsingBlock:^(Piece *localPiece, NSUInteger idx, BOOL *stop) {
-            localPiece.pieceNumber = idx+1;
             if (story.timeStamp < localPiece.timeStamp) {
                 story.timeStamp = localPiece.timeStamp;
             }

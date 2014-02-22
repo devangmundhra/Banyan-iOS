@@ -20,7 +20,7 @@
 @dynamic isInvited;
 @dynamic length;
 @dynamic readAccess;
-@dynamic currentPieceNum;
+@dynamic currentPieceIndexNum;
 @dynamic tags, category;
 @dynamic title;
 @dynamic writeAccess;
@@ -32,7 +32,7 @@
 - (void)awakeFromFetch
 {
     [super awakeFromFetch];
-    self.currentPieceNum = self.currentPieceNum > self.length ? self.length : self.currentPieceNum;
+    self.currentPieceIndexNum = self.currentPieceIndexNum >= self.length ? 0 : self.currentPieceIndexNum;
     [self setUploadStatusNumber:[self calculateUploadStatusNumber]];
 }
 
@@ -247,7 +247,7 @@
                                                        @"stats.numLikes" : @"numberOfLikes",
                                                        @"stats.userViewed" : @"viewedByCurUser",
                                                        @"stats.userLiked" : @"likedByCurUser",
-                                                       @"firstUnviewedPieceNumByUser" : @"currentPieceNum",
+                                                       @"firstUnviewedPieceNumByUser" : @"currentPieceIndexNum",
                                                        @"resource_uri" : @"resourceUri",
                                                        @"perma_link" : @"permaLink",
                                                        }];

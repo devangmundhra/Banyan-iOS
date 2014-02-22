@@ -21,7 +21,7 @@
 @property (nonatomic) BOOL isInvited;
 @property (nonatomic) int16_t length;
 @property (nonatomic, retain) BNPermissionsObject<BNPermissionsObject> * readAccess;
-@property (nonatomic) int16_t currentPieceNum;
+@property (nonatomic) int16_t currentPieceIndexNum;
 @property (nonatomic, retain) NSString * tags;
 @property (nonatomic, retain) NSString * category;
 @property (nonatomic, retain) NSString * title;

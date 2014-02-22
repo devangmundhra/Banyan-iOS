@@ -15,7 +15,7 @@
 
 @protocol ReadPieceViewControllerDelegate <NSObject>
 
-- (BOOL) readPieceViewControllerFlipToPiece:(NSNumber *)pieceNumber;
+- (BOOL) readPieceViewControllerFlipToPieceAtIndex:(NSUInteger)pieceIndexNumber;
 - (void) setCurrentPiece:(Piece *)piece;
 - (void) readPieceViewControllerDoneReading;
 - (UIPanGestureRecognizer *) dismissBackPanGestureRecognizer;

@@ -16,9 +16,9 @@
 
 + (void) deleteStory:(Story *)story completion:(void (^)(void)) completion;
 {
-    if (story.remoteStatus == RemoteObjectStatusPushing) {
+    if ([[story calculateUploadStatusNumber] unsignedIntegerValue] != RemoteObjectStatusSync) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Error in deleting story %@", story.title]
-                                                        message:@"Can't delete a story while it is being uploaded"
+                                                        message:@"Can't delete a story while the story or its pieces are being uploaded"
                                                        delegate:nil
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];
@@ -69,7 +69,6 @@
                                                  });
                                              }
          ];
-        [hud hide:YES];
     } else {
         [story remove];
         dispatch_async(dispatch_get_main_queue(), ^{

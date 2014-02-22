@@ -74,6 +74,14 @@
 
 - (void)setStory:(Story *)story
 {
+    /* WARNING!!
+     * Don't set anything in the story here or in one of the subviews.
+     * This is because when the mainContext is being saved, it updates the FRC before the save completes.
+     * When the FRC is being updated, it can set the story again. Now if something in the story is being
+     * set while the MOC is being saved, it is observed that the FRC updates happen again, ending in a
+     * endless loop of FRC updates - story parameter being set - FRC updates.
+     * Therefore it is better to not set anything that can call the FRC updates while the story is being set.
+     */
     _story = story;
     [self.storyView setStory:story];
     [self.piecesScrollView setStory:story];
@@ -98,7 +106,7 @@
     // switch the indicator when more than 50% of the previous/next page is visible
     CGFloat pageWidth = CGRectGetWidth(self.piecesScrollView.frame);
     NSUInteger page = floor((self.piecesScrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
-    [self.piecesScrollView scrollToPieceNumber:page+1];
+    [self.piecesScrollView scrollToPieceIndexNumber:page];
 }
 
 #pragma SingleStoryView delegate
@@ -136,9 +144,14 @@
 {
     if (!self.story || ![self.story.pieces count])
         return nil;
-    NSUInteger pieceNum = self.piecesScrollView.currentPieceNum;
-    Piece *piece = [Piece pieceForStory:self.story withAttribute:@"pieceNumber" asValue:[NSNumber numberWithUnsignedInteger:pieceNum]];
-    return piece;
+    NSUInteger pieceIndexNum = self.piecesScrollView.currentPieceIndexNum;
+    @try {
+        return [self.story.pieces objectAtIndex:pieceIndexNum];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"Error in getting currentlyVisible Piece for index: %d", pieceIndexNum);
+        return nil;
+    }
 }
 
 @end

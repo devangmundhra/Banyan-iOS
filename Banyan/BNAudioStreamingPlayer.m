@@ -470,8 +470,8 @@ NSString *kCurrentItemKey	= @"currentItem";
     [self disablePlayerButtons];
     
     /* Display the error. */
-	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[error localizedDescription]
-														message:[error localizedFailureReason]
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error in playing audio"
+														message:[error localizedDescription]
 													   delegate:nil
 											  cancelButtonTitle:@"OK"
 											  otherButtonTitles:nil];

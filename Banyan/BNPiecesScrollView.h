@@ -15,9 +15,9 @@
 @interface BNPiecesScrollView : UIScrollView
 
 @property (strong, nonatomic) Story *story;
-@property (nonatomic) NSUInteger currentPieceNum;
+@property (nonatomic) NSUInteger currentPieceIndexNum;
 
-- (void) scrollToPieceNumber:(NSUInteger)pieceNum;
+- (void) scrollToPieceIndexNumber:(NSUInteger)pieceIndexNum;
 - (void) resetView;
 
 @end

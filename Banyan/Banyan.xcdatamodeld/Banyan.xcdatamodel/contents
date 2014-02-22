@@ -58,7 +58,7 @@
         <attribute name="canView" optional="YES" attributeType="Boolean" indexed="YES" syncable="YES"/>
         <attribute name="category" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="contributors" optional="YES" attributeType="Transformable" indexed="YES" syncable="YES"/>
-        <attribute name="currentPieceNum" optional="YES" attributeType="Integer 16" defaultValueString="1" indexed="YES" syncable="YES"/>
+        <attribute name="currentPieceIndexNum" optional="YES" attributeType="Integer 16" defaultValueString="1" indexed="YES" syncable="YES"/>
         <attribute name="isInvited" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="length" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="numNewPiecesToView" optional="YES" attributeType="Integer 16" defaultValueString="NO" indexed="YES" syncable="YES"/>

@@ -24,7 +24,7 @@ static UIFont *_regularFont;
 @implementation SinglePieceView
 
 @synthesize piece = _piece;
-@synthesize pieceNum = _pieceNum;
+@synthesize pieceIndexNum = _pieceIndexNum;
 @synthesize textLabel = _textLabel;
 
 + (void)initialize
@@ -119,7 +119,7 @@ static UIFont *_regularFont;
 {
     self.textLabel.hidden = YES;
     _piece = nil;
-    self.pieceNum = 0;
+    self.pieceIndexNum = 0;
     self.textLabel.textColor = BANYAN_BLACK_COLOR;
     [self cancelCurrentImageLoad];
 }
