@@ -300,15 +300,10 @@
         NSData *imageData;
         
         ALAssetRepresentation *rep = [asset defaultRepresentation];
-        CGImageRef imageRef = [rep fullScreenImage]; // not fullResolutionImage
+        CGImageRef imageRef = [rep fullScreenImage]; // Not full resolution image
         UIImage *image = [UIImage imageWithCGImage:imageRef];
         
-        // For now, compress the image before sending.
-        // When PUT API is done, compress on the server
-        // TODO
-        UIImage *resizedImage = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:[[UIScreen mainScreen] bounds].size interpolationQuality:kCGInterpolationLow];
-        
-        imageData = UIImageJPEGRepresentation(resizedImage, 1);
+        imageData = UIImageJPEGRepresentation(image, 1);
         
         self.remoteStatus = MediaRemoteStatusPushing;
 
@@ -427,7 +422,7 @@
         [library assetForURL:[NSURL URLWithString:self.localURL] resultBlock:^(ALAsset *asset) {
             ALAssetRepresentation *rep = [asset defaultRepresentation];
             CGImageRef imageRef = [rep fullScreenImage];
-            UIImage *image = [UIImage imageWithCGImage:imageRef];
+            UIImage *image = [UIImage imageWithCGImage:imageRef scale:1.0 orientation:(UIImageOrientation)[rep orientation]];
             if (success) success(image);
         }
                 failureBlock:failure

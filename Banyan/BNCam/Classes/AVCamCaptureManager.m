@@ -172,24 +172,24 @@ NSString *const AVCamCaptureManagerInfoImage = @"AVCamCaptureManagerInfoImage";
 {
     BOOL success = NO;
     
-	// Set torch and flash mode to auto
+	// Set torch and flash mode to off. Let user turn it on.
     // Don't set camera or flash mode automatically
-//	if ([[self backFacingCamera] hasFlash]) {
-//		if ([[self backFacingCamera] lockForConfiguration:nil]) {
-//			if ([[self backFacingCamera] isFlashModeSupported:AVCaptureFlashModeAuto]) {
-//				[[self backFacingCamera] setFlashMode:AVCaptureFlashModeAuto];
-//			}
-//			[[self backFacingCamera] unlockForConfiguration];
-//		}
-//	}
-//	if ([[self backFacingCamera] hasTorch]) {
-//		if ([[self backFacingCamera] lockForConfiguration:nil]) {
-//			if ([[self backFacingCamera] isTorchModeSupported:AVCaptureTorchModeAuto]) {
-//				[[self backFacingCamera] setTorchMode:AVCaptureTorchModeAuto];
-//			}
-//			[[self backFacingCamera] unlockForConfiguration];
-//		}
-//	}
+	if ([[self backFacingCamera] hasFlash]) {
+		if ([[self backFacingCamera] lockForConfiguration:nil]) {
+			if ([[self backFacingCamera] isFlashModeSupported:AVCaptureFlashModeOff]) {
+				[[self backFacingCamera] setFlashMode:AVCaptureFlashModeOff];
+			}
+			[[self backFacingCamera] unlockForConfiguration];
+		}
+	}
+	if ([[self backFacingCamera] hasTorch]) {
+		if ([[self backFacingCamera] lockForConfiguration:nil]) {
+			if ([[self backFacingCamera] isTorchModeSupported:AVCaptureTorchModeOff]) {
+				[[self backFacingCamera] setTorchMode:AVCaptureTorchModeOff];
+			}
+			[[self backFacingCamera] unlockForConfiguration];
+		}
+	}
 
     /*
      * Note: Commenting out the Audio/Video parts from this method because currently the app only uses still photos.
@@ -343,7 +343,7 @@ bail:
     return success;
 }
 
-- (BOOL)toggleFlash:(BOOL)flash
+- (void)toggleFlash:(BOOL)flash
 {
     if ([[self backFacingCamera] hasFlash]) {
 		if ([[self backFacingCamera] lockForConfiguration:nil]) {
@@ -354,11 +354,6 @@ bail:
 			[[self backFacingCamera] unlockForConfiguration];
 		}
 	}
-    else {
-        return NO;
-    }
-	
-    return YES;
 }
 
 #pragma mark Device Counts

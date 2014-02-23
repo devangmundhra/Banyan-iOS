@@ -99,7 +99,7 @@ else\
         [library assetForURL:[NSURL URLWithString:media.localURL] resultBlock:^(ALAsset *asset) {
             ALAssetRepresentation *rep = [asset defaultRepresentation];
             CGImageRef imageRef = [rep fullResolutionImage];
-            UIImage *image = [UIImage imageWithCGImage:imageRef];
+            UIImage *image = [UIImage imageWithCGImage:imageRef scale:1.0 orientation:(UIImageOrientation)[rep orientation]];
             PROCESS_IMAGE(image);
         }
                 failureBlock:nil
