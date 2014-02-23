@@ -246,6 +246,8 @@
 		51F032B818B95C2200FFA71E /* Play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F032B418B95C2200FFA71E /* Play@2x.png */; };
 		51F032B918B95C2200FFA71E /* Stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F032B518B95C2200FFA71E /* Stop.png */; };
 		51F032BA18B95C2200FFA71E /* Stop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F032B618B95C2200FFA71E /* Stop@2x.png */; };
+		51F032BD18B9EFFC00FFA71E /* x_alt.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F032BB18B9EFFC00FFA71E /* x_alt.png */; };
+		51F032BE18B9EFFC00FFA71E /* x_alt@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F032BC18B9EFFC00FFA71E /* x_alt@2x.png */; };
 		51F2288C161A9E22006B3AA7 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51F2288B161A9E22006B3AA7 /* Default-568h@2x.png */; };
 		51F57C541721141D00A76FA5 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F57C531721141D00A76FA5 /* MessageUI.framework */; };
 		51F8622D1858EA050037D576 /* UIViewController+BNSlidingViewControllerAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F8622C1858EA050037D576 /* UIViewController+BNSlidingViewControllerAdditions.m */; };
@@ -600,6 +602,8 @@
 		51F032B418B95C2200FFA71E /* Play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Play@2x.png"; sourceTree = "<group>"; };
 		51F032B518B95C2200FFA71E /* Stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Stop.png; sourceTree = "<group>"; };
 		51F032B618B95C2200FFA71E /* Stop@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Stop@2x.png"; sourceTree = "<group>"; };
+		51F032BB18B9EFFC00FFA71E /* x_alt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = x_alt.png; sourceTree = "<group>"; };
+		51F032BC18B9EFFC00FFA71E /* x_alt@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "x_alt@2x.png"; sourceTree = "<group>"; };
 		51F22884161A9DC1006B3AA7 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		51F22887161A9DE4006B3AA7 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		51F22889161A9DF2006B3AA7 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -824,6 +828,8 @@
 		513203B118B35D86007A53FD /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				51F032BB18B9EFFC00FFA71E /* x_alt.png */,
+				51F032BC18B9EFFC00FFA71E /* x_alt@2x.png */,
 				513203B218B35FEE007A53FD /* Icon-60@2x.png */,
 				513203B318B35FEE007A53FD /* Icon-76.png */,
 				513203B418B35FEE007A53FD /* Icon-76@2x.png */,
@@ -1786,6 +1792,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				51B49A3318A3596A0073F184 /* Thats-Font-Folks.ttf in Resources */,
+				51F032BE18B9EFFC00FFA71E /* x_alt@2x.png in Resources */,
 				5105364F17A5AD720046D969 /* defaultPerfs.plist in Resources */,
 				51F032B918B95C2200FFA71E /* Stop.png in Resources */,
 				5189B2C215B387E200562DD0 /* InfoPlist.strings in Resources */,
@@ -1880,6 +1887,7 @@
 				51B23505171658BF004241C1 /* Roboto-Light.ttf in Resources */,
 				51B23506171658BF004241C1 /* Roboto-LightItalic.ttf in Resources */,
 				51B23507171658BF004241C1 /* Roboto-Medium.ttf in Resources */,
+				51F032BD18B9EFFC00FFA71E /* x_alt.png in Resources */,
 				51F032A118B955FD00FFA71E /* Microphone.png in Resources */,
 				51F032A618B9574500FFA71E /* Trash@2x.png in Resources */,
 				51F0329518B94F4400FFA71E /* Cog.png in Resources */,

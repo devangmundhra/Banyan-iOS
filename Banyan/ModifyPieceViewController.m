@@ -20,6 +20,7 @@
 #import "BNAudioRecorderView.h"
 #import "UIImage+ResizeAdditions.h"
 #import "GooglePlacePickerViewController.h"
+#import "MBProgressHUD.h"
 
 @interface ModifyPieceViewController (LocationPickerButtonDelegate) <LocationPickerButtonDelegate>
 
@@ -296,14 +297,22 @@
         
         // Cover image
         Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
-        
         if (imageMedia) {
+            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.addPhotoButton animated:YES];
+            hud.mode = MBProgressHUDModeDeterminate;
+            __weak MBProgressHUD *whud = hud;
             [imageMedia getImageForMediaWithSuccess:^(UIImage *image) {
+                [whud hide:YES];
                 [self.addPhotoButton setImage:image];
-            } failure:^(NSError *error) {
-                NSLog(@"%s Error in getting image for piece (id: %@ text: %@)", __PRETTY_FUNCTION__, self.piece.bnObjectId, self.piece.shortText);
-                [self.addPhotoButton unsetImage];
-            }];
+            }
+                                           progress:^(NSUInteger receivedSize, long long expectedSize) {
+                                               whud.progress = receivedSize/expectedSize;
+                                           }
+                                            failure:^(NSError *error) {
+                                                [whud hide:YES];
+                                                NSLog(@"%s Error in getting image for piece (id: %@ text: %@)", __PRETTY_FUNCTION__, self.piece.bnObjectId, self.piece.shortText);
+                                                [self.addPhotoButton unsetImage];
+                                            }];
         } else {
             [self.addPhotoButton unsetImage];
         }
@@ -728,8 +737,11 @@
     media.localURL = [(NSURL *)[infoDict objectForKey:AVCamCaptureManagerInfoURL] absoluteString];
     UIImage *image = [infoDict objectForKey:AVCamCaptureManagerInfoImage];
     [self.addPhotoButton setImage:image];
-    image = [image thumbnailImage:MEDIA_THUMBNAIL_SIZE transparentBorder:0 cornerRadius:2 interpolationQuality:kCGInterpolationHigh];
-    media.thumbnail = image;
+    image = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:MEDIA_THUMBNAIL_SIZE interpolationQuality:kCGInterpolationHigh];
+    CGRect imageCropBounds = CGRectZero;
+    imageCropBounds.origin = CGPointMake(roundf((image.size.width - MEDIA_THUMBNAIL_SIZE.width) / 2), roundf((image.size.height - MEDIA_THUMBNAIL_SIZE.height) / 2));
+    imageCropBounds.size = MEDIA_THUMBNAIL_SIZE;
+    image = [image croppedImage:imageCropBounds];    media.thumbnail = image;
     [self.addPhotoButton setThumbnail:image forMedia:media];
     self.doneButton.enabled = [self checkForChanges];
 }
@@ -747,7 +759,11 @@
     media.localURL = [(NSURL *)[info objectForKey:MediaPickerViewControllerInfoURL] absoluteString];
     UIImage *image = [info objectForKey:MediaPickerViewControllerInfoImage];
     [self.addPhotoButton setImage:image];
-    image = [image thumbnailImage:MEDIA_THUMBNAIL_SIZE transparentBorder:0 cornerRadius:2 interpolationQuality:kCGInterpolationHigh];
+    image = [image resizedImageWithContentMode:UIViewContentModeScaleAspectFill bounds:MEDIA_THUMBNAIL_SIZE interpolationQuality:kCGInterpolationHigh];
+    CGRect imageCropBounds = CGRectZero;
+    imageCropBounds.origin = CGPointMake(roundf((image.size.width - MEDIA_THUMBNAIL_SIZE.width) / 2), roundf((image.size.height - MEDIA_THUMBNAIL_SIZE.height) / 2));
+    imageCropBounds.size = MEDIA_THUMBNAIL_SIZE;
+    image = [image croppedImage:imageCropBounds];
     media.thumbnail = image;
     [self.addPhotoButton setThumbnail:image forMedia:media];
     self.doneButton.enabled = [self checkForChanges];

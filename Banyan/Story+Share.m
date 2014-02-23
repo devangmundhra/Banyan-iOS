@@ -72,10 +72,12 @@
                     FBRequest *photoRequest = [FBRequest requestWithGraphPath:[NSString stringWithFormat:@"%@/photos", @"{result=upload-album:$.id}"] parameters:parameters HTTPMethod:@"POST"];
                     [requestConnection addRequest:photoRequest completionHandler:nil];
                     imageMediaCount--;
-                } failure:^(NSError *error) {
-                    imageMediaCount--;
-                    NSLog(@"Error in getting image from media for story %@", story);
-                }];
+                }
+                                          progress:nil
+                                           failure:^(NSError *error) {
+                                               imageMediaCount--;
+                                               NSLog(@"Error in getting image from media for story %@", story);
+                                           }];
             }
         }
         
@@ -154,9 +156,11 @@
         if (imageMedia) {
             [imageMedia getImageForMediaWithSuccess:^(UIImage *image) {
                 [self shareOnFacebookWithName:self.title caption:nil description:nil image:image pictureURL:imageMedia.remoteURL.length?imageMedia.remoteURL:nil shareLink:self.permaLink completionHandler:completionHandler];
-            } failure:^(NSError *error) {
-                [self shareOnFacebookWithName:self.title caption:nil description:nil image:nil pictureURL:imageMedia.remoteURL.length?imageMedia.remoteURL:nil shareLink:self.permaLink completionHandler:completionHandler];
-            }];
+            }
+                                           progress:nil
+                                            failure:^(NSError *error) {
+                                                [self shareOnFacebookWithName:self.title caption:nil description:nil image:nil pictureURL:imageMedia.remoteURL.length?imageMedia.remoteURL:nil shareLink:self.permaLink completionHandler:completionHandler];
+                                            }];
         } else {
             [self shareOnFacebookWithName:self.title caption:nil description:nil image:nil pictureURL:nil shareLink:self.permaLink completionHandler:completionHandler];
         }

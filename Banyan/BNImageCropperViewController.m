@@ -23,9 +23,6 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        self.cropSize = CGSizeMake(MEDIA_THUMBNAIL_SIZE, MEDIA_THUMBNAIL_SIZE);
-        self.minimumScale = 0.2;
-        self.maximumScale = 10;
     }
     return self;
 }
@@ -34,6 +31,14 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    self.title = @"Edit thumnail";
+    self.cropSize = MEDIA_THUMBNAIL_SIZE;
+    self.minimumScale = 0.001;
+    self.maximumScale = 10;
+    self.checkBounds = NO;
+    self.rotateEnabled = NO;
+    self.outputWidth = self.cropSize.width;
+    [self reset:NO];
 }
 
 - (void)didReceiveMemoryWarning

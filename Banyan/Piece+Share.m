@@ -48,7 +48,7 @@
     if (imageMedia) {
         [imageMedia getImageForMediaWithSuccess:^(UIImage *image) {
             [self shareOnFacebookWithName:self.story.title caption:self.shortText description:self.longText image:image pictureURL:imageMedia.remoteURL.length?imageMedia.remoteURL:nil shareLink:self.permaLink completionHandler:completionHandler];
-        } failure:^(NSError *error) {
+        } progress:nil failure:^(NSError *error) {
             [self shareOnFacebookWithName:self.story.title caption:self.shortText description:self.longText image:nil pictureURL:imageMedia.remoteURL.length?imageMedia.remoteURL:nil shareLink:self.permaLink completionHandler:completionHandler];
         }];
     } else {

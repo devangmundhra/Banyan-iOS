@@ -23,7 +23,7 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
 @class RemoteObject;
 
 @interface Media : NSManagedObject
-#define MEDIA_THUMBNAIL_SIZE 160
+#define MEDIA_THUMBNAIL_SIZE CGSizeMake(300, 130)
 
 @property (nonatomic, retain) NSDate * createdAt;
 @property (nonatomic, retain) NSString * filename;
@@ -55,11 +55,12 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
 - (void)save;
 - (void)cloneFrom:(Media *)source;
 
-- (void) getImageForMediaWithSuccess:(void (^)(UIImage *))success failure:(void (^)(NSError *error))failure;
+- (void) getImageForMediaWithSuccess:(void (^)(UIImage *image))success progress:(void (^)(NSUInteger receivedSize, long long expectedSize))progress failure:(void (^)(NSError *error))failure;
 - (void) getImageWithContentMode:(UIViewContentMode)contentMode
                           bounds:(CGSize)size
             interpolationQuality:(CGInterpolationQuality)quality
              forMediaWithSuccess:(void (^)(UIImage *))success
+                        progress:(void (^)(NSUInteger receivedSize, long long expectedSize))progress
                          failure:(void (^)(NSError *error))failure;
 
 + (Media *)getMediaOfType:(NSString *)type inMediaSet:(NSOrderedSet *)mediaSet;

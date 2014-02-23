@@ -337,7 +337,7 @@
     }
     
     [BNAWSS3Client uploadData:UIImageJPEGRepresentation(self.thumbnail, 1) withContentType:@"image/jpeg"
-                  forFileName:[NSString stringWithFormat:@"%@/%@_%@_80x80.jpg", [BNSharedUser currentUser].userId, [self.remoteObject getIdentifierForMediaFileName], [BNMisc genRandStringLength:10]]
+                  forFileName:[NSString stringWithFormat:@"%@/%@_%@_%@.jpg", [BNSharedUser currentUser].userId, [self.remoteObject getIdentifierForMediaFileName], [BNMisc genRandStringLength:10], NSStringFromCGSize(MEDIA_THUMBNAIL_SIZE)]
         inBackgroundWithBlock:^(bool succeeded, NSString *url, NSString *filename, NSError *error) {
             if (succeeded) {
                 self.thumbnail = nil;
@@ -397,21 +397,23 @@
                           bounds:(CGSize)size
             interpolationQuality:(CGInterpolationQuality)quality
              forMediaWithSuccess:(void (^)(UIImage *))success
+                        progress:(void (^)(NSUInteger receivedSize, long long expectedSize))progress
                          failure:(void (^)(NSError *error))failure
 {
     [self getImageForMediaWithSuccess:^(UIImage *image) {
         success([image resizedImageWithContentMode:contentMode bounds:size interpolationQuality:quality]);
     }
+                             progress:progress
                               failure:failure];
 }
 
-- (void) getImageForMediaWithSuccess:(void (^)(UIImage *image))success failure:(void (^)(NSError *error))failure
+- (void) getImageForMediaWithSuccess:(void (^)(UIImage *image))success progress:(void (^)(NSUInteger receivedSize, long long expectedSize))progress failure:(void (^)(NSError *error))failure
 {
     assert([self.mediaType isEqualToString:@"image"]);
     
     if ([self.remoteURL length]) {
         [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:self.remoteURL] options:SDWebImageDownloaderUseNSURLCache
-                                                             progress:nil
+                                                             progress:progress
                                                             completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
                                                                 if (image) {
                                                                     if (success) success(image);

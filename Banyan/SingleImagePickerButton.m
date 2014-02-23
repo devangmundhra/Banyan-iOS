@@ -103,8 +103,7 @@
         frame.size = CGSizeMake(100.0f, 44.0f);
         frame.origin = CGPointMake(CGRectGetMaxX(self.bounds)-CGRectGetWidth(frame), CGRectGetMidY(self.bounds)-CGRectGetHeight(frame)/2);
         self.galleryButton = [[UIButton alloc] initWithFrame:frame];
-        [self.galleryButton setImage:[UIImage imageNamed:@"Picture_iOS"] forState:UIControlStateNormal];
-        [self.galleryButton setImage:[UIImage imageNamed:@"Picture_iOS_selected"] forState:UIControlStateHighlighted];
+        [self.galleryButton setTitle:@"Gallery" forState:UIControlStateNormal];
         [self.galleryButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
         [self.galleryButton setBackgroundColor:BANYAN_DARKGRAY_COLOR];
         self.galleryButton.showsTouchWhenHighlighted = YES;
@@ -129,10 +128,8 @@
     frame.size = CGSizeMake(20.0f, 20.0f);
     frame.origin = CGPointMake(5.0f, 5.0f);
     self.imageDeleteButton = [[UIButton alloc] initWithFrame:frame];
-    [self.imageDeleteButton setBackgroundColor:BANYAN_RED_COLOR];
-    [self.imageDeleteButton setTitle:@"X" forState:UIControlStateNormal];
-    self.imageDeleteButton.clipsToBounds = YES;
-    [self.imageDeleteButton.layer setCornerRadius:10.0f];
+    [self.imageDeleteButton setImage:[UIImage imageNamed:@"x_alt"] forState:UIControlStateNormal];
+    [self.imageDeleteButton setImageEdgeInsets:UIEdgeInsetsMake(5, 5, 5, 5)];
     self.imageDeleteButton.userInteractionEnabled = YES;
     [self.imageView addSubview:self.imageDeleteButton];
     
@@ -171,18 +168,12 @@
     BNImageCropperViewController *imageEditorVc = [[BNImageCropperViewController alloc] initWithNibName:@"BNImageCropperViewController" bundle:nil];
     imageEditorVc.sourceImage = self.imageDisplayView.image;
     imageEditorVc.previewImage = imageEditorVc.sourceImage;
-    imageEditorVc.checkBounds = YES;
-    imageEditorVc.rotateEnabled = NO;
-    [imageEditorVc reset:NO];
     __weak BNImageCropperViewController *wImageEditorVc = imageEditorVc;
     imageEditorVc.doneCallback = ^(UIImage *editedImage, BOOL canceled){
         if (!canceled) {
-            UIImage *image = [editedImage thumbnailImage:MEDIA_THUMBNAIL_SIZE
-                                 transparentBorder:0
-                                      cornerRadius:2
-                              interpolationQuality:kCGInterpolationHigh];
-            [self.thumbnailButton setBackgroundImage:image forState:UIControlStateNormal];
-            self.media.thumbnail = image;
+            NSLog(@"Size of edited image is %@", NSStringFromCGSize(editedImage.size));
+            [self.thumbnailButton setBackgroundImage:editedImage forState:UIControlStateNormal];
+            self.media.thumbnail = editedImage;
         }
         [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
         [wImageEditorVc dismissViewControllerAnimated:YES completion:nil];
@@ -197,7 +188,7 @@
     self.media = media;
     
 #define BUTTON_SPACING 10
-#define THUMBNAIL_BUTTON_SIZE 80
+#define THUMBNAIL_BUTTON_SIZE 100
     CGRect frame = self.imageView.bounds;
     frame.origin.x = CGRectGetMaxX(self.imageDeleteButton.frame) + BUTTON_SPACING;
     frame.size.width = CGRectGetWidth(self.imageView.frame) - 2*BUTTON_SPACING - THUMBNAIL_BUTTON_SIZE - frame.origin.x;
@@ -206,8 +197,10 @@
     self.thumbnailButton = [UIButton buttonWithType:UIButtonTypeCustom];
     frame = self.imageDisplayView.frame;
     frame.origin.x = CGRectGetMaxX(self.imageDisplayView.frame)+BUTTON_SPACING;
+    frame.origin.y = BUTTON_SPACING;
     frame.size.width = THUMBNAIL_BUTTON_SIZE;
-    frame.size.height = THUMBNAIL_BUTTON_SIZE;
+    // Keep the aspect ratio the same
+    frame.size.height = roundf((frame.size.width * MEDIA_THUMBNAIL_SIZE.height)/MEDIA_THUMBNAIL_SIZE.width);
     self.thumbnailButton.frame = frame;
     
     [self.thumbnailButton setBackgroundImage:image forState:UIControlStateNormal];
@@ -218,7 +211,7 @@
     self.thumbnailButton.titleLabel.numberOfLines = 2;
     NSAttributedString *attrString = [[NSAttributedString alloc]
                                       initWithString:@"Edit thumbnail"
-                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
+                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:13],
                                                    NSForegroundColorAttributeName: BANYAN_GRAY_COLOR}];
     [self.thumbnailButton setAttributedTitle:attrString
                                     forState:UIControlStateNormal];
