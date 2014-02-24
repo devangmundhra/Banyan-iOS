@@ -186,9 +186,7 @@ static NSString *CellIdentifier = @"StoryPickerCell";
 
 - (void) modifyStoryViewControllerDidSelectStory:(Story *)story
 {
-    if (HAVE_ASSERTS) {
-        assert(story);
-    }
+    NSAssert(story, @"No story was selected when modifying story");
     [self dismissStoryPickerViewControllerAnimated:YES completionBlock:^{
         [self.delegate storyPickerViewControllerDidPickStory:story];
     }];

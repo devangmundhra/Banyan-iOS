@@ -163,8 +163,7 @@
     // Default is limited permissions for viewers
     self.readAccessList = [BNPermissionsObject permissionsObject];
     BNSharedUser *currentUser = [BNSharedUser currentUser];
-    if (HAVE_ASSERTS)
-        NSAssert(currentUser, @"No Current user available when modifying story");
+    NSAssert(currentUser, @"No Current user available when modifying story");
     if (currentUser) {
         NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
                                         currentUser.name, @"name",

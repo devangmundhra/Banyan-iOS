@@ -59,6 +59,15 @@ static UIFont *_regularFont;
         self.textLabel.textAlignment = NSTextAlignmentLeft;
         [self addSubview:self.textLabel];
         
+        UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:self.bounds];
+        CALayer *layer = self.textLabel.layer;
+        layer.masksToBounds = NO;
+        layer.shadowColor = [BANYAN_WHITE_COLOR CGColor];
+        layer.shadowOpacity = 0.5;
+        layer.shadowOffset = CGSizeMake(-20.0f, 40.0f);
+        layer.shadowPath = shadowPath.CGPath;
+        layer.shadowRadius = 40.0f;
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleManagedObjectContextDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
     }
     return self;

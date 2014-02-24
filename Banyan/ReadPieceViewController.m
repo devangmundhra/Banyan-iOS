@@ -86,8 +86,7 @@
         // Custom initialization
         // this should never be called directly.
         // initWithPiece should be called
-        if (HAVE_ASSERTS)
-            assert(false);
+        NSAssert(false, @"Use initWithPiece method to initialize this view controller");
     }
     return self;
 }

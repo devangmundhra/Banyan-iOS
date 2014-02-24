@@ -246,8 +246,7 @@
     if (self.allContributors || self.allViewers)
         return TRUE;
     
-    if (HAVE_ASSERTS)
-        assert(self.selectedViewerContacts);
+    NSAssert(self.selectedViewerContacts, @"No permission object for selected viewers");
     
     return [self.selectedViewerContacts containsObject:friend] || [self.selectedContributorContacts containsObject:friend];
 }
@@ -257,8 +256,8 @@
     if (self.allContributors)
         return TRUE;
     
-    if (HAVE_ASSERTS)
-        assert(self.selectedContributorContacts);
+    NSAssert(self.selectedContributorContacts, @"No permission object for selected contributors");
+
     
     return [self.selectedContributorContacts containsObject:friend];
 }

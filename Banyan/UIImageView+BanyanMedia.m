@@ -25,14 +25,7 @@ void (^block)(void) = ^\
         [sself setNeedsDisplay];\
     }\
 };\
-if ([NSThread isMainThread])\
-{\
-    block();\
-}\
-else\
-{\
-    dispatch_sync(dispatch_get_main_queue(), block);\
-}
+RUN_SYNC_ON_MAINTHREAD(block)
 
 @implementation UIImageView (BanyanMedia)
 
@@ -85,15 +78,11 @@ else\
                              hud.progress = (float)receivedSize/expectedSize;
                          }
                         completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                            if ([NSThread isMainThread])
-                                [hud hide:YES];
-                            else
-                                dispatch_sync(dispatch_get_main_queue(), ^{[hud hide:YES];});
+                            RUN_SYNC_ON_MAINTHREAD(^{[hud hide:YES];});
                             PROCESS_IMAGE(image);
                         }];
         };
-        if ([NSThread isMainThread]) fetchImageBlock();
-        else dispatch_async(dispatch_get_main_queue(), fetchImageBlock);
+        RUN_SYNC_ON_MAINTHREAD(fetchImageBlock);
     } else if ([media.localURL length]) {
         ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
         [library assetForURL:[NSURL URLWithString:media.localURL] resultBlock:^(ALAsset *asset) {

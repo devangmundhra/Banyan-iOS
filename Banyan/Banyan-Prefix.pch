@@ -36,6 +36,5 @@
 #define REPLACE_EMPTY_STRING_WITH_NIL(__value__) (__value__.length ? __value__ : nil)
 #define NUMBER_EXISTS(__value__) !([__value__ isEqual:[NSNull null]] || [__value__ intValue] == 0)
 
-#define DEVICE_VERSION_7PLUS ([[UIDevice currentDevice].systemVersion floatValue] >= 7.0)
-
-#define HAVE_ASSERTS true
+#define RUN_ASYNC_ON_MAINTHREAD(__block__) if ([NSThread isMainThread]) __block__(); else dispatch_async(dispatch_get_main_queue(), __block__);
+#define RUN_SYNC_ON_MAINTHREAD(__block__) if ([NSThread isMainThread]) __block__(); else dispatch_sync(dispatch_get_main_queue(), __block__);

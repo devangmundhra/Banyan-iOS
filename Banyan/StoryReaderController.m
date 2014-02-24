@@ -1,9 +1,9 @@
 //
 //  ScenesViewController.m
-//  Storied
+//  Banyan
 //
 //  Created by Devang Mundhra on 3/14/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Banyan. All rights reserved.
 //
 
 #import "StoryReaderController.h"
@@ -68,8 +68,7 @@
         // Custom initialization
         // this should never be called directly.
         // initWithPiece should be called
-        if (HAVE_ASSERTS)
-            assert(false);
+        NSAssert(false, @"Use initWithPiece: to intialize this view controller");
     }
     return self;
 }
