@@ -155,12 +155,13 @@
 - (IBAction)showOptionsForNextStory:(UIGestureRecognizer *)gR
 {    
     if (gR.state == UIGestureRecognizerStateBegan) {
-        NextStoryViewController *nextStoryVc = [[NextStoryViewController alloc] initWithNibName:@"NextStoryViewController" bundle:nil];
+        NextStoryViewController *nextStoryVc = [[NextStoryViewController alloc] init];
         nextStoryVc.delegate = self;
         nextStoryVc.nextStory = [self.delegate storyReaderControllerGetNextStory:self];
         nextStoryVc.currentStory = self.story;
-        nextStoryVc.transitioningDelegate = self;
-        [self presentViewController:nextStoryVc animated:YES completion:nil];
+        UINavigationController *nvVC = [[UINavigationController alloc] initWithRootViewController:nextStoryVc];
+        nvVC.transitioningDelegate = self;
+        [self presentViewController:nvVC animated:YES completion:nil];
     }
 }
 

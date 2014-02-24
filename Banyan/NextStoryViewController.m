@@ -8,30 +8,30 @@
 
 #import "NextStoryViewController.h"
 #import "Story+Permissions.h"
+#import "Media.h"
+#import "UIImage+ImageEffects.h"
 
 @interface NextStoryViewController (UIGestureRecognizerDelegate) <UIGestureRecognizerDelegate>
 
 @end
 
 @interface NextStoryViewController ()
-@property (weak, nonatomic) IBOutlet UILabel *endStoryMsgLabel;
-@property (weak, nonatomic) IBOutlet UILabel *whatNextMsgLabel;
-
-@property (weak, nonatomic) IBOutlet UIButton *storyListButton;
-@property (weak, nonatomic) IBOutlet UIButton *nextStoryButton;
-@property (weak, nonatomic) IBOutlet UIButton *addPieceButton;
 
 @end
 
 @implementation NextStoryViewController
 @synthesize delegate = _delegate;
-@synthesize endStoryMsgLabel = _endStoryMsgLabel;
-@synthesize whatNextMsgLabel = _whatNextMsgLabel;
-@synthesize storyListButton = _storyListButton;
-@synthesize nextStoryButton = _nextStoryButton;
-@synthesize addPieceButton = _addPieceButton;
 @synthesize nextStory = _nextStory;
 @synthesize currentStory = _currentStory;
+
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -44,87 +44,115 @@
 
 - (void)viewDidLoad
 {
-#define CORNER_RADIUS 15.0f
-#define BORDER_WIDTH   3.0f
-#define TEXT_SIDE_INSETS 8.0f
-#define TEXT_SPACE_INSETS 10.0f
+#define CORNER_RADIUS 8.0f
+#define TEXT_INSETS 6
+#define VIEW_INSETS 8
     
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-    self.endStoryMsgLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:16];
-    self.endStoryMsgLabel.textColor = BANYAN_BLACK_COLOR;
+	// Do any additional setup after loading the view.
+    self.view.backgroundColor = BANYAN_WHITE_COLOR;
     
-    self.whatNextMsgLabel.font = [UIFont fontWithName:@"Roboto" size:16];
-    self.whatNextMsgLabel.textColor = BANYAN_BLACK_COLOR;
+    // Set the Navigation Item Views
+    // Title of Story
+    self.navigationItem.title = self.currentStory.title;
     
-    NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
-    paraStyle.alignment = NSTextAlignmentCenter;
-    CALayer *layer = nil;
+    // Back button
+    UIImage *prevImage = [UIImage imageNamed:@"Previous"];
+    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    backButton.frame = CGRectMake(0, 0, 80, prevImage.size.height);
+    [backButton setImage:prevImage forState:UIControlStateNormal];
+    [backButton setTitle:@"Stories" forState:UIControlStateNormal];
+    [backButton setTitleColor:BANYAN_GREEN_COLOR forState:UIControlStateNormal];
+    [backButton.titleLabel setFont:[UIFont fontWithName:@"Roboto" size:16]];
+    [backButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 10.0f, 0, -10.0f)];
+    [backButton addTarget:self action:@selector(goToStoryList:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *backBarButton = [[UIBarButtonItem alloc] initWithCustomView:backButton];
+    self.navigationItem.leftBarButtonItem = backBarButton;
     
-    // Story List Button
-    layer = self.storyListButton.layer;
-    layer.cornerRadius = CORNER_RADIUS;
-    [layer setMasksToBounds:YES];
-    layer.borderWidth = BORDER_WIDTH;
-    layer.borderColor = BANYAN_GREEN_COLOR.CGColor;
-    self.storyListButton.contentEdgeInsets = UIEdgeInsetsMake(TEXT_SPACE_INSETS, TEXT_SIDE_INSETS, TEXT_SPACE_INSETS, TEXT_SIDE_INSETS);
-    self.storyListButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
-    self.storyListButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    [self.storyListButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"<< Go back to Story List\r"
-                                                                             attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
-                                                                                          NSForegroundColorAttributeName: BANYAN_GREEN_COLOR,}]
-                                    forState:UIControlStateNormal];
+    // Add piece button
+    if (self.currentStory.canContribute) {
+        UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addPieceToStory:)];
+        self.navigationItem.rightBarButtonItem = rightButton;
+    }
+    
+    // Show the content of the view
+    UILabel *theEndLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    theEndLabel.text = @"The End";
+    theEndLabel.font = [UIFont fontWithName:@"ThatsFontFolksItalic" size:32];
+    theEndLabel.textAlignment = NSTextAlignmentCenter;
+    CGRect frame = self.view.bounds;
+    frame.size.width -= 2*VIEW_INSETS;
+    frame.size.height = 100;
+    frame.origin.x = VIEW_INSETS;
+    frame.origin.y = CGRectGetMaxY(self.navigationController.navigationBar.frame) + 2*VIEW_INSETS;
+    theEndLabel.frame = frame;
+    CGPoint center = theEndLabel.center;
+    [theEndLabel sizeToFit];
+    theEndLabel.center = center;
+    [self.view addSubview:theEndLabel];
     
     if (self.nextStory) {
+        UILabel *nextStoryLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        nextStoryLabel.text = @"Next story";
+        nextStoryLabel.textAlignment = NSTextAlignmentCenter;
+        nextStoryLabel.font = [UIFont fontWithName:@"Roboto" size:16];
+        frame.origin.y = CGRectGetMaxY(theEndLabel.frame) + 2*VIEW_INSETS;
+        frame.size.height = 100;
+        nextStoryLabel.frame = frame;
+        center = nextStoryLabel.center;
+        [nextStoryLabel sizeToFit];
+        nextStoryLabel.center = center;
+        [self.view addSubview:nextStoryLabel];
+        
         // Next Story Button
-        layer = self.nextStoryButton.layer;
-        layer.cornerRadius = CORNER_RADIUS;
-        [layer setMasksToBounds:YES];
-        layer.borderWidth = BORDER_WIDTH;
-        layer.borderColor = BANYAN_GREEN_COLOR.CGColor;
-        self.nextStoryButton.titleLabel.numberOfLines = 0;
-        self.nextStoryButton.contentEdgeInsets = UIEdgeInsetsMake(TEXT_SPACE_INSETS, 2*TEXT_SIDE_INSETS, TEXT_SPACE_INSETS, 2*TEXT_SIDE_INSETS);
-        self.nextStoryButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
-        self.nextStoryButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        NSMutableAttributedString *nextStoryString = [[NSMutableAttributedString alloc] initWithString:@"Go to next Story >\r"
-                                                                                            attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
-                                                                                                         NSForegroundColorAttributeName: BANYAN_GREEN_COLOR,}];
-        NSAttributedString *storyTitleString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\r", self.nextStory.title]
-                                                                               attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:14],
-                                                                                                                NSForegroundColorAttributeName: BANYAN_BLACK_COLOR,}];
+        UIButton *nextStoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [nextStoryButton addTarget:self action:@selector(goToNextStory:) forControlEvents:UIControlEventTouchUpInside];
+        nextStoryButton.backgroundColor = BANYAN_WHITE_COLOR;
+        
+        nextStoryButton.titleLabel.numberOfLines = 0;
+        nextStoryButton.contentEdgeInsets = UIEdgeInsetsMake(TEXT_INSETS, TEXT_INSETS, TEXT_INSETS, TEXT_INSETS);
+        nextStoryButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+        nextStoryButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        
+        NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
+        paraStyle.alignment = NSTextAlignmentCenter;
+        NSMutableAttributedString *nextStoryString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\r", self.nextStory.title]
+                                                                                            attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:14],
+                                                                                                         NSForegroundColorAttributeName: BANYAN_BLACK_COLOR,}];
         NSAttributedString *storyContributorString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"by %@", [self.nextStory shortStringOfContributors]]
                                                                                attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:12],
                                                                                             NSForegroundColorAttributeName: BANYAN_DARKGRAY_COLOR,}];
-        
-        [nextStoryString appendAttributedString:storyTitleString];
+
         [nextStoryString appendAttributedString:storyContributorString];
         [nextStoryString addAttribute:NSParagraphStyleAttributeName value:paraStyle
                                 range:NSMakeRange(0, [nextStoryString string].length)];
-        [self.nextStoryButton setAttributedTitle:nextStoryString
-                                        forState:UIControlStateNormal];
-    } else {
-        self.nextStoryButton.hidden = YES;
+        [nextStoryButton setAttributedTitle:nextStoryString
+                                   forState:UIControlStateNormal];
+        
+        frame.origin.y = CGRectGetMaxY(nextStoryLabel.frame) + VIEW_INSETS;
+        frame.size.height = CGRectGetHeight(self.view.bounds)-CGRectGetMaxY(frame);
+        CGSize buttonSize = [nextStoryString.string boundingRectWithSize:frame.size
+                                                                 options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin
+                                                              attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:14],
+                                                                           NSParagraphStyleAttributeName: paraStyle}
+                                                                 context:nil].size;
+        frame.size.height = buttonSize.height;
+        nextStoryButton.frame = frame;
+        nextStoryButton.layer.cornerRadius = CORNER_RADIUS;
+        nextStoryButton.layer.shadowOffset = CGSizeMake(5, 2);
+        nextStoryButton.layer.shadowRadius = 3;
+        nextStoryButton.layer.shadowOpacity = 0.5;
+        nextStoryButton.layer.shadowPath = [UIBezierPath bezierPathWithRect:nextStoryButton.bounds].CGPath;
+        nextStoryButton.layer.shadowColor = [BANYAN_DARKGRAY_COLOR CGColor];
+        nextStoryButton.layer.masksToBounds = NO;
+        
+        __weak UIButton *wNextStoryButton = nextStoryButton;
+        Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.nextStory.media];
+        [imageMedia getImageForMediaWithSuccess:^(UIImage *image) {
+            RUN_SYNC_ON_MAINTHREAD(^{[wNextStoryButton setBackgroundImage:[image applyExtraLightEffect] forState:UIControlStateNormal];});
+        } progress:nil failure:nil];
+        [self.view addSubview:nextStoryButton];
     }
-
-    
-    if (self.currentStory.canContribute) {
-        // Add piece to story button
-        layer = self.addPieceButton.layer;
-        layer.cornerRadius = CORNER_RADIUS;
-        [layer setMasksToBounds:YES];
-        layer.borderWidth = BORDER_WIDTH;
-        layer.borderColor = BANYAN_GREEN_COLOR.CGColor;
-        self.addPieceButton.contentEdgeInsets = UIEdgeInsetsMake(TEXT_SPACE_INSETS, TEXT_SIDE_INSETS, TEXT_SPACE_INSETS, TEXT_SIDE_INSETS);
-        self.addPieceButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
-        self.addPieceButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        [self.addPieceButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"+ Add a piece to this story"
-                                                                                attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
-                                                                                             NSForegroundColorAttributeName: BANYAN_GREEN_COLOR,}]
-                                       forState:UIControlStateNormal];
-    } else {
-        self.addPieceButton.hidden = YES;
-    }
-
 }
 
 #pragma mark

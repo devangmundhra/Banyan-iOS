@@ -188,7 +188,6 @@
 		51C4252D1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C4252C1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.m */; };
 		51C4253018270CF900AF90C1 /* BNDuckTypedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C4252F18270CF900AF90C1 /* BNDuckTypedObject.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		51C4253A1828E15100AF90C1 /* NextStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C425381828E15100AF90C1 /* NextStoryViewController.m */; };
-		51C4253B1828E15100AF90C1 /* NextStoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51C425391828E15100AF90C1 /* NextStoryViewController.xib */; };
 		51C42541182A488F00AF90C1 /* BNIntroductionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C42540182A488F00AF90C1 /* BNIntroductionView.m */; };
 		51CE90B51796724500A2F7CB /* RemoteObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CE90B41796392800A2F7CB /* RemoteObject.m */; };
 		51CFD92915F1F260002926F9 /* SettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51CFD92715F1F260002926F9 /* SettingsTableViewController.m */; };
@@ -527,7 +526,6 @@
 		51C4252F18270CF900AF90C1 /* BNDuckTypedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNDuckTypedObject.m; path = Banyan/BNDuckTypedObject.m; sourceTree = "<group>"; };
 		51C425371828E15100AF90C1 /* NextStoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NextStoryViewController.h; path = Banyan/NextStoryViewController.h; sourceTree = "<group>"; };
 		51C425381828E15100AF90C1 /* NextStoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NextStoryViewController.m; path = Banyan/NextStoryViewController.m; sourceTree = "<group>"; };
-		51C425391828E15100AF90C1 /* NextStoryViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = NextStoryViewController.xib; path = Banyan/NextStoryViewController.xib; sourceTree = "<group>"; };
 		51C4253F182A488F00AF90C1 /* BNIntroductionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNIntroductionView.h; path = Banyan/BNIntroductionView.h; sourceTree = "<group>"; };
 		51C42540182A488F00AF90C1 /* BNIntroductionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNIntroductionView.m; path = Banyan/BNIntroductionView.m; sourceTree = "<group>"; };
 		51CE90B31796392800A2F7CB /* RemoteObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RemoteObject.h; path = Banyan/RemoteObject.h; sourceTree = "<group>"; };
@@ -858,7 +856,6 @@
 				5189B30115B395F300562DD0 /* StoryReaderController.m */,
 				51C425371828E15100AF90C1 /* NextStoryViewController.h */,
 				51C425381828E15100AF90C1 /* NextStoryViewController.m */,
-				51C425391828E15100AF90C1 /* NextStoryViewController.xib */,
 			);
 			name = Read;
 			sourceTree = "<group>";
@@ -1843,7 +1840,6 @@
 				51F032B218B959B600FFA71E /* progressBar@2x.png in Resources */,
 				51F0329E18B9509200FFA71E /* Previous@2x.png in Resources */,
 				51B49A1B1898E8DF0073F184 /* locateButton@2x.png in Resources */,
-				51C4253B1828E15100AF90C1 /* NextStoryViewController.xib in Resources */,
 				518153511713F474006F73D3 /* addPieceButton.png in Resources */,
 				518153521713F474006F73D3 /* addPieceButton@2x.png in Resources */,
 				518153531713F474006F73D3 /* backViewHideButton.png in Resources */,

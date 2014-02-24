@@ -345,7 +345,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if ([[BanyanConnection storiesPaginator] isLoaded] && ![[BanyanConnection storiesPaginator] hasNextPage]) {
         self.endOfStoryButton.titleLabel.numberOfLines = 1;
         [self.endOfStoryButton setTitle:@"That's all folks!" forState:UIControlStateNormal];
-        self.endOfStoryButton.titleLabel.font = [UIFont fontWithName:@"ThatsFontFolksItalic" size:40];;
+        self.endOfStoryButton.titleLabel.font = [UIFont fontWithName:@"ThatsFontFolksItalic" size:40];
         self.tableView.tableFooterView = self.endOfStoryButton;
     }
     if ([[BanyanConnection storiesPaginator].objectRequestOperation isFinished] && [BanyanConnection storiesPaginator].objectRequestOperation.HTTPRequestOperation.error) {
