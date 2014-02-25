@@ -3,6 +3,7 @@ PODS:
   - AFNetworking-TastyPie (0.0.2):
     - AFNetworking (~> 1.0)
   - BNSwipeableView (0.0.1)
+  - CMPopTipView (2.1.0)
   - ECSlidingViewController (2.0.0-beta2)
   - ios-image-editor (1.1.3)
   - ISO8601DateFormatterValueTransformer (0.5.0):
@@ -63,6 +64,7 @@ PODS:
 DEPENDENCIES:
   - AFNetworking-TastyPie (from `https://github.com/YetiHQ/AFNetworking-TastyPie`)
   - BNSwipeableView (from `https://github.com/devangmundhra/BNSwipeableView.git`)
+  - CMPopTipView (~> 2.1.0)
   - ECSlidingViewController
   - ios-image-editor
   - MBProgressHUD (>= 0.8)
@@ -98,6 +100,7 @@ SPEC CHECKSUMS:
   AFNetworking: 61fdd49e2ffe6380378df37b3b6e70630bb9dd66
   AFNetworking-TastyPie: 36b4e7d7296a1200296cccefe32f993115cd0f0f
   BNSwipeableView: f10ecb74337225b5659861e150b96e2b8464fc7a
+  CMPopTipView: de01c6c169c24726356c46ae339ce3498ae9a41d
   ECSlidingViewController: 097e5451e8628611f17ed27a6e0829fa705f7851
   ios-image-editor: 001717135e5a92b234a7465347cdcfb435418959
   ISO8601DateFormatterValueTransformer: d0af1f50a9df42db72d7418db31938b8473e0af8

@@ -10,6 +10,7 @@
 #import "BNImageCropperViewController.h"
 #import "BanyanAppDelegate.h"
 #import "UIImage+ResizeAdditions.h"
+#import "CMPopTipView.h"
 
 @interface SingleImagePickerButton ()
 @property (nonatomic, strong) UIButton *button;
@@ -207,7 +208,7 @@
     self.thumbnailButton.imageEdgeInsets = UIEdgeInsetsMake(-10, 0, 0, 0);
     [self.thumbnailButton addTarget:self action:@selector(editThumbnailButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
-    self.thumbnailButton.titleEdgeInsets = UIEdgeInsetsMake(100, 0, 0, 0);
+    self.thumbnailButton.titleEdgeInsets = UIEdgeInsetsMake(CGRectGetHeight(frame)+2*BUTTON_SPACING, 0, 0, 0);
     self.thumbnailButton.titleLabel.numberOfLines = 2;
     NSAttributedString *attrString = [[NSAttributedString alloc]
                                       initWithString:@"Edit thumbnail"
@@ -216,6 +217,19 @@
     [self.thumbnailButton setAttributedTitle:attrString
                                     forState:UIControlStateNormal];
     [self.imageView addSubview:self.thumbnailButton];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
+    if (![firstTimeDict objectForKey:BNUserDefaultsFirstTimeModifyPieceImageAdded] ) {
+        [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:BNUserDefaultsFirstTimeModifyPieceImageAdded];
+        [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
+        [defaults synchronize];
+        CMPopTipView *popTipView = [[CMPopTipView alloc] initWithTitle:@"Why thumbnails?"
+                                                               message:@"Thumbnails helps us show the important parts of the image when a user is quickly scrolling through all the pieces"];
+        SET_CMPOPTIPVIEW_APPEARANCES(popTipView);
+        [popTipView presentPointingAtView:self.thumbnailButton inView:self.superview animated:NO];
+    }
+    
 #undef BUTTON_SPACING
 #undef THUMBNAIL_BUTTON_SIZE
 }

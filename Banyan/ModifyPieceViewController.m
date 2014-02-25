@@ -21,6 +21,7 @@
 #import "UIImage+ResizeAdditions.h"
 #import "GooglePlacePickerViewController.h"
 #import "MBProgressHUD.h"
+#import "CMPopTipView.h"
 
 @interface ModifyPieceViewController (LocationPickerButtonDelegate) <LocationPickerButtonDelegate>
 
@@ -132,6 +133,19 @@
 {
     [super viewDidAppear:animated];
     [self.view endEditing:YES];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
+    NSUInteger numberOfTimes = [[firstTimeDict objectForKey:BNUserDefaultsFirstTimeModifyPieceVCOpen] unsignedIntegerValue];
+    if (numberOfTimes < 2) {
+        [firstTimeDict setObject:[NSNumber numberWithUnsignedInteger:numberOfTimes+1] forKey:BNUserDefaultsFirstTimeModifyPieceVCOpen];
+        [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
+        [defaults synchronize];
+        CMPopTipView *popTipView = [[CMPopTipView alloc] initWithMessage:@"Tap here to contribute to a different story"];
+        SET_CMPOPTIPVIEW_APPEARANCES(popTipView);
+        [popTipView presentPointingAtView:self.storyTitleButton inView:self.view animated:NO];
+    }
+    
     [self registerForKeyboardNotifications];
 }
 

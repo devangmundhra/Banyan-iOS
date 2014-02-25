@@ -42,7 +42,15 @@ extern NSString *const BNUserDefaultsUserPageTurnAnimation;
 
 extern NSString *const BNUserDefaultsCurrentOngoingStoryToContribute;
 
-extern NSString *const BNUserDefaultsLastLogin;
+// First time action constants
+extern NSString *const BNUserDefaultsFirstTimeActionsDict;
+extern NSString *const BNUserDefaultsFirstTimeAppOpen;
+extern NSString *const BNUserDefaultsFirstTimeStoryListVCWoSignin;
+extern NSString *const BNUserDefaultsFirstTimeStoryListVCWSignin;
+extern NSString *const BNUserDefaultsFirstTimeModifyPieceVCOpen;
+extern NSString *const BNUserDefaultsFirstTimeStoryReaderOpen;
+extern NSString *const BNUserDefaultsFirstTimeModifyPieceImageAdded;
+
 
 #pragma mark - PFObject Story Class
 // Class key

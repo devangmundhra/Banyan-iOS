@@ -23,6 +23,7 @@
 #import "URBMediaFocusViewController.h"
 #import "StoryOverviewController.h"
 #import "Piece+Share.h"
+#import "CMPopTipView.h"
 
 @interface ReadPieceViewController (UIScrollViewDelegate) <UIScrollViewDelegate>
 @end
@@ -165,7 +166,7 @@
     titleButton.titleLabel.numberOfLines = 2;
     titleButton.showsTouchWhenHighlighted = YES;
     [titleButton addTarget:self action:@selector(storyOverviewButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self.storyInfoView insertSubview:titleButton atIndex:0];
+    [self.storyInfoView insertSubview:titleButton atIndex:0]; // Title always at subview index 0
     [self updateStoryTitle];
     [self.view addSubview:self.storyInfoView];
     
@@ -271,6 +272,17 @@
     
     [self addGestureRecognizerToContentView:[self.delegate dismissBackPanGestureRecognizer]];
     [self addGestureRecognizerToContentView:[self.delegate dismissAheadPanGestureRecognizer]];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
+    if (![firstTimeDict objectForKey:BNUserDefaultsFirstTimeStoryReaderOpen] ) {
+        [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:BNUserDefaultsFirstTimeStoryReaderOpen];
+        [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
+        [defaults synchronize];
+        CMPopTipView *popTipView = [[CMPopTipView alloc] initWithMessage:@"Tap here to get information about the story"];
+        SET_CMPOPTIPVIEW_APPEARANCES(popTipView);
+        [popTipView presentPointingAtView:[self.storyInfoView.subviews objectAtIndex:0] inView:self.view animated:NO];
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated

@@ -271,22 +271,27 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 
 - (void) loadRemoteObjectFromUserInfo:(NSDictionary *)userInfo displayIfPossible:(BOOL)display
 {
+#define OP_TIMEOUT_INTERVAL 8
     NSDictionary *dataDict = [userInfo objectForKey:@"data"];
     NSString *storyId = [dataDict objectForKey:@"story"];
     NSString *pieceId = [dataDict objectForKey:@"piece"];
-    
+//    NSDate *opStartDate = [NSDate date];
+
     if (storyId) {
         UINavigationController *topNavController = nil;
         StoryListTableViewController *topStoryListVC = nil;
-        MBProgressHUD *hud = nil;
+        __block MBProgressHUD *hud = nil;
         
         if ([[self topMostController] isKindOfClass:[ECSlidingViewController class]] && [self.homeViewController.topViewController isKindOfClass:[UINavigationController class]]) {
             topNavController = (UINavigationController *)self.homeViewController.topViewController;
             
             if ([topNavController.topViewController isKindOfClass:[StoryListTableViewController class]]) {
                 topStoryListVC = (StoryListTableViewController *)topNavController.topViewController;
-                hud = [MBProgressHUD showHUDAddedTo:APP_DELEGATE.topMostController.view animated:YES];
-                hud.mode = MBProgressHUDModeIndeterminate;
+                RUN_SYNC_ON_MAINTHREAD(^{
+                    hud = [MBProgressHUD showHUDAddedTo:APP_DELEGATE.topMostController.view animated:YES];
+                    hud.mode = MBProgressHUDModeIndeterminate;
+//                    [hud hide:YES afterDelay:OP_TIMEOUT_INTERVAL];
+                });
             }
         }
         
@@ -296,7 +301,14 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                                                   success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                                       // Reset the badge to zero
                                                       [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-                                                      
+//                                                      NSTimeInterval opInterval = [opStartDate timeIntervalSinceNow];
+//                                                      if (opInterval < -OP_TIMEOUT_INTERVAL) {
+//                                                          // We give OP_TIMEOUT_INTERVAL seconds from the app launch for the story to be successfully
+//                                                          // received and opened, so that if a user starts another operation, he/she is not
+//                                                          // interrupted by some random story being opened
+//                                                          NSLog(@"Ignoring action from notificaiton as operation interval was %f seconds", opInterval);
+//                                                          return;
+//                                                      }
                                                       NSArray *stories = [mappingResult array];
                                                       NSAssert1(stories.count <= 1, @"Error in getting a single story from remote notificaiton", storyId);
                                                       Story *story = [stories lastObject];
@@ -319,10 +331,10 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                                                               [topStoryListVC storyReaderWithStory:story piece:piece];
                                                           }
                                                       }
-                                                      [hud hide:YES];
+                                                      RUN_SYNC_ON_MAINTHREAD(^{[hud hide:YES];});
                                                   }
                                                   failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                                      [hud hide:YES];
+                                                      RUN_SYNC_ON_MAINTHREAD(^{[hud hide:YES];});
                                                   }];
         
     } else {
@@ -588,14 +600,6 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     }
     
     return topController;
-}
-
-+ (BOOL) isFirstTimeUser
-{    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSDate *lastLoginDate = [defaults objectForKey:BNUserDefaultsLastLogin];
-    [defaults setObject:[NSDate date] forKey:BNUserDefaultsLastLogin];
-    return lastLoginDate?NO:YES;
 }
 
 #pragma mark Background Timer to upload unsaved objects

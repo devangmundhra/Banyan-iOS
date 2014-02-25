@@ -36,5 +36,4 @@
 + (BOOL)loggedIn;
 - (UIViewController*) topMostController;
 + (NSURL *)applicationDocumentsDirectory;
-+ (BOOL) isFirstTimeUser;
 @end

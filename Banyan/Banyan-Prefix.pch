@@ -38,3 +38,16 @@
 
 #define RUN_ASYNC_ON_MAINTHREAD(__block__) if ([NSThread isMainThread]) __block__(); else dispatch_async(dispatch_get_main_queue(), __block__);
 #define RUN_SYNC_ON_MAINTHREAD(__block__) if ([NSThread isMainThread]) __block__(); else dispatch_sync(dispatch_get_main_queue(), __block__);
+
+#define SET_CMPOPTIPVIEW_APPEARANCES(__popTipView__) \
+do {    \
+__popTipView__.backgroundColor = [BANYAN_DARKGRAY_COLOR colorWithAlphaComponent:0.95];\
+__popTipView__.titleFont = [UIFont fontWithName:@"Roboto-Bold" size:14];\
+__popTipView__.textFont = [UIFont fontWithName:@"Roboto" size:12];\
+__popTipView__.has3DStyle = NO;\
+__popTipView__.borderColor = __popTipView__.backgroundColor;\
+__popTipView__.borderWidth = 0;\
+__popTipView__.hasShadow = NO;\
+__popTipView__.pointerSize = 6;\
+__popTipView__.hasGradientBackground = NO;\
+} while(FALSE)

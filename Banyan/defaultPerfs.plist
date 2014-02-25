@@ -4,6 +4,8 @@
 <dict>
 	<key>io.banyan.Banyan.userDefaults.addStoryInvitedViewPushNotification</key>
 	<true/>
+	<key>io.banyan.Banyan.UserDefaults.firstTimeActionsDict</key>
+	<dict/>
 	<key>io.banyan.Banyan.userDefaults.addPieceToContriStoryPushNotification</key>
 	<true/>
 	<key>io.banyan.Banyan.userDefaults.pieceActionPushNotification</key>

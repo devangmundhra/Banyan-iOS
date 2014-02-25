@@ -21,6 +21,7 @@
 #import "User.h"
 #import "UIViewController+BNSlidingViewControllerAdditions.h"
 #import "Story+Share.h"
+#import "CMPopTipView.h"
 
 static NSString *CellIdentifier = @"SingleStoryCell";
 
@@ -144,15 +145,34 @@ typedef enum {
                                                    object:nil];
     }
     
-    if ([BanyanAppDelegate isFirstTimeUser]) {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
+    if (![firstTimeDict objectForKey:BNUserDefaultsFirstTimeAppOpen]) {
         [self.navigationController setNavigationBarHidden:YES];
         self.tableView.scrollEnabled = NO;
         BNIntroductionView *introductionView = [[BNIntroductionView alloc] initWithFrame:self.view.bounds];
         introductionView.delegate = self;
         [self.view addSubview:introductionView];
     }
-    
+
     [TestFlight passCheckpoint:@"RootViewController loaded"];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
+    if (![firstTimeDict objectForKey:BNUserDefaultsFirstTimeStoryListVCWSignin] && [BanyanAppDelegate loggedIn]) {
+        [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:BNUserDefaultsFirstTimeStoryListVCWSignin];
+        [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
+        [defaults synchronize];
+        CMPopTipView *popTipView = [[CMPopTipView alloc] initWithMessage:@"Tap here to create new stories, or contribute to existing ones!"];
+        SET_CMPOPTIPVIEW_APPEARANCES(popTipView);
+        [popTipView presentPointingAtBarButtonItem:self.navigationItem.rightBarButtonItem animated:NO];
+        [popTipView autoDismissAnimated:YES atTimeInterval:5];
+    }
 }
 
 - (void)dealloc
@@ -519,6 +539,22 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     self.tableView.scrollEnabled = YES;
+
+    // We only show this if the use has just started the app
+    if (![BanyanAppDelegate loggedIn]) {
+        CMPopTipView *popTipView = [[CMPopTipView alloc] initWithTitle:@"Sign in" message:@"Sign in (using Facebook) to see, create and contribute to more stories"];
+        SET_CMPOPTIPVIEW_APPEARANCES(popTipView);
+        [popTipView presentPointingAtBarButtonItem:self.navigationItem.rightBarButtonItem animated:NO];
+        [popTipView autoDismissAnimated:YES atTimeInterval:5];
+    }
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
+    [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:BNUserDefaultsFirstTimeAppOpen];
+    [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:BNUserDefaultsFirstTimeStoryListVCWoSignin];
+    [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
+    [defaults synchronize];
+    
 }
 
 -(void)introduction:(MYBlurIntroductionView *)introductionView didChangeToPanel:(MYIntroductionPanel *)panel withIndex:(NSInteger)panelIndex

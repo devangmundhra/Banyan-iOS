@@ -40,7 +40,13 @@ NSString *const BNUserDefaultsUserPageTurnAnimation = @"io.banyan.Banyan.userDef
 
 NSString *const BNUserDefaultsCurrentOngoingStoryToContribute = @"io.banyan.Banyan.UserDefaults.currentOngoingStoryToContribute";
 
-NSString *const BNUserDefaultsLastLogin = @"io.banyan.Banyan.UserDefaults.lastLogin";
+NSString *const BNUserDefaultsFirstTimeActionsDict = @"io.banyan.Banyan.UserDefaults.firstTimeActionsDict";
+NSString *const BNUserDefaultsFirstTimeAppOpen = @"io.banyan.Banyan.UserDefaults.firstTime.AppOpen";
+NSString *const BNUserDefaultsFirstTimeStoryListVCWoSignin = @"io.banyan.Banyan.UserDefaults.firstTime.storyListVCWoSignin";
+NSString *const BNUserDefaultsFirstTimeStoryListVCWSignin = @"io.banyan.Banyan.UserDefaults.firstTime.storyListVCWSignin";
+NSString *const BNUserDefaultsFirstTimeModifyPieceVCOpen = @"io.banyan.Banyan.UserDefaults.firstTime.modifyPieceVCOpen";
+NSString *const BNUserDefaultsFirstTimeStoryReaderOpen = @"io.banyan.Banyan.UserDefaults.firstTime.storyReaderOpen";
+NSString *const BNUserDefaultsFirstTimeModifyPieceImageAdded = @"io.banyan.Banyan.UserDefaults.firstTime.modifyPieceImageAdded";
 
 #pragma mark - ManagedObject Story Class
 // Class key
