@@ -64,8 +64,9 @@
     [backButton setTitle:@"Stories" forState:UIControlStateNormal];
     [backButton setTitleColor:BANYAN_GREEN_COLOR forState:UIControlStateNormal];
     [backButton.titleLabel setFont:[UIFont fontWithName:@"Roboto" size:16]];
-    [backButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 10.0f, 0, -10.0f)];
+    [backButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 4.0f, 0, -10.0f)];
     [backButton addTarget:self action:@selector(goToStoryList:) forControlEvents:UIControlEventTouchUpInside];
+    [backButton sizeToFit];
     UIBarButtonItem *backBarButton = [[UIBarButtonItem alloc] initWithCustomView:backButton];
     self.navigationItem.leftBarButtonItem = backBarButton;
     
@@ -144,13 +145,12 @@
         nextStoryButton.layer.shadowOpacity = 0.5;
         nextStoryButton.layer.shadowPath = [UIBezierPath bezierPathWithRect:nextStoryButton.bounds].CGPath;
         nextStoryButton.layer.shadowColor = [BANYAN_DARKGRAY_COLOR CGColor];
-        nextStoryButton.layer.masksToBounds = NO;
         
         __weak UIButton *wNextStoryButton = nextStoryButton;
         Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.nextStory.media];
-        [imageMedia getImageForMediaWithSuccess:^(UIImage *image) {
+        [imageMedia getImageWithContentMode:UIViewContentModeScaleAspectFill bounds:frame.size interpolationQuality:kCGInterpolationDefault forMediaWithSuccess:^(UIImage *image) {
             RUN_SYNC_ON_MAINTHREAD(^{[wNextStoryButton setBackgroundImage:[image applyExtraLightEffect] forState:UIControlStateNormal];});
-        } progress:nil failure:nil];
+        } progress:nil failure:nil includeThumbnail:YES];
         [self.view addSubview:nextStoryButton];
     }
 }

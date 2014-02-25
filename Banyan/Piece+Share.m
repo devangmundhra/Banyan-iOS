@@ -50,7 +50,8 @@
             [self shareOnFacebookWithName:self.story.title caption:self.shortText description:self.longText image:image pictureURL:imageMedia.remoteURL.length?imageMedia.remoteURL:nil shareLink:self.permaLink completionHandler:completionHandler];
         } progress:nil failure:^(NSError *error) {
             [self shareOnFacebookWithName:self.story.title caption:self.shortText description:self.longText image:nil pictureURL:imageMedia.remoteURL.length?imageMedia.remoteURL:nil shareLink:self.permaLink completionHandler:completionHandler];
-        }];
+        }
+         includeThumbnail:NO];
     } else {
         [self shareOnFacebookWithName:self.story.title caption:self.shortText description:self.longText image:nil pictureURL:nil shareLink:self.permaLink completionHandler:completionHandler];
     }

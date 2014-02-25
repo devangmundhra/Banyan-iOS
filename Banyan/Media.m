@@ -394,20 +394,46 @@
              forMediaWithSuccess:(void (^)(UIImage *))success
                         progress:(void (^)(NSUInteger receivedSize, long long expectedSize))progress
                          failure:(void (^)(NSError *error))failure
+                includeThumbnail:(BOOL) includeThumbnail
 {
     [self getImageForMediaWithSuccess:^(UIImage *image) {
         success([image resizedImageWithContentMode:contentMode bounds:size interpolationQuality:quality]);
     }
                              progress:progress
-                              failure:failure];
+                              failure:failure
+                     includeThumbnail:includeThumbnail];
 }
 
-- (void) getImageForMediaWithSuccess:(void (^)(UIImage *image))success progress:(void (^)(NSUInteger receivedSize, long long expectedSize))progress failure:(void (^)(NSError *error))failure
+- (void) getImageForMediaWithSuccess:(void (^)(UIImage *image))success
+                            progress:(void (^)(NSUInteger receivedSize, long long expectedSize))progress
+                             failure:(void (^)(NSError *error))failure
+                    includeThumbnail:(BOOL) includeThumbnail
 {
     assert([self.mediaType isEqualToString:@"image"]);
     
-    if ([self.remoteURL length]) {
-        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:self.remoteURL] options:SDWebImageDownloaderUseNSURLCache
+    if (includeThumbnail) {
+        UIImage *image = self.thumbnail;
+        if (image) {
+            success(image);
+            return;
+        }
+    }
+    
+    if (includeThumbnail && [self.thumbnailURL length]) {
+        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:self.thumbnailURL]
+                                                              options:SDWebImageDownloaderUseNSURLCache
+                                                             progress:progress
+                                                            completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+                                                                if (image) {
+                                                                    if (success) success(image);
+                                                                }
+                                                                else {
+                                                                    if (failure) failure(error);
+                                                                }
+                                                            }];
+    } else if ([self.remoteURL length]) {
+        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:self.remoteURL]
+                                                              options:SDWebImageDownloaderUseNSURLCache
                                                              progress:progress
                                                             completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
                                                                 if (image) {

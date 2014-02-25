@@ -312,7 +312,8 @@
                                                 [whud hide:YES];
                                                 NSLog(@"%s Error in getting image for piece (id: %@ text: %@)", __PRETTY_FUNCTION__, self.piece.bnObjectId, self.piece.shortText);
                                                 [self.addPhotoButton unsetImage];
-                                            }];
+                                            }
+             includeThumbnail:YES];
         } else {
             [self.addPhotoButton unsetImage];
         }

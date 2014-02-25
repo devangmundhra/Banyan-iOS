@@ -77,7 +77,8 @@
                                            failure:^(NSError *error) {
                                                imageMediaCount--;
                                                NSLog(@"Error in getting image from media for story %@", story);
-                                           }];
+                                           }
+                 includeThumbnail:NO];
             }
         }
         
@@ -160,7 +161,8 @@
                                            progress:nil
                                             failure:^(NSError *error) {
                                                 [self shareOnFacebookWithName:self.title caption:nil description:nil image:nil pictureURL:imageMedia.remoteURL.length?imageMedia.remoteURL:nil shareLink:self.permaLink completionHandler:completionHandler];
-                                            }];
+                                            }
+             includeThumbnail:NO];
         } else {
             [self shareOnFacebookWithName:self.title caption:nil description:nil image:nil pictureURL:nil shareLink:self.permaLink completionHandler:completionHandler];
         }

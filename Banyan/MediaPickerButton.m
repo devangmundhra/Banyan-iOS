@@ -235,7 +235,7 @@
     [cell.contentView addSubview:imageView];
     imageView.frame = CGRectMake(0, 0, CGRectGetHeight(self.bounds), CGRectGetHeight(self.bounds));
     cell.media = [[self.delegate listOfMediaForMediaPickerButton] objectAtIndex:indexPath.row];
-    [cell.media getImageWithContentMode:UIViewContentModeScaleAspectFit bounds:CGSizeMake(CGRectGetHeight(self.bounds), CGRectGetHeight(self.bounds)) interpolationQuality:kCGInterpolationLow forMediaWithSuccess:^(UIImage *image) {[imageView setImage:image];} progress:nil failure:nil];
+    [cell.media getImageWithContentMode:UIViewContentModeScaleAspectFit bounds:CGSizeMake(CGRectGetHeight(self.bounds), CGRectGetHeight(self.bounds)) interpolationQuality:kCGInterpolationLow forMediaWithSuccess:^(UIImage *image) {[imageView setImage:image];} progress:nil failure:nil includeThumbnail:YES];
 }
 
 #pragma mark -

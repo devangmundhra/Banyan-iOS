@@ -55,13 +55,17 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
 - (void)save;
 - (void)cloneFrom:(Media *)source;
 
-- (void) getImageForMediaWithSuccess:(void (^)(UIImage *image))success progress:(void (^)(NSUInteger receivedSize, long long expectedSize))progress failure:(void (^)(NSError *error))failure;
+- (void) getImageForMediaWithSuccess:(void (^)(UIImage *image))success
+                            progress:(void (^)(NSUInteger receivedSize, long long expectedSize))progress
+                             failure:(void (^)(NSError *error))failure
+                    includeThumbnail:(BOOL) includeThumbnail;
 - (void) getImageWithContentMode:(UIViewContentMode)contentMode
                           bounds:(CGSize)size
             interpolationQuality:(CGInterpolationQuality)quality
-             forMediaWithSuccess:(void (^)(UIImage *))success
+             forMediaWithSuccess:(void (^)(UIImage *image))success
                         progress:(void (^)(NSUInteger receivedSize, long long expectedSize))progress
-                         failure:(void (^)(NSError *error))failure;
+                         failure:(void (^)(NSError *error))failure
+                includeThumbnail:(BOOL) includeThumbnail;
 
 + (Media *)getMediaOfType:(NSString *)type inMediaSet:(NSOrderedSet *)mediaSet;
 + (NSOrderedSet *)getAllMediaOfType:(NSString *)type inMediaSet:(NSOrderedSet *)mediaSet;
