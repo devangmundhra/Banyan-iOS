@@ -130,6 +130,7 @@ typedef enum {
             cell.textLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:12];
             cell.textLabel.text = [self textForNotificationsSectionAtRow:indexPath.row];
             cell.accessoryView = [self accessoryViewForNotificationsSectionAtRow:indexPath.row];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
             break;
             
         default:
@@ -288,66 +289,91 @@ typedef enum {
 
 - (IBAction)addStoryContribNotificationsSwitchChanged:(UISwitch *)switchControl
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setBool:switchControl.on forKey:BNUserDefaultsAddStoryInvitedContributePushNotification];
-    [defaults synchronize];
+    BOOL isEnabled = switchControl.on;
+    void (^snsNotificationCompletionBlock)(bool, NSError *) = ^(bool succeeded, NSError *error) {
+        if (succeeded) {
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            [defaults setBool:isEnabled forKey:BNUserDefaultsAddStoryInvitedContributePushNotification];
+            [defaults synchronize];
+        }
+    };
 
     if (switchControl.on) {
-        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_INVTOCONTRIBUTE forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"InvitedToContribute"]];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_INVTOCONTRIBUTE forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"InvitedToContribute"] inBackgroundWithBlock:snsNotificationCompletionBlock];
     } else {
-        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_INVTOCONTRIBUTE forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"InvitedToContribute"]];
+        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_INVTOCONTRIBUTE forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"InvitedToContribute"] inBackgroundWithBlock:snsNotificationCompletionBlock];
     }
     NSLog( @"The %@: %@", BNAddStoryInvitedContributePushNotification, switchControl.on ? @"ON" : @"OFF" );
 }
 - (IBAction)addStoryViewNotificationsSwitchChanged:(UISwitch *)switchControl
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setBool:switchControl.on forKey:BNUserDefaultsAddStoryInvitedViewPushNotification];
-    [defaults synchronize];
+    BOOL isEnabled = switchControl.on;
+    void (^snsNotificationCompletionBlock)(bool, NSError *) = ^(bool succeeded, NSError *error) {
+        if (succeeded) {
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            [defaults setBool:isEnabled forKey:BNUserDefaultsAddStoryInvitedViewPushNotification];
+            [defaults synchronize];
+        }
+    };
     
     if (switchControl.on) {
-        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_INVTOVIEW forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"InvitedToView"]];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_INVTOVIEW forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"InvitedToView"] inBackgroundWithBlock:snsNotificationCompletionBlock];
     } else {
-        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_INVTOVIEW forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"InvitedToView"]];
+        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_INVTOVIEW forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"InvitedToView"] inBackgroundWithBlock:snsNotificationCompletionBlock];
     }
     NSLog( @"The %@: %@", BNAddStoryInvitedViewPushNotification, switchControl.on ? @"ON" : @"OFF" );
 }
 - (IBAction)addPieceNotificationsSwitchChanged:(UISwitch *)switchControl
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setBool:switchControl.on forKey:BNUserDefaultsAddPieceToContributedStoryPushNotification];
-    [defaults synchronize];
+    BOOL isEnabled = switchControl.on;
+    void (^snsNotificationCompletionBlock)(bool, NSError *) = ^(bool succeeded, NSError *error) {
+        if (succeeded) {
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            [defaults setBool:isEnabled forKey:BNUserDefaultsAddPieceToContributedStoryPushNotification];
+            [defaults synchronize];
+        }
+    };
     
     if (switchControl.on) {
-        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_PIECEADDED forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"PieceAdded"]];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_PIECEADDED forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"PieceAdded"] inBackgroundWithBlock:snsNotificationCompletionBlock];
     } else {
-        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_PIECEADDED forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"PieceAdded"]];
+        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_PIECEADDED forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"PieceAdded"] inBackgroundWithBlock:snsNotificationCompletionBlock];
     }
     NSLog( @"The %@: %@", BNAddPieceToContributedStoryPushNotification, switchControl.on ? @"ON" : @"OFF" );
 }
 - (IBAction)pieceActionNotificationsSwitchChanged:(UISwitch *)switchControl
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setBool:switchControl.on forKey:BNUserDefaultsPieceActionPushNotification];
-    [defaults synchronize];
+    BOOL isEnabled = switchControl.on;
+    void (^snsNotificationCompletionBlock)(bool, NSError *) = ^(bool succeeded, NSError *error) {
+        if (succeeded) {
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            [defaults setBool:isEnabled forKey:BNUserDefaultsPieceActionPushNotification];
+            [defaults synchronize];
+        }
+    };
     
     if (switchControl.on) {
-        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_PIECEACTION forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"PieceAction"]];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_PIECEACTION forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"PieceAction"] inBackgroundWithBlock:snsNotificationCompletionBlock];
     } else {
-        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_PIECEACTION forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"PieceAction"]];
+        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_PIECEACTION forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"PieceAction"] inBackgroundWithBlock:snsNotificationCompletionBlock];
     }
     NSLog( @"The %@: %@", BNPieceActionPushNotification, switchControl.on ? @"ON" : @"OFF" );
 }
 - (IBAction)userFollowNotificationsSwitchChanged:(UISwitch *)switchControl
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setBool:switchControl.on forKey:BNUserDefaultsUserFollowingPushNotification];
-    [defaults synchronize];
+    BOOL isEnabled = switchControl.on;
+    void (^snsNotificationCompletionBlock)(bool, NSError *) = ^(bool succeeded, NSError *error) {
+        if (succeeded) {
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            [defaults setBool:isEnabled forKey:BNUserDefaultsUserFollowingPushNotification];
+            [defaults synchronize];
+        }
+    };
     
     if (switchControl.on) {
-        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_USERFOLLOWING forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"UserFollowing"]];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_USERFOLLOWING forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"UserFollowing"] inBackgroundWithBlock:snsNotificationCompletionBlock];
     } else {
-        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_USERFOLLOWING forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"UserFollowing"]];
+        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_USERFOLLOWING forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"UserFollowing"] inBackgroundWithBlock:snsNotificationCompletionBlock];
     }
     NSLog( @"The %@: %@", BNUserFollowingPushNotification, switchControl.on ? @"ON" : @"OFF" );
 }

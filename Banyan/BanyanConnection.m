@@ -207,7 +207,7 @@
         NSString *requestString = [NSString stringWithFormat:@"/api/v1/story/?offset=:offset&limit=:perPage&order_by=-timeStamp&format=json"];
         
         _storiesPaginator = [[RKObjectManager sharedManager] paginatorWithPathPattern:requestString];
-        _storiesPaginator.perPage = 6; // this will request /posts?page=N&per_page=6
+        _storiesPaginator.perPage = 10; // this will request /posts?page=N&per_page=10
         
         [_storiesPaginator setCompletionBlockWithSuccess:^(RKPaginator *paginator, NSArray *objects, NSUInteger page) {
             NSLog(@"BanyanConnection loadDataSource COMPLETE for page %d", page);

@@ -75,7 +75,7 @@
     });
 }
 
-+ (void) enableNotificationsFromChannel:(NSString *)channel forEndpointArn:(NSString *)arn
++ (void) enableNotificationsFromChannel:(NSString *)channel forEndpointArn:(NSString *)arn inBackgroundWithBlock:(void (^)(bool succeeded, NSError *error))block
 {
     if (!arn)
         return;
@@ -87,14 +87,16 @@
         [req setAttributesValue:@"true" forKey:@"Enabled"];
         @try {
             [[self sharedClient] setEndpointAttributes:req];
+            if (block) block(YES, nil);
         }
         @catch (NSException *exception) {
             NSLog(@"Exception is: %@", exception.description);
+            if (block) block(NO, nil);
         }
     });
 }
 
-+ (void) disableNotificationsFromChannel:(NSString *)channel forEndpointArn:(NSString *)arn
++ (void) disableNotificationsFromChannel:(NSString *)channel forEndpointArn:(NSString *)arn inBackgroundWithBlock:(void (^)(bool succeeded, NSError *error))block;
 {
     if (!arn)
         return;
@@ -106,9 +108,11 @@
         [req setAttributesValue:@"false" forKey:@"Enabled"];
         @try {
             [[self sharedClient] setEndpointAttributes:req];
+            if (block) block(YES, nil);
         }
         @catch (NSException *exception) {
             NSLog(@"Exception is: %@", exception.description);
+            if (block) block(NO, nil);
         }
     });
 }

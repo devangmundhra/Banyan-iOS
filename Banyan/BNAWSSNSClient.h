@@ -14,7 +14,11 @@
 
 + (void) registerDeviceToken:(NSString *)deviceToken;
 + (NSMutableDictionary *)endpointsDict;
-+ (void) enableNotificationsFromChannel:(NSString *)channel forEndpointArn:(NSString *)arn;
-+ (void) disableNotificationsFromChannel:(NSString *)channel forEndpointArn:(NSString *)arn;
++ (void) enableNotificationsFromChannel:(NSString *)channel
+                         forEndpointArn:(NSString *)arn
+                  inBackgroundWithBlock:(void (^)(bool succeeded, NSError *error))block;
++ (void) disableNotificationsFromChannel:(NSString *)channel
+                          forEndpointArn:(NSString *)arn
+                   inBackgroundWithBlock:(void (^)(bool succeeded, NSError *error))block;
 
 @end
