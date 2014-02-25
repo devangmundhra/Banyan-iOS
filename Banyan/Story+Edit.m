@@ -10,6 +10,7 @@
 #import "Media.h"
 #import "Story+Create.h"
 #import "Story+Delete.h"
+#import "BanyanAppDelegate.h"
 
 @implementation Story (Edit)
 
@@ -76,7 +77,8 @@
                                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                                NSLog(@"Update story successful %@", story);
                                                story.remoteStatus = RemoteObjectStatusSync;
-                                               [story save];
+                                               // Be eager in uploading pieces if available
+                                               [APP_DELEGATE fireRemoteObjectTimer];
                                            }
                                            failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                                story.remoteStatus = RemoteObjectStatusFailed;

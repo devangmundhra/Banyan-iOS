@@ -15,6 +15,7 @@
 #import "Story+Permissions.h"
 #import "BNLabel.h"
 #import "BNTextField.h"
+#import "Story+Edit.h"
 
 @interface ModifyStoryViewController (UITextFieldDelegate) <UITextFieldDelegate>
 @end

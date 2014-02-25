@@ -1,9 +1,9 @@
 //
-//  Scene+Create.m
-//  Storied
+//  Piece+Create.m
+//  Banyan
 //
 //  Created by Devang Mundhra on 3/11/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Banyan. All rights reserved.
 //
 
 #import "Piece+Create.h"
@@ -12,6 +12,7 @@
 #import "User.h"
 #import "Story+Permissions.h"
 #import "Piece+Stats.h"
+#import "Story+Edit.h"
 
 @implementation Piece (Create)
 

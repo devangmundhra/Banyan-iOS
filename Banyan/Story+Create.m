@@ -12,6 +12,7 @@
 #import "Media.h"
 #import "User.h"
 #import "Story+Stats.h"
+#import "BanyanAppDelegate.h"
 
 @implementation Story (Create)
 
@@ -53,6 +54,8 @@
                                                 NSLog(@"Create story successful %@", story);
                                                 story.remoteStatus = RemoteObjectStatusSync;
                                                 [Story viewedStory:story];
+                                                // Be eager in uploading pieces if available
+                                                [APP_DELEGATE fireRemoteObjectTimer];
                                             }
                                             failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                                 story.remoteStatus = RemoteObjectStatusFailed;
