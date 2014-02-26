@@ -144,16 +144,6 @@ typedef enum {
                                                      name:BNRefreshCurrentStoryListNotification
                                                    object:nil];
     }
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
-    if (![firstTimeDict objectForKey:BNUserDefaultsFirstTimeAppOpen]) {
-        [self.navigationController setNavigationBarHidden:YES];
-        self.tableView.scrollEnabled = NO;
-        BNIntroductionView *introductionView = [[BNIntroductionView alloc] initWithFrame:self.view.bounds];
-        introductionView.delegate = self;
-        [self.view addSubview:introductionView];
-    }
 
     [TestFlight passCheckpoint:@"RootViewController loaded"];
 }
@@ -164,6 +154,14 @@ typedef enum {
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
+    
+    if (1 || ![firstTimeDict objectForKey:BNUserDefaultsFirstTimeAppOpen]) {
+        [[UIApplication sharedApplication] setStatusBarHidden:YES];
+        BNIntroductionView *introductionView = [[BNIntroductionView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        introductionView.delegate = self;
+        [self.navigationController.view addSubview:introductionView];
+    }
+    
     if (![firstTimeDict objectForKey:BNUserDefaultsFirstTimeStoryListVCWSignin] && [BanyanAppDelegate loggedIn]) {
         [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:BNUserDefaultsFirstTimeStoryListVCWSignin];
         [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
@@ -536,9 +534,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 -(void)introduction:(MYBlurIntroductionView *)introductionView didFinishWithType:(MYFinishType)finishType
 {
     [introductionView removeFromSuperview];
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
-    self.tableView.scrollEnabled = YES;
 
     // We only show this if the use has just started the app
     if (![BanyanAppDelegate loggedIn]) {
@@ -559,15 +555,28 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 -(void)introduction:(MYBlurIntroductionView *)introductionView didChangeToPanel:(MYIntroductionPanel *)panel withIndex:(NSInteger)panelIndex
 {
+    UIImage *image = nil;
     //You can edit introduction view properties right from the delegate method!
-    //If it is the first panel, change the color to green!
     if (panelIndex == 0) {
-        [introductionView setBackgroundColor:BANYAN_GREEN_COLOR];
+        image = [UIImage imageNamed:@"IntroBkg2"];
+        [introductionView setBackgroundColor:[BANYAN_WHITE_COLOR colorWithAlphaComponent:0.4]];
+        panel.PanelTitleLabel.textColor = BANYAN_BLACK_COLOR;
+        panel.PanelDescriptionLabel.textColor = BANYAN_BLACK_COLOR;
+    } else if (panelIndex == 1){
+        image = [UIImage imageNamed:@"static_bg_01"];
+        [introductionView setBackgroundColor:BANYAN_CLEAR_COLOR];
+        panel.PanelTitleLabel.textColor = BANYAN_WHITE_COLOR;
+        panel.PanelDescriptionLabel.textColor = BANYAN_WHITE_COLOR;
+    } else if (panelIndex == 2) {
+        image = [UIImage imageNamed:@"IntroBkg3"];
+        [introductionView setBackgroundColor:[BANYAN_WHITE_COLOR colorWithAlphaComponent:0.4]];
+        panel.PanelTitleLabel.textColor = BANYAN_BLACK_COLOR;
+        panel.PanelDescriptionLabel.textColor = BANYAN_BLACK_COLOR;
     }
-    //If it is the second panel, change the color to blue!
-    else if (panelIndex == 1){
-        [introductionView setBackgroundColor:BANYAN_BROWN_COLOR];
-    }
-}
+    panel.PanelTitleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:24];
+    panel.PanelDescriptionLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:14];
 
+
+    introductionView.BackgroundImageView.image = image;
+}
 @end

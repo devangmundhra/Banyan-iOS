@@ -52,6 +52,7 @@
 		<string>Roboto-Light.ttf</string>
 		<string>Roboto-Bold.ttf</string>
 		<string>Roboto-BoldCondensed.ttf</string>
+		<string>Roboto-Condensed.ttf</string>
 	</array>
 	<key>UIPrerenderedIcon</key>
 	<true/>

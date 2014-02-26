@@ -121,6 +121,13 @@
 		5189B3C715B39BE100562DD0 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3C615B39BE100562DD0 /* MobileCoreServices.framework */; };
 		5189B3C915B39BE700562DD0 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3C815B39BE700562DD0 /* AudioToolbox.framework */; };
 		5189B45715B3A38E00562DD0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B3C415B39BD100562DD0 /* QuartzCore.framework */; };
+		518AB37F18BDBF8F00F8000C /* IntroBkg3.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB37918BDBF8F00F8000C /* IntroBkg3.png */; };
+		518AB38018BDBF8F00F8000C /* IntroBkg3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB37A18BDBF8F00F8000C /* IntroBkg3@2x.png */; };
+		518AB38118BDBF8F00F8000C /* IntroBkg2.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB37B18BDBF8F00F8000C /* IntroBkg2.png */; };
+		518AB38218BDBF8F00F8000C /* IntroBkg2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB37C18BDBF8F00F8000C /* IntroBkg2@2x.png */; };
+		518AB38418BDC4AE00F8000C /* static_bg_01.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB38318BDC4AE00F8000C /* static_bg_01.png */; };
+		518AB38718BDCFB600F8000C /* BNLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB38518BDCFB600F8000C /* BNLogo.png */; };
+		518AB38818BDCFB600F8000C /* BNLogo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB38618BDCFB600F8000C /* BNLogo@2x.png */; };
 		518CAA2A17DBA23500D641A6 /* BNAWSSNSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 518CAA2917DBA23500D641A6 /* BNAWSSNSClient.m */; };
 		519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 519232A01671CC57009686E4 /* AFGoogleAPIClient.m */; };
 		5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 5192332616743F02009686E4 /* GooglePlacesObject.m */; };
@@ -433,6 +440,13 @@
 		5189B3C415B39BD100562DD0 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		5189B3C615B39BE100562DD0 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		5189B3C815B39BE700562DD0 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		518AB37918BDBF8F00F8000C /* IntroBkg3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = IntroBkg3.png; sourceTree = "<group>"; };
+		518AB37A18BDBF8F00F8000C /* IntroBkg3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "IntroBkg3@2x.png"; sourceTree = "<group>"; };
+		518AB37B18BDBF8F00F8000C /* IntroBkg2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = IntroBkg2.png; sourceTree = "<group>"; };
+		518AB37C18BDBF8F00F8000C /* IntroBkg2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "IntroBkg2@2x.png"; sourceTree = "<group>"; };
+		518AB38318BDC4AE00F8000C /* static_bg_01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = static_bg_01.png; sourceTree = "<group>"; };
+		518AB38518BDCFB600F8000C /* BNLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BNLogo.png; sourceTree = "<group>"; };
+		518AB38618BDCFB600F8000C /* BNLogo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BNLogo@2x.png"; sourceTree = "<group>"; };
 		518CAA2817DBA23500D641A6 /* BNAWSSNSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNAWSSNSClient.h; path = Banyan/BNAWSSNSClient.h; sourceTree = "<group>"; };
 		518CAA2917DBA23500D641A6 /* BNAWSSNSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNAWSSNSClient.m; path = Banyan/BNAWSSNSClient.m; sourceTree = "<group>"; };
 		5192329F1671CC57009686E4 /* AFGoogleAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFGoogleAPIClient.h; path = Banyan/AFGoogleAPIClient.h; sourceTree = "<group>"; };
@@ -925,6 +939,7 @@
 		5166B1B515E75B420072749C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				518AB37618BDBF8000F8000C /* Background Images */,
 				51F0328E18B94F2300FFA71E /* Navigation */,
 				51F0328D18B94F1800FFA71E /* Settings */,
 				51F0326618B9456500FFA71E /* Feedback symbols */,
@@ -1288,6 +1303,20 @@
 			);
 			name = "Helpful Categories";
 			path = ..;
+			sourceTree = "<group>";
+		};
+		518AB37618BDBF8000F8000C /* Background Images */ = {
+			isa = PBXGroup;
+			children = (
+				518AB38518BDCFB600F8000C /* BNLogo.png */,
+				518AB38618BDCFB600F8000C /* BNLogo@2x.png */,
+				518AB37918BDBF8F00F8000C /* IntroBkg3.png */,
+				518AB37A18BDBF8F00F8000C /* IntroBkg3@2x.png */,
+				518AB37B18BDBF8F00F8000C /* IntroBkg2.png */,
+				518AB37C18BDBF8F00F8000C /* IntroBkg2@2x.png */,
+				518AB38318BDC4AE00F8000C /* static_bg_01.png */,
+			);
+			name = "Background Images";
 			sourceTree = "<group>";
 		};
 		5192332416743EB7009686E4 /* Location */ = {
@@ -1802,11 +1831,14 @@
 				513203B018B3593D007A53FD /* powered-by-google-on-white@2x.png in Resources */,
 				5189B34E15B395F300562DD0 /* UserLoginViewController.xib in Resources */,
 				5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */,
+				518AB37F18BDBF8F00F8000C /* IntroBkg3.png in Resources */,
+				518AB38018BDBF8F00F8000C /* IntroBkg3@2x.png in Resources */,
 				5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */,
 				5166B1BC15E75B420072749C /* buttonFacebookSelected.png in Resources */,
 				5166B1BD15E75B420072749C /* buttonFacebookSelected@2x.png in Resources */,
 				513203BC18B35FEE007A53FD /* Icon-Small-40.png in Resources */,
 				51B49A1C1898E8DF0073F184 /* location.png in Resources */,
+				518AB38218BDBF8F00F8000C /* IntroBkg2@2x.png in Resources */,
 				51170B6F17F42CD50015B343 /* ProfileViewController.xib in Resources */,
 				51F2288C161A9E22006B3AA7 /* Default-568h@2x.png in Resources */,
 				51FD96ED1665E6C7001A1709 /* dotted-pattern.png in Resources */,
@@ -1868,6 +1900,7 @@
 				51B49A141898E8620073F184 /* GooglePlacePickerViewController.xib in Resources */,
 				51B234FE171658BF004241C1 /* Roboto-Bold.ttf in Resources */,
 				51B234FF171658BF004241C1 /* Roboto-BoldCondensed.ttf in Resources */,
+				518AB38818BDCFB600F8000C /* BNLogo@2x.png in Resources */,
 				51B49A1A1898E8DF0073F184 /* locateButton.png in Resources */,
 				51E2145E18B9185000619150 /* Camera_Rotate@2x.png in Resources */,
 				51F0329618B94F4400FFA71E /* Cog@2x.png in Resources */,
@@ -1878,6 +1911,7 @@
 				51B23503171658BF004241C1 /* Roboto-CondensedItalic.ttf in Resources */,
 				51F032B818B95C2200FFA71E /* Play@2x.png in Resources */,
 				51F0328218B94BE700FFA71E /* heartSymbolHollow@2x.png in Resources */,
+				518AB38418BDC4AE00F8000C /* static_bg_01.png in Resources */,
 				51F0328118B94BE700FFA71E /* heartSymbolHollow.png in Resources */,
 				51B23504171658BF004241C1 /* Roboto-Italic.ttf in Resources */,
 				51B23505171658BF004241C1 /* Roboto-Light.ttf in Resources */,
@@ -1902,11 +1936,13 @@
 				51B2351617168BF9004241C1 /* locationSymbolSmall.png in Resources */,
 				51B2351717168BF9004241C1 /* locationSymbolSmall@2x.png in Resources */,
 				51F0328718B94E0500FFA71E /* Picture_iOS_selected.png in Resources */,
+				518AB38118BDBF8F00F8000C /* IntroBkg2.png in Resources */,
 				51F0329118B94F3C00FFA71E /* Cog_selected.png in Resources */,
 				51F862321859701F0037D576 /* slider_background@2x.png in Resources */,
 				513203C118B365A0007A53FD /* Images.xcassets in Resources */,
 				51E2146218B9185000619150 /* Lightening@2x.png in Resources */,
 				51E2146618B91B5700619150 /* Scroll_selected@2x.png in Resources */,
+				518AB38718BDCFB600F8000C /* BNLogo.png in Resources */,
 				51BDA1E1173B788F00BD2C19 /* Default.png in Resources */,
 				51BDA1E3173B789600BD2C19 /* Default@2x.png in Resources */,
 				51BDA27417434F3D00BD2C19 /* emptyBar.png in Resources */,

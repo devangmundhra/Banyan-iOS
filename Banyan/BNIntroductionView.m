@@ -26,22 +26,42 @@
 {
     //Create Stock Panel with header
     MYIntroductionPanel *panel1 = [[MYIntroductionPanel alloc] initWithFrame:frame
-                                                                       title:@"Welcome to Banyan!"
-                                                                 description:@"Banyan is a tool to help you and people around you capture experiences together."];
-    
+                                                                       title:@"Welcome!"
+                                                                 description:@"By nature, we are all social creatures. We laugh, play and have fun together."
+                                   "We progress by taking somebody's imagination, and improve upon it to create something even better than what we started with.\r\r"
+                                   "But when we capture and record our experiences, we do it alone, individually - on our phones, on our own photo albums, in our own silos.\r\r"
+                                   "At Banyan, we understand that a person can have many stories to tell. But we think it might be just a little more fun telling the stories together!"];
     
     //Create Stock Panel With Image
     MYIntroductionPanel *panel2 = [[MYIntroductionPanel alloc] initWithFrame:frame
-                                                                       title:@"Thanks for helping out!"
-                                                                 description:@"Now that you know what Banyan is, we would really love it if you could keep letting us know what can be done to make it more useful for you. We want to be able to provide you the best way to create and share your stories with anyone."];
+                                                                       title:@"Banyan"
+                                                                 description:@"Banyan allows you to create your own stories and invite anyone you like to contribute to or view the story. "
+                                   "You can also make the stories publicly viewable and contributable, letting your friends and could-be-friends to expand upon it.\r\r"
+                                   "Better still, if there is already a story about something you want to add to, share a piece of your thought to it."
+                                                                       image:[UIImage imageNamed:@"BNLogo"]];
+    
+    MYIntroductionPanel *panel3 = [[MYIntroductionPanel alloc] initWithFrame:frame
+                                                                       title:@"Almost there..."
+                                                                 description:@"To start with, you can read some of the publicly shared stories by some of the Banyan users."
+                                   "You might have been invited to more stories by your (Facebook) friends, but you will only find it out once you sign in!\r\r"
+                                   "What you have downloaded is just the beginning of an experiment. You will surely find some rough edges here and there. "
+                                   "We are however, constantly rubbing sandpaper on those edges.\r\r"
+                                   "Let us know your thoughts through the feedback tab available in the side menu, or email us at hello@banyan.io"];
     
     //Add panels to an array
-    NSArray *panels = @[panel1, panel2];
+    NSArray *panels = @[panel1, panel2, panel3];
     //introductionView.LanguageDirection = MYLanguageDirectionRightToLeft;
     
     //Build the introduction with desired panels
     [self buildIntroductionWithPanels:panels];
-    [self setBackgroundColor:BANYAN_GREEN_COLOR];
+
+    self.BackgroundImageView.image =  [UIImage imageNamed:@"IntroBkg2"];
+    [self setBackgroundColor:[BANYAN_WHITE_COLOR colorWithAlphaComponent:0.4]];
+    panel1.PanelTitleLabel.textColor = BANYAN_BLACK_COLOR;
+    panel1.PanelDescriptionLabel.textColor = BANYAN_BLACK_COLOR;
+    panel1.PanelTitleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:24];
+    panel1.PanelDescriptionLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:14];
+
 }
 
 @end
