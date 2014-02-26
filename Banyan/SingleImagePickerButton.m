@@ -138,9 +138,8 @@
     frame.origin.x = CGRectGetMaxX(self.imageDeleteButton.frame);
     frame.size.width -= frame.origin.x;
     self.imageDisplayView = [[UIImageView alloc] initWithFrame:frame];
-    self.imageDisplayView.userInteractionEnabled = YES;
+    self.imageDisplayView.userInteractionEnabled = NO;
     self.imageDisplayView.contentMode = UIViewContentModeScaleAspectFit;
-    [self.imageDisplayView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(editThumbnailButtonPressed:)]];
     [self.imageView addSubview:self.imageDisplayView];
     
     self.imageLoaded = NO;

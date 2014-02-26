@@ -9,14 +9,17 @@
 #import "HFImageEditorViewController+Private.h"
 #import "BNImageCropperViewController.h"
 #import "Media.h"
+#import "CMPopTipView.h"
 
 @interface BNImageCropperViewController ()
 @property (nonatomic,strong) IBOutlet UIBarButtonItem *saveButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *editThumbnailButton;
 
 @end
 
 @implementation BNImageCropperViewController
 @synthesize  saveButton = _saveButton;
+@synthesize editThumbnailButton = _editThumbnailButton;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -39,6 +42,14 @@
     self.rotateEnabled = NO;
     self.outputWidth = self.cropSize.width;
     [self reset:NO];
+}
+
+- (IBAction)titlePressed:(id)sender
+{
+    CMPopTipView *popTipView = [[CMPopTipView alloc] initWithTitle:@"Why thumbnails?"
+                                                           message:@"Thumbnails helps us show the important parts of the image when a user is quickly scrolling through all the pieces"];
+    SET_CMPOPTIPVIEW_APPEARANCES(popTipView);
+    [popTipView presentPointingAtBarButtonItem:self.editThumbnailButton animated:NO];
 }
 
 - (void)didReceiveMemoryWarning

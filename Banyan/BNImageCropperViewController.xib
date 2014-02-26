@@ -6,6 +6,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="BNImageCropperViewController">
             <connections>
+                <outlet property="editThumbnailButton" destination="jxs-Yz-RQb" id="Q2f-dw-dtG"/>
                 <outlet property="frameView" destination="ap1-CF-iS8" id="LjD-fB-r4d"/>
                 <outlet property="saveButton" destination="VYS-gS-6S5" id="OXY-n8-ytv"/>
                 <outlet property="view" destination="1" id="3"/>
@@ -31,8 +32,11 @@
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="7Jy-U3-ram"/>
-                        <barButtonItem enabled="NO" title="Edit Thumbnail" style="plain" id="jxs-Yz-RQb">
+                        <barButtonItem title="Edit Thumbnail" style="plain" id="jxs-Yz-RQb">
                             <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="titlePressed:" destination="-1" id="dX6-N6-69f"/>
+                            </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="JmA-jd-l8N"/>
                         <barButtonItem title="Save" id="VYS-gS-6S5">
