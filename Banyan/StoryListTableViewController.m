@@ -155,7 +155,7 @@ typedef enum {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
     
-    if (1 || ![firstTimeDict objectForKey:BNUserDefaultsFirstTimeAppOpen]) {
+    if (![firstTimeDict objectForKey:BNUserDefaultsFirstTimeAppOpen]) {
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
         BNIntroductionView *introductionView = [[BNIntroductionView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
         introductionView.delegate = self;
@@ -559,7 +559,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     //You can edit introduction view properties right from the delegate method!
     if (panelIndex == 0) {
         image = [UIImage imageNamed:@"IntroBkg2"];
-        [introductionView setBackgroundColor:[BANYAN_WHITE_COLOR colorWithAlphaComponent:0.4]];
+        [introductionView setBackgroundColor:[BANYAN_WHITE_COLOR colorWithAlphaComponent:0.5]];
         panel.PanelTitleLabel.textColor = BANYAN_BLACK_COLOR;
         panel.PanelDescriptionLabel.textColor = BANYAN_BLACK_COLOR;
     } else if (panelIndex == 1){

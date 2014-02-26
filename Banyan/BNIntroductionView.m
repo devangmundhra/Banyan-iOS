@@ -56,7 +56,7 @@
     [self buildIntroductionWithPanels:panels];
 
     self.BackgroundImageView.image =  [UIImage imageNamed:@"IntroBkg2"];
-    [self setBackgroundColor:[BANYAN_WHITE_COLOR colorWithAlphaComponent:0.4]];
+    [self setBackgroundColor:[BANYAN_WHITE_COLOR colorWithAlphaComponent:0.5]];
     panel1.PanelTitleLabel.textColor = BANYAN_BLACK_COLOR;
     panel1.PanelDescriptionLabel.textColor = BANYAN_BLACK_COLOR;
     panel1.PanelTitleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:24];
