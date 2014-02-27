@@ -10,7 +10,6 @@
 #import "Piece+Edit.h"
 #import "Media.h"
 #import "BNMisc.h"
-#import "Story+Edit.h"
 #import "Piece+Delete.h"
 
 @implementation Piece (Edit)
@@ -73,10 +72,6 @@
         for (Media *media in piece.media) {
             if ([media.localURL length]) {
                 assert(media.remoteStatus != MediaRemoteStatusSync);
-                
-                // If the story doesn't have any media yet, use this image for story media
-                // A new upload of media will occur for the story
-                [piece.story updateMediaIfRequiredWithMediaSet:piece.media];
                 
                 if (media.remoteStatus == MediaRemoteStatusProcessing || media.remoteStatus == MediaRemoteStatusPushing) {
                     mediaBeingUploaded = YES;

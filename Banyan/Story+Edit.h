@@ -12,6 +12,5 @@
 
 + (void) syncStoryAttributeWithItsPieces:(Story *)story;
 + (void) editStory:(Story *)story;
-- (void) updateMediaIfRequiredWithMediaSet:(NSOrderedSet *)mediaSet;
 
 @end

@@ -52,14 +52,18 @@
 
     // If the object has not been created yet, don't ask for editing it on the server.
     if (!NUMBER_EXISTS(story.bnObjectId)) {
-        // TODO: There is still a race condition here when the story is being created
-        // and an edit comes in, in which case the edit will be lost.
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Can't synchronize the story with the server."
-                                                        message:@"A previous synchronization is going on. Try in a bit!"
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
+        if (story.remoteStatus == RemoteObjectStatusPushing) {
+            // TODO: There is still a race condition here when the story is being created
+            // and an edit comes in, in which case the edit will be lost.
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Can't update the story"
+                                                            message:@"A previous syncronization of the story to the server is still in progress"
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+            return;
+        }
+        // Else don't do anything. The story has not even been created yet. So the creation of the story will take care of the edit as well.
         return;
     }
     
@@ -139,27 +143,6 @@
     }
 
     [story save];
-}
-
-- (void) updateMediaIfRequiredWithMediaSet:(NSOrderedSet *)mediaSet
-{
-    // Check if the story already has a media object, if so, don't do anything
-    if (self.media.count) {
-        return;
-    }
-    
-    // Check if any of the media in this set been uploaded, if so, use that url and filename
-    for (Media *media in mediaSet) {
-        if ([media.mediaType isEqualToString:@"image"] && media.remoteStatus == MediaRemoteStatusLocal) {
-            NSAssert1(media.localURL.length, @"Media not available for story %@ without length", self.title);
-            
-            Media *newMedia = [Media newMediaForObject:self];
-            [newMedia cloneFrom:media];
-            [Story editStory:self];
-            return;
-        }
-        
-    }
 }
 
 @end

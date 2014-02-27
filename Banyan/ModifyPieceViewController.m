@@ -22,6 +22,8 @@
 #import "GooglePlacePickerViewController.h"
 #import "MBProgressHUD.h"
 #import "CMPopTipView.h"
+#import "User.h"
+#import "BNLabel.h"
 
 @interface ModifyPieceViewController (LocationPickerButtonDelegate) <LocationPickerButtonDelegate>
 
@@ -35,6 +37,8 @@
 - (IBAction)addPhotoButtonTappedForCamera:(id)sender;
 - (IBAction)addPhotoButtonTappedForGallery:(id)sender;
 - (IBAction)addPhotoButtonTappedToDeleteImage:(id)sender;
+- (void) showOptionToMakePhotoAsStoryCover;
+- (void) hideOptionToMakePhotoAsStoryCover;
 @end
 
 @interface ModifyPieceViewController (AVCamViewControllerDelegate) <AVCamViewControllerDelegate>
@@ -69,6 +73,9 @@
 
 @property (strong, nonatomic) NSManagedObjectID *storyID;
 
+@property (strong, nonatomic) UIView *storyAlbumCoverOptionView;
+@property (strong, nonatomic) UISwitch *storyAlbumCoverOptionSwitch;
+
 @end
 
 @implementation ModifyPieceViewController
@@ -89,6 +96,8 @@
 @synthesize kbSize;
 @synthesize scratchMOC = _scratchMOC;
 @synthesize storyID = _storyID;
+@synthesize storyAlbumCoverOptionView = _storyAlbumCoverOptionView;
+@synthesize storyAlbumCoverOptionSwitch = _storyAlbumCoverOptionSwitch;
 
 #define TEXT_INSETS 5
 #define VIEW_INSETS 8
@@ -440,6 +449,29 @@
     // This is because refresh object does not refresh the relationships (only attributes)
     [self.piece.story cloneIntoNSManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
     
+    if (self.storyAlbumCoverOptionSwitch.on) {
+        // The user has asked us to make this as the cover image of the story.
+        // Delete any previous media for this story
+        for (Media *media in self.piece.story.media) {
+            // If its a local image, don't delete it
+            if ([media.remoteURL length]) {
+                [media deleteWitSuccess:nil
+                                failure:^(NSError *error) {
+                                    NSLog(@"Error %@ deleting %@ when editing piece %@",
+                                          error.localizedDescription, media.mediaTypeName, self.piece.shortText.length ? self.piece.shortText : @"");
+                                }];
+            }
+            [media remove];
+        }
+        Media *storyMedia = [Media newMediaForObject:self.piece.story];
+        // Get the image media from piece's media
+        Media *pcImageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
+        // We must have just created this media, so it better still be local
+        NSAssert1(pcImageMedia.localURL.length, @"Media not available for story %@ without length", self.piece.story.title);
+        [storyMedia cloneFrom:pcImageMedia];
+        [Story editStory:self.piece.story];
+    }
+    
     if (self.editMode == ModifyPieceViewControllerEditModeAddPiece)
     {
         [Piece createNewPiece:self.piece];
@@ -459,7 +491,7 @@
     else {
         NSAssert(false, @"ModifyPieceViewController_No valid edit mode");
     }
-    
+
     [self dismissEditViewWithCompletionBlock:^{
         if (self.delegate)
             [self.delegate modifyPieceViewController:self didFinishAddingPiece:self.piece];
@@ -706,11 +738,6 @@
     // Release any cached data, images, etc that aren't in use.
     NSLog(@"Received memory warning in ModifyPieceViewController");
 }
-
-#undef TEXT_INSETS
-#undef VIEW_INSETS
-#undef CORNER_RADIUS
-#undef SUBVIEW_OPACITY
 @end
 
 @implementation ModifyPieceViewController (AVCamViewControllerDelegate)
@@ -758,6 +785,7 @@
     imageCropBounds.size = MEDIA_THUMBNAIL_SIZE;
     image = [image croppedImage:imageCropBounds];    media.thumbnail = image;
     [self.addPhotoButton setThumbnail:image forMedia:media];
+    [self showOptionToMakePhotoAsStoryCover];
     self.doneButton.enabled = [self checkForChanges];
 }
 
@@ -781,6 +809,7 @@
     image = [image croppedImage:imageCropBounds];
     media.thumbnail = image;
     [self.addPhotoButton setThumbnail:image forMedia:media];
+    [self showOptionToMakePhotoAsStoryCover];
     self.doneButton.enabled = [self checkForChanges];
 }
 
@@ -833,6 +862,89 @@
     Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
     [mediaToDelete addObject:imageMedia];
     [self.addPhotoButton unsetImage];
+    [self hideOptionToMakePhotoAsStoryCover];
+}
+
+- (void) showOptionToMakePhotoAsStoryCover
+{
+    NSError *error = nil;
+    Story *story = (Story *)[self.scratchMOC existingObjectWithID:self.storyID error:&error];
+    
+    // Do this only if a new photo has been added to the piece and the author of the piece
+    // is the author of the story as well
+    if (!story || story.author.userId != [BNSharedUser currentUser].userId) {
+        return;
+    }
+    
+    __block CGRect frame = CGRectZero;
+    frame = self.scrollView.bounds;
+    frame.origin.x = VIEW_INSETS;
+    frame.size.width -= 2*VIEW_INSETS;
+    frame.origin.y = CGRectGetMaxY(self.addPhotoButton.frame) + VIEW_INSETS;
+    frame.size.height = 44.0f;
+    
+    self.storyAlbumCoverOptionView = [[UIView alloc] initWithFrame:frame];
+    self.storyAlbumCoverOptionView.backgroundColor = [BANYAN_WHITE_COLOR colorWithAlphaComponent:SUBVIEW_OPACITY];
+    [self.storyAlbumCoverOptionView.layer setCornerRadius:CORNER_RADIUS];
+    
+    
+    frame = self.storyAlbumCoverOptionView.bounds;
+    frame.size.width -= 60;
+    BNLabel *storyAlbumTitle = [[BNLabel alloc] initWithFrame:frame];
+    storyAlbumTitle.textEdgeInsets = UIEdgeInsetsMake(0, 2*TEXT_INSETS, 0, TEXT_INSETS);
+    storyAlbumTitle.font = [UIFont fontWithName:@"Roboto" size:14];
+    storyAlbumTitle.text = @"Use this photo for album cover";
+    [self.storyAlbumCoverOptionView addSubview:storyAlbumTitle];
+    
+    frame = self.storyAlbumCoverOptionView.bounds;
+    frame.size.width -= CGRectGetWidth(storyAlbumTitle.frame);
+    frame.origin.x = CGRectGetMaxX(storyAlbumTitle.frame);
+    CGPoint centerPt = storyAlbumTitle.center;
+    self.storyAlbumCoverOptionSwitch = [[UISwitch alloc] initWithFrame:frame];
+    centerPt.x = self.storyAlbumCoverOptionSwitch.center.x;
+    self.storyAlbumCoverOptionSwitch.center = centerPt;
+    self.storyAlbumCoverOptionSwitch.on = !story.media.count;
+    [self.storyAlbumCoverOptionView addSubview:self.storyAlbumCoverOptionSwitch];
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        frame = self.scrollView.bounds;
+        frame.origin.x = VIEW_INSETS;
+        frame.size.width -= 2*VIEW_INSETS;
+        frame.origin.y = CGRectGetMaxY(self.storyAlbumCoverOptionView.frame) + VIEW_INSETS;
+        frame.size.height = 44.0f;
+        self.audioPickerView.frame = frame;
+        frame.origin.y = CGRectGetMaxY(self.audioPickerView.frame) + VIEW_INSETS;
+        frame.size.height = 44.0f;
+        self.addLocationButton.frame = frame;
+    } completion:^(BOOL finished) {
+        // Finally once the animation is done, actually show the option view
+        [self.scrollView addSubview:self.storyAlbumCoverOptionView];
+    }];
+}
+
+- (void) hideOptionToMakePhotoAsStoryCover
+{
+    if (!self.storyAlbumCoverOptionView) {
+        return;
+    }
+    for (UIView *view in self.storyAlbumCoverOptionView.subviews) {
+        [view removeFromSuperview];
+    }
+    [self.storyAlbumCoverOptionView removeFromSuperview];
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        CGRect frame = CGRectZero;
+        frame = self.scrollView.bounds;
+        frame.origin.x = VIEW_INSETS;
+        frame.size.width -= 2*VIEW_INSETS;
+        
+        frame.origin.y = CGRectGetMaxY(self.addPhotoButton.frame) + VIEW_INSETS;
+        frame.size.height = 44.0f;
+        self.audioPickerView.frame = frame;
+        frame.origin.y = CGRectGetMaxY(self.audioPickerView.frame) + VIEW_INSETS;
+        frame.size.height = 44.0f;
+        self.addLocationButton.frame = frame;
+    }];
 }
 
 @end
@@ -867,3 +979,8 @@
 }
 
 @end
+
+#undef TEXT_INSETS
+#undef VIEW_INSETS
+#undef CORNER_RADIUS
+#undef SUBVIEW_OPACITY
