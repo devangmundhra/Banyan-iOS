@@ -108,7 +108,7 @@ static UIFont *_regularFont;
         } else if ([self.piece.longText length]) {
             self.textLabel.hidden = NO;
             self.textLabel.text = self.piece.longText;
-            self.textLabel.font = _regularFont;
+            self.textLabel.font = _boldCondensedFont;
         }
     } else {
         [self setStatusForView:@"Error in loading piece." font:_regularFont];

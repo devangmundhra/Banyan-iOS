@@ -125,9 +125,10 @@
 		518AB38018BDBF8F00F8000C /* IntroBkg3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB37A18BDBF8F00F8000C /* IntroBkg3@2x.png */; };
 		518AB38118BDBF8F00F8000C /* IntroBkg2.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB37B18BDBF8F00F8000C /* IntroBkg2.png */; };
 		518AB38218BDBF8F00F8000C /* IntroBkg2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB37C18BDBF8F00F8000C /* IntroBkg2@2x.png */; };
-		518AB38418BDC4AE00F8000C /* static_bg_01.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB38318BDC4AE00F8000C /* static_bg_01.png */; };
 		518AB38718BDCFB600F8000C /* BNLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB38518BDCFB600F8000C /* BNLogo.png */; };
 		518AB38818BDCFB600F8000C /* BNLogo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB38618BDCFB600F8000C /* BNLogo@2x.png */; };
+		518AB38B18BEF27F00F8000C /* IntroBkg1.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB38918BEF27F00F8000C /* IntroBkg1.png */; };
+		518AB38C18BEF27F00F8000C /* IntroBkg1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB38A18BEF27F00F8000C /* IntroBkg1@2x.png */; };
 		518CAA2A17DBA23500D641A6 /* BNAWSSNSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 518CAA2917DBA23500D641A6 /* BNAWSSNSClient.m */; };
 		519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 519232A01671CC57009686E4 /* AFGoogleAPIClient.m */; };
 		5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 5192332616743F02009686E4 /* GooglePlacesObject.m */; };
@@ -444,9 +445,10 @@
 		518AB37A18BDBF8F00F8000C /* IntroBkg3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "IntroBkg3@2x.png"; sourceTree = "<group>"; };
 		518AB37B18BDBF8F00F8000C /* IntroBkg2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = IntroBkg2.png; sourceTree = "<group>"; };
 		518AB37C18BDBF8F00F8000C /* IntroBkg2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "IntroBkg2@2x.png"; sourceTree = "<group>"; };
-		518AB38318BDC4AE00F8000C /* static_bg_01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = static_bg_01.png; sourceTree = "<group>"; };
 		518AB38518BDCFB600F8000C /* BNLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BNLogo.png; sourceTree = "<group>"; };
 		518AB38618BDCFB600F8000C /* BNLogo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BNLogo@2x.png"; sourceTree = "<group>"; };
+		518AB38918BEF27F00F8000C /* IntroBkg1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = IntroBkg1.png; sourceTree = "<group>"; };
+		518AB38A18BEF27F00F8000C /* IntroBkg1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "IntroBkg1@2x.png"; sourceTree = "<group>"; };
 		518CAA2817DBA23500D641A6 /* BNAWSSNSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNAWSSNSClient.h; path = Banyan/BNAWSSNSClient.h; sourceTree = "<group>"; };
 		518CAA2917DBA23500D641A6 /* BNAWSSNSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNAWSSNSClient.m; path = Banyan/BNAWSSNSClient.m; sourceTree = "<group>"; };
 		5192329F1671CC57009686E4 /* AFGoogleAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFGoogleAPIClient.h; path = Banyan/AFGoogleAPIClient.h; sourceTree = "<group>"; };
@@ -1314,7 +1316,8 @@
 				518AB37A18BDBF8F00F8000C /* IntroBkg3@2x.png */,
 				518AB37B18BDBF8F00F8000C /* IntroBkg2.png */,
 				518AB37C18BDBF8F00F8000C /* IntroBkg2@2x.png */,
-				518AB38318BDC4AE00F8000C /* static_bg_01.png */,
+				518AB38918BEF27F00F8000C /* IntroBkg1.png */,
+				518AB38A18BEF27F00F8000C /* IntroBkg1@2x.png */,
 			);
 			name = "Background Images";
 			sourceTree = "<group>";
@@ -1888,6 +1891,7 @@
 				51B234E117154C43004241C1 /* shareButtonBlack.png in Resources */,
 				51B234E217154C43004241C1 /* shareButtonBlack@2x.png in Resources */,
 				51B234E317154C43004241C1 /* shareButtonWhite.png in Resources */,
+				518AB38B18BEF27F00F8000C /* IntroBkg1.png in Resources */,
 				51F0326418B93AE700FFA71E /* Lightening_selected.png in Resources */,
 				513203BB18B35FEE007A53FD /* Icon-76@2x.png in Resources */,
 				51B234E417154C43004241C1 /* shareButtonWhite@2x.png in Resources */,
@@ -1911,7 +1915,6 @@
 				51B23503171658BF004241C1 /* Roboto-CondensedItalic.ttf in Resources */,
 				51F032B818B95C2200FFA71E /* Play@2x.png in Resources */,
 				51F0328218B94BE700FFA71E /* heartSymbolHollow@2x.png in Resources */,
-				518AB38418BDC4AE00F8000C /* static_bg_01.png in Resources */,
 				51F0328118B94BE700FFA71E /* heartSymbolHollow.png in Resources */,
 				51B23504171658BF004241C1 /* Roboto-Italic.ttf in Resources */,
 				51B23505171658BF004241C1 /* Roboto-Light.ttf in Resources */,
@@ -1948,6 +1951,7 @@
 				51BDA27417434F3D00BD2C19 /* emptyBar.png in Resources */,
 				51BDA27517434F3D00BD2C19 /* emptyBar@2x.png in Resources */,
 				51B49A2418A0C0CE0073F184 /* globe_white.png in Resources */,
+				518AB38C18BEF27F00F8000C /* IntroBkg1@2x.png in Resources */,
 				51F0329D18B9509200FFA71E /* Previous.png in Resources */,
 				51E2144F18B9181E00619150 /* Pencil.png in Resources */,
 				51E2146518B91B5700619150 /* Scroll_selected.png in Resources */,

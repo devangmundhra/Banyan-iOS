@@ -27,15 +27,15 @@
     //Create Stock Panel with header
     MYIntroductionPanel *panel1 = [[MYIntroductionPanel alloc] initWithFrame:frame
                                                                        title:@"Welcome!"
-                                                                 description:@"By nature, we are all social creatures. We laugh, play and have fun together."
+                                                                 description:@"\"Man is by nature a social animal...\" ~ Aristotle\r\r"
                                    "We progress by taking somebody's imagination, and improve upon it to create something even better than what we started with.\r\r"
-                                   "But when we capture and record our experiences, we do it alone, individually - on our phones, on our own photo albums, in our own silos.\r\r"
+                                   "But when we record our experiences and imaginations, we do it kinda alone - on our phones, on our own albums, in our own silos.\r\r"
                                    "At Banyan, we understand that a person can have many stories to tell. But we think it might be just a little more fun telling the stories together!"];
     
     //Create Stock Panel With Image
     MYIntroductionPanel *panel2 = [[MYIntroductionPanel alloc] initWithFrame:frame
                                                                        title:@"Banyan"
-                                                                 description:@"Banyan allows you to create your own stories and invite anyone you like to contribute to or view the story. "
+                                                                 description:@"Banyan assists you to create your own stories and invite anyone you like to contribute to or view the story. "
                                    "You can also make the stories publicly viewable and contributable, letting your friends and could-be-friends to expand upon it.\r\r"
                                    "Better still, if there is already a story about something you want to add to, share a piece of your thought to it."
                                                                        image:[UIImage imageNamed:@"BNLogo"]];
@@ -43,7 +43,7 @@
     MYIntroductionPanel *panel3 = [[MYIntroductionPanel alloc] initWithFrame:frame
                                                                        title:@"Almost there..."
                                                                  description:@"To start with, you can read some of the publicly shared stories by some of the Banyan users."
-                                   "You might have been invited to more stories by your (Facebook) friends, but you will only find it out once you sign in!\r\r"
+                                   "You might have been invited to more stories by your friends, but you will only find it out once you sign in!\r\r"
                                    "What you have downloaded is just the beginning of an experiment. You will surely find some rough edges here and there. "
                                    "We are however, constantly rubbing sandpaper on those edges.\r\r"
                                    "Let us know your thoughts through the feedback tab available in the side menu, or email us at hello@banyan.io"];

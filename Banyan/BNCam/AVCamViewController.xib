@@ -26,9 +26,12 @@
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yc2-GF-c1R">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yc2-GF-c1R">
                     <rect key="frame" x="20" y="20" width="46" height="30"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="46" id="nTg-Gi-Zps"/>
+                    </constraints>
                     <state key="normal">
                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -61,8 +64,8 @@
                     </items>
                     <color key="barTintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                 </toolbar>
-                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="srx-Jz-9FI">
-                    <rect key="frame" x="270" y="20" width="30" height="30"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="srx-Jz-9FI">
+                    <rect key="frame" x="246" y="20" width="54" height="30"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="QIn-Rd-zb7"/>
@@ -79,7 +82,10 @@
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
+                <constraint firstItem="srx-Jz-9FI" firstAttribute="height" secondItem="Yc2-GF-c1R" secondAttribute="height" id="3i4-Os-kiY"/>
+                <constraint firstItem="Yc2-GF-c1R" firstAttribute="top" secondItem="srx-Jz-9FI" secondAttribute="top" id="4J8-Qo-pw7"/>
                 <constraint firstAttribute="trailing" secondItem="46" secondAttribute="trailing" id="7xD-Uw-A5z"/>
+                <constraint firstItem="Yc2-GF-c1R" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="20" symbolic="YES" id="Axq-ff-jfo"/>
                 <constraint firstAttribute="trailing" secondItem="srx-Jz-9FI" secondAttribute="trailing" constant="20" id="Ddw-NE-TgD"/>
                 <constraint firstAttribute="bottom" secondItem="46" secondAttribute="bottom" id="FOv-B9-37M"/>
                 <constraint firstItem="srx-Jz-9FI" firstAttribute="top" secondItem="6" secondAttribute="top" constant="20" id="Jas-Ed-n19"/>
@@ -87,6 +93,7 @@
                 <constraint firstItem="46" firstAttribute="leading" secondItem="6" secondAttribute="leading" id="VcN-de-5rC"/>
                 <constraint firstItem="46" firstAttribute="top" secondItem="6" secondAttribute="top" id="hmt-pt-INh"/>
                 <constraint firstAttribute="bottom" secondItem="8" secondAttribute="bottom" id="n8Y-Sd-fGB"/>
+                <constraint firstItem="Yc2-GF-c1R" firstAttribute="baseline" secondItem="srx-Jz-9FI" secondAttribute="baseline" id="w9M-Wu-408"/>
             </constraints>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>

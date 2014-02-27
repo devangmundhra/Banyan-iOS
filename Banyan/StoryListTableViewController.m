@@ -154,15 +154,15 @@ typedef enum {
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
-    
-    if (![firstTimeDict objectForKey:BNUserDefaultsFirstTimeAppOpen]) {
+    BOOL appAlreadyOpened = [[firstTimeDict objectForKey:BNUserDefaultsFirstTimeAppOpen] boolValue];
+    if (!appAlreadyOpened) {
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
         BNIntroductionView *introductionView = [[BNIntroductionView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
         introductionView.delegate = self;
         [self.navigationController.view addSubview:introductionView];
     }
     
-    if (![firstTimeDict objectForKey:BNUserDefaultsFirstTimeStoryListVCWSignin] && [BanyanAppDelegate loggedIn]) {
+    if (appAlreadyOpened && ![firstTimeDict objectForKey:BNUserDefaultsFirstTimeStoryListVCWSignin] && [BanyanAppDelegate loggedIn]) {
         [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:BNUserDefaultsFirstTimeStoryListVCWSignin];
         [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
         [defaults synchronize];
@@ -563,7 +563,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         panel.PanelTitleLabel.textColor = BANYAN_BLACK_COLOR;
         panel.PanelDescriptionLabel.textColor = BANYAN_BLACK_COLOR;
     } else if (panelIndex == 1){
-        image = [UIImage imageNamed:@"static_bg_01"];
+        image = [UIImage imageNamed:@"IntroBkg1"]; // http://www.flickr.com/photos/horiavarlan/5018799808/
         [introductionView setBackgroundColor:BANYAN_CLEAR_COLOR];
         panel.PanelTitleLabel.textColor = BANYAN_WHITE_COLOR;
         panel.PanelDescriptionLabel.textColor = BANYAN_WHITE_COLOR;
