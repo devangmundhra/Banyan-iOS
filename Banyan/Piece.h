@@ -15,7 +15,6 @@
 @interface Piece : RemoteObject
 
 @property (nonatomic, retain) NSString * longText;
-@property (nonatomic) int16_t pieceNumber;
 @property (nonatomic, retain) NSString * shortText;
 @property (nonatomic, retain) NSString * tags;
 @property (nonatomic, retain) Story *story;

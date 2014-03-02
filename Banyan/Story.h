@@ -19,7 +19,6 @@
 @property (nonatomic) BOOL canView;
 @property (nonatomic, retain) id contributors;
 @property (nonatomic) BOOL isInvited;
-@property (nonatomic) int16_t length;
 @property (nonatomic, retain) BNPermissionsObject<BNPermissionsObject> * readAccess;
 @property (nonatomic) int16_t currentPieceIndexNum;
 @property (nonatomic, retain) NSString * tags;
@@ -32,6 +31,8 @@
 @property (nonatomic, retain) NSString * sectionIdentifier;
 @property (nonatomic, retain) NSString * primitiveSectionIdentifier;
 @property (nonatomic) int16_t numNewPiecesToView;
+
+@property (nonatomic, readonly) int16_t length;
 
 + (NSArray *)storiesFailedToBeUploaded;
 + (NSArray *)syncedStories;

@@ -21,5 +21,6 @@
 - (void) shareOnFacebook;
 - (void) performFacebookPublishAction:(void (^)(NSError *error)) action;
 - (void) performFacebookUserPhotosAction:(void (^)(NSError *error)) action;
-- (void)showErrorAlert:(NSError *)error;
+- (void) showErrorAlert:(NSError *)error;
+- (void) flaggedWithMessage:(NSString *)message;
 @end

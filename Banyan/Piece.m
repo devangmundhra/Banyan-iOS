@@ -15,7 +15,6 @@
 @implementation Piece
 
 @dynamic longText;
-@dynamic pieceNumber;
 @dynamic shortText;
 @dynamic story;
 @dynamic tags;
@@ -143,7 +142,7 @@
 {
     RKEntityMapping *pieceMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-    [pieceMapping addAttributeMappingsFromArray:@[@"bnObjectId", @"pieceNumber", @"longText", @"shortText", @"isLocationEnabled", @"location",
+    [pieceMapping addAttributeMappingsFromArray:@[@"bnObjectId", @"longText", @"shortText", @"isLocationEnabled", @"location",
                                                   @"createdAt", @"updatedAt", @"timeStamp"]];
     [pieceMapping addAttributeMappingsFromDictionary:@{@"stats.numViews" : @"numberOfViews",
                                                        @"stats.numLikes" : @"numberOfLikes",
@@ -178,7 +177,7 @@
     RKEntityMapping *pieceResponseMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
                                                                 inManagedObjectStore:[RKManagedObjectStore defaultStore]];
     [pieceResponseMapping addAttributeMappingsFromDictionary:@{@"resource_uri": @"resourceUri"}];
-    [pieceResponseMapping addAttributeMappingsFromArray:@[@"createdAt", @"updatedAt", @"pieceNumber", @"permaLink", @"bnObjectId"]];
+    [pieceResponseMapping addAttributeMappingsFromArray:@[@"createdAt", @"updatedAt", @"permaLink", @"bnObjectId"]];
     pieceResponseMapping.identificationAttributes = @[@"bnObjectId"];
     return pieceResponseMapping;
 }

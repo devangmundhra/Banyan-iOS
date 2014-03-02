@@ -16,13 +16,10 @@
 
 + (void) syncStoryAttributeWithItsPieces:(Story *)story
 {
-    // Update the length
-    story.length = story.pieces.count;
-    
     if (story.currentPieceIndexNum >= story.length)
     /*
      * Correct the story currentPieceIndexNum if required.
-     * This can be needed if for example a piece was deleted but the currentPieceNumber of the story
+     * This can be needed if for example a piece was deleted but the currentPieceIndexNum of the story
      * wasn't updated. For example,
      * 1. A story is fetched from the backend
      * 2. The story is deleted in the backend
@@ -41,9 +38,7 @@
                 story.timeStamp = localPiece.timeStamp;
             }
         }];
-    }
-    
-    [story save];
+    }    
 }
 
 + (void) editStory:(Story *)story

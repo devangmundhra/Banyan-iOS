@@ -412,10 +412,10 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                                            }
                                            
                                            // Set the header authorizations so that the api knows who the user is
-                                           NSString *email = [userInfo objectForKey:@"email"];
+                                           NSString *username = [userInfo objectForKey:@"username"];
                                            NSString *apikey = [userInfo objectForKey:@"api_key"];
                                            [[ RKObjectManager sharedManager].HTTPClient
-                                            setAuthorizationHeaderWithTastyPieUsername:email
+                                            setAuthorizationHeaderWithTastyPieUsername:username
                                             andToken:apikey];
                                            
                                            [self subscribeToPushNotifications];

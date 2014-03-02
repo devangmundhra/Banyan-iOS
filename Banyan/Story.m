@@ -18,7 +18,6 @@
 @dynamic canView;
 @dynamic contributors;
 @dynamic isInvited;
-@dynamic length;
 @dynamic readAccess;
 @dynamic currentPieceIndexNum;
 @dynamic tags, category;
@@ -34,6 +33,11 @@
     [super awakeFromFetch];
     self.currentPieceIndexNum = self.currentPieceIndexNum >= self.length ? 0 : self.currentPieceIndexNum;
     [self setUploadStatusNumber:[self calculateUploadStatusNumber]];
+}
+
+- (int16_t)length
+{
+    return self.pieces.count;
 }
 
 + (NSArray *)syncedStories
@@ -253,7 +257,7 @@
                                                        }];
     storyMapping.identificationAttributes = @[@"bnObjectId"];
     
-    [storyMapping addAttributeMappingsFromArray:@[@"bnObjectId", @"title", @"readAccess", @"writeAccess", @"tags", @"length",
+    [storyMapping addAttributeMappingsFromArray:@[@"bnObjectId", @"title", @"readAccess", @"writeAccess", @"tags",
                                                   @"createdAt", @"updatedAt", @"isLocationEnabled", @"location", @"timeStamp"]];
     [storyMapping addPropertyMappingsFromArray:@[[RKRelationshipMapping relationshipMappingFromKeyPath:@"pieces" toKeyPath:@"pieces" withMapping:[Piece pieceMappingForRKGET]],
                                                  [RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:[Media mediaMappingForRKGET]],

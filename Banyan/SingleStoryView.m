@@ -29,7 +29,8 @@ static UIImage *_backViewHideImage;
 static UIImage *_shareBlackImage;
 static UIImage *_shareWhiteImage;
 static UIImage *_addPieceImage;
-static UIImage *_deleteStoryImage;
+static UIImage *_flagStoryImage;
+static UIImage *_flagStoryImageSelected;
 static UIImage *_hideStoryImage;
 static NSDateFormatter *_dateFormatter;
 static UIFont *_boldFont;
@@ -54,7 +55,8 @@ static BOOL _loggedIn;
         _backViewHideImage = [UIImage imageNamed:@"backViewHideButton"];
         _shareBlackImage = [UIImage imageNamed:@"shareButtonBlack"];
         _addPieceImage = [UIImage imageNamed:@"addPieceButton"];
-        _deleteStoryImage = [UIImage imageNamed:@"deleteStoryButton"];
+        _flagStoryImage = [UIImage imageNamed:@"Flag_Story"];
+        _flagStoryImageSelected = [UIImage imageNamed:@"Flag_Story_selected"];
         _hideStoryImage = [UIImage imageNamed:@"hideStoryButton"];
         _shareWhiteImage = [UIImage imageNamed:@"shareButtonWhite"];
         
@@ -316,56 +318,44 @@ static BOOL _loggedIn;
 - (void) setupBackView
 {
     // Add Piece Button
-    UIButton *addPieceButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIButton *flagStoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
     // Make sure the button ends up in the right place when the cell is resized
-    addPieceButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
-    [addPieceButton setImage:_addPieceImage forState:UIControlStateNormal];
-    [addPieceButton addTarget:self.delegate action:@selector(addPiece:) forControlEvents:UIControlEventTouchUpInside];
+    flagStoryButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
+    [flagStoryButton setImage:_flagStoryImage forState:UIControlStateNormal];
+    [flagStoryButton setImage:_flagStoryImageSelected forState:UIControlStateHighlighted];
+    [flagStoryButton addTarget:self action:@selector(flagStoryAlert:) forControlEvents:UIControlEventTouchUpInside];
     // Set the button's frame
-    CGRect addPieceButtonFrame = addPieceButton.bounds;
+    CGRect addPieceButtonFrame = flagStoryButton.bounds;
     addPieceButtonFrame.origin.x = TABLE_CELL_MARGIN + BUTTON_SPACING;
     addPieceButtonFrame.origin.y = floor(self.topSwipeView.backView.bounds.origin.y);
     addPieceButtonFrame.size = _addPieceImage.size;
     addPieceButtonFrame.size.height = floor(self.topSwipeView.backView.bounds.size.height);
     addPieceButtonFrame.size.width = floor(addPieceButtonFrame.size.width);
-    addPieceButton.frame = addPieceButtonFrame;
-    if (!(self.story.canContribute && _loggedIn)) {
-        addPieceButton.enabled = NO;
-        addPieceButton.alpha = 0.2;
-    } else {
-        addPieceButton.enabled = YES;
-        addPieceButton.alpha = 1;
-    }
-    [self.topSwipeView.backView addSubview:addPieceButton];
+    flagStoryButton.frame = addPieceButtonFrame;
+    [self.topSwipeView.backView addSubview:flagStoryButton];
     
-    // Delete Story Button
-    UIButton *deleteStoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    deleteStoryButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
+    // Hide Story Button
+    UIButton *hideStoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    hideStoryButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
     
-    // Always hide story. Deletion done in storyOverview
-    //        if (self.story.author.userId == [BNSharedUser currentUser].userId) {
-    //            [deleteStoryButton setImage:_deleteStoryImage forState:UIControlStateNormal];
-    //            [deleteStoryButton addTarget:self action:@selector(deleteStoryAlert:) forControlEvents:UIControlEventTouchUpInside];
-    //        } else {
-    [deleteStoryButton setImage:_hideStoryImage forState:UIControlStateNormal];
-    [deleteStoryButton addTarget:self action:@selector(hideStoryAlert:) forControlEvents:UIControlEventTouchUpInside];
-    //        }
+    [hideStoryButton setImage:_hideStoryImage forState:UIControlStateNormal];
+    [hideStoryButton addTarget:self action:@selector(hideStoryAlert:) forControlEvents:UIControlEventTouchUpInside];
     
-    CGRect deleteStoryButtonFrame = deleteStoryButton.bounds;
-    deleteStoryButtonFrame.origin.x = floor(CGRectGetMaxX(addPieceButton.frame) + BUTTON_SPACING);
-    deleteStoryButtonFrame.origin.y = floor(self.topSwipeView.backView.bounds.origin.y);
-    deleteStoryButtonFrame.size = _deleteStoryImage.size;
-    deleteStoryButtonFrame.size.height = floor(self.topSwipeView.backView.bounds.size.height);
-    deleteStoryButtonFrame.size.width = floor(deleteStoryButtonFrame.size.width);
-    deleteStoryButton.frame = deleteStoryButtonFrame;
+    CGRect hideStoryButtonFrame = hideStoryButton.bounds;
+    hideStoryButtonFrame.origin.x = floor(CGRectGetMaxX(flagStoryButton.frame) + BUTTON_SPACING);
+    hideStoryButtonFrame.origin.y = floor(self.topSwipeView.backView.bounds.origin.y);
+    hideStoryButtonFrame.size = _hideStoryImage.size;
+    hideStoryButtonFrame.size.height = floor(self.topSwipeView.backView.bounds.size.height);
+    hideStoryButtonFrame.size.width = floor(hideStoryButtonFrame.size.width);
+    hideStoryButton.frame = hideStoryButtonFrame;
     if (!_loggedIn) {
-        deleteStoryButton.enabled = NO;
-        deleteStoryButton.alpha = 0.2;
+        hideStoryButton.enabled = NO;
+        hideStoryButton.alpha = 0.2;
     } else {
-        deleteStoryButton.enabled = YES;
-        deleteStoryButton.alpha = 1;
+        hideStoryButton.enabled = YES;
+        hideStoryButton.alpha = 1;
     }
-    [self.topSwipeView.backView addSubview:deleteStoryButton];
+    [self.topSwipeView.backView addSubview:hideStoryButton];
     // Share Button
     UIButton *shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
     shareButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
@@ -373,7 +363,7 @@ static BOOL _loggedIn;
     [shareButton addTarget:self.delegate action:@selector(shareStory:) forControlEvents:UIControlEventTouchUpInside];
     
     CGRect shareButtonFrame = shareButton.bounds;
-    shareButtonFrame.origin.x = floor(CGRectGetMaxX(deleteStoryButton.frame) + BUTTON_SPACING);
+    shareButtonFrame.origin.x = floor(CGRectGetMaxX(hideStoryButton.frame) + BUTTON_SPACING);
     shareButtonFrame.origin.y = floor(self.topSwipeView.backView.bounds.origin.y);
     shareButtonFrame.size = _shareWhiteImage.size;
     shareButtonFrame.size.height = floor(self.topSwipeView.backView.bounds.size.height);
@@ -430,15 +420,6 @@ static BOOL _loggedIn;
 }
 
 #pragma mark UIAlertView
-- (void)deleteStoryAlert:(UIButton *)button
-{
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Delete Story"
-                                                        message:@"Do you want to delete this story?"
-                                                       delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
-    
-    [alertView show];
-}
-
 - (void)hideStoryAlert:(UIButton *)button
 {
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Hide Story"
@@ -448,14 +429,25 @@ static BOOL _loggedIn;
     [alertView show];
 }
 
+- (void)flagStoryAlert:(UIButton *)button
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Flag Story"
+                                                        message:@"Do you want to report this story as inappropriate?\rYou can optionally specify a brief message for the reviewers."
+                                                       delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+    alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+    
+    [alertView show];
+}
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if ([alertView.title isEqualToString:@"Delete Story"] && buttonIndex==1) {
-        [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
-        [self.delegate deleteStory:self];
-    } else if ([alertView.title isEqualToString:@"Hide Story"] && buttonIndex==1) {
+    if ([alertView.title isEqualToString:@"Hide Story"] && buttonIndex==1) {
         [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
         [self.delegate hideStory:self];
+    } else if ([alertView.title isEqualToString:@"Flag Story"] && buttonIndex==1) {
+        [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
+        NSString *message = [alertView textFieldAtIndex:0].text;
+        [self.delegate flagStory:self withMessage:message];
     }
 }
 @end

@@ -28,7 +28,6 @@
     </entity>
     <entity name="Piece" representedClassName="Piece" parentEntity="RemoteObject" syncable="YES">
         <attribute name="longText" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="pieceNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="shortText" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tags" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="story" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Story" inverseName="pieces" inverseEntity="Story" syncable="YES"/>
@@ -60,7 +59,6 @@
         <attribute name="contributors" optional="YES" attributeType="Transformable" indexed="YES" syncable="YES"/>
         <attribute name="currentPieceIndexNum" optional="YES" attributeType="Integer 16" defaultValueString="1" indexed="YES" syncable="YES"/>
         <attribute name="isInvited" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="length" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="numNewPiecesToView" optional="YES" attributeType="Integer 16" defaultValueString="NO" indexed="YES" syncable="YES"/>
         <attribute name="readAccess" optional="YES" attributeType="Transformable" valueTransformerName="BNDuckTypedObjectToDataTransformer" syncable="YES"/>
         <attribute name="sectionIdentifier" optional="YES" transient="YES" attributeType="String" defaultValueString="Drafts" indexed="YES" syncable="YES"/>

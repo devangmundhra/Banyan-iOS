@@ -78,16 +78,12 @@
 		517A01D7170A7A9E00665F0F /* MediaPickerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 517A01D6170A7A9E00665F0F /* MediaPickerButton.m */; };
 		517A01DA170BFA3000665F0F /* InviteFriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 517A01D9170BFA2F00665F0F /* InviteFriendCell.m */; };
 		517A01DD170BFA5B00665F0F /* InviteFriendCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 517A01DC170BFA5A00665F0F /* InviteFriendCell.xib */; };
-		5181533017129F83006F73D3 /* addUserSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181532E17129F83006F73D3 /* addUserSymbol.png */; };
-		5181533117129F83006F73D3 /* addUserSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181532F17129F83006F73D3 /* addUserSymbol@2x.png */; };
 		518153511713F474006F73D3 /* addPieceButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 518153471713F469006F73D3 /* addPieceButton.png */; };
 		518153521713F474006F73D3 /* addPieceButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 518153481713F46D006F73D3 /* addPieceButton@2x.png */; };
 		518153531713F474006F73D3 /* backViewHideButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 518153491713F46E006F73D3 /* backViewHideButton.png */; };
 		518153541713F474006F73D3 /* backViewHideButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181534A1713F46E006F73D3 /* backViewHideButton@2x.png */; };
 		518153551713F474006F73D3 /* backViewShowButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181534B1713F46F006F73D3 /* backViewShowButton.png */; };
 		518153561713F474006F73D3 /* backViewShowButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181534C1713F470006F73D3 /* backViewShowButton@2x.png */; };
-		518153571713F474006F73D3 /* deleteStoryButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181534D1713F471006F73D3 /* deleteStoryButton.png */; };
-		518153581713F474006F73D3 /* deleteStoryButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5181534E1713F471006F73D3 /* deleteStoryButton@2x.png */; };
 		5189B2B815B387E200562DD0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2B715B387E200562DD0 /* UIKit.framework */; };
 		5189B2BA15B387E200562DD0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2B915B387E200562DD0 /* Foundation.framework */; };
 		5189B2BC15B387E200562DD0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5189B2BB15B387E200562DD0 /* CoreGraphics.framework */; };
@@ -129,6 +125,10 @@
 		518AB38818BDCFB600F8000C /* BNLogo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB38618BDCFB600F8000C /* BNLogo@2x.png */; };
 		518AB38B18BEF27F00F8000C /* IntroBkg1.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB38918BEF27F00F8000C /* IntroBkg1.png */; };
 		518AB38C18BEF27F00F8000C /* IntroBkg1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB38A18BEF27F00F8000C /* IntroBkg1@2x.png */; };
+		518AB39118BF2F5200F8000C /* Flag_Story_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB38D18BF2F5200F8000C /* Flag_Story_selected.png */; };
+		518AB39218BF2F5200F8000C /* Flag_Story_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB38E18BF2F5200F8000C /* Flag_Story_selected@2x.png */; };
+		518AB39318BF2F5200F8000C /* Flag_Story.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB38F18BF2F5200F8000C /* Flag_Story.png */; };
+		518AB39418BF2F5200F8000C /* Flag_Story@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB39018BF2F5200F8000C /* Flag_Story@2x.png */; };
 		518CAA2A17DBA23500D641A6 /* BNAWSSNSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 518CAA2917DBA23500D641A6 /* BNAWSSNSClient.m */; };
 		519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 519232A01671CC57009686E4 /* AFGoogleAPIClient.m */; };
 		5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 5192332616743F02009686E4 /* GooglePlacesObject.m */; };
@@ -269,8 +269,6 @@
 		51F8F439176E6F640056A308 /* SingleStoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 51F8F438176E6F640056A308 /* SingleStoryView.m */; };
 		51FAC0B8172C829E0046C2D6 /* Comment.m in Sources */ = {isa = PBXBuildFile; fileRef = 51FAC0B7172C829E0046C2D6 /* Comment.m */; };
 		51FAC0BC172F8C500046C2D6 /* FBGraphObjectToDataTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 51FAC0BB172F8C500046C2D6 /* FBGraphObjectToDataTransformer.m */; };
-		51FD96ED1665E6C7001A1709 /* dotted-pattern.png in Resources */ = {isa = PBXBuildFile; fileRef = 51FD96EB1665E6C7001A1709 /* dotted-pattern.png */; };
-		51FD96EE1665E6C7001A1709 /* dotted-pattern@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51FD96EC1665E6C7001A1709 /* dotted-pattern@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -377,16 +375,12 @@
 		517A01D8170BFA2F00665F0F /* InviteFriendCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InviteFriendCell.h; path = Banyan/InviteFriendCell.h; sourceTree = "<group>"; };
 		517A01D9170BFA2F00665F0F /* InviteFriendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InviteFriendCell.m; path = Banyan/InviteFriendCell.m; sourceTree = "<group>"; };
 		517A01DC170BFA5A00665F0F /* InviteFriendCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = InviteFriendCell.xib; path = Banyan/InviteFriendCell.xib; sourceTree = "<group>"; };
-		5181532E17129F83006F73D3 /* addUserSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addUserSymbol.png; sourceTree = "<group>"; };
-		5181532F17129F83006F73D3 /* addUserSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "addUserSymbol@2x.png"; sourceTree = "<group>"; };
 		518153471713F469006F73D3 /* addPieceButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addPieceButton.png; sourceTree = "<group>"; };
 		518153481713F46D006F73D3 /* addPieceButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "addPieceButton@2x.png"; sourceTree = "<group>"; };
 		518153491713F46E006F73D3 /* backViewHideButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backViewHideButton.png; sourceTree = "<group>"; };
 		5181534A1713F46E006F73D3 /* backViewHideButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backViewHideButton@2x.png"; sourceTree = "<group>"; };
 		5181534B1713F46F006F73D3 /* backViewShowButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backViewShowButton.png; sourceTree = "<group>"; };
 		5181534C1713F470006F73D3 /* backViewShowButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backViewShowButton@2x.png"; sourceTree = "<group>"; };
-		5181534D1713F471006F73D3 /* deleteStoryButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = deleteStoryButton.png; sourceTree = "<group>"; };
-		5181534E1713F471006F73D3 /* deleteStoryButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "deleteStoryButton@2x.png"; sourceTree = "<group>"; };
 		5189B2B315B387E200562DD0 /* Banyan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Banyan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5189B2B715B387E200562DD0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		5189B2B915B387E200562DD0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -449,6 +443,10 @@
 		518AB38618BDCFB600F8000C /* BNLogo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BNLogo@2x.png"; sourceTree = "<group>"; };
 		518AB38918BEF27F00F8000C /* IntroBkg1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = IntroBkg1.png; sourceTree = "<group>"; };
 		518AB38A18BEF27F00F8000C /* IntroBkg1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "IntroBkg1@2x.png"; sourceTree = "<group>"; };
+		518AB38D18BF2F5200F8000C /* Flag_Story_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Flag_Story_selected.png; sourceTree = "<group>"; };
+		518AB38E18BF2F5200F8000C /* Flag_Story_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Flag_Story_selected@2x.png"; sourceTree = "<group>"; };
+		518AB38F18BF2F5200F8000C /* Flag_Story.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Flag_Story.png; sourceTree = "<group>"; };
+		518AB39018BF2F5200F8000C /* Flag_Story@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Flag_Story@2x.png"; sourceTree = "<group>"; };
 		518CAA2817DBA23500D641A6 /* BNAWSSNSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNAWSSNSClient.h; path = Banyan/BNAWSSNSClient.h; sourceTree = "<group>"; };
 		518CAA2917DBA23500D641A6 /* BNAWSSNSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNAWSSNSClient.m; path = Banyan/BNAWSSNSClient.m; sourceTree = "<group>"; };
 		5192329F1671CC57009686E4 /* AFGoogleAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFGoogleAPIClient.h; path = Banyan/AFGoogleAPIClient.h; sourceTree = "<group>"; };
@@ -645,8 +643,6 @@
 		51FAC0B7172C829E0046C2D6 /* Comment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Comment.m; path = Banyan/Comment.m; sourceTree = "<group>"; };
 		51FAC0BA172F8C500046C2D6 /* FBGraphObjectToDataTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FBGraphObjectToDataTransformer.h; path = Banyan/FBGraphObjectToDataTransformer.h; sourceTree = "<group>"; };
 		51FAC0BB172F8C500046C2D6 /* FBGraphObjectToDataTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FBGraphObjectToDataTransformer.m; path = Banyan/FBGraphObjectToDataTransformer.m; sourceTree = "<group>"; };
-		51FD96EB1665E6C7001A1709 /* dotted-pattern.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dotted-pattern.png"; sourceTree = "<group>"; };
-		51FD96EC1665E6C7001A1709 /* dotted-pattern@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dotted-pattern@2x.png"; sourceTree = "<group>"; };
 		8ED9F22B0C2B4CE9B82B3621 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		F6EDBDCCC91248339FDC7301 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -955,16 +951,6 @@
 				51B234E9171658BF004241C1 /* Roboto Font */,
 				5181535B1713F49F006F73D3 /* Swipeable View Symbols */,
 				513203B118B35D86007A53FD /* Icons */,
-				51B49A2218A0C0CD0073F184 /* globe_white.png */,
-				51B49A2318A0C0CE0073F184 /* globe_white@2x.png */,
-				51D5E6E5182220A5005CA2F4 /* hideStoryButton@2x.png */,
-				51D5E6E6182220A5005CA2F4 /* hideStoryButton.png */,
-				5181532E17129F83006F73D3 /* addUserSymbol.png */,
-				5181532F17129F83006F73D3 /* addUserSymbol@2x.png */,
-				5144EC621712277600F0B265 /* locationSymbol.png */,
-				5144EC631712277600F0B265 /* locationSymbol@2x.png */,
-				51FD96EB1665E6C7001A1709 /* dotted-pattern.png */,
-				51FD96EC1665E6C7001A1709 /* dotted-pattern@2x.png */,
 				5166B1B615E75B420072749C /* buttonFacebook.png */,
 				5166B1B715E75B420072749C /* buttonFacebook@2x.png */,
 				5166B1B815E75B420072749C /* buttonFacebookSelected.png */,
@@ -1037,8 +1023,12 @@
 				5181534A1713F46E006F73D3 /* backViewHideButton@2x.png */,
 				5181534B1713F46F006F73D3 /* backViewShowButton.png */,
 				5181534C1713F470006F73D3 /* backViewShowButton@2x.png */,
-				5181534D1713F471006F73D3 /* deleteStoryButton.png */,
-				5181534E1713F471006F73D3 /* deleteStoryButton@2x.png */,
+				51D5E6E5182220A5005CA2F4 /* hideStoryButton@2x.png */,
+				51D5E6E6182220A5005CA2F4 /* hideStoryButton.png */,
+				518AB38D18BF2F5200F8000C /* Flag_Story_selected.png */,
+				518AB38E18BF2F5200F8000C /* Flag_Story_selected@2x.png */,
+				518AB38F18BF2F5200F8000C /* Flag_Story.png */,
+				518AB39018BF2F5200F8000C /* Flag_Story@2x.png */,
 			);
 			name = "Swipeable View Symbols";
 			sourceTree = "<group>";
@@ -1420,6 +1410,10 @@
 				51B49A171898E8DF0073F184 /* locateButton@2x.png */,
 				51B49A181898E8DF0073F184 /* location.png */,
 				51B49A191898E8DF0073F184 /* location@2x.png */,
+				5144EC621712277600F0B265 /* locationSymbol.png */,
+				5144EC631712277600F0B265 /* locationSymbol@2x.png */,
+				51B49A2218A0C0CD0073F184 /* globe_white.png */,
+				51B49A2318A0C0CE0073F184 /* globe_white@2x.png */,
 			);
 			name = Location;
 			sourceTree = "<group>";
@@ -1827,6 +1821,7 @@
 				5189B2C215B387E200562DD0 /* InfoPlist.strings in Resources */,
 				51E2145D18B9185000619150 /* Camera_Rotate.png in Resources */,
 				51F032A218B955FD00FFA71E /* Microphone@2x.png in Resources */,
+				518AB39318BF2F5200F8000C /* Flag_Story.png in Resources */,
 				51E2145F18B9185000619150 /* Camera.png in Resources */,
 				513203BD18B35FEE007A53FD /* Icon-Small-40@2x.png in Resources */,
 				513203BE18B35FEE007A53FD /* Icon-Small.png in Resources */,
@@ -1844,8 +1839,6 @@
 				518AB38218BDBF8F00F8000C /* IntroBkg2@2x.png in Resources */,
 				51170B6F17F42CD50015B343 /* ProfileViewController.xib in Resources */,
 				51F2288C161A9E22006B3AA7 /* Default-568h@2x.png in Resources */,
-				51FD96ED1665E6C7001A1709 /* dotted-pattern.png in Resources */,
-				51FD96EE1665E6C7001A1709 /* dotted-pattern@2x.png in Resources */,
 				51F032BA18B95C2200FFA71E /* Stop@2x.png in Resources */,
 				51E2146918B91B6200619150 /* Pencil_selected.png in Resources */,
 				514CDF65181509B70098B0A9 /* AVCamViewController.xib in Resources */,
@@ -1863,8 +1856,6 @@
 				51D5E6E7182220A5005CA2F4 /* hideStoryButton@2x.png in Resources */,
 				51E2145118B9181E00619150 /* Scroll.png in Resources */,
 				513203AF18B3593D007A53FD /* powered-by-google-on-white.png in Resources */,
-				5181533017129F83006F73D3 /* addUserSymbol.png in Resources */,
-				5181533117129F83006F73D3 /* addUserSymbol@2x.png in Resources */,
 				51B49A1D1898E8DF0073F184 /* location@2x.png in Resources */,
 				51F0328418B94BE700FFA71E /* heartSymbolPink@2x.png in Resources */,
 				51F0329A18B9508A00FFA71E /* Previous_selected@2x.png in Resources */,
@@ -1885,8 +1876,6 @@
 				51F0328018B94BE700FFA71E /* heartSmallPink@2x.png in Resources */,
 				51F0329918B9508A00FFA71E /* Previous_selected.png in Resources */,
 				513203B918B35FEE007A53FD /* Icon-60@2x.png in Resources */,
-				518153571713F474006F73D3 /* deleteStoryButton.png in Resources */,
-				518153581713F474006F73D3 /* deleteStoryButton@2x.png in Resources */,
 				51F0328C18B94E0C00FFA71E /* Picture_iOS@2x.png in Resources */,
 				51B234E117154C43004241C1 /* shareButtonBlack.png in Resources */,
 				51B234E217154C43004241C1 /* shareButtonBlack@2x.png in Resources */,
@@ -1894,12 +1883,14 @@
 				518AB38B18BEF27F00F8000C /* IntroBkg1.png in Resources */,
 				51F0326418B93AE700FFA71E /* Lightening_selected.png in Resources */,
 				513203BB18B35FEE007A53FD /* Icon-76@2x.png in Resources */,
+				518AB39218BF2F5200F8000C /* Flag_Story_selected@2x.png in Resources */,
 				51B234E417154C43004241C1 /* shareButtonWhite@2x.png in Resources */,
 				51E2146118B9185000619150 /* Lightening.png in Resources */,
 				51D5E6E8182220A5005CA2F4 /* hideStoryButton.png in Resources */,
 				51B234FB171658BF004241C1 /* Google Android License.txt in Resources */,
 				51B49A2518A0C0CE0073F184 /* globe_white@2x.png in Resources */,
 				51B234FC171658BF004241C1 /* Roboto-Black.ttf in Resources */,
+				518AB39418BF2F5200F8000C /* Flag_Story@2x.png in Resources */,
 				51B234FD171658BF004241C1 /* Roboto-BlackItalic.ttf in Resources */,
 				51B49A141898E8620073F184 /* GooglePlacePickerViewController.xib in Resources */,
 				51B234FE171658BF004241C1 /* Roboto-Bold.ttf in Resources */,
@@ -1944,6 +1935,7 @@
 				51F862321859701F0037D576 /* slider_background@2x.png in Resources */,
 				513203C118B365A0007A53FD /* Images.xcassets in Resources */,
 				51E2146218B9185000619150 /* Lightening@2x.png in Resources */,
+				518AB39118BF2F5200F8000C /* Flag_Story_selected.png in Resources */,
 				51E2146618B91B5700619150 /* Scroll_selected@2x.png in Resources */,
 				518AB38718BDCFB600F8000C /* BNLogo.png in Resources */,
 				51BDA1E1173B788F00BD2C19 /* Default.png in Resources */,

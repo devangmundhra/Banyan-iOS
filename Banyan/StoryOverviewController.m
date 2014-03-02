@@ -69,15 +69,9 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
     UIBarButtonItem *leftButton = [[UIBarButtonItem alloc] initWithImage:backArrowImage style:UIBarButtonItemStyleBordered target:self action:@selector(cancel:)];
     [self.navigationItem setLeftBarButtonItem:leftButton];
     
-    if (self.story.canContribute) {
-        UIImage *settingsImage = [UIImage imageNamed:@"Cog"];
-        UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithImage:settingsImage style:UIBarButtonItemStyleBordered target:self action:@selector(settingsPopup:)];
-        [self.navigationItem setRightBarButtonItem:rightButton];
-    } else {
-        // Share button
-        UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Share" style:UIBarButtonItemStyleBordered target:self.story action:@selector(shareOnFacebook)];
-        [self.navigationItem setRightBarButtonItem:rightButton];
-    }
+    UIImage *settingsImage = [UIImage imageNamed:@"Cog"];
+    UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithImage:settingsImage style:UIBarButtonItemStyleBordered target:self action:@selector(settingsPopup:)];
+    [self.navigationItem setRightBarButtonItem:rightButton];
     
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
     // Story title label
@@ -129,12 +123,21 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
 # pragma mark target/actions
 - (void)settingsPopup:(id)sender
 {
+    
     UIActionSheet *actionSheet = nil;
-    actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                              delegate:self
-                                     cancelButtonTitle:@"Cancel"
-                                destructiveButtonTitle:self.story.author.userId == [BNSharedUser currentUser].userId ? @"Delete story" : nil
-                                     otherButtonTitles:@"Edit story", @"Share", nil];
+    if (self.story.canContribute && [BanyanAppDelegate loggedIn]) {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                  delegate:self
+                                         cancelButtonTitle:@"Cancel"
+                                    destructiveButtonTitle:self.story.author.userId == [BNSharedUser currentUser].userId ? @"Delete story" : @"Flag story"
+                                         otherButtonTitles:@"Edit story", @"Share", nil];
+    } else {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                  delegate:self
+                                         cancelButtonTitle:@"Cancel"
+                                    destructiveButtonTitle:@"Flag story"
+                                         otherButtonTitles:@"Share", nil];
+    }
     
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
     [actionSheet showInView:self.view];
@@ -218,11 +221,18 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
     if (buttonIndex == actionSheet.cancelButtonIndex) {
         // DO NOTHING ON CANCEL
     }
-    else if (buttonIndex == actionSheet.destructiveButtonIndex) {
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Delete story"]) {
         // Delete story
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Delete Story"
                                                             message:@"Do you want to delete this story?"
                                                            delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+        
+        [alertView show];
+    } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Flag story"]) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Flag Story"
+                                                            message:@"Do you want to report this story as inappropriate?\rYou can optionally specify a brief message for the reviewers."
+                                                           delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+        alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
         
         [alertView show];
     }
@@ -245,6 +255,10 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
                 [self.delegate storyOverviewControllerDeletedStory];
             }];
         }];
+    } else if ([alertView.title isEqualToString:@"Flag Story"] && buttonIndex==1) {
+        [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
+        NSString *message = [alertView textFieldAtIndex:0].text;
+        [self.story flaggedWithMessage:message];
     }
 }
 

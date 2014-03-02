@@ -110,14 +110,14 @@
 }
 
 #pragma SingleStoryView delegate
-- (void)deleteStory:(id)sender
-{
-    [self.delegate deleteStory:self.story];
-}
-
 - (void)addPiece:(id)sender
 {
     [self.delegate addPieceForStory:self.story];
+}
+
+- (void)flagStory:(id)sender withMessage:(NSString *)message
+{
+    [self.delegate flagStory:self.story withMessage:message];
 }
 
 - (void)shareStory:(id)sender

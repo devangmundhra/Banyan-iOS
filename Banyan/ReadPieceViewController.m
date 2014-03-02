@@ -31,7 +31,7 @@
 @interface ReadPieceViewController (StoryOverviewControllerDelegate) <StoryOverviewControllerDelegate>
 @end
 
-@interface ReadPieceViewController () <UIActionSheetDelegate, ModifyPieceViewControllerDelegate>
+@interface ReadPieceViewController () <UIActionSheetDelegate, UIAlertViewDelegate, ModifyPieceViewControllerDelegate>
 
 @property (strong, nonatomic) UIView *storyInfoView;
 @property (strong, nonatomic) IBOutlet UIScrollView *contentView;
@@ -532,13 +532,13 @@
         actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                   delegate:self
                                          cancelButtonTitle:@"Cancel"
-                                    destructiveButtonTitle:self.piece.author.userId == [BNSharedUser currentUser].userId ? @"Delete piece" : nil
+                                    destructiveButtonTitle:self.piece.author.userId == [BNSharedUser currentUser].userId ? @"Delete piece" : @"Flag piece"
                                          otherButtonTitles:@"Add a piece", @"Edit piece", @"Share", nil];
     } else {
         actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                   delegate:self
                                          cancelButtonTitle:@"Cancel"
-                                    destructiveButtonTitle:nil
+                                    destructiveButtonTitle:@"Flag piece"
                                          otherButtonTitles:@"Share", nil];
     }
     
@@ -582,13 +582,21 @@
     // the user clicked one of the OK/Cancel buttons
     if (buttonIndex == actionSheet.cancelButtonIndex) {
         // DO NOTHING ON CANCEL
-    }
-    else if (buttonIndex == actionSheet.destructiveButtonIndex) {
+    } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Delete piece"]) {
         // Delete piece
-        // Do this after a delay so that the action sheet can be dismissed
-        [actionSheet dismissWithClickedButtonIndex:buttonIndex animated:YES];
-        [self deletePiece:self.piece];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Delete Piece"
+                                                            message:@"Do you want to delete this piece?"
+                                                           delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+        
+        [alertView show];
     }
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Flag piece"]) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Flag Piece"
+                                                            message:@"Do you want to report this piece as inappropriate?\rYou can optionally specify a brief message for the reviewers."
+                                                           delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+        alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+        
+        [alertView show];    }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Add a piece"]) {
         Piece *piece = [Piece newPieceDraftForStory:self.piece.story];
         ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
@@ -610,6 +618,18 @@
     }
     else {
         NSLog(@"StoryReaderController_actionSheetclickedButtonAtIndex %@", [actionSheet buttonTitleAtIndex:buttonIndex]);
+    }
+}
+
+# pragma mark AlertVew Delegate methods
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if ([alertView.title isEqualToString:@"Delete Piece"] && buttonIndex==1) {
+        [self deletePiece:self.piece];
+    } else if ([alertView.title isEqualToString:@"Flag Piece"] && buttonIndex==1) {
+        [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
+        NSString *message = [alertView textFieldAtIndex:0].text;
+        [self.piece flaggedWithMessage:message];
     }
 }
 

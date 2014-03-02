@@ -23,8 +23,8 @@
 
 @protocol SingleStoryViewDelegate <NSObject>
 
-- (void)deleteStory:(id)sender;
 - (void)addPiece:(id)sender;
+- (void)flagStory:(id)sender withMessage:(NSString *)message;
 - (void)shareStory:(id)sender;
 - (void)hideStory:(id)sender;
 

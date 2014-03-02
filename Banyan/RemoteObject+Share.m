@@ -9,6 +9,7 @@
 #import "RemoteObject+Share.h"
 #import "BanyanAppDelegate.h"
 #import "MBProgressHUD.h"
+#import "AFBanyanAPIClient.h"
 
 @implementation RemoteObject (Share)
 - (void) shareOnFacebookWithName:(NSString *)name
@@ -160,5 +161,18 @@
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];
     [alertView show];
+}
+
+- (void) flaggedWithMessage:(NSString *)message
+{
+    NSLog(@"Flagging story with message: %@", message);
+    [[AFBanyanAPIClient sharedClient] postPath:@"flag_object/"
+                                    parameters:@{@"content_object":self.resourceUri, @"message":message}
+                                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                           NSLog(@"Object flagged");
+                                       }
+                                       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                           NSLog(@"An error occurred: %@", error.localizedDescription);
+                                       }];
 }
 @end

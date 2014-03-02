@@ -15,8 +15,8 @@
 
 @protocol SingleStoryCellDelegate <NSObject>
 
+- (void) flagStory:(Story *)story withMessage:(NSString *)message;
 - (void) addPieceForStory:(Story *)story;
-- (void) deleteStory:(Story *)story;
 - (void) shareStory:(Story *)story;
 - (void) hideStory:(Story *)story;
 

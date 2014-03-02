@@ -311,11 +311,9 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self addPieceToStory:story];
 }
 
-- (void) deleteStory:(Story *)story
+- (void) flagStory:(Story *)story withMessage:(NSString *)message
 {
-    [self.fetchedResultsController indexPathForObject:story];
-    NSIndexPath *myIndexPath = [self.fetchedResultsController indexPathForObject:story];
-    if (myIndexPath) [self tableView:self.tableView commitEditingStyle:UITableViewCellEditingStyleDelete forRowAtIndexPath:myIndexPath];
+    [story flaggedWithMessage:message];
 }
 
 - (void) shareStory:(Story *)story
@@ -335,7 +333,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                                               [story remove];
                                           }
                                           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                              NSLog(@"An error occurred: %@", error.localizedRecoverySuggestion);
+                                              NSLog(@"An error occurred: %@", error.localizedDescription);
                                           }];
     }
 }
