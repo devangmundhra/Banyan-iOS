@@ -1,9 +1,9 @@
 //
 //  UserLoginViewController.h
-//  Storied
+//  Banyan
 //
 //  Created by Devang Mundhra on 3/29/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Banyan. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -12,8 +12,8 @@
 
 @protocol UserLoginViewControllerDelegate <NSObject>
 
-- (void) loginViewControllerDidLoginWithFacebookUser:(id<FBGraphUser>)user;
-
+- (void) loginViewControllerDidLoginWithFacebookUser:(id<FBGraphUser>)user
+                                 withCompletionBlock:(void (^)(bool succeeded, NSError *error))block;
 
 @end
 

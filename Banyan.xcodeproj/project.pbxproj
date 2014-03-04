@@ -67,10 +67,6 @@
 		515CF517183DF1650071C9B2 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F22889161A9DF2006B3AA7 /* StoreKit.framework */; };
 		515CF518183F3B1A0071C9B2 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51F22884161A9DC1006B3AA7 /* AdSupport.framework */; };
 		515DE02F183040C200B88596 /* UIImageView+BanyanMedia.m in Sources */ = {isa = PBXBuildFile; fileRef = 515DE02E183040C200B88596 /* UIImageView+BanyanMedia.m */; };
-		5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B615E75B420072749C /* buttonFacebook.png */; };
-		5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B715E75B420072749C /* buttonFacebook@2x.png */; };
-		5166B1BC15E75B420072749C /* buttonFacebookSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B815E75B420072749C /* buttonFacebookSelected.png */; };
-		5166B1BD15E75B420072749C /* buttonFacebookSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5166B1B915E75B420072749C /* buttonFacebookSelected@2x.png */; };
 		517A018C1706D92E00665F0F /* LocationPickerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 517A018B1706D92E00665F0F /* LocationPickerButton.m */; };
 		517A01BA17095EDC00665F0F /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 517A01B917095EDC00665F0F /* CoreText.framework */; };
 		517A01BC17095F0E00665F0F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 517A01BB17095F0E00665F0F /* OpenGLES.framework */; };
@@ -359,10 +355,6 @@
 		51596AB61745E284008F5276 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		515DE02D183040C200B88596 /* UIImageView+BanyanMedia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImageView+BanyanMedia.h"; path = "Banyan/UIImageView+BanyanMedia.h"; sourceTree = "<group>"; };
 		515DE02E183040C200B88596 /* UIImageView+BanyanMedia.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImageView+BanyanMedia.m"; path = "Banyan/UIImageView+BanyanMedia.m"; sourceTree = "<group>"; };
-		5166B1B615E75B420072749C /* buttonFacebook.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebook.png; sourceTree = "<group>"; };
-		5166B1B715E75B420072749C /* buttonFacebook@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFacebook@2x.png"; sourceTree = "<group>"; };
-		5166B1B815E75B420072749C /* buttonFacebookSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = buttonFacebookSelected.png; sourceTree = "<group>"; };
-		5166B1B915E75B420072749C /* buttonFacebookSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buttonFacebookSelected@2x.png"; sourceTree = "<group>"; };
 		517A018A1706D92E00665F0F /* LocationPickerButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocationPickerButton.h; path = Banyan/LocationPickerButton.h; sourceTree = "<group>"; };
 		517A018B1706D92E00665F0F /* LocationPickerButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocationPickerButton.m; path = Banyan/LocationPickerButton.m; sourceTree = "<group>"; };
 		517A01B917095EDC00665F0F /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
@@ -951,10 +943,6 @@
 				51B234E9171658BF004241C1 /* Roboto Font */,
 				5181535B1713F49F006F73D3 /* Swipeable View Symbols */,
 				513203B118B35D86007A53FD /* Icons */,
-				5166B1B615E75B420072749C /* buttonFacebook.png */,
-				5166B1B715E75B420072749C /* buttonFacebook@2x.png */,
-				5166B1B815E75B420072749C /* buttonFacebookSelected.png */,
-				5166B1B915E75B420072749C /* buttonFacebookSelected@2x.png */,
 				51F2288B161A9E22006B3AA7 /* Default-568h@2x.png */,
 				51BDA1E2173B789600BD2C19 /* Default@2x.png */,
 				51BDA1E0173B788F00BD2C19 /* Default.png */,
@@ -1828,12 +1816,8 @@
 				51F862311859701F0037D576 /* slider_background.png in Resources */,
 				513203B018B3593D007A53FD /* powered-by-google-on-white@2x.png in Resources */,
 				5189B34E15B395F300562DD0 /* UserLoginViewController.xib in Resources */,
-				5166B1BA15E75B420072749C /* buttonFacebook.png in Resources */,
 				518AB37F18BDBF8F00F8000C /* IntroBkg3.png in Resources */,
 				518AB38018BDBF8F00F8000C /* IntroBkg3@2x.png in Resources */,
-				5166B1BB15E75B420072749C /* buttonFacebook@2x.png in Resources */,
-				5166B1BC15E75B420072749C /* buttonFacebookSelected.png in Resources */,
-				5166B1BD15E75B420072749C /* buttonFacebookSelected@2x.png in Resources */,
 				513203BC18B35FEE007A53FD /* Icon-Small-40.png in Resources */,
 				51B49A1C1898E8DF0073F184 /* location.png in Resources */,
 				518AB38218BDBF8F00F8000C /* IntroBkg2@2x.png in Resources */,

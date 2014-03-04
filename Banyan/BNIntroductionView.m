@@ -42,11 +42,10 @@
     
     MYIntroductionPanel *panel3 = [[MYIntroductionPanel alloc] initWithFrame:frame
                                                                        title:@"Almost there..."
-                                                                 description:@"To start with, you can read some of the publicly shared stories by some of the Banyan users."
-                                   "You might have been invited to more stories by your friends, but you will only find it out once you sign in!\r\r"
-                                   "What you have downloaded is just the beginning of an experiment. You will surely find some rough edges here and there. "
-                                   "We are however, constantly rubbing sandpaper on those edges.\r\r"
-                                   "Let us know your thoughts through the feedback tab available in the side menu, or email us at hello@banyan.io"];
+                                                                 description:@"To start with, you can read some of the publicly shared stories by users like you."
+                                   "To share your own stories, or to see stories to which you might have been invited to, please Sign in.\r\r"
+                                   "What you have downloaded is just the beginning of an experiment. You will surely find some rough edges here and there, on which we are constantly rubbing the sand paper.\r\r "
+                                   "We are always eager to hear from you- your thoughts, feedback, complaints and what you would like to see in the app. You can reach us through the feedback tab available in the side menu, or email us at hello@banyan.io"];
     
     //Add panels to an array
     NSArray *panels = @[panel1, panel2, panel3];

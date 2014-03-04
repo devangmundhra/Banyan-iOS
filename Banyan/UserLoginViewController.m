@@ -1,21 +1,30 @@
 //
 //  UserLoginViewController.m
-//  Storied
+//  Banyan
 //
 //  Created by Devang Mundhra on 3/29/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Banyan. All rights reserved.
 //
 
 #import "UserLoginViewController.h"
+#import "TTTAttributedLabel.h"
+#import "BanyanAppDelegate.h"
+#import "MBProgressHUD.h"
+
+@interface UserLoginViewController (TTTAttributedLabelDelegate) <TTTAttributedLabelDelegate, UIActionSheetDelegate>
+@end
 
 @interface UserLoginViewController () <FBLoginViewDelegate>
 @property (weak, nonatomic) IBOutlet FBLoginView *fbLoginView;
+@property (weak, nonatomic) IBOutlet UILabel *noSharePromiseLabel;
+@property (weak, nonatomic) IBOutlet TTTAttributedLabel *eulaLabel;
 
 @end
 
 @implementation UserLoginViewController
 @synthesize fbLoginView = _fbLoginView;
 @synthesize delegate = _delegate;
+@synthesize noSharePromiseLabel = _noSharePromiseLabel;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -30,10 +39,24 @@
 {
     [super viewDidLoad];
 
+    // Do any additional setup after loading the view, typically from a nib.
     self.title = @"Get started!";
     [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
 
-	// Do any additional setup after loading the view, typically from a nib.
+    self.noSharePromiseLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:22];
+    
+    self.eulaLabel.font = [UIFont fontWithName:@"Roboto" size:16];
+    self.eulaLabel.textColor = BANYAN_GRAY_COLOR;
+    self.eulaLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.eulaLabel.numberOfLines = 0;
+    self.eulaLabel.textAlignment = NSTextAlignmentLeft;
+    self.eulaLabel.verticalAlignment = TTTAttributedLabelVerticalAlignmentCenter;
+    self.eulaLabel.enabledTextCheckingTypes = NSTextCheckingTypeLink;
+    self.eulaLabel.text = @"By logging in, you agree to the terms that govern the use of the Banyan application.";
+    NSRange range = [self.eulaLabel.text rangeOfString:@"terms"];
+    [self.eulaLabel addLinkToURL:[NSURL URLWithString:@"https://www.banyan.io/terms"] withRange:range];
+    self.eulaLabel.delegate = self;
+
     self.fbLoginView.readPermissions = [NSArray arrayWithObjects: @"email", @"user_about_me", @"user_photos", nil];
 }
 
@@ -44,34 +67,6 @@
 
 #pragma mark target actions
 
-//- (IBAction)facebookLogin:(UIButton *)sender 
-//{
-//    [FBSession openActiveSessionWithReadPermissions:self.facebookPermissions
-//                                       allowLoginUI:YES
-//                                  completionHandler:^(FBSession *session,
-//                                                      FBSessionState status,
-//                                                      NSError *error) {
-//                                      [self.activityIndicator stopAnimating]; // Hide loading indicator
-//                                      if (error) {
-//                                          NSLog(@"Uh oh. An error occurred: %@", error);
-//                                          UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Error" message:[error description] delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Dismiss", nil];
-//                                          [alert show];
-//                                      } else {
-//                                          // Respond to session state changes
-//                                          if ([session isOpen]) {
-//                                              // Call the banyan api to get the real user data
-//                                              [self.delegate logInViewController:self didLogInUser:nil];
-//                                          } else {
-//                                              UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Error" message:@"Unable to open an active session on facebook" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Dismiss", nil];
-//                                              [alert show];
-//                                          }
-//                                      }
-//                                  }];
-//    
-//    [self.activityIndicator startAnimating]; // Show loading indicator until login is finished
-//    [self dismissViewControllerAnimated:YES completion:nil];
-//    return;
-//}
 
 - (IBAction)cancel:(id)sender 
 {
@@ -82,8 +77,23 @@
 - (void)loginViewFetchedUserInfo:(FBLoginView *)loginView
                             user:(id<FBGraphUser>)user
 {
-    [self.delegate loginViewControllerDidLoginWithFacebookUser:user];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
+    hud.labelText = @"Registering with Banyan";
+    hud.labelFont = [UIFont fontWithName:@"Roboto" size:14];
+    __weak MBProgressHUD *whud = hud;
+    __weak UserLoginViewController *wself = self;
+    [self.delegate loginViewControllerDidLoginWithFacebookUser:user withCompletionBlock:^(bool succeeded, NSError *error) {
+        if (!succeeded) {
+            [[[UIAlertView alloc] initWithTitle:@"Error when registering with Banyan"
+                                        message:@"Sorry for the inconvenience. Please try in a bit"
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
+            [APP_DELEGATE logout];
+        }
+        [whud hide:YES];
+        [wself dismissViewControllerAnimated:YES completion:nil];
+    }];
 }
 
 - (void)loginView:(FBLoginView *)loginView
@@ -128,4 +138,26 @@
     
     // Release any cached data, images, etc that aren't in use.
 }
+@end
+
+@implementation UserLoginViewController (TTTAttributedLabelDelegate)
+
+- (void)attributedLabel:(__unused TTTAttributedLabel *)label
+   didSelectLinkWithURL:(NSURL *)url
+{
+    [[[UIActionSheet alloc] initWithTitle:[url absoluteString] delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Open Link in Safari", nil), nil] showInView:self.view];
+}
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet
+clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == actionSheet.cancelButtonIndex) {
+        return;
+    }
+    
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:actionSheet.title]];
+}
+
 @end

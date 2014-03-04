@@ -84,7 +84,7 @@
         // Update user details and get updates on FB friends
         [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
             if (!error) {
-                [self updateUserCredentials:result];
+                [self updateUserCredentials:result withCompletionBlock:nil];
             } else {
                 [self facebookRequest:connection didFailWithError:error];
             }
@@ -376,13 +376,13 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 }
 
 # pragma mark UserLoginViewControllerDelegate methods
-- (void) loginViewControllerDidLoginWithFacebookUser:(id<FBGraphUser>)user
+- (void) loginViewControllerDidLoginWithFacebookUser:(id<FBGraphUser>)user withCompletionBlock:(void (^)(bool succeeded, NSError *error))block
 {
-    [self updateUserCredentials:user];
+    [self updateUserCredentials:user withCompletionBlock:block];
 }
 
 
-- (void) updateUserCredentials:(id<FBGraphUser>)user
+- (void) updateUserCredentials:(id<FBGraphUser>)user withCompletionBlock:(void (^)(bool succeeded, NSError *error))block
 {
     NSString *accessToken = [[FBSession.activeSession accessTokenData] accessToken];
     NSMutableDictionary *postInfo = [NSMutableDictionary dictionary];
@@ -419,9 +419,13 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                                             andToken:apikey];
                                            
                                            [self subscribeToPushNotifications];
-                                           
+                                           if (block) {
+                                               block(YES, nil);
+                                           }
                                        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                           NSLog(@"An error occurred: %@", error.localizedDescription);
+                                           if (block) {
+                                               block(NO, error);
+                                           }
                                        }];
 }
 
