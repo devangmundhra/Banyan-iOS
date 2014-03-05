@@ -64,17 +64,17 @@
     
     story.remoteStatus = RemoteObjectStatusPushing;
     
-    NSLog(@"Trying to update story %@", story.bnObjectId);
+    BNLogInfo(@"Trying to update story %@", story.bnObjectId);
     
     // Block to upload the story
     void (^updateStory)(Story *) = ^(Story *story) {
-        NSLog(@"Edit Story %@", story);
+        BNLogTrace(@"Edit Story %@", story);
         
         [[RKObjectManager sharedManager] putObject:story
                                               path:nil
                                         parameters:nil
                                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                               NSLog(@"Update story successful %@", story);
+                                               BNLogTrace(@"Update story successful %@", story);
                                                story.remoteStatus = RemoteObjectStatusSync;
                                                // Be eager in uploading pieces if available
                                                [APP_DELEGATE fireRemoteObjectTimer];
@@ -92,7 +92,7 @@
                                                                      otherButtonTitles:nil]
                                                     show];
                                                }
-                                               NSLog(@"Error in updating story");
+                                               BNLogError(@"Error in updating story %@", story.bnObjectId);
                                            }];
     };
     
@@ -113,14 +113,14 @@
                 // Upload the media then update the story
                 [media
                  uploadWithSuccess:^{
-                     NSLog(@"Successfully uploaded %@ [%@] when editing story %@", media.mediaTypeName, media.filename, story.title);
+                     BNLogTrace(@"Successfully uploaded %@ [%@] when editing story %@", media.mediaTypeName, media.filename, story.title);
                      story.remoteStatus = RemoteObjectStatusFailed; // So that this is called again to update the media array
                      [Story editStory:story];
                  }
                  failure:^(NSError *error) {
                      story.remoteStatus = RemoteObjectStatusFailed;
                      [story save];
-                     NSLog(@"Error uploading %@ [%@] when editing story %@", media.mediaTypeName, media.filename, story.title);
+                     BNLogError(@"Error uploading %@ [%@] when editing story %@", media.mediaTypeName, media.filename, story.title);
                  }];
                 mediaBeingUploaded = YES;
             }

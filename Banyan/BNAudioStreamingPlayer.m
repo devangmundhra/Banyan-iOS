@@ -723,7 +723,7 @@ NSString *kCurrentItemKey	= @"currentItem";
 	// if application sound is not playing, there's nothing to do, so return.
 	if (![self isPlaying]) {
         
-		NSLog (@"Audio route change while application audio is stopped.");
+		BNLogWarning(@"Audio route change while application audio is stopped.");
 		return;
 		
 	} else {
@@ -737,7 +737,7 @@ NSString *kCurrentItemKey	= @"currentItem";
 		if (routeChangeReason == AVAudioSessionRouteChangeReasonOldDeviceUnavailable) {
             
 			[self.player pause];
-			NSLog (@"Output device removed, so application audio was paused.");
+			BNLogWarning (@"Output device removed, so application audio was paused.");
             
 			UIAlertView *routeChangeAlertView =
             [[UIAlertView alloc]	initWithTitle: NSLocalizedString (@"Playback Paused", @"Title for audio hardware route-changed alert view")
@@ -749,7 +749,7 @@ NSString *kCurrentItemKey	= @"currentItem";
 			// release takes place in alertView:clickedButtonAtIndex: method
             
 		} else {
-			NSLog (@"A route change occurred that does not require pausing of application audio.");
+			BNLogWarning (@"A route change occurred that does not require pausing of application audio.");
 		}
 	}
 }

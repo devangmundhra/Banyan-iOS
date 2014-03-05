@@ -43,6 +43,7 @@ NSString *const MediaPickerViewControllerInfoImage = @"MediaPickerViewController
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    [self setGAIScreenName:@"Media Picker"];
 }
 
 - (BOOL)shouldStartCameraController {
@@ -156,10 +157,10 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
         [library writeImageToSavedPhotosAlbum:image.CGImage orientation:(ALAssetOrientation)image.imageOrientation completionBlock:^(NSURL *assetURL, NSError *error )
          {
              if (assetURL) {
-                 NSLog(@"%s Image saved to photo albums %@", __PRETTY_FUNCTION__, assetURL);
+                 BNLogInfo(@"Image saved to photo albums %@", assetURL);
                  self.imageURL = assetURL;
              } else {
-                 NSLog(@"%s Error saving image: %@", __PRETTY_FUNCTION__, error);
+                 BNLogError(@"Error saving image: %@", error);
              }
              [MBProgressHUD hideHUDForView:self.view animated:YES];
              NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:self.imageURL, MediaPickerViewControllerInfoURL, self.image, MediaPickerViewControllerInfoImage, nil];

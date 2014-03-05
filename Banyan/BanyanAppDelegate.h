@@ -21,6 +21,7 @@
 #define TESTFLIGHT_BANYAN_APP_TOKEN @"ebf0542f-c311-4378-b6d0-1f14c6fdf4a6"
 
 #define GOOGLE_API_KEY @"AIzaSyBwOBP068EO-Ubi0Qzu8uwFnZZHaIVwNyg"
+#define GOOGLE_ANALYTICS_ID @"UA-35913422-2"
 
 #define APP_DELEGATE ((BanyanAppDelegate *)([UIApplication sharedApplication].delegate))
 @interface BanyanAppDelegate : UIResponder <UIApplicationDelegate>

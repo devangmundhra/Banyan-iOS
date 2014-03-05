@@ -108,6 +108,7 @@
 {
     [super viewDidLoad];
     
+    [self setGAIScreenName:@"Facebook Invitation Screen"];
     self.searchBar.placeholder = @"Search for a friend";
     self.searchDisplayController.delegate = self;
     self.searchDisplayController.searchResultsDataSource = self;

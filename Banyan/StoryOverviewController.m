@@ -62,6 +62,8 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self setGAIScreenName:@"Story Overview Screen"];
+    
 	// Do any additional setup after loading the view.
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
@@ -79,7 +81,7 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
     
     // Piece collection view
     CGRect frame = self.view.bounds;
-#define COLL_VIEW_INSET 5
+#define COLL_VIEW_INSET 4
     UICollectionViewFlowLayout *collViewLayout = [[UICollectionViewFlowLayout alloc] init];
     CGFloat pcSz = ceilf(CGRectGetWidth(frame)/3) - 3*COLL_VIEW_INSET;
     collViewLayout.itemSize = CGSizeMake(pcSz, pcSz);

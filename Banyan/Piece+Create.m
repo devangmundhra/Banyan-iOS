@@ -61,7 +61,8 @@
     
     // Block to upload the piece
     void (^createPiece)(Piece *) = ^(Piece *piece) {
-        NSLog(@"Adding piece %@ for story %@", piece, piece.story);
+        BNLogInfo(@"Adding piece %@ for story %@", piece.shortText ? piece.shortText : piece.longText, piece.story.bnObjectId);
+        BNLogTrace(@"Adding piece %@ for story %@", piece, piece.story);
         
         NSManagedObjectID *storyID = piece.story.objectID;
 
@@ -83,11 +84,11 @@
                                                                              existingObjectWithID:storyID
                                                                              error:&error];
                                                     if (error || !story) {
-                                                        NSLog(@"Error %@ in fetching story after the piece was created", error.userInfo);
+                                                        BNLogError(@"Error %@ in fetching story %@ after the piece was created", error.userInfo, story.bnObjectId);
                                                         story = nil;
                                                     }
                                                 }
-                                                NSLog(@"Create piece successful %@", piece);
+                                                BNLogTrace(@"Create piece (%@) %@ for story %@", piece.bnObjectId, piece.shortText ? piece.shortText : piece.longText, piece.story.bnObjectId);
                                                 [Piece viewedPiece:piece];
                                             }
                                             failure:^(RKObjectRequestOperation *operation, NSError *error) {
@@ -104,7 +105,7 @@
                                                                              existingObjectWithID:storyID
                                                                              error:&error];
                                                     if (error || !story) {
-                                                        NSLog(@"Error %@ in fetching story after the piece was created", error.userInfo);
+                                                        BNLogError(@"Error %@ in fetching story %@ after the piece was created", error.userInfo, story.bnObjectId);
                                                         story = nil;
                                                     }
                                                 }
@@ -121,7 +122,7 @@
                                                         [Piece deletePiece:piece completion:nil];
                                                     }
                                                 }
-                                                NSLog(@"Error in create piece");
+                                                BNLogError(@"Error in create piece");
                                             }];
     };
     
@@ -140,14 +141,14 @@
                 // Upload the media then update the piece
                 [media
                  uploadWithSuccess:^{
-                     NSLog(@"Successfully uploaded %@ [%@] when creating piece %@", media.mediaTypeName, media.filename, piece.shortText.length ? piece.shortText : @"");
+                     BNLogTrace(@"Successfully uploaded %@ [%@] when creating piece %@", media.mediaTypeName, media.filename, piece.shortText.length ? piece.shortText : @"");
                      piece.remoteStatus = RemoteObjectStatusPushing; // So that the new piece can be uploaded now with all the media
                      [Piece createNewPiece:piece];
                  }
                  failure:^(NSError *error) {
                      piece.remoteStatus = RemoteObjectStatusFailed;
                      [piece save];
-                     NSLog(@"Error uploading %@ [%@] when creating piece %@", media.mediaTypeName, media.filename, piece.shortText.length ? piece.shortText : @"");
+                     BNLogError(@"Error uploading %@ [%@] when creating piece %@", media.mediaTypeName, media.filename, piece.shortText.length ? piece.shortText : @"");
                  }];
                 mediaBeingUploaded = YES;
             }

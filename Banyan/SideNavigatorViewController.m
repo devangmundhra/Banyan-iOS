@@ -68,6 +68,7 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self setGAIScreenName:@"Hamburger menu screen"];
     
     // Notifications to handle permission controls
     [[NSNotificationCenter defaultCenter] addObserver:self

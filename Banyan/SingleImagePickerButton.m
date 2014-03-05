@@ -171,7 +171,7 @@
     __weak BNImageCropperViewController *wImageEditorVc = imageEditorVc;
     imageEditorVc.doneCallback = ^(UIImage *editedImage, BOOL canceled){
         if (!canceled) {
-            NSLog(@"Size of edited image is %@", NSStringFromCGSize(editedImage.size));
+            BNLogTrace(@"Size of edited image is %@", NSStringFromCGSize(editedImage.size));
             [self.thumbnailButton setBackgroundImage:editedImage forState:UIControlStateNormal];
             self.media.thumbnail = editedImage;
         }

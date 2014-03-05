@@ -32,22 +32,22 @@
     }
     piece.remoteStatus = RemoteObjectStatusPushing;
     
-    NSLog(@"Trying to update piece %@", piece.bnObjectId);
+    BNLogInfo(@"Trying to update piece %@", piece.bnObjectId);
     
     // Block to upload the piece
     void (^updatePiece)(Piece *) = ^(Piece *piece) {
-        NSLog(@"Update piece %@ for story %@", piece, piece.story);
+        BNLogTrace(@"Update piece %@ for story %@", piece, piece.story);
         
         [[RKObjectManager sharedManager] putObject:piece
                                               path:nil
                                         parameters:nil
                                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                               NSLog(@"Update piece successful %@", piece);
+                                               BNLogTrace(@"Update piece successful %@", piece);
                                                piece.remoteStatus = RemoteObjectStatusSync;
                                                [piece save];
                                            }
                                            failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                               NSLog(@"Error in updating piece");
+                                               BNLogError(@"Error in updating piece");
                                                piece.remoteStatus = RemoteObjectStatusFailed;
                                                if ([[error localizedDescription] rangeOfString:@"got 400"].location != NSNotFound) {
                                                    if ([[error localizedRecoverySuggestion] rangeOfString:piece.story.resourceUri].location != NSNotFound) {
@@ -80,14 +80,14 @@
                 // Upload the media then update the piece
                 [media
                  uploadWithSuccess:^{
-                     NSLog(@"Successfully uploaded %@ [%@] when editing piece %@", media.mediaTypeName, media.filename, piece.shortText.length ? piece.shortText : @"");
+                     BNLogTrace(@"Successfully uploaded %@ [%@] when editing piece %@", media.mediaTypeName, media.filename, piece.shortText.length ? piece.shortText : @"");
                      piece.remoteStatus = RemoteObjectStatusFailed; // So that this is called again to update the media array
                      [Piece editPiece:piece];
                  }
                  failure:^(NSError *error) {
                      piece.remoteStatus = RemoteObjectStatusFailed;
                      [piece save];
-                     NSLog(@"Error uploading %@ [%@] when editing piece %@", media.mediaTypeName, media.filename, piece.shortText.length ? piece.shortText : @"");
+                     BNLogError(@"Error uploading %@ [%@] when editing piece %@", media.mediaTypeName, media.filename, piece.shortText.length ? piece.shortText : @"");
                  }];
                 mediaBeingUploaded = YES;
             }

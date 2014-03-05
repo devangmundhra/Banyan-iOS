@@ -42,6 +42,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self setGAIScreenName:@"Following friends"];
     
     // Add the find friends button
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), 45)];
@@ -172,7 +173,7 @@
 
 - (void) findFriends
 {
-    NSLog(@"Finding Friends");
+    BNLogTrace(@"Finding Friends");
 }
 
 #pragma Memory Management

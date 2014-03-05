@@ -70,7 +70,7 @@
 {
     NSError *error = nil;
     if (![self.managedObjectContext saveToPersistentStore:&error]) {
-        NSLog(@"Unresolved Core Data Save error %@, %@ in saving media", error, [error userInfo]);
+        BNLogError(@"Unresolved Core Data Save error %@, %@ in saving media", error, [error userInfo]);
         exit(-1);
     }
 }
@@ -80,18 +80,18 @@
     for (NSString *key in [[[source entity] attributesByName] allKeys]) {
         // Skip filename to avoid getting multiple media object when mapping through restkit identificationAttributes
         if ([key isEqualToString:@"filename"]) {
-            NSLog(@"Skipping attribute %@", key);
+            BNLogTrace(@"Skipping attribute %@", key);
             continue;
         }
-        NSLog(@"Copying attribute %@", key);
+        BNLogTrace(@"Copying attribute %@", key);
         [self setValue:[source valueForKey:key] forKey:key];
     }
     
     for (NSString *key in [[[source entity] relationshipsByName] allKeys]) {
         if ([key isEqualToString:@"remoteObject"]) {
-            NSLog(@"Skipping relationship %@", key);
+            BNLogTrace(@"Skipping relationship %@", key);
         } else {
-            NSLog(@"Copying relationship %@", key);
+            BNLogTrace(@"Copying relationship %@", key);
             [self setValue: [source valueForKey:key] forKey: key];
         }
     }
@@ -193,7 +193,7 @@
         return;
     }
 
-    NSLog(@"Uploading %@ media (Status: %@, filename: %@) for object id: %@", self.mediaType, self.remoteStatusNumber, self.filename, self.remoteObject.bnObjectId);
+    BNLogInfo(@"Uploading %@ media (Status: %@, filename: %@) for object id: %@", self.mediaType, self.remoteStatusNumber, self.filename, self.remoteObject.bnObjectId);
     
     void (^success)() = ^(){
         self.remoteStatus = MediaRemoteStatusSync;
@@ -274,7 +274,7 @@
                 NSFileManager *fileManager = [NSFileManager defaultManager];
                 NSError *error = nil;
                 if (![fileManager removeItemAtPath:[(NSURL *)[NSURL URLWithString:self.localURL] path] error:&error])
-                    NSLog(@"Error: %@ in deleting file: %@", error.localizedDescription, self.localURL);
+                    BNLogError(@"Error: %@ in deleting file: %@", error.localizedDescription, self.localURL);
                 
                 successBlock();
             } else {
@@ -360,7 +360,7 @@
             NSFileManager *fileManager = [NSFileManager defaultManager];
             NSError *error = nil;
             if (![fileManager removeItemAtPath:[(NSURL *)[NSURL URLWithString:self.localURL] path] error:&error])
-                NSLog(@"Error: %@ in deleting file: %@", error.localizedDescription, self.localURL);
+                BNLogError(@"Error: %@ in deleting file: %@", error.localizedDescription, self.localURL);
             
             successBlock();
         } else {

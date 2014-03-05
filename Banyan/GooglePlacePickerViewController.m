@@ -40,6 +40,8 @@ static NSString *PlacesDetailCellIdentifier = @"GooglePlacesCell";
 }
 
 - (void)viewDidLoad {
+    [super viewDidLoad];
+    [self setGAIScreenName:@"Google Location Picker"];
     self.title = @"Select location";
     self.searchDisplayController.searchBar.placeholder = @"Search or Address";
 //    self.searchDisplayController.displaysSearchBarInNavigationBar = YES;

@@ -21,7 +21,7 @@
         return;
     
     if (!piece) {
-        NSLog(@"%s --ERROR-- No piece available!!", __PRETTY_FUNCTION__);
+        BNLogError(@"Error: No piece available!!");
         return;
     }
     

@@ -52,6 +52,7 @@ typedef enum {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self setGAIScreenName:@"Story List screen"];
     
     // Animation between view controllers
     self.animationController = [[CEFlipAnimationController alloc] init];
@@ -175,7 +176,7 @@ typedef enum {
 
 - (void)dealloc
 {
-    NSLog(@"StoryList View Controller Deallocated");
+    BNLogInfo(@"StoryList View Controller Deallocated");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -192,7 +193,7 @@ typedef enum {
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                                                target:self action:@selector(addStoryOrPieceButtonPressed:)];
     } else {
-        NSLog(@"%s Unknown notification %@", __PRETTY_FUNCTION__, [notification name]);
+        BNLogError(@"%s Unknown notification %@", __PRETTY_FUNCTION__, [notification name]);
     }
     self.navigationItem.rightBarButtonItem.tintColor = BANYAN_GREEN_COLOR;
 }
@@ -329,11 +330,11 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         [[AFBanyanAPIClient sharedClient] putPath:currentUser.resourceUri
                                        parameters:@{@"stories_hidden":@[story.resourceUri]}
                                           success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                              NSLog(@"Story successfully hidden");
+                                              BNLogInfo(@"Story successfully hidden");
                                               [story remove];
                                           }
                                           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                              NSLog(@"An error occurred: %@", error.localizedDescription);
+                                              BNLogError(@"An error occurred: %@", error.localizedDescription);
                                           }];
     }
 }
@@ -470,7 +471,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if (scrollView.contentSize.height - scrollView.contentOffset.y < 1130 /* ~ 2*CGRectGetHeight(self.view.bounds */) {
         if ([[BanyanConnection storiesPaginator] objectRequestOperation].isFinished && [[BanyanConnection storiesPaginator] isLoaded] && [[BanyanConnection storiesPaginator] hasNextPage]) {
             [[BanyanConnection storiesPaginator] loadNextPage];
-            NSLog(@"StoryListTableViewController loadDataSource BEGIN for page %d", [BanyanConnection storiesPaginator].currentPage);
+            BNLogInfo(@"StoryListTableViewController loadDataSource BEGIN for page %d", [BanyanConnection storiesPaginator].currentPage);
             [self.activityView startAnimating];
             self.tableView.tableFooterView = self.activityView;
         }

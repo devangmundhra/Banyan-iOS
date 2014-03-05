@@ -19,11 +19,6 @@
     if (story.viewedByCurUser)
         return;
     
-    if (!NUMBER_EXISTS(story.bnObjectId)) {
-        NSLog(@"%s Remember to correct this later. Proper counting for views", __PRETTY_FUNCTION__);
-        return;
-    }
-    
     BNSharedUser *currentUser = [BNSharedUser currentUser];
     if (!currentUser)
         return;

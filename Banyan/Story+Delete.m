@@ -37,7 +37,7 @@
     
     if (story.remoteStatus != RemoteObjectStatusLocal && NUMBER_EXISTS(story.bnObjectId)) {
         NSNumber *storyId = story.bnObjectId;
-        NSLog(@"%s Story id: %@", __PRETTY_FUNCTION__, storyId);
+        BNLogInfo(@"Deleting story id: %@", storyId);
         
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[APP_DELEGATE topMostController].view animated:YES];
         hud.labelText = @"Deleting story";
@@ -45,7 +45,7 @@
         [[AFBanyanAPIClient sharedClient] deletePath:[NSString stringWithFormat:@"story/%@/?format=json", storyId]
                                           parameters:nil
                                              success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                                 NSLog(@"Story with id %@ deleted", storyId);
+                                                 BNLogInfo(@"Story with id %@ deleted", storyId);
                                                  [story remove];
                                                  dispatch_async(dispatch_get_main_queue(), ^{
                                                      [hud hide:YES];

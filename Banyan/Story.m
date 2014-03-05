@@ -103,7 +103,7 @@
     NSError *error = nil;
     Story *story = (Story *)[[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext existingObjectWithID:storyId error:&error];
     if (error || !story.canContribute) {
-        NSLog(@"Error in fetching current story: %@ contributable: %@", error, [NSNumber numberWithBool:story.canContribute]);
+        BNLogError(@"Error in fetching current story: %@ contributable: %@", error, [NSNumber numberWithBool:story.canContribute]);
         [defaults removeObjectForKey:BNUserDefaultsCurrentOngoingStoryToContribute];
         story = nil;
     }
@@ -207,7 +207,7 @@
     NSError *error = nil;
     BOOL returnVal = [self.managedObjectContext obtainPermanentIDsForObjects:@[self] error:&error];
     if (!returnVal) {
-        NSLog(@"Failed to obtain the permanentIds of the story because of error %@", error);
+        BNLogError(@"Failed to obtain the permanentIds of the story because of error %@", error);
     } else {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setURL:[[self objectID] URIRepresentation] forKey:BNUserDefaultsCurrentOngoingStoryToContribute];

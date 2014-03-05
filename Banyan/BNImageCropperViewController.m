@@ -33,6 +33,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self setGAIScreenName:@"Image Cropper"];
+    
     // Do any additional setup after loading the view from its nib.
     self.title = @"Edit thumnail";
     self.cropSize = MEDIA_THUMBNAIL_SIZE;

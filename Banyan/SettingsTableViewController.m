@@ -52,6 +52,8 @@ typedef enum {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self setGAIScreenName:@"Settings screen"];
+    
     [self.tableView setTranslatesAutoresizingMaskIntoConstraints:NO];
     self.clearsSelectionOnViewWillAppear = YES;
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -213,7 +215,7 @@ typedef enum {
     [defaults setBool:switchControl.on forKey:BNUserDefaultsUserPageTurnAnimation];
     [defaults synchronize];
 
-    NSLog( @"The %@: %@", BNUserDefaultsUserPageTurnAnimation, switchControl.on ? @"ON" : @"OFF" );
+    BNLogInfo( @"The %@: %@", BNUserDefaultsUserPageTurnAnimation, switchControl.on ? @"ON" : @"OFF" );
 }
 
 # pragma mark Notifications Section
@@ -303,7 +305,7 @@ typedef enum {
     } else {
         [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_INVTOCONTRIBUTE forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"InvitedToContribute"] inBackgroundWithBlock:snsNotificationCompletionBlock];
     }
-    NSLog( @"The %@: %@", BNAddStoryInvitedContributePushNotification, switchControl.on ? @"ON" : @"OFF" );
+    BNLogInfo( @"The %@: %@", BNAddStoryInvitedContributePushNotification, switchControl.on ? @"ON" : @"OFF" );
 }
 - (IBAction)addStoryViewNotificationsSwitchChanged:(UISwitch *)switchControl
 {
@@ -321,7 +323,7 @@ typedef enum {
     } else {
         [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_INVTOVIEW forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"InvitedToView"] inBackgroundWithBlock:snsNotificationCompletionBlock];
     }
-    NSLog( @"The %@: %@", BNAddStoryInvitedViewPushNotification, switchControl.on ? @"ON" : @"OFF" );
+    BNLogInfo( @"The %@: %@", BNAddStoryInvitedViewPushNotification, switchControl.on ? @"ON" : @"OFF" );
 }
 - (IBAction)addPieceNotificationsSwitchChanged:(UISwitch *)switchControl
 {
@@ -339,7 +341,7 @@ typedef enum {
     } else {
         [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_PIECEADDED forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"PieceAdded"] inBackgroundWithBlock:snsNotificationCompletionBlock];
     }
-    NSLog( @"The %@: %@", BNAddPieceToContributedStoryPushNotification, switchControl.on ? @"ON" : @"OFF" );
+    BNLogInfo( @"The %@: %@", BNAddPieceToContributedStoryPushNotification, switchControl.on ? @"ON" : @"OFF" );
 }
 - (IBAction)pieceActionNotificationsSwitchChanged:(UISwitch *)switchControl
 {
@@ -357,7 +359,7 @@ typedef enum {
     } else {
         [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_PIECEACTION forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"PieceAction"] inBackgroundWithBlock:snsNotificationCompletionBlock];
     }
-    NSLog( @"The %@: %@", BNPieceActionPushNotification, switchControl.on ? @"ON" : @"OFF" );
+    BNLogInfo( @"The %@: %@", BNPieceActionPushNotification, switchControl.on ? @"ON" : @"OFF" );
 }
 - (IBAction)userFollowNotificationsSwitchChanged:(UISwitch *)switchControl
 {
@@ -375,7 +377,7 @@ typedef enum {
     } else {
         [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_USERFOLLOWING forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"UserFollowing"] inBackgroundWithBlock:snsNotificationCompletionBlock];
     }
-    NSLog( @"The %@: %@", BNUserFollowingPushNotification, switchControl.on ? @"ON" : @"OFF" );
+    BNLogInfo( @"The %@: %@", BNUserFollowingPushNotification, switchControl.on ? @"ON" : @"OFF" );
 }
 
 #pragma Memory Management

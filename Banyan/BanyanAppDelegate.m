@@ -20,6 +20,7 @@
 #import "UserVoice.h"
 #import "MBProgressHUD.h"
 #import "TWMessageBarManager.h"
+#import "GAI.h"
 
 @interface BanyanAppDelegateTWMessageBarStyleSheet : NSObject <TWMessageBarStyleSheet>
 
@@ -71,7 +72,7 @@
         [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
         
         if (![[AFBanyanAPIClient sharedClient] isReachable])
-            NSLog(@"Banyan not reachable");
+            BNLogError(@"Banyan not reachable");
     };
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -90,7 +91,7 @@
             }
         }];
     } else {
-        NSLog(@"User missing Facebook ID");
+        BNLogError(@"User missing Facebook ID");
         [self logout];
     }
     
@@ -145,9 +146,27 @@
 
 void uncaughtExceptionHandler(NSException *exception)
 {
-    NSLog(@"CRASH: %@", exception);
-    NSLog(@"Stack Trace: %@", [exception callStackSymbols]);
+    BNLogError(@"CRASH: %@", exception);
+    BNLogError(@"Stack Trace: %@", [exception callStackSymbols]);
     // Internal error reporting
+}
+
+- (void) googleAnalyticsInitialization
+{
+    // automatically send uncaught exceptions to Google Analytics.
+    [GAI sharedInstance].trackUncaughtExceptions = YES;
+    
+    // set Google Analytics dispatch interval to e.g. 20 seconds.
+    [GAI sharedInstance].dispatchInterval = 20;
+    
+    // set Logger to VERBOSE for debug information.
+    [[[GAI sharedInstance] logger] setLogLevel:kGAILogLevelVerbose];
+    
+    [GAI sharedInstance].dryRun = YES;
+
+    // Initialize tracker.
+    id<GAITracker> tracker = [[GAI sharedInstance] trackerWithTrackingId:GOOGLE_ANALYTICS_ID];
+    BNLogTrace(@"Google Analytics tracker iniitialized %@", tracker);
 }
 
 #pragma mark customize appearnaces
@@ -243,20 +262,20 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
                                stringByReplacingOccurrencesOfString: @">" withString: @""]
                              stringByReplacingOccurrencesOfString: @" " withString: @""];
     // Tell AWS SNS about the device token.
-    NSLog(@"Now registering device token information with Amazon");
+    BNLogInfo(@"Now registering device token information with Amazon");
     [BNAWSSNSClient registerDeviceToken:[NSString stringWithFormat:@"%@", deviceToken]];
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
 //    [BNAWSSNSClient registerDeviceToken:@"1111111111111111111111111111111111111111111111111111111111111111"];
-    NSLog(@"Failed to register for notification for error: %@", error.localizedDescription);
+    BNLogWarning(@"Failed to register for notification for error: %@", error.localizedDescription);
 }
 
 - (void)application:(UIApplication *)application
 didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
-    NSLog(@"Handling push with info: %@", userInfo);
+    BNLogInfo(@"Handling push with info: %@", userInfo);
     
     UIApplicationState state = [application applicationState];
     if (state == UIApplicationStateActive) {
@@ -481,12 +500,12 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 
 - (void)facebookRequest:(FBRequestConnection *)connection didFailWithError:(NSError *)error
 {
-    NSLog(@"Facebook error: %@", error);
+    BNLogError(@"Facebook error: %@", error);
     
     if ([BanyanAppDelegate loggedIn]) {
         if ([[[[error userInfo] objectForKey:@"error"] objectForKey:@"type"]
              isEqualToString: @"OAuthException"]) {
-            NSLog(@"The facebook token was invalidated");
+            BNLogInfo(@"The facebook token was invalidated");
             [self logout];
         }
     }
@@ -503,7 +522,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
         case FBSessionStateOpen:
             if (!error) {
                 // We have a valid session
-                NSLog(@"User session found");
+                BNLogInfo(@"User session found");
             }
             break;
         case FBSessionStateClosed:
@@ -591,7 +610,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     
     [RKManagedObjectStore setDefaultStore:managedObjectStore];
     
-    NSLog(@"\rPersistent Store Ctx: %@\rMain Ctx: %@", managedObjectStore.persistentStoreManagedObjectContext, managedObjectStore.mainQueueManagedObjectContext);
+    BNLogTrace(@"\rPersistent Store Ctx: %@\rMain Ctx: %@", managedObjectStore.persistentStoreManagedObjectContext, managedObjectStore.mainQueueManagedObjectContext);
 }
 
 #pragma mark MISCELLANEOUS METHODS

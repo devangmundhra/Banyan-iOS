@@ -76,7 +76,7 @@
                                           progress:nil
                                            failure:^(NSError *error) {
                                                imageMediaCount--;
-                                               NSLog(@"Error in getting image from media for story %@", story);
+                                               BNLogError(@"Error in getting image from media %@ for story %@", media, story.bnObjectId);
                                            }
                  includeThumbnail:NO];
             }

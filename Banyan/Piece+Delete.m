@@ -55,7 +55,7 @@
         [[AFBanyanAPIClient sharedClient] deletePath:[NSString stringWithFormat:@"piece/%@/?format=json", piece.bnObjectId]
                                           parameters:nil
                                              success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                                 NSLog(@"Piece %@ DELETED", piece.bnObjectId);
+                                                 BNLogTrace(@"Piece %@ DELETED", piece.bnObjectId);
                                                  [piece removeWithStoryUpdate];
                                                  dispatch_async(dispatch_get_main_queue(), ^{
                                                      [hud hide:YES];

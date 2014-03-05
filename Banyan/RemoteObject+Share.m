@@ -165,14 +165,14 @@
 
 - (void) flaggedWithMessage:(NSString *)message
 {
-    NSLog(@"Flagging story with message: %@", message);
+    BNLogInfo(@"Flagging object %@ with message: %@", self.bnObjectId, message);
     [[AFBanyanAPIClient sharedClient] postPath:@"flag_object/"
                                     parameters:@{@"content_object":self.resourceUri, @"message":message}
                                        success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                           NSLog(@"Object flagged");
+                                           BNLogTrace(@"Object flagged");
                                        }
                                        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                           NSLog(@"An error occurred: %@", error.localizedDescription);
+                                           BNLogError(@"An error occurred: %@", error.localizedDescription);
                                        }];
 }
 @end

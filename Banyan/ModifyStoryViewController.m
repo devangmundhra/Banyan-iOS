@@ -97,6 +97,7 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
+    [self setGAIScreenName:@"Modify Story"];
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
     [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done:)]];
@@ -234,13 +235,12 @@
     if (self.editMode == ModifyStoryViewControllerEditModeAdd) {
         [Story createNewStory:self.story];
         
-        NSLog(@"New story %@ saved", self.story);
+        BNLogInfo(@"New story %@ saved", self.story);
         [TestFlight passCheckpoint:@"New Story created successfully"];
     } else if (self.editMode == ModifyStoryViewControllerEditModeEdit) {
         [Story editStory:self.story];
     } else {
-        assert(false);
-        NSLog(@"ModifyStoryViewController_No valid edit mode");
+        NSAssert(false, @"Not a valid edit mode");
     }
     
     [self dismissEditViewWithCompletionBlock:^{

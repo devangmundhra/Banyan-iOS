@@ -124,13 +124,13 @@
     }
     
     if (!CGImageDestinationFinalize(destination)) {
-        NSLog(@"failed to finalize image destination");
+        BNLogError(@"failed to finalize image destination");
         CFRelease(destination);
         return nil;
     }
     CFRelease(destination);
     
-    NSLog(@"url=%@", fileURL);
+    BNLogTrace(@"url=%@", fileURL);
     return [fileURL absoluteString];
 }
 

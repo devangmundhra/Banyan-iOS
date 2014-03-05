@@ -87,6 +87,8 @@
 {
     [super viewDidLoad];
     
+    [self setGAIScreenName:@"Story Reader"];
+
     self.title = self.story.title;
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
     
@@ -134,7 +136,7 @@
     self.view.gestureRecognizers = self.pageViewController.gestureRecognizers;
     
     [TestFlight passCheckpoint:@"Story started to be read"];
-    NSLog(@"Reading story with objectId %@ and title %@", REPLACE_NIL_WITH_EMPTY_STRING(self.story.bnObjectId), REPLACE_NIL_WITH_EMPTY_STRING(self.story.title));
+    BNLogInfo(@"Reading story with objectId %@ and title %@", REPLACE_NIL_WITH_EMPTY_STRING(self.story.bnObjectId), REPLACE_NIL_WITH_EMPTY_STRING(self.story.title));
 }
 
 - (void)viewDidUnload

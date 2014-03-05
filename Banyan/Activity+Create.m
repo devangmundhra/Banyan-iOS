@@ -24,7 +24,7 @@
                                             activity.initialized = YES;
                                         }
                                         failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                            NSLog(@"Error in create activity");
+                                            BNLogError(@"Error in create activity %@", activity);
                                         }];
 }
 

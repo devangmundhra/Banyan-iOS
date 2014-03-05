@@ -39,6 +39,7 @@
 {
     [super viewDidLoad];
 
+    [self setGAIScreenName:@"User Login"];
     // Do any additional setup after loading the view, typically from a nib.
     self.title = @"Get started!";
     [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
@@ -113,12 +114,12 @@
     } else if (error.fberrorCategory == FBErrorCategoryUserCancelled) {
         // The user has cancelled a login. You can inspect the error
         // for more context. For this sample, we will simply ignore it.
-        NSLog(@"user cancelled login");
+        BNLogInfo(@"user cancelled login");
     } else {
         // For simplicity, this sample treats other errors blindly.
         alertTitle  = @"Unknown Error";
         alertMessage = @"Error. Please try again later.";
-        NSLog(@"Unexpected error:%@", error);
+        BNLogError(@"Unexpected error:%@", error);
     }
     
     if (alertMessage) {

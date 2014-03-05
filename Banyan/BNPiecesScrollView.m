@@ -228,7 +228,7 @@ static UIFont *_regularFont;
     }
     @catch (NSException *exception) {
         [view setStatusForView:@"There was a problem in fetching this piece" font:_regularFont];
-        NSLog(@"Error in setting piece: Exception name: %@, reason: %@, userinfo: %@", exception.name, exception.reason, exception.userInfo);
+        BNLogError(@"Error in setting piece: Exception name: %@, reason: %@, userinfo: %@", exception.name, exception.reason, exception.userInfo);
     }
 }
 

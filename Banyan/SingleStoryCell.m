@@ -149,7 +149,7 @@
         return [self.story.pieces objectAtIndex:pieceIndexNum];
     }
     @catch (NSException *exception) {
-        NSLog(@"Error in getting currentlyVisible Piece for index: %d", pieceIndexNum);
+        BNLogError(@"Error in getting currentlyVisible Piece for index: %d", pieceIndexNum);
         return nil;
     }
 }

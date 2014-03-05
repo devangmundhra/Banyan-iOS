@@ -47,26 +47,26 @@
 {
     for (NSString *key in [[[source entity] attributesByName] allKeys]) {
         if ([key isEqualToString:@"bnObjectId"]) {
-            NSLog(@"Skipping attribute %@", key);
+            BNLogTrace(@"Skipping attribute %@", key);
             continue;
         }
-        NSLog(@"Copying attribute %@", key);
+        BNLogTrace(@"Copying attribute %@", key);
         [self setValue:[source valueForKey:key] forKey:key];
     }
     for (NSString *key in [[[source entity] relationshipsByName] allKeys]) {
         if ([key isEqualToString:@"original"] || [key isEqualToString:@"revision"]) {
-            NSLog(@"Skipping relationship %@", key);
+            BNLogTrace(@"Skipping relationship %@", key);
         } else if ([key isEqualToString:@"comments"]) {
-            NSLog(@"Copying relationship %@", key);
+            BNLogTrace(@"Copying relationship %@", key);
             [self setComments:[source comments]];
         } else if ([key isEqualToString:@"pieces"]) {
-            NSLog(@"Skipping relationship %@", key);
+            BNLogTrace(@"Skipping relationship %@", key);
         } else if ([key isEqualToString:@"media"]) {
-            NSLog(@"Skipping relationship %@", key);
+            BNLogTrace(@"Skipping relationship %@", key);
         } else if ([key isEqualToString:@"author"]) {
             NSLog(@"Skipping relationship %@", key);
         } else {
-            NSLog(@"Copying relationship %@", key);
+            BNLogTrace(@"Copying relationship %@", key);
             [self setValue: [source valueForKey:key] forKey: key];
         }
     }

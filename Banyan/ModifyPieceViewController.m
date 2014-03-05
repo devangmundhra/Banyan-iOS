@@ -116,7 +116,7 @@
         // 5. When the refresh compeltes, there will be a CocoaError 1600.
         // This does not happen in NSPrivateQueueConcurrencyType
         self.scratchMOC = [[RKManagedObjectStore defaultStore] newChildManagedObjectContextWithConcurrencyType:NSMainQueueConcurrencyType tracksChanges:YES];
-        NSLog(@"Scratch MOC for modify piece vc: %@", self.scratchMOC);
+        BNLogTrace(@"Scratch MOC for modify piece vc: %@", self.scratchMOC);
         self.piece = (Piece *)[piece cloneIntoNSManagedObjectContext:self.scratchMOC];
         // Just in case the connection between the piece and story is lost (say because the piece is currently being created and the story is refreshed),
         // this context will still have the correct relationship
@@ -167,6 +167,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [self setGAIScreenName:@"Piece Edit screen"];
     
     // Do any additional setup after loading the view
     self.edgesForExtendedLayout = UIRectEdgeNone;
@@ -333,7 +335,7 @@
                                            }
                                             failure:^(NSError *error) {
                                                 [whud hide:YES];
-                                                NSLog(@"%s Error in getting image for piece (id: %@ text: %@)", __PRETTY_FUNCTION__, self.piece.bnObjectId, self.piece.shortText);
+                                                BNLogError(@"Error in getting image for piece (id: %@ text: %@)", self.piece.bnObjectId, self.piece.shortText);
                                                 [self.addPhotoButton unsetImage];
                                             }
              includeThumbnail:YES];
@@ -437,7 +439,7 @@
         if ([media.remoteURL length]) {
             [media deleteWitSuccess:nil
                             failure:^(NSError *error) {
-                                NSLog(@"Error %@ deleting %@ when editing piece %@", error.localizedDescription, media.mediaTypeName, self.piece.shortText.length ? self.piece.shortText : @"");
+                                BNLogError(@"Error %@ deleting %@ when editing piece %@", error.localizedDescription, media.mediaTypeName, self.piece.shortText.length ? self.piece.shortText : @"");
             }];
         }
         [media remove];
@@ -457,7 +459,7 @@
             if ([media.remoteURL length]) {
                 [media deleteWitSuccess:nil
                                 failure:^(NSError *error) {
-                                    NSLog(@"Error %@ deleting %@ when editing piece %@",
+                                    BNLogError(@"Error %@ deleting %@ when editing piece %@",
                                           error.localizedDescription, media.mediaTypeName, self.piece.shortText.length ? self.piece.shortText : @"");
                                 }];
             }
@@ -480,7 +482,7 @@
             currentPieceIndexNum = self.piece.story.pieces.count-1;
         self.piece.story.currentPieceIndexNum = currentPieceIndexNum;
 
-        NSLog(@"New piece %@ saved", self.piece);
+        BNLogInfo(@"New piece %@ saved", self.piece);
         [TestFlight passCheckpoint:@"New piece created successfully"];
     }
     else if (self.editMode == ModifyPieceViewControllerEditModeEditPiece)
@@ -510,7 +512,7 @@
 
 - (IBAction)storyChangeButtonPressed:(id)sender
 {
-    NSLog(@"Current story is %@", self.piece.story.title);
+    BNLogInfo(@"Current story is %@", self.piece.story.title);
     StoryPickerViewController *vc = [[StoryPickerViewController alloc] init];
     vc.delegate = self;
     UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:vc];
@@ -736,7 +738,7 @@
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
     // Release any cached data, images, etc that aren't in use.
-    NSLog(@"Received memory warning in ModifyPieceViewController");
+    BNLogWarning(@"Received memory warning in ModifyPieceViewController");
 }
 @end
 

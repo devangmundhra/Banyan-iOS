@@ -60,14 +60,14 @@ static CLLocationManager *_sharedLocationManager;
         dispatch_once(&onceToken, ^{
             _sharedLocationManager = [[CLLocationManager alloc] init];
             _sharedLocationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters; //kCLLocationAccuracyBest; // kCLLocationAccuracyNearestTenMeters;
-            NSLog(@"%s Initialized shared location manager", __PRETTY_FUNCTION__);
+            BNLogTrace(@"Initialized shared location manager");
         });
     }
 }
 
 + (void) dealloc
 {
-    NSLog(@"%s Dealloc'ed shared location manager", __PRETTY_FUNCTION__);
+    BNLogTrace(@"Dealloc'ed shared location manager");
     [_sharedLocationManager stopUpdatingLocation];
     _sharedLocationManager.delegate = nil;
     _sharedLocationManager = nil;
@@ -101,7 +101,7 @@ static CLLocationManager *_sharedLocationManager;
         //
         if (newLocation.horizontalAccuracy <= 10) {
             // IMPORTANT!!! Minimize power usage by stopping the location manager as soon as possible.
-            NSLog(@"Got location in manager");
+            BNLogInfo(@"Got location in manager");
             [self getNearbyLocations:newLocation];
             self.placePickerViewController.locationCoordinate = newLocation.coordinate;
             [self stopUpdatingLocation:nil];
@@ -150,7 +150,7 @@ static CLLocationManager *_sharedLocationManager;
 - (void) getNearbyLocations:(CLLocation *)location
 {
     [FBRequestConnection startForPlacesSearchAtCoordinate:location.coordinate radiusInMeters:50000 resultsLimit:1 searchText:nil completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        NSLog(@"result: %@", result);
+        BNLogTrace(@"result: %@", result);
         
         NSArray *data = [result objectForKey:@"data"];
         

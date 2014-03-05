@@ -65,12 +65,12 @@
                                                parameters:@{@"device_token":deviceToken, @"type":[UIDevice currentDevice].systemName, @"push_endpoints": @{@"apns": [self endpointsDict]}}
                                                   success:nil
                                                   failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                                      NSLog(@"An error occurred: %@", error.localizedDescription);
+                                                      BNLogError(@"An error occurred: %@", error.localizedDescription);
                                                   }];
             }
         }
         @catch (NSException *exception) {
-            NSLog(@"Exception is: %@", exception.description);
+            BNLogError(@"Exception is: %@", exception.description);
         }
     });
 }
@@ -90,7 +90,7 @@
             if (block) block(YES, nil);
         }
         @catch (NSException *exception) {
-            NSLog(@"Exception is: %@", exception.description);
+            BNLogError(@"Exception is: %@", exception.description);
             if (block) block(NO, nil);
         }
     });
@@ -111,7 +111,7 @@
             if (block) block(YES, nil);
         }
         @catch (NSException *exception) {
-            NSLog(@"Exception is: %@", exception.description);
+            BNLogError(@"Exception is: %@", exception.description);
             if (block) block(NO, nil);
         }
     });

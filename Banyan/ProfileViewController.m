@@ -40,6 +40,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self setGAIScreenName:@"Profile view"];
     
     self.navigationController.navigationBar.translucent = YES;
 

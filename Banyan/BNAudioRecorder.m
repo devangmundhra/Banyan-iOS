@@ -75,7 +75,7 @@
                      error:&error];
     
     if (error) {
-        NSLog(@"error: %@", [error localizedDescription]);
+        BNLogError(@"error: %@", [error localizedDescription]);
     } else {
         audioRecorder.delegate = self;
     }
@@ -98,7 +98,7 @@
         [aRView setTextForTimeLabel:[NSString stringWithFormat:@"%d/%ds", (int)floor([audioPlayer currentTime]), (int)floor([audioPlayer duration])]];
         currentProgress = [audioPlayer currentTime]/[audioPlayer duration];
     } else {
-        NSLog(@"Neither recording nor playing!!");
+        BNLogWarning(@"Neither recording nor playing!!");
     }
     [aRView performSelectorOnMainThread:@selector(refreshUIWithProgress:) withObject:[NSNumber numberWithFloat:currentProgress] waitUntilDone:YES];
 }
@@ -135,7 +135,7 @@
 {
     NSError *activationError = nil;
     [[AVAudioSession sharedInstance] setActive:NO error: &activationError];
-    NSLog(@"Decode Error occurred");
+    BNLogError(@"Decode Error occurred");
 }
 
 - (void)audioPlayerBeginInterruption:(AVAudioPlayer *)player
@@ -165,7 +165,7 @@
 -(void)audioRecorderEncodeErrorDidOccur:(AVAudioRecorder *)recorder
                                   error:(NSError *)error
 {
-    NSLog(@"Encode Error occurred");
+    BNLogError(@"Encode Error occurred");
 }
 
 #pragma mark instance methods
@@ -211,7 +211,7 @@
                        error:&error];
         
         if (error) {
-            NSLog(@"Error: %@",
+            BNLogError(@"Error: %@",
                   [error localizedDescription]);
         }
         else {

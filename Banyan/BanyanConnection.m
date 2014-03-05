@@ -195,7 +195,7 @@
     } else if ([[notification name] isEqualToString:BNUserLogInNotification]) {
         [self loadDataSource:notification];
     } else {
-        NSLog(@"%s Unknown notification %@", __PRETTY_FUNCTION__, [notification name]);
+        BNLogWarning(@"Unknown notification %@", [notification name]);
     }
 }
 
@@ -210,7 +210,7 @@
         _storiesPaginator.perPage = 10; // this will request /posts?page=N&per_page=10
         
         [_storiesPaginator setCompletionBlockWithSuccess:^(RKPaginator *paginator, NSArray *objects, NSUInteger page) {
-            NSLog(@"BanyanConnection loadDataSource COMPLETE for page %d", page);
+            BNLogInfo(@"BanyanConnection loadDataSource COMPLETE for page %d", page);
             NSArray *stories = objects;
             [stories enumerateObjectsUsingBlock:^(Story *story, NSUInteger idx, BOOL *stop) {
                 story.lastSynced = [NSDate date];
@@ -268,7 +268,7 @@
             }
             [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
                                                                 object:self];
-            NSLog(@"Hit error: %@", error);
+            BNLogError(@"Error %@ in getting stories", error);
         }];
     });
     
@@ -282,7 +282,7 @@
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         NSDate *lastSyncDate = [userDefaults objectForKey:BNUserDefaultsLastSuccessfulStoryUpdateTime];
         if (lastSyncDate && [[NSDate date] timeIntervalSinceDate:lastSyncDate]<15) {
-            NSLog(@"%s loadDataSource SKIPPED because last sync date (%@) - now (%@) < 15", __PRETTY_FUNCTION__, lastSyncDate, [NSDate date]);
+            BNLogWarning(@"%s loadDataSource SKIPPED because last sync date (%@) - now (%@) < 15", __PRETTY_FUNCTION__, lastSyncDate, [NSDate date]);
             [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
                                                                 object:self];
             return;
@@ -309,14 +309,14 @@
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
                                                             object:self];
-        NSLog(@"%s loadDataSource SKIPPED because upload in progress", __PRETTY_FUNCTION__);
+        BNLogWarning(@"%s loadDataSource SKIPPED because upload in progress", __PRETTY_FUNCTION__);
 
         return;
     }
     
     [[self storiesPaginator] cancel];
 
-    NSLog(@"BanyanConnection loadDataSource BEGIN for page 1");
+    BNLogInfo(@"BanyanConnection loadDataSource BEGIN for page 1");
     [[self storiesPaginator] loadPage:1];
     return;
 }

@@ -49,6 +49,7 @@
 #define VIEW_INSETS 8
     
     [super viewDidLoad];
+    [self setGAIScreenName:@"Next Story"];
 	// Do any additional setup after loading the view.
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
     

@@ -17,7 +17,7 @@
 #define GOOGLE_API_NO_RESULTS_STATUS @"ZERO_RESULTS"
 
 #define AF_GOOGLE_ERROR_BLOCK() ^(AFHTTPRequestOperation *operation, NSError *error) {             \
-NSLog(@"operation: %@, response: %@, error: %@", operation, [operation responseString], error);   \
+BNLogError(@"operation: %@, response: %@, error: %@", operation, [operation responseString], error);   \
 }
 @interface AFGoogleAPIClient : AFHTTPClient
 + (AFGoogleAPIClient *)sharedClient;

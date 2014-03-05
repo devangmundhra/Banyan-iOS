@@ -37,21 +37,22 @@
 // Upload the given story using RestKit
 + (void)createNewStory:(Story *)story
 {
-    assert(!NUMBER_EXISTS(story.bnObjectId));
-    assert(NUMBER_EXISTS(story.author.userId));
+    NSAssert1(!NUMBER_EXISTS(story.bnObjectId), @"Trying to create a story that already exists (%@)", story.bnObjectId);
+    NSAssert(NUMBER_EXISTS(story.author.userId), @"Trying to create a story without an author");
     story.canContribute = story.canView = YES;
     
     story.remoteStatus = RemoteObjectStatusPushing;
     
     // Block to upload the story
     void (^createStory)(Story *) = ^(Story *story) {
-        NSLog(@"Adding story %@", story);
+        BNLogInfo(@"Adding story %@", story.title);
+        BNLogTrace(@"Adding story %@", story);
         
         [[RKObjectManager sharedManager] postObject:story
                                                path:nil
                                          parameters:nil
                                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                                NSLog(@"Create story successful %@", story);
+                                                BNLogTrace(@"Create story successful %@", story);
                                                 story.remoteStatus = RemoteObjectStatusSync;
                                                 [Story viewedStory:story];
                                                 // Be eager in uploading pieces if available
@@ -60,19 +61,19 @@
                                             failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                                 story.remoteStatus = RemoteObjectStatusFailed;
                                                 [story save];
-                                                NSLog(@"Error in create story");
+                                                BNLogError(@"Error in create story");
                                             }];
     };
 
     if ([story.media count]) {
         // Story should only have 1 media at most
-        assert(story.media.count <= 1);
+        NSAssert1((story.media.count <= 1), @"The story %@ has more than expected media objects", story.bnObjectId);
         
         // If all the media haven't been uploaded yet, don't edit the story
         BOOL mediaBeingUploaded = NO;
         for (Media *media in story.media) {
             if ([media.localURL length]) {
-                assert(media.remoteStatus != MediaRemoteStatusSync);
+                NSAssert(media.remoteStatus != MediaRemoteStatusSync, @"Trying to upload an already uploaded media");
                 
                 if (media.remoteStatus == MediaRemoteStatusProcessing || media.remoteStatus == MediaRemoteStatusPushing) {
                     mediaBeingUploaded = YES;
@@ -81,14 +82,14 @@
                 // Upload the media then create the story
                 [media
                  uploadWithSuccess:^{
-                     NSLog(@"Successfully uploaded %@ [%@] when creating story %@", media.mediaTypeName, media.filename, story.title);
+                     BNLogTrace(@"Successfully uploaded %@ [%@] when creating story %@", media.mediaTypeName, media.filename, story.title);
                      story.remoteStatus = RemoteObjectStatusPushing; // So that the story can be uploaded now with all the media
                      [Story createNewStory:story];
                  }
                  failure:^(NSError *error) {
                      story.remoteStatus = RemoteObjectStatusFailed;
                      [story save];
-                     NSLog(@"Error uploading %@ [%@] when creating story %@", media.mediaTypeName, media.filename, story.title);
+                     BNLogError(@"Error uploading %@ [%@] when creating story %@", media.mediaTypeName, media.filename, story.title);
                  }];
                 mediaBeingUploaded = YES;
             }

@@ -117,6 +117,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self setGAIScreenName:@"Read Piece screen"];
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
     
     CGRect frame = [UIScreen mainScreen].applicationFrame;
@@ -244,7 +245,7 @@
                                                  name:BNUserLogOutNotification
                                                object:nil];
     
-    NSLog(@"Reading piece with objectId %@ and shortText %@", REPLACE_NIL_WITH_EMPTY_STRING(self.piece.bnObjectId), REPLACE_NIL_WITH_EMPTY_STRING(self.piece.shortText));
+    BNLogInfo(@"Reading piece with objectId %@ and shortText %@", REPLACE_NIL_WITH_EMPTY_STRING(self.piece.bnObjectId), REPLACE_NIL_WITH_EMPTY_STRING(self.piece.shortText));
 }
 
 - (void) addGestureRecognizerToFocusOnImageView:(UIImageView *)view
@@ -617,7 +618,7 @@
         [self.piece shareOnFacebook];
     }
     else {
-        NSLog(@"StoryReaderController_actionSheetclickedButtonAtIndex %@", [actionSheet buttonTitleAtIndex:buttonIndex]);
+        BNLogWarning(@"StoryReaderController_actionSheetclickedButtonAtIndex %@", [actionSheet buttonTitleAtIndex:buttonIndex]);
     }
 }
 
@@ -648,7 +649,6 @@
 
 - (IBAction)likeButtonPressed:(UIButton *)sender
 {
-    NSLog(@"Liked!");
     [Piece toggleLikedPiece:self.piece];
     [self togglePieceLikeButtonLabel];
     [TestFlight passCheckpoint:@"Like piece"];
