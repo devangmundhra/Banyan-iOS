@@ -76,7 +76,10 @@ static NSString *radiusString = @"1000";
                                                   completionBlock(gResponseData);
                                               }
                                           } else {
-                                              [TestFlight passCheckpoint:[NSString stringWithFormat:@"Invalid Google Maps API request %@", operation]];
+                                              [BNMisc sendGoogleAnalyticsEventWithCategory:@"Error"
+                                                                                    action:@"Invalid Google Maps API request"
+                                                                                     label:[NSString stringWithFormat:@"%@", parameters]
+                                                                                     value:nil];
                                           }
                                       }
                                       failure:AF_GOOGLE_ERROR_BLOCK()];
@@ -124,7 +127,10 @@ static NSString *radiusString = @"1000";
                                                   completionBlock(gResponseData);
                                               }
                                           } else {
-                                              [TestFlight passCheckpoint:[NSString stringWithFormat:@"Invalid Google Maps API request %@", operation]];
+                                              [BNMisc sendGoogleAnalyticsEventWithCategory:@"Error"
+                                                                                    action:@"Invalid Google Maps API request"
+                                                                                     label:[NSString stringWithFormat:@"%@", parameters]
+                                                                                     value:nil];
                                           }
                                       }
                                       failure:AF_GOOGLE_ERROR_BLOCK()];

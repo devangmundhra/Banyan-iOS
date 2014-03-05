@@ -2,7 +2,6 @@ platform :ios, '7.0'
 
 pod 'BNSwipeableView', :git => 'https://github.com/devangmundhra/BNSwipeableView.git'
 pod 'MBProgressHUD', '>= 0.8'
-pod 'TestFlightSDK', '>= 2.0.2'
 #pod 'RestKit', :git => 'https://github.com/RestKit/RestKit.git', :branch => 'development'
 pod 'RestKit', :path => '~/Developer/RestKit', :branch => 'paginator_fixes'
 pod 'SDWebImage', :git => 'https://github.com/rs/SDWebImage.git', :commit => '282e8179193a49867575cd658ae64883aedbce7b'

@@ -144,8 +144,6 @@ typedef enum {
                                                      name:BNRefreshCurrentStoryListNotification
                                                    object:nil];
     }
-
-    [TestFlight passCheckpoint:@"RootViewController loaded"];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -302,7 +300,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
         [Story deleteStory:story completion:nil];
-        [TestFlight passCheckpoint:@"Story deleted by swipe"];
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Action" action:@"delete by swipe" label:@"swipe_delete" value:nil];
     }
 }
 

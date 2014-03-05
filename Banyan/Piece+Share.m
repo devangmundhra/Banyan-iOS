@@ -21,7 +21,7 @@
     
     [shareSheet showInView:APP_DELEGATE.topMostController.view];
     
-    [TestFlight passCheckpoint:@"Piece shared"];
+    [BNMisc sendGoogleAnalyticsSocialInteractionWithNetwork:@"Banyan" action:@"share" target:[NSString stringWithFormat:@"Piece_%@", self.bnObjectId]];
 }
 
 

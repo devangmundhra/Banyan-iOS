@@ -11,6 +11,9 @@
 #import <ImageIO/ImageIO.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "BanyanAppDelegate.h"
+#import "GAI.h"
+#import "GAIFields.h"
+#import "GAIDictionaryBuilder.h"
 
 @implementation BNMisc
 
@@ -132,6 +135,36 @@
     
     BNLogTrace(@"url=%@", fileURL);
     return [fileURL absoluteString];
+}
+
++ (void) sendGoogleAnalyticsEventWithCategory:(NSString *)category
+                                       action:(NSString *)action
+                                        label:(NSString *)label
+                                        value:(NSNumber *)value
+{
+    NSAssert(category, @"Need a category when recording event");
+    NSAssert(action, @"Need an action when recording event");
+    
+    id<GAITracker>tracker = [[GAI sharedInstance] defaultTracker];
+    
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:category
+                                                          action:action
+                                                           label:label
+                                                           value:value] build]];
+}
+
++ (void) sendGoogleAnalyticsSocialInteractionWithNetwork:(NSString *)socialNetwork
+                                                  action:(NSString *)socialAction
+                                                  target:(NSString *)target
+{
+    NSAssert(socialNetwork, @"Need a social network when recording social interactions");
+    NSAssert(socialAction, @"Need a social action when recording socail interactions");
+    
+    id tracker = [[GAI sharedInstance] defaultTracker];
+    
+    [tracker send:[[GAIDictionaryBuilder createSocialWithNetwork:socialNetwork
+                                                          action:socialAction
+                                                          target:target] build]];
 }
 
 @end

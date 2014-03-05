@@ -89,7 +89,6 @@ typedef enum {
     [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
     
 //    self.tableView.rowHeight = 75.0f;
-    [TestFlight passCheckpoint:@"Invitation view loaded"];
 }
 
 - (void)viewDidAppear:(BOOL)animated

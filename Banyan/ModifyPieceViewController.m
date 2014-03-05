@@ -483,7 +483,6 @@
         self.piece.story.currentPieceIndexNum = currentPieceIndexNum;
 
         BNLogInfo(@"New piece %@ saved", self.piece);
-        [TestFlight passCheckpoint:@"New piece created successfully"];
     }
     else if (self.editMode == ModifyPieceViewControllerEditModeEditPiece)
     {

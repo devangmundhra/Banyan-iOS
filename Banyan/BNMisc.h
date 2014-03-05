@@ -19,5 +19,13 @@
 + (NSDateFormatter *) shortDateFormatter;
 + (NSString *) gifFromArray:(NSArray *)imagesArray;
 
++ (void) sendGoogleAnalyticsEventWithCategory:(NSString *)category
+                                       action:(NSString *)action
+                                        label:(NSString *)label
+                                        value:(NSNumber *)value;
+
++ (void) sendGoogleAnalyticsSocialInteractionWithNetwork:(NSString *)socialNetwork
+                                                  action:(NSString *)socialAction
+                                                  target:(NSString *)target;
 @end
 

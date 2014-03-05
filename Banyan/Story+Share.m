@@ -22,7 +22,7 @@
     
     [shareSheet showInView:APP_DELEGATE.topMostController.view];
     
-    [TestFlight passCheckpoint:@"Story shared"];
+    [BNMisc sendGoogleAnalyticsSocialInteractionWithNetwork:@"Banyan" action:@"share" target:[NSString stringWithFormat:@"Story_%@", self.bnObjectId]];
 }
 
 - (void) shareAsAlbumOnFacebook

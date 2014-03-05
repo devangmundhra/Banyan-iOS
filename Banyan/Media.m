@@ -39,7 +39,7 @@
     if (![remoteObject managedObjectContext]) {
         [[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Problem in trying to add this media to the %@", [[remoteObject entity].description lowercaseString]]
                                     message:@"Please cancel and try again. Sorry for the inconvenience!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-        [TestFlight passCheckpoint:[NSString stringWithFormat:@"Error: No managed object passed inNewMediaForObject: %@", [remoteObject entity].description]];
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"Error" action:@"No context for new media" label:[remoteObject entity].description value:nil];
         return nil;
     }
     Media *media = [NSEntityDescription insertNewObjectForEntityForName:@"Media" inManagedObjectContext:[remoteObject managedObjectContext]];

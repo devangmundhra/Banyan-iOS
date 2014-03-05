@@ -8,7 +8,6 @@
 
 #import "SettingsTableViewController.h"
 #import <QuartzCore/QuartzCore.h>
-#import "BNFeedbackViewController.h"
 #import "User.h"
 #import "BNAWSSNSClient.h"
 #import "UIViewController+BNSlidingViewControllerAdditions.h"

@@ -236,7 +236,6 @@
         [Story createNewStory:self.story];
         
         BNLogInfo(@"New story %@ saved", self.story);
-        [TestFlight passCheckpoint:@"New Story created successfully"];
     } else if (self.editMode == ModifyStoryViewControllerEditModeEdit) {
         [Story editStory:self.story];
     } else {

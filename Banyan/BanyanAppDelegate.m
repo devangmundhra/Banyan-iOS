@@ -50,33 +50,11 @@
     NSDictionary *defaultPreferences = [NSDictionary dictionaryWithContentsOfFile:defaultPrefsFile];
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultPreferences];
     
-    void (^nonMainBlock)(void) = ^{
-#ifdef DEBUG
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        if ([defaults objectForKey:@"UUID"]) {
-            [TestFlight setDeviceIdentifier:[defaults objectForKey:@"UUID"]];
-        } else {
-            CFUUIDRef theUUID = CFUUIDCreate(NULL);
-            CFStringRef string = CFUUIDCreateString(NULL, theUUID);
-            CFRelease(theUUID);
-            NSString *uuidString = (__bridge_transfer NSString *)string;
-            [defaults setObject:uuidString forKey:@"UUID"];
-            [defaults synchronize];
-            [TestFlight setDeviceIdentifier:uuidString];
-        }
-#endif
-        
-        [TestFlight takeOff:TESTFLIGHT_BANYAN_APP_TOKEN];
-        //let AFNetworking manage the activity indicator
-        [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
-        
-        if (![[AFBanyanAPIClient sharedClient] isReachable])
-            BNLogError(@"Banyan not reachable");
-    };
+    //let AFNetworking manage the activity indicator
+    [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        nonMainBlock();
-    });
+    if (![[AFBanyanAPIClient sharedClient] isReachable])
+        BNLogError(@"Banyan not reachable");
     
     if ([BanyanAppDelegate loggedIn] &&
         [FBSession openActiveSessionWithAllowLoginUI:NO]) {
@@ -154,9 +132,6 @@ void uncaughtExceptionHandler(NSException *exception)
 
 - (void) googleAnalyticsInitialization
 {
-    // automatically send uncaught exceptions to Google Analytics.
-    [GAI sharedInstance].trackUncaughtExceptions = YES;
-    
     // set Logger to VERBOSE for debug information.
     [[[GAI sharedInstance] logger] setLogLevel:kGAILogLevelError];
     

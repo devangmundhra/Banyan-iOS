@@ -145,7 +145,6 @@
 		51A8DC9516928AE00017E86F /* Banyan.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC9316928AE00017E86F /* Banyan.xcdatamodeld */; };
 		51A8DC981692C4490017E86F /* Story+Permissions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC971692C4490017E86F /* Story+Permissions.m */; };
 		51AFD5F117607800008C7203 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 51AFD5F017607800008C7203 /* User.m */; };
-		51AFD5F71765B64B008C7203 /* BNFeedbackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51AFD5F61765B64B008C7203 /* BNFeedbackViewController.m */; };
 		51B234E117154C43004241C1 /* shareButtonBlack.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B234DD17154C43004241C1 /* shareButtonBlack.png */; };
 		51B234E217154C43004241C1 /* shareButtonBlack@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B234DE17154C43004241C1 /* shareButtonBlack@2x.png */; };
 		51B234E317154C43004241C1 /* shareButtonWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B234DF17154C43004241C1 /* shareButtonWhite.png */; };
@@ -484,8 +483,6 @@
 		51A8DC971692C4490017E86F /* Story+Permissions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Story+Permissions.m"; path = "Banyan/Story+Permissions.m"; sourceTree = "<group>"; };
 		51AFD5EF17607800008C7203 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = User.h; path = Banyan/User.h; sourceTree = "<group>"; };
 		51AFD5F017607800008C7203 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = User.m; path = Banyan/User.m; sourceTree = "<group>"; };
-		51AFD5F51765B64B008C7203 /* BNFeedbackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNFeedbackViewController.h; sourceTree = "<group>"; };
-		51AFD5F61765B64B008C7203 /* BNFeedbackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNFeedbackViewController.m; sourceTree = "<group>"; };
 		51B234DD17154C43004241C1 /* shareButtonBlack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shareButtonBlack.png; sourceTree = "<group>"; };
 		51B234DE17154C43004241C1 /* shareButtonBlack@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shareButtonBlack@2x.png"; sourceTree = "<group>"; };
 		51B234DF17154C43004241C1 /* shareButtonWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shareButtonWhite.png; sourceTree = "<group>"; };
@@ -727,15 +724,6 @@
 				5112D104181C61F0003E8C37 /* UIPlaceHolderTextView.m */,
 			);
 			name = UIPlaceHolderTextView;
-			sourceTree = "<group>";
-		};
-		51170B6317F425D70015B343 /* FeedBackViewController */ = {
-			isa = PBXGroup;
-			children = (
-				51AFD5F51765B64B008C7203 /* BNFeedbackViewController.h */,
-				51AFD5F61765B64B008C7203 /* BNFeedbackViewController.m */,
-			);
-			name = FeedBackViewController;
 			sourceTree = "<group>";
 		};
 		51170B6417F425E90015B343 /* Following Friend View Controller */ = {
@@ -1544,7 +1532,6 @@
 				51F862341859749A0037D576 /* BNZoomAnimationController.h */,
 				51F862351859749A0037D576 /* BNZoomAnimationController.m */,
 				51170B7517F431A00015B343 /* About View Controller */,
-				51170B6317F425D70015B343 /* FeedBackViewController */,
 				51170B6417F425E90015B343 /* Following Friend View Controller */,
 				51CFD93015F3121C002926F9 /* Settings */,
 				51170B6A17F4262A0015B343 /* Profile View Controller */,
@@ -2106,7 +2093,6 @@
 				5128EB5417478B3D00393173 /* BNAudioRecorder.m in Sources */,
 				5128EB5717478B5500393173 /* BNAudioStreamingPlayer.m in Sources */,
 				51AFD5F117607800008C7203 /* User.m in Sources */,
-				51AFD5F71765B64B008C7203 /* BNFeedbackViewController.m in Sources */,
 				5129545F18C6447700E62D6B /* UIViewController+GoogleAnalytics.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2228,7 +2214,6 @@
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
-					"-lTestFlight",
 					"-lz",
 					"-framework",
 					CFNetwork,
@@ -2278,7 +2263,6 @@
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
-					"-lTestFlight",
 					"-lz",
 					"-framework",
 					CFNetwork,

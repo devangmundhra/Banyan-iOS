@@ -651,7 +651,7 @@
 {
     [Piece toggleLikedPiece:self.piece];
     [self togglePieceLikeButtonLabel];
-    [TestFlight passCheckpoint:@"Like piece"];
+    [BNMisc sendGoogleAnalyticsSocialInteractionWithNetwork:@"Banyan" action:@"like" target:[NSString stringWithFormat:@"Piece_%@", self.piece.bnObjectId]];
 }
 
 - (void)showFocusView:(UITapGestureRecognizer *)gestureRecognizer
