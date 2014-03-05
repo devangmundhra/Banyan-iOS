@@ -52,7 +52,6 @@ typedef enum {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setGAIScreenName:@"Story List screen"];
     
     // Animation between view controllers
     self.animationController = [[CEFlipAnimationController alloc] init];
@@ -152,7 +151,8 @@ typedef enum {
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
+    [self setGAIScreenName:@"Story List screen"];
+
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
     BOOL appAlreadyOpened = [[firstTimeDict objectForKey:BNUserDefaultsFirstTimeAppOpen] boolValue];

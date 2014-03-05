@@ -33,7 +33,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setGAIScreenName:@"Image Cropper"];
     
     // Do any additional setup after loading the view from its nib.
     self.title = @"Edit thumnail";
@@ -44,6 +43,12 @@
     self.rotateEnabled = NO;
     self.outputWidth = self.cropSize.width;
     [self reset:NO];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self setGAIScreenName:@"Image Cropper"];
 }
 
 - (IBAction)titlePressed:(id)sender

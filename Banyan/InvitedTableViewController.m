@@ -85,12 +85,17 @@ typedef enum {
 {
     [super viewDidLoad];
 
-    [self setGAIScreenName:@"Invitation screen"];
     [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneInviting:)]];
     [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
     
 //    self.tableView.rowHeight = 75.0f;
     [TestFlight passCheckpoint:@"Invitation view loaded"];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self setGAIScreenName:@"Invitation screen"];
 }
 
 - (void)didReceiveMemoryWarning

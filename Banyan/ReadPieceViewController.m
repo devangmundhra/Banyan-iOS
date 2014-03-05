@@ -117,7 +117,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setGAIScreenName:@"Read Piece screen"];
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
     
     CGRect frame = [UIScreen mainScreen].applicationFrame;
@@ -267,6 +266,7 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    [self setGAIScreenName:@"Read Piece screen"];
     if ([self.delegate respondsToSelector:@selector(setCurrentPiece:)]) {
         [self.delegate performSelector:@selector(setCurrentPiece:) withObject:self.piece];
     }

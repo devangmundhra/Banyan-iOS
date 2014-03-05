@@ -28,9 +28,13 @@
 #endif
 
 #define BNLogInfo CLS_LOG
-#define BNLogTrace CLS_LOG
 #define BNLogWarning CLS_LOG
 #define BNLogError CLS_LOG
+#ifdef DEBUG
+#define BNLogTrace CLS_LOG
+#else
+#define BNLogTrace ;
+#endif
 
 #define REPLACE_NIL_WITH_NULL(__value__) (__value__ ? __value__ : [NSNull null])
 #define REPLACE_NULL_WITH_NIL(__value__) ([__value__ isEqual:[NSNull null]] ? nil : __value__)

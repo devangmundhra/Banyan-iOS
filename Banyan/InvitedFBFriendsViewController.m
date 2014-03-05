@@ -108,7 +108,6 @@
 {
     [super viewDidLoad];
     
-    [self setGAIScreenName:@"Facebook Invitation Screen"];
     self.searchBar.placeholder = @"Search for a friend";
     self.searchDisplayController.delegate = self;
     self.searchDisplayController.searchResultsDataSource = self;
@@ -138,6 +137,12 @@
     [self loadFacebookFriendsListAndRefresh];
     
     [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneInviting:)]];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self setGAIScreenName:@"Facebook Invitation Screen"];
 }
 
 - (void)loadFacebookFriendsListAndRefresh

@@ -23,6 +23,7 @@
 #define GOOGLE_API_KEY @"AIzaSyBwOBP068EO-Ubi0Qzu8uwFnZZHaIVwNyg"
 #define GOOGLE_ANALYTICS_ID @"UA-35913422-2"
 
+#define CRASHLYTICS_API_KEY @"2af776d8f9dd545aa2bcb6afef1d780cfc5a1ee0"
 #define APP_DELEGATE ((BanyanAppDelegate *)([UIApplication sharedApplication].delegate))
 @interface BanyanAppDelegate : UIResponder <UIApplicationDelegate>
 

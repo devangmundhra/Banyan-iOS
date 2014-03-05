@@ -66,6 +66,7 @@ static NSString *CellIdentifier = @"StoryPickerCell";
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    [self setGAIScreenName:@"Story Picker Screen"];
 }
 
 - (BOOL) isAddStoryIndexPath:(NSIndexPath *)indexPath

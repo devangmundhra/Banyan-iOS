@@ -40,7 +40,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setGAIScreenName:@"Profile view"];
     
     self.navigationController.navigationBar.translucent = YES;
 
@@ -130,6 +129,12 @@
     CGSize screenSize = [UIScreen mainScreen].applicationFrame.size;
     self.scrollView.contentSize = CGSizeMake(screenSize.width,
                                              screenSize.height);
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self setGAIScreenName:@"Profile view"];
 }
 
 - (IBAction)logoutButtonPressed:(id)sender

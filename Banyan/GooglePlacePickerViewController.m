@@ -41,7 +41,6 @@ static NSString *PlacesDetailCellIdentifier = @"GooglePlacesCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self setGAIScreenName:@"Google Location Picker"];
     self.title = @"Select location";
     self.searchDisplayController.searchBar.placeholder = @"Search or Address";
 //    self.searchDisplayController.displaysSearchBarInNavigationBar = YES;
@@ -51,6 +50,12 @@ static NSString *PlacesDetailCellIdentifier = @"GooglePlacesCell";
                                    options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
                                    context:NULL];
     locationObserverAdded = YES;
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self setGAIScreenName:@"Google Location Picker"];
 }
 
 - (IBAction)recenterMapToUserLocation:(id)sender {

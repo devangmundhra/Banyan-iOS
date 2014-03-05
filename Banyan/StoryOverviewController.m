@@ -62,7 +62,6 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setGAIScreenName:@"Story Overview Screen"];
     
 	// Do any additional setup after loading the view.
     self.edgesForExtendedLayout = UIRectEdgeNone;
@@ -114,6 +113,12 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
     if ([insertedObjects containsObject:self.story] || [updatedObjects containsObject:self.story]) {
         [self refreshUI];
     }
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self setGAIScreenName:@"Story Overview Screen"];
 }
 
 - (void) refreshUI

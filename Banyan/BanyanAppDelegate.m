@@ -51,7 +51,6 @@
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultPreferences];
     
     void (^nonMainBlock)(void) = ^{
-#define DEBUG 1
 #ifdef DEBUG
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         if ([defaults objectForKey:@"UUID"]) {
@@ -106,7 +105,9 @@
     
     [RemoteObject validateAllObjects];
 
-    [Crashlytics startWithAPIKey:@"2af776d8f9dd545aa2bcb6afef1d780cfc5a1ee0"];
+    [self googleAnalyticsInitialization];
+    
+    [Crashlytics startWithAPIKey:CRASHLYTICS_API_KEY];
     
     UVConfig *config = [UVConfig configWithSite:@"banyan.uservoice.com"];
     [UVStyleSheet instance].tintColor = BANYAN_GREEN_COLOR;
@@ -156,13 +157,12 @@ void uncaughtExceptionHandler(NSException *exception)
     // automatically send uncaught exceptions to Google Analytics.
     [GAI sharedInstance].trackUncaughtExceptions = YES;
     
-    // set Google Analytics dispatch interval to e.g. 20 seconds.
-    [GAI sharedInstance].dispatchInterval = 20;
-    
     // set Logger to VERBOSE for debug information.
-    [[[GAI sharedInstance] logger] setLogLevel:kGAILogLevelVerbose];
+    [[[GAI sharedInstance] logger] setLogLevel:kGAILogLevelError];
     
+#ifdef DEBUG
     [GAI sharedInstance].dryRun = YES;
+#endif
 
     // Initialize tracker.
     id<GAITracker> tracker = [[GAI sharedInstance] trackerWithTrackingId:GOOGLE_ANALYTICS_ID];

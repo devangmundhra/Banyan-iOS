@@ -52,12 +52,17 @@ typedef enum {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setGAIScreenName:@"Settings screen"];
     
     [self.tableView setTranslatesAutoresizingMaskIntoConstraints:NO];
     self.clearsSelectionOnViewWillAppear = YES;
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self prepareForSlidingViewController];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self setGAIScreenName:@"Settings screen"];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

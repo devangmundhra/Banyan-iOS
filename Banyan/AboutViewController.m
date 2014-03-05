@@ -28,10 +28,15 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    [self setGAIScreenName:@"About Banyan screen"];
     [self prepareForSlidingViewController];
     
     self.title = @"About Banyan";
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self setGAIScreenName:@"About Banyan screen"];
 }
 
 - (void)didReceiveMemoryWarning

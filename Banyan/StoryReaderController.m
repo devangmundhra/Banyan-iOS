@@ -86,8 +86,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    [self setGAIScreenName:@"Story Reader"];
 
     self.title = self.story.title;
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
@@ -139,16 +137,14 @@
     BNLogInfo(@"Reading story with objectId %@ and title %@", REPLACE_NIL_WITH_EMPTY_STRING(self.story.bnObjectId), REPLACE_NIL_WITH_EMPTY_STRING(self.story.title));
 }
 
-- (void)viewDidUnload
+- (void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    self.pageViewController = nil;
-    self.currentPiece = nil;
-    self.toolbar = nil;
-    self.cancelButton = nil;
-    self.settingsButton = nil;
-    self.titleLabel = nil;
+    [super viewDidAppear:animated];
+    [self setGAIScreenName:@"Story Reader"];
+}
+
+- (void)dealloc
+{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

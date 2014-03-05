@@ -33,8 +33,6 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    [self setGAIScreenName:@"Feedback screen"];
-    
     UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                                 target:self
                                                                                 action:@selector(doneButtonPressed:)];
@@ -56,6 +54,7 @@
 {
     [super viewDidAppear:YES];
     [textView becomeFirstResponder];
+    [self setGAIScreenName:@"Feedback screen"];
 }
 
 - (void)viewWillDisappear:(BOOL)animated

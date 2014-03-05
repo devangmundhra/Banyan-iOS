@@ -43,6 +43,11 @@ NSString *const MediaPickerViewControllerInfoImage = @"MediaPickerViewController
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
     [self setGAIScreenName:@"Media Picker"];
 }
 

@@ -61,14 +61,13 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
+    [self setGAIScreenName:@"Hamburger menu screen"];
     [self updateSignInOutButtons];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setGAIScreenName:@"Hamburger menu screen"];
     
     // Notifications to handle permission controls
     [[NSNotificationCenter defaultCenter] addObserver:self

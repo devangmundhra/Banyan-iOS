@@ -141,6 +141,8 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    [self setGAIScreenName:@"Piece Edit screen"];
+
     [self.view endEditing:YES];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -167,9 +169,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    [self setGAIScreenName:@"Piece Edit screen"];
-    
+
     // Do any additional setup after loading the view
     self.edgesForExtendedLayout = UIRectEdgeNone;
 

@@ -39,7 +39,6 @@
 {
     [super viewDidLoad];
 
-    [self setGAIScreenName:@"User Login"];
     // Do any additional setup after loading the view, typically from a nib.
     self.title = @"Get started!";
     [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
@@ -59,6 +58,12 @@
     self.eulaLabel.delegate = self;
 
     self.fbLoginView.readPermissions = [NSArray arrayWithObjects: @"email", @"user_about_me", @"user_photos", nil];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self setGAIScreenName:@"User Login"];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

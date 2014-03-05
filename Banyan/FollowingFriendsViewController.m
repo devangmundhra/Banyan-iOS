@@ -42,7 +42,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self setGAIScreenName:@"Following friends"];
     
     // Add the find friends button
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.tableView.frame), 45)];
@@ -67,6 +66,12 @@
     self.tableView.tableHeaderView = view;
     [view addSubview:actionButton];
     [self prepareForSlidingViewController];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self setGAIScreenName:@"Following friends"];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

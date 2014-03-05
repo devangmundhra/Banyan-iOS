@@ -49,7 +49,6 @@
 #define VIEW_INSETS 8
     
     [super viewDidLoad];
-    [self setGAIScreenName:@"Next Story"];
 	// Do any additional setup after loading the view.
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
     
@@ -154,6 +153,12 @@
         } progress:nil failure:nil includeThumbnail:YES];
         [self.view addSubview:nextStoryButton];
     }
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self setGAIScreenName:@"Next Story"];
 }
 
 #pragma mark

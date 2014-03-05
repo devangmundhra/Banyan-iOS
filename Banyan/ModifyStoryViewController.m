@@ -89,6 +89,7 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    [self setGAIScreenName:@"Modify Story"];
     [self.view endEditing:YES];
 }
 
@@ -97,7 +98,6 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
-    [self setGAIScreenName:@"Modify Story"];
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
     [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done:)]];
