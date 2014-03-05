@@ -61,10 +61,6 @@
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     backButton.frame = CGRectMake(0, 0, 80, prevImage.size.height);
     [backButton setImage:prevImage forState:UIControlStateNormal];
-    [backButton setTitle:@"Story list" forState:UIControlStateNormal];
-    [backButton setTitleColor:BANYAN_GREEN_COLOR forState:UIControlStateNormal];
-    [backButton.titleLabel setFont:[UIFont fontWithName:@"Roboto" size:20]];
-    [backButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 4.0f, 0, -10.0f)];
     [backButton addTarget:self action:@selector(goToStoryList:) forControlEvents:UIControlEventTouchUpInside];
     [backButton sizeToFit];
     UIBarButtonItem *backBarButton = [[UIBarButtonItem alloc] initWithCustomView:backButton];

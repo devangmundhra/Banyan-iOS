@@ -314,7 +314,9 @@
         if (audioMedia ) {
             UIButton *deleteAudioButton = [UIButton buttonWithType:UIButtonTypeCustom];
             deleteAudioButton.frame = self.audioPickerView.bounds;
+            [deleteAudioButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
             [deleteAudioButton setTitle:@"Delete audio clip" forState:UIControlStateNormal];
+            [deleteAudioButton.titleLabel setFont:[UIFont fontWithName:@"Roboto" size:16]];
             [deleteAudioButton setBackgroundColor:BANYAN_RED_COLOR];
             [deleteAudioButton addTarget:self action:@selector(deleteAudioAlert:) forControlEvents:UIControlEventTouchUpInside];
             [self.audioPickerView addSubview:deleteAudioButton];
@@ -893,7 +895,7 @@
     frame.size.width -= 60;
     BNLabel *storyAlbumTitle = [[BNLabel alloc] initWithFrame:frame];
     storyAlbumTitle.textEdgeInsets = UIEdgeInsetsMake(0, 2*TEXT_INSETS, 0, TEXT_INSETS);
-    storyAlbumTitle.font = [UIFont fontWithName:@"Roboto" size:14];
+    storyAlbumTitle.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
     storyAlbumTitle.text = @"Use this photo for album cover";
     [self.storyAlbumCoverOptionView addSubview:storyAlbumTitle];
     
