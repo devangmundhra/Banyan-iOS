@@ -150,6 +150,7 @@
     }
     @catch (NSException *exception) {
         BNLogError(@"Error in getting currentlyVisible Piece for index: %d", pieceIndexNum);
+        [BNMisc sendGoogleAnalyticsException:exception inAction:@"Getting currentPieceIndex" isFatal:NO];
         return nil;
     }
 }

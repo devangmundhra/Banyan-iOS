@@ -27,5 +27,8 @@
 + (void) sendGoogleAnalyticsSocialInteractionWithNetwork:(NSString *)socialNetwork
                                                   action:(NSString *)socialAction
                                                   target:(NSString *)target;
+
++ (void) sendGoogleAnalyticsException:(NSException *)exception inAction:(NSString *)action isFatal:(BOOL)fatal;
++ (void) sendGoogleAnalyticsError:(NSError *)error inAction:(NSString *)action isFatal:(BOOL)fatal;
 @end
 

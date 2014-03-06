@@ -251,7 +251,7 @@
                 /* This operation was cancelled before it could be completed. So just ignore this error */
             }
             else if ([[error localizedDescription] rangeOfString:@"org.restkit.RestKit.ErrorDomain error 2"].location != NSNotFound) {
-                [BNMisc sendGoogleAnalyticsEventWithCategory:@"Error" action:@"Fetching stories" label:[error localizedDescription] value:nil];
+                [BNMisc sendGoogleAnalyticsError:error inAction:@"Fetching stories" isFatal:NO];
 #ifdef DEBUG
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in fetching stories."
                                                                 message:@"Please try again."
@@ -262,7 +262,7 @@
 #endif
             }
             else {
-                [BNMisc sendGoogleAnalyticsEventWithCategory:@"Error" action:@"Fetching stories" label:[error localizedDescription] value:nil];
+                [BNMisc sendGoogleAnalyticsError:error inAction:@"Fetching stories" isFatal:NO];
 #ifdef DEBUG
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in fetching stories."
                                                                 message:[error localizedDescription]

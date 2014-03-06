@@ -234,6 +234,7 @@ static UIFont *_regularFont;
     }
     @catch (NSException *exception) {
         [view setStatusForView:@"There was a problem in fetching this piece" font:_regularFont];
+        [BNMisc sendGoogleAnalyticsException:exception inAction:@"Fetching piece in scroll view" isFatal:NO];
         BNLogError(@"Error in setting piece: Exception name: %@, reason: %@, userinfo: %@", exception.name, exception.reason, exception.userInfo);
     }
 }

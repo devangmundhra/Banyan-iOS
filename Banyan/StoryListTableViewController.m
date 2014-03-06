@@ -300,7 +300,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         Story *story = [self.fetchedResultsController objectAtIndexPath:indexPath];
         [Story deleteStory:story completion:nil];
-        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Action" action:@"delete by swipe" label:@"swipe_delete" value:nil];
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"delete by swipe" label:@"swipe_delete" value:nil];
     }
 }
 
@@ -506,6 +506,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                     i++;
             }
             @catch (NSException *exception) {
+                [BNMisc sendGoogleAnalyticsException:exception inAction:@"Getting next story" isFatal:NO];
                 return nil;
             }
         } while (TRUE && nextStory); // Get the next story that has some piece to read

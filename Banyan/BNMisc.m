@@ -160,11 +160,24 @@
     NSAssert(socialNetwork, @"Need a social network when recording social interactions");
     NSAssert(socialAction, @"Need a social action when recording socail interactions");
     
-    id tracker = [[GAI sharedInstance] defaultTracker];
+    id<GAITracker>tracker = [[GAI sharedInstance] defaultTracker];
     
     [tracker send:[[GAIDictionaryBuilder createSocialWithNetwork:socialNetwork
                                                           action:socialAction
                                                           target:target] build]];
 }
 
++ (void) sendGoogleAnalyticsException:(NSException *)exception inAction:(NSString *)action isFatal:(BOOL)fatal
+{
+    id<GAITracker>tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createExceptionWithDescription:[NSString stringWithFormat:@"%@ exception: %@", action, exception.reason]
+                                                              withFatal:[NSNumber numberWithBool:fatal]] build]];
+}
+
++ (void) sendGoogleAnalyticsError:(NSError *)error inAction:(NSString *)action isFatal:(BOOL)fatal
+{
+    id<GAITracker>tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createExceptionWithDescription:[NSString stringWithFormat:@"%@ error: %@", action, error.localizedDescription]
+                                                              withFatal:[NSNumber numberWithBool:fatal]] build]];
+}
 @end
