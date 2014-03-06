@@ -135,28 +135,19 @@
 #pragma mark target - actions
 
 - (void)shouldToggleFollowFriendForCell:(FollowingUsersCell *)cell {
-    BNSharedUser *currentUser = [BNSharedUser currentUser];
     NSMutableDictionary *cellUser = cell.user;
     if ([cell.followButton isSelected]) {
         // Unfollow
         cell.followButton.selected = NO;
-        Activity *activity = [Activity activityWithType:kBNActivityTypeUnfollowUser
-                                                      fromUser:currentUser.resourceUri
-                                                        toUser:[cellUser objectForKey:@"objectId"]
-                                                       piece:nil
-                                                       story:nil];
-        [Activity createActivity:activity];
+        Activity *activity = [Activity activityWithType:kBNActivityTypeUnfollowUser object:[cellUser objectForKey:@"resourceUri"]];
+        [Activity createActivity:activity withCompletionBlock:nil];
         [self changeFollowingStatusForUser:cellUser toStatus:NO];
         [[NSNotificationCenter defaultCenter] postNotificationName:BNUserFollowingChangedNotification object:nil];
     } else {
         // Follow
         cell.followButton.selected = YES;
-        Activity *activity = [Activity activityWithType:kBNActivityTypeFollowUser
-                                               fromUser:currentUser.resourceUri
-                                                 toUser:[cellUser objectForKey:@"objectId"]
-                                                piece:nil
-                                                story:nil];
-        [Activity createActivity:activity];
+        Activity *activity = [Activity activityWithType:kBNActivityTypeFollowUser object:[cellUser objectForKey:@"resourceUri"]];
+        [Activity createActivity:activity withCompletionBlock:nil];
         [self changeFollowingStatusForUser:cellUser toStatus:YES];
         [[NSNotificationCenter defaultCenter] postNotificationName:BNUserFollowingChangedNotification object:nil];
     }

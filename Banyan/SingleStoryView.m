@@ -36,6 +36,7 @@ static NSDateFormatter *_dateFormatter;
 static UIFont *_boldFont;
 static UIFont *_mediumFont;
 static UIFont *_smallFont;
+static UIFont *_normalFontSz18;
 static BOOL _loggedIn;
 
 @implementation SingleStoryView
@@ -68,6 +69,7 @@ static BOOL _loggedIn;
         _boldFont = [UIFont fontWithName:@"Roboto-Bold" size:20];
         _mediumFont = [UIFont fontWithName:@"Roboto-Medium" size:12];
         _smallFont = [UIFont fontWithName:@"Roboto-Medium" size:10];
+        _normalFontSz18 = [UIFont fontWithName:@"Roboto" size:18];
         
         _loggedIn = [BanyanAppDelegate loggedIn];
         
@@ -103,7 +105,8 @@ static BOOL _loggedIn;
 - (id)initWithFrame:(CGRect)frame
 {
 #define SIZE_OF_STORY_STATUS_LABEL 72
-#define SIZE_OF_ADD_PC_BUTTON 10
+#define SIZE_OF_ADD_PC_BUTTON 44
+#define ADD_PC_BUTTON_TEXT_INSET 18
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
@@ -128,7 +131,7 @@ static BOOL _loggedIn;
         
         self.storyAuthorsLabel = [[UILabel alloc] initWithFrame:CGRectMake(TABLE_CELL_MARGIN,
                                                                            TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT,
-                                                                           CGRectGetWidth(frame) - 2*TABLE_CELL_MARGIN - SIZE_OF_STORY_STATUS_LABEL - SIZE_OF_ADD_PC_BUTTON,
+                                                                           CGRectGetWidth(frame) - 2*TABLE_CELL_MARGIN - SIZE_OF_STORY_STATUS_LABEL - SIZE_OF_ADD_PC_BUTTON + ADD_PC_BUTTON_TEXT_INSET,
                                                                            BOTTOM_VIEW_HEIGHT)];
         self.storyAuthorsLabel.backgroundColor = BANYAN_WHITE_COLOR;
         self.storyAuthorsLabel.textColor = [UIColor grayColor];
@@ -148,15 +151,17 @@ static BOOL _loggedIn;
         self.storyStatusLabel.minimumScaleFactor = 0.5;
         [self addSubview:self.storyStatusLabel];
         
-        self.addPcButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.storyStatusLabel.frame)+SPACER_DISTANCE,
+        self.addPcButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.storyStatusLabel.frame) - ADD_PC_BUTTON_TEXT_INSET + SPACER_DISTANCE,
                                                                       TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT,
                                                                       SIZE_OF_ADD_PC_BUTTON, BOTTOM_VIEW_HEIGHT)];
         [self.addPcButton setTintColor:BANYAN_GREEN_COLOR];
-        [self.addPcButton setTitle:@"+" forState:UIControlStateNormal];
+        [self.addPcButton.titleLabel setFont:_normalFontSz18];
+        [self.addPcButton setTitleEdgeInsets:UIEdgeInsetsMake(0, ADD_PC_BUTTON_TEXT_INSET, 0, 0)];
         [self.addPcButton setTitleColor:BANYAN_GREEN_COLOR forState:UIControlStateNormal];
         self.addPcButton.showsTouchWhenHighlighted = YES;
         self.addPcButton.exclusiveTouch = YES;
-        [self addSubview:self.addPcButton];
+        
+        [self insertSubview:self.addPcButton belowSubview:self.storyStatusLabel];
     }
     return self;
 }
@@ -185,10 +190,18 @@ static BOOL _loggedIn;
     } else {
         self.storyStatusLabel.hidden = YES;
     }
-    if (self.story.canContribute && _loggedIn)
+
+    if (self.story.canContribute && _loggedIn) {
         self.addPcButton.hidden = NO;
-    else
+        if (self.story.isInvited) {
+            [self.addPcButton setTitle:@"++" forState:UIControlStateNormal];
+        } else {
+            [self.addPcButton setTitle:@"++" forState:UIControlStateNormal];
+        }
+    }
+    else {
         self.addPcButton.hidden = YES;
+    }
 }
 
 # pragma mark BNSwipeableView delegates

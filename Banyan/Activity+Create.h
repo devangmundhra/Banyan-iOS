@@ -10,6 +10,6 @@
 
 @interface Activity (Create)
 
-+ (void)createActivity:(Activity *)activity;
++ (void)createActivity:(Activity *)activity withCompletionBlock:(void (^)(bool succeeded, NSError *error))block;
 
 @end

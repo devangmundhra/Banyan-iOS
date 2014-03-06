@@ -471,7 +471,7 @@
         // Get the image media from piece's media
         Media *pcImageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
         // We must have just created this media, so it better still be local
-        NSAssert1(pcImageMedia.localURL.length, @"Media not available for story %@ without length", self.piece.story.title);
+        NSAssert1(pcImageMedia.localURL.length, @"Media not available for story without length", self.piece.story.title);
         [storyMedia cloneFrom:pcImageMedia];
         [Story editStory:self.piece.story];
     }
@@ -887,7 +887,7 @@
     frame.size.height = 44.0f;
     
     self.storyAlbumCoverOptionView = [[UIView alloc] initWithFrame:frame];
-    self.storyAlbumCoverOptionView.backgroundColor = [BANYAN_WHITE_COLOR colorWithAlphaComponent:SUBVIEW_OPACITY];
+    self.storyAlbumCoverOptionView.backgroundColor = [BANYAN_LIGHT_GREEN_COLOR colorWithAlphaComponent:SUBVIEW_OPACITY];
     [self.storyAlbumCoverOptionView.layer setCornerRadius:CORNER_RADIUS];
     
     

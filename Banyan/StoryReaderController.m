@@ -97,7 +97,7 @@
     self.dismissAheadPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(showOptionsForNextStory:)];
     self.dismissAheadPanGestureRecognizer.delegate = self;
     
-    [Story viewedStory:self.story];
+    [self.story setViewedWithCompletionBlock:nil];
     
 //    UIPageViewControllerTransitionStyle pageTurnAnimation = UIPageViewControllerTransitionStylePageCurl;
 //    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];

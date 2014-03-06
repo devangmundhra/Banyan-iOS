@@ -10,21 +10,20 @@
 
 @implementation Activity (Create)
 
-+ (void)createActivity:(Activity *)activity
++ (void)createActivity:(Activity *)activity withCompletionBlock:(void (^)(bool succeeded, NSError *error))block;
 {
-    if (!(activity.piece || activity.story) &&
-        !([activity.type isEqualToString:kBNActivityTypeFollowUser] || [activity.type isEqualToString:kBNActivityTypeUnfollowUser])) {
-        return;
-    }
+    NSAssert1(activity.object, @"No object to create an activity of type", activity.type);
+    NSAssert1(![activity.type isEqualToString:kBNActivityTypeFollowUser] && ![activity.type isEqualToString:kBNActivityTypeUnfollowUser], @"Invalid activity of type", activity.type);
 
     [[RKObjectManager sharedManager] postObject:activity
                                            path:nil
                                      parameters:nil
                                         success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                            activity.initialized = YES;
+                                            if (block) block(YES, nil);
                                         }
                                         failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                             BNLogError(@"Error in create activity %@", activity);
+                                            if (block) block(NO, error);
                                         }];
 }
 

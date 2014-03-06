@@ -75,10 +75,7 @@ extern NSString *const kBNActivityClassKey;
 
 // Field keys
 extern NSString *const kBNActivityTypeKey;
-extern NSString *const kBNActivityFromUserKey;
-extern NSString *const kBNActivityToUserKey;
-extern NSString *const kBNActivityPieceKey;
-extern NSString *const kBNActivityStoryKey;
+extern NSString *const kBNActivityObjectKey;
 
 // Type values
 extern NSString *const kBNActivityTypeLike;

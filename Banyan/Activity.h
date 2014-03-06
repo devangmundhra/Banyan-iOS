@@ -12,17 +12,10 @@
 
 @property (strong, nonatomic) NSNumber *activityId;
 @property (strong, nonatomic) NSString *type;
-@property (strong, nonatomic) NSString *fromUser;
-@property (strong, nonatomic) NSString *toUser;
-@property (strong, nonatomic) NSString *piece;
-@property (strong, nonatomic) NSString *story;
-@property BOOL initialized;
+@property (strong, nonatomic) NSString *object;
 
 + (Activity *) activityWithType:(NSString *)type
-                       fromUser:(NSString *)fromUser
-                         toUser:(NSString *)toUser
-                          piece:(NSString *)piece
-                          story:(NSString *)story;
+                         object:(NSString *)object;
 
 + (RKObjectMapping *)activityRequestMappingForRKPOST;
 + (RKObjectMapping *)activityResponseMappingForRKPOST;

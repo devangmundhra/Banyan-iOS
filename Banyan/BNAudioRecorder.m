@@ -230,7 +230,10 @@
 - (void) bnAudioRecorderViewToStop:(BNAudioRecorderView *)aRView
 {
     if (audioRecorder.recording) {
+        // Get the current time before stopping
+        int recordedTime = (int)floor([audioRecorder currentTime]);
         [audioRecorder stop];
+        [aRView setTextForTimeLabel:[NSString stringWithFormat:@"0/%ds", recordedTime]];
     } else if (audioPlayer.playing) {
         [audioPlayer stop];
         [self invalidateTimer];

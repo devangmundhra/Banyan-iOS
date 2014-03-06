@@ -1,9 +1,9 @@
 //
 //  Piece+Stats.m
-//  Storied
+//  Banyan
 //
 //  Created by Devang Mundhra on 4/26/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Banyan. All rights reserved.
 //
 
 #import "Piece+Stats.h"
@@ -14,94 +14,70 @@
 
 @implementation Piece (Stats)
 
-
-+ (void) viewedPiece:(Piece *)piece
+- (void) setViewedWithCompletionBlock:(void (^)(bool succeeded, NSError *error))block
 {
-    if (piece.viewedByCurUser)
+    if (self.viewedByCurUser)
         return;
     
-    if (!piece) {
+    if (!self) {
         BNLogError(@"Error: No piece available!!");
         return;
     }
     
-    if (piece.viewedByCurUser || piece.remoteStatus != RemoteObjectStatusSync)
+    if (self.viewedByCurUser || self.remoteStatus != RemoteObjectStatusSync)
         return;
     
     BNSharedUser *currentUser = [BNSharedUser currentUser];
     if (!currentUser)
         return;
     
-    Activity *activity = [Activity activityWithType:kBNActivityTypeView
-                                           fromUser:currentUser.resourceUri
-                                             toUser:currentUser.resourceUri
-                                            piece:piece.resourceUri
-                                            story:piece.story.resourceUri];
-    [Activity createActivity:activity];
+    Activity *activity = [Activity activityWithType:kBNActivityTypeView object:self.resourceUri];
     
-    piece.viewedByCurUser = YES;
-    piece.numberOfViews += 1;
-    piece.story.numNewPiecesToView = [Piece numPiecesForStory:piece.story withAttribute:@"viewedByCurUser" asValue:[NSNumber numberWithBool:FALSE]];
+    __weak Piece *wself = self;
+    [Activity createActivity:activity withCompletionBlock:^(bool succeeded, NSError *error) {
+        if (succeeded && wself) {
+            wself.viewedByCurUser = YES;
+            wself.numberOfViews += 1;
+            wself.story.numNewPiecesToView = [Piece numPiecesForStory:wself.story withAttribute:@"viewedByCurUser" asValue:[NSNumber numberWithBool:FALSE]];
+        }
+        if (block) block(succeeded, error);
+    }];
+
     return;
 }
 
-+ (void) toggleLikedPiece:(Piece *)piece
+- (void) toggleLikedWithCompletionBlock:(void (^)(bool succeeded, NSError *error))block
 {
     BNSharedUser *currentUser = [BNSharedUser currentUser];
     if (!currentUser)
         return;
     
+    __weak Piece *wself = self;
     Activity *activity = nil;
-    if (piece.likedByCurUser) {
+
+    if (self.likedByCurUser) {
         // unlike piece
-        activity = [Activity activityWithType:kBNActivityTypeUnlike
-                                     fromUser:currentUser.resourceUri
-                                       toUser:currentUser.resourceUri
-                                      piece:piece.resourceUri
-                                      story:piece.story.resourceUri];
-        
-        piece.likedByCurUser = NO;
-        piece.numberOfLikes -= 1;
+        activity = [Activity activityWithType:kBNActivityTypeUnlike object:self.resourceUri];
+        [Activity createActivity:activity withCompletionBlock:^(bool succeeded, NSError *error) {
+            if (succeeded && wself) {
+                wself.likedByCurUser = NO;
+                wself.numberOfLikes -= 1;
+            }
+            if (block) block(succeeded, error);
+        }];
+
     }
     else {
         // like piece
-        activity = [Activity activityWithType:kBNActivityTypeLike
-                                     fromUser:currentUser.resourceUri
-                                       toUser:currentUser.resourceUri
-                                      piece:piece.resourceUri
-                                      story:piece.story.resourceUri];
-        
-        piece.likedByCurUser = YES;
-        piece.numberOfLikes += 1;
+        activity = [Activity activityWithType:kBNActivityTypeLike object:self.resourceUri];
+        [Activity createActivity:activity withCompletionBlock:^(bool succeeded, NSError *error) {
+            if (succeeded && wself) {
+                wself.likedByCurUser = YES;
+                wself.numberOfLikes += 1;
+            }
+            if (block) block(succeeded, error);
+        }];
     }
-    [Activity createActivity:activity];
-}
-
-+ (void) toggleFavouritedPiece:(Piece *)piece
-{
-    BNSharedUser *currentUser = [BNSharedUser currentUser];
-    if (!currentUser)
-        return;
-    Activity *activity = nil;
-    if (piece.favoriteByCurUser) {
-        // unfavourite piece
-        activity = [Activity activityWithType:kBNActivityTypeUnfavourite
-                                     fromUser:currentUser.resourceUri
-                                       toUser:currentUser.resourceUri
-                                      piece:piece.resourceUri
-                                      story:piece.story.resourceUri];
-        piece.favoriteByCurUser = NO;
-    }
-    else {
-        // favourite piece
-        activity = [Activity activityWithType:kBNActivityTypeFavourite
-                                    fromUser:currentUser.resourceUri
-                                      toUser:currentUser.resourceUri
-                                     piece:piece.resourceUri
-                                     story:piece.story.resourceUri];
-        piece.favoriteByCurUser = YES;
-    }
-    [Activity createActivity:activity];
 }
 
 @end

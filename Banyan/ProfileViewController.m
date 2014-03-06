@@ -55,6 +55,7 @@
         
         UIBarButtonItem *rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Sign out" style:UIBarButtonItemStyleBordered target:self action:@selector(logoutButtonPressed:)];
         self.navigationItem.rightBarButtonItem = rightBarButtonItem;
+        self.navigationItem.rightBarButtonItem.tintColor = BANYAN_RED_COLOR;
         // If there is no self.user, that means we came here via the SideNavigatorViewController.
         // So set up the left bar button item.
         [self prepareForSlidingViewController];

@@ -103,11 +103,17 @@ static UIFont *_regularFont;
 
 - (void)setStory:(Story *)story
 {
+    NSUInteger currentPcNumIndex = story.currentPieceIndexNum;
+    if (_story && story && _story == story) {
+        // If the story hasn't changed, don't change the index
+        currentPcNumIndex = self.currentPieceIndexNum;
+    }
     _story = story;
     self.allPieces = _story.pieces;
     self.contentSize = CGSizeMake(story.length*self.frame.size.width, self.frame.size.height);
-    [self scrollRectToVisible:[self calculateFrameForPieceIndexNum:story.currentPieceIndexNum] animated:NO];
-    [self scrollToPieceIndexNumber:story.currentPieceIndexNum];
+    
+    [self scrollRectToVisible:[self calculateFrameForPieceIndexNum:currentPcNumIndex] animated:NO];
+    [self scrollToPieceIndexNumber:currentPcNumIndex];
     [self addMsgOnPieceViewIfNeeded];
 }
 
@@ -162,7 +168,7 @@ static UIFont *_regularFont;
 {
     if (pieceIndexNum == NSNotFound || pieceIndexNum >= self.story.length) {
 #ifdef DEBUG
-        return CGRectZero;
+        NSAssert2(false, @"Incorrect pieceIndexNum", pieceIndexNum, self.story.length);
 #else
         pieceIndexNum = 0;
 #endif
@@ -179,7 +185,7 @@ static UIFont *_regularFont;
 {
     if (pieceIndexNum == NSNotFound || pieceIndexNum >= self.story.length) {
 #ifdef DEBUG
-        return;
+        NSAssert2(false, @"Incorrect pieceIndexNum", pieceIndexNum, self.story.length);
 #else
         pieceIndexNum = 0;
 #endif

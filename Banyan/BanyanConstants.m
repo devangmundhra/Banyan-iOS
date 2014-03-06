@@ -70,10 +70,7 @@ NSString *const kBNActivityClassKey = @"Activity";
 
 // Field keys
 NSString *const kBNActivityTypeKey        = @"type";
-NSString *const kBNActivityFromUserKey    = @"fromUser";
-NSString *const kBNActivityToUserKey      = @"toUser";
-NSString *const kBNActivityPieceKey       = @"piece";
-NSString *const kBNActivityStoryKey       = @"story";
+NSString *const kBNActivityObjectKey      = @"object";
 
 // Type values
 NSString *const kBNActivityTypeLike       = @"like";

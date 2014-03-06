@@ -37,7 +37,7 @@
 // Upload the given story using RestKit
 + (void)createNewStory:(Story *)story
 {
-    NSAssert1(!NUMBER_EXISTS(story.bnObjectId), @"Trying to create a story that already exists (%@)", story.bnObjectId);
+    NSAssert1(!NUMBER_EXISTS(story.bnObjectId), @"Trying to create a story that already exists", story.bnObjectId);
     NSAssert(NUMBER_EXISTS(story.author.userId), @"Trying to create a story without an author");
     story.canContribute = story.canView = YES;
     
@@ -54,7 +54,7 @@
                                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                                 BNLogTrace(@"Create story successful %@", story);
                                                 story.remoteStatus = RemoteObjectStatusSync;
-                                                [Story viewedStory:story];
+                                                [story setViewedWithCompletionBlock:nil];
                                                 // Be eager in uploading pieces if available
                                                 [APP_DELEGATE fireRemoteObjectTimer];
                                             }
@@ -67,7 +67,7 @@
 
     if ([story.media count]) {
         // Story should only have 1 media at most
-        NSAssert1((story.media.count <= 1), @"The story %@ has more than expected media objects", story.bnObjectId);
+        NSAssert1((story.media.count <= 1), @"The story has more than expected media objects", story.bnObjectId);
         
         // If all the media haven't been uploaded yet, don't edit the story
         BOOL mediaBeingUploaded = NO;

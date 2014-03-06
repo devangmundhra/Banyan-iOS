@@ -10,6 +10,7 @@
 #import "RemoteObject.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "SDWebImage/SDWebImageDownloader.h"
+#import "SDWebImage/SDWebImageManager.h"
 #import "UIImage+ResizeAdditions.h"
 #import "BNAWSS3Client.h"
 #import "User.h"
@@ -309,8 +310,12 @@
 
         [BNAWSS3Client uploadData:imageData withContentType:@"image/jpeg" forFileName:[NSString stringWithFormat:@"%@/%@_%@.jpg", [BNSharedUser currentUser].userId, [self.remoteObject getIdentifierForMediaFileName], self.filename] inBackgroundWithBlock:^(bool succeeded, NSString *url, NSString *filename, NSError *error) {
             if (succeeded) {
+                // Cache this in SDWebCache
+                [[SDWebImageManager sharedManager].imageCache storeImage:image forKey:url toDisk:YES];
+                
                 self.remoteURL = url;
                 self.filename = filename;
+                
                 // Bigger image has been successfully uploaded. Upload the thumbnail now
                 [self uploadThumbnailImageWithSuccess:successBlock failure:errorBlock];
             } else {
@@ -335,8 +340,12 @@
                   forFileName:[NSString stringWithFormat:@"%@/%@_%@_%@.jpg", [BNSharedUser currentUser].userId, [self.remoteObject getIdentifierForMediaFileName], [BNMisc genRandStringLength:10], NSStringFromCGSize(MEDIA_THUMBNAIL_SIZE)]
         inBackgroundWithBlock:^(bool succeeded, NSString *url, NSString *filename, NSError *error) {
             if (succeeded) {
+                // Cache this in SDWebCache
+                [[SDWebImageManager sharedManager].imageCache storeImage:self.thumbnail forKey:url toDisk:YES];
+                
                 self.thumbnail = nil;
                 self.thumbnailURL = url;
+
                 successBlock();
             } else {
                 errorBlock(error);

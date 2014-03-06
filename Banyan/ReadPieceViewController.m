@@ -113,6 +113,7 @@
 #define BUTTON_SPACING 5.0f
 #define TEXT_INSET_BIG 20.0f
 #define TEXT_INSET_SMALL 2.0f
+#define SIDE_MARGIN 20.0f
 
 - (void)viewDidLoad
 {
@@ -233,7 +234,7 @@
     
     // Do any additional setup after loading the view from its nib.
     // Update Stats
-    [Piece viewedPiece:self.piece];
+    [self.piece setViewedWithCompletionBlock:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(userLoginStatusChanged) 
@@ -360,7 +361,7 @@
         {
             frame = [UIScreen mainScreen].bounds;
             // like button
-            self.likesButton.frame = CGRectMake(CGRectGetMaxX(frame)-35-3*TEXT_INSET_SMALL, 0, 35, floor(CGRectGetHeight(self.authorLabel.frame)));
+            self.likesButton.frame = CGRectMake(CGRectGetMaxX(frame)-44-3*TEXT_INSET_SMALL, 0, 44, floor(CGRectGetHeight(self.authorLabel.frame)));
             self.likesButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
             [self.likesButton setImageEdgeInsets:UIEdgeInsetsMake(5, 4, 5, 4)];
             [self.likesButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 3*TEXT_INSET_SMALL, 0, 0)];
@@ -387,10 +388,11 @@
             self.locationLabel.minimumScaleFactor = 0.8;
             self.locationLabel.backgroundColor = [UIColor clearColor];
             self.locationLabel.textAlignment = NSTextAlignmentLeft;
-            [self.locationLabel sizeToFit];
+            self.locationLabel.lineBreakMode = NSLineBreakByTruncatingTail;
             frame = self.locationLabel.frame;
             frame.origin = CGPointMake(CGRectGetMaxX(self.timeLabel.frame), CGRectGetMaxY(self.authorLabel.frame));
             frame.size.height = CGRectGetHeight(self.timeLabel.frame);
+            frame.size.width = CGRectGetWidth([UIScreen mainScreen].bounds) - frame.origin.x - SIDE_MARGIN;
             self.locationLabel.frame = frame;
         }
         [self.pieceInfoView sizeToFit];
@@ -400,7 +402,7 @@
         frame = CGRectMake(0, CGRectGetMaxY(self.pieceInfoView.frame), frame.size.width, 100);
         
         CGSize maximumLabelSize = frame.size;
-        maximumLabelSize.width -= 40; // adjust for the textInsets
+        maximumLabelSize.width -= 2*TEXT_INSET_BIG; // adjust for the textInsets
         CGSize expectedLabelSize = [self.piece.shortText boundingRectWithSize:maximumLabelSize
                                                                       options:NSStringDrawingUsesFontLeading|NSStringDrawingUsesLineFragmentOrigin
                                                                    attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-BoldCondensed" size:26]}
@@ -414,9 +416,9 @@
     if (hasDescription) {
         CGPoint descOrigin;
         if (hasCaption) {
-            descOrigin = CGPointMake(20, CGRectGetMaxY(self.pieceCaptionView.frame));
+            descOrigin = CGPointMake(SIDE_MARGIN, CGRectGetMaxY(self.pieceCaptionView.frame));
         } else {
-            descOrigin = CGPointMake(20, CGRectGetMaxY(self.pieceInfoView.frame));
+            descOrigin = CGPointMake(SIDE_MARGIN, CGRectGetMaxY(self.pieceInfoView.frame));
         }
         NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
         paraStyle.alignment = self.pieceTextView.textAlignment;
@@ -428,7 +430,7 @@
                                                   context:nil];
         frame.origin = descOrigin;
         frame.size.height += 2*TEXT_INSET_BIG;
-        frame.size.width = CGRectGetWidth([UIScreen mainScreen].bounds)-2*20;
+        frame.size.width = CGRectGetWidth([UIScreen mainScreen].bounds)-2*SIDE_MARGIN;
         self.pieceTextView.frame = frame;
         self.pieceTextView.text = self.piece.longText;
         csize.height += CGRectGetHeight(self.pieceTextView.frame);
@@ -649,9 +651,15 @@
 
 - (IBAction)likeButtonPressed:(UIButton *)sender
 {
-    [Piece toggleLikedPiece:self.piece];
-    [self togglePieceLikeButtonLabel];
-    [BNMisc sendGoogleAnalyticsSocialInteractionWithNetwork:@"Banyan" action:@"like" target:[NSString stringWithFormat:@"Piece_%@", self.piece.bnObjectId]];
+    __weak UIButton *wLikeButton = sender;
+    __weak ReadPieceViewController *wself = self;
+    [self.piece toggleLikedWithCompletionBlock:^(bool succeeded, NSError *error) {
+        wLikeButton.enabled = YES;
+        if (succeeded) {
+            [wself togglePieceLikeButtonLabel];
+            [BNMisc sendGoogleAnalyticsSocialInteractionWithNetwork:@"Banyan" action:@"like" target:[NSString stringWithFormat:@"Piece_%@", wself.piece.bnObjectId]];
+        }
+    }];
 }
 
 - (void)showFocusView:(UITapGestureRecognizer *)gestureRecognizer
