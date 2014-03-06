@@ -80,6 +80,7 @@
     if (!arn)
         return;
 
+    [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"enableNotification" label:channel value:nil];
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
     dispatch_async(queue, ^{
         SNSSetEndpointAttributesRequest *req = [[SNSSetEndpointAttributesRequest alloc] init];
@@ -101,6 +102,7 @@
     if (!arn)
         return;
 
+    [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"disableNotification" label:channel value:nil];
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
     dispatch_async(queue, ^{
         SNSSetEndpointAttributesRequest *req = [[SNSSetEndpointAttributesRequest alloc] init];
