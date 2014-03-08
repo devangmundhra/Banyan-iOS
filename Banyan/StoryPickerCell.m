@@ -131,6 +131,20 @@
     self.fullLabel.text = @"Create a new story";
 }
 
+- (void)setHighlighted:(BOOL)highlighted
+{
+    [super setHighlighted:highlighted];
+    if (self.fullLabel.hidden == NO) {
+        if (highlighted) {
+            // Set background color as dark green
+            self.fullLabel.backgroundColor = BANYAN_DARK_GREEN_COLOR;
+        } else {
+            // Set background color as green
+            self.fullLabel.backgroundColor = BANYAN_GREEN_COLOR;
+        }
+    }
+}
+
 #undef TEXT_INSETS
 #undef VIEW_INSETS
 @end

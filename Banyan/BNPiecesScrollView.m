@@ -168,7 +168,7 @@ static UIFont *_regularFont;
 {
     if (pieceIndexNum == NSNotFound || pieceIndexNum >= self.story.length) {
 #ifdef DEBUG
-        NSAssert2(false, @"Incorrect pieceIndexNum", pieceIndexNum, self.story.length);
+        return CGRectZero;
 #else
         pieceIndexNum = 0;
 #endif
@@ -185,7 +185,7 @@ static UIFont *_regularFont;
 {
     if (pieceIndexNum == NSNotFound || pieceIndexNum >= self.story.length) {
 #ifdef DEBUG
-        NSAssert2(false, @"Incorrect pieceIndexNum", pieceIndexNum, self.story.length);
+        return;
 #else
         pieceIndexNum = 0;
 #endif
@@ -204,7 +204,9 @@ static UIFont *_regularFont;
     }];
     
     // Load up all the pieces for and around the current piece number
-    for (int i = pieceIndexNum - floor(NUM_PIECES_WINDOW/2); i <= pieceIndexNum + floor(NUM_PIECES_WINDOW/2); i++) {
+    int minPieceIndexNum = MAX(pieceIndexNum - floor(NUM_PIECES_WINDOW/2), 0);
+    int maxPieceIndexNum = MIN(pieceIndexNum + floor(NUM_PIECES_WINDOW/2), self.story.length-1);
+    for (int i = minPieceIndexNum; i <= maxPieceIndexNum; i++) {
         CGRect frame = [self calculateFrameForPieceIndexNum:i];
         if (!CGRectEqualToRect(CGRectZero, frame)) {
             SinglePieceView *pv = [self addPieceSubviewAtFrame:frame forPieceIndexNum:i];

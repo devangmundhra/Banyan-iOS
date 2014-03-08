@@ -236,9 +236,10 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
                                 stringByReplacingOccurrencesOfString: @"<" withString: @""]
                                stringByReplacingOccurrencesOfString: @">" withString: @""]
                              stringByReplacingOccurrencesOfString: @" " withString: @""];
-    // Tell AWS SNS about the device token.
-    BNLogInfo(@"Now registering device token information with Amazon");
-    [BNAWSSNSClient registerDeviceToken:[NSString stringWithFormat:@"%@", deviceToken]];
+    // Save the device token
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:deviceToken forKey:BNUserDefaultsDeviceToken];
+    [defaults synchronize];
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
@@ -412,6 +413,10 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                                             setAuthorizationHeaderWithTastyPieUsername:username
                                             andToken:apikey];
                                            
+                                           NSString *deviceToken = [defaults objectForKey:BNUserDefaultsDeviceToken];
+
+                                           // Tell AWS SNS about the device token.
+                                           [BNAWSSNSClient registerDeviceToken:deviceToken];
                                            [self subscribeToPushNotifications];
                                            if (block) {
                                                block(YES, nil);

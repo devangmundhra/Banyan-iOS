@@ -1,9 +1,9 @@
 //
 //  InvitedTableViewController.h
-//  Storied
+//  Banyan
 //
 //  Created by Devang Mundhra on 4/7/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Banyan. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

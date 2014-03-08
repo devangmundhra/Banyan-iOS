@@ -1,15 +1,17 @@
 //
 //  InvitedTableViewController.m
-//  Storied
+//  Banyan
 //
 //  Created by Devang Mundhra on 4/7/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Banyan. All rights reserved.
 //
 
 #import "InvitedTableViewController.h"
 #import "BanyanAppDelegate.h"
 #import "InvitedFBFriendsViewController.h"
 #import "User.h"
+#import "MZFormSheetController.h"
+#import "HelpInfoViewController.h"
 
 @interface InvitedTableViewController () <InvitedFBFriendsViewControllerDelegate>
 
@@ -95,6 +97,77 @@ typedef enum {
 {
     [super viewDidAppear:animated];
     [self setGAIScreenName:@"Invitation screen"];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
+    if (![firstTimeDict objectForKey:BNUserDefaultsFirstTimeSettingPermissions]) {
+        [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeSettingPermissions];
+        [defaults synchronize];
+#define MZFORMSHEET_TOP_INSET 40.0
+#define MZFORMSHEET_LEFT_INSET 20.0
+        
+        HelpInfoViewController *vc = [[HelpInfoViewController alloc] initWithNibName:@"HelpInfoViewController" bundle:nil];
+        MZFormSheetController *formSheet = [[MZFormSheetController alloc] initWithViewController:vc];
+        formSheet.transitionStyle = MZFormSheetTransitionStyleSlideFromTop;
+        formSheet.portraitTopInset = MZFORMSHEET_TOP_INSET;
+        formSheet.landscapeTopInset = MZFORMSHEET_LEFT_INSET;
+        formSheet.presentedFormSheetSize = CGSizeMake(CGRectGetWidth([UIScreen mainScreen].bounds) - 2*MZFORMSHEET_LEFT_INSET,
+                                                      CGRectGetHeight([UIScreen mainScreen].bounds) - 2*MZFORMSHEET_TOP_INSET);
+        formSheet.willPresentCompletionHandler = ^(UIViewController *presentedFSViewController) {
+            // Passing data
+            __weak typeof(self) wself = self;
+            HelpInfoViewController *helpInfoVc = (HelpInfoViewController *)presentedFSViewController;
+            helpInfoVc.descriptionLabel.attributedText = [wself helpText];
+        };
+
+        [self presentFormSheetController:formSheet animated:YES completionHandler:^(MZFormSheetController *formSheetController) {
+        }];
+    }
+}
+
+- (NSAttributedString *)helpText
+{
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+    paragraphStyle.alignment = NSTextAlignmentJustified;
+    
+    NSMutableAttributedString *title = [[NSMutableAttributedString alloc] initWithString:@"\rInvitations Control Center\r\r"
+                                                                                    attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:14],
+                                                                                                 NSForegroundColorAttributeName: BANYAN_BLACK_COLOR,
+                                                                                                 NSParagraphStyleAttributeName: paragraphStyle,
+                                                                                                 NSBaselineOffsetAttributeName : [NSNumber numberWithInt:0]}];
+    NSMutableAttributedString *info1 = [[NSMutableAttributedString alloc] initWithString:@"These settings allow you to control who can contribute to this story and who can read this story.\r\r"
+                                                                attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:12],
+                                                                             NSForegroundColorAttributeName: BANYAN_BLACK_COLOR,
+                                                                             NSParagraphStyleAttributeName: paragraphStyle,
+                                                                             NSBaselineOffsetAttributeName : [NSNumber numberWithInt:0]}];
+
+
+    NSMutableAttributedString *info2 = [[NSMutableAttributedString alloc] initWithString:@"By default, the permissions are set such that only you can contribute to the story, and anyone in the list of your Facebook friends can read the story. "
+                                                                              attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:12],
+                                                                                           NSForegroundColorAttributeName: BANYAN_BLACK_COLOR,
+                                                                                           NSParagraphStyleAttributeName: paragraphStyle,
+                                                                                           NSBaselineOffsetAttributeName : [NSNumber numberWithInt:0]}];
+    
+    NSMutableAttributedString *info3 = [[NSMutableAttributedString alloc] initWithString:@"You can change it by choosing selected individuals who can contribute to or read this story, or select Public if you want anyone to contribute to or read this story.\r\r"
+                                        "Currently we only allow individuals to be selected as a contributor or viewer from the list of your Facebook friends. If you would like people from other walks you would like to add, let us know through the Feedback tab on the home screen menu.\r\r"
+                                                                              attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:12],
+                                                                                           NSForegroundColorAttributeName: BANYAN_BLACK_COLOR,
+                                                                                           NSParagraphStyleAttributeName: paragraphStyle,
+                                                                                           NSBaselineOffsetAttributeName : [NSNumber numberWithInt:0]}];
+    
+    NSMutableAttributedString *info4 = [[NSMutableAttributedString alloc] initWithString:@"When you add a contributor to a story, you are also implicitly providing her/him the permission to invite other contributors or viewers from their network.\r"
+                                                                              attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:12],
+                                                                                           NSForegroundColorAttributeName: BANYAN_BLACK_COLOR,
+                                                                                           NSParagraphStyleAttributeName: paragraphStyle,
+                                                                                           NSBaselineOffsetAttributeName : [NSNumber numberWithInt:0]}];
+    
+    [title appendAttributedString:info1];
+    [title appendAttributedString:info2];
+    [title appendAttributedString:info3];
+    [title appendAttributedString:info4];
+    
+    return title;
 }
 
 - (void)didReceiveMemoryWarning
@@ -181,11 +254,11 @@ typedef enum {
 {
     switch (section) {
         case InvitedTableViewSectionContributor:
-            return @"Permission for contributors";
+            return @"Contributors";
             break;
             
         case InvitedTableViewSectionViewer:
-            return @"Permission for viewers";
+            return @"Viewers";
             break;
             
         default:

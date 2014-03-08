@@ -36,6 +36,8 @@
 		5128EB5717478B5500393173 /* BNAudioStreamingPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5128EB5617478B5500393173 /* BNAudioStreamingPlayer.m */; };
 		5129545518C63ECA00E62D6B /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5129545418C63ECA00E62D6B /* libGoogleAnalyticsServices.a */; };
 		5129545F18C6447700E62D6B /* UIViewController+GoogleAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 5129545E18C6447700E62D6B /* UIViewController+GoogleAnalytics.m */; };
+		5129546418C9B56600E62D6B /* HelpInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5129546218C9B56600E62D6B /* HelpInfoViewController.m */; };
+		5129546518C9B56600E62D6B /* HelpInfoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5129546318C9B56600E62D6B /* HelpInfoViewController.xib */; };
 		5130E1FE18335ECF00975068 /* BNAudioRecorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5130E1FD18335ECF00975068 /* BNAudioRecorderView.m */; };
 		513203AA18AE9C15007A53FD /* BNNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 513203A918AE9C15007A53FD /* BNNavigationController.m */; };
 		513203AF18B3593D007A53FD /* powered-by-google-on-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 513203AD18B3593D007A53FD /* powered-by-google-on-white.png */; };
@@ -322,6 +324,9 @@
 		5129545C18C6424800E62D6B /* GAITracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITracker.h; sourceTree = "<group>"; };
 		5129545D18C6447700E62D6B /* UIViewController+GoogleAnalytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIViewController+GoogleAnalytics.h"; path = "Banyan/UIViewController+GoogleAnalytics.h"; sourceTree = "<group>"; };
 		5129545E18C6447700E62D6B /* UIViewController+GoogleAnalytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+GoogleAnalytics.m"; path = "Banyan/UIViewController+GoogleAnalytics.m"; sourceTree = "<group>"; };
+		5129546118C9B56600E62D6B /* HelpInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelpInfoViewController.h; path = Banyan/HelpInfoViewController.h; sourceTree = "<group>"; };
+		5129546218C9B56600E62D6B /* HelpInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HelpInfoViewController.m; path = Banyan/HelpInfoViewController.m; sourceTree = "<group>"; };
+		5129546318C9B56600E62D6B /* HelpInfoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = HelpInfoViewController.xib; path = Banyan/HelpInfoViewController.xib; sourceTree = "<group>"; };
 		5130E1FC18335ECF00975068 /* BNAudioRecorderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNAudioRecorderView.h; sourceTree = "<group>"; };
 		5130E1FD18335ECF00975068 /* BNAudioRecorderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioRecorderView.m; sourceTree = "<group>"; };
 		513203A818AE9C15007A53FD /* BNNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNNavigationController.h; path = Banyan/BNNavigationController.h; sourceTree = "<group>"; };
@@ -831,6 +836,25 @@
 				5129545E18C6447700E62D6B /* UIViewController+GoogleAnalytics.m */,
 			);
 			name = UIViewController;
+			sourceTree = "<group>";
+		};
+		5129546618C9B56B00E62D6B /* HelpInfoVC */ = {
+			isa = PBXGroup;
+			children = (
+				5129546118C9B56600E62D6B /* HelpInfoViewController.h */,
+				5129546218C9B56600E62D6B /* HelpInfoViewController.m */,
+				5129546318C9B56600E62D6B /* HelpInfoViewController.xib */,
+			);
+			name = HelpInfoVC;
+			sourceTree = "<group>";
+		};
+		5129546718C9B58800E62D6B /* InviteFBFriendsVC */ = {
+			isa = PBXGroup;
+			children = (
+				514CDF5918131F410098B0A9 /* InvitedFBFriendsViewController.h */,
+				514CDF5A18131F410098B0A9 /* InvitedFBFriendsViewController.m */,
+			);
+			name = InviteFBFriendsVC;
 			sourceTree = "<group>";
 		};
 		513203AB18AE9C1A007A53FD /* BNNavigationController */ = {
@@ -1405,6 +1429,7 @@
 		51B2351B17168C6D004241C1 /* Custom Views and View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				5129546618C9B56B00E62D6B /* HelpInfoVC */,
 				5112D102181C61B8003E8C37 /* UIPlaceHolderTextView */,
 				511B421C17A6669100466A8B /* BNImageLabel */,
 				511B421D17A6669C00466A8B /* BNTableViewController */,
@@ -1640,8 +1665,7 @@
 			children = (
 				5189B2DD15B395F300562DD0 /* InvitedTableViewController.h */,
 				5189B2DE15B395F300562DD0 /* InvitedTableViewController.m */,
-				514CDF5918131F410098B0A9 /* InvitedFBFriendsViewController.h */,
-				514CDF5A18131F410098B0A9 /* InvitedFBFriendsViewController.m */,
+				5129546718C9B58800E62D6B /* InviteFBFriendsVC */,
 				517A01DB170BFA3700665F0F /* InviteFriendCell */,
 			);
 			name = Invite;
@@ -1853,6 +1877,7 @@
 				514CDF65181509B70098B0A9 /* AVCamViewController.xib in Resources */,
 				517A01DD170BFA5B00665F0F /* InviteFriendCell.xib in Resources */,
 				5144EC6A1712277600F0B265 /* cameraSymbol.png in Resources */,
+				5129546518C9B56600E62D6B /* HelpInfoViewController.xib in Resources */,
 				5144EC6B1712277600F0B265 /* cameraSymbol@2x.png in Resources */,
 				51F0329218B94F3C00FFA71E /* Cog_selected@2x.png in Resources */,
 				513203BA18B35FEE007A53FD /* Icon-76.png in Resources */,
@@ -2004,6 +2029,7 @@
 				51170B6E17F42CD50015B343 /* ProfileViewController.m in Sources */,
 				5189B32B15B395F300562DD0 /* InvitedTableViewController.m in Sources */,
 				51A1E0A9186C318000162BD6 /* Story+Share.m in Sources */,
+				5129546418C9B56600E62D6B /* HelpInfoViewController.m in Sources */,
 				51984D40176EDE1000CD6C3E /* BNPiecesScrollView.m in Sources */,
 				51F86251185C40E90037D576 /* StoryOverviewHeaderView.m in Sources */,
 				5189B32F15B395F300562DD0 /* ModifyPieceViewController.m in Sources */,

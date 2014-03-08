@@ -36,10 +36,22 @@
 
 + (void) registerDeviceToken:(NSString *)deviceToken
 {
+    // If this is running in simulator, don't do anything
+    if (!deviceToken) {
+        return;
+    }
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
     dispatch_async(queue, ^{
+        BNSharedUser *currentUser = [BNSharedUser currentUser];
+        if (!currentUser) {
+            [BNMisc sendGoogleAnalyticsEventWithCategory:@"Error" action:@"No current user when registering device" label:nil value:nil];
+            return;
+        }
+        
         SNSCreatePlatformEndpointRequest *req = [[SNSCreatePlatformEndpointRequest alloc] init];
         req.token = deviceToken;
+        req.customUserData = currentUser.userId.stringValue;
+
         SNSCreatePlatformEndpointResponse *resp = nil;
         @try {
             req.platformApplicationArn = AWS_APPARN_INVTOCONTRIBUTE;
@@ -58,18 +70,15 @@
             resp = [[self sharedClient] createPlatformEndpoint:req];
             [[self endpointsDict] setObject:resp.endpointArn forKey:@"UserFollowing"];
             
-            BNSharedUser *currentUser = [BNSharedUser currentUser];
-            
-            if (currentUser) {
-                [[AFBanyanAPIClient sharedClient] putPath:[NSString stringWithFormat:@"%@%@/", currentUser.resourceUri, @"installations"]
-                                               parameters:@{@"device_token":deviceToken, @"type":[UIDevice currentDevice].systemName, @"push_endpoints": @{@"apns": [self endpointsDict]}}
-                                                  success:nil
-                                                  failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                                      BNLogError(@"An error occurred: %@", error.localizedDescription);
-                                                  }];
-            }
+            [[AFBanyanAPIClient sharedClient] putPath:[NSString stringWithFormat:@"%@%@/", currentUser.resourceUri, @"installations"]
+                                           parameters:@{@"device_token":deviceToken, @"type":[UIDevice currentDevice].systemName, @"push_endpoints": @{@"apns": [self endpointsDict]}}
+                                              success:nil
+                                              failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                                  BNLogError(@"An error occurred: %@", error.localizedDescription);
+                                              }];
         }
         @catch (NSException *exception) {
+            [BNMisc sendGoogleAnalyticsException:exception inAction:@"Create SNS Endpoint" isFatal:NO];
             BNLogError(@"Exception is: %@", exception.description);
         }
     });
@@ -92,6 +101,7 @@
         }
         @catch (NSException *exception) {
             BNLogError(@"Exception is: %@", exception.description);
+            [BNMisc sendGoogleAnalyticsException:exception inAction:@"Enable SNS Notification" isFatal:NO];
             if (block) block(NO, nil);
         }
     });
@@ -101,7 +111,7 @@
 {
     if (!arn)
         return;
-
+    
     [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"disableNotification" label:channel value:nil];
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
     dispatch_async(queue, ^{
@@ -113,6 +123,7 @@
             if (block) block(YES, nil);
         }
         @catch (NSException *exception) {
+            [BNMisc sendGoogleAnalyticsException:exception inAction:@"Disable SNS Notification" isFatal:NO];
             BNLogError(@"Exception is: %@", exception.description);
             if (block) block(NO, nil);
         }

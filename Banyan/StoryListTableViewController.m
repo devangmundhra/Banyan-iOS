@@ -509,7 +509,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
                 [BNMisc sendGoogleAnalyticsException:exception inAction:@"Getting next story" isFatal:NO];
                 return nil;
             }
-        } while (TRUE && nextStory); // Get the next story that has some piece to read
+        } while (nextStory); // Get the next story that has some piece to read
     } else {
         return nil;
     }

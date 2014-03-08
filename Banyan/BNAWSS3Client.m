@@ -9,7 +9,11 @@
 #import "BNAWSS3Client.h"
 #import "BanyanAppDelegate.h"
 
-static NSString *AWSS3BucketName = @"banyancontent";
+#ifdef DEBUG
+static NSString *AWSS3BucketName = @"dev_banyancontent";
+#else
+static NSString *AWSS3BucketName = @"banyanusercontent";
+#endif
 
 @implementation BNAWSS3Client
 

@@ -47,6 +47,9 @@ NSString *const BNUserDefaultsFirstTimeStoryListVCWSignin = @"io.banyan.Banyan.U
 NSString *const BNUserDefaultsFirstTimeModifyPieceVCOpen = @"io.banyan.Banyan.UserDefaults.firstTime.modifyPieceVCOpen";
 NSString *const BNUserDefaultsFirstTimeStoryReaderOpen = @"io.banyan.Banyan.UserDefaults.firstTime.storyReaderOpen";
 NSString *const BNUserDefaultsFirstTimeModifyPieceImageAdded = @"io.banyan.Banyan.UserDefaults.firstTime.modifyPieceImageAdded";
+NSString *const BNUserDefaultsFirstTimeSettingPermissions = @"io.banyan.Banyan.UserDefaults.firstTime.settingPermissions";
+
+NSString *const BNUserDefaultsDeviceToken = @"io.banyan.Banyan.UserDefaults.deviceToken";
 
 #pragma mark - ManagedObject Story Class
 // Class key
