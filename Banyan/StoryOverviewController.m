@@ -75,8 +75,25 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
     [self.navigationItem setRightBarButtonItem:rightButton];
     
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.navigationController.navigationBar.frame) - 80,
+                                                                    CGRectGetHeight(self.navigationController.navigationBar.frame))];
+    titleLabel.numberOfLines = 2;
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
+    
+    NSMutableAttributedString *titleString = [[NSMutableAttributedString alloc] initWithString:self.story.title
+                                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
+                                                                                   NSForegroundColorAttributeName: BANYAN_BLACK_COLOR}];
+    NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:@"\roverview"
+                                                                       attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
+                                                                                    NSForegroundColorAttributeName: BANYAN_GRAY_COLOR}];
+    
+    [titleString appendAttributedString:appendString];
+    titleLabel.attributedText = titleString;
+
     // Story title label
-    self.navigationItem.title = self.story.title;
+    self.navigationItem.titleView = titleLabel;
     
     // Piece collection view
     CGRect frame = self.view.bounds;

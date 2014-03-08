@@ -101,7 +101,8 @@ typedef enum {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
     if (![firstTimeDict objectForKey:BNUserDefaultsFirstTimeSettingPermissions]) {
-        [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeSettingPermissions];
+        [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:BNUserDefaultsFirstTimeSettingPermissions];
+        [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
         [defaults synchronize];
 #define MZFORMSHEET_TOP_INSET 40.0
 #define MZFORMSHEET_LEFT_INSET 20.0

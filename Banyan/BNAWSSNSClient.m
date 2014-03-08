@@ -50,7 +50,6 @@
         
         SNSCreatePlatformEndpointRequest *req = [[SNSCreatePlatformEndpointRequest alloc] init];
         req.token = deviceToken;
-        req.customUserData = currentUser.userId.stringValue;
 
         SNSCreatePlatformEndpointResponse *resp = nil;
         @try {

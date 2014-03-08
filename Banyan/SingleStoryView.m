@@ -196,7 +196,7 @@ static BOOL _loggedIn;
         if (self.story.isInvited) {
             [self.addPcButton setTitle:@"++" forState:UIControlStateNormal];
         } else {
-            [self.addPcButton setTitle:@"++" forState:UIControlStateNormal];
+            [self.addPcButton setTitle:@"+" forState:UIControlStateNormal];
         }
     }
     else {
