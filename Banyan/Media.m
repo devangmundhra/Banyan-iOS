@@ -34,6 +34,7 @@
 @dynamic title;
 @dynamic width;
 @dynamic remoteObject;
+@dynamic thumbnailfilename;
 
 + (Media *)newMediaForObject:(RemoteObject *)remoteObject
 {
@@ -345,6 +346,7 @@
                 
                 self.thumbnail = nil;
                 self.thumbnailURL = url;
+                self.thumbnailfilename = filename;
 
                 successBlock();
             } else {
@@ -383,7 +385,7 @@
     RKEntityMapping *mediaMapping = [RKEntityMapping mappingForEntityForName:kBNMediaClassKey
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
     [mediaMapping addAttributeMappingsFromDictionary:@{@"url": @"remoteURL"}];
-    [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType", @"thumbnailURL"]];
+    [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType", @"thumbnailURL", @"thumbnailfilename"]];
     mediaMapping.identificationAttributes = @[@"filename", @"remoteURL"];
     return mediaMapping;
 }
@@ -392,7 +394,7 @@
 {
     RKObjectMapping *mediaMapping = [RKObjectMapping requestMapping];
     [mediaMapping addAttributeMappingsFromDictionary:@{@"remoteURL": @"url"}];
-    [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType", @"thumbnailURL"]];
+    [mediaMapping addAttributeMappingsFromArray:@[@"filename", @"filesize", @"height", @"length", @"orientation", @"title", @"width", @"mediaType", @"thumbnailURL", @"thumbnailfilename"]];
     return mediaMapping;
 }
 

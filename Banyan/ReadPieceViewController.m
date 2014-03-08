@@ -371,7 +371,7 @@
         // date label
         self.timeLabel.text = [NSString stringWithFormat:@"%@",[[BNMisc dateTimeFormatter] stringFromDate:self.piece.createdAt]];
         self.timeLabel.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSET_BIG, 0, TEXT_INSET_SMALL);
-        self.timeLabel.font = [UIFont fontWithName:@"Roboto" size:12];
+        self.timeLabel.font = [UIFont fontWithName:@"Roboto-Condensed" size:12];
         self.timeLabel.minimumScaleFactor = 0.8;
         self.timeLabel.backgroundColor = [UIColor clearColor];
         self.timeLabel.textAlignment = NSTextAlignmentLeft;
@@ -384,7 +384,7 @@
         if ([self.piece.location.name length]) {
             self.locationLabel.text = [NSString stringWithFormat:@"at %@", self.piece.location.name];
             self.locationLabel.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSET_SMALL, 0, TEXT_INSET_SMALL);
-            self.locationLabel.font = [UIFont fontWithName:@"Roboto" size:12];
+            self.locationLabel.font = [UIFont fontWithName:@"Roboto-Condensed" size:12];
             self.locationLabel.minimumScaleFactor = 0.8;
             self.locationLabel.backgroundColor = [UIColor clearColor];
             self.locationLabel.textAlignment = NSTextAlignmentLeft;

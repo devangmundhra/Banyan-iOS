@@ -365,7 +365,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     }
     if ([[BanyanConnection storiesPaginator].objectRequestOperation isFinished] && [BanyanConnection storiesPaginator].objectRequestOperation.HTTPRequestOperation.error) {
         self.endOfStoryButton.titleLabel.numberOfLines = 2;
-        [self.endOfStoryButton setTitle:@"Error in loading the new stories.\rPlease try again." forState:UIControlStateNormal];
+        [self.endOfStoryButton setTitle:@"Error in loading new stories.\rPlease try again." forState:UIControlStateNormal];
         self.endOfStoryButton.titleLabel.font = [UIFont fontWithName:@"Roboto" size:16];;
         self.tableView.tableFooterView = self.endOfStoryButton;
     }

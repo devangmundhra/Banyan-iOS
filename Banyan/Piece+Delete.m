@@ -36,17 +36,6 @@
         [alert show];
         return;
     }
-    
-    NSOrderedSet *mediaSet = piece.media;
-    // Delete all media for the piece from the server.
-    // The core data entries will be automatically deleted when the piece gets deleted
-    for (Media *media in mediaSet) {
-        // If its a local image, don't delete it
-        if ([media.remoteURL length]) {
-            [media deleteWitSuccess:nil
-                            failure:nil]; // ignore errors for now
-        }
-    }
 
     if (piece.remoteStatus != RemoteObjectStatusLocal && NUMBER_EXISTS(piece.bnObjectId)) {
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[APP_DELEGATE topMostController].view animated:YES];

@@ -21,6 +21,7 @@
         <attribute name="remoteStatusNumber" optional="YES" attributeType="Integer 16" defaultValueString="3" indexed="YES" syncable="YES"/>
         <attribute name="remoteURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="thumbnail" optional="YES" attributeType="Transformable" valueTransformerName="ImageToDataTransformer" syncable="YES"/>
+        <attribute name="thumbnailfilename" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="thumbnailURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="width" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -83,11 +84,11 @@
         <relationship name="remoteObject" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RemoteObject" inverseName="author" inverseEntity="RemoteObject" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Comment" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Media" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Piece" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="RemoteObject" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Story" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="User" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Comment" positionX="0" positionY="0" width="128" height="120"/>
+        <element name="Media" positionX="0" positionY="0" width="128" height="313"/>
+        <element name="Piece" positionX="0" positionY="0" width="128" height="105"/>
+        <element name="RemoteObject" positionX="0" positionY="0" width="128" height="315"/>
+        <element name="Story" positionX="0" positionY="0" width="128" height="255"/>
+        <element name="User" positionX="0" positionY="0" width="128" height="225"/>
     </elements>
 </model>

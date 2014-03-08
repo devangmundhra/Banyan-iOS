@@ -40,6 +40,7 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
 @property (nonatomic, retain) NSString * remoteURL;
 @property (nonatomic, retain) NSString * thumbnailURL;
 @property (nonatomic, retain) UIImage * thumbnail;
+@property (nonatomic, retain) NSString *thumbnailfilename;
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * width;
 @property (nonatomic, retain) RemoteObject *remoteObject;

@@ -79,7 +79,7 @@
     
     _timeLabel = [[UILabel alloc] init];
     _timeLabel.text = [NSString stringWithFormat:@"0/%ds", self.delegate.bnAudioRecorderAudioRecordDuration];
-    _timeLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
+    _timeLabel.font = [UIFont fontWithName:@"Roboto-Condensed" size:14];
     _timeLabel.textColor = BANYAN_WHITE_COLOR;
     _timeLabel.backgroundColor = BANYAN_CLEAR_COLOR;
     [self addSubview:_timeLabel];

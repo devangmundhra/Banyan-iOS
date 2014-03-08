@@ -887,7 +887,7 @@
     frame.size.height = 44.0f;
     
     self.storyAlbumCoverOptionView = [[UIView alloc] initWithFrame:frame];
-    self.storyAlbumCoverOptionView.backgroundColor = [BANYAN_LIGHT_GREEN_COLOR colorWithAlphaComponent:SUBVIEW_OPACITY];
+    self.storyAlbumCoverOptionView.backgroundColor = [BANYAN_WHITE_COLOR colorWithAlphaComponent:SUBVIEW_OPACITY];
     [self.storyAlbumCoverOptionView.layer setCornerRadius:CORNER_RADIUS];
     
     
@@ -895,8 +895,9 @@
     frame.size.width -= 60;
     BNLabel *storyAlbumTitle = [[BNLabel alloc] initWithFrame:frame];
     storyAlbumTitle.textEdgeInsets = UIEdgeInsetsMake(0, 2*TEXT_INSETS, 0, TEXT_INSETS);
-    storyAlbumTitle.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
+    storyAlbumTitle.font = [UIFont fontWithName:@"Roboto-Condensed" size:16];
     storyAlbumTitle.text = @"Use this photo for album cover";
+    storyAlbumTitle.textColor = BANYAN_GRAY_COLOR;
     [self.storyAlbumCoverOptionView addSubview:storyAlbumTitle];
     
     frame = self.storyAlbumCoverOptionView.bounds;

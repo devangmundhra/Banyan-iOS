@@ -26,15 +26,6 @@
         return;
     }
     
-    // Delete all media for the story
-    for (Media *media in story.media) {
-        // If its a local image, don't delete it
-        if ([media.remoteURL length]) {
-            [media deleteWitSuccess:nil
-                            failure:nil]; // ignore errors for now
-        }
-    }
-    
     if (story.remoteStatus != RemoteObjectStatusLocal && NUMBER_EXISTS(story.bnObjectId)) {
         NSNumber *storyId = story.bnObjectId;
         BNLogInfo(@"Deleting story id: %@", storyId);
