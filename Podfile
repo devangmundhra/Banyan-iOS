@@ -17,6 +17,7 @@ pod 'TWMessageBarManager', '~> 1.3.2'
 pod 'CMPopTipView', '~> 2.1.0'
 pod 'MYBlurIntroductionView'
 pod 'TTTAttributedLabel'
+pod 'GoogleAnalytics-iOS-SDK'
 
 # Testing and Search are optional components
 # pod 'RestKit/Testing',  :git => 'https://github.com/RestKit/RestKit.git'

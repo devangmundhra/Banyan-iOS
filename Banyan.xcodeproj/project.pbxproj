@@ -34,7 +34,6 @@
 		512598BF17B0D5C500FEFCF0 /* SingleImagePickerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 512598BE17B0D5C500FEFCF0 /* SingleImagePickerButton.m */; };
 		5128EB5417478B3D00393173 /* BNAudioRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 5128EB5317478B3D00393173 /* BNAudioRecorder.m */; };
 		5128EB5717478B5500393173 /* BNAudioStreamingPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5128EB5617478B5500393173 /* BNAudioStreamingPlayer.m */; };
-		5129545518C63ECA00E62D6B /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5129545418C63ECA00E62D6B /* libGoogleAnalyticsServices.a */; };
 		5129545F18C6447700E62D6B /* UIViewController+GoogleAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 5129545E18C6447700E62D6B /* UIViewController+GoogleAnalytics.m */; };
 		5129546418C9B56600E62D6B /* HelpInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5129546218C9B56600E62D6B /* HelpInfoViewController.m */; };
 		5129546518C9B56600E62D6B /* HelpInfoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5129546318C9B56600E62D6B /* HelpInfoViewController.xib */; };
@@ -315,13 +314,6 @@
 		5128EB5317478B3D00393173 /* BNAudioRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioRecorder.m; sourceTree = "<group>"; };
 		5128EB5517478B5500393173 /* BNAudioStreamingPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNAudioStreamingPlayer.h; sourceTree = "<group>"; };
 		5128EB5617478B5500393173 /* BNAudioStreamingPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioStreamingPlayer.m; sourceTree = "<group>"; };
-		5129545418C63ECA00E62D6B /* libGoogleAnalyticsServices.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGoogleAnalyticsServices.a; path = ../libGoogleAnalyticsServices.a; sourceTree = "<group>"; };
-		5129545718C6424800E62D6B /* GAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAI.h; sourceTree = "<group>"; };
-		5129545818C6424800E62D6B /* GAIDictionaryBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAIDictionaryBuilder.h; sourceTree = "<group>"; };
-		5129545918C6424800E62D6B /* GAIFields.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAIFields.h; sourceTree = "<group>"; };
-		5129545A18C6424800E62D6B /* GAILogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAILogger.h; sourceTree = "<group>"; };
-		5129545B18C6424800E62D6B /* GAITrackedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITrackedViewController.h; sourceTree = "<group>"; };
-		5129545C18C6424800E62D6B /* GAITracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITracker.h; sourceTree = "<group>"; };
 		5129545D18C6447700E62D6B /* UIViewController+GoogleAnalytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIViewController+GoogleAnalytics.h"; path = "Banyan/UIViewController+GoogleAnalytics.h"; sourceTree = "<group>"; };
 		5129545E18C6447700E62D6B /* UIViewController+GoogleAnalytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+GoogleAnalytics.m"; path = "Banyan/UIViewController+GoogleAnalytics.m"; sourceTree = "<group>"; };
 		5129546118C9B56600E62D6B /* HelpInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelpInfoViewController.h; path = Banyan/HelpInfoViewController.h; sourceTree = "<group>"; };
@@ -668,7 +660,6 @@
 				51BDA25F173EEC1500BD2C19 /* ImageIO.framework in Frameworks */,
 				51F57C541721141D00A76FA5 /* MessageUI.framework in Frameworks */,
 				512598BB17AB916600FEFCF0 /* FacebookSDK.framework in Frameworks */,
-				5129545518C63ECA00E62D6B /* libGoogleAnalyticsServices.a in Frameworks */,
 				517A01BC17095F0E00665F0F /* OpenGLES.framework in Frameworks */,
 				517A01BA17095EDC00665F0F /* CoreText.framework in Frameworks */,
 				5122365C17E688220032892A /* AWSSNS.framework in Frameworks */,
@@ -812,21 +803,6 @@
 				51F032B618B95C2200FFA71E /* Stop@2x.png */,
 			);
 			name = "Music player";
-			sourceTree = "<group>";
-		};
-		5129545618C6424800E62D6B /* GoogleAnalyticsServices */ = {
-			isa = PBXGroup;
-			children = (
-				5129545418C63ECA00E62D6B /* libGoogleAnalyticsServices.a */,
-				5129545718C6424800E62D6B /* GAI.h */,
-				5129545818C6424800E62D6B /* GAIDictionaryBuilder.h */,
-				5129545918C6424800E62D6B /* GAIFields.h */,
-				5129545A18C6424800E62D6B /* GAILogger.h */,
-				5129545B18C6424800E62D6B /* GAITrackedViewController.h */,
-				5129545C18C6424800E62D6B /* GAITracker.h */,
-			);
-			name = GoogleAnalyticsServices;
-			path = Library;
 			sourceTree = "<group>";
 		};
 		5129546018C6447C00E62D6B /* UIViewController */ = {
@@ -1123,7 +1099,6 @@
 				5189B2BB15B387E200562DD0 /* CoreGraphics.framework */,
 				F6EDBDCCC91248339FDC7301 /* libPods.a */,
 				51596AB61745E284008F5276 /* CoreMedia.framework */,
-				5129545618C6424800E62D6B /* GoogleAnalyticsServices */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
