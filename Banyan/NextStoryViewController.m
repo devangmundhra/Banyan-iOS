@@ -164,6 +164,7 @@
     [self dismissViewControllerAnimated:NO completion:^{
         [self.delegate nextStoryViewControllerGoToStoryList:self];
     }];
+    [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"end of story" label:@"back to story list" value:nil];
 }
 
 - (IBAction)goToNextStory:(id)sender
@@ -171,6 +172,7 @@
     [self dismissViewControllerAnimated:NO completion:^{
         [self.delegate nextStoryViewControllerGoToStory:self.nextStory];
     }];
+    [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"next story" label:@"back to story list" value:nil];
 }
 
 - (IBAction)addPieceToStory:(id)sender
@@ -178,6 +180,7 @@
     [self dismissViewControllerAnimated:NO completion:^{
         [self.delegate nextStoryViewControllerAddPieceToStory:self];
     }];
+    [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"add piece to story" label:@"back to story list" value:nil];
 }
 
 # pragma mark

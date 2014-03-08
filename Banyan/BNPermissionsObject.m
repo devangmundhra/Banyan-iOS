@@ -158,6 +158,32 @@
     }
 }
 
+- (NSString *)typeOfInvitee
+{
+    if ([self.inviteeList.isPublic boolValue]) {
+        return @"Public";
+    } else if (self.inviteeList.allFacebookFriendsOf.count) {
+        return @"allFBFriendsOF";
+    } else if (self.inviteeList.facebookFriends.count) {
+        return @"fbFriends";
+    } else {
+        return @"No one";
+    }
+}
+
+- (NSNumber *)countOfInvitee
+{
+    if ([self.inviteeList.isPublic boolValue]) {
+        return [NSNumber numberWithInt:0];
+    } else if (self.inviteeList.allFacebookFriendsOf.count) {
+        return [NSNumber numberWithInt:self.inviteeList.allFacebookFriendsOf.count];
+    } else if (self.inviteeList.facebookFriends.count) {
+        return [NSNumber numberWithInt:self.inviteeList.facebookFriends.count];
+    } else {
+        return [NSNumber numberWithInt:0];
+    }
+}
+
 @end
 
 @implementation BNPermissionsObject (InternalMethods)

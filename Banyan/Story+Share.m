@@ -21,8 +21,6 @@
     UIActionSheet *shareSheet = [[UIActionSheet alloc] initWithTitle:@"How would you like to share this story" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Share as a link on Facebook", @"Share as a new album on Facebook", @"Copy link to story", nil];
     
     [shareSheet showInView:APP_DELEGATE.topMostController.view];
-    
-    [BNMisc sendGoogleAnalyticsSocialInteractionWithNetwork:@"Banyan" action:@"share" target:[NSString stringWithFormat:@"Story_%@", self.bnObjectId]];
 }
 
 - (void) shareAsAlbumOnFacebook
@@ -174,6 +172,7 @@
 @implementation Story (UIActionSheetDelegate)
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    [BNMisc sendGoogleAnalyticsSocialInteractionWithNetwork:@"Banyan" action:[actionSheet buttonTitleAtIndex:buttonIndex] target:[NSString stringWithFormat:@"Story_%@", self.bnObjectId]];
     if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share as a new album on Facebook"]) {
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){

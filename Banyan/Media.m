@@ -23,7 +23,6 @@
 @dynamic height;
 @dynamic length;
 @dynamic localURL;
-@dynamic mediaID;
 @dynamic mediaType;
 @dynamic orientation;
 @dynamic progress;

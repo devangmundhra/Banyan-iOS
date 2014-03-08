@@ -389,6 +389,7 @@
                               otherButtonTitles:nil]
              show];
             [self cancel:nil];
+            [BNMisc sendGoogleAnalyticsEventWithCategory:@"Error" action:@"story deleted on server" label:nil value:nil];
             return;
         }
         self.piece.story = story;
@@ -403,6 +404,7 @@
                           otherButtonTitles:nil]
          show];
         [self cancel:nil];
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"piece deleted on server" label:nil value:nil];
         return;
     }
     
@@ -433,9 +435,13 @@
         Media *media = [Media newMediaForObject:self.piece];
         media.mediaType = @"audio";
         media.localURL = [audioRecording absoluteString];
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"audio in piece" label:nil value:nil];
     }
 
     // Delete any media that were indicated to be deleted
+    if (mediaToDelete.count) {
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"media deleted from piece" label:nil value:[NSNumber numberWithUnsignedInteger:mediaToDelete.count]];
+    }
     for (Media *media in mediaToDelete) {
         // If its a local image, don't delete it
         if ([media.remoteURL length]) {
@@ -458,6 +464,7 @@
         // Delete any previous media for this story
         for (Media *media in self.piece.story.media) {
             // If its a local image, don't delete it
+            [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"overriding existing story cover" label:nil value:nil];
             if ([media.remoteURL length]) {
                 [media deleteWitSuccess:nil
                                 failure:^(NSError *error) {
@@ -466,7 +473,9 @@
                                 }];
             }
             [media remove];
+            [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"photo set as story cover" label:nil value:nil];
         }
+        
         Media *storyMedia = [Media newMediaForObject:self.piece.story];
         // Get the image media from piece's media
         Media *pcImageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
@@ -509,6 +518,7 @@
                                           delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
     
     [alertView show];
+    [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"delete audio button pressed" label:nil value:nil];
 }
 
 - (IBAction)storyChangeButtonPressed:(id)sender
@@ -518,6 +528,7 @@
     vc.delegate = self;
     UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:vc];
     [self presentViewController:nvc animated:YES completion:nil];
+    [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"story change button pressed" label:nil value:nil];
 }
 
 - (void) updateStoryTitle
@@ -549,6 +560,7 @@
         // Remove the delete button
         [[[self.audioPickerView subviews] lastObject] removeFromSuperview];
         self.doneButton.enabled = YES;
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"audio deleted from piece" label:nil value:nil];
         return;
     }
 }
@@ -556,6 +568,9 @@
 # pragma mark StoryPickerViewControllerDelegate
 - (void) storyPickerViewControllerDidPickStory:(Story *)story
 {
+    if (![self.piece.story.objectID isEqual:story.objectID]) {
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"different story selected from piece" label:nil value:nil];
+    }
     // A new story was picked.
     // Change the story of this piece to the new story
     self.piece.story = (Story *)[story cloneIntoNSManagedObjectContext:self.scratchMOC];
@@ -790,6 +805,7 @@
     [self.addPhotoButton setThumbnail:image forMedia:media];
     [self showOptionToMakePhotoAsStoryCover];
     self.doneButton.enabled = [self checkForChanges];
+    [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"photo from camera" label:nil value:nil];
 }
 
 @end
@@ -814,6 +830,7 @@
     [self.addPhotoButton setThumbnail:image forMedia:media];
     [self showOptionToMakePhotoAsStoryCover];
     self.doneButton.enabled = [self checkForChanges];
+    [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"photo from gallery" label:nil value:nil];
 }
 
 - (void) mediaPickerDidCancel:(MediaPickerViewController *)mediaPicker
@@ -962,6 +979,8 @@
     GooglePlacePickerViewController *gppVC = [[GooglePlacePickerViewController alloc] initWithNibName:@"GooglePlacePickerViewController" bundle:nil];
     gppVC.delegate = self;
     [self presentViewController:gppVC animated:YES completion:nil];
+    [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"location button was tapped" label:nil value:nil];
+
 }
 
 - (void)locationPickerButtonToggleLocationEnable:(LocationPickerButton *)sender
@@ -980,6 +999,7 @@
 - (void)googlePlacesViewControllerPickedLocation:(BNDuckTypedObject<GooglePlacesObject>*)place
 {
     self.addLocationButton.location = place;
+    [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"location was picked for piece" label:place.name value:nil];
 }
 
 @end

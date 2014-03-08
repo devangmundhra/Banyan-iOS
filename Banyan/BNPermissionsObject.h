@@ -36,5 +36,6 @@ typedef enum {
 + (BNPermissionsObject <BNPermissionsObject> *)permissionsObject;
 + (NSString *)longFormattedPermissionObject:(BNPermissionsObject <BNPermissionsObject>*)obj level:(BNPermissionObjectInvitationLevel)level list:(BOOL)list;
 + (NSString *)shortFormattedPermissionObject:(BNPermissionsObject <BNPermissionsObject>*)obj level:(BNPermissionObjectInvitationLevel)level;
-
+- (NSString *)typeOfInvitee;
+- (NSNumber *)countOfInvitee;
 @end

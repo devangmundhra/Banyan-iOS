@@ -178,6 +178,7 @@ static NSString *PlacesDetailCellIdentifier = @"GooglePlacesCell";
         [self.mapView.userLocation removeObserver:self forKeyPath:@"location"];
         locationObserverAdded = NO;
     }
+    [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"user searching for location" label:nil value:nil];
 }
 
 - (void)handleSearchForSearchString:(NSString *)searchString {

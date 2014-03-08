@@ -226,6 +226,13 @@
     self.story.title = (self.storyTitleTextField.text && ![self.storyTitleTextField.text isEqualToString:@""]) ? self.storyTitleTextField.text : [BNMisc shortCurrentDate];
     
     // Story Privacy
+    BOOL samePermissions = YES;
+    if (![self.writeAccessList isEqual:self.story.writeAccess]) {
+        samePermissions = NO;
+    }
+    if (![self.readAccessList isEqual:self.story.readAccess]) {
+        samePermissions = NO;
+    }
     self.story.writeAccess = self.writeAccessList;
     self.story.readAccess = self.readAccessList;
 
@@ -234,10 +241,19 @@
     // Upload Story
     if (self.editMode == ModifyStoryViewControllerEditModeAdd) {
         [Story createNewStory:self.story];
-        
         BNLogInfo(@"New story %@ saved", self.story);
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"create story: write"
+                                               label:[self.writeAccessList typeOfInvitee]
+                                               value:[self.writeAccessList countOfInvitee]];
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"create story: read"
+                                               label:[self.readAccessList typeOfInvitee]
+                                               value:[self.readAccessList countOfInvitee]];
+        
     } else if (self.editMode == ModifyStoryViewControllerEditModeEdit) {
         [Story editStory:self.story];
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"edit story"
+                                               label:@"changed permissions"
+                                               value:[NSNumber numberWithBool:samePermissions]];
     } else {
         NSAssert(false, @"Not a valid edit mode");
     }

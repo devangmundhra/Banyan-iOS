@@ -31,7 +31,6 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
 @property (nonatomic, retain) NSNumber * height;
 @property (nonatomic, retain) NSNumber * length;
 @property (nonatomic, retain) NSString * localURL;
-@property (nonatomic, retain) NSNumber * mediaID;
 @property (nonatomic, retain) NSString * mediaType;
 @property (weak, nonatomic, readonly) NSString * mediaTypeName;
 @property (nonatomic, retain) NSString * orientation;

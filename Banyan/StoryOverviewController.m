@@ -232,6 +232,7 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
     [self dismissViewControllerAnimated:YES completion:^{
         [self.delegate storyOverviewControllerSelectedPiece:piece];
     }];
+    [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"story overview" label:@"selected a piece" value:[NSNumber numberWithInt:indexPath.item]];
 }
 
 @end

@@ -573,6 +573,7 @@ bail:
     
     if (afpSession.modified)
     {
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"photo edited" label:nil value:nil];
         // If image was modified, save again)
         ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
         [library writeImageToSavedPhotosAlbum:[image CGImage]

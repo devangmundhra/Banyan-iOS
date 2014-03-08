@@ -245,6 +245,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
 //    [BNAWSSNSClient registerDeviceToken:@"1111111111111111111111111111111111111111111111111111111111111111"];
+    [BNMisc sendGoogleAnalyticsError:error inAction:@"register for remote notification" isFatal:NO];
     BNLogWarning(@"Failed to register for notification for error: %@", error.localizedDescription);
 }
 
