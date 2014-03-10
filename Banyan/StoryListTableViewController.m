@@ -554,26 +554,18 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 -(void)introduction:(MYBlurIntroductionView *)introductionView didChangeToPanel:(MYIntroductionPanel *)panel withIndex:(NSInteger)panelIndex
 {
     UIImage *image = nil;
-    //You can edit introduction view properties right from the delegate method!
+    // You can edit introduction view properties right from the delegate method!
     if (panelIndex == 0) {
         image = [UIImage imageNamed:@"IntroBkg2"];
         [introductionView setBackgroundColor:[BANYAN_WHITE_COLOR colorWithAlphaComponent:0.5]];
-        panel.PanelTitleLabel.textColor = BANYAN_BLACK_COLOR;
-        panel.PanelDescriptionLabel.textColor = BANYAN_BLACK_COLOR;
-    } else if (panelIndex == 1){
-        image = [UIImage imageNamed:@"IntroBkg1"]; // http://www.flickr.com/photos/horiavarlan/5018799808/
-        [introductionView setBackgroundColor:BANYAN_CLEAR_COLOR];
-        panel.PanelTitleLabel.textColor = BANYAN_WHITE_COLOR;
-        panel.PanelDescriptionLabel.textColor = BANYAN_WHITE_COLOR;
-    } else if (panelIndex == 2) {
+    } else if (panelIndex == 1) {
         image = [UIImage imageNamed:@"IntroBkg3"];
         [introductionView setBackgroundColor:[BANYAN_WHITE_COLOR colorWithAlphaComponent:0.4]];
-        panel.PanelTitleLabel.textColor = BANYAN_BLACK_COLOR;
-        panel.PanelDescriptionLabel.textColor = BANYAN_BLACK_COLOR;
     }
+    panel.PanelTitleLabel.textColor = BANYAN_BLACK_COLOR;
+    panel.PanelDescriptionLabel.textColor = BANYAN_BLACK_COLOR;
     panel.PanelTitleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:24];
     panel.PanelDescriptionLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:14];
-
 
     introductionView.BackgroundImageView.image = image;
 }

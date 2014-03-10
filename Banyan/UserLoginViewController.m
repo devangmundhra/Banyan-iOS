@@ -57,7 +57,8 @@
     [self.eulaLabel addLinkToURL:[NSURL URLWithString:@"https://www.banyan.io/terms"] withRange:range];
     self.eulaLabel.delegate = self;
 
-    self.fbLoginView.readPermissions = [NSArray arrayWithObjects: @"email", @"user_about_me", @"user_photos", nil];
+    // Note: if you update permissions here, also update them on the server (social_auth settings)
+    self.fbLoginView.readPermissions = [NSArray arrayWithObjects: @"email", @"user_photos", nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated

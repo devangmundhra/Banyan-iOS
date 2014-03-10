@@ -37,6 +37,7 @@
 		5129545F18C6447700E62D6B /* UIViewController+GoogleAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 5129545E18C6447700E62D6B /* UIViewController+GoogleAnalytics.m */; };
 		5129546418C9B56600E62D6B /* HelpInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5129546218C9B56600E62D6B /* HelpInfoViewController.m */; };
 		5129546518C9B56600E62D6B /* HelpInfoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5129546318C9B56600E62D6B /* HelpInfoViewController.xib */; };
+		5129546918CD7E4900E62D6B /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5129546818CD7E4800E62D6B /* libGoogleAnalyticsServices.a */; };
 		5130E1FE18335ECF00975068 /* BNAudioRecorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5130E1FD18335ECF00975068 /* BNAudioRecorderView.m */; };
 		513203AA18AE9C15007A53FD /* BNNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 513203A918AE9C15007A53FD /* BNNavigationController.m */; };
 		513203AF18B3593D007A53FD /* powered-by-google-on-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 513203AD18B3593D007A53FD /* powered-by-google-on-white.png */; };
@@ -319,6 +320,7 @@
 		5129546118C9B56600E62D6B /* HelpInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelpInfoViewController.h; path = Banyan/HelpInfoViewController.h; sourceTree = "<group>"; };
 		5129546218C9B56600E62D6B /* HelpInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HelpInfoViewController.m; path = Banyan/HelpInfoViewController.m; sourceTree = "<group>"; };
 		5129546318C9B56600E62D6B /* HelpInfoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = HelpInfoViewController.xib; path = Banyan/HelpInfoViewController.xib; sourceTree = "<group>"; };
+		5129546818CD7E4800E62D6B /* libGoogleAnalyticsServices.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGoogleAnalyticsServices.a; path = ../../Downloads/GoogleAnalyticsServicesiOS_3.03/libGoogleAnalyticsServices.a; sourceTree = "<group>"; };
 		5130E1FC18335ECF00975068 /* BNAudioRecorderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNAudioRecorderView.h; sourceTree = "<group>"; };
 		5130E1FD18335ECF00975068 /* BNAudioRecorderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioRecorderView.m; sourceTree = "<group>"; };
 		513203A818AE9C15007A53FD /* BNNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNNavigationController.h; path = Banyan/BNNavigationController.h; sourceTree = "<group>"; };
@@ -649,6 +651,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5129546918CD7E4900E62D6B /* libGoogleAnalyticsServices.a in Frameworks */,
 				515CF518183F3B1A0071C9B2 /* AdSupport.framework in Frameworks */,
 				515CF517183DF1650071C9B2 /* StoreKit.framework in Frameworks */,
 				5112D106181E4EEA003E8C37 /* Accelerate.framework in Frameworks */,
@@ -1066,6 +1069,7 @@
 		5189B2B615B387E200562DD0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5129546818CD7E4800E62D6B /* libGoogleAnalyticsServices.a */,
 				5112D056181A4CE5003E8C37 /* CoreVideo.framework */,
 				5122365B17E688220032892A /* AWSSNS.framework */,
 				514EEA8D17C5EF5400B4BCBF /* AWSS3.framework */,
@@ -2212,6 +2216,7 @@
 					/Users/devangmundhra/Developer/Banyan/Banyan/lib,
 					/Users/devangmundhra/Developer/Banyan/Banyan/AviarySDK,
 					/Users/devangmundhra/Developer/Banyan,
+					/Users/devangmundhra/Downloads/GoogleAnalyticsServicesiOS_3.03,
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -2261,6 +2266,7 @@
 					/Users/devangmundhra/Developer/Banyan/Banyan/lib,
 					/Users/devangmundhra/Developer/Banyan/Banyan/AviarySDK,
 					/Users/devangmundhra/Developer/Banyan,
+					/Users/devangmundhra/Downloads/GoogleAnalyticsServicesiOS_3.03,
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
