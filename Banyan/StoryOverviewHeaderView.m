@@ -111,7 +111,6 @@
     formSheet.shadowRadius = 2.0;
     formSheet.shadowOpacity = 0.3;
     formSheet.shouldDismissOnBackgroundViewTap = YES;
-    formSheet.shouldCenterVerticallyWhenKeyboardAppears = YES;
     __weak StoryOverviewHeaderView *wself = self;
     formSheet.willPresentCompletionHandler = ^(UIViewController *presentedFSViewController) {
         // Passing data
@@ -120,7 +119,7 @@
         [conVC.tableView reloadData];
     };
     
-    [APP_DELEGATE.topMostController presentFormSheetController:formSheet animated:YES completionHandler:^(MZFormSheetController *formSheetController) {
+    [APP_DELEGATE.topMostController mz_presentFormSheetController:formSheet animated:YES completionHandler:^(MZFormSheetController *formSheetController) {
         
     }];
 }

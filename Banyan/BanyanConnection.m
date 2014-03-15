@@ -261,6 +261,17 @@
                 [alert show];
 #endif
             }
+            else if ([[error localizedDescription] rangeOfString:@"status code in (200-299), got 500"].location != NSNotFound) {
+                [BNMisc sendGoogleAnalyticsError:error inAction:@"Fetching stories" isFatal:NO];
+#ifdef DEBUG
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in fetching stories."
+                                                                message:@"There was a problem in the Banyan servers. We're looking into it. \rPlease try again in a bit"
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+                [alert show];
+#endif
+            }
             else {
                 [BNMisc sendGoogleAnalyticsError:error inAction:@"Fetching stories" isFatal:NO];
 #ifdef DEBUG

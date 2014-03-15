@@ -802,8 +802,8 @@
     imageCropBounds.origin = CGPointMake(roundf((image.size.width - MEDIA_THUMBNAIL_SIZE.width) / 2), roundf((image.size.height - MEDIA_THUMBNAIL_SIZE.height) / 2));
     imageCropBounds.size = MEDIA_THUMBNAIL_SIZE;
     image = [image croppedImage:imageCropBounds];    media.thumbnail = image;
-    [self.addPhotoButton setThumbnail:image forMedia:media];
     [self showOptionToMakePhotoAsStoryCover];
+    [self.addPhotoButton setThumbnail:image forMedia:media];
     self.doneButton.enabled = [self checkForChanges];
     [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"photo from camera" label:nil value:nil];
 }
@@ -827,8 +827,8 @@
     imageCropBounds.size = MEDIA_THUMBNAIL_SIZE;
     image = [image croppedImage:imageCropBounds];
     media.thumbnail = image;
-    [self.addPhotoButton setThumbnail:image forMedia:media];
     [self showOptionToMakePhotoAsStoryCover];
+    [self.addPhotoButton setThumbnail:image forMedia:media];
     self.doneButton.enabled = [self checkForChanges];
     [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"photo from gallery" label:nil value:nil];
 }

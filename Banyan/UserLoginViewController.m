@@ -58,7 +58,7 @@
     self.eulaLabel.delegate = self;
 
     // Note: if you update permissions here, also update them on the server (social_auth settings)
-    self.fbLoginView.readPermissions = [NSArray arrayWithObjects: @"email", @"user_photos", nil];
+    self.fbLoginView.readPermissions = [NSArray arrayWithObjects: @"basic_info", @"email", @"user_photos", nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated

@@ -325,15 +325,16 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     BNSharedUser *currentUser = [BNSharedUser currentUser];
 
     if (currentUser) {
-        [[AFBanyanAPIClient sharedClient] putPath:currentUser.resourceUri
-                                       parameters:@{@"stories_hidden":@[story.resourceUri]}
-                                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                              BNLogInfo(@"Story successfully hidden");
-                                              [story remove];
-                                          }
-                                          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                              BNLogError(@"An error occurred: %@", error.localizedDescription);
-                                          }];
+        [[AFBanyanAPIClient sharedClient] postPath:@"hide_object/"
+                                        parameters:@{@"content_object":story.resourceUri}
+                                           success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                               BNLogInfo(@"Story successfully hidden");
+                                               [story remove];
+                                           }
+                                           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                               [BNMisc sendGoogleAnalyticsError:error inAction:@"Hide Story" isFatal:NO];
+                                               BNLogError(@"An error occurred: %@", error.localizedDescription);
+                                           }];
     }
 }
 

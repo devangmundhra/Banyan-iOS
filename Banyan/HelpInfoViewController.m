@@ -56,7 +56,7 @@
 - (IBAction)gotitButtonPressed:(id)sender
 {
     [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"button" label:@"Got it permission" value:nil];
-    [self dismissFormSheetControllerAnimated:YES completionHandler:nil];
+    [self mz_dismissFormSheetControllerAnimated:YES completionHandler:nil];
 }
 
 - (void)didReceiveMemoryWarning

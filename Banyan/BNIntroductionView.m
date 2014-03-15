@@ -28,8 +28,7 @@
                                                                        title:@"Welcome to Banyan!"
                                                                  description:@"Banyan assists you to create your own stories and invite anyone you like to contribute to or view the story. "
                                    "You can also make the stories publicly viewable and contributable, letting your friends and could-be-friends to expand upon it.\r\r"
-                                   "Better still, if there is already a story about something you want to add to, share a piece of your thought to it."
-                                                                       image:[UIImage imageNamed:@"BNLogo"]];
+                                   "Better still, if there is already a story about something you want to add to, share a piece of your thought to it."];
     
     MYIntroductionPanel *panel2 = [[MYIntroductionPanel alloc] initWithFrame:frame
                                                                        title:@"Almost there..."
@@ -46,7 +45,7 @@
     [self buildIntroductionWithPanels:panels];
 
     self.BackgroundImageView.image =  [UIImage imageNamed:@"IntroBkg2"];
-    [self setBackgroundColor:[BANYAN_WHITE_COLOR colorWithAlphaComponent:0.5]];
+    [self setBackgroundColor:[BANYAN_WHITE_COLOR colorWithAlphaComponent:0.6]];
     panel1.PanelTitleLabel.textColor = BANYAN_BLACK_COLOR;
     panel1.PanelDescriptionLabel.textColor = BANYAN_BLACK_COLOR;
     panel1.PanelTitleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:24];

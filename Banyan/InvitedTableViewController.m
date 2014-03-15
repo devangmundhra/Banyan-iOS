@@ -121,7 +121,7 @@ typedef enum {
             helpInfoVc.descriptionLabel.attributedText = [wself helpText];
         };
 
-        [self presentFormSheetController:formSheet animated:YES completionHandler:^(MZFormSheetController *formSheetController) {
+        [self mz_presentFormSheetController:formSheet animated:YES completionHandler:^(MZFormSheetController *formSheetController) {
         }];
     }
 }

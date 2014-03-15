@@ -94,7 +94,7 @@ static NSString *radiusString = @"1000";
                                         if (!error) {
                                             CLPlacemark *placemark = [placemarks onlyObject];
                                             GooglePlacesObject<GooglePlacesObject>* place = (GooglePlacesObject<GooglePlacesObject>*)[GooglePlacesObject duckTypedObject];
-                                            place.name = [NSString stringWithFormat:@"%@, %@", placemark.subLocality, placemark.locality];;
+                                            place.name = [NSString stringWithFormat:@"%@, %@", placemark.name, placemark.locality];;
                                             place.geometry.location.lat = [NSNumber numberWithDouble:placemark.location.coordinate.latitude];
                                             place.geometry.location.lng = [NSNumber numberWithDouble:placemark.location.coordinate.longitude];
                                             block(placemark, place, error);

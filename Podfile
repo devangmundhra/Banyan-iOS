@@ -12,7 +12,7 @@ pod 'MZFormSheetController'
 pod 'ios-image-editor'
 pod 'SPGooglePlacesAutocomplete', :git => 'https://github.com/devangmundhra/SPGooglePlacesAutocomplete.git', :commit => '24c94888a1892e7be7cc16275821663ec9fce8dd'
 pod 'uservoice-iphone-sdk', '~> 3.0'
-pod 'AFNetworking-TastyPie', :git => 'https://github.com/YetiHQ/AFNetworking-TastyPie'
+pod 'AFNetworking-TastyPie', :git => "https://github.com/rhfung/AFNetworking-TastyPie.git", :tag => "0.0.1"
 pod 'TWMessageBarManager', '~> 1.3.2'
 pod 'CMPopTipView', '~> 2.1.0'
 pod 'MYBlurIntroductionView'
