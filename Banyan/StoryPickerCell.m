@@ -81,6 +81,7 @@
         _fullLabel.textEdgeInsets = UIEdgeInsetsMake(TEXT_INSETS, TEXT_INSETS, TEXT_INSETS, TEXT_INSETS);
         _fullLabel.textColor = BANYAN_WHITE_COLOR;
         _fullLabel.layer.cornerRadius = 8.0f;
+        _fullLabel.layer.masksToBounds = YES;
         [self addSubview:_fullLabel];
     }
     return self;
