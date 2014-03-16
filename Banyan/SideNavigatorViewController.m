@@ -201,7 +201,7 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
                 cell.textLabel.text = @"Feedback";
                 break;
             case SidePanelOptionLoggedInAbout:
-                cell.textLabel.text = @"About";
+                cell.textLabel.text = @"About Banyan";
                 break;
             default:
                 break;
@@ -218,7 +218,7 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
                 cell.textLabel.text = @"Feedback";
                 break;
             case SidePanelOptionLoggedOutAbout:
-                cell.textLabel.text = @"About";
+                cell.textLabel.text = @"About Banyan";
                 break;
             default:
                 break;

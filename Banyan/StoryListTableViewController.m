@@ -60,7 +60,7 @@ typedef enum {
     [self.navigationController.navigationBar setBarStyle:UIBarStyleDefault];
     self.navigationController.navigationBar.translucent = YES;
     
-    self.title = @"Stories";
+    self.title = @"Your Stories";
     
     [self.tableView registerClass:[SingleStoryCell class] forCellReuseIdentifier:CellIdentifier];
     [self.view setBackgroundColor:BANYAN_LIGHTGRAY_COLOR];
@@ -92,7 +92,7 @@ typedef enum {
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, CGRectGetHeight(self.navigationController.navigationBar.frame))];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.backgroundColor = BANYAN_CLEAR_COLOR;
-    titleLabel.attributedText = [[NSAttributedString alloc] initWithString:@"Banyan"
+    titleLabel.attributedText = [[NSAttributedString alloc] initWithString:self.title
                                                                 attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:20]}];
     self.navigationItem.titleView = titleLabel;
     if ([BanyanAppDelegate loggedIn]) {
