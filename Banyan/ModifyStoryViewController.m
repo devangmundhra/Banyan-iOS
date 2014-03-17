@@ -54,7 +54,7 @@
 @synthesize charCountLabel = _charCountLabel;
 @synthesize scratchMOC = _scratchMOC;
 
-#define MAX_STORY_TITLE_LENGTH 20
+#define MAX_STORY_TITLE_LENGTH 40
 #define TEXT_INSETS 5
 #define VIEW_INSETS 8
 

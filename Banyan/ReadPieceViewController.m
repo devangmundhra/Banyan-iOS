@@ -481,9 +481,18 @@
     NSUInteger currentPieceNum = [self.piece.story.pieces indexOfObject:self.piece];
 
     UIButton *titleButton = [self.storyInfoView.subviews objectAtIndex:0];
-    NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:self.piece.story.title
-                                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
-                                                                                   NSForegroundColorAttributeName: BANYAN_DARKGRAY_COLOR}];
+    NSAttributedString *titleString = nil;
+    
+    if (self.piece.story.title.length <= 20) {
+        titleString = [[NSAttributedString alloc] initWithString:self.piece.story.title
+                                        attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
+                                                     NSForegroundColorAttributeName: BANYAN_DARKGRAY_COLOR}];
+    } else {
+        titleString = [[NSAttributedString alloc] initWithString:self.piece.story.title
+                                        attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:12],
+                                                     NSForegroundColorAttributeName: BANYAN_DARKGRAY_COLOR}];
+    }
+    
     NSAttributedString *pageString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\rpiece %d/%d", currentPieceNum+1, self.piece.story.length]
                                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
                                                                                   NSForegroundColorAttributeName: BANYAN_GRAY_COLOR}];

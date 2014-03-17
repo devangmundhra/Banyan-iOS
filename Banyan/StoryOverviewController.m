@@ -82,9 +82,18 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
     
-    NSMutableAttributedString *titleString = [[NSMutableAttributedString alloc] initWithString:self.story.title
-                                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
-                                                                                   NSForegroundColorAttributeName: BANYAN_BLACK_COLOR}];
+    NSMutableAttributedString *titleString = nil;
+    
+    if (self.story.title.length <= 20) {
+        titleString = [[NSMutableAttributedString alloc] initWithString:self.story.title
+                                                             attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
+                                                                          NSForegroundColorAttributeName: BANYAN_BLACK_COLOR}];
+    } else {
+        titleString = [[NSMutableAttributedString alloc] initWithString:self.story.title
+                                                             attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:12],
+                                                                          NSForegroundColorAttributeName: BANYAN_BLACK_COLOR}];
+    }
+    
     NSAttributedString *appendString = [[NSAttributedString alloc] initWithString:@"\roverview"
                                                                        attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
                                                                                     NSForegroundColorAttributeName: BANYAN_GRAY_COLOR}];

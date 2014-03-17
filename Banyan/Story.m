@@ -32,7 +32,10 @@
 {
     [super awakeFromFetch];
     self.currentPieceIndexNum = self.currentPieceIndexNum >= self.length ? 0 : self.currentPieceIndexNum;
-    [self setUploadStatusNumber:[self calculateUploadStatusNumber]];
+    // Skip updating objects not related to self in awakeFromFetch
+    // The object graph might be a little iffy and its not wise to assume the consistency of other objects while I
+    // am being fetched
+//    [self setUploadStatusNumber:[self calculateUploadStatusNumber]];
 }
 
 - (int16_t)length

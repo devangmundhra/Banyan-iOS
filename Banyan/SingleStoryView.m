@@ -34,6 +34,7 @@ static UIImage *_flagStoryImageSelected;
 static UIImage *_hideStoryImage;
 static NSDateFormatter *_dateFormatter;
 static UIFont *_boldFont;
+static UIFont *_boldFontSmall;
 static UIFont *_mediumFont;
 static UIFont *_smallFont;
 static UIFont *_normalFontSz18;
@@ -67,6 +68,7 @@ static BOOL _loggedIn;
         [_dateFormatter setDoesRelativeDateFormatting:YES];
         
         _boldFont = [UIFont fontWithName:@"Roboto-Bold" size:20];
+        _boldFontSmall = [UIFont fontWithName:@"Roboto-Bold" size:16];
         _mediumFont = [UIFont fontWithName:@"Roboto-Medium" size:12];
         _smallFont = [UIFont fontWithName:@"Roboto-Medium" size:10];
         _normalFontSz18 = [UIFont fontWithName:@"Roboto" size:18];
@@ -230,10 +232,18 @@ static BOOL _loggedIn;
     NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
     paraStyle.lineBreakMode = NSLineBreakByTruncatingTail;
     
-    [self.story.title drawInRect:CGRectMake(point.x, point.y, CGRectGetWidth(self.frame) - TABLE_CELL_MARGIN - BUTTON_SPACING, TOP_VIEW_HEIGHT)
-                  withAttributes:@{NSFontAttributeName: _boldFont,
-                                   NSForegroundColorAttributeName: BANYAN_BLACK_COLOR,
-                                   NSParagraphStyleAttributeName: paraStyle}];
+    if (self.story.title.length <= 20) {
+        [self.story.title drawInRect:CGRectMake(point.x, point.y, CGRectGetWidth(self.frame) - TABLE_CELL_MARGIN - BUTTON_SPACING, TOP_VIEW_HEIGHT)
+                      withAttributes:@{NSFontAttributeName: _boldFont,
+                                       NSForegroundColorAttributeName: BANYAN_BLACK_COLOR,
+                                       NSParagraphStyleAttributeName: paraStyle}];
+    } else {
+        // Try to fit atleast a bit more if the story title is big
+        [self.story.title drawInRect:CGRectMake(point.x, point.y, CGRectGetWidth(self.frame) - TABLE_CELL_MARGIN - BUTTON_SPACING, TOP_VIEW_HEIGHT)
+                      withAttributes:@{NSFontAttributeName: _boldFontSmall,
+                                       NSForegroundColorAttributeName: BANYAN_BLACK_COLOR,
+                                       NSParagraphStyleAttributeName: paraStyle}];
+    }
     
     // Time label
     point = CGPointMake(TABLE_CELL_MARGIN+_clockSymbolImage.size.width+SPACER_DISTANCE, TOP_VIEW_HEIGHT/2+SPACER_DISTANCE);
