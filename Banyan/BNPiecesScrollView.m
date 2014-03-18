@@ -104,7 +104,7 @@ static UIFont *_regularFont;
 - (void)setStory:(Story *)story
 {
     NSUInteger currentPcNumIndex = story.currentPieceIndexNum;
-    if (_story && story && _story == story) {
+    if (_story && story && _story == story && self.currentPieceIndexNum < _story.length) {
         // If the story hasn't changed, don't change the index
         currentPcNumIndex = self.currentPieceIndexNum;
     }
