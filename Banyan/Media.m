@@ -303,6 +303,8 @@
         ALAssetRepresentation *rep = [asset defaultRepresentation];
         CGImageRef imageRef = [rep fullScreenImage]; // Not full resolution image
         UIImage *image = [UIImage imageWithCGImage:imageRef];
+        self.width = [NSNumber numberWithFloat:image.size.width];
+        self.height = [NSNumber numberWithFloat:image.size.height];
         
         imageData = UIImageJPEGRepresentation(image, 1);
         
