@@ -927,7 +927,7 @@
     self.storyAlbumCoverOptionSwitch.on = !story.media.count;
     [self.storyAlbumCoverOptionView addSubview:self.storyAlbumCoverOptionSwitch];
     
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView animateWithDuration:0.2 animations:^{
         frame = self.scrollView.bounds;
         frame.origin.x = VIEW_INSETS;
         frame.size.width -= 2*VIEW_INSETS;
@@ -953,7 +953,7 @@
     }
     [self.storyAlbumCoverOptionView removeFromSuperview];
     
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView animateWithDuration:0.2 animations:^{
         CGRect frame = CGRectZero;
         frame = self.scrollView.bounds;
         frame.origin.x = VIEW_INSETS;
