@@ -7,7 +7,7 @@
 //
 
 #import "Piece+Share.h"
-#import "Media.h"
+#import "Media+Transfer.h"
 #import "Story.h"
 
 @interface Piece (UIActionSheetDelegate) <UIActionSheetDelegate>
@@ -27,7 +27,7 @@
 {
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:APP_DELEGATE.topMostController.view animated:YES];
     hud.labelText = @"Sharing piece";
-    hud.detailsLabelText = @"Sharing link to this piece on Facebook";
+    hud.detailsLabelText = @"Sharing this piece on Facebook";
     void (^completionHandler)(NSError *) = ^(NSError *error){
         dispatch_async(dispatch_get_main_queue(), ^{
             [hud setMode:MBProgressHUDModeText];
@@ -41,18 +41,20 @@
         });
     };
     
-    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.media];
-    
-    if (imageMedia) {
-        [imageMedia getImageForMediaWithSuccess:^(UIImage *image) {
-            [self shareOnFacebookWithName:self.story.title caption:self.shortText description:self.longText image:image pictureURL:imageMedia.remoteURL.length?imageMedia.remoteURL:nil shareLink:self.permaLink completionHandler:completionHandler];
-        } progress:nil failure:^(NSError *error) {
-            [self shareOnFacebookWithName:self.story.title caption:self.shortText description:self.longText image:nil pictureURL:imageMedia.remoteURL.length?imageMedia.remoteURL:nil shareLink:self.permaLink completionHandler:completionHandler];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.media];
+        
+        if (imageMedia) {
+            [imageMedia getImageForMediaWithSuccess:^(UIImage *image) {
+                [self shareOnFacebookWithName:self.story.title caption:self.shortText description:self.longText image:image pictureURL:imageMedia.remoteURL.length?imageMedia.remoteURL:nil shareLink:self.permaLink completionHandler:completionHandler];
+            } progress:nil failure:^(NSError *error) {
+                [self shareOnFacebookWithName:self.story.title caption:self.shortText description:self.longText image:nil pictureURL:imageMedia.remoteURL.length?imageMedia.remoteURL:nil shareLink:self.permaLink completionHandler:completionHandler];
+            }
+                                   includeThumbnail:NO];
+        } else {
+            [self shareOnFacebookWithName:self.story.title caption:self.shortText description:self.longText image:nil pictureURL:nil shareLink:self.permaLink completionHandler:completionHandler];
         }
-         includeThumbnail:NO];
-    } else {
-        [self shareOnFacebookWithName:self.story.title caption:self.shortText description:self.longText image:nil pictureURL:nil shareLink:self.permaLink completionHandler:completionHandler];
-    }
+    });
 }
 @end
 

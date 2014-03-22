@@ -7,7 +7,7 @@
 //
 
 #import "MediaPickerButton.h"
-#import "Media.h"
+#import "Media+Transfer.h"
 
 @interface MediaPickerButtonTableViewCell ()
 @property (strong, nonatomic) UIImageView *myImageView;

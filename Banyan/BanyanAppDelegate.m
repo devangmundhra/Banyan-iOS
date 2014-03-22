@@ -53,6 +53,9 @@
     //let AFNetworking manage the activity indicator
     [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     
+    // Ask AWS iOS SDK not to throw exceptions. Return errors instead
+    [AmazonErrorHandler shouldNotThrowExceptions];
+    
     if (![[AFBanyanAPIClient sharedClient] isReachable])
         BNLogError(@"Banyan not reachable");
     

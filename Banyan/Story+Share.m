@@ -7,7 +7,7 @@
 //
 
 #import "Story+Share.h"
-#import "Media.h"
+#import "Media+Transfer.h"
 #import "User.h"
 #import "Piece.h"
 
@@ -90,7 +90,7 @@
         [requestConnection start];
     };
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+    dispatch_async(dispatch_get_main_queue(), ^{
         [self performFacebookUserPhotosAction:^(NSError *error){
             if (error) {
                 completionHandler(error);
@@ -101,9 +101,7 @@
                     completionHandler(error);
                     return;
                 }
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    createNewAlbum(self);
-                });
+                createNewAlbum(self);
             }];
         }];
     });
@@ -136,35 +134,37 @@
             [fbIds addObject:[contributor objectForKey:@"id"]];
     }
     
-    FBShareDialogParams *params = [[FBShareDialogParams alloc] init];
-    params.dataFailuresFatal = NO;
-    params.caption = self.title;
-    params.description = @"";
-    params.friends = fbIds;
-    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.media];
-    params.picture = [NSURL URLWithString:imageMedia.remoteURL];
-    params.ref = @"Story";
-    if ([FBDialogs canPresentShareDialogWithParams:params]) {
-        [FBDialogs presentShareDialogWithParams:params clientState:nil handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
-            completionHandler(error);
-            if (error) {
-                [self showErrorAlert:error];
-            }
-        }];
-    } else {
-        if (imageMedia) {
-            [imageMedia getImageForMediaWithSuccess:^(UIImage *image) {
-                [self shareOnFacebookWithName:self.title caption:nil description:nil image:image pictureURL:imageMedia.remoteURL.length?imageMedia.remoteURL:nil shareLink:self.permaLink completionHandler:completionHandler];
-            }
-                                           progress:nil
-                                            failure:^(NSError *error) {
-                                                [self shareOnFacebookWithName:self.title caption:nil description:nil image:nil pictureURL:imageMedia.remoteURL.length?imageMedia.remoteURL:nil shareLink:self.permaLink completionHandler:completionHandler];
-                                            }
-             includeThumbnail:NO];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        FBShareDialogParams *params = [[FBShareDialogParams alloc] init];
+        params.dataFailuresFatal = NO;
+        params.caption = self.title;
+        params.description = @"";
+        params.friends = fbIds;
+        Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.media];
+        params.picture = [NSURL URLWithString:imageMedia.remoteURL];
+        params.ref = @"Story";
+        if ([FBDialogs canPresentShareDialogWithParams:params]) {
+            [FBDialogs presentShareDialogWithParams:params clientState:nil handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {
+                completionHandler(error);
+                if (error) {
+                    [self showErrorAlert:error];
+                }
+            }];
         } else {
-            [self shareOnFacebookWithName:self.title caption:nil description:nil image:nil pictureURL:nil shareLink:self.permaLink completionHandler:completionHandler];
+            if (imageMedia) {
+                [imageMedia getImageForMediaWithSuccess:^(UIImage *image) {
+                    [self shareOnFacebookWithName:self.title caption:nil description:nil image:image pictureURL:imageMedia.remoteURL.length?imageMedia.remoteURL:nil shareLink:self.permaLink completionHandler:completionHandler];
+                }
+                                               progress:nil
+                                                failure:^(NSError *error) {
+                                                    [self shareOnFacebookWithName:self.title caption:nil description:nil image:nil pictureURL:imageMedia.remoteURL.length?imageMedia.remoteURL:nil shareLink:self.permaLink completionHandler:completionHandler];
+                                                }
+                                       includeThumbnail:NO];
+            } else {
+                [self shareOnFacebookWithName:self.title caption:nil description:nil image:nil pictureURL:nil shareLink:self.permaLink completionHandler:completionHandler];
+            }
         }
-    }
+    });
 }
 
 @end

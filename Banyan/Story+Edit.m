@@ -7,7 +7,7 @@
 //
 
 #import "Story+Edit.h"
-#import "Media.h"
+#import "Media+Transfer.h"
 #import "Story+Create.h"
 #import "Story+Delete.h"
 #import "BanyanAppDelegate.h"

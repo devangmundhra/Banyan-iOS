@@ -12,7 +12,7 @@
 #import "Piece+Delete.h"
 #import "Story+Delete.h"
 #import "Story+Edit.h"
-#import "Media.h"
+#import "Media+Transfer.h"
 #import "AVCamViewController.h"
 #import "UIPlaceHolderTextView.h"
 #import "BNTextField.h"

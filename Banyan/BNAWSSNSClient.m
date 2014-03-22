@@ -19,6 +19,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _sharedClient = [[AmazonSNSClient alloc] initWithAccessKey:AWS_ACCESS_KEY withSecretKey:AWS_SECRET_KEY];
+        _sharedClient.endpoint = [AmazonEndpoints snsEndpoint:US_EAST_1];
     });
     
     return _sharedClient;

@@ -8,7 +8,7 @@
 
 #import "Piece+Create.h"
 #import "Piece+Delete.h"
-#import "Media.h"
+#import "Media+Transfer.h"
 #import "User.h"
 #import "Story+Permissions.h"
 #import "Piece+Stats.h"

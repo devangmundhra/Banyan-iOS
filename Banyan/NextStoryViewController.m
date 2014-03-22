@@ -8,7 +8,7 @@
 
 #import "NextStoryViewController.h"
 #import "Story+Permissions.h"
-#import "Media.h"
+#import "Media+Transfer.h"
 #import "UIImage+ImageEffects.h"
 
 @interface NextStoryViewController (UIGestureRecognizerDelegate) <UIGestureRecognizerDelegate>

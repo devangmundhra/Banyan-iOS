@@ -304,6 +304,7 @@
                                                                 object:self];
             return;
         }
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction Skipped" action:@"story refresh" label:@"last sync too soon" value:nil];
     }
     
     /*
@@ -323,6 +324,7 @@
                                                   cancelButtonTitle:@"OK"
                                                   otherButtonTitles:nil];
             [alert show];
+            [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction Skipped" action:@"story refresh" label:@"pending changes" value:nil];
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:BNStoryListRefreshedNotification
                                                             object:self];

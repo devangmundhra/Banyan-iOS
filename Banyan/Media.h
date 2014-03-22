@@ -21,6 +21,7 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
 
 
 @class RemoteObject;
+@class BNS3TransferManager;
 
 @interface Media : NSManagedObject
 #define MEDIA_THUMBNAIL_SIZE CGSizeMake(300, 130)
@@ -43,29 +44,15 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * width;
 @property (nonatomic, retain) RemoteObject *remoteObject;
+@property (nonatomic, strong) BNS3TransferManager *transferManager;
 
 @property (nonatomic) MediaRemoteStatus remoteStatus;
 
-- (void)uploadWithSuccess:(void (^)())success failure:(void (^)(NSError *error))failure;
-- (void) deleteWitSuccess:(void (^)(void))successBlock failure:(void (^)(NSError *error))errorBlock;
-
 + (Media *)newMediaForObject:(RemoteObject *)remoteObject;
-- (void)cancelUpload;
+
 - (void)remove;
 - (void)save;
 - (void)cloneFrom:(Media *)source;
-
-- (void) getImageForMediaWithSuccess:(void (^)(UIImage *image))success
-                            progress:(void (^)(NSUInteger receivedSize, long long expectedSize))progress
-                             failure:(void (^)(NSError *error))failure
-                    includeThumbnail:(BOOL) includeThumbnail;
-- (void) getImageWithContentMode:(UIViewContentMode)contentMode
-                          bounds:(CGSize)size
-            interpolationQuality:(CGInterpolationQuality)quality
-             forMediaWithSuccess:(void (^)(UIImage *image))success
-                        progress:(void (^)(NSUInteger receivedSize, long long expectedSize))progress
-                         failure:(void (^)(NSError *error))failure
-                includeThumbnail:(BOOL) includeThumbnail;
 
 + (Media *)getMediaOfType:(NSString *)type inMediaSet:(NSOrderedSet *)mediaSet;
 + (NSOrderedSet *)getAllMediaOfType:(NSString *)type inMediaSet:(NSOrderedSet *)mediaSet;

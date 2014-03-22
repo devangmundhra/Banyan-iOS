@@ -22,3 +22,11 @@ pod 'GoogleAnalytics-iOS-SDK'
 # Testing and Search are optional components
 # pod 'RestKit/Testing',  :git => 'https://github.com/RestKit/RestKit.git'
 # pod 'RestKit/Search',  :git => 'https://github.com/RestKit/RestKit.git'
+
+post_install do |installer_representation|
+  installer_representation.project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['ARCHS'] = 'armv7 armv7s'
+    end
+  end
+end

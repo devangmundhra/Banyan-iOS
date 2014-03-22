@@ -28,7 +28,6 @@
 		51170B7317F4319C0015B343 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B7117F4319C0015B343 /* AboutViewController.m */; };
 		51170B7417F4319C0015B343 /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51170B7217F4319C0015B343 /* AboutViewController.xib */; };
 		51170B7817F906FF0015B343 /* BNHorizontalSwipeInteractionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B7717F906FF0015B343 /* BNHorizontalSwipeInteractionController.m */; };
-		5122365C17E688220032892A /* AWSSNS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5122365B17E688220032892A /* AWSSNS.framework */; };
 		512598BB17AB916600FEFCF0 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 512598BA17AB916600FEFCF0 /* FacebookSDK.framework */; };
 		512598BC17AB918D00FEFCF0 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
 		512598BF17B0D5C500FEFCF0 /* SingleImagePickerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 512598BE17B0D5C500FEFCF0 /* SingleImagePickerButton.m */; };
@@ -47,14 +46,15 @@
 		5144EC6B1712277600F0B265 /* cameraSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC611712277600F0B265 /* cameraSymbol@2x.png */; };
 		5144EC6C1712277600F0B265 /* locationSymbol.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC621712277600F0B265 /* locationSymbol.png */; };
 		5144EC6D1712277600F0B265 /* locationSymbol@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5144EC631712277600F0B265 /* locationSymbol@2x.png */; };
+		5148F85D18DC1306005CFA86 /* AWSRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5148F85C18DC1306005CFA86 /* AWSRuntime.framework */; };
+		5148F85F18DC1310005CFA86 /* AWSS3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5148F85E18DC1310005CFA86 /* AWSS3.framework */; };
+		5148F86118DC131A005CFA86 /* AWSSNS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5148F86018DC131A005CFA86 /* AWSSNS.framework */; };
 		514CDF5418125BFF0098B0A9 /* BNPermissionsObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 514CDF5318125BFE0098B0A9 /* BNPermissionsObject.m */; };
 		514CDF5B18131F410098B0A9 /* InvitedFBFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 514CDF5A18131F410098B0A9 /* InvitedFBFriendsViewController.m */; };
 		514CDF65181509B70098B0A9 /* AVCamViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 514CDF5D181509B70098B0A9 /* AVCamViewController.xib */; };
 		514CDF66181509B70098B0A9 /* AVCamCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 514CDF60181509B70098B0A9 /* AVCamCaptureManager.m */; };
 		514CDF67181509B70098B0A9 /* AVCamRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 514CDF62181509B70098B0A9 /* AVCamRecorder.m */; };
 		514CDF68181509B70098B0A9 /* AVCamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 514CDF64181509B70098B0A9 /* AVCamViewController.m */; };
-		514EEA8C17C5EF4700B4BCBF /* AWSRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 514EEA8B17C5EF4700B4BCBF /* AWSRuntime.framework */; };
-		514EEA8E17C5EF5500B4BCBF /* AWSS3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 514EEA8D17C5EF5400B4BCBF /* AWSS3.framework */; };
 		514EEA9117C5F49300B4BCBF /* BNAWSS3Client.m in Sources */ = {isa = PBXBuildFile; fileRef = 514EEA9017C5F49300B4BCBF /* BNAWSS3Client.m */; };
 		5157CD031650902900C22CCE /* BanyanConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5157CD021650902900C22CCE /* BanyanConnection.m */; };
 		5158AE2B16F56F7F0089193E /* BNTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5158AE2916F56F7E0089193E /* BNTabBarController.m */; };
@@ -173,6 +173,9 @@
 		51B49A2518A0C0CE0073F184 /* globe_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A2318A0C0CE0073F184 /* globe_white@2x.png */; };
 		51B49A3318A3596A0073F184 /* Thats-Font-Folks.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A3218A358A70073F184 /* Thats-Font-Folks.ttf */; };
 		51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B5989D15EB31B300DF4D9D /* BanyanConstants.m */; };
+		51BAEC3D18DAA7C400BA9C49 /* Media+Transfer.m in Sources */ = {isa = PBXBuildFile; fileRef = 51BAEC3C18DAA7C400BA9C49 /* Media+Transfer.m */; };
+		51BAEC4018DAB19C00BA9C49 /* BNS3TransferManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 51BAEC3F18DAB19C00BA9C49 /* BNS3TransferManager.m */; };
+		51BAEC4318DACFE900BA9C49 /* BNS3PutObjectRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 51BAEC4218DACFE900BA9C49 /* BNS3PutObjectRequest.m */; };
 		51BDA25F173EEC1500BD2C19 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51BDA25E173EEC1500BD2C19 /* ImageIO.framework */; };
 		51BDA2701741EB4100BD2C19 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51BDA26F1741EB4000BD2C19 /* AVFoundation.framework */; };
 		51BDA27417434F3D00BD2C19 /* emptyBar.png in Resources */ = {isa = PBXBuildFile; fileRef = 51BDA27217434F3D00BD2C19 /* emptyBar.png */; };
@@ -293,7 +296,6 @@
 		51170B7717F906FF0015B343 /* BNHorizontalSwipeInteractionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNHorizontalSwipeInteractionController.m; path = Banyan/BNHorizontalSwipeInteractionController.m; sourceTree = "<group>"; };
 		511E708A161A9756009AAD25 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		5122365B17E688220032892A /* AWSSNS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSSNS.framework; sourceTree = "<group>"; };
 		512598BA17AB916600FEFCF0 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		512598BD17B0D5C500FEFCF0 /* SingleImagePickerButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SingleImagePickerButton.h; sourceTree = "<group>"; };
 		512598BE17B0D5C500FEFCF0 /* SingleImagePickerButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SingleImagePickerButton.m; sourceTree = "<group>"; };
@@ -306,7 +308,6 @@
 		5129546118C9B56600E62D6B /* HelpInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HelpInfoViewController.h; path = Banyan/HelpInfoViewController.h; sourceTree = "<group>"; };
 		5129546218C9B56600E62D6B /* HelpInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HelpInfoViewController.m; path = Banyan/HelpInfoViewController.m; sourceTree = "<group>"; };
 		5129546318C9B56600E62D6B /* HelpInfoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = HelpInfoViewController.xib; path = Banyan/HelpInfoViewController.xib; sourceTree = "<group>"; };
-		5129546818CD7E4800E62D6B /* libGoogleAnalyticsServices.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGoogleAnalyticsServices.a; path = ../../Downloads/GoogleAnalyticsServicesiOS_3.03/libGoogleAnalyticsServices.a; sourceTree = "<group>"; };
 		5130E1FC18335ECF00975068 /* BNAudioRecorderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNAudioRecorderView.h; sourceTree = "<group>"; };
 		5130E1FD18335ECF00975068 /* BNAudioRecorderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNAudioRecorderView.m; sourceTree = "<group>"; };
 		513203A818AE9C15007A53FD /* BNNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNNavigationController.h; path = Banyan/BNNavigationController.h; sourceTree = "<group>"; };
@@ -315,11 +316,13 @@
 		513203AE18B3593D007A53FD /* powered-by-google-on-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "powered-by-google-on-white@2x.png"; sourceTree = "<group>"; };
 		513203C018B365A0007A53FD /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		513203C418B3DF48007A53FD /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
-		5135279118D1881E005B241B /* libPods-GoogleAnalytics-iOS-SDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-GoogleAnalytics-iOS-SDK.a"; path = "Pods/build/Debug-iphoneos/libPods-GoogleAnalytics-iOS-SDK.a"; sourceTree = "<group>"; };
 		5144EC601712277600F0B265 /* cameraSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cameraSymbol.png; sourceTree = "<group>"; };
 		5144EC611712277600F0B265 /* cameraSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cameraSymbol@2x.png"; sourceTree = "<group>"; };
 		5144EC621712277600F0B265 /* locationSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = locationSymbol.png; sourceTree = "<group>"; };
 		5144EC631712277600F0B265 /* locationSymbol@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "locationSymbol@2x.png"; sourceTree = "<group>"; };
+		5148F85C18DC1306005CFA86 /* AWSRuntime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSRuntime.framework; sourceTree = "<group>"; };
+		5148F85E18DC1310005CFA86 /* AWSS3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSS3.framework; sourceTree = "<group>"; };
+		5148F86018DC131A005CFA86 /* AWSSNS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSSNS.framework; sourceTree = "<group>"; };
 		514CDF5218125BFE0098B0A9 /* BNPermissionsObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNPermissionsObject.h; path = Banyan/BNPermissionsObject.h; sourceTree = "<group>"; };
 		514CDF5318125BFE0098B0A9 /* BNPermissionsObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNPermissionsObject.m; path = Banyan/BNPermissionsObject.m; sourceTree = "<group>"; };
 		514CDF5918131F410098B0A9 /* InvitedFBFriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InvitedFBFriendsViewController.h; path = Banyan/InvitedFBFriendsViewController.h; sourceTree = "<group>"; };
@@ -331,8 +334,6 @@
 		514CDF62181509B70098B0A9 /* AVCamRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVCamRecorder.m; sourceTree = "<group>"; };
 		514CDF63181509B70098B0A9 /* AVCamViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVCamViewController.h; sourceTree = "<group>"; };
 		514CDF64181509B70098B0A9 /* AVCamViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVCamViewController.m; sourceTree = "<group>"; };
-		514EEA8B17C5EF4700B4BCBF /* AWSRuntime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSRuntime.framework; sourceTree = "<group>"; };
-		514EEA8D17C5EF5400B4BCBF /* AWSS3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSS3.framework; sourceTree = "<group>"; };
 		514EEA8F17C5F49300B4BCBF /* BNAWSS3Client.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNAWSS3Client.h; path = Banyan/BNAWSS3Client.h; sourceTree = "<group>"; };
 		514EEA9017C5F49300B4BCBF /* BNAWSS3Client.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNAWSS3Client.m; path = Banyan/BNAWSS3Client.m; sourceTree = "<group>"; };
 		5157CD011650902900C22CCE /* BanyanConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BanyanConnection.h; path = Banyan/BanyanConnection.h; sourceTree = "<group>"; };
@@ -501,6 +502,12 @@
 		51B49A3218A358A70073F184 /* Thats-Font-Folks.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Thats-Font-Folks.ttf"; sourceTree = "<group>"; };
 		51B5989C15EB31B300DF4D9D /* BanyanConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BanyanConstants.h; sourceTree = "<group>"; };
 		51B5989D15EB31B300DF4D9D /* BanyanConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BanyanConstants.m; sourceTree = "<group>"; };
+		51BAEC3B18DAA7C400BA9C49 /* Media+Transfer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Media+Transfer.h"; path = "Banyan/Media+Transfer.h"; sourceTree = "<group>"; };
+		51BAEC3C18DAA7C400BA9C49 /* Media+Transfer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Media+Transfer.m"; path = "Banyan/Media+Transfer.m"; sourceTree = "<group>"; };
+		51BAEC3E18DAB19C00BA9C49 /* BNS3TransferManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNS3TransferManager.h; path = Banyan/BNS3TransferManager.h; sourceTree = "<group>"; };
+		51BAEC3F18DAB19C00BA9C49 /* BNS3TransferManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNS3TransferManager.m; path = Banyan/BNS3TransferManager.m; sourceTree = "<group>"; };
+		51BAEC4118DACFE900BA9C49 /* BNS3PutObjectRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNS3PutObjectRequest.h; path = Banyan/BNS3PutObjectRequest.h; sourceTree = "<group>"; };
+		51BAEC4218DACFE900BA9C49 /* BNS3PutObjectRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNS3PutObjectRequest.m; path = Banyan/BNS3PutObjectRequest.m; sourceTree = "<group>"; };
 		51BDA25E173EEC1500BD2C19 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		51BDA26F1741EB4000BD2C19 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		51BDA27217434F3D00BD2C19 /* emptyBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = emptyBar.png; sourceTree = "<group>"; };
@@ -628,31 +635,31 @@
 				51D7AF1118D2F33E00E00FF4 /* libGoogleAnalyticsServices.a in Frameworks */,
 				515CF518183F3B1A0071C9B2 /* AdSupport.framework in Frameworks */,
 				515CF517183DF1650071C9B2 /* StoreKit.framework in Frameworks */,
+				5148F85D18DC1306005CFA86 /* AWSRuntime.framework in Frameworks */,
 				5112D106181E4EEA003E8C37 /* Accelerate.framework in Frameworks */,
 				5112D057181A4CE5003E8C37 /* CoreVideo.framework in Frameworks */,
 				512598BC17AB918D00FEFCF0 /* libsqlite3.dylib in Frameworks */,
 				51596AB71745E285008F5276 /* CoreMedia.framework in Frameworks */,
-				514EEA8E17C5EF5500B4BCBF /* AWSS3.framework in Frameworks */,
 				51BDA2701741EB4100BD2C19 /* AVFoundation.framework in Frameworks */,
 				51BDA25F173EEC1500BD2C19 /* ImageIO.framework in Frameworks */,
 				51F57C541721141D00A76FA5 /* MessageUI.framework in Frameworks */,
+				5148F86118DC131A005CFA86 /* AWSSNS.framework in Frameworks */,
 				512598BB17AB916600FEFCF0 /* FacebookSDK.framework in Frameworks */,
 				517A01BC17095F0E00665F0F /* OpenGLES.framework in Frameworks */,
 				517A01BA17095EDC00665F0F /* CoreText.framework in Frameworks */,
-				5122365C17E688220032892A /* AWSSNS.framework in Frameworks */,
 				519AFA7215C26F5D00F68F3C /* AssetsLibrary.framework in Frameworks */,
 				5189B45715B3A38E00562DD0 /* QuartzCore.framework in Frameworks */,
 				5189B3C915B39BE700562DD0 /* AudioToolbox.framework in Frameworks */,
 				5189B3C715B39BE100562DD0 /* MobileCoreServices.framework in Frameworks */,
 				5189B2BC15B387E200562DD0 /* CoreGraphics.framework in Frameworks */,
 				513203C518B3DF48007A53FD /* Crashlytics.framework in Frameworks */,
-				514EEA8C17C5EF4700B4BCBF /* AWSRuntime.framework in Frameworks */,
 				5189B3C315B39BCC00562DD0 /* MapKit.framework in Frameworks */,
 				5189B3C115B39BC500562DD0 /* CFNetwork.framework in Frameworks */,
 				5189B3BF15B39BBF00562DD0 /* SystemConfiguration.framework in Frameworks */,
 				5189B3BA15B39BA400562DD0 /* libz.1.1.3.dylib in Frameworks */,
 				51E2144718B8566B00619150 /* libAviarySDK.a in Frameworks */,
 				5189B3BB15B39BA400562DD0 /* libz.dylib in Frameworks */,
+				5148F85F18DC1310005CFA86 /* AWSS3.framework in Frameworks */,
 				5189B3B715B39B9300562DD0 /* CoreLocation.framework in Frameworks */,
 				5189B2B815B387E200562DD0 /* UIKit.framework in Frameworks */,
 				5189B2BA15B387E200562DD0 /* Foundation.framework in Frameworks */,
@@ -686,6 +693,8 @@
 			children = (
 				51BDA27D1743821400BD2C19 /* Media.h */,
 				51BDA27E1743821400BD2C19 /* Media.m */,
+				51BAEC3B18DAA7C400BA9C49 /* Media+Transfer.h */,
+				51BAEC3C18DAA7C400BA9C49 /* Media+Transfer.m */,
 			);
 			name = Media;
 			sourceTree = "<group>";
@@ -1034,12 +1043,10 @@
 			isa = PBXGroup;
 			children = (
 				51D7AF1018D2F33E00E00FF4 /* libGoogleAnalyticsServices.a */,
-				5135279118D1881E005B241B /* libPods-GoogleAnalytics-iOS-SDK.a */,
-				5129546818CD7E4800E62D6B /* libGoogleAnalyticsServices.a */,
+				5148F86018DC131A005CFA86 /* AWSSNS.framework */,
+				5148F85E18DC1310005CFA86 /* AWSS3.framework */,
+				5148F85C18DC1306005CFA86 /* AWSRuntime.framework */,
 				5112D056181A4CE5003E8C37 /* CoreVideo.framework */,
-				5122365B17E688220032892A /* AWSSNS.framework */,
-				514EEA8D17C5EF5400B4BCBF /* AWSS3.framework */,
-				514EEA8B17C5EF4700B4BCBF /* AWSRuntime.framework */,
 				512598BA17AB916600FEFCF0 /* FacebookSDK.framework */,
 				51BDA26F1741EB4000BD2C19 /* AVFoundation.framework */,
 				51BDA25E173EEC1500BD2C19 /* ImageIO.framework */,
@@ -1123,6 +1130,10 @@
 				519232A01671CC57009686E4 /* AFGoogleAPIClient.m */,
 				514EEA8F17C5F49300B4BCBF /* BNAWSS3Client.h */,
 				514EEA9017C5F49300B4BCBF /* BNAWSS3Client.m */,
+				51BAEC3E18DAB19C00BA9C49 /* BNS3TransferManager.h */,
+				51BAEC3F18DAB19C00BA9C49 /* BNS3TransferManager.m */,
+				51BAEC4118DACFE900BA9C49 /* BNS3PutObjectRequest.h */,
+				51BAEC4218DACFE900BA9C49 /* BNS3PutObjectRequest.m */,
 				518CAA2817DBA23500D641A6 /* BNAWSSNSClient.h */,
 				518CAA2917DBA23500D641A6 /* BNAWSSNSClient.m */,
 			);
@@ -1976,6 +1987,7 @@
 				5189B33A15B395F300562DD0 /* Piece+Edit.m in Sources */,
 				51F86255185D72870037D576 /* ContributorsTableViewController.m in Sources */,
 				5189B33B15B395F300562DD0 /* Piece+Stats.m in Sources */,
+				51BAEC3D18DAA7C400BA9C49 /* Media+Transfer.m in Sources */,
 				51CE90B51796724500A2F7CB /* RemoteObject.m in Sources */,
 				5189B33E15B395F300562DD0 /* StoryReaderController.m in Sources */,
 				51B49A2018996FCF0073F184 /* GooglePlacesAnnotation.m in Sources */,
@@ -2023,6 +2035,7 @@
 				51C4253A1828E15100AF90C1 /* NextStoryViewController.m in Sources */,
 				514CDF5418125BFF0098B0A9 /* BNPermissionsObject.m in Sources */,
 				51A8DC9116928A240017E86F /* Activity+Create.m in Sources */,
+				51BAEC4018DAB19C00BA9C49 /* BNS3TransferManager.m in Sources */,
 				5130E1FE18335ECF00975068 /* BNAudioRecorderView.m in Sources */,
 				51A8DC9516928AE00017E86F /* Banyan.xcdatamodeld in Sources */,
 				51A8DC981692C4490017E86F /* Story+Permissions.m in Sources */,
@@ -2047,6 +2060,7 @@
 				51FAC0B8172C829E0046C2D6 /* Comment.m in Sources */,
 				51FAC0BC172F8C500046C2D6 /* FBGraphObjectToDataTransformer.m in Sources */,
 				51BDA27F1743821400BD2C19 /* Media.m in Sources */,
+				51BAEC4318DACFE900BA9C49 /* BNS3PutObjectRequest.m in Sources */,
 				51596AB11744BAF7008F5276 /* BNMisc.m in Sources */,
 				5128EB5417478B3D00393173 /* BNAudioRecorder.m in Sources */,
 				5128EB5717478B5500393173 /* BNAudioStreamingPlayer.m in Sources */,
@@ -2082,8 +2096,8 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Devang Mundhra (X6GCQVUWTS)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Devang Mundhra (X6GCQVUWTS)";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -2126,8 +2140,8 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Devang Mundhra (3M2XNZPFR5)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Devang Mundhra (3M2XNZPFR5)";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -2167,6 +2181,7 @@
 					"$(SRCROOT)",
 					"$(SRCROOT)/../../Documents/FacebookSDK",
 					/Users/devangmundhra/Developer/Banyan,
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Banyan/Banyan-Prefix.pch";
@@ -2222,6 +2237,7 @@
 					"$(SRCROOT)",
 					"$(SRCROOT)/../../Documents/FacebookSDK",
 					/Users/devangmundhra/Developer/Banyan,
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Banyan/Banyan-Prefix.pch";

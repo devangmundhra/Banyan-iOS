@@ -33,17 +33,17 @@
 
 @interface BNSharedUser : NSObject
 
-@property (nonatomic, strong) NSString * email;
+@property (nonatomic, copy) NSString * email;
 @property (nonatomic, strong) NSDate * createdAt;
-@property (nonatomic, strong) NSString * facebookId;
-@property (nonatomic, strong) NSString * firstName;
-@property (nonatomic, strong) NSString * lastName;
-@property (nonatomic, strong) NSString * name;
+@property (nonatomic, copy) NSString * facebookId;
+@property (nonatomic, copy) NSString * firstName;
+@property (nonatomic, copy) NSString * lastName;
+@property (nonatomic, copy) NSString * name;
 @property (nonatomic, strong) id profilePic;
 @property (nonatomic, strong) NSDate * updatedAt;
 @property (nonatomic, strong) NSNumber * userId;
-@property (nonatomic, strong) NSString * username;
-@property (nonatomic, strong) NSString *resourceUri;
+@property (nonatomic, copy) NSString * username;
+@property (nonatomic, copy) NSString *resourceUri;
 
 + (BNSharedUser *)currentUser;
 

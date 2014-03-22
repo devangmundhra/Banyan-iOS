@@ -9,12 +9,6 @@
 #import "BNAWSS3Client.h"
 #import "BanyanAppDelegate.h"
 
-#ifdef DEBUG
-static NSString *AWSS3BucketName = @"dev_banyancontent";
-#else
-static NSString *AWSS3BucketName = @"banyanusercontent";
-#endif
-
 @implementation BNAWSS3Client
 
 + (AmazonS3Client *)sharedClient
@@ -23,6 +17,7 @@ static NSString *AWSS3BucketName = @"banyanusercontent";
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _sharedClient = [[AmazonS3Client alloc] initWithAccessKey:AWS_ACCESS_KEY withSecretKey:AWS_SECRET_KEY];
+        _sharedClient.endpoint = [AmazonEndpoints s3Endpoint:US_EAST_1];
     });
     
     return _sharedClient;

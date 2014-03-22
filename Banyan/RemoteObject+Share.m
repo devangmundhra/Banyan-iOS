@@ -78,26 +78,29 @@
                     return;
                 }
                 // Lastly, fall back on a request for permissions and a direct post using the Graph API
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                                   REPLACE_NIL_WITH_EMPTY_STRING(name), @"name",
-                                                   REPLACE_NIL_WITH_EMPTY_STRING(caption), @"caption",
-                                                   REPLACE_NIL_WITH_EMPTY_STRING(description), @"description",
-                                                   REPLACE_NIL_WITH_EMPTY_STRING(urlToShare), @"link",
-                                                   REPLACE_NIL_WITH_EMPTY_STRING(pictureURL), @"picture",
-                                                   nil];
-                    
-                    FBRequestConnection *requestConnection = [[FBRequestConnection alloc] init];
-                    requestConnection.errorBehavior = FBRequestConnectionErrorBehaviorRetry
-                    | FBRequestConnectionErrorBehaviorReconnectSession | FBRequestConnectionErrorBehaviorAlertUser;
-                    
-                    FBRequest *request = [FBRequest requestWithGraphPath:@"me/feed" parameters:params HTTPMethod:@"POST"];
-                    [requestConnection addRequest:request completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-                        handler(error);
-                    }];
+                NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                               REPLACE_NIL_WITH_EMPTY_STRING(name), @"name",
+                                               REPLACE_NIL_WITH_EMPTY_STRING(caption), @"caption",
+                                               REPLACE_NIL_WITH_EMPTY_STRING(description), @"description",
+                                               REPLACE_NIL_WITH_EMPTY_STRING(urlToShare), @"link",
+                                               REPLACE_NIL_WITH_EMPTY_STRING(pictureURL), @"picture",
+                                               nil];
+                
+                FBRequestConnection *requestConnection = [[FBRequestConnection alloc] init];
+                requestConnection.errorBehavior = FBRequestConnectionErrorBehaviorRetry
+                | FBRequestConnectionErrorBehaviorReconnectSession | FBRequestConnectionErrorBehaviorAlertUser;
+                
+                FBRequest *request = [FBRequest requestWithGraphPath:@"me/feed" parameters:params HTTPMethod:@"POST"];
+                [requestConnection addRequest:request completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                    handler(error);
+                }];
+                // Even though this method is always called on the main thread, still do a dispatch_async.
+                // For some reason, the thread gets hung here otherwise.
+                // Maybe [requestConnection start] does a dispatch_sync on the main thread?
+                dispatch_async(dispatch_get_main_queue(), ^{
                     [requestConnection start];
-                });
 
+                });
             }];
         }
     }

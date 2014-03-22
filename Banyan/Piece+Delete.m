@@ -34,6 +34,7 @@
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];
         [alert show];
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction Skipped" action:@"piece delete" label:@"pending changes" value:nil];
         return;
     }
 

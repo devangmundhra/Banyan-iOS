@@ -9,7 +9,7 @@
 #import "Story+Create.h"
 #import "Story+Permissions.h"
 #import "UIImage+ResizeAdditions.h"
-#import "Media.h"
+#import "Media+Transfer.h"
 #import "User.h"
 #import "Story+Stats.h"
 #import "BanyanAppDelegate.h"

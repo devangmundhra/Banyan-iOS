@@ -8,7 +8,7 @@
 
 #import "Story.h"
 #import "Piece+Edit.h"
-#import "Media.h"
+#import "Media+Transfer.h"
 #import "BNMisc.h"
 #import "Piece+Delete.h"
 
