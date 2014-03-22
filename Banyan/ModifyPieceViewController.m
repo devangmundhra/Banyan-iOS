@@ -25,12 +25,13 @@
 #import "User.h"
 #import "BNLabel.h"
 
-@interface ModifyPieceViewController (LocationPickerButtonDelegate) <LocationPickerButtonDelegate>
+@interface ModifyPieceViewController (UIActionSheetDelegate) <UIActionSheetDelegate>
+@end
 
+@interface ModifyPieceViewController (LocationPickerButtonDelegate) <LocationPickerButtonDelegate>
 @end
 
 @interface ModifyPieceViewController (GooglePlacesViewControllerDelegate) <GooglePlacesViewControllerDelegate>
-
 @end
 
 @interface ModifyPieceViewController (AddPhotoButtonActions)
@@ -364,12 +365,16 @@
 
 - (IBAction)cancel:(UIBarButtonItem *)sender
 {
-	//remove the original piece in case of local draft unsaved
-	if (self.editMode == ModifyPieceViewControllerEditModeAddPiece || self.piece.remoteStatus == RemoteObjectStatusLocal)
-		[self.piece remove];
+    [self dismissKeyboard:nil];
     
-	self.piece = nil; // Just in case
-    [self dismissEditViewWithCompletionBlock:nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                             delegate:self
+                                                    cancelButtonTitle:@"Cancel"
+                                               destructiveButtonTitle:@"Delete draft"
+                                                    otherButtonTitles:nil];
+    
+    actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
+    [actionSheet showInView:self.view];
 }
 
 // Done modifying piece. Now save all the changes.
@@ -968,6 +973,20 @@
     }];
 }
 
+@end
+
+@implementation ModifyPieceViewController (UIActionSheetDelegate)
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == actionSheet.destructiveButtonIndex) {
+        //remove the original piece in case of local draft unsaved
+        if (self.editMode == ModifyPieceViewControllerEditModeAddPiece || self.piece.remoteStatus == RemoteObjectStatusLocal)
+            [self.piece remove];
+        
+        self.piece = nil; // Just in case
+        [self dismissEditViewWithCompletionBlock:nil];
+    }
+}
 @end
 
 @implementation ModifyPieceViewController (LocationPickerButtonDelegate)

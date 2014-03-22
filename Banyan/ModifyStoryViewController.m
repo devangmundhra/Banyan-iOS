@@ -17,6 +17,9 @@
 #import "BNTextField.h"
 #import "Story+Edit.h"
 
+@interface ModifyStoryViewController (UIActionSheetDelegate) <UIActionSheetDelegate>
+@end
+
 @interface ModifyStoryViewController (UITextFieldDelegate) <UITextFieldDelegate>
 @end
 
@@ -265,16 +268,15 @@
 
 - (IBAction)cancel:(id)sender
 {
-	//remove the original piece in case of local draft unsaved
-	if (self.editMode == ModifyStoryViewControllerEditModeAdd || self.story.remoteStatus == RemoteObjectStatusLocal)
-		[self.story remove];
-    
-	self.story = nil; // Just in case
-    [self dismissEditViewWithCompletionBlock:^{
-        if ([self.delegate respondsToSelector:@selector(modifyStoryViewControllerDidDismiss:)]) {
-            [self.delegate modifyStoryViewControllerDidDismiss:self];
-        }
-    }];
+    [self dismissKeyboard:nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                              delegate:self
+                                     cancelButtonTitle:@"Cancel"
+                                destructiveButtonTitle:@"Delete draft"
+                                     otherButtonTitles:nil];
+
+    actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
+    [actionSheet showInView:self.view];
 }
 
 # pragma mark Instance methods
@@ -372,6 +374,24 @@ finishedInvitingForViewerPermissions:(BNPermissionsObject *)viewerPermissions
 #undef TEXT_INSETS
 #undef VIEW_INSETS
 
+@end
+
+@implementation ModifyStoryViewController (UIActionSheetDelegate)
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == actionSheet.destructiveButtonIndex) {
+        //remove the original piece in case of local draft unsaved
+        if (self.editMode == ModifyStoryViewControllerEditModeAdd || self.story.remoteStatus == RemoteObjectStatusLocal)
+            [self.story remove];
+        
+        self.story = nil; // Just in case
+        [self dismissEditViewWithCompletionBlock:^{
+            if ([self.delegate respondsToSelector:@selector(modifyStoryViewControllerDidDismiss:)]) {
+                [self.delegate modifyStoryViewControllerDidDismiss:self];
+            }
+        }];
+    }
+}
 @end
 
 @implementation ModifyStoryViewController (UITextFieldDelegate)
