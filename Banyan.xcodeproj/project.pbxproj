@@ -49,6 +49,8 @@
 		5148F85D18DC1306005CFA86 /* AWSRuntime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5148F85C18DC1306005CFA86 /* AWSRuntime.framework */; };
 		5148F85F18DC1310005CFA86 /* AWSS3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5148F85E18DC1310005CFA86 /* AWSS3.framework */; };
 		5148F86118DC131A005CFA86 /* AWSSNS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5148F86018DC131A005CFA86 /* AWSSNS.framework */; };
+		5148F86B18DD5599005CFA86 /* banyan_tinted.png in Resources */ = {isa = PBXBuildFile; fileRef = 5148F86918DD5599005CFA86 /* banyan_tinted.png */; };
+		5148F86C18DD5599005CFA86 /* banyan_tinted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5148F86A18DD5599005CFA86 /* banyan_tinted@2x.png */; };
 		514CDF5418125BFF0098B0A9 /* BNPermissionsObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 514CDF5318125BFE0098B0A9 /* BNPermissionsObject.m */; };
 		514CDF5B18131F410098B0A9 /* InvitedFBFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 514CDF5A18131F410098B0A9 /* InvitedFBFriendsViewController.m */; };
 		514CDF65181509B70098B0A9 /* AVCamViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 514CDF5D181509B70098B0A9 /* AVCamViewController.xib */; };
@@ -323,6 +325,8 @@
 		5148F85C18DC1306005CFA86 /* AWSRuntime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSRuntime.framework; sourceTree = "<group>"; };
 		5148F85E18DC1310005CFA86 /* AWSS3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSS3.framework; sourceTree = "<group>"; };
 		5148F86018DC131A005CFA86 /* AWSSNS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSSNS.framework; sourceTree = "<group>"; };
+		5148F86918DD5599005CFA86 /* banyan_tinted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = banyan_tinted.png; sourceTree = "<group>"; };
+		5148F86A18DD5599005CFA86 /* banyan_tinted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "banyan_tinted@2x.png"; sourceTree = "<group>"; };
 		514CDF5218125BFE0098B0A9 /* BNPermissionsObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNPermissionsObject.h; path = Banyan/BNPermissionsObject.h; sourceTree = "<group>"; };
 		514CDF5318125BFE0098B0A9 /* BNPermissionsObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNPermissionsObject.m; path = Banyan/BNPermissionsObject.m; sourceTree = "<group>"; };
 		514CDF5918131F410098B0A9 /* InvitedFBFriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InvitedFBFriendsViewController.h; path = Banyan/InvitedFBFriendsViewController.h; sourceTree = "<group>"; };
@@ -867,6 +871,15 @@
 			name = Read;
 			sourceTree = "<group>";
 		};
+		5148F86818DD5328005CFA86 /* Banyan Logo */ = {
+			isa = PBXGroup;
+			children = (
+				5148F86918DD5599005CFA86 /* banyan_tinted.png */,
+				5148F86A18DD5599005CFA86 /* banyan_tinted@2x.png */,
+			);
+			name = "Banyan Logo";
+			sourceTree = "<group>";
+		};
 		514CDF5518125C030098B0A9 /* Permissions */ = {
 			isa = PBXGroup;
 			children = (
@@ -932,6 +945,7 @@
 		5166B1B515E75B420072749C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				5148F86818DD5328005CFA86 /* Banyan Logo */,
 				518AB37618BDBF8000F8000C /* Background Images */,
 				51F0328E18B94F2300FFA71E /* Navigation */,
 				51F0328D18B94F1800FFA71E /* Settings */,
@@ -1874,6 +1888,7 @@
 				51B49A2518A0C0CE0073F184 /* globe_white@2x.png in Resources */,
 				51B234FC171658BF004241C1 /* Roboto-Black.ttf in Resources */,
 				518AB39418BF2F5200F8000C /* Flag_Story@2x.png in Resources */,
+				5148F86B18DD5599005CFA86 /* banyan_tinted.png in Resources */,
 				51B234FD171658BF004241C1 /* Roboto-BlackItalic.ttf in Resources */,
 				51B49A141898E8620073F184 /* GooglePlacePickerViewController.xib in Resources */,
 				51B234FE171658BF004241C1 /* Roboto-Bold.ttf in Resources */,
@@ -1910,6 +1925,7 @@
 				51B2351317168BF9004241C1 /* clockSymbol@2x.png in Resources */,
 				51B2351617168BF9004241C1 /* locationSymbolSmall.png in Resources */,
 				51B2351717168BF9004241C1 /* locationSymbolSmall@2x.png in Resources */,
+				5148F86C18DD5599005CFA86 /* banyan_tinted@2x.png in Resources */,
 				51F0328718B94E0500FFA71E /* Picture_iOS_selected.png in Resources */,
 				518AB38118BDBF8F00F8000C /* IntroBkg2.png in Resources */,
 				51F0329118B94F3C00FFA71E /* Cog_selected.png in Resources */,

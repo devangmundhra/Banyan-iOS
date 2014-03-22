@@ -63,7 +63,7 @@ static UIFont *_regularFont;
         CALayer *layer = self.textLabel.layer;
         layer.masksToBounds = NO;
         layer.shadowColor = [BANYAN_WHITE_COLOR CGColor];
-        layer.shadowOpacity = 0.5;
+        layer.shadowOpacity = 0.65;
         layer.shadowOffset = CGSizeMake(-20.0f, 40.0f);
         layer.shadowPath = shadowPath.CGPath;
         layer.shadowRadius = 40.0f;

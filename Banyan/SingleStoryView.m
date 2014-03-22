@@ -37,7 +37,7 @@ static UIFont *_boldFont;
 static UIFont *_boldFontSmall;
 static UIFont *_mediumFont;
 static UIFont *_smallFont;
-static UIFont *_normalFontSz18;
+static UIFont *_thinFont;
 static BOOL _loggedIn;
 
 @implementation SingleStoryView
@@ -71,7 +71,7 @@ static BOOL _loggedIn;
         _boldFontSmall = [UIFont fontWithName:@"Roboto-Bold" size:16];
         _mediumFont = [UIFont fontWithName:@"Roboto-Medium" size:12];
         _smallFont = [UIFont fontWithName:@"Roboto-Medium" size:10];
-        _normalFontSz18 = [UIFont fontWithName:@"Roboto" size:18];
+        _thinFont = [UIFont fontWithName:@"Roboto-Thin" size:18];
         
         _loggedIn = [BanyanAppDelegate loggedIn];
         
@@ -107,7 +107,7 @@ static BOOL _loggedIn;
 - (id)initWithFrame:(CGRect)frame
 {
 #define SIZE_OF_STORY_STATUS_LABEL 72
-#define SIZE_OF_ADD_PC_BUTTON 44
+#define SIZE_OF_ADD_PC_BUTTON 36
 #define ADD_PC_BUTTON_TEXT_INSET 18
     self = [super initWithFrame:frame];
     if (self) {
@@ -154,14 +154,18 @@ static BOOL _loggedIn;
         [self addSubview:self.storyStatusLabel];
         
         self.addPcButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.storyStatusLabel.frame) - ADD_PC_BUTTON_TEXT_INSET + SPACER_DISTANCE,
-                                                                      TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT,
-                                                                      SIZE_OF_ADD_PC_BUTTON, BOTTOM_VIEW_HEIGHT)];
+                                                                      TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT + SPACER_DISTANCE,
+                                                                      SIZE_OF_ADD_PC_BUTTON, BOTTOM_VIEW_HEIGHT - 2*SPACER_DISTANCE)];
         [self.addPcButton setTintColor:BANYAN_GREEN_COLOR];
-        [self.addPcButton.titleLabel setFont:_normalFontSz18];
-        [self.addPcButton setTitleEdgeInsets:UIEdgeInsetsMake(0, ADD_PC_BUTTON_TEXT_INSET, 0, 0)];
-        [self.addPcButton setTitleColor:BANYAN_GREEN_COLOR forState:UIControlStateNormal];
+        [self.addPcButton.titleLabel setFont:_thinFont];
+        [self.addPcButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+        [self.addPcButton setTitleColor:BANYAN_DARK_GREEN_COLOR forState:UIControlStateNormal];
         self.addPcButton.showsTouchWhenHighlighted = YES;
         self.addPcButton.exclusiveTouch = YES;
+        self.addPcButton.layer.borderColor = [BANYAN_GREEN_COLOR colorWithAlphaComponent:0.3].CGColor;
+        self.addPcButton.layer.borderWidth = 1.0f;
+        self.addPcButton.layer.cornerRadius = 6.0f;
+        self.addPcButton.layer.masksToBounds = YES;
         
         [self insertSubview:self.addPcButton belowSubview:self.storyStatusLabel];
     }

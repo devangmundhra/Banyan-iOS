@@ -28,6 +28,7 @@
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];
         [alert show];
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction Skipped" action:@"piece edit" label:@"pending changes" value:nil];
         return;
     }
     piece.remoteStatus = RemoteObjectStatusPushing;

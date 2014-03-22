@@ -96,10 +96,11 @@ typedef enum {
                                                                 attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:20]}];
     self.navigationItem.titleView = titleLabel;
     if ([BanyanAppDelegate loggedIn]) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                                                               target:self action:@selector(addStoryOrPieceButtonPressed:)];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"banyan_tinted"]
+                                                                                  style:UIBarButtonItemStylePlain target:self
+                                                                                 action:@selector(addStoryOrLoginButtonPressed:)];
     } else {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Sign in" style:UIBarButtonItemStylePlain target:self action:@selector(addStoryOrPieceButtonPressed:)];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Sign in" style:UIBarButtonItemStylePlain target:self action:@selector(addStoryOrLoginButtonPressed:)];
     }
 
     self.navigationItem.rightBarButtonItem.tintColor = BANYAN_GREEN_COLOR;
@@ -168,7 +169,6 @@ typedef enum {
         CMPopTipView *popTipView = [[CMPopTipView alloc] initWithMessage:@"Tap here to create new stories, or contribute to existing ones!"];
         SET_CMPOPTIPVIEW_APPEARANCES(popTipView);
         [popTipView presentPointingAtBarButtonItem:self.navigationItem.rightBarButtonItem animated:NO];
-        [popTipView autoDismissAnimated:YES atTimeInterval:5];
     }
 }
 
@@ -186,12 +186,13 @@ typedef enum {
 - (void) userLoginStatusChanged:(NSNotification *)notification
 {
     if ([[notification name] isEqualToString:BNUserLogOutNotification]) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Sign in" style:UIBarButtonItemStylePlain target:self action:@selector(addStoryOrPieceButtonPressed:)];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Sign in" style:UIBarButtonItemStylePlain target:self action:@selector(addStoryOrLoginButtonPressed:)];
     } else if ([[notification name] isEqualToString:BNUserLogInNotification]) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                                                               target:self action:@selector(addStoryOrPieceButtonPressed:)];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"banyan_tinted"]
+                                                                                  style:UIBarButtonItemStylePlain target:self
+                                                                                 action:@selector(addStoryOrLoginButtonPressed:)];
     } else {
-        BNLogError(@"%s Unknown notification %@", __PRETTY_FUNCTION__, [notification name]);
+        BNLogError(@"Unknown notification %@", [notification name]);
     }
     self.navigationItem.rightBarButtonItem.tintColor = BANYAN_GREEN_COLOR;
 }
@@ -413,24 +414,17 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     [self presentViewController:navController animated:YES completion:nil];
 }
 
--(IBAction) addStoryOrPieceButtonPressed:(UIButton *)sender
+-(IBAction) addStoryOrLoginButtonPressed:(UIButton *)sender
 {
     BanyanAppDelegate *delegate = (BanyanAppDelegate *)[[UIApplication sharedApplication] delegate];
     if (![BanyanAppDelegate loggedIn]) {
         [delegate login];
     } else {
-        // If there is already a default story user is creating a story on, use that story.
-        // Else show the story picker view controller.
-        
-        Story *story = [Story getCurrentOngoingStoryToContribute];
-        if (!story) {
-            StoryPickerViewController *vc = [[StoryPickerViewController alloc] init];
-            vc.delegate = self;
-            UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:vc];
-            [self presentViewController:nvc animated:YES completion:nil];
-        } else {
-            [self addPieceToStory:story];
-        }
+        // Show the story picker view controller.
+        StoryPickerViewController *vc = [[StoryPickerViewController alloc] init];
+        vc.delegate = self;
+        UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:vc];
+        [self presentViewController:nvc animated:YES completion:nil];
     }
 }
 
@@ -540,7 +534,6 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         CMPopTipView *popTipView = [[CMPopTipView alloc] initWithTitle:@"Sign in" message:@"Sign in (using Facebook) to see, create and contribute to more stories"];
         SET_CMPOPTIPVIEW_APPEARANCES(popTipView);
         [popTipView presentPointingAtBarButtonItem:self.navigationItem.rightBarButtonItem animated:NO];
-        [popTipView autoDismissAnimated:YES atTimeInterval:5];
     }
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];

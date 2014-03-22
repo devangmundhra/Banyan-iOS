@@ -56,6 +56,7 @@
                                                   cancelButtonTitle:@"OK"
                                                   otherButtonTitles:nil];
             [alert show];
+            [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction Skipped" action:@"story edit" label:@"pending changes" value:nil];
             return;
         }
         // Else don't do anything. The story has not even been created yet. So the creation of the story will take care of the edit as well.

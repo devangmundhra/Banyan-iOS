@@ -58,4 +58,5 @@ __popTipView__.borderWidth = 0;\
 __popTipView__.hasShadow = NO;\
 __popTipView__.pointerSize = 6;\
 __popTipView__.hasGradientBackground = NO;\
+[__popTipView__ autoDismissAnimated:YES atTimeInterval:5];\
 } while(FALSE)
