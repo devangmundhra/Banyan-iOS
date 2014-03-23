@@ -329,6 +329,8 @@ static void *AVCamFocusModeObserverContext = &AVCamFocusModeObserverContext;
 - (void)captureManager:(AVCamCaptureManager *)captureManager didFailWithError:(NSError *)error
 {
     CFRunLoopPerformBlock(CFRunLoopGetMain(), kCFRunLoopCommonModes, ^(void) {
+        [[self stillButton] setEnabled:YES];
+        [delegate dismissAVCamViewController:self];
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[error localizedDescription]
                                                             message:[error localizedFailureReason]
                                                            delegate:nil

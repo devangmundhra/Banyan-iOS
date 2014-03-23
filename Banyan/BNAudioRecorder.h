@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <AVFoundation/AVFoundation.h>
 #import "BNAudioRecorderView.h"
 
 @interface BNAudioRecorder : NSObject

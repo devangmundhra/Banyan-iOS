@@ -180,4 +180,33 @@
     [tracker send:[[GAIDictionaryBuilder createExceptionWithDescription:[NSString stringWithFormat:@"%@ error: %@", action, error.localizedDescription]
                                                               withFatal:[NSNumber numberWithBool:fatal]] build]];
 }
+
++ (void) showLocationServicesAlertIfRequired
+{    
+    if ([CLLocationManager locationServicesEnabled]) {
+        if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied){
+            [[[UIAlertView alloc] initWithTitle:@"Banyan cannot access your location"
+                                        message:@"You currently have all location services for Banyan disabled. Banyan won't be able to determine your current location, but you can still search for particular locations."
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
+            [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction Skipped" action:@"location services denied" label:@"Banyan" value:nil];
+        } else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted) {
+            [[[UIAlertView alloc] initWithTitle:@"Banyan cannot access your location"
+                                        message:@"Your location services are currently restricted. Banyan won't be able to determine your current location, but you can still search for particular locations."
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
+            [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction Skipped" action:@"location services restricted" label:@"Banyan" value:nil];
+        }
+    }
+    else {
+        [[[UIAlertView alloc] initWithTitle:@"Banyan cannot access your location"
+                                    message:@"You currently have all location services for this device disabled. Banyan won't be able to determine your current location, but you can still search for particular locations."
+                                   delegate:nil
+                          cancelButtonTitle:@"OK"
+                          otherButtonTitles:nil] show];
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction Skipped" action:@"location services disabled" label:@"Device" value:nil];
+    }
+}
 @end

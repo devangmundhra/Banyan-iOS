@@ -281,6 +281,7 @@ NSString *const AVCamCaptureManagerInfoImage = @"AVCamCaptureManagerInfoImage";
 															 
                                                              ALAssetsLibraryWriteImageCompletionBlock completionBlock = ^(NSURL *assetURL, NSError *error) {
                                                                  if (error) {
+                                                                     [BNMisc sendGoogleAnalyticsError:error inAction:@"capture still image" isFatal:NO];
                                                                      if ([[self delegate] respondsToSelector:@selector(captureManager:didFailWithError:)]) {
                                                                          [[self delegate] captureManager:self didFailWithError:error];
                                                                      }
@@ -293,10 +294,15 @@ NSString *const AVCamCaptureManagerInfoImage = @"AVCamCaptureManagerInfoImage";
                                                                  [library writeImageToSavedPhotosAlbum:[image CGImage]
                                                                                            orientation:(ALAssetOrientation)[image imageOrientation]
                                                                                        completionBlock:^(NSURL *assetURL, NSError *error) {
-                                                                                           self.imageURL = assetURL;
-                                                                                           AFPhotoEditorController *editorController = [[AFPhotoEditorController alloc] initWithImage:image];
-                                                                                           [editorController setDelegate:self];
-                                                                                            [APP_DELEGATE.topMostController presentViewController:editorController animated:NO completion:nil];
+                                                                                           NSAssert(assetURL || error, @"No asset or error while capturing image");
+                                                                                           if (error) {
+                                                                                               completionBlock(nil, error);
+                                                                                           } else if (assetURL) {
+                                                                                               self.imageURL = assetURL;
+                                                                                               AFPhotoEditorController *editorController = [[AFPhotoEditorController alloc] initWithImage:image];
+                                                                                               [editorController setDelegate:self];
+                                                                                               [APP_DELEGATE.topMostController presentViewController:editorController animated:NO completion:nil];
+                                                                                           }
                                                                                        }];
 															 }
 															 else

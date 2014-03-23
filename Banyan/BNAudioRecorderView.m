@@ -132,10 +132,25 @@
 #pragma mark target actions
 - (IBAction) recordAudio:(id)sender
 {
-    [self.controlButton setImage:[UIImage imageNamed:@"Stop"] forState:UIControlStateNormal];
-    [self.controlButton removeTarget:self action:NULL forControlEvents:UIControlEventTouchUpInside];
-    [self.controlButton addTarget:self action:@selector(stop:) forControlEvents:UIControlEventTouchUpInside];
-    [self.delegate bnAudioRecorderViewToRecord:self];
+    // Get permission to record audio first
+    // Otherwise only silence is recorded
+    __weak typeof(self) wself = self;
+    
+    [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
+        if (granted) {
+            [wself.controlButton setImage:[UIImage imageNamed:@"Stop"] forState:UIControlStateNormal];
+            [wself.controlButton removeTarget:wself action:NULL forControlEvents:UIControlEventTouchUpInside];
+            [wself.controlButton addTarget:wself action:@selector(stop:) forControlEvents:UIControlEventTouchUpInside];
+            [wself.delegate bnAudioRecorderViewToRecord:wself];
+        } else {
+            [[[UIAlertView alloc] initWithTitle:@"Banyan does not have access to your microphone"
+                                        message:@"You can enable access in Privacy Settings to record audio"
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
+            [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction Skipped" action:@"microphone disabled" label:@"Banyan" value:nil];
+        }
+    }];
 }
 
 - (IBAction) playAudio:(id)sender

@@ -18,6 +18,7 @@
 + (NSDateFormatter *) longDateFormatter;
 + (NSDateFormatter *) shortDateFormatter;
 + (NSString *) gifFromArray:(NSArray *)imagesArray;
++ (void) showLocationServicesAlertIfRequired;
 
 + (void) sendGoogleAnalyticsEventWithCategory:(NSString *)category
                                        action:(NSString *)action
@@ -30,5 +31,6 @@
 
 + (void) sendGoogleAnalyticsException:(NSException *)exception inAction:(NSString *)action isFatal:(BOOL)fatal;
 + (void) sendGoogleAnalyticsError:(NSError *)error inAction:(NSString *)action isFatal:(BOOL)fatal;
+
 @end
 

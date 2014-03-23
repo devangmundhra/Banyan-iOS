@@ -71,7 +71,7 @@ static BOOL _loggedIn;
         _boldFontSmall = [UIFont fontWithName:@"Roboto-Bold" size:16];
         _mediumFont = [UIFont fontWithName:@"Roboto-Medium" size:12];
         _smallFont = [UIFont fontWithName:@"Roboto-Medium" size:10];
-        _thinFont = [UIFont fontWithName:@"Roboto-Thin" size:18];
+        _thinFont = [UIFont fontWithName:@"Roboto-Thin" size:20];
         
         _loggedIn = [BanyanAppDelegate loggedIn];
         
@@ -107,7 +107,7 @@ static BOOL _loggedIn;
 - (id)initWithFrame:(CGRect)frame
 {
 #define SIZE_OF_STORY_STATUS_LABEL 72
-#define SIZE_OF_ADD_PC_BUTTON 36
+#define SIZE_OF_ADD_PC_BUTTON 40
 #define ADD_PC_BUTTON_TEXT_INSET 18
     self = [super initWithFrame:frame];
     if (self) {

@@ -104,13 +104,19 @@
 #pragma mark -
 #pragma mark Instance Methods
 
-- (void)handleNameButtonTapped:(id)sender {
+- (void)handleNameButtonTapped:(id)sender
+{
+    [BNMisc showLocationServicesAlertIfRequired];
+    
     if (delegate) {
         [delegate locationPickerButtonTapped:self];
     }
 }
 
-- (void)handleOnOffButtonTapped:(id)sender {
+- (void)handleOnOffButtonTapped:(id)sender
+{
+    [BNMisc showLocationServicesAlertIfRequired];
+
     if (delegate) {
         [delegate locationPickerButtonToggleLocationEnable:self];
     }

@@ -848,6 +848,25 @@
 
 - (IBAction)addPhotoButtonTappedForCamera:(id)sender
 {
+    ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
+    
+    if (status == ALAuthorizationStatusDenied) {
+        [[[UIAlertView alloc] initWithTitle:@"Banyan does not have access to your photos"
+                                    message:@"You can enable access in Privacy Settings to to click and save photos"
+                                   delegate:nil
+                          cancelButtonTitle:@"Close"
+                          otherButtonTitles:nil, nil] show];
+        return;
+    } else if (status == ALAuthorizationStatusRestricted) {
+        [[[UIAlertView alloc] initWithTitle:@"Banyan's access to your photos is currently restricted"
+                                    message:@"Banyan needs access to your photos to click and save photos"
+                                   delegate:nil
+                          cancelButtonTitle:@"Close"
+                          otherButtonTitles:nil, nil] show];
+        return;
+    }
+    
+    // Check if the user has the permissions to access camera
     [self dismissKeyboard:nil];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
     [UIView animateWithDuration:1
