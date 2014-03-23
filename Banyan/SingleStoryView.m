@@ -164,7 +164,7 @@ static BOOL _loggedIn;
         self.addPcButton.exclusiveTouch = YES;
         self.addPcButton.layer.borderColor = [BANYAN_GREEN_COLOR colorWithAlphaComponent:0.3].CGColor;
         self.addPcButton.layer.borderWidth = 1.0f;
-        self.addPcButton.layer.cornerRadius = 6.0f;
+        self.addPcButton.layer.cornerRadius = 5.0f;
         self.addPcButton.layer.masksToBounds = YES;
         
         [self insertSubview:self.addPcButton belowSubview:self.storyStatusLabel];
