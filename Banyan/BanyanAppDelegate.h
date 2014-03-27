@@ -8,8 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-#define AWS_ACCESS_KEY @"AKIAJ3LJBD4SE3HS4NIQ"
-#define AWS_SECRET_KEY @"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"
+#ifdef DEBUG
+#define AWS_ACCESS_KEY @"AKIAIMJYZAZYRAR454YA"
+#define AWS_SECRET_KEY @"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"
+#else
+#define AWS_ACCESS_KEY @"AKIAIQNNBF3SFGNBWULA"
+#define AWS_SECRET_KEY @"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"
+#endif
 
 #ifdef DEBUG
 #define AWS_APPARN_INVTOCONTRIBUTE @"arn:aws:sns:us-east-1:925059984507:app/APNS_SANDBOX/Banyan_SBX_InvToContribute"

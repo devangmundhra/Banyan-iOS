@@ -347,6 +347,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 
 - (void) refreshStoryList:(id)sender
 {
+    [self.refreshControl beginRefreshing];
     [self.activityView startAnimating];
     self.tableView.tableFooterView = self.activityView;
     [BanyanConnection loadDataSource:sender];

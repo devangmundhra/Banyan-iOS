@@ -31,7 +31,7 @@ typedef enum {
     SettingsNotificationSectionAddStoryContribute = 0,
     SettingsNotificationSectionAddStoryView,
     SettingsNotificationSectionAddPiece,
-//    SettingsNotificationSectionPieceAction,
+    SettingsNotificationSectionPieceAction,
 //    SettingsNotificationSectionUserFollowing,
     SettingsNotificationsSectionMax,
 } SettingsNotificationsSection;
@@ -235,9 +235,9 @@ typedef enum {
         case SettingsNotificationSectionAddPiece:
             return @"Story I follow has a piece added";
             break;
-//        case SettingsNotificationSectionPieceAction:
-//            return @"Piece I added is liked";
-//            break;
+        case SettingsNotificationSectionPieceAction:
+            return @"Piece I added is liked";
+            break;
 //        case SettingsNotificationSectionUserFollowing:
 //            return @"User starts following my stories";
 //            break;
@@ -276,10 +276,10 @@ typedef enum {
             [switchView addTarget:self action:@selector(addPieceNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
             on = [defaults boolForKey:BNUserDefaultsAddPieceToContributedStoryPushNotification];
             break;
-//        case SettingsNotificationSectionPieceAction:
-//            [switchView addTarget:self action:@selector(pieceActionNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
-//            on = [defaults boolForKey:BNUserDefaultsPieceActionPushNotification];
-//            break;
+        case SettingsNotificationSectionPieceAction:
+            [switchView addTarget:self action:@selector(pieceActionNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
+            on = [defaults boolForKey:BNUserDefaultsPieceActionPushNotification];
+            break;
 //        case SettingsNotificationSectionUserFollowing:
 //            [switchView addTarget:self action:@selector(userFollowNotificationsSwitchChanged:) forControlEvents:UIControlEventValueChanged];
 //            on = [defaults boolForKey:BNUserDefaultsUserFollowingPushNotification];
@@ -301,6 +301,14 @@ typedef enum {
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
             [defaults setBool:isEnabled forKey:BNUserDefaultsAddStoryInvitedContributePushNotification];
             [defaults synchronize];
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[[UIAlertView alloc] initWithTitle:@"Error in updating notification settings"
+                                            message:@"There was an error in updating your notification preference. We are currently looking into it.\rPlease try again in sometime."
+                                           delegate:nil
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil] show];
+            });
         }
     };
 
@@ -319,6 +327,14 @@ typedef enum {
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
             [defaults setBool:isEnabled forKey:BNUserDefaultsAddStoryInvitedViewPushNotification];
             [defaults synchronize];
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[[UIAlertView alloc] initWithTitle:@"Error in updating notification settings"
+                                            message:@"There was an error in updating your notification preference. We are currently looking into it.\rPlease try again in sometime."
+                                           delegate:nil
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil] show];
+            });
         }
     };
     
@@ -337,6 +353,14 @@ typedef enum {
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
             [defaults setBool:isEnabled forKey:BNUserDefaultsAddPieceToContributedStoryPushNotification];
             [defaults synchronize];
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[[UIAlertView alloc] initWithTitle:@"Error in updating notification settings"
+                                            message:@"There was an error in updating your notification preference. We are currently looking into it.\rPlease try again in sometime."
+                                           delegate:nil
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil] show];
+            });
         }
     };
     
@@ -355,6 +379,14 @@ typedef enum {
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
             [defaults setBool:isEnabled forKey:BNUserDefaultsPieceActionPushNotification];
             [defaults synchronize];
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[[UIAlertView alloc] initWithTitle:@"Error in updating notification settings"
+                                            message:@"There was an error in updating your notification preference. We are currently looking into it.\rPlease try again in sometime."
+                                           delegate:nil
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil] show];
+            });
         }
     };
     
@@ -373,6 +405,14 @@ typedef enum {
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
             [defaults setBool:isEnabled forKey:BNUserDefaultsUserFollowingPushNotification];
             [defaults synchronize];
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[[UIAlertView alloc] initWithTitle:@"Error in updating notification settings"
+                                            message:@"There was an error in updating your notification preference. We are currently looking into it.\rPlease try again in sometime."
+                                           delegate:nil
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil] show];
+            });
         }
     };
     

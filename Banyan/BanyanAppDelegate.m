@@ -263,11 +263,11 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 
 - (void) loadRemoteObjectFromUserInfo:(NSDictionary *)userInfo displayIfPossible:(BOOL)display
 {
-#define OP_TIMEOUT_INTERVAL 8
+#define OP_TIMEOUT_INTERVAL 12
     NSDictionary *dataDict = [userInfo objectForKey:@"data"];
     NSString *storyId = [dataDict objectForKey:@"story"];
     NSString *pieceId = [dataDict objectForKey:@"piece"];
-//    NSDate *opStartDate = [NSDate date];
+    NSDate *opStartDate = [NSDate date];
 
     if (storyId) {
         UINavigationController *topNavController = nil;
@@ -282,25 +282,28 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                 RUN_SYNC_ON_MAINTHREAD(^{
                     hud = [MBProgressHUD showHUDAddedTo:APP_DELEGATE.topMostController.view animated:YES];
                     hud.mode = MBProgressHUDModeIndeterminate;
-//                    [hud hide:YES afterDelay:OP_TIMEOUT_INTERVAL];
+                    hud.labelText = pieceId ? @"Trying to fetch piece from the server" : @"Trying to fetch story from the server";
+                    hud.labelFont = [UIFont fontWithName:@"Roboto" size:12];
+                    [hud hide:YES afterDelay:OP_TIMEOUT_INTERVAL];
                 });
             }
         }
-        
+        __weak typeof(hud) whud = hud;
+
         // There was a new story. Get the story and launch it
         [[RKObjectManager sharedManager] getObjectsAtPath:[NSString stringWithFormat:@"story/%@/?format=json", storyId]
                                                parameters:nil
                                                   success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                                       // Reset the badge to zero
                                                       [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-//                                                      NSTimeInterval opInterval = [opStartDate timeIntervalSinceNow];
-//                                                      if (opInterval < -OP_TIMEOUT_INTERVAL) {
-//                                                          // We give OP_TIMEOUT_INTERVAL seconds from the app launch for the story to be successfully
-//                                                          // received and opened, so that if a user starts another operation, he/she is not
-//                                                          // interrupted by some random story being opened
-//                                                          NSLog(@"Ignoring action from notificaiton as operation interval was %f seconds", opInterval);
-//                                                          return;
-//                                                      }
+                                                      NSTimeInterval opInterval = [opStartDate timeIntervalSinceNow];
+                                                      if (opInterval < -OP_TIMEOUT_INTERVAL) {
+                                                          // We give OP_TIMEOUT_INTERVAL seconds from the app launch for the story to be successfully
+                                                          // received and opened, so that if a user starts another operation, he/she is not
+                                                          // interrupted by some random story being opened
+                                                          BNLogInfo(@"Ignoring action from notificaiton as operation interval was %f seconds", opInterval);
+                                                          return;
+                                                      }
                                                       NSArray *stories = [mappingResult array];
                                                       NSAssert1(stories.count <= 1, @"Error in getting a single story from remote notificaiton", storyId);
                                                       Story *story = [stories lastObject];
@@ -323,10 +326,10 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                                                               [topStoryListVC storyReaderWithStory:story piece:piece];
                                                           }
                                                       }
-                                                      RUN_SYNC_ON_MAINTHREAD(^{[hud hide:YES];});
+                                                      RUN_SYNC_ON_MAINTHREAD(^{[whud hide:YES];});
                                                   }
                                                   failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                                      RUN_SYNC_ON_MAINTHREAD(^{[hud hide:YES];});
+                                                      RUN_SYNC_ON_MAINTHREAD(^{[whud hide:YES];});
                                                   }];
         
     } else {
@@ -413,8 +416,9 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                                            NSString *deviceToken = [defaults objectForKey:BNUserDefaultsDeviceToken];
 
                                            // Tell AWS SNS about the device token.
-                                           [BNAWSSNSClient registerDeviceToken:deviceToken];
-                                           [self subscribeToPushNotifications];
+                                           [BNAWSSNSClient registerDeviceToken:deviceToken withCompletionBlock:^{
+                                               [self subscribeToPushNotifications];
+                                           }];
                                            if (block) {
                                                block(YES, nil);
                                            }

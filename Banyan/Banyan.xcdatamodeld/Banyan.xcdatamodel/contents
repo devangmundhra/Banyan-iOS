@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3396" systemVersion="13B42" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5063" systemVersion="13C64" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Comment" representedClassName="Comment" syncable="YES">
         <attribute name="author" attributeType="Transformable" syncable="YES"/>
         <attribute name="commentID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -61,7 +61,7 @@
         <attribute name="isInvited" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="numNewPiecesToView" optional="YES" attributeType="Integer 16" defaultValueString="NO" indexed="YES" syncable="YES"/>
         <attribute name="readAccess" optional="YES" attributeType="Transformable" valueTransformerName="BNDuckTypedObjectToDataTransformer" syncable="YES"/>
-        <attribute name="sectionIdentifier" optional="YES" transient="YES" attributeType="String" defaultValueString="Drafts" indexed="YES" syncable="YES"/>
+        <attribute name="sectionIdentifier" optional="YES" transient="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="tags" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="uploadStatusNumber" optional="YES" attributeType="Integer 16" defaultValueString="3" indexed="YES" syncable="YES"/>
@@ -83,11 +83,11 @@
         <relationship name="remoteObject" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RemoteObject" inverseName="author" inverseEntity="RemoteObject" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Comment" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Media" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Piece" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="RemoteObject" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Story" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="User" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Comment" positionX="0" positionY="0" width="128" height="120"/>
+        <element name="Media" positionX="0" positionY="0" width="128" height="300"/>
+        <element name="Piece" positionX="0" positionY="0" width="128" height="105"/>
+        <element name="RemoteObject" positionX="0" positionY="0" width="128" height="315"/>
+        <element name="Story" positionX="0" positionY="0" width="128" height="255"/>
+        <element name="User" positionX="0" positionY="0" width="128" height="225"/>
     </elements>
 </model>

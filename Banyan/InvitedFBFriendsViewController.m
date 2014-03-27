@@ -130,10 +130,10 @@
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     [refreshControl addTarget:self action:@selector(loadFacebookFriendsListAndRefresh) forControlEvents:UIControlEventValueChanged];
-    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Load friends from facebook"];
     refreshControl.tintColor = BANYAN_GREEN_COLOR;
     self.refreshControl = refreshControl;
     
+    [self.refreshControl beginRefreshing];
     [self loadFacebookFriendsListAndRefresh];
     
     [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneInviting:)]];
@@ -147,16 +147,25 @@
 
 - (void)loadFacebookFriendsListAndRefresh
 {
+    __weak typeof(self) wself = self;
     [FBRequestConnection startForMyFriendsWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (!error) {
             NSArray *array = [result objectForKey:@"data"];
-            self.listContacts = array;
-            [self setContactIndex];
+            wself.listContacts = array;
+            [wself setContactIndex];
         } else {
-            // TODO: Handle error
+            [[[UIAlertView alloc] initWithTitle:@"Cannot get friend list"
+                                        message:@"There was an error in fetching your list of friends. Please try again in a bit" delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
+            [BNMisc sendGoogleAnalyticsError:error inAction:@"Fetching facebook friends" isFatal:NO];
         }
-        [self.refreshControl endRefreshing];
-        [self.tableView reloadData];
+        if (self.searchDisplayController.isActive) {
+            [self.searchDisplayController setActive:NO animated:YES];
+        }
+        [wself.refreshControl endRefreshing];
+        wself.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Load friends from facebook"];
+        [wself.tableView reloadData];
     }];
 }
 

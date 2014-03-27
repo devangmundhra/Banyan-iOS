@@ -12,7 +12,7 @@
 
 @interface BNAWSSNSClient : NSObject
 
-+ (void) registerDeviceToken:(NSString *)deviceToken;
++ (void) registerDeviceToken:(NSString *)deviceToken withCompletionBlock:(void(^)(void))block;
 + (NSMutableDictionary *)endpointsDict;
 + (void) enableNotificationsFromChannel:(NSString *)channel
                          forEndpointArn:(NSString *)arn

@@ -107,8 +107,7 @@ static BOOL _loggedIn;
 - (id)initWithFrame:(CGRect)frame
 {
 #define SIZE_OF_STORY_STATUS_LABEL 72
-#define SIZE_OF_ADD_PC_BUTTON 40
-#define ADD_PC_BUTTON_TEXT_INSET 18
+#define SIZE_OF_ADD_PC_BUTTON 36
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
@@ -133,7 +132,7 @@ static BOOL _loggedIn;
         
         self.storyAuthorsLabel = [[UILabel alloc] initWithFrame:CGRectMake(TABLE_CELL_MARGIN,
                                                                            TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT,
-                                                                           CGRectGetWidth(frame) - 2*TABLE_CELL_MARGIN - SIZE_OF_STORY_STATUS_LABEL - SIZE_OF_ADD_PC_BUTTON + ADD_PC_BUTTON_TEXT_INSET,
+                                                                           CGRectGetWidth(frame) - 2*TABLE_CELL_MARGIN - SIZE_OF_ADD_PC_BUTTON - SPACER_DISTANCE,
                                                                            BOTTOM_VIEW_HEIGHT)];
         self.storyAuthorsLabel.backgroundColor = BANYAN_WHITE_COLOR;
         self.storyAuthorsLabel.textColor = [UIColor grayColor];
@@ -142,18 +141,18 @@ static BOOL _loggedIn;
         self.storyAuthorsLabel.font = _mediumFont;
         [self addSubview:self.storyAuthorsLabel];
         
-        self.storyStatusLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.storyAuthorsLabel.frame),
+        self.storyStatusLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.storyAuthorsLabel.frame) - SIZE_OF_STORY_STATUS_LABEL,
                                                                           TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT,
                                                                           SIZE_OF_STORY_STATUS_LABEL, BOTTOM_VIEW_HEIGHT)];
         self.storyStatusLabel.backgroundColor = BANYAN_WHITE_COLOR;
         self.storyStatusLabel.textColor = BANYAN_LIGHTGRAY_COLOR;
-        self.storyStatusLabel.textAlignment = NSTextAlignmentCenter;
+        self.storyStatusLabel.textAlignment = NSTextAlignmentRight;
         self.storyStatusLabel.lineBreakMode = NSLineBreakByClipping;
         self.storyStatusLabel.font = _smallFont;
         self.storyStatusLabel.minimumScaleFactor = 0.5;
         [self addSubview:self.storyStatusLabel];
         
-        self.addPcButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.storyStatusLabel.frame) - ADD_PC_BUTTON_TEXT_INSET + SPACER_DISTANCE,
+        self.addPcButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.storyStatusLabel.frame) + SPACER_DISTANCE,
                                                                       TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT + SPACER_DISTANCE,
                                                                       SIZE_OF_ADD_PC_BUTTON, BOTTOM_VIEW_HEIGHT - 2*SPACER_DISTANCE)];
         [self.addPcButton setTintColor:BANYAN_GREEN_COLOR];

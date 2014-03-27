@@ -415,21 +415,6 @@
     
     self.piece.longText = self.pieceTextView.text;
     
-//    // Extract the tags
-//    NSMutableArray *substrings = [NSMutableArray array];
-//    NSScanner *scanner = [NSScanner scannerWithString:self.piece.longText];
-//    [scanner scanUpToString:@"#" intoString:nil]; // Scan all characters before #
-//    while(![scanner isAtEnd]) {
-//        NSString *substring = nil;
-//        [scanner scanString:@"#" intoString:nil]; // Scan the # character
-//        if([scanner scanUpToString:@" " intoString:&substring]) {
-//            // If the space immediately followed the #, this will be skipped
-//            [substrings addObject:substring];
-//        }
-//        [scanner scanUpToString:@"#" intoString:nil]; // Scan all characters before next #
-//    }
-//    self.piece.tags = [substrings componentsJoinedByString:@", "];
-    
     self.piece.shortText = self.pieceCaptionView.text;
     
     self.piece.location = (GooglePlacesObject<GooglePlacesObject>*)self.addLocationButton.location;
@@ -963,7 +948,7 @@
         self.addLocationButton.frame = frame;
     } completion:^(BOOL finished) {
         // Finally once the animation is done, actually show the option view
-        [self.scrollView addSubview:self.storyAlbumCoverOptionView];
+        [self.scrollView insertSubview:self.storyAlbumCoverOptionView belowSubview:self.addPhotoButton];
     }];
 }
 
