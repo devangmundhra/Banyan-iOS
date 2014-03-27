@@ -10,6 +10,9 @@
 #import "Media+Transfer.h"
 #import "Story.h"
 
+NSString *const shareAsAPicOnFbString = @"Share as a picture on Facebook";
+NSString *const copyLinkToPieceString = @"Copy link to piece";
+
 @interface Piece (UIActionSheetDelegate) <UIActionSheetDelegate>
 @end
 
@@ -17,7 +20,7 @@
 
 - (void) shareOnFacebook
 {
-    UIActionSheet *shareSheet = [[UIActionSheet alloc] initWithTitle:@"How would you like to share this piece" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Share as a picture on facebook", @"Copy link to piece", nil];
+    UIActionSheet *shareSheet = [[UIActionSheet alloc] initWithTitle:@"How would you like to share this piece" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:shareAsAPicOnFbString, copyLinkToPieceString, nil];
     
     [shareSheet showInView:APP_DELEGATE.topMostController.view];
 }
@@ -63,12 +66,12 @@
 {
     [BNMisc sendGoogleAnalyticsSocialInteractionWithNetwork:@"Banyan" action:[actionSheet buttonTitleAtIndex:buttonIndex]
                                                      target:[NSString stringWithFormat:@"Piece_%@", self.bnObjectId]];
-    if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share as a picture on facebook"]) {
+    if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:shareAsAPicOnFbString]) {
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             [self shareAsPictureOnFacebook];
         });
-    } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Copy link to piece"]) {
+    } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:copyLinkToPieceString]) {
         UIPasteboard *pb = [UIPasteboard generalPasteboard];
         [pb setString:REPLACE_NIL_WITH_EMPTY_STRING(self.permaLink)];
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);

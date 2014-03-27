@@ -381,12 +381,17 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
     NSString *accessToken = [[FBSession.activeSession accessTokenData] accessToken];
     NSMutableDictionary *postInfo = [NSMutableDictionary dictionary];
+    /* 
+     * For now don't send the user info. Once the app pulls the info from facebook,
+     * lets just use it that way. This is because we might allow a person to change his/her name on
+     * the app in the future. Just send the new access token that was retrieved from facebook.
     [postInfo setObject:user.first_name forKey:@"first_name"];
     [postInfo setObject:user.last_name forKey:@"last_name"];
     [postInfo setObject:user.name forKey:@"name"];
     [postInfo setObject:[user objectForKey:@"email"] forKey:@"email"];
+     */
     [postInfo setObject:@{@"access_token": accessToken, @"id": user.id} forKey:@"facebook"];
-
+    
     [[AFBanyanAPIClient sharedClient] postPath:@"users/"
                                     parameters:postInfo
                                        success:^(AFHTTPRequestOperation *operation, id responseObject) {

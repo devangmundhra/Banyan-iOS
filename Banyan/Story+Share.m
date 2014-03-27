@@ -11,6 +11,10 @@
 #import "User.h"
 #import "Piece.h"
 
+NSString *const shareAsLinkOnFacebookString = @"Share as a link on Facebook";
+NSString *const shareAsNewFbAlbumString = @"Share as a new Facebook album";
+NSString *const copyLinkToStoryString = @"Copy link to story";
+
 @interface Story (UIActionSheetDelegate) <UIActionSheetDelegate>
 @end
 
@@ -18,7 +22,7 @@
 
 - (void) shareOnFacebook
 {
-    UIActionSheet *shareSheet = [[UIActionSheet alloc] initWithTitle:@"How would you like to share this story" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Share as a link on Facebook", @"Share as a new album on Facebook", @"Copy link to story", nil];
+    UIActionSheet *shareSheet = [[UIActionSheet alloc] initWithTitle:@"How would you like to share this story" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:shareAsLinkOnFacebookString, shareAsNewFbAlbumString, copyLinkToStoryString, nil];
     
     [shareSheet showInView:APP_DELEGATE.topMostController.view];
 }
@@ -173,17 +177,17 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     [BNMisc sendGoogleAnalyticsSocialInteractionWithNetwork:@"Banyan" action:[actionSheet buttonTitleAtIndex:buttonIndex] target:[NSString stringWithFormat:@"Story_%@", self.bnObjectId]];
-    if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share as a new album on Facebook"]) {
+    if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:shareAsNewFbAlbumString]) {
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             [self shareAsAlbumOnFacebook];
         });
-    } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share as a link on Facebook"]) {
+    } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:shareAsLinkOnFacebookString]) {
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             [self shareAsLinkOnFacebook];
         });
-    } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Copy link to story"]) {
+    } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:copyLinkToStoryString]) {
         UIPasteboard *pb = [UIPasteboard generalPasteboard];
         [pb setString:REPLACE_NIL_WITH_EMPTY_STRING(self.permaLink)];
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);
