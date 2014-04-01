@@ -33,7 +33,7 @@
 #ifdef DEBUG
 #define BNLogTrace CLS_LOG
 #else
-#define BNLogTrace ;
+#define BNLogTrace(...)
 #endif
 
 #define REPLACE_NIL_WITH_NULL(__value__) (__value__ ? __value__ : [NSNull null])
