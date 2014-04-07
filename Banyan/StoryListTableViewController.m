@@ -462,8 +462,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
 //    NSLog(@"contentSize.height(%f) - contentOffset.y(%f)", scrollView.contentSize.height, scrollView.contentOffset.y);
-    if (scrollView.contentSize.height - scrollView.contentOffset.y < 1130 /* ~ 2*CGRectGetHeight(self.view.bounds */) {
-        if ([[BanyanConnection storiesPaginator] objectRequestOperation].isFinished && [[BanyanConnection storiesPaginator] isLoaded] && [[BanyanConnection storiesPaginator] hasNextPage]) {
+    if (scrollView.contentSize.height - scrollView.contentOffset.y < 1130 /* ~ 2*CGRectGetHeight(self.view.bounds) */) {
+        if (   [[BanyanConnection storiesPaginator] objectRequestOperation].isFinished
+            && [[BanyanConnection storiesPaginator] isLoaded]
+            && [[BanyanConnection storiesPaginator] hasNextPage]) {
             [[BanyanConnection storiesPaginator] loadNextPage];
             BNLogInfo(@"StoryListTableViewController loadDataSource BEGIN for page %d", [BanyanConnection storiesPaginator].currentPage);
             [self.activityView startAnimating];
