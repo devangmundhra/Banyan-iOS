@@ -28,6 +28,13 @@
 		51170B7317F4319C0015B343 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B7117F4319C0015B343 /* AboutViewController.m */; };
 		51170B7417F4319C0015B343 /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51170B7217F4319C0015B343 /* AboutViewController.xib */; };
 		51170B7817F906FF0015B343 /* BNHorizontalSwipeInteractionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51170B7717F906FF0015B343 /* BNHorizontalSwipeInteractionController.m */; };
+		511D741418F51FCC000926B0 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 511D741318F51FCC000926B0 /* GLKit.framework */; };
+		511D741618F51FD8000926B0 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511D741518F51FD8000926B0 /* libc++.dylib */; };
+		511D741818F51FEC000926B0 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511D741718F51FEC000926B0 /* libicucore.dylib */; };
+		511D742218F63C1B000926B0 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 511D742118F63C1B000926B0 /* GoogleMaps.framework */; };
+		511D742418F63C6A000926B0 /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 511D742318F63C6A000926B0 /* GoogleMaps.bundle */; };
+		511D742618F63E9D000926B0 /* GooglePlacePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 511D742518F63E9D000926B0 /* GooglePlacePickerViewController.xib */; };
+		511D743418F9D1EA000926B0 /* GooglePlacePickerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 511D743318F9D1EA000926B0 /* GooglePlacePickerTableViewCell.m */; };
 		512598BB17AB916600FEFCF0 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 512598BA17AB916600FEFCF0 /* FacebookSDK.framework */; };
 		512598BC17AB918D00FEFCF0 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 511E708D161A977F009AAD25 /* libsqlite3.dylib */; };
 		512598BF17B0D5C500FEFCF0 /* SingleImagePickerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 512598BE17B0D5C500FEFCF0 /* SingleImagePickerButton.m */; };
@@ -118,7 +125,7 @@
 		518AB39318BF2F5200F8000C /* Flag_Story.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB38F18BF2F5200F8000C /* Flag_Story.png */; };
 		518AB39418BF2F5200F8000C /* Flag_Story@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 518AB39018BF2F5200F8000C /* Flag_Story@2x.png */; };
 		518CAA2A17DBA23500D641A6 /* BNAWSSNSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 518CAA2917DBA23500D641A6 /* BNAWSSNSClient.m */; };
-		519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 519232A01671CC57009686E4 /* AFGoogleAPIClient.m */; };
+		519232A11671CC57009686E4 /* AFGooglePlacesAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 519232A01671CC57009686E4 /* AFGooglePlacesAPIClient.m */; };
 		5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 5192332616743F02009686E4 /* GooglePlacesObject.m */; };
 		51929D601867B7940061BD6C /* BNImageCropperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51929D5E1867B7940061BD6C /* BNImageCropperViewController.m */; };
 		51929D611867B7940061BD6C /* BNImageCropperViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51929D5F1867B7940061BD6C /* BNImageCropperViewController.xib */; };
@@ -163,12 +170,10 @@
 		51B2351A17168C69004241C1 /* BNImageLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2351917168C68004241C1 /* BNImageLabel.m */; };
 		51B235211717DBA9004241C1 /* BNTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B235201717DBA9004241C1 /* BNTableViewController.m */; };
 		51B49A131898E8620073F184 /* GooglePlacePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B49A111898E8620073F184 /* GooglePlacePickerViewController.m */; };
-		51B49A141898E8620073F184 /* GooglePlacePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A121898E8620073F184 /* GooglePlacePickerViewController.xib */; };
 		51B49A1A1898E8DF0073F184 /* locateButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A161898E8DF0073F184 /* locateButton.png */; };
 		51B49A1B1898E8DF0073F184 /* locateButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A171898E8DF0073F184 /* locateButton@2x.png */; };
 		51B49A1C1898E8DF0073F184 /* location.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A181898E8DF0073F184 /* location.png */; };
 		51B49A1D1898E8DF0073F184 /* location@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A191898E8DF0073F184 /* location@2x.png */; };
-		51B49A2018996FCF0073F184 /* GooglePlacesAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B49A1F18996FCF0073F184 /* GooglePlacesAnnotation.m */; };
 		51B49A2418A0C0CE0073F184 /* globe_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A2218A0C0CD0073F184 /* globe_white.png */; };
 		51B49A2518A0C0CE0073F184 /* globe_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A2318A0C0CE0073F184 /* globe_white@2x.png */; };
 		51B49A3318A3596A0073F184 /* Thats-Font-Folks.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 51B49A3218A358A70073F184 /* Thats-Font-Folks.ttf */; };
@@ -296,6 +301,14 @@
 		51170B7217F4319C0015B343 /* AboutViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AboutViewController.xib; sourceTree = "<group>"; };
 		51170B7617F906FF0015B343 /* BNHorizontalSwipeInteractionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNHorizontalSwipeInteractionController.h; path = Banyan/BNHorizontalSwipeInteractionController.h; sourceTree = "<group>"; };
 		51170B7717F906FF0015B343 /* BNHorizontalSwipeInteractionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNHorizontalSwipeInteractionController.m; path = Banyan/BNHorizontalSwipeInteractionController.m; sourceTree = "<group>"; };
+		511D741318F51FCC000926B0 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		511D741518F51FD8000926B0 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
+		511D741718F51FEC000926B0 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
+		511D742118F63C1B000926B0 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
+		511D742318F63C6A000926B0 /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = GoogleMaps.framework/Versions/A/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
+		511D742518F63E9D000926B0 /* GooglePlacePickerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = GooglePlacePickerViewController.xib; path = Banyan/GooglePlacePickerViewController.xib; sourceTree = "<group>"; };
+		511D743218F9D1EA000926B0 /* GooglePlacePickerTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GooglePlacePickerTableViewCell.h; path = Banyan/GooglePlacePickerTableViewCell.h; sourceTree = "<group>"; };
+		511D743318F9D1EA000926B0 /* GooglePlacePickerTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GooglePlacePickerTableViewCell.m; path = Banyan/GooglePlacePickerTableViewCell.m; sourceTree = "<group>"; };
 		511E708A161A9756009AAD25 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		512598BA17AB916600FEFCF0 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
@@ -429,8 +442,8 @@
 		518AB39018BF2F5200F8000C /* Flag_Story@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Flag_Story@2x.png"; sourceTree = "<group>"; };
 		518CAA2817DBA23500D641A6 /* BNAWSSNSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNAWSSNSClient.h; path = Banyan/BNAWSSNSClient.h; sourceTree = "<group>"; };
 		518CAA2917DBA23500D641A6 /* BNAWSSNSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNAWSSNSClient.m; path = Banyan/BNAWSSNSClient.m; sourceTree = "<group>"; };
-		5192329F1671CC57009686E4 /* AFGoogleAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFGoogleAPIClient.h; path = Banyan/AFGoogleAPIClient.h; sourceTree = "<group>"; };
-		519232A01671CC57009686E4 /* AFGoogleAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFGoogleAPIClient.m; path = Banyan/AFGoogleAPIClient.m; sourceTree = "<group>"; };
+		5192329F1671CC57009686E4 /* AFGooglePlacesAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFGooglePlacesAPIClient.h; path = Banyan/AFGooglePlacesAPIClient.h; sourceTree = "<group>"; };
+		519232A01671CC57009686E4 /* AFGooglePlacesAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFGooglePlacesAPIClient.m; path = Banyan/AFGooglePlacesAPIClient.m; sourceTree = "<group>"; };
 		5192332516743F02009686E4 /* GooglePlacesObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GooglePlacesObject.h; path = Banyan/GooglePlacesObject.h; sourceTree = "<group>"; };
 		5192332616743F02009686E4 /* GooglePlacesObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GooglePlacesObject.m; path = Banyan/GooglePlacesObject.m; sourceTree = "<group>"; };
 		51929D5D1867B7940061BD6C /* BNImageCropperViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNImageCropperViewController.h; sourceTree = "<group>"; };
@@ -492,13 +505,10 @@
 		51B235201717DBA9004241C1 /* BNTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNTableViewController.m; path = Banyan/BNTableViewController.m; sourceTree = "<group>"; };
 		51B49A101898E8620073F184 /* GooglePlacePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GooglePlacePickerViewController.h; path = Banyan/GooglePlacePickerViewController.h; sourceTree = "<group>"; };
 		51B49A111898E8620073F184 /* GooglePlacePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GooglePlacePickerViewController.m; path = Banyan/GooglePlacePickerViewController.m; sourceTree = "<group>"; };
-		51B49A121898E8620073F184 /* GooglePlacePickerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = GooglePlacePickerViewController.xib; path = Banyan/GooglePlacePickerViewController.xib; sourceTree = "<group>"; };
 		51B49A161898E8DF0073F184 /* locateButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = locateButton.png; sourceTree = "<group>"; };
 		51B49A171898E8DF0073F184 /* locateButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "locateButton@2x.png"; sourceTree = "<group>"; };
 		51B49A181898E8DF0073F184 /* location.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = location.png; sourceTree = "<group>"; };
 		51B49A191898E8DF0073F184 /* location@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "location@2x.png"; sourceTree = "<group>"; };
-		51B49A1E18996FCF0073F184 /* GooglePlacesAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GooglePlacesAnnotation.h; path = Banyan/GooglePlacesAnnotation.h; sourceTree = "<group>"; };
-		51B49A1F18996FCF0073F184 /* GooglePlacesAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GooglePlacesAnnotation.m; path = Banyan/GooglePlacesAnnotation.m; sourceTree = "<group>"; };
 		51B49A2218A0C0CD0073F184 /* globe_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = globe_white.png; sourceTree = "<group>"; };
 		51B49A2318A0C0CE0073F184 /* globe_white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "globe_white@2x.png"; sourceTree = "<group>"; };
 		51B49A3218A358A70073F184 /* Thats-Font-Folks.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Thats-Font-Folks.ttf"; sourceTree = "<group>"; };
@@ -636,7 +646,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5189B3BF15B39BBF00562DD0 /* SystemConfiguration.framework in Frameworks */,
+				517A01BC17095F0E00665F0F /* OpenGLES.framework in Frameworks */,
+				511D741818F51FEC000926B0 /* libicucore.dylib in Frameworks */,
+				511D741618F51FD8000926B0 /* libc++.dylib in Frameworks */,
+				511D741418F51FCC000926B0 /* GLKit.framework in Frameworks */,
 				51D7AF1118D2F33E00E00FF4 /* libGoogleAnalyticsServices.a in Frameworks */,
+				511D742218F63C1B000926B0 /* GoogleMaps.framework in Frameworks */,
 				515CF518183F3B1A0071C9B2 /* AdSupport.framework in Frameworks */,
 				515CF517183DF1650071C9B2 /* StoreKit.framework in Frameworks */,
 				5148F85D18DC1306005CFA86 /* AWSRuntime.framework in Frameworks */,
@@ -649,7 +665,6 @@
 				51F57C541721141D00A76FA5 /* MessageUI.framework in Frameworks */,
 				5148F86118DC131A005CFA86 /* AWSSNS.framework in Frameworks */,
 				512598BB17AB916600FEFCF0 /* FacebookSDK.framework in Frameworks */,
-				517A01BC17095F0E00665F0F /* OpenGLES.framework in Frameworks */,
 				517A01BA17095EDC00665F0F /* CoreText.framework in Frameworks */,
 				519AFA7215C26F5D00F68F3C /* AssetsLibrary.framework in Frameworks */,
 				5189B45715B3A38E00562DD0 /* QuartzCore.framework in Frameworks */,
@@ -659,7 +674,6 @@
 				513203C518B3DF48007A53FD /* Crashlytics.framework in Frameworks */,
 				5189B3C315B39BCC00562DD0 /* MapKit.framework in Frameworks */,
 				5189B3C115B39BC500562DD0 /* CFNetwork.framework in Frameworks */,
-				5189B3BF15B39BBF00562DD0 /* SystemConfiguration.framework in Frameworks */,
 				5189B3BA15B39BA400562DD0 /* libz.1.1.3.dylib in Frameworks */,
 				51E2144718B8566B00619150 /* libAviarySDK.a in Frameworks */,
 				5189B3BB15B39BA400562DD0 /* libz.dylib in Frameworks */,
@@ -1056,6 +1070,11 @@
 		5189B2B615B387E200562DD0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				511D742118F63C1B000926B0 /* GoogleMaps.framework */,
+				511D742318F63C6A000926B0 /* GoogleMaps.bundle */,
+				511D741718F51FEC000926B0 /* libicucore.dylib */,
+				511D741518F51FD8000926B0 /* libc++.dylib */,
+				511D741318F51FCC000926B0 /* GLKit.framework */,
 				51D7AF1018D2F33E00E00FF4 /* libGoogleAnalyticsServices.a */,
 				5148F86018DC131A005CFA86 /* AWSSNS.framework */,
 				5148F85E18DC1310005CFA86 /* AWSS3.framework */,
@@ -1140,8 +1159,8 @@
 			children = (
 				510787CD163A36D80042B436 /* AFBanyanAPIClient.h */,
 				510787CE163A36D80042B436 /* AFBanyanAPIClient.m */,
-				5192329F1671CC57009686E4 /* AFGoogleAPIClient.h */,
-				519232A01671CC57009686E4 /* AFGoogleAPIClient.m */,
+				5192329F1671CC57009686E4 /* AFGooglePlacesAPIClient.h */,
+				519232A01671CC57009686E4 /* AFGooglePlacesAPIClient.m */,
 				514EEA8F17C5F49300B4BCBF /* BNAWSS3Client.h */,
 				514EEA9017C5F49300B4BCBF /* BNAWSS3Client.m */,
 				51BAEC3E18DAB19C00BA9C49 /* BNS3TransferManager.h */,
@@ -1350,8 +1369,9 @@
 			children = (
 				51B49A101898E8620073F184 /* GooglePlacePickerViewController.h */,
 				51B49A111898E8620073F184 /* GooglePlacePickerViewController.m */,
-				51B49A121898E8620073F184 /* GooglePlacePickerViewController.xib */,
-				51B49A2118996FD30073F184 /* GooglePlacesAnnotation */,
+				511D742518F63E9D000926B0 /* GooglePlacePickerViewController.xib */,
+				511D743218F9D1EA000926B0 /* GooglePlacePickerTableViewCell.h */,
+				511D743318F9D1EA000926B0 /* GooglePlacePickerTableViewCell.m */,
 			);
 			name = "Location using Google";
 			sourceTree = "<group>";
@@ -1421,15 +1441,6 @@
 				51B49A2318A0C0CE0073F184 /* globe_white@2x.png */,
 			);
 			name = Location;
-			sourceTree = "<group>";
-		};
-		51B49A2118996FD30073F184 /* GooglePlacesAnnotation */ = {
-			isa = PBXGroup;
-			children = (
-				51B49A1E18996FCF0073F184 /* GooglePlacesAnnotation.h */,
-				51B49A1F18996FCF0073F184 /* GooglePlacesAnnotation.m */,
-			);
-			name = GooglePlacesAnnotation;
 			sourceTree = "<group>";
 		};
 		51B598A315EB451600DF4D9D /* Activity */ = {
@@ -1859,6 +1870,7 @@
 				51B49A1D1898E8DF0073F184 /* location@2x.png in Resources */,
 				51F0328418B94BE700FFA71E /* heartSymbolPink@2x.png in Resources */,
 				51F0329A18B9508A00FFA71E /* Previous_selected@2x.png in Resources */,
+				511D742418F63C6A000926B0 /* GoogleMaps.bundle in Resources */,
 				51F0327F18B94BE700FFA71E /* heartSmallPink.png in Resources */,
 				51F0326518B93AE700FFA71E /* Lightening_selected@2x.png in Resources */,
 				51F0328B18B94E0C00FFA71E /* Picture_iOS.png in Resources */,
@@ -1890,7 +1902,6 @@
 				518AB39418BF2F5200F8000C /* Flag_Story@2x.png in Resources */,
 				51E8A7A918E75C1300C8D93C /* banyan_tinted.png in Resources */,
 				51B234FD171658BF004241C1 /* Roboto-BlackItalic.ttf in Resources */,
-				51B49A141898E8620073F184 /* GooglePlacePickerViewController.xib in Resources */,
 				51B234FE171658BF004241C1 /* Roboto-Bold.ttf in Resources */,
 				51B234FF171658BF004241C1 /* Roboto-BoldCondensed.ttf in Resources */,
 				51B49A1A1898E8DF0073F184 /* locateButton.png in Resources */,
@@ -1912,6 +1923,7 @@
 				51F032A118B955FD00FFA71E /* Microphone.png in Resources */,
 				51F032A618B9574500FFA71E /* Trash@2x.png in Resources */,
 				51F0329518B94F4400FFA71E /* Cog.png in Resources */,
+				511D742618F63E9D000926B0 /* GooglePlacePickerViewController.xib in Resources */,
 				51B23508171658BF004241C1 /* Roboto-MediumItalic.ttf in Resources */,
 				51E2146018B9185000619150 /* Camera@2x.png in Resources */,
 				51F0328818B94E0500FFA71E /* Picture_iOS_selected@2x.png in Resources */,
@@ -2006,7 +2018,6 @@
 				51BAEC3D18DAA7C400BA9C49 /* Media+Transfer.m in Sources */,
 				51CE90B51796724500A2F7CB /* RemoteObject.m in Sources */,
 				5189B33E15B395F300562DD0 /* StoryReaderController.m in Sources */,
-				51B49A2018996FCF0073F184 /* GooglePlacesAnnotation.m in Sources */,
 				5189B34315B395F300562DD0 /* Story+Create.m in Sources */,
 				5189B34415B395F300562DD0 /* Story+Delete.m in Sources */,
 				5112D105181C61F0003E8C37 /* UIPlaceHolderTextView.m in Sources */,
@@ -2046,7 +2057,7 @@
 				51E9B2C6181F8F88004B35A5 /* BNTextField.m in Sources */,
 				514CDF5B18131F410098B0A9 /* InvitedFBFriendsViewController.m in Sources */,
 				5103FB9F166898960095B11F /* UIImage+Create.m in Sources */,
-				519232A11671CC57009686E4 /* AFGoogleAPIClient.m in Sources */,
+				519232A11671CC57009686E4 /* AFGooglePlacesAPIClient.m in Sources */,
 				5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */,
 				51C4253A1828E15100AF90C1 /* NextStoryViewController.m in Sources */,
 				514CDF5418125BFF0098B0A9 /* BNPermissionsObject.m in Sources */,
@@ -2059,6 +2070,7 @@
 				51F8F439176E6F640056A308 /* SingleStoryView.m in Sources */,
 				514EEA9117C5F49300B4BCBF /* BNAWSS3Client.m in Sources */,
 				517A018C1706D92E00665F0F /* LocationPickerButton.m in Sources */,
+				511D743418F9D1EA000926B0 /* GooglePlacePickerTableViewCell.m in Sources */,
 				517A01D4170983B400665F0F /* MediaPickerViewController.m in Sources */,
 				517A01D7170A7A9E00665F0F /* MediaPickerButton.m in Sources */,
 				517A01DA170BFA3000665F0F /* InviteFriendCell.m in Sources */,

@@ -7,10 +7,6 @@
 //
 
 #import "GooglePlacesObject.h"
-#import "AFGoogleAPIClient.h"
-#import "BanyanAppDelegate.h"
-
-static NSString *radiusString = @"1000";
 
 @implementation GooglePlacesObject
 
@@ -29,22 +25,6 @@ static NSString *radiusString = @"1000";
 @synthesize international_phone_number;
 @synthesize geometry;
 
-+ (NSString *)placeTypesToConsider
-{
-    return [NSString stringWithFormat:@"%@|%@|%@|%@|%@|%@|%@|%@|%@|%@|%@",
-            kBar,
-            kRestaurant,
-            kCafe,
-            kBakery,
-            kFood,
-            kLodging,
-            kNightClub,
-            kEstablishment,
-            kGeocode,
-            kLodging,
-            kUniversity];
-}
-
 # pragma mark Helper functions
 - (NSString *)getFormattedName
 {
@@ -53,86 +33,42 @@ static NSString *radiusString = @"1000";
     return [NSString stringWithFormat:@"%@, %@", self.name, self.vicinity];
 }
 
-// Search
-+ (void) getNearbyLocations:(CLLocation *)location withCompletion:(GooglePlacesQueryCompletionBlock)completionBlock
+@end
+
+@interface GooglePlacesAutocompletePlace()
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSString *reference;
+@property (nonatomic, strong) NSString *identifier;
+@property (nonatomic) GooglePlacesAutocompletePlaceType type;
+@end
+
+@implementation GooglePlacesAutocompletePlace
+
+@synthesize name;
+@synthesize reference;
+@synthesize identifier;
+
+
++ (GooglePlacesAutocompletePlace *)placeFromDictionary:(NSDictionary *)placeDictionary
 {
-    NSString *coords = [NSString stringWithFormat:@"%f,%f", location.coordinate.latitude, location.coordinate.longitude];
-    
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-    [parameters setObject:GOOGLE_API_KEY forKey:@"key"];
-    [parameters setObject:coords forKey:@"location"];
-    [parameters setObject:[self placeTypesToConsider] forKey:@"types"];
-    [parameters setObject:radiusString forKey:@"radius"];
-//    [parameters setObject:@"distance" forKey:@"rankby"];
-    [parameters setObject:@"true" forKey:@"sensor"];
-    
-    [[AFGoogleAPIClient sharedClient] getPath:GOOGLE_API_NEARBY_PLACES_URL()
-                                   parameters:parameters
-                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                          NSDictionary *results = (NSDictionary *)responseObject;
-                                          if (![[results objectForKey:@"status"] isEqualToString:GOOGLE_API_ERROR_STATUS]) {
-                                              if (![[results objectForKey:@"status"] isEqualToString:GOOGLE_API_NO_RESULTS_STATUS]) {
-                                                  NSArray *gResponseData  = [results objectForKey: @"results"];
-                                                  completionBlock(gResponseData);
-                                              }
-                                          } else {
-                                              [BNMisc sendGoogleAnalyticsEventWithCategory:@"Error"
-                                                                                    action:@"Invalid Google Maps API request"
-                                                                                     label:[NSString stringWithFormat:@"%@", parameters]
-                                                                                     value:nil];
-                                          }
-                                      }
-                                      failure:AF_GOOGLE_ERROR_BLOCK()];
-    
-    return;
+    GooglePlacesAutocompletePlace *place = [[self alloc] init];
+    place.name = placeDictionary[@"description"];
+    place.reference = placeDictionary[@"reference"];
+    place.identifier = placeDictionary[@"id"];
+    place.type = placeTypeFromDictionary(placeDictionary);
+    return place;
 }
 
-+ (void) getPlacemarkForCLLocation:(CLLocation *)location withCompletion:(GooglePlacesPlacemarkResultBlock)block
-{
-    [[[CLGeocoder alloc] init] reverseGeocodeLocation:location
-                                    completionHandler:^(NSArray *placemarks, NSError *error) {
-                                        if (!error) {
-                                            CLPlacemark *placemark = [placemarks onlyObject];
-                                            GooglePlacesObject<GooglePlacesObject>* place = (GooglePlacesObject<GooglePlacesObject>*)[GooglePlacesObject duckTypedObject];
-                                            place.name = [NSString stringWithFormat:@"%@, %@", placemark.name, placemark.locality];;
-                                            place.geometry.location.lat = [NSNumber numberWithDouble:placemark.location.coordinate.latitude];
-                                            place.geometry.location.lng = [NSNumber numberWithDouble:placemark.location.coordinate.longitude];
-                                            block(placemark, place, error);
-                                        }
-                                    }];
+- (NSString *)description {
+    return [NSString stringWithFormat:@"Name: %@, Reference: %@, Identifier: %@, Type: %@",
+            self.name, self.reference, self.identifier, placeTypeStringForPlaceType(self.type)];
 }
 
-+(void)getGoogleObjectsWithQuery:(NSString *)query
-                  andCoordinates:(CLLocationCoordinate2D)coords
-                  withCompletion:(GooglePlacesQueryCompletionBlock)completionBlock
-{
-    assert(coords.latitude!=0 && coords.longitude!=0);
-    NSString *coordsString = [NSString stringWithFormat:@"%f,%f", coords.latitude, coords.longitude];
-    
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
-    [parameters setObject:GOOGLE_API_KEY forKey:@"key"];
-    [parameters setObject:coordsString forKey:@"location"];
-    [parameters setObject:[GooglePlacesObject placeTypesToConsider] forKey:@"types"];
-    [parameters setObject:radiusString forKey:@"radius"];
-    [parameters setObject:@"true" forKey:@"sensor"];
-    [parameters setObject:query forKey:@"name"];
-    
-    [[AFGoogleAPIClient sharedClient] getPath:GOOGLE_API_SEARCH_PLACES_URL()
-                                   parameters:parameters
-                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                          NSDictionary *results = (NSDictionary *)responseObject;
-                                          if (![[results objectForKey:@"status"] isEqualToString:GOOGLE_API_ERROR_STATUS]) {
-                                              if (![[results objectForKey:@"status"] isEqualToString:GOOGLE_API_NO_RESULTS_STATUS]) {
-                                                  NSArray *gResponseData  = [results objectForKey: @"results"];
-                                                  completionBlock(gResponseData);
-                                              }
-                                          } else {
-                                              [BNMisc sendGoogleAnalyticsEventWithCategory:@"Error"
-                                                                                    action:@"Invalid Google Maps API request"
-                                                                                     label:[NSString stringWithFormat:@"%@", parameters]
-                                                                                     value:nil];
-                                          }
-                                      }
-                                      failure:AF_GOOGLE_ERROR_BLOCK()];
+GooglePlacesAutocompletePlaceType placeTypeFromDictionary(NSDictionary *placeDictionary) {
+    return [placeDictionary[@"types"] containsObject:@"establishment"] ? PlaceTypeEstablishment : PlaceTypeGeocode;
+}
+
+NSString *placeTypeStringForPlaceType(GooglePlacesAutocompletePlaceType type) {
+    return (type == PlaceTypeGeocode) ? @"geocode" : @"establishment";
 }
 @end

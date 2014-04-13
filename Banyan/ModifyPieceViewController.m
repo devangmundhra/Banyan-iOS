@@ -24,6 +24,10 @@
 #import "CMPopTipView.h"
 #import "User.h"
 #import "BNLabel.h"
+#import <CoreLocation/CoreLocation.h>
+
+@interface ModifyPieceViewController (CLLocationManagerDelegate) <CLLocationManagerDelegate>
+@end
 
 @interface ModifyPieceViewController (UIActionSheetDelegate) <UIActionSheetDelegate>
 @end
@@ -77,6 +81,8 @@
 @property (strong, nonatomic) UIView *storyAlbumCoverOptionView;
 @property (strong, nonatomic) UISwitch *storyAlbumCoverOptionSwitch;
 
+@property (strong, nonatomic) CLLocation *currentLocation;
+
 @end
 
 @implementation ModifyPieceViewController
@@ -99,6 +105,7 @@
 @synthesize storyID = _storyID;
 @synthesize storyAlbumCoverOptionView = _storyAlbumCoverOptionView;
 @synthesize storyAlbumCoverOptionSwitch = _storyAlbumCoverOptionSwitch;
+@synthesize currentLocation = _currentLocation;
 
 #define TEXT_INSETS 5
 #define VIEW_INSETS 8
@@ -351,6 +358,16 @@
         self.title = @"Edit Piece";
     } else {
         self.title = @"Add Piece";
+    }
+    
+    // Start location manger to get current location if required
+    // This is done here instead of in viewDidAppear because here this will be called only once when the view is loaded.
+    // If the user has explicitly cancelled the fetching of location, we want to respect that.
+    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && self.piece.story.isLocationEnabled) {
+        [self.addLocationButton locationPickerLocationEnabled:YES];
+        [self.addLocationButton setLocationPickerTitle:@"Fetching location"];
+        [[BNMisc sharedLocationManager] setDelegate:self];
+        [[BNMisc sharedLocationManager] startUpdatingLocation];
     }
     
     self.doneButton.enabled = [self checkForChanges];
@@ -735,6 +752,8 @@
 #pragma mark Methods to interface between views
 - (void) dismissEditViewWithCompletionBlock:(void (^)(void))completionBlock
 {
+    [[BNMisc sharedLocationManager] stopUpdatingLocation];
+    [[BNMisc sharedLocationManager] setDelegate:nil];
     [self dismissViewControllerAnimated:YES completion:completionBlock];
 }
 
@@ -1001,7 +1020,7 @@
     // Create the navigation controller and present it.
     GooglePlacePickerViewController *gppVC = [[GooglePlacePickerViewController alloc] initWithNibName:@"GooglePlacePickerViewController" bundle:nil];
     gppVC.delegate = self;
-    [self presentViewController:gppVC animated:YES completion:nil];
+    [self.navigationController pushViewController:gppVC animated:YES];
     [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"location button was tapped" label:nil value:nil];
 
 }
@@ -1013,6 +1032,11 @@
     [self.addLocationButton locationPickerLocationEnabled:isLocationEnabled];
     if (isLocationEnabled) {
         [self locationPickerButtonTapped:sender];
+    } else {
+        // User has disabled the location explicity.
+        // Stop fetching the location
+        [[BNMisc sharedLocationManager] stopUpdatingLocation];
+        [[BNMisc sharedLocationManager] setDelegate:nil];
     }
 }
 
@@ -1025,6 +1049,59 @@
     [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"location was picked for piece" label:place.name value:nil];
 }
 
+@end
+
+@implementation ModifyPieceViewController (CLLocationManagerDelegate)
+/*
+ * We want to get and store a location measurement that meets the desired accuracy. 
+ */
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+{
+    CLLocation *newLocation = [locations lastObject];
+    // test the age of the location measurement to determine if the measurement is cached
+    // in most cases you will not want to rely on cached measurements
+    NSTimeInterval locationAge = -[newLocation.timestamp timeIntervalSinceNow];
+    if (locationAge > 5.0) return;
+    // test that the horizontal accuracy does not indicate an invalid measurement
+    if (newLocation.horizontalAccuracy < 0) return;
+    // test the measurement to see if it meets the desired accuracy
+    // IMPORTANT!!! kCLLocationAccuracyBest should not be used for comparison with location coordinate or altitidue
+    // accuracy because it is a negative value. Instead, compare against some predetermined "real" measure of
+    // acceptable accuracy, or depend on the timeout to stop updating. This sample depends on a 10m acceptable accuracy
+    //
+    if (newLocation.horizontalAccuracy <= 10) {
+        // IMPORTANT!!! Minimize power usage by stopping the location manager as soon as possible.
+        self.currentLocation = newLocation;
+        CLLocationCoordinate2D coordinate = newLocation.coordinate;
+        // Reverse Geocode and set the location
+        GMSGeocoder * geocoder_ = [[GMSGeocoder alloc] init];
+        GMSReverseGeocodeCallback handler = ^(GMSReverseGeocodeResponse *response, NSError *error) {
+            GMSAddress *address = response.firstResult;
+            if (address) {
+                // Fill up the location
+                GooglePlacesObject<GooglePlacesObject>* place = (GooglePlacesObject<GooglePlacesObject>*)[GooglePlacesObject duckTypedObject];
+                place.name = [NSString stringWithFormat:@"%@, %@", address.locality, address.country];;
+                place.geometry.location.lat = [NSNumber numberWithDouble:address.coordinate.latitude];
+                place.geometry.location.lng = [NSNumber numberWithDouble:address.coordinate.longitude];
+                self.addLocationButton.location = place;
+                BNLogInfo(@"Geocoder result: %@", address);
+            } else {
+                BNLogError(@"Could not reverse geocode point (%f,%f): %@",
+                      coordinate.latitude, coordinate.longitude, error);
+            }
+        };
+        [geocoder_ reverseGeocodeCoordinate:coordinate completionHandler:handler];
+        [manager stopUpdatingLocation];
+        manager.delegate = nil;
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
+    [BNMisc sendGoogleAnalyticsError:error inAction:@"Auto fetch locations" isFatal:NO];
+    [self.addLocationButton locationPickerLocationEnabled:NO];
+    [manager stopUpdatingLocation];
+    manager.delegate = nil;
+}
 @end
 
 #undef TEXT_INSETS

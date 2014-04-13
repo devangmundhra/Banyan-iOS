@@ -7,25 +7,63 @@
 //
 
 #import "GooglePlacePickerViewController.h"
-#import "SPGooglePlacesAutocomplete.h"
 #import "BanyanAppDelegate.h"
 #import "GooglePlacesCell.h"
+#import "AFGooglePlacesAPIClient.h"
+#import "GooglePlacePickerTableViewCell.h"
+
+// Note that the searchBar in the nib file has width zero.
+// This is by design because otherwise during the view did appear animation, the
+// search bar first animates to the middle of the view, and then slides to the top,
+// which makes the view appearance a bit awkward.
+const int cameraZoom = 15;
+
+@interface GooglePlacePickerViewController (GooglePlacePickerTableViewCellDelegate) <GooglePlacePickerTableViewCellDelegate>
+@end
+
+@interface GooglePlacePickerViewController (GMSMapViewDelegate) <GMSMapViewDelegate>
+@end
 
 static NSString *PlacesDetailCellIdentifier = @"GooglePlacesCell";
 
-@interface GooglePlacePickerViewController ()
+@interface GooglePlacePickerViewController () <UITableViewDataSource, UITableViewDelegate, UISearchDisplayDelegate, UISearchBarDelegate>
+@property (weak, nonatomic) IBOutlet GMSMapView *mapView;
+@property (weak, nonatomic) IBOutlet UITableView *nearbyTableView;
+
+@property (strong, nonatomic) NSArray *nearbyPlaces;
+@property (strong ,nonatomic) NSArray *tableViewPlaces;
+
+@property (strong, nonatomic) NSArray *searchResultPlaces;
+
 @property (nonatomic) BOOL locationObserverAdded;
+@property (nonatomic) BOOL shouldBeginEditing;
+@property (nonatomic) BOOL firstLocationUpdate;
+
 @end
 
+static const NSArray *markerColors = nil;
+
 @implementation GooglePlacePickerViewController
-@synthesize searchResultPlaces, searchQuery, selectedPlaceAnnotation, shouldBeginEditing;
+@synthesize tableViewPlaces;
+@synthesize nearbyPlaces;
+@synthesize searchResultPlaces, shouldBeginEditing;
 @synthesize mapView = _mapView;
 @synthesize locationObserverAdded;
+@synthesize firstLocationUpdate;
+
++ (void)initialize
+{
+    markerColors = @[BANYAN_BROWN_COLOR,
+                    BANYAN_DARK_GREEN_COLOR,
+                    BANYAN_RED_COLOR,
+                    BANYAN_LIGHT_GREEN_COLOR,
+                    BANYAN_PINK_COLOR,
+                    BANYAN_DARKBROWN_COLOR];
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        searchQuery = [[SPGooglePlacesAutocompleteQuery alloc] initWithApiKey:GOOGLE_API_KEY];
         shouldBeginEditing = YES;
     }
     return self;
@@ -34,22 +72,49 @@ static NSString *PlacesDetailCellIdentifier = @"GooglePlacesCell";
 - (void)dealloc
 {
     if (locationObserverAdded) {
-        [self.mapView.userLocation removeObserver:self forKeyPath:@"location"];
+        [self.mapView removeObserver:self forKeyPath:@"myLocation"];
         locationObserverAdded = NO;
     }
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"Select location";
-    self.searchDisplayController.searchBar.placeholder = @"Search or Address";
-//    self.searchDisplayController.displaysSearchBarInNavigationBar = YES;
     
-    [self.mapView.userLocation addObserver:self
-                                forKeyPath:@"location"
-                                   options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
-                                   context:NULL];
-    locationObserverAdded = YES;
+    self.title = @"Select location";
+    self.searchDisplayController.displaysSearchBarInNavigationBar = YES;
+    self.searchDisplayController.searchBar.placeholder = @"Search a Place";
+    GMSCameraPosition *camera = nil;
+    if ([self.delegate currentLocation]) {
+        camera = [GMSCameraPosition cameraWithTarget:[self.delegate currentLocation].coordinate
+                                                zoom:cameraZoom];
+    } else {
+        camera = [GMSCameraPosition cameraWithLatitude:37.78
+                                             longitude:122.41
+                                                  zoom:kGMSMinZoomLevel];
+    }
+
+    
+    self.mapView.camera = camera;
+    self.mapView.settings.compassButton = YES;
+    self.mapView.settings.myLocationButton = YES;
+    self.mapView.delegate = self;
+
+    // Setup location services
+    if (   [CLLocationManager locationServicesEnabled]
+        && [CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
+        // Listen to the myLocation property of GMSMapView.
+        [self.mapView addObserver:self
+                       forKeyPath:@"myLocation"
+                          options:NSKeyValueObservingOptionNew
+                          context:NULL];
+        
+        locationObserverAdded = YES;
+        
+        // Ask for My Location data after the map has already been added to the UI.
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.mapView.myLocationEnabled = YES;
+        });
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -58,81 +123,107 @@ static NSString *PlacesDetailCellIdentifier = @"GooglePlacesCell";
     [self setGAIScreenName:@"Google Location Picker"];
 }
 
-- (IBAction)recenterMapToUserLocation:(id)sender {
-    MKCoordinateRegion region;
-    MKCoordinateSpan span;
-    
-    span.latitudeDelta = 0.02;
-    span.longitudeDelta = 0.02;
-    
-    region.span = span;
-    region.center = self.mapView.userLocation.coordinate;
-    
-    [self.mapView setRegion:region animated:YES];
-    
-    // Get nearby placemarks for all the establishments
-    [GooglePlacesObject getPlacemarkForCLLocation:self.mapView.userLocation.location withCompletion:^(CLPlacemark *placemark, GooglePlacesObject<GooglePlacesObject>* place, NSError *error) {
-        if (placemark) {
-            GooglePlacesAnnotation *annotation = [[GooglePlacesAnnotation alloc] init];
-            annotation.coordinate = placemark.location.coordinate;
-            annotation.title = place.name;
-            annotation.place = place;
-            [self.mapView addAnnotation:annotation];
-            [self.mapView selectAnnotation:annotation animated:NO];
-        }
-    }];
+-(IBAction)goBack:(id)sender {
+	// Some anything you need to do before leaving
+	[self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark -
 #pragma mark UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [searchResultPlaces count];
+    if (self.searchDisplayController.isActive) {
+        return [searchResultPlaces count];
+    } else {
+        return [tableViewPlaces count];
+    }
 }
 
-- (SPGooglePlacesAutocompletePlace *)placeAtIndexPath:(NSIndexPath *)indexPath {
-    return searchResultPlaces[indexPath.row];
+- (id)placeAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.searchDisplayController.isActive) {
+        return searchResultPlaces[indexPath.row];
+    } else {
+        return tableViewPlaces[indexPath.row];
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *cellIdentifier = @"SPGooglePlacesAutocompleteCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    static NSString *cellIdentifier = @"GooglePlaces";
+    GooglePlacePickerTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+        cell = [[GooglePlacePickerTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
     }
     
-    cell.textLabel.font = [UIFont fontWithName:@"Roboto" size:12.0];
-    cell.textLabel.text = [self placeAtIndexPath:indexPath].name;
+    cell.delegate = self;
+    UIColor *color = nil;
+    
+    id place = [self placeAtIndexPath:indexPath];
+    NSString *name = nil;
+    if (self.searchDisplayController.isActive) {
+        name = ((GooglePlacesAutocompletePlace *)place).name;
+        [cell setWithName:name place:place color:color markOnMap:NO];
+    } else {
+        name = ((GooglePlacesObject<GooglePlacesObject> *)place).name;
+        if ([tableViewPlaces count] > 1)
+            // There is just one place, no need to color it specially
+            color = [markerColors objectAtIndex:(indexPath.row % markerColors.count)];
+        [cell setWithName:name place:place color:color markOnMap:YES];
+    }
+
     return cell;
 }
 
 #pragma mark -
 #pragma mark UITableViewDelegate
 
-- (void)recenterMapToPlacemark:(CLPlacemark *)placemark {
-    MKCoordinateRegion region;
-    MKCoordinateSpan span;
+- (void)recenterMapToLocation:(CLLocation *)location
+{
+    if (!location || !CLLocationCoordinate2DIsValid(location.coordinate)) {
+        return;
+    }
     
-    span.latitudeDelta = 0.2;
-    span.longitudeDelta = 0.2;
+    const float animationDuration = 2.0f;
     
-    region.span = span;
-    region.center = placemark.location.coordinate;
+    self.mapView.layer.cameraLatitude = location.coordinate.latitude;
+    self.mapView.layer.cameraLongitude = location.coordinate.longitude;
+    self.mapView.layer.cameraBearing = 0.0;
     
-    [self.mapView setRegion:region];
+    // Access the GMSMapLayer directly to modify the following properties with a
+    // specified timing function and duration.
+    
+    CAMediaTimingFunction *curve =
+    [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    CABasicAnimation *animation;
+    
+    animation = [CABasicAnimation animationWithKeyPath:kGMSLayerCameraLatitudeKey];
+    animation.duration = animationDuration;
+    animation.timingFunction = curve;
+    animation.toValue = @(location.coordinate.latitude);
+    [self.mapView.layer addAnimation:animation forKey:kGMSLayerCameraLatitudeKey];
+    
+    animation = [CABasicAnimation animationWithKeyPath:kGMSLayerCameraLongitudeKey];
+    animation.duration = animationDuration;
+    animation.timingFunction = curve;
+    animation.toValue = @(location.coordinate.longitude);
+    [self.mapView.layer addAnimation:animation forKey:kGMSLayerCameraLongitudeKey];
+    
+    animation = [CABasicAnimation animationWithKeyPath:kGMSLayerCameraBearingKey];
+    animation.duration = animationDuration;
+    animation.timingFunction = curve;
+    animation.toValue = @0.0;
+    [self.mapView.layer addAnimation:animation forKey:kGMSLayerCameraBearingKey];
+    
+//    // Fly out to the minimum zoom and then zoom back to the current zoom!
+//    CGFloat zoom = self.mapView.camera.zoom;
+//    NSArray *keyValues = @[@(zoom), @(kGMSMinZoomLevel), @(zoom)];
+//    CAKeyframeAnimation *keyFrameAnimation =
+//    [CAKeyframeAnimation animationWithKeyPath:kGMSLayerCameraZoomLevelKey];
+//    keyFrameAnimation.duration = animationDuration;
+//    keyFrameAnimation.values = keyValues;
+//    [self.mapView.layer addAnimation:keyFrameAnimation forKey:kGMSLayerCameraZoomLevelKey];
 }
 
-- (void)addPlacemarkAnnotationToMap:(CLPlacemark *)placemark place:(GooglePlacesObject<GooglePlacesObject>*)place{
-    [self.mapView removeAnnotation:selectedPlaceAnnotation];
-    
-    selectedPlaceAnnotation = [[GooglePlacesAnnotation alloc] init];
-    selectedPlaceAnnotation.coordinate = placemark.location.coordinate;
-    selectedPlaceAnnotation.title = place.name;
-    selectedPlaceAnnotation.place = place;
-    [self.mapView addAnnotation:selectedPlaceAnnotation];
-}
-
-- (void)dismissSearchController {
+- (void)dismissSearchControllerWithCompletion:(void (^)(void))completionBlock {
     // Animate out the table view.
     NSTimeInterval animationDuration = 0.3;
     [UIView animateWithDuration:animationDuration animations:^{
@@ -140,32 +231,38 @@ static NSString *PlacesDetailCellIdentifier = @"GooglePlacesCell";
 
     } completion:^(BOOL finished) {
         [self.searchDisplayController setActive:NO];
-
+        if (completionBlock) completionBlock();
     }];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    SPGooglePlacesAutocompletePlace *place = [self placeAtIndexPath:indexPath];
-    [place resolveToPlacemark:^(CLPlacemark *placemark, NSString *addressString, NSError *error) {
-        if (error || !placemark) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could not map selected place"
-                                                            message:error.localizedDescription
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil, nil];
-            [alert show];
-        } else {
-            GooglePlacesObject<GooglePlacesObject>* gpoPlace = (GooglePlacesObject<GooglePlacesObject>*)[GooglePlacesObject duckTypedObject];
-            gpoPlace.name = addressString;
-            gpoPlace.geometry.location.lat = [NSNumber numberWithDouble:placemark.location.coordinate.latitude];
-            gpoPlace.geometry.location.lng = [NSNumber numberWithDouble:placemark.location.coordinate.longitude];
-            
-            [self addPlacemarkAnnotationToMap:placemark place:gpoPlace];
-            [self recenterMapToPlacemark:placemark];
-            [self dismissSearchController];
-            [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:indexPath animated:NO];
-        }
-    }];
+    if (self.searchDisplayController.isActive) {
+        GooglePlacesAutocompletePlace *place = [self placeAtIndexPath:indexPath];
+        [[AFGooglePlacesAPIClient sharedClient] getPlaceDetailsWitReference:place.reference
+                                                             withCompletion:^(NSDictionary *placeDictionary, NSError *error) {
+                                                                 if (error || !placeDictionary) {
+                                                                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could not map selected place"
+                                                                                                                     message:error.localizedDescription
+                                                                                                                    delegate:nil
+                                                                                                           cancelButtonTitle:@"OK"
+                                                                                                           otherButtonTitles:nil, nil];
+                                                                     [alert show];
+                                                                 } else {
+                                                                     GooglePlacesObject<GooglePlacesObject>* gpoPlace = (GooglePlacesObject<GooglePlacesObject>*)[GooglePlacesObject duckTypedObjectWrappingDictionary:placeDictionary];
+
+                                                                     [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:indexPath animated:NO];
+                                                                     [self dismissSearchControllerWithCompletion:^{
+                                                                         [self recenterMapToLocation:[[CLLocation alloc] initWithLatitude:[gpoPlace.geometry.location.lat doubleValue] longitude:[gpoPlace.geometry.location.lng doubleValue]]];
+                                                                         tableViewPlaces = @[gpoPlace];
+                                                                         [self.mapView clear];
+                                                                         [self.nearbyTableView reloadData];
+                                                                     }];
+                                                                 }
+                                                             }];
+    } else {
+        [self.delegate googlePlacesViewControllerPickedLocation:[self placeAtIndexPath:indexPath]];
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 #pragma mark -
@@ -175,28 +272,29 @@ static NSString *PlacesDetailCellIdentifier = @"GooglePlacesCell";
 {
     // The user has chosen to search for the location. Cancel the KVO that centers on user location
     if (locationObserverAdded) {
-        [self.mapView.userLocation removeObserver:self forKeyPath:@"location"];
+        [self.mapView removeObserver:self forKeyPath:@"myLocation"];
         locationObserverAdded = NO;
     }
     [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"user searching for location" label:nil value:nil];
 }
 
 - (void)handleSearchForSearchString:(NSString *)searchString {
-    searchQuery.location = self.mapView.userLocation.coordinate;
-    searchQuery.input = searchString;
-    [searchQuery fetchPlaces:^(NSArray *places, NSError *error) {
-        if (error) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could not fetch Places"
-                                                            message:error.localizedDescription
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil, nil];
-            [alert show];
-        } else {
-            searchResultPlaces = places;
-            [self.searchDisplayController.searchResultsTableView reloadData];
-        }
-    }];
+//    searchQuery.location = self.mapView.userLocation.coordinate;
+    [[AFGooglePlacesAPIClient sharedClient] autoCompletePlacesForQuery:searchString
+                                                          nearLocation:nil
+                                                        withCompletion:^(NSArray *places, NSError *error) {
+                                                            if (error) {
+                                                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could not fetch Places"
+                                                                                                                message:error.localizedDescription
+                                                                                                               delegate:nil
+                                                                                                      cancelButtonTitle:@"OK"
+                                                                                                      otherButtonTitles:nil, nil];
+                                                                [alert show];
+                                                            } else {
+                                                                searchResultPlaces = places;
+                                                                [self.searchDisplayController.searchResultsTableView reloadData];
+                                                            }
+                                                        }];
 }
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
@@ -208,13 +306,11 @@ static NSString *PlacesDetailCellIdentifier = @"GooglePlacesCell";
 
 #pragma mark -
 #pragma mark UISearchBar Delegate
-
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if (![searchBar isFirstResponder]) {
         // User tapped the 'clear' button.
         shouldBeginEditing = NO;
         [self.searchDisplayController setActive:NO];
-        [self.mapView removeAnnotation:selectedPlaceAnnotation];
     }
 }
 
@@ -227,7 +323,6 @@ static NSString *PlacesDetailCellIdentifier = @"GooglePlacesCell";
         self.searchDisplayController.searchResultsTableView.alpha = 0.75;
         [UIView commitAnimations];
         
-        [self.searchDisplayController.searchBar setShowsCancelButton:YES animated:YES];
         UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"powered-by-google-on-white"]];
         imageView.contentMode = UIViewContentModeRight;
         self.searchDisplayController.searchResultsTableView.tableFooterView = imageView;
@@ -237,47 +332,6 @@ static NSString *PlacesDetailCellIdentifier = @"GooglePlacesCell";
     return boolToReturn;
 }
 
-#pragma mark -
-#pragma mark MKMapView Delegate
-
-- (MKAnnotationView *)mapView:(MKMapView *)mapViewIn viewForAnnotation:(id <MKAnnotation>)annotation {
-    if (mapViewIn != self.mapView || [annotation isKindOfClass:[MKUserLocation class]]) {
-        return nil;
-    }
-    static NSString *annotationIdentifier = @"SPGooglePlacesAutocompleteAnnotation";
-    MKPinAnnotationView *annotationView = (MKPinAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
-    if (!annotationView) {
-        annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
-    }
-    annotationView.animatesDrop = YES;
-    annotationView.canShowCallout = YES;
-    
-    UIButton *detailButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-    annotationView.rightCalloutAccessoryView = detailButton;
-    
-    return annotationView;
-}
-
-- (void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views {
-    // Whenever we've dropped a pin on the map, immediately select it to present its callout bubble.
-    [self.mapView selectAnnotation:selectedPlaceAnnotation animated:YES];
-}
-
-- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
-{
-    GooglePlacesAnnotation *annotation = view.annotation;
-    [self dismissViewControllerAnimated:YES completion:^{
-        [self.delegate googlePlacesViewControllerPickedLocation:annotation.place];
-    }];
-}
-
-#pragma mark
-#pragma target actions
-- (IBAction)cancelButtonPressed:(id)sender
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
 #pragma mark
 #pragma KVO
 -(void)observeValueForKeyPath:(NSString *)keyPath
@@ -285,13 +339,67 @@ static NSString *PlacesDetailCellIdentifier = @"GooglePlacesCell";
                        change:(NSDictionary *)change
                       context:(void *)context
 {
-    if ([self.mapView isUserLocationVisible]) {
-        [self recenterMapToUserLocation:nil];
-        if (locationObserverAdded) {
-            [self.mapView.userLocation removeObserver:self forKeyPath:@"location"];
-            locationObserverAdded = NO;
-        }
+    if (!firstLocationUpdate) {
+        firstLocationUpdate = YES;
+        CLLocation *location = [change objectForKey:NSKeyValueChangeNewKey];
+        self.mapView.camera = [GMSCameraPosition cameraWithTarget:location.coordinate
+                                                             zoom:cameraZoom];
+        [self getNearbyPlacesAndRefreshTable];
+
     }
 }
 
+// Fetch nearby places
+- (void) getNearbyPlacesAndRefreshTable
+{
+    // Get nearby location
+    [[AFGooglePlacesAPIClient sharedClient] getNearbyLocations:self.mapView.myLocation withCompletion:^(NSArray *places, NSError *error) {
+        if (!error) {
+            nearbyPlaces = places;
+            tableViewPlaces = nearbyPlaces;
+            [self.mapView clear];
+            [self.nearbyTableView reloadData];
+        }
+    }];
+}
+@end
+
+@implementation GooglePlacePickerViewController (GMSMapViewDelegate)
+
+/**
+ * Called when the My Location button is tapped.
+ *
+ * @return YES if the listener has consumed the event (i.e., the default behavior should not occur),
+ *         NO otherwise (i.e., the default behavior should occur). The default behavior is for the
+ *         camera to move such that it is centered on the user location.
+ */
+- (BOOL)didTapMyLocationButtonForMapView:(GMSMapView *)mapView
+{
+    [self.mapView clear];
+    
+    // Fetch nearby places
+    if (nearbyPlaces) {
+        tableViewPlaces = nearbyPlaces;
+        [self.mapView clear];
+        [self.nearbyTableView reloadData];
+    }
+    else
+        [self getNearbyPlacesAndRefreshTable];
+    return NO;
+}
+
+@end
+
+@implementation GooglePlacePickerViewController (GooglePlacePickerTableViewCellDelegate)
+- (GMSMarker *)addMarkerAtPlace:(GooglePlacesObject<GooglePlacesObject>*)place withColor:(UIColor *)color
+{
+    GMSMarker *marker = [[GMSMarker alloc] init];
+    marker.position = CLLocationCoordinate2DMake([place.geometry.location.lat doubleValue], [place.geometry.location.lng doubleValue]);
+    marker.appearAnimation = kGMSMarkerAnimationPop;
+    marker.title = place.name;
+    if (color)
+        marker.icon = [GMSMarker markerImageWithColor:color];
+    marker.map = self.mapView;
+    return marker;
+}
 @end

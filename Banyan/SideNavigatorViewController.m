@@ -35,7 +35,7 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedIn) {
 
 typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
     SidePanelOptionLoggedOutHome,
-    SidePanelOptionLoggedOutSettings,
+//    SidePanelOptionLoggedOutSettings,
     SidePanelOptionLoggedOutFeedback,
     SidePanelOptionLoggedOutAbout,
     SidePanelOptionLoggedOutMax,
@@ -181,6 +181,7 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
     
     cell.textLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:15];
     cell.textLabel.textColor = FOREGROUND_COLOR;
+    BNSharedUser *currentUser = nil;
     
     // Configure the cell...
     if ([BanyanAppDelegate loggedIn]) {
@@ -189,7 +190,8 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
                 cell.textLabel.text = @"Home";
                 break;
             case SidePanelOptionLoggedInProfile:
-                cell.textLabel.text = @"Profile";
+                currentUser = [BNSharedUser currentUser];
+                cell.textLabel.text = currentUser.name;
                 break;
 //            case SidePanelOptionLoggedInFriends:
 //                cell.textLabel.text = @"Friends";
@@ -210,9 +212,6 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
         switch (indexPath.row) {
             case SidePanelOptionLoggedOutHome:
                 cell.textLabel.text = @"Home";
-                break;
-            case SidePanelOptionLoggedOutSettings:
-                cell.textLabel.text = @"Settings";
                 break;
             case SidePanelOptionLoggedOutFeedback:
                 cell.textLabel.text = @"Feedback";
@@ -270,9 +269,6 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
         switch (indexPath.row) {
             case SidePanelOptionLoggedOutHome:
                 self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[StoryListTableViewController alloc] init]];
-                break;
-            case SidePanelOptionLoggedOutSettings:
-                self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:[[SettingsTableViewController alloc] init]];
                 break;
             case SidePanelOptionLoggedOutFeedback:
                 [UserVoice presentUserVoiceInterfaceForParentViewController:self.slidingViewController];

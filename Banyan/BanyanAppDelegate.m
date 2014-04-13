@@ -21,6 +21,7 @@
 #import "MBProgressHUD.h"
 #import "TWMessageBarManager.h"
 #import "GAI.h"
+#import <GoogleMaps/GoogleMaps.h>
 
 @interface BanyanAppDelegateTWMessageBarStyleSheet : NSObject <TWMessageBarStyleSheet>
 
@@ -85,7 +86,7 @@
     [self restKitCoreDataInitialization];
     
     [RemoteObject validateAllObjects];
-
+    [GMSServices provideAPIKey:GOOGLE_IOS_API_KEY];
     [self googleAnalyticsInitialization];
     
     [Crashlytics startWithAPIKey:CRASHLYTICS_API_KEY];

@@ -9,8 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 #import "BNDuckTypedObject.h"
-#import "SPGooglePlacesAutoComplete.h"
-#import "SPGooglePlacesPlaceDetailQuery.h"
 
 #define	kAccounting	@"accounting"
 #define	kAirport	@"airport"
@@ -113,9 +111,6 @@
 @protocol GooglePlacesObject;
 @class GooglePlacesObject;
 
-typedef void (^GooglePlacesQueryCompletionBlock)(NSArray *places);
-typedef void (^GooglePlacesPlacemarkResultBlock)(CLPlacemark *placemark, GooglePlacesObject<GooglePlacesObject>* place, NSError *error);
-
 @protocol GoogleLocationObject <BNDuckTypedObject>
 
 @property (strong, nonatomic) NSNumber *lat;
@@ -150,9 +145,36 @@ typedef void (^GooglePlacesPlacemarkResultBlock)(CLPlacemark *placemark, GoogleP
 
 - (NSString *)getFormattedName;
 
-+ (void) getNearbyLocations:(CLLocation *)location withCompletion:(GooglePlacesQueryCompletionBlock)completionBlock;
-+ (void) getPlacemarkForCLLocation:(CLLocation *)location withCompletion:(GooglePlacesPlacemarkResultBlock)block;
-+ (void) getGoogleObjectsWithQuery:(NSString *)query
-                  andCoordinates:(CLLocationCoordinate2D)coords
-                  withCompletion:(GooglePlacesQueryCompletionBlock)completionBlock;
+@end
+
+#pragma 
+#pragma GooglePlacesAutocompletePlace
+@interface GooglePlacesAutocompletePlace : NSObject
++ (GooglePlacesAutocompletePlace *)placeFromDictionary:(NSDictionary *)placeDictionary;
+
+/*!
+ Contains the human-readable name for the returned result. For establishment results, this is usually the business name.
+ */
+@property (nonatomic, strong, readonly) NSString *name;
+
+typedef enum {
+    PlaceTypeInvalid = -1,
+    PlaceTypeGeocode = 0,
+    PlaceTypeEstablishment
+} GooglePlacesAutocompletePlaceType;
+/*!
+ Contains the primary 'type' of this place (i.e. "establishment" or "gecode").
+ */
+@property (nonatomic, readonly) GooglePlacesAutocompletePlaceType type;
+
+/*!
+ Contains a unique token that you can use to retrieve additional information about this place in a Place Details request. You can store this token and use it at any time in future to refresh cached data about this Place, but the same token is not guaranteed to be returned for any given Place across different searches.
+ */
+@property (nonatomic, strong, readonly) NSString *reference;
+
+/*!
+ Contains a unique stable identifier denoting this place. This identifier may not be used to retrieve information about this place, but can be used to consolidate data about this Place, and to verify the identity of a Place across separate searches.
+ */
+@property (nonatomic, strong, readonly) NSString *identifier;
+
 @end

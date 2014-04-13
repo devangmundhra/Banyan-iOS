@@ -14,6 +14,7 @@
 #import "GAI.h"
 #import "GAIFields.h"
 #import "GAIDictionaryBuilder.h"
+#import <CoreLocation/CoreLocation.h>
 
 @implementation BNMisc
 
@@ -208,5 +209,16 @@
                           otherButtonTitles:nil] show];
         [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction Skipped" action:@"location services disabled" label:@"Device" value:nil];
     }
+}
+
++ (CLLocationManager *)sharedLocationManager {
+    static CLLocationManager *_sharedLocationManager = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _sharedLocationManager = [[CLLocationManager alloc] init];
+        _sharedLocationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters; //kCLLocationAccuracyBest; // kCLLocationAccuracyNearestTenMeters;
+    });
+    
+    return _sharedLocationManager;
 }
 @end

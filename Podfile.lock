@@ -26,7 +26,7 @@ PODS:
   - libwebp/webp (0.4.0)
   - MBProgressHUD (0.8)
   - MYBlurIntroductionView (1.0.3)
-  - MZAppearance (1.1.1)
+  - MZAppearance (1.1.2)
   - MZFormSheetController (2.3.2):
     - MZAppearance (~> 1.1.1)
   - RestKit (0.22.0):
@@ -54,7 +54,6 @@ PODS:
   - SDWebImage/MapKit (3.3):
     - libwebp
   - SOCKit (1.1)
-  - SPGooglePlacesAutocomplete (1.0.2)
   - TransitionKit (2.0.0)
   - TTTAttributedLabel (1.9.1)
   - TWMessageBarManager (1.3.2)
@@ -74,7 +73,6 @@ DEPENDENCIES:
   - MZFormSheetController
   - RestKit (from `~/Developer/RestKit`)
   - SDWebImage (from `https://github.com/rs/SDWebImage.git`, commit `282e8179193a49867575cd658ae64883aedbce7b`)
-  - SPGooglePlacesAutocomplete (from `https://github.com/devangmundhra/SPGooglePlacesAutocomplete.git`, commit `24c94888a1892e7be7cc16275821663ec9fce8dd`)
   - TTTAttributedLabel
   - TWMessageBarManager (~> 1.3.2)
   - URBMediaFocusViewController (from `https://github.com/u10int/URBMediaFocusViewController.git`)
@@ -93,9 +91,6 @@ EXTERNAL SOURCES:
   SDWebImage:
     :commit: 282e8179193a49867575cd658ae64883aedbce7b
     :git: https://github.com/rs/SDWebImage.git
-  SPGooglePlacesAutocomplete:
-    :commit: 24c94888a1892e7be7cc16275821663ec9fce8dd
-    :git: https://github.com/devangmundhra/SPGooglePlacesAutocomplete.git
   URBMediaFocusViewController:
     :git: https://github.com/u10int/URBMediaFocusViewController.git
 
@@ -105,24 +100,23 @@ SPEC CHECKSUMS:
   BNSwipeableView: f10ecb74337225b5659861e150b96e2b8464fc7a
   CMPopTipView: de01c6c169c24726356c46ae339ce3498ae9a41d
   ECSlidingViewController: d7bb96ee5bbe261ed80ee16a513f94b9fd3c9767
-  GoogleAnalytics-iOS-SDK: 7b0e55cfe5e70d60478a7b105f15ac71e8bc373e
+  GoogleAnalytics-iOS-SDK: 80c804540a992c59d88397b3f9567417ba1001dc
   ios-image-editor: 001717135e5a92b234a7465347cdcfb435418959
   ISO8601DateFormatterValueTransformer: d0af1f50a9df42db72d7418db31938b8473e0af8
-  libwebp: 325bda7f5a0030dbba71d5e771a62547ecf8f8cc
+  libwebp: 9e42449a525ff8a43548032e0345c588ff7c4573
   MBProgressHUD: 2bbc6f470111daf7f3eaa4eb12b8cbf01c4c0622
   MYBlurIntroductionView: 0ed5699c570ceb1cdfc86dc6cf7dae869950d677
-  MZAppearance: 8b02683f0019f725557ae9839ed6cab153fff669
+  MZAppearance: 75bc6c786025c311ebc247b01e1dead5cd29f7c5
   MZFormSheetController: 17c5e96a51e0c658dfe8cc032a7ed2c624113639
   RestKit: 8aedc01890f52f090ff30f60c709eab072dd14c3
   RKValueTransformers: 1562d458b9c9d59ce777bfc5982f2e1aef2e9182
   SDWebImage: 79a8bac9ccf85b269100b294f7b43684dab8bf8a
-  SOCKit: 2f3bc4d07910de12dcc202815e07db68a3802581
-  SPGooglePlacesAutocomplete: 363dea30ebb697be8c88412a0ce8fb9d00dcb4be
+  SOCKit: 8871d058926a6c6cc144f0c5eee82c5d0ec274a3
   TransitionKit: 433284465abacdc07852d7db6dd0cc075010059a
   TTTAttributedLabel: 3299d80e6cc066676fd6ac44276a2b0baaa1e965
   TWMessageBarManager: e14110324f2b2e821ba0880805a0655cbdb76e82
   URBMediaFocusViewController: e9b303bf30714c4e8835f01f1384c7162c7cb2eb
   uservoice-iphone-sdk: 547ef35f8db7ad9975cada6f39e39dc972d87c33
-  VCTransitionsLibrary: 328859e78311d45cf393a69a879417133a68c309
+  VCTransitionsLibrary: c734cd53f129ef69029f521f3c658aae7e649b66
 
-COCOAPODS: 0.29.0
+COCOAPODS: 0.31.1

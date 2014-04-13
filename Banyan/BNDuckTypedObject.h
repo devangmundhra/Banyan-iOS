@@ -18,7 +18,7 @@
 /*!
  @method
  @abstract
- Returns a property on this `FBGraphObject`.
+ Returns a property on this `BNDuckTypedObject`.
  
  @param aKey        name of the property to return
  */
@@ -26,13 +26,13 @@
 /*!
  @method
  @abstract
- Returns an enumerator of the property naems on this `FBGraphObject`.
+ Returns an enumerator of the property naems on this `BNDuckTypedObject`.
  */
 - (NSEnumerator *)keyEnumerator;
 /*!
  @method
  @abstract
- Removes a property on this `FBGraphObject`.
+ Removes a property on this `BNDuckTypedObject`.
  
  @param aKey        name of the property to remove
  */
@@ -40,7 +40,7 @@
 /*!
  @method
  @abstract
- Sets the value of a property on this `FBGraphObject`.
+ Sets the value of a property on this `BNDuckTypedObject`.
  
  @param anObject    the new value of the property
  @param aKey        name of the property to set

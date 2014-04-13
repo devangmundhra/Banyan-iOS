@@ -7,23 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "GooglePlacesAnnotation.h"
-
-@class SPGooglePlacesAutocompleteQuery;
+#import <GoogleMaps/GoogleMaps.h>
+#import "GooglePlacesObject.h"
 
 @protocol GooglePlacesViewControllerDelegate <NSObject>
 
 - (void)googlePlacesViewControllerPickedLocation:(BNDuckTypedObject<GooglePlacesObject>*)place;
 
+- (CLLocation *)currentLocation;
 @end
 
-@interface GooglePlacePickerViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchDisplayDelegate, UISearchBarDelegate, MKMapViewDelegate>
+@interface GooglePlacePickerViewController : UIViewController
 
-@property (strong, nonatomic) NSArray *searchResultPlaces;
-@property (strong, nonatomic) SPGooglePlacesAutocompleteQuery *searchQuery;
-@property (strong, nonatomic) GooglePlacesAnnotation *selectedPlaceAnnotation;
-@property (nonatomic) BOOL shouldBeginEditing;
 @property (nonatomic, weak) id <GooglePlacesViewControllerDelegate> delegate;
-@property (weak, nonatomic) IBOutlet MKMapView *mapView;
 
 @end

@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class CLLocationManager;
+
 @interface BNMisc : NSObject
 
 + (NSString *)longCurrentDate;
@@ -31,6 +33,7 @@
 
 + (void) sendGoogleAnalyticsException:(NSException *)exception inAction:(NSString *)action isFatal:(BOOL)fatal;
 + (void) sendGoogleAnalyticsError:(NSError *)error inAction:(NSString *)action isFatal:(BOOL)fatal;
++ (CLLocationManager *)sharedLocationManager;
 
 @end
 
