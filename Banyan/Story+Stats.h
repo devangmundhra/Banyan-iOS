@@ -11,5 +11,7 @@
 @interface Story (Stats)
 
 - (void) setViewedWithCompletionBlock:(void (^)(bool succeeded, NSError *error))block;
+- (void) followWithCompletionBlock:(void (^)(bool succeeded, NSError *error))block;
+- (void) unfollowWithCompletionBlock:(void (^)(bool succeeded, NSError *error))block;
 
 @end

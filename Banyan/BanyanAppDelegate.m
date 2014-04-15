@@ -563,26 +563,20 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
      Complete Core Data stack initialization
      */
     [managedObjectStore createPersistentStoreCoordinator];
-    NSString *storePath = [RKApplicationDataDirectory() stringByAppendingPathComponent:@"Banyan.sqlite"];
     NSError *error;
+    BOOL success = RKEnsureDirectoryExistsAtPath(RKApplicationDataDirectory(), &error);
+    if (! success) {
+        RKLogError(@"Failed to create Application Data Directory at path '%@': %@", RKApplicationDataDirectory(), error);
+    }
+    NSString *storePath = [RKApplicationDataDirectory() stringByAppendingPathComponent:@"Banyan.sqlite"];
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
+                             [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,
+                             [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
     NSPersistentStore *persistentStore = [managedObjectStore addSQLitePersistentStoreAtPath:storePath
                                                                      fromSeedDatabaseAtPath:nil
                                                                           withConfiguration:nil
-                                                                                    options:nil
+                                                                                    options:options
                                                                                       error:&error];
-    if (!persistentStore) {
-        // The below assert will fail if the core data schema was changed. For now, just drop the database
-        // and recreate it. It will automatically get filled up when it gets synced.
-        // TO-DO: Use migration
-        [[NSFileManager defaultManager] removeItemAtPath:storePath error:&error];
-
-        [managedObjectStore createPersistentStoreCoordinator];
-        persistentStore = [managedObjectStore addSQLitePersistentStoreAtPath:storePath
-                                                      fromSeedDatabaseAtPath:nil
-                                                           withConfiguration:nil
-                                                                     options:nil
-                                                                       error:&error];
-    }
     
     NSAssert(persistentStore, @"Failed to add persistent store with error: %@", error);
 

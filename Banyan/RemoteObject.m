@@ -18,7 +18,6 @@
 @dynamic author;
 @dynamic bnObjectId;
 @dynamic createdAt;
-@dynamic isLocationEnabled;
 @dynamic lastSynced;
 @dynamic location;
 @dynamic remoteStatusNumber, primitiveRemoteStatusNumber;
@@ -26,7 +25,7 @@
 @dynamic permaLink;
 @dynamic comments;
 @dynamic media;
-@dynamic viewedByCurUser, likedByCurUser, favoriteByCurUser, numberOfLikes, numberOfViews;
+@dynamic viewedByCurUser, likeActivityResourceUri, numberOfLikes, numberOfViews;
 @dynamic timeStamp;
 @dynamic resourceUri;
 

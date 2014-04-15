@@ -27,6 +27,8 @@
 @dynamic uploadStatusNumber, primitiveUploadStatusNumber;
 @dynamic sectionIdentifier, primitiveSectionIdentifier;
 @dynamic numNewPiecesToView;
+@dynamic autoAddLocation;
+@dynamic followActivityResourceUri;
 
 - (void)awakeFromFetch
 {
@@ -251,17 +253,17 @@
                                                        @"permission.canWrite" : @"canContribute",
                                                        @"permission.isInvited" : @"isInvited",
                                                        @"stats.numViews" : @"numberOfViews",
-                                                       @"stats.numLikes" : @"numberOfLikes",
                                                        @"stats.userViewed" : @"viewedByCurUser",
-                                                       @"stats.userLiked" : @"likedByCurUser",
+                                                       @"stats.followActivity" : @"followActivityResourceUri",
                                                        @"firstUnviewedPieceNumByUser" : @"currentPieceIndexNum",
                                                        @"resource_uri" : @"resourceUri",
                                                        @"perma_link" : @"permaLink",
+                                                       @"isLocationEnabled" : @"autoAddLocation"
                                                        }];
     storyMapping.identificationAttributes = @[@"bnObjectId"];
     
     [storyMapping addAttributeMappingsFromArray:@[@"bnObjectId", @"title", @"readAccess", @"writeAccess", @"tags",
-                                                  @"createdAt", @"updatedAt", @"isLocationEnabled", @"location", @"timeStamp"]];
+                                                  @"createdAt", @"updatedAt", @"location", @"timeStamp"]];
     [storyMapping addPropertyMappingsFromArray:@[[RKRelationshipMapping relationshipMappingFromKeyPath:@"pieces" toKeyPath:@"pieces" withMapping:[Piece pieceMappingForRKGET]],
                                                  [RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:[Media mediaMappingForRKGET]],
                                                  [RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:[User UserMappingForRKGET]]]];
@@ -272,8 +274,8 @@
 + (RKObjectMapping *)storyRequestMappingForRKPOST
 {
     RKObjectMapping *storyRequestMapping = [RKObjectMapping requestMapping];
-    [storyRequestMapping addAttributeMappingsFromArray:@[@"title", @"writeAccess", @"readAccess", @"tags", @"isLocationEnabled", @"timeStamp", @"location"]];
-    [storyRequestMapping addAttributeMappingsFromDictionary:@{@"author.resourceUri" : @"author"}];
+    [storyRequestMapping addAttributeMappingsFromArray:@[@"title", @"writeAccess", @"readAccess", @"tags", @"timeStamp", @"location"]];
+    [storyRequestMapping addAttributeMappingsFromDictionary:@{@"author.resourceUri" : @"author", @"autoAddLocation" : @"isLocationEnabled"}];
     [storyRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:[Media mediaRequestMapping]]];
     return storyRequestMapping;
 }
@@ -282,7 +284,10 @@
 {
     RKEntityMapping *storyResponseMapping = [RKEntityMapping mappingForEntityForName:kBNStoryClassKey
                                                                 inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-    [storyResponseMapping addAttributeMappingsFromDictionary:@{@"resource_uri": @"resourceUri"}];
+    [storyResponseMapping addAttributeMappingsFromDictionary:@{@"resource_uri": @"resourceUri",
+                                                               @"stats.numViews" : @"numberOfViews",
+                                                               @"stats.userViewed" : @"viewedByCurUser",
+                                                               @"stats.followActivity" : @"followActivityResourceUri",}];
     [storyResponseMapping addAttributeMappingsFromArray:@[@"createdAt", @"updatedAt", @"permaLink", @"bnObjectId"]];
     storyResponseMapping.identificationAttributes = @[@"bnObjectId"];
     return storyResponseMapping;

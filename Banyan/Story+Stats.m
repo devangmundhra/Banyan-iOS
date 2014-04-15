@@ -9,7 +9,7 @@
 #import "Story+Stats.h"
 #import "Story+Edit.h"
 #import "User.h"
-#import "Activity+Create.h"
+#import "Activity.h"
 
 @implementation Story (Stats)
 
@@ -26,7 +26,7 @@
                                              object:self.resourceUri];
     
     __weak Story *wself = self;
-    [Activity createActivity:activity withCompletionBlock:^(bool succeeded, NSError *error) {
+    [Activity createActivity:activity withCompletionBlock:^(bool succeeded, NSString *resourceUri, NSError *error) {
         if (succeeded) {
             wself.viewedByCurUser = YES;
             wself.numberOfViews += 1;
@@ -35,5 +35,35 @@
     }];
 }
 
-@end
+- (void) followWithCompletionBlock:(void (^)(bool succeeded, NSError *error))block
+{
+    BNSharedUser *currentUser = [BNSharedUser currentUser];
+    if (!currentUser)
+        return;
+    
+    __weak Story *wself = self;
+    Activity *activity = [Activity activityWithType:kBNActivityTypeFollowStory object:self.resourceUri];
+    [Activity createActivity:activity withCompletionBlock:^(bool succeeded, NSString *resourceUri, NSError *error) {
+        if (succeeded && wself) {
+            wself.followActivityResourceUri = resourceUri;
+        }
+        if (block) block(succeeded, error);
+    }];
+}
 
+- (void) unfollowWithCompletionBlock:(void (^)(bool succeeded, NSError *error))block
+{
+    BNSharedUser *currentUser = [BNSharedUser currentUser];
+    if (!currentUser)
+        return;
+    
+    __weak Story *wself = self;
+    [Activity deleteActivityAtResourceUri:self.followActivityResourceUri withCompletionBlock:^(bool succeeded, NSError *error) {
+        if (succeeded && wself) {
+            wself.followActivityResourceUri = nil;
+        }
+        if (block) block(succeeded, error);
+    }];
+}
+
+@end

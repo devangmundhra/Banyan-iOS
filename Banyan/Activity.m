@@ -12,6 +12,7 @@
 
 @synthesize type = _type;
 @synthesize object = _object;
+@synthesize resourceUri = _resourceUri;
 
 + (Activity *) activityWithType:(NSString *)type
                          object:(NSString *)object
@@ -41,8 +42,8 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"{Activity\n type: %@ object: %@\n}",
-            self.type, self.object];
+    return [NSString stringWithFormat:@"{Activity %@(%@)\n type: %@ object: %@\n}",
+            self.activityId, self.resourceUri, self.type, self.object];
 }
 
 + (RKObjectMapping *)activityRequestMappingForRKPOST
@@ -57,9 +58,39 @@
 + (RKObjectMapping *)activityResponseMappingForRKPOST
 {
     RKObjectMapping *activityResponseMapping = [RKObjectMapping mappingForClass:[Activity class]];
-    [activityResponseMapping addAttributeMappingsFromDictionary:@{@"id" : @"activityId"}];
+    [activityResponseMapping addAttributeMappingsFromDictionary:@{@"id" : @"activityId", @"resource_uri": @"resourceUri"}];
     
     return activityResponseMapping;
+}
+
++ (void)createActivity:(Activity *)activity withCompletionBlock:(void (^)(bool succeeded, NSString *resourceUri, NSError *error))block;
+{
+    NSAssert1(activity.object, @"No object to create an activity of type", activity.type);
+    NSAssert1(![activity.type isEqualToString:kBNActivityTypeFollowUser] && ![activity.type isEqualToString:kBNActivityTypeUnfollowUser], @"Invalid activity of type", activity.type);
+    
+    [[RKObjectManager sharedManager] postObject:activity
+                                           path:nil
+                                     parameters:nil
+                                        success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                            if (block) block(YES, activity.resourceUri, nil);
+                                        }
+                                        failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                            BNLogError(@"Error in create activity %@", activity);
+                                            if (block) block(NO, nil, error);
+                                        }];
+}
+
++ (void) deleteActivityAtResourceUri:(NSString *)resourceUri withCompletionBlock:(void (^)(bool succeeded, NSError *error))block
+{
+    [[RKObjectManager sharedManager] deleteObject:nil
+                                             path:resourceUri
+                                       parameters:nil
+                                          success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                              if (block) block(YES, nil);
+                                          }
+                                          failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                              if (block) block(NO, error);
+                                          }];
 }
 
 @end

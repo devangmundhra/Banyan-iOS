@@ -11,7 +11,7 @@
 @interface Piece (Stats)
 
 - (void) setViewedWithCompletionBlock:(void (^)(bool succeeded, NSError *error))block;
-
-- (void) toggleLikedWithCompletionBlock:(void (^)(bool succeeded, NSError *error))block;
+- (void) likeWithCompletionBlock:(void (^)(bool succeeded, NSError *error))block;
+- (void) unlikeWithCompletionBlock:(void (^)(bool succeeded, NSError *error))block;
 
 @end

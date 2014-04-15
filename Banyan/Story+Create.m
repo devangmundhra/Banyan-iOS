@@ -54,7 +54,6 @@
                                             success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                                 BNLogTrace(@"Create story successful %@", story);
                                                 story.remoteStatus = RemoteObjectStatusSync;
-                                                [story setViewedWithCompletionBlock:nil];
                                                 // Be eager in uploading pieces if available
                                                 [APP_DELEGATE fireRemoteObjectTimer];
                                             }

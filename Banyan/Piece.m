@@ -142,12 +142,12 @@
 {
     RKEntityMapping *pieceMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-    [pieceMapping addAttributeMappingsFromArray:@[@"bnObjectId", @"longText", @"shortText", @"isLocationEnabled", @"location",
+    [pieceMapping addAttributeMappingsFromArray:@[@"bnObjectId", @"longText", @"shortText", @"location",
                                                   @"createdAt", @"updatedAt", @"timeStamp"]];
     [pieceMapping addAttributeMappingsFromDictionary:@{@"stats.numViews" : @"numberOfViews",
                                                        @"stats.numLikes" : @"numberOfLikes",
                                                        @"stats.userViewed" : @"viewedByCurUser",
-                                                       @"stats.userLiked" : @"likedByCurUser",
+                                                       @"stats.likeActivity" : @"likeActivityResourceUri",
                                                        @"resource_uri" : @"resourceUri",
                                                        @"perma_link" : @"permaLink",
                                                        }];
@@ -167,7 +167,7 @@
 {
     RKObjectMapping *pieceRequestMapping = [RKObjectMapping requestMapping];
     [pieceRequestMapping addAttributeMappingsFromDictionary:@{@"author.resourceUri" : @"author", @"story.resourceUri" : @"story"}];
-    [pieceRequestMapping addAttributeMappingsFromArray:@[@"longText", @"shortText", @"isLocationEnabled", @"timeStamp", @"location"]];
+    [pieceRequestMapping addAttributeMappingsFromArray:@[@"longText", @"shortText", @"timeStamp", @"location"]];
     [pieceRequestMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:[Media mediaRequestMapping]]];
     return pieceRequestMapping;
 }
@@ -176,7 +176,11 @@
 {
     RKEntityMapping *pieceResponseMapping = [RKEntityMapping mappingForEntityForName:kBNPieceClassKey
                                                                 inManagedObjectStore:[RKManagedObjectStore defaultStore]];
-    [pieceResponseMapping addAttributeMappingsFromDictionary:@{@"resource_uri": @"resourceUri"}];
+    [pieceResponseMapping addAttributeMappingsFromDictionary:@{@"resource_uri": @"resourceUri",
+                                                               @"stats.numViews" : @"numberOfViews",
+                                                               @"stats.numLikes" : @"numberOfLikes",
+                                                               @"stats.userViewed" : @"viewedByCurUser",
+                                                               @"stats.likeActivity" : @"likeActivityResourceUri",}];
     [pieceResponseMapping addAttributeMappingsFromArray:@[@"createdAt", @"updatedAt", @"permaLink", @"bnObjectId"]];
     pieceResponseMapping.identificationAttributes = @[@"bnObjectId"];
     return pieceResponseMapping;

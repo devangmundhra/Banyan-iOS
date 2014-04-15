@@ -24,7 +24,6 @@ typedef enum {
 @property (nonatomic, retain) User * author;
 @property (nonatomic, retain) NSNumber * bnObjectId;
 @property (nonatomic, retain) NSDate * createdAt;
-@property (nonatomic) BOOL isLocationEnabled;
 @property (nonatomic, retain) NSDate * lastSynced;
 @property (nonatomic, retain) GooglePlacesObject<GooglePlacesObject> * location;
 @property (nonatomic, retain) NSNumber * remoteStatusNumber;
@@ -33,12 +32,11 @@ typedef enum {
 @property (nonatomic) RemoteObjectStatus remoteStatus;
 @property (nonatomic, retain) NSString * permaLink;
 @property (nonatomic, retain) NSNumber * timeStamp;
-@property (nonatomic, strong) NSString *resourceUri;
+@property (nonatomic, retain) NSString *resourceUri;
 
 // Stats
 @property (nonatomic) BOOL viewedByCurUser;
-@property (nonatomic) BOOL likedByCurUser;
-@property (nonatomic) BOOL favoriteByCurUser;
+@property (nonatomic, copy) NSString *likeActivityResourceUri;
 @property (nonatomic) int16_t numberOfLikes;
 @property (nonatomic) int16_t numberOfViews;
 // Relationships

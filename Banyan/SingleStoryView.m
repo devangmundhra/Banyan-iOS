@@ -12,6 +12,9 @@
 #import "User.h"
 #import "Piece.h"
 
+static NSString *const hideStoryString = @"Hide Story";
+static NSString *const flagStoryString = @"Flag Story";
+
 @interface SingleStoryView ()
 
 @property (strong, nonatomic) BNSwipeableView *topSwipeView;
@@ -274,7 +277,7 @@ static BOOL _loggedIn;
     [_clockSymbolImage drawAtPoint:point];
     
     locationStringSize = CGSizeZero;
-    if (self.story.isLocationEnabled && [self.story.location.name length]) {
+    if ([self.story.location.name length]) {
         // Location label
         point.x = TABLE_CELL_MARGIN+_clockSymbolImage.size.width+SPACER_DISTANCE+clockStringSize.width+2*SPACER_DISTANCE+_locationSymbolImage.size.width+SPACER_DISTANCE;
         point.y = TOP_VIEW_HEIGHT/2+SPACER_DISTANCE;
@@ -448,7 +451,7 @@ static BOOL _loggedIn;
 #pragma mark UIAlertView
 - (void)hideStoryAlert:(UIButton *)button
 {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Hide Story"
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:hideStoryString
                                                         message:@"Do you want to hide this story from your feed?"
                                                        delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
     
@@ -457,7 +460,7 @@ static BOOL _loggedIn;
 
 - (void)flagStoryAlert:(UIButton *)button
 {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Flag Story"
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:flagStoryString
                                                         message:@"Do you want to report this story as inappropriate?\rYou can optionally specify a brief message for the reviewers."
                                                        delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
     alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
@@ -467,10 +470,10 @@ static BOOL _loggedIn;
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if ([alertView.title isEqualToString:@"Hide Story"] && buttonIndex==1) {
+    if ([alertView.title isEqualToString:hideStoryString] && buttonIndex==1) {
         [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
         [self.delegate hideStory:self];
-    } else if ([alertView.title isEqualToString:@"Flag Story"] && buttonIndex==1) {
+    } else if ([alertView.title isEqualToString:flagStoryString] && buttonIndex==1) {
         [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
         NSString *message = [alertView textFieldAtIndex:0].text;
         [self.delegate flagStory:self withMessage:message];

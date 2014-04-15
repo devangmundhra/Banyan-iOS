@@ -7,7 +7,7 @@
 //
 
 #import "FollowingFriendsViewController.h"
-#import "Activity+Create.h"
+#import "Activity.h"
 #import <QuartzCore/QuartzCore.h>
 #import "User.h"
 #import "UIViewController+BNSlidingViewControllerAdditions.h"

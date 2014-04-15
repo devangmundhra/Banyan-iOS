@@ -77,11 +77,9 @@ NSString *const kBNActivityObjectKey      = @"object";
 
 // Type values
 NSString *const kBNActivityTypeLike       = @"like";
-NSString *const kBNActivityTypeUnlike     = @"unlike";
 NSString *const kBNActivityTypeFollowUser = @"followUser";
 NSString *const kBNActivityTypeUnfollowUser = @"unfollowUser";
-NSString *const kBNActivityTypeFavourite  = @"favourite";
-NSString *const kBNActivityTypeUnfavourite  = @"unfavourite";
+NSString *const kBNActivityTypeFollowStory = @"followStory";
 NSString *const kBNActivityTypeView       = @"view";
 NSString *const kBNActivityTypeComment    = @"comment";
 NSString *const kBNActivityTypeJoined     = @"joined";

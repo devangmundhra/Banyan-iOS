@@ -89,7 +89,6 @@
                                                     }
                                                 }
                                                 BNLogTrace(@"Create piece (%@) %@ for story %@", piece.bnObjectId, piece.shortText ? piece.shortText : piece.longText, piece.story.bnObjectId);
-                                                [piece setViewedWithCompletionBlock:nil];
                                             }
                                             failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                                 piece.remoteStatus = RemoteObjectStatusFailed;

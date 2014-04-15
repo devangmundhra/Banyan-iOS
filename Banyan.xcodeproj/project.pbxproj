@@ -138,7 +138,6 @@
 		51A1E0AC186C350E00162BD6 /* Piece+Share.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A1E0AB186C350E00162BD6 /* Piece+Share.m */; };
 		51A8494A171CF4A500367039 /* BNPlacePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A84949171CF4A500367039 /* BNPlacePickerViewController.m */; };
 		51A8494D171D24E900367039 /* BNFBLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8494C171D24E900367039 /* BNFBLocationManager.m */; };
-		51A8DC9116928A240017E86F /* Activity+Create.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC9016928A240017E86F /* Activity+Create.m */; };
 		51A8DC9516928AE00017E86F /* Banyan.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC9316928AE00017E86F /* Banyan.xcdatamodeld */; };
 		51A8DC981692C4490017E86F /* Story+Permissions.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A8DC971692C4490017E86F /* Story+Permissions.m */; };
 		51AFD5F117607800008C7203 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 51AFD5F017607800008C7203 /* User.m */; };
@@ -309,6 +308,7 @@
 		511D742518F63E9D000926B0 /* GooglePlacePickerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = GooglePlacePickerViewController.xib; path = Banyan/GooglePlacePickerViewController.xib; sourceTree = "<group>"; };
 		511D743218F9D1EA000926B0 /* GooglePlacePickerTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GooglePlacePickerTableViewCell.h; path = Banyan/GooglePlacePickerTableViewCell.h; sourceTree = "<group>"; };
 		511D743318F9D1EA000926B0 /* GooglePlacePickerTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GooglePlacePickerTableViewCell.m; path = Banyan/GooglePlacePickerTableViewCell.m; sourceTree = "<group>"; };
+		511D743518FB9A99000926B0 /* Banyan 1.0.2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Banyan 1.0.2.xcdatamodel"; sourceTree = "<group>"; };
 		511E708A161A9756009AAD25 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		511E708D161A977F009AAD25 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		512598BA17AB916600FEFCF0 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
@@ -467,8 +467,6 @@
 		51A8494B171D24E900367039 /* BNFBLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNFBLocationManager.h; path = Banyan/BNFBLocationManager.h; sourceTree = "<group>"; };
 		51A8494C171D24E900367039 /* BNFBLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNFBLocationManager.m; path = Banyan/BNFBLocationManager.m; sourceTree = "<group>"; };
 		51A8DC72169141B90017E86F /* Piece+Stats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Piece+Stats.h"; path = "Banyan/Piece+Stats.h"; sourceTree = "<group>"; };
-		51A8DC8F16928A240017E86F /* Activity+Create.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Activity+Create.h"; path = "Banyan/Activity+Create.h"; sourceTree = "<group>"; };
-		51A8DC9016928A240017E86F /* Activity+Create.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Activity+Create.m"; path = "Banyan/Activity+Create.m"; sourceTree = "<group>"; };
 		51A8DC9416928AE00017E86F /* Banyan.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Banyan.xcdatamodel; sourceTree = "<group>"; };
 		51A8DC961692C4490017E86F /* Story+Permissions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Story+Permissions.h"; path = "Banyan/Story+Permissions.h"; sourceTree = "<group>"; };
 		51A8DC971692C4490017E86F /* Story+Permissions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Story+Permissions.m"; path = "Banyan/Story+Permissions.m"; sourceTree = "<group>"; };
@@ -1448,8 +1446,6 @@
 			children = (
 				510787D3163A37190042B436 /* Activity.h */,
 				510787D4163A37190042B436 /* Activity.m */,
-				51A8DC8F16928A240017E86F /* Activity+Create.h */,
-				51A8DC9016928A240017E86F /* Activity+Create.m */,
 			);
 			name = Activity;
 			sourceTree = "<group>";
@@ -2061,7 +2057,6 @@
 				5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */,
 				51C4253A1828E15100AF90C1 /* NextStoryViewController.m in Sources */,
 				514CDF5418125BFF0098B0A9 /* BNPermissionsObject.m in Sources */,
-				51A8DC9116928A240017E86F /* Activity+Create.m in Sources */,
 				51BAEC4018DAB19C00BA9C49 /* BNS3TransferManager.m in Sources */,
 				5130E1FE18335ECF00975068 /* BNAudioRecorderView.m in Sources */,
 				51A8DC9516928AE00017E86F /* Banyan.xcdatamodeld in Sources */,
@@ -2332,9 +2327,10 @@
 		51A8DC9316928AE00017E86F /* Banyan.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				511D743518FB9A99000926B0 /* Banyan 1.0.2.xcdatamodel */,
 				51A8DC9416928AE00017E86F /* Banyan.xcdatamodel */,
 			);
-			currentVersion = 51A8DC9416928AE00017E86F /* Banyan.xcdatamodel */;
+			currentVersion = 511D743518FB9A99000926B0 /* Banyan 1.0.2.xcdatamodel */;
 			path = Banyan.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

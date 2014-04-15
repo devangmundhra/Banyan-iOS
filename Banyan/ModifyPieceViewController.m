@@ -363,7 +363,7 @@
     // Start location manger to get current location if required
     // This is done here instead of in viewDidAppear because here this will be called only once when the view is loaded.
     // If the user has explicitly cancelled the fetching of location, we want to respect that.
-    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && self.piece.story.isLocationEnabled) {
+    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece && self.piece.story.autoAddLocation) {
         [self.addLocationButton locationPickerLocationEnabled:YES];
         [self.addLocationButton setLocationPickerTitle:@"Fetching location"];
         [[BNMisc sharedLocationManager] setDelegate:self];

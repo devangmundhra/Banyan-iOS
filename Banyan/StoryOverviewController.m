@@ -15,9 +15,19 @@
 #import "Story+Delete.h"
 #import "StoryOverviewHeaderView.h"
 #import "Story+Share.h"
+#import "Story+Stats.h"
+#import "MBProgressHUD.h"
 
 static NSString *CellIdentifier = @"StoryOverview_PieceCell";
 static NSString *HeaderIdentifier = @"StoryOverview_Header";
+
+static NSString *const deleteStoryString = @"Delete story";
+static NSString *const flagStoryString = @"Flag story";
+static NSString *const editStoryString = @"Edit story";
+static NSString *const shareString = @"Share";
+static NSString *const cancelString = @"Cancel";
+static NSString *const followStoryString = @"Follow story";
+static NSString *const unfollowStoryString = @"Unfollow story";
 
 @interface StoryOverviewController (UIAlertViewDelegateAndActionSheetDelegate) <UIAlertViewDelegate, UIActionSheetDelegate>
 @end
@@ -158,18 +168,26 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
 {
     
     UIActionSheet *actionSheet = nil;
-    if (self.story.canContribute && [BanyanAppDelegate loggedIn]) {
-        actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                  delegate:self
-                                         cancelButtonTitle:@"Cancel"
-                                    destructiveButtonTitle:self.story.author.userId == [BNSharedUser currentUser].userId ? @"Delete story" : @"Flag story"
-                                         otherButtonTitles:@"Edit story", @"Share", nil];
+    if ([BanyanAppDelegate loggedIn]) {
+        if (self.story.canContribute) {
+            actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                      delegate:self
+                                             cancelButtonTitle:cancelString
+                                        destructiveButtonTitle:self.story.author.userId == [BNSharedUser currentUser].userId ? deleteStoryString : flagStoryString
+                                             otherButtonTitles:editStoryString, self.story.followActivityResourceUri.length ? unfollowStoryString : followStoryString, shareString, nil];
+        } else {
+            actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                      delegate:self
+                                             cancelButtonTitle:cancelString
+                                        destructiveButtonTitle:self.story.author.userId == [BNSharedUser currentUser].userId ? deleteStoryString : flagStoryString
+                                             otherButtonTitles:self.story.followActivityResourceUri.length ? unfollowStoryString : followStoryString, shareString, nil];
+        }
     } else {
         actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                   delegate:self
-                                         cancelButtonTitle:@"Cancel"
-                                    destructiveButtonTitle:@"Flag story"
-                                         otherButtonTitles:@"Share", nil];
+                                         cancelButtonTitle:cancelString
+                                    destructiveButtonTitle:flagStoryString
+                                         otherButtonTitles:shareString, nil];
     }
     
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
@@ -241,7 +259,10 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
     [self dismissViewControllerAnimated:YES completion:^{
         [self.delegate storyOverviewControllerSelectedPiece:piece];
     }];
-    [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"story overview" label:@"selected a piece" value:[NSNumber numberWithInt:indexPath.item]];
+    [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction"
+                                          action:@"story overview"
+                                           label:@"selected a piece"
+                                           value:[NSNumber numberWithInt:indexPath.item]];
 }
 
 @end
@@ -255,27 +276,63 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
     if (buttonIndex == actionSheet.cancelButtonIndex) {
         // DO NOTHING ON CANCEL
     }
-    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Delete story"]) {
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:deleteStoryString]) {
         // Delete story
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Delete Story"
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:deleteStoryString
                                                             message:@"Do you want to delete this story?"
                                                            delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
         
         [alertView show];
-    } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Flag story"]) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Flag Story"
+    } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:flagStoryString]) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:flagStoryString
                                                             message:@"Do you want to report this story as inappropriate?\rYou can optionally specify a brief message for the reviewers."
                                                            delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
         alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
         
         [alertView show];
     }
-    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Edit story"]) {
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:editStoryString]) {
         ModifyStoryViewController *newStoryViewController = [[ModifyStoryViewController alloc] initWithStory:self.story];
         UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:newStoryViewController];
         [self presentViewController:navController animated:YES completion:nil];
     }
-    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share"]) {
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:followStoryString]) {
+        __weak typeof(self) wself = self;
+        // Follow story
+        [self.story followWithCompletionBlock:^(bool succeeded, NSError *error) {
+            if (wself) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:wself.view animated:YES];
+                    hud.labelFont = [UIFont fontWithName:@"Roboto" size:12];
+                    hud.mode = MBProgressHUDModeText;
+                    if (succeeded)
+                        hud.labelText = @"Follow story - success";
+                    else
+                        hud.labelText = @"Follow story - error";
+                    [hud hide:YES afterDelay:2];
+                });
+            }
+        }];
+    }
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:unfollowStoryString]) {
+        // Unfollow story
+        __weak typeof(self) wself = self;
+        [self.story unfollowWithCompletionBlock:^(bool succeeded, NSError *error) {
+            if (wself) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+                    hud.labelFont = [UIFont fontWithName:@"Roboto" size:12];
+                    hud.mode = MBProgressHUDModeText;
+                    if (succeeded)
+                        hud.labelText = @"Unfollow story - success";
+                    else
+                        hud.labelText = @"Unfollow story - error";
+                    [hud hide:YES afterDelay:2];
+                });
+            }
+        }];
+    }
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:shareString]) {
         // Share
         [self.story shareOnFacebook];
     }
@@ -283,13 +340,13 @@ static NSString *HeaderIdentifier = @"StoryOverview_Header";
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if ([alertView.title isEqualToString:@"Delete Story"] && buttonIndex==1) {
+    if ([alertView.title isEqualToString:deleteStoryString] && buttonIndex==1) {
         [Story deleteStory:self.story completion:^{
             [self dismissViewControllerAnimated:YES completion:^{
                 [self.delegate storyOverviewControllerDeletedStory];
             }];
         }];
-    } else if ([alertView.title isEqualToString:@"Flag Story"] && buttonIndex==1) {
+    } else if ([alertView.title isEqualToString:flagStoryString] && buttonIndex==1) {
         [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
         NSString *message = [alertView textFieldAtIndex:0].text;
         [self.story flaggedWithMessage:message];

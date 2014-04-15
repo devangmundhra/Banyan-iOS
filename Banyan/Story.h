@@ -31,6 +31,8 @@
 @property (nonatomic, retain) NSString * sectionIdentifier;
 @property (nonatomic, retain) NSString * primitiveSectionIdentifier;
 @property (nonatomic) int16_t numNewPiecesToView;
+@property (nonatomic) BOOL autoAddLocation;
+@property (nonatomic, copy) NSString *followActivityResourceUri;
 
 @property (nonatomic, readonly) int16_t length;
 

@@ -25,6 +25,13 @@
 #import "Piece+Share.h"
 #import "CMPopTipView.h"
 
+static NSString *const deletePieceString = @"Delete piece";
+static NSString *const flagPieceString = @"Flag piece";
+static NSString *const addPieceString = @"Add a piece";
+static NSString *const editPieceString = @"Edit piece";
+static NSString *const shareString = @"Share";
+static NSString *const cancelString = @"Cancel";
+
 @interface ReadPieceViewController (UIScrollViewDelegate) <UIScrollViewDelegate>
 @end
 
@@ -226,7 +233,7 @@
     self.pieceTextView.editable = NO;
     self.pieceTextView.backgroundColor = [UIColor clearColor];
     self.pieceTextView.font = [UIFont fontWithName:@"Roboto" size:18];
-    self.pieceTextView.textAlignment = NSTextAlignmentJustified;
+    self.pieceTextView.textAlignment = NSTextAlignmentLeft;
     self.pieceTextView.scrollEnabled = NO;
     [self.contentView addSubview:self.pieceTextView];
 
@@ -543,15 +550,15 @@
     if (self.piece.story.canContribute && [BanyanAppDelegate loggedIn]) {
         actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                   delegate:self
-                                         cancelButtonTitle:@"Cancel"
-                                    destructiveButtonTitle:self.piece.author.userId == [BNSharedUser currentUser].userId ? @"Delete piece" : @"Flag piece"
-                                         otherButtonTitles:@"Add a piece", @"Edit piece", @"Share", nil];
+                                         cancelButtonTitle:cancelString
+                                    destructiveButtonTitle:self.piece.author.userId == [BNSharedUser currentUser].userId ? deletePieceString : flagPieceString
+                                         otherButtonTitles:addPieceString, editPieceString, shareString, nil];
     } else {
         actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                   delegate:self
-                                         cancelButtonTitle:@"Cancel"
-                                    destructiveButtonTitle:@"Flag piece"
-                                         otherButtonTitles:@"Share", nil];
+                                         cancelButtonTitle:cancelString
+                                    destructiveButtonTitle:flagPieceString
+                                         otherButtonTitles:shareString, nil];
     }
     
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
@@ -594,22 +601,22 @@
     // the user clicked one of the OK/Cancel buttons
     if (buttonIndex == actionSheet.cancelButtonIndex) {
         // DO NOTHING ON CANCEL
-    } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Delete piece"]) {
+    } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:deletePieceString]) {
         // Delete piece
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Delete Piece"
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:deletePieceString
                                                             message:@"Do you want to delete this piece?"
                                                            delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
         
         [alertView show];
     }
-    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Flag piece"]) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Flag Piece"
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:flagPieceString]) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:flagPieceString
                                                             message:@"Do you want to report this piece as inappropriate?\rYou can optionally specify a brief message for the reviewers."
                                                            delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
         alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
         
         [alertView show];    }
-    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Add a piece"]) {
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:addPieceString]) {
         Piece *piece = [Piece newPieceDraftForStory:self.piece.story];
         ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
         addPieceViewController.delegate = self;
@@ -617,14 +624,14 @@
         [navController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
         [self presentViewController:navController animated:YES completion:nil];
     }
-    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Edit piece"]) {
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:editPieceString]) {
         ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:self.piece];
         UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:addPieceViewController];
         //    addSceneViewController.delegate = self;
         [navController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
         [self presentViewController:navController animated:YES completion:nil];
     }
-    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:@"Share"]) {
+    else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:shareString]) {
         // Share
         [self.piece shareOnFacebook];
     }
@@ -636,9 +643,9 @@
 # pragma mark AlertVew Delegate methods
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if ([alertView.title isEqualToString:@"Delete Piece"] && buttonIndex==1) {
+    if ([alertView.title isEqualToString:deletePieceString] && buttonIndex==1) {
         [self deletePiece:self.piece];
-    } else if ([alertView.title isEqualToString:@"Flag Piece"] && buttonIndex==1) {
+    } else if ([alertView.title isEqualToString:flagPieceString] && buttonIndex==1) {
         [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
         NSString *message = [alertView textFieldAtIndex:0].text;
         [self.piece flaggedWithMessage:message];
@@ -648,7 +655,7 @@
 - (void)togglePieceLikeButtonLabel
 {
     UIImage *heartImage = nil;
-    if (self.piece.likedByCurUser) {
+    if (self.piece.likeActivityResourceUri.length) {
         heartImage = [UIImage imageNamed:@"heartSymbolPink"];
     }
     else {
@@ -662,13 +669,21 @@
 {
     __weak UIButton *wLikeButton = sender;
     __weak ReadPieceViewController *wself = self;
-    [self.piece toggleLikedWithCompletionBlock:^(bool succeeded, NSError *error) {
+    
+    wLikeButton.enabled = NO;
+    void (^likeCompletionBlock)(bool succeeded, NSError *error) = ^(bool succeeded, NSError *error) {
         wLikeButton.enabled = YES;
         if (succeeded) {
             [wself togglePieceLikeButtonLabel];
             [BNMisc sendGoogleAnalyticsSocialInteractionWithNetwork:@"Banyan" action:@"like" target:[NSString stringWithFormat:@"Piece_%@", wself.piece.bnObjectId]];
         }
-    }];
+    };
+    
+    if (self.piece.likeActivityResourceUri.length) {
+        [self.piece unlikeWithCompletionBlock:likeCompletionBlock];
+    } else {
+        [self.piece likeWithCompletionBlock:likeCompletionBlock];
+    }
 }
 
 - (void)showFocusView:(UITapGestureRecognizer *)gestureRecognizer
