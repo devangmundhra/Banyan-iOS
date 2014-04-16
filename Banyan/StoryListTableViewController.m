@@ -176,6 +176,8 @@ typedef enum {
 {
     BNLogInfo(@"StoryList View Controller Deallocated");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    self.fetchedResultsController.delegate = nil;
+    self.fetchedResultsController = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
