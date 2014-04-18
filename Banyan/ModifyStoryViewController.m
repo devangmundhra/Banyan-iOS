@@ -16,6 +16,7 @@
 #import "BNLabel.h"
 #import "BNTextField.h"
 #import "Story+Edit.h"
+#import "NSObject+BlockObservation.h"
 
 @interface ModifyStoryViewController (UIActionSheetDelegate) <UIActionSheetDelegate>
 @end
@@ -33,6 +34,8 @@
 @property (strong, nonatomic) IBOutlet UIView *invitationView;
 @property (strong, nonatomic) IBOutlet BNLabel *inviteeLabel;
 @property (strong, nonatomic) IBOutlet UIButton *inviteContactsButton;
+@property (strong, nonatomic) UIView *autoLocationView;
+@property (strong, nonatomic) UISwitch *autoLocationSwitch;
 
 @property (strong, nonatomic) BNPermissionsObject<BNPermissionsObject> *writeAccessList;
 @property (strong, nonatomic) BNPermissionsObject<BNPermissionsObject> *readAccessList;
@@ -40,6 +43,8 @@
 @property (nonatomic) ModifyStoryViewControllerEditMode editMode;
 
 @property (strong, nonatomic) NSManagedObjectContext *scratchMOC;;
+@property (strong, nonatomic) AMBlockToken *updatePermissionsFrameBlock;
+
 @end
 
 @implementation ModifyStoryViewController
@@ -56,10 +61,15 @@
 @synthesize invitationView = _invitationView;
 @synthesize charCountLabel = _charCountLabel;
 @synthesize scratchMOC = _scratchMOC;
+@synthesize autoLocationView = _autoLocationView;
+@synthesize autoLocationSwitch = _autoLocationSwitch;
+@synthesize updatePermissionsFrameBlock = _updatePermissionsFrameBlock;
 
 #define MAX_STORY_TITLE_LENGTH 40
 #define TEXT_INSETS 5
 #define VIEW_INSETS 8
+#define CORNER_RADIUS 8
+#define SUBVIEW_OPACITY 0.2
 
 - (id)init
 {
@@ -101,6 +111,8 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
+    __weak typeof(self) wself = self;
+    
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
     [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done:)]];
@@ -119,7 +131,7 @@
     frame.size.width -= 2*VIEW_INSETS;
     frame.origin.y = 16.0f;
     self.storyTitleTextField = [[BNTextField alloc] initWithFrame:frame];
-    self.storyTitleTextField.backgroundColor = [BANYAN_GREEN_COLOR colorWithAlphaComponent:0.2];
+    self.storyTitleTextField.backgroundColor = [BANYAN_GREEN_COLOR colorWithAlphaComponent:SUBVIEW_OPACITY];
     self.storyTitleTextField.placeholder = @"What do you want to call your story?";
     self.storyTitleTextField.delegate = self;
     self.storyTitleTextField.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSETS, 0, TEXT_INSETS);
@@ -143,15 +155,15 @@
 
     frame.origin.y = CGRectGetMaxY(self.charCountLabel.frame) + 30 /* distance between char count label and permission */;
     self.invitationView = [[UIView alloc] initWithFrame:frame];
-    self.invitationView.backgroundColor = [BANYAN_GREEN_COLOR colorWithAlphaComponent:0.1];
-    [self.invitationView.layer setCornerRadius:8];
+    self.invitationView.backgroundColor = [BANYAN_GREEN_COLOR colorWithAlphaComponent:SUBVIEW_OPACITY/2];
+    [self.invitationView.layer setCornerRadius:CORNER_RADIUS];
     [self.scrollView addSubview:self.invitationView];
     
     frame = self.invitationView.bounds;
     self.inviteeLabel = [[BNLabel alloc] initWithFrame:frame];
     self.inviteeLabel.textEdgeInsets = UIEdgeInsetsMake(TEXT_INSETS, TEXT_INSETS, TEXT_INSETS, TEXT_INSETS);
-    self.inviteeLabel.backgroundColor = [BANYAN_GREEN_COLOR colorWithAlphaComponent:0.1];
-    [self.inviteeLabel.layer setCornerRadius:8];
+    self.inviteeLabel.backgroundColor = [BANYAN_GREEN_COLOR colorWithAlphaComponent:SUBVIEW_OPACITY/2];
+    [self.inviteeLabel.layer setCornerRadius:CORNER_RADIUS];
     self.inviteeLabel.numberOfLines = 0;
     [self.invitationView addSubview:self.inviteeLabel];
 
@@ -190,6 +202,42 @@
     }
     
     [self.inviteContactsButton addTarget:self action:@selector(inviteContacts:) forControlEvents:UIControlEventTouchUpInside];
+    self.updatePermissionsFrameBlock = [self.invitationView addObserverForKeyPath:@"frame" task:^(id obj, NSDictionary *change) {
+        [wself updateAutoLocationViewFrame];
+        [wself updateScrollViewContentSize];
+    }];
+    
+    frame = self.scrollView.bounds;
+    frame.origin.x = VIEW_INSETS;
+    frame.size = self.scrollView.bounds.size;
+    frame.size.height = 44.0f;
+    frame.size.width -= 2*VIEW_INSETS;
+    frame.origin.y = CGRectGetMaxY(self.invitationView.frame) + 30;
+    self.autoLocationView = [[UIView alloc] initWithFrame:frame];
+    self.autoLocationView.backgroundColor = [BANYAN_GREEN_COLOR colorWithAlphaComponent:SUBVIEW_OPACITY];
+    [self.autoLocationView.layer setCornerRadius:CORNER_RADIUS];
+    [self.scrollView addSubview:self.autoLocationView];
+    
+    frame = self.autoLocationView.bounds;
+    frame.size.width -= 60;
+    BNLabel *autoLocationLabel = [[BNLabel alloc] initWithFrame:frame];
+    autoLocationLabel.textEdgeInsets = UIEdgeInsetsMake(0, 2*TEXT_INSETS, 0, TEXT_INSETS);
+    autoLocationLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:16];
+    autoLocationLabel.text = @"Automatically add location to pieces (if available)";
+    autoLocationLabel.numberOfLines = 2;
+    autoLocationLabel.textColor = BANYAN_GRAY_COLOR;
+    [self.autoLocationView addSubview:autoLocationLabel];
+    
+    frame = self.autoLocationView.bounds;
+    frame.size.width -= CGRectGetWidth(autoLocationLabel.frame);
+    frame.origin.x = CGRectGetMaxX(autoLocationLabel.frame);
+    CGPoint centerPt = autoLocationLabel.center;
+    self.autoLocationSwitch = [[UISwitch alloc] initWithFrame:frame];
+    centerPt.x = self.autoLocationSwitch.center.x;
+    self.autoLocationSwitch.center = centerPt;
+    self.autoLocationSwitch.on = self.story.autoAddLocation;
+    [self.autoLocationView addSubview:self.autoLocationSwitch];
+    
     [self updatePermissionTextInView];
 }
 
@@ -239,6 +287,11 @@
     self.story.writeAccess = self.writeAccessList;
     self.story.readAccess = self.readAccessList;
 
+    self.story.autoAddLocation = self.autoLocationSwitch.on;
+    [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"edit story"
+                                           label:@"auto add location"
+                                           value:[NSNumber numberWithBool:self.autoLocationSwitch.on]];
+    
     self.story = (Story *)[self.story cloneIntoNSManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
     
     // Upload Story
@@ -288,7 +341,7 @@
     NSString *permStr = [NSString stringWithFormat:@"%@ can contribute to this story.\r%@ can view this story.", writeAccessStr, readAccessStr];
     NSMutableAttributedString *labelStr =[[NSMutableAttributedString alloc] initWithString:@"Who can contribute or view the story?"
                                                                                 attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
-                                                                                             NSForegroundColorAttributeName: [UIColor grayColor]}];
+                                                                                             NSForegroundColorAttributeName: BANYAN_GRAY_COLOR}];
     
     [labelStr appendAttributedString:[[NSMutableAttributedString alloc] initWithString:@"\r\r"
                                                                             attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:8]}]];
@@ -318,9 +371,19 @@
     frame = self.invitationView.frame;
     frame.size.height = CGRectGetHeight(self.inviteeLabel.frame) + CGRectGetHeight(self.inviteContactsButton.frame);
     self.invitationView.frame = frame;
-    
+}
+
+- (void) updateAutoLocationViewFrame
+{
+    CGRect frame = self.autoLocationView.frame;
+    frame.origin.y = CGRectGetMaxY(self.invitationView.frame) + 30;
+    self.autoLocationView.frame = frame;
+}
+
+- (void) updateScrollViewContentSize
+{
     CGSize scrollSize = self.view.bounds.size;
-    frame = [self.invitationView convertRect:self.invitationView.bounds toView:self.view];
+    CGRect frame = [self.autoLocationView convertRect:self.autoLocationView.bounds toView:self.view];
     scrollSize.height = CGRectGetMaxY(frame) + CGRectGetMaxY(self.navigationController.navigationBar.frame);
     self.scrollView.contentSize = scrollSize;
 }
@@ -368,6 +431,7 @@ finishedInvitingForViewerPermissions:(BNPermissionsObject *)viewerPermissions
 
 - (void)dealloc
 {
+    [self removeObserverWithBlockToken:self.updatePermissionsFrameBlock];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -422,4 +486,5 @@ finishedInvitingForViewerPermissions:(BNPermissionsObject *)viewerPermissions
 }
 
 #undef MAX_STORY_TITLE_LENGTH
+#undef CORNER_RADIUS
 @end
