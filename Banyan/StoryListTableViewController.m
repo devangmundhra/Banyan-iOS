@@ -30,9 +30,6 @@ typedef enum {
     FilterStoriesSegmentIndexPopular
 } FilterStoriesSegmentIndex;
 
-@interface StoryListTableViewController (MYIntroductionDelegate) <MYIntroductionDelegate>
-@end
-
 @interface StoryListTableViewController (StoryReaderControllerDelegate) <StoryReaderControllerDelegate>
 @end
 
@@ -154,15 +151,16 @@ typedef enum {
 
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
-    BOOL appAlreadyOpened = [[firstTimeDict objectForKey:BNUserDefaultsFirstTimeAppOpen] boolValue];
-    if (!appAlreadyOpened) {
-        [[UIApplication sharedApplication] setStatusBarHidden:YES];
-        BNIntroductionView *introductionView = [[BNIntroductionView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-        introductionView.delegate = self;
-        [self.navigationController.view addSubview:introductionView];
-    }
     
-    if (appAlreadyOpened && ![firstTimeDict objectForKey:BNUserDefaultsFirstTimeStoryListVCWSignin] && [BanyanAppDelegate loggedIn]) {
+    // We only show this if the use has just started the app
+    if (![firstTimeDict objectForKey:BNUserDefaultsFirstTimeStoryListVCWoSignin] && ![BanyanAppDelegate loggedIn]) {
+        CMPopTipView *popTipView = [[CMPopTipView alloc] initWithTitle:@"Sign in" message:@"Sign in (using Facebook) to see, create and contribute to more stories"];
+        [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:BNUserDefaultsFirstTimeStoryListVCWoSignin];
+        [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
+        [defaults synchronize];
+        SET_CMPOPTIPVIEW_APPEARANCES(popTipView);
+        [popTipView presentPointingAtBarButtonItem:self.navigationItem.rightBarButtonItem animated:NO];
+    } else if (![firstTimeDict objectForKey:BNUserDefaultsFirstTimeStoryListVCWSignin] && [BanyanAppDelegate loggedIn]) {
         [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:BNUserDefaultsFirstTimeStoryListVCWSignin];
         [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
         [defaults synchronize];
@@ -525,47 +523,4 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     }
 }
 
-@end
-
-@implementation StoryListTableViewController (MYIntroductionDelegate)
-
--(void)introduction:(MYBlurIntroductionView *)introductionView didFinishWithType:(MYFinishType)finishType
-{
-    [introductionView removeFromSuperview];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
-
-    // We only show this if the use has just started the app
-    if (![BanyanAppDelegate loggedIn]) {
-        CMPopTipView *popTipView = [[CMPopTipView alloc] initWithTitle:@"Sign in" message:@"Sign in (using Facebook) to see, create and contribute to more stories"];
-        SET_CMPOPTIPVIEW_APPEARANCES(popTipView);
-        [popTipView presentPointingAtBarButtonItem:self.navigationItem.rightBarButtonItem animated:NO];
-    }
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
-    [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:BNUserDefaultsFirstTimeAppOpen];
-    [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:BNUserDefaultsFirstTimeStoryListVCWoSignin];
-    [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
-    [defaults synchronize];
-    
-}
-
--(void)introduction:(MYBlurIntroductionView *)introductionView didChangeToPanel:(MYIntroductionPanel *)panel withIndex:(NSInteger)panelIndex
-{
-    UIImage *image = nil;
-    // You can edit introduction view properties right from the delegate method!
-    if (panelIndex == 0) {
-        image = [UIImage imageNamed:@"IntroBkg2"];
-        [introductionView setBackgroundColor:[BANYAN_WHITE_COLOR colorWithAlphaComponent:0.5]];
-    } else if (panelIndex == 1) {
-        image = [UIImage imageNamed:@"IntroBkg3"];
-        [introductionView setBackgroundColor:[BANYAN_WHITE_COLOR colorWithAlphaComponent:0.4]];
-    }
-    panel.PanelTitleLabel.textColor = BANYAN_BLACK_COLOR;
-    panel.PanelDescriptionLabel.textColor = BANYAN_BLACK_COLOR;
-    panel.PanelTitleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:24];
-    panel.PanelDescriptionLabel.font = [UIFont fontWithName:@"Roboto-Medium" size:14];
-
-    introductionView.BackgroundImageView.image = image;
-}
 @end

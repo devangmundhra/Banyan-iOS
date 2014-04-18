@@ -14,18 +14,19 @@ pod 'uservoice-iphone-sdk', '~> 3.0'
 pod 'AFNetworking-TastyPie', :git => "https://github.com/rhfung/AFNetworking-TastyPie.git", :tag => "0.0.1"
 pod 'TWMessageBarManager', '~> 1.3.2'
 pod 'CMPopTipView', '~> 2.1.0'
-pod 'MYBlurIntroductionView'
 pod 'TTTAttributedLabel'
 pod 'GoogleAnalytics-iOS-SDK'
+pod 'JazzHands'
+pod 'BButton'
 
 # Testing and Search are optional components
 # pod 'RestKit/Testing',  :git => 'https://github.com/RestKit/RestKit.git'
 # pod 'RestKit/Search',  :git => 'https://github.com/RestKit/RestKit.git'
 
-post_install do |installer_representation|
-  installer_representation.project.targets.each do |target|
-    target.build_configurations.each do |config|
-      config.build_settings['ARCHS'] = 'armv7 armv7s'
-    end
-  end
-end
+#post_install do |installer_representation|
+#  installer_representation.project.targets.each do |target|
+#    target.build_configurations.each do |config|
+#      config.build_settings['ARCHS'] = 'armv7 armv7s'
+#    end
+#  end
+#end

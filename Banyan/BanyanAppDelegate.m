@@ -22,6 +22,7 @@
 #import "TWMessageBarManager.h"
 #import "GAI.h"
 #import <GoogleMaps/GoogleMaps.h>
+#import "BNIntroViewController.h"
 
 @interface BanyanAppDelegateTWMessageBarStyleSheet : NSObject <TWMessageBarStyleSheet>
 
@@ -112,12 +113,25 @@
     self.window.rootViewController = self.homeViewController;
     [self.window makeKeyAndVisible];
     
+    [self showIntroIfRequired];
+    
     // Extract the notification data
     if (launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]) {
         [self application:application didReceiveRemoteNotification:launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]];
     }
 
     return YES;
+}
+
+- (void) showIntroIfRequired
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
+    BOOL appAlreadyOpened = [[firstTimeDict objectForKey:BNUserDefaultsFirstTimeAppOpen] boolValue];
+    if (!appAlreadyOpened) {
+        BNIntroViewController *introVC = [[BNIntroViewController alloc] init];
+        [self.window.rootViewController presentViewController:introVC animated:NO completion:nil];
+    }
 }
 
 void uncaughtExceptionHandler(NSException *exception)

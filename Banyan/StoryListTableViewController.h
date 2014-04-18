@@ -10,7 +10,6 @@
 #import "CoreDataTableViewController.h"
 #import "SingleStoryCell.h"
 #import "StoryPickerViewController.h"
-#import "BNIntroductionView.h"
 
 @interface StoryListTableViewController : CoreDataTableViewController <SingleStoryCellDelegate, StoryPickerViewControllerDelegate>
 
