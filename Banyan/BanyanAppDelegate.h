@@ -38,6 +38,10 @@
 
 #define CRASHLYTICS_API_KEY @"2af776d8f9dd545aa2bcb6afef1d780cfc5a1ee0"
 #define APP_DELEGATE ((BanyanAppDelegate *)([UIApplication sharedApplication].delegate))
+
+#define AVIARY_KEY @"qv6LJ4O2qEqxH9twpUiIKg"
+#define AVIARY_SECRET @"hG0n4Foxw0qN10P0E1SlIA"
+
 @interface BanyanAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;

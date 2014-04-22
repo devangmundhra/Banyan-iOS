@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "AFPhotoEditorController.h"
+#import <AviarySDK/AviarySDK.h>
 #import "UIImage+ResizeAdditions.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 

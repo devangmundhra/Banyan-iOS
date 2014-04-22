@@ -23,6 +23,7 @@
 #import "GAI.h"
 #import <GoogleMaps/GoogleMaps.h>
 #import "BNIntroViewController.h"
+#import <AviarySDK/AviarySDK.h>
 
 @interface BanyanAppDelegateTWMessageBarStyleSheet : NSObject <TWMessageBarStyleSheet>
 
@@ -100,6 +101,12 @@
         [Crashlytics setUserIdentifier:[NSString stringWithFormat:@"%@", currentUser.userId]];
     }
     [UserVoice initialize:config];
+    
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [AFPhotoEditorController setAPIKey:AVIARY_KEY secret:AVIARY_SECRET];
+    });
+    [AFOpenGLManager beginOpenGLLoad];
     
     [application registerForRemoteNotificationTypes:
      UIRemoteNotificationTypeBadge |

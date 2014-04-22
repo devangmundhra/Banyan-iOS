@@ -89,6 +89,7 @@
     
     self.scrollView.pagingEnabled = YES;
     self.scrollView.showsHorizontalScrollIndicator = NO;
+    self.scrollView.bounces = NO;
     
     [self placeViews];
     [self configureAnimation];

@@ -50,7 +50,7 @@
 #import <MobileCoreServices/UTCoreTypes.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <ImageIO/CGImageProperties.h>
-#import "AFPhotoEditorController.h"
+#import <AviarySDK/AviarySDK.h>
 #import "BanyanAppDelegate.h"
 
 NSString *const AVCamCaptureManagerInfoURL = @"AVCamCaptureManagerInfoURL";
