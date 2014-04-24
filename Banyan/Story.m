@@ -11,6 +11,10 @@
 #import "Media.h"
 #import "Story+Permissions.h"
 #import "User.h"
+#import "Piece+Create.h"
+#import "Piece+Edit.h"
+#import "Story+Create.h"
+#import "Story+Edit.h"
 
 @implementation Story
 
@@ -91,6 +95,46 @@
         array = [NSArray array];
     }
     return array;
+}
+
+- (void)uploadFailedRemoteObject
+{
+    if (self.remoteStatus == RemoteObjectStatusFailed) {
+        if (NUMBER_EXISTS(self.bnObjectId)) {
+            [Story editStory:self];
+        }
+        else {
+            [Story createNewStory:self];
+        }
+        return;
+    }
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:[NSEntityDescription entityForName:kBNPieceClassKey inManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@) AND (story = %@)",
+							  [NSNumber numberWithInt:RemoteObjectStatusFailed], self];
+    [request setPredicate:predicate];
+    
+    NSError *error = nil;
+    NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
+    if (array == nil) {
+        return;
+    }
+    
+    for (Piece *piece in array) {
+        if (NUMBER_EXISTS(piece.bnObjectId)) {
+            [Piece editPiece:piece];
+        }
+        else {
+            [Piece createNewPiece:piece];
+        }
+    }
+}
+- (void) cancelAnyOngoingOperation
+{
+    [super cancelAnyOngoingOperation];
+    for (Piece *piece in self.pieces) {
+        [piece cancelAnyOngoingOperation];
+    }
 }
 
 + (Story *)getCurrentOngoingStoryToContribute

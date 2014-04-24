@@ -15,11 +15,19 @@
 #import "User.h"
 #import "BNS3TransferManager.h"
 
+static char operationKey;
+
 @implementation Media (Transfer)
 
 - (void)cancelUpload
 {
-    
+    // Cancel in progress upload
+    BNS3PutObjectRequest *operation = objc_getAssociatedObject(self, &operationKey);
+    if (operation)
+    {
+        [operation cancel];
+        objc_setAssociatedObject(self, &operationKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
 }
 
 - (void) uploadWithSuccess:(void (^)())successBlock failure:(void (^)(NSError *error))errorBlock
@@ -33,12 +41,14 @@
     void (^success)() = ^(){
         self.remoteStatus = MediaRemoteStatusSync;
         self.localURL = nil;
+        objc_setAssociatedObject(self, &operationKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         [self save];
         successBlock();
     };
     
-    void (^failure)(NSError *error) = ^(NSError *error){
+    void (^failure)(NSError *error) = ^(NSError *error) {
         self.remoteStatus = MediaRemoteStatusFailed;
+        objc_setAssociatedObject(self, &operationKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         [self save];
         errorBlock(error);
     };
@@ -75,7 +85,7 @@
     
     __weak typeof(self) wself = self;
     NSString *filename = [NSString stringWithFormat:@"%@/%@_%@.wav", [BNSharedUser currentUser].userId, [self.remoteObject getIdentifierForMediaFileName], self.filename];
-    [self.transferManager uploadData:audioData withContentType:@"audio/wav"
+    S3TransferOperation *operation =[self.remoteObject.transferManager uploadData:audioData withContentType:@"audio/wav"
                          forFileName:filename
                         successBlock:^(NSString *url){
                             wself.remoteURL = url;
@@ -90,6 +100,7 @@
                             successBlock();
                         }
                           errorBlock:errorBlock];
+    objc_setAssociatedObject(self, &operationKey, operation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (void) uploadImageWithSuccess:(void (^)())successBlock failure:(void (^)(NSError *error))errorBlock
@@ -118,7 +129,7 @@
         self.remoteStatus = MediaRemoteStatusPushing;
         __weak typeof(self) wself = self;
         NSString *filename = [NSString stringWithFormat:@"%@/%@_%@.jpg", [BNSharedUser currentUser].userId, [self.remoteObject getIdentifierForMediaFileName], self.filename];
-        [self.transferManager uploadData:imageData withContentType:@"image/jpeg"
+        S3TransferOperation *operation = [self.remoteObject.transferManager uploadData:imageData withContentType:@"image/jpeg"
                              forFileName:filename
                             successBlock:^(NSString *url) {
                                 // Cache this in SDWebCache
@@ -131,6 +142,7 @@
                                 [wself uploadThumbnailImageWithSuccess:successBlock failure:errorBlock];
                             }
                               errorBlock:errorBlock];
+        objc_setAssociatedObject(self, &operationKey, operation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
             failureBlock:^(NSError *error) {
                 errorBlock(error);
@@ -148,7 +160,7 @@
     __weak typeof(self) wself = self;
     NSString *filename = [NSString stringWithFormat:@"%@/%@_%@_%@.jpg", [BNSharedUser currentUser].userId, [self.remoteObject getIdentifierForMediaFileName], [BNMisc genRandStringLength:10], NSStringFromCGSize(MEDIA_THUMBNAIL_SIZE)];
     
-    [self.transferManager uploadData:UIImageJPEGRepresentation(self.thumbnail, 1)
+    S3TransferOperation *operation = [self.remoteObject.transferManager uploadData:UIImageJPEGRepresentation(self.thumbnail, 1)
                      withContentType:@"image/jpeg"
                          forFileName:filename
                         successBlock:^(NSString *url) {
@@ -162,13 +174,14 @@
                             successBlock();
                         }
                           errorBlock:errorBlock];
+    objc_setAssociatedObject(self, &operationKey, operation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (void) getImageWithContentMode:(UIViewContentMode)contentMode
                           bounds:(CGSize)size
             interpolationQuality:(CGInterpolationQuality)quality
              forMediaWithSuccess:(void (^)(UIImage *))success
-                        progress:(void (^)(NSUInteger receivedSize, long long expectedSize))progress
+                        progress:(void (^)(NSInteger receivedSize, NSInteger expectedSize))progress
                          failure:(void (^)(NSError *error))failure
                 includeThumbnail:(BOOL) includeThumbnail
 {
@@ -181,7 +194,7 @@
 }
 
 - (void) getImageForMediaWithSuccess:(void (^)(UIImage *image))success
-                            progress:(void (^)(NSUInteger receivedSize, long long expectedSize))progress
+                            progress:(void (^)(NSInteger receivedSize, NSInteger expectedSize))progress
                              failure:(void (^)(NSError *error))failure
                     includeThumbnail:(BOOL) includeThumbnail
 {

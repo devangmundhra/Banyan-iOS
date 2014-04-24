@@ -18,6 +18,7 @@ typedef enum {
 } RemoteObjectStatus;
 
 @class Comment, Media, User;
+@class BNS3TransferManager;
 
 @interface RemoteObject : NSManagedObject
 
@@ -43,6 +44,9 @@ typedef enum {
 @property (nonatomic, retain) NSSet * comments;
 @property (nonatomic, retain) NSOrderedSet * media;
 
+@property (nonatomic, strong) BNS3TransferManager *transferManager;
+@property (atomic, strong) RKObjectRequestOperation *ongoingOperation;
+
 // Revision management
 - (RemoteObject *) cloneIntoNSManagedObjectContext:(NSManagedObjectContext *)newContext;
 - (void)cloneFrom:(RemoteObject *)source;
@@ -55,6 +59,8 @@ typedef enum {
 
 // Misc methods
 - (NSString *)getIdentifierForMediaFileName;
+- (void) cancelAnyOngoingOperation;
+- (void) uploadFailedRemoteObject;
 @end
 
 

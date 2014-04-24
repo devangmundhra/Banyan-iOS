@@ -91,3 +91,6 @@ NSString *const kBNMediaClassKey           = @"Media";
 #pragma mark - ManagedObject User Class
 // Class key
 NSString *const kBNUserClassKey           = @"User";
+
+#pragma mark - Errors
+NSString *const BNErrorDomain = @"com.banyan.Banyan.ErrorDomain";

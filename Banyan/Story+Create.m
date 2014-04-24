@@ -48,20 +48,23 @@
         BNLogInfo(@"Adding story %@", story.title);
         BNLogTrace(@"Adding story %@", story);
         
-        [[RKObjectManager sharedManager] postObject:story
-                                               path:nil
-                                         parameters:nil
-                                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                                BNLogTrace(@"Create story successful %@", story);
-                                                story.remoteStatus = RemoteObjectStatusSync;
-                                                // Be eager in uploading pieces if available
-                                                [APP_DELEGATE fireRemoteObjectTimer];
-                                            }
-                                            failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                                story.remoteStatus = RemoteObjectStatusFailed;
-                                                [story save];
-                                                BNLogError(@"Error in create story");
-                                            }];
+        RKObjectRequestOperation *operation = [[RKObjectManager sharedManager] appropriateObjectRequestOperationWithObject:story method:RKRequestMethodPOST path:nil parameters:nil];
+
+        [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+            BNLogTrace(@"Create story successful %@", story);
+            story.remoteStatus = RemoteObjectStatusSync;
+            story.ongoingOperation = nil;
+            // Be eager in uploading pieces if available
+            [story uploadFailedRemoteObject];
+        }
+                                         failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                             story.remoteStatus = RemoteObjectStatusFailed;
+                                             story.ongoingOperation = nil;
+                                             [story save];
+                                             BNLogError(@"Error in create story");
+                                         }];
+        story.ongoingOperation = operation;
+        [[RKObjectManager sharedManager] enqueueObjectRequestOperation:operation];
     };
 
     if ([story.media count]) {

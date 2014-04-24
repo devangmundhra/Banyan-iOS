@@ -21,7 +21,6 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
 
 
 @class RemoteObject;
-@class BNS3TransferManager;
 
 @interface Media : NSManagedObject
 #define MEDIA_THUMBNAIL_SIZE CGSizeMake(300, 130)
@@ -44,7 +43,6 @@ typedef NS_ENUM(NSUInteger, MediaRemoteStatus) {
 @property (nonatomic, retain) NSString * title;
 @property (nonatomic, retain) NSNumber * width;
 @property (nonatomic, retain) RemoteObject *remoteObject;
-@property (nonatomic, strong) BNS3TransferManager *transferManager;
 
 @property (nonatomic) MediaRemoteStatus remoteStatus;
 

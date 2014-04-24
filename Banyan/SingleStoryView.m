@@ -11,16 +11,20 @@
 #import "Story+Permissions.h"
 #import "User.h"
 #import "Piece.h"
+#import "BButton.h"
+#import "AFBanyanAPIClient.h"
 
 static NSString *const hideStoryString = @"Hide Story";
 static NSString *const flagStoryString = @"Flag Story";
+static NSString *const cancelUploadString = @"Cancel upload";
+static NSString *const retryUploadString = @"Retry upload";
 
 @interface SingleStoryView ()
 
 @property (strong, nonatomic) BNSwipeableView *topSwipeView;
 @property (strong, nonatomic) UIButton *storyFrontViewControl;
 @property (strong, nonatomic) UILabel *storyAuthorsLabel;
-@property (strong, nonatomic) UILabel *storyStatusLabel;
+@property (strong, nonatomic) BButton *storyUploadStatusButton;
 @property (strong, nonatomic) UIButton *addPcButton;
 
 @end
@@ -42,12 +46,15 @@ static UIFont *_mediumFont;
 static UIFont *_smallFont;
 static UIFont *_thinFont;
 static BOOL _loggedIn;
+static NSString *_uploadString;
+static NSString *_exclaimString;
 
 @implementation SingleStoryView
 @synthesize story = _story;
 @synthesize storyFrontViewControl = _storyFrontViewControl;
 @synthesize addPcButton = _addPcButton;
 @synthesize delegate = _delegate;
+@synthesize storyUploadStatusButton = _storyUploadStatusButton;
 
 + (void)initialize
 {
@@ -77,6 +84,10 @@ static BOOL _loggedIn;
         _thinFont = [UIFont fontWithName:@"Roboto-Thin" size:20];
         
         _loggedIn = [BanyanAppDelegate loggedIn];
+        
+        NSArray *fontAwesomeStrings = [NSString fa_allFontAwesomeStrings];
+        _uploadString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconSpinner];
+        _exclaimString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconExclamationSign];
         
         // Notifications to handle permission controls
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -109,7 +120,6 @@ static BOOL _loggedIn;
 
 - (id)initWithFrame:(CGRect)frame
 {
-#define SIZE_OF_STORY_STATUS_LABEL 72
 #define SIZE_OF_ADD_PC_BUTTON 36
     self = [super initWithFrame:frame];
     if (self) {
@@ -144,18 +154,22 @@ static BOOL _loggedIn;
         self.storyAuthorsLabel.font = _mediumFont;
         [self addSubview:self.storyAuthorsLabel];
         
-        self.storyStatusLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.storyAuthorsLabel.frame) - SIZE_OF_STORY_STATUS_LABEL,
-                                                                          TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT,
-                                                                          SIZE_OF_STORY_STATUS_LABEL, BOTTOM_VIEW_HEIGHT)];
-        self.storyStatusLabel.backgroundColor = BANYAN_WHITE_COLOR;
-        self.storyStatusLabel.textColor = BANYAN_LIGHTGRAY_COLOR;
-        self.storyStatusLabel.textAlignment = NSTextAlignmentRight;
-        self.storyStatusLabel.lineBreakMode = NSLineBreakByClipping;
-        self.storyStatusLabel.font = _smallFont;
-        self.storyStatusLabel.minimumScaleFactor = 0.5;
-        [self addSubview:self.storyStatusLabel];
+        self.storyUploadStatusButton = [[BButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.storyAuthorsLabel.frame) - SIZE_OF_ADD_PC_BUTTON,
+                                                                                 TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT + SPACER_DISTANCE,
+                                                                                 SIZE_OF_ADD_PC_BUTTON,
+                                                                                 BOTTOM_VIEW_HEIGHT - 2*SPACER_DISTANCE)
+                                                                color:[UIColor bb_successColorV3]
+                                                                style:BButtonStyleBootstrapV3
+                                                                 icon:FAIconSpinner
+                                                             fontSize:20.0f];
+        [self.storyUploadStatusButton setTitle:_uploadString forState:UIControlStateNormal];
+        [self.storyUploadStatusButton setColor:[UIColor bb_successColorV3]];
+        [self.storyUploadStatusButton addTarget:self action:@selector(storyUploadActionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        self.storyUploadStatusButton.hidden = YES;
+        [self.storyUploadStatusButton setTitleEdgeInsets:UIEdgeInsetsMake(SPACER_DISTANCE, 0, 0, 0)]; // Adjust this since title seems to be a little off from the top
+        [self addSubview:self.storyUploadStatusButton];
         
-        self.addPcButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.storyStatusLabel.frame) + SPACER_DISTANCE,
+        self.addPcButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.storyUploadStatusButton.frame) + SPACER_DISTANCE,
                                                                       TOP_VIEW_HEIGHT + MIDDLE_VIEW_HEIGHT + SPACER_DISTANCE,
                                                                       SIZE_OF_ADD_PC_BUTTON, BOTTOM_VIEW_HEIGHT - 2*SPACER_DISTANCE)];
         [self.addPcButton setTintColor:BANYAN_GREEN_COLOR];
@@ -169,7 +183,7 @@ static BOOL _loggedIn;
         self.addPcButton.layer.cornerRadius = 5.0f;
         self.addPcButton.layer.masksToBounds = YES;
         
-        [self insertSubview:self.addPcButton belowSubview:self.storyStatusLabel];
+        [self insertSubview:self.addPcButton belowSubview:self.storyUploadStatusButton];
     }
     return self;
 }
@@ -192,11 +206,23 @@ static BOOL _loggedIn;
     self.storyAuthorsLabel.text = [NSString stringWithFormat:@"by %@", [self.story shortStringOfContributors]];
     // If the uploadStatusNumber says not sync, confirm it by actually calculating the upload status number.
     // Sometimes, due to caching, the uploadStatusNumber does not reflect the latest value
-    if ([self.story.uploadStatusNumber unsignedIntegerValue] != RemoteObjectStatusSync && [[self.story calculateUploadStatusNumber] unsignedIntegerValue] != RemoteObjectStatusSync) {
-        self.storyStatusLabel.hidden = NO;
-        self.storyStatusLabel.text = self.story.sectionIdentifier;
+    if (   [self.story.uploadStatusNumber unsignedIntegerValue] != RemoteObjectStatusSync
+        && [[self.story calculateUploadStatusNumber] unsignedIntegerValue] != RemoteObjectStatusSync) {
+        if ([self.story.uploadStatusNumber unsignedIntegerValue] == RemoteObjectStatusPushing) {
+            [self.storyUploadStatusButton setTitle:_uploadString forState:UIControlStateNormal];
+            [self.storyUploadStatusButton setColor:[UIColor bb_successColorV3]];
+        } else if ([self.story.uploadStatusNumber unsignedIntegerValue] == RemoteObjectStatusFailed) {
+            [self.storyUploadStatusButton setTitle:_exclaimString forState:UIControlStateNormal];
+            [self.storyUploadStatusButton setColor:[UIColor bb_dangerColorV3]];
+        }
+        if ([[AFBanyanAPIClient sharedClient] isReachable]) {
+            self.storyUploadStatusButton.enabled = YES;
+        } else {
+            self.storyUploadStatusButton.enabled = NO;
+        }
+        self.storyUploadStatusButton.hidden = NO;
     } else {
-        self.storyStatusLabel.hidden = YES;
+        self.storyUploadStatusButton.hidden = YES;
     }
 
     if (self.story.canContribute && _loggedIn) {
@@ -209,6 +235,16 @@ static BOOL _loggedIn;
     }
     else {
         self.addPcButton.hidden = YES;
+    }
+}
+
+- (IBAction)storyUploadActionButtonPressed:(id)sender
+{
+    BNLogInfo(@"story upload action button pressed for status %@", self.story.uploadStatusNumber);
+    if ([self.story.uploadStatusNumber unsignedIntegerValue] == RemoteObjectStatusPushing) {
+        [self cancelStoryUploadAlert:sender];
+    } else if ([self.story.uploadStatusNumber unsignedIntegerValue] == RemoteObjectStatusFailed) {
+        [self retryStoryUploadAlert:sender];
     }
 }
 
@@ -468,6 +504,22 @@ static BOOL _loggedIn;
     [alertView show];
 }
 
+- (void)cancelStoryUploadAlert:(UIButton *)button
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:cancelUploadString
+                                                        message:@"Do you want to cancel the upload of any changes to this story and its pieces?"
+                                                       delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];    
+    [alertView show];
+}
+
+- (void)retryStoryUploadAlert:(UIButton *)button
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:retryUploadString
+                                                        message:@"Retry synchronization of any changes to this story and its pieces?"
+                                                       delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+    [alertView show];
+}
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if ([alertView.title isEqualToString:hideStoryString] && buttonIndex==1) {
@@ -477,6 +529,14 @@ static BOOL _loggedIn;
         [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
         NSString *message = [alertView textFieldAtIndex:0].text;
         [self.delegate flagStory:self withMessage:message];
+    } else if ([alertView.title isEqualToString:cancelUploadString] && buttonIndex==1) {
+        [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
+        [self.story cancelAnyOngoingOperation];
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"story upload action" label:@"cancel" value:nil];
+    } else if ([alertView.title isEqualToString:retryUploadString] && buttonIndex==1) {
+        [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
+        [self.story uploadFailedRemoteObject];
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"story upload action" label:@"retry" value:nil];
     }
 }
 @end

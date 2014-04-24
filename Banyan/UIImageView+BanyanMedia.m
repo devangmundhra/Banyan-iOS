@@ -74,7 +74,7 @@ RUN_SYNC_ON_MAINTHREAD(block)
             [self setImageWithURL:[NSURL URLWithString:media.remoteURL]
                  placeholderImage:placeHolderImage
                           options:0
-                         progress:^(NSUInteger receivedSize, long long expectedSize) {
+                         progress:^(NSInteger receivedSize, NSInteger expectedSize) {
                              hud.progress = (float)receivedSize/expectedSize;
                          }
                         completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {

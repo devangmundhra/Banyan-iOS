@@ -46,9 +46,6 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
-- (void) fireRemoteObjectTimer;
-- (void) invalidateRemoteObjectTimer;
-
 //- (BOOL) openSessionWithAllowLoginUI:(BOOL)allowLoginUI;;
 - (void) login;
 - (void) logout;

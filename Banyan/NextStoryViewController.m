@@ -54,13 +54,40 @@
     
     // Set the Navigation Item Views
     // Title of Story
-    self.navigationItem.title = self.currentStory.title;
+//    self.navigationItem.title = self.currentStory.title;
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+    titleLabel.numberOfLines = 0;
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    NSAttributedString *titleString = nil;
+    
+    if (self.currentStory.title.length <= 20) {
+        titleString = [[NSAttributedString alloc] initWithString:self.currentStory.title
+                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
+                                                                   NSForegroundColorAttributeName: BANYAN_DARKGRAY_COLOR}];
+    } else {
+        titleString = [[NSAttributedString alloc] initWithString:self.currentStory.title
+                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:12],
+                                                                   NSForegroundColorAttributeName: BANYAN_DARKGRAY_COLOR}];
+    }
+    
+    NSAttributedString *swipeString = [[NSAttributedString alloc] initWithString:@"\rswipe to go back to story"
+                                                                     attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
+                                                                                  NSForegroundColorAttributeName: BANYAN_GRAY_COLOR}];
+    NSMutableAttributedString *fullAttrString = [[NSMutableAttributedString alloc] initWithAttributedString:titleString];
+    [fullAttrString appendAttributedString:swipeString];
+    titleLabel.attributedText = fullAttrString;
+    self.navigationItem.titleView = titleLabel;
     
     // Back button
     UIImage *prevImage = [UIImage imageNamed:@"Previous"];
     UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
     backButton.frame = CGRectMake(0, 0, 80, prevImage.size.height);
     [backButton setImage:prevImage forState:UIControlStateNormal];
+//    [backButton setTitle:@"All stories" forState:UIControlStateNormal];
+//    [backButton setTitleColor:BANYAN_GREEN_COLOR forState:UIControlStateNormal];
+//    [backButton.titleLabel setFont:[UIFont fontWithName:@"Roboto" size:20]];
+//    [backButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 4.0f, 0, -10.0f)];
     [backButton addTarget:self action:@selector(goToStoryList:) forControlEvents:UIControlEventTouchUpInside];
     [backButton sizeToFit];
     UIBarButtonItem *backBarButton = [[UIBarButtonItem alloc] initWithCustomView:backButton];

@@ -28,14 +28,8 @@
 + (void) deletePiece:(Piece *)piece completion:(void (^)(void)) completion
 {
     if (piece.remoteStatus == RemoteObjectStatusPushing) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error in deleting piece"
-                                                        message:@"Can't delete a piece while it is being uploaded"
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
+        [piece cancelAnyOngoingOperation];
         [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction Skipped" action:@"piece delete" label:@"pending changes" value:nil];
-        return;
     }
 
     if (piece.remoteStatus != RemoteObjectStatusLocal && NUMBER_EXISTS(piece.bnObjectId)) {

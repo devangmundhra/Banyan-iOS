@@ -30,7 +30,6 @@
 @dynamic width;
 @dynamic remoteObject;
 @dynamic thumbnailfilename;
-@synthesize transferManager = _transferManager;
 
 + (Media *)newMediaForObject:(RemoteObject *)remoteObject
 {
@@ -49,19 +48,6 @@
 //    [media save];
     
     return media;
-}
-
-
-- (BNS3TransferManager *)transferManager
-{
-    @synchronized(self) {
-        if (!_transferManager) {
-            _transferManager = [[BNS3TransferManager alloc] init];
-            _transferManager.s3 = [BNAWSS3Client sharedClient];
-        }
-    }
-
-    return _transferManager;
 }
 
 - (void)remove {
@@ -104,7 +90,7 @@
 }
 
 - (void)awakeFromFetch {
-    if ((self.remoteStatus == MediaRemoteStatusPushing && self.transferManager.operationQueue.operationCount == 0) || (self.remoteStatus == MediaRemoteStatusProcessing)) {
+    if ((self.remoteStatus == MediaRemoteStatusPushing && self.remoteObject.transferManager.operationQueue.operationCount == 0) || (self.remoteStatus == MediaRemoteStatusProcessing)) {
         self.remoteStatus = MediaRemoteStatusFailed;
     }
 }

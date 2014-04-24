@@ -45,21 +45,16 @@
 {
     [story save];
 
-    // If the object has not been created yet, don't ask for editing it on the server.
+    // If the object has not been created yet, create it first.
     if (!NUMBER_EXISTS(story.bnObjectId)) {
         if (story.remoteStatus == RemoteObjectStatusPushing) {
-            // TODO: There is still a race condition here when the story is being created
-            // and an edit comes in, in which case the edit will be lost.
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Can't update the story"
-                                                            message:@"A previous syncronization of the story to the server is still in progress"
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
-            [alert show];
+            // Cancel any current POST operations going on
+            [story cancelAnyOngoingOperation];
             [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction Skipped" action:@"story edit" label:@"pending changes" value:nil];
             return;
         }
-        // Else don't do anything. The story has not even been created yet. So the creation of the story will take care of the edit as well.
+        // Now since this story has not yet been created, create if first
+        [Story createNewStory:story];
         return;
     }
     
@@ -71,30 +66,33 @@
     void (^updateStory)(Story *) = ^(Story *story) {
         BNLogTrace(@"Edit Story %@", story);
         
-        [[RKObjectManager sharedManager] putObject:story
-                                              path:nil
-                                        parameters:nil
-                                           success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                               BNLogTrace(@"Update story successful %@", story);
-                                               story.remoteStatus = RemoteObjectStatusSync;
-                                               // Be eager in uploading pieces if available
-                                               [APP_DELEGATE fireRemoteObjectTimer];
-                                           }
-                                           failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                               story.remoteStatus = RemoteObjectStatusFailed;
-                                               if ([[error localizedDescription] rangeOfString:@"got 400"].location != NSNotFound) {
-                                                   // The story is no longer available on the server. This is now a local copy
-                                                   story.remoteStatus = RemoteObjectStatusLocal;
-                                                   [Story deleteStory:story completion:nil];
-                                                   [[[UIAlertView alloc] initWithTitle:@"Error in story update"
-                                                                               message:@"This story has already been deleted and so the changes to the story will be dropped"
-                                                                              delegate:nil
-                                                                     cancelButtonTitle:@"OK"
-                                                                     otherButtonTitles:nil]
-                                                    show];
-                                               }
-                                               BNLogError(@"Error in updating story %@", story.bnObjectId);
-                                           }];
+        RKObjectRequestOperation *operation = [[RKObjectManager sharedManager] appropriateObjectRequestOperationWithObject:story method:RKRequestMethodPUT path:nil parameters:nil];
+
+        [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+            BNLogTrace(@"Update story successful %@", story);
+            story.remoteStatus = RemoteObjectStatusSync;
+            story.ongoingOperation = nil;
+            // Be eager in uploading pieces if available
+            [story uploadFailedRemoteObject];
+        }
+                                         failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                             story.remoteStatus = RemoteObjectStatusFailed;
+                                             story.ongoingOperation = nil;
+                                             if ([[error localizedDescription] rangeOfString:@"got 400"].location != NSNotFound) {
+                                                 // The story is no longer available on the server. This is now a local copy
+                                                 story.remoteStatus = RemoteObjectStatusLocal;
+                                                 [Story deleteStory:story completion:nil];
+                                                 [[[UIAlertView alloc] initWithTitle:@"Error in story update"
+                                                                             message:@"This story has already been deleted and so the changes to the story will be dropped"
+                                                                            delegate:nil
+                                                                   cancelButtonTitle:@"OK"
+                                                                   otherButtonTitles:nil]
+                                                  show];
+                                             }
+                                             BNLogError(@"Error in updating story %@", story.bnObjectId);
+                                         }];
+        story.ongoingOperation = operation;
+        [[RKObjectManager sharedManager] enqueueObjectRequestOperation:operation];
     };
     
     if ([story.media count]) {

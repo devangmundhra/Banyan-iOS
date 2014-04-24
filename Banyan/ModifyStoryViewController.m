@@ -431,7 +431,7 @@ finishedInvitingForViewerPermissions:(BNPermissionsObject *)viewerPermissions
 
 - (void)dealloc
 {
-    [self removeObserverWithBlockToken:self.updatePermissionsFrameBlock];
+    [self.invitationView removeObserverWithBlockToken:self.updatePermissionsFrameBlock];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

@@ -11,6 +11,8 @@
 #import "User.h"
 #import "Media.h"
 #import "RemoteObject+Share.h"
+#import "Piece+Create.h"
+#import "Piece+Edit.h"
 
 @implementation Piece
 
@@ -106,6 +108,16 @@
     NSArray *array = [story.managedObjectContext executeFetchRequest:request error:&error];
     
     return array;
+}
+
+- (void)uploadFailedRemoteObject
+{
+    if (NUMBER_EXISTS(self.bnObjectId)) {
+        [Piece editPiece:self];
+    }
+    else {
+        [Piece createNewPiece:self];
+    }
 }
 
 -(void)setRemoteStatusNumber:(NSNumber *)remoteStatusNumber

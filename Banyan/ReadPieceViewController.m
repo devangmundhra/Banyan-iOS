@@ -24,6 +24,7 @@
 #import "StoryOverviewController.h"
 #import "Piece+Share.h"
 #import "CMPopTipView.h"
+#import "BButton.h"
 
 static NSString *const deletePieceString = @"Delete piece";
 static NSString *const flagPieceString = @"Flag piece";
@@ -31,6 +32,8 @@ static NSString *const addPieceString = @"Add a piece";
 static NSString *const editPieceString = @"Edit piece";
 static NSString *const shareString = @"Share";
 static NSString *const cancelString = @"Cancel";
+static NSString *const cancelUploadString = @"Cancel upload";
+static NSString *const retryUploadString = @"Retry upload";
 
 @interface ReadPieceViewController (UIScrollViewDelegate) <UIScrollViewDelegate>
 @end
@@ -57,7 +60,12 @@ static NSString *const cancelString = @"Cancel";
 
 @property (strong, nonatomic) URBMediaFocusViewController *mediaFocusManager;
 @property (nonatomic) BOOL mediaFocusVisible;
+
+@property (strong, nonatomic) BButton *pieceUploadStatusButton;
 @end
+
+static NSString *_uploadString;
+static NSString *_exclaimString;
 
 @implementation ReadPieceViewController
 @synthesize contentView = _contentView;
@@ -77,6 +85,14 @@ static NSString *const cancelString = @"Cancel";
 @synthesize audioPlayer = _audioPlayer;
 @synthesize storyInfoView = _storyInfoView;
 @synthesize mediaFocusVisible;
+@synthesize pieceUploadStatusButton = _pieceUploadStatusButton;
+
++ (void)initialize
+{
+    NSArray *fontAwesomeStrings = [NSString fa_allFontAwesomeStrings];
+    _uploadString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconSpinner];
+    _exclaimString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconExclamationSign];
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -237,6 +253,17 @@ static NSString *const cancelString = @"Cancel";
     self.pieceTextView.scrollEnabled = NO;
     [self.contentView addSubview:self.pieceTextView];
 
+    // Piece upload status button
+    frame = [UIScreen mainScreen].bounds;
+    self.pieceUploadStatusButton = [BButton awesomeButtonWithOnlyIcon:FAIconSpinner color:[UIColor bb_successColorV3] style:BButtonStyleBootstrapV3];
+    self.pieceUploadStatusButton.frame = CGRectOffset(self.pieceUploadStatusButton.frame,
+                                                      CGRectGetWidth(frame) - CGRectGetWidth(self.pieceUploadStatusButton.frame) - BUTTON_SPACING,
+                                                      CGRectGetHeight(frame) - CGRectGetHeight(self.pieceUploadStatusButton.frame) - BUTTON_SPACING);
+    self.pieceUploadStatusButton.alpha = 0.8;
+    self.pieceUploadStatusButton.hidden = YES;
+    [self.pieceUploadStatusButton addTarget:self action:@selector(pieceUploadActionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view insertSubview:self.pieceUploadStatusButton aboveSubview:self.contentView];
+    
     [self refreshUI];
     
     // Do any additional setup after loading the view from its nib.
@@ -476,6 +503,19 @@ static NSString *const cancelString = @"Cancel";
     
     [self.contributorsButton setTitle:@"Contributors" forState:UIControlStateNormal];
     [self.contributorsButton setEnabled:NO];
+    
+    // Upload status
+    if (self.piece.remoteStatus == RemoteObjectStatusPushing) {
+        [self.pieceUploadStatusButton setTitle:_uploadString forState:UIControlStateNormal];
+        [self.pieceUploadStatusButton setColor:[UIColor bb_successColorV3]];
+        self.pieceUploadStatusButton.hidden = NO;
+    } else if (self.piece.remoteStatus == RemoteObjectStatusFailed) {
+        [self.pieceUploadStatusButton setTitle:_exclaimString forState:UIControlStateNormal];
+        [self.pieceUploadStatusButton setColor:[UIColor bb_dangerColorV3]];
+        self.pieceUploadStatusButton.hidden = NO;
+    } else {
+        self.pieceUploadStatusButton.hidden = YES;
+    }
 }
 
 - (void) updateStoryTitle
@@ -540,9 +580,32 @@ static NSString *const cancelString = @"Cancel";
     }
 }
 
-#pragma mark target actions for read piece buttons/gestures
-# pragma mark
 # pragma mark target actions
+- (IBAction)pieceUploadActionButtonPressed:(id)sender
+{
+    BNLogInfo(@"piece upload action button pressed for status %@", self.piece.remoteStatusNumber);
+    if (self.piece.remoteStatus == RemoteObjectStatusPushing) {
+        [self cancelPieceUploadAlert:sender];
+    } else if (self.piece.remoteStatus == RemoteObjectStatusFailed) {
+        [self retryPieceUploadAlert:sender];
+    }
+}
+
+- (void)cancelPieceUploadAlert:(UIButton *)button
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:cancelUploadString
+                                                        message:@"Do you want to cancel the upload of any changes to this piece?"
+                                                       delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+    [alertView show];
+}
+
+- (void)retryPieceUploadAlert:(UIButton *)button
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:retryUploadString
+                                                        message:@"Retry synchronization of any changes to this piece?"
+                                                       delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+    [alertView show];
+}
 
 - (void)settingsPopup:(id)sender
 {
@@ -649,6 +712,14 @@ static NSString *const cancelString = @"Cancel";
         [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
         NSString *message = [alertView textFieldAtIndex:0].text;
         [self.piece flaggedWithMessage:message];
+    } else if ([alertView.title isEqualToString:cancelUploadString] && buttonIndex==1) {
+        [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
+        [self.piece cancelAnyOngoingOperation];
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"piece upload action" label:@"cancel" value:nil];
+    } else if ([alertView.title isEqualToString:retryUploadString] && buttonIndex==1) {
+        [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
+        [self.piece uploadFailedRemoteObject];
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"piece upload action" label:@"retry" value:nil];
     }
 }
 

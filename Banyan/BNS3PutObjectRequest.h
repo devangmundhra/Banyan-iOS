@@ -14,5 +14,4 @@ typedef void (^BNS3PutFailedBlock)(NSError *error);
 @interface BNS3PutObjectRequest : S3PutObjectRequest <AmazonServiceRequestDelegate>
 @property (strong, nonatomic) BNS3PutSuccessfulBlock successBlock;
 @property (strong, nonatomic) BNS3PutFailedBlock failBlock;
-
 @end

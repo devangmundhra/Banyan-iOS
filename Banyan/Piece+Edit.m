@@ -11,6 +11,7 @@
 #import "Media+Transfer.h"
 #import "BNMisc.h"
 #import "Piece+Delete.h"
+#import "Piece+Create.h"
 
 @implementation Piece (Edit)
 
@@ -18,19 +19,19 @@
 {
     [piece save];
     
-    // If the object has not been created yet, don't ask for editing it on the server.
+    // If the object has not been created yet, create it first.
     if (!NUMBER_EXISTS(piece.bnObjectId)) {
-        // TODO: There is still a race condition here when the piece is being created
-        // and an edit comes in
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Can't synchronize the piece with the server."
-                                                        message:@"A previous synchronization is going on. Try in a bit!"
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
-        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction Skipped" action:@"piece edit" label:@"pending changes" value:nil];
+        if (piece.remoteStatus == RemoteObjectStatusPushing) {
+            // Cancel any current POST operations going on
+            [piece cancelAnyOngoingOperation];
+            [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction Skipped" action:@"piece edit" label:@"pending changes" value:nil];
+            return;
+        }
+        // Now since this story has not yet been created, create if first
+        [Piece createNewPiece:piece];
         return;
     }
+    
     piece.remoteStatus = RemoteObjectStatusPushing;
     
     BNLogInfo(@"Trying to update piece %@", piece.bnObjectId);
@@ -39,31 +40,34 @@
     void (^updatePiece)(Piece *) = ^(Piece *piece) {
         BNLogTrace(@"Update piece %@ for story %@", piece, piece.story);
         
-        [[RKObjectManager sharedManager] putObject:piece
-                                              path:nil
-                                        parameters:nil
-                                           success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                               BNLogTrace(@"Update piece successful %@", piece);
-                                               piece.remoteStatus = RemoteObjectStatusSync;
-                                               [piece save];
-                                           }
-                                           failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                               BNLogError(@"Error in updating piece");
-                                               piece.remoteStatus = RemoteObjectStatusFailed;
-                                               if ([[error localizedDescription] rangeOfString:@"got 400"].location != NSNotFound) {
-                                                   if ([[error localizedRecoverySuggestion] rangeOfString:piece.story.resourceUri].location != NSNotFound) {
-                                                       // The story is no longer available on the server. This is now a local copy
-                                                       piece.remoteStatus = RemoteObjectStatusLocal;
-                                                       [[[UIAlertView alloc] initWithTitle:@"Error in updating piece"
-                                                                                   message:[NSString stringWithFormat:@"The story has already been deleted so the piece \"%@\" will be dropped", piece.shortText?:piece.longText?:@""]
-                                                                                  delegate:nil
-                                                                         cancelButtonTitle:@"OK"
-                                                                         otherButtonTitles:nil]
-                                                        show];
-                                                       [Piece deletePiece:piece completion:nil];
-                                                   }
-                                               }
-                                           }];
+        RKObjectRequestOperation *operation = [[RKObjectManager sharedManager] appropriateObjectRequestOperationWithObject:piece method:RKRequestMethodPUT path:nil parameters:nil];
+
+        [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+            BNLogTrace(@"Update piece successful %@", piece);
+            piece.remoteStatus = RemoteObjectStatusSync;
+            piece.ongoingOperation = nil;
+            [piece save];
+        }
+                                         failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                             BNLogError(@"Error in updating piece");
+                                             piece.remoteStatus = RemoteObjectStatusFailed;
+                                             piece.ongoingOperation = nil;
+                                             if ([[error localizedDescription] rangeOfString:@"got 400"].location != NSNotFound) {
+                                                 if ([[error localizedRecoverySuggestion] rangeOfString:piece.story.resourceUri].location != NSNotFound) {
+                                                     // The story is no longer available on the server. This is now a local copy
+                                                     piece.remoteStatus = RemoteObjectStatusLocal;
+                                                     [[[UIAlertView alloc] initWithTitle:@"Error in updating piece"
+                                                                                 message:[NSString stringWithFormat:@"The story has already been deleted so the piece \"%@\" will be dropped", piece.shortText?:piece.longText?:@""]
+                                                                                delegate:nil
+                                                                       cancelButtonTitle:@"OK"
+                                                                       otherButtonTitles:nil]
+                                                      show];
+                                                     [Piece deletePiece:piece completion:nil];
+                                                 }
+                                             }
+                                         }];
+        piece.ongoingOperation = operation;
+        [[RKObjectManager sharedManager] enqueueObjectRequestOperation:operation];
     };
     
     if ([piece.media count]) {

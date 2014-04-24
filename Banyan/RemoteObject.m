@@ -12,6 +12,10 @@
 #import "Story.h"
 #import "Piece.h"
 #import "GooglePlacesObject.h"
+#import "objc/runtime.h"
+#import "BNS3TransferManager.h"
+
+static char operationKey;
 
 @implementation RemoteObject
 
@@ -28,6 +32,8 @@
 @dynamic viewedByCurUser, likeActivityResourceUri, numberOfLikes, numberOfViews;
 @dynamic timeStamp;
 @dynamic resourceUri;
+@synthesize ongoingOperation = _ongoingOperation;
+@synthesize transferManager = _transferManager;
 
 #pragma mark -
 #pragma mark Revision management
@@ -108,7 +114,8 @@
 - (void) remove
 {
     if (self.remoteStatus == RemoteObjectStatusPushing || self.remoteStatus == RemoteObjectStatusLocal) {
-        // Send notification to cancel this upload
+        // Cancel any ongoing operations
+        [self cancelAnyOngoingOperation];
     }
     
     [self.managedObjectContext performBlockAndWait:^(void) {
@@ -143,6 +150,7 @@
     NSError *error = nil;
     NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:request error:&error];
     for (RemoteObject *obj in array) {
+        [obj cancelAnyOngoingOperation];
         obj.remoteStatus = RemoteObjectStatusFailed;
     }
     
@@ -169,6 +177,45 @@
     }
     
     [Media validateAllMedias];
+}
+
+- (BNS3TransferManager *)transferManager
+{
+    @synchronized(self) {
+        if (!_transferManager) {
+            _transferManager = [[BNS3TransferManager alloc] init];
+            _transferManager.s3 = [BNAWSS3Client sharedClient];
+        }
+    }
+    
+    return _transferManager;
+}
+
+- (RKObjectRequestOperation *)ongoingOperation
+{
+    return objc_getAssociatedObject(self, &operationKey);
+}
+
+- (void)setOngoingOperation:(RKObjectRequestOperation *)ongoingOperation
+{
+    objc_setAssociatedObject(self, &operationKey, ongoingOperation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (void)cancelAnyOngoingOperation
+{
+    [self.transferManager cancelAllTransfers];
+    RKObjectRequestOperation *operation = [self ongoingOperation];
+    if (operation)
+    {
+        [operation cancel];
+        [self setOngoingOperation:nil];
+    }
+}
+
+- (void)uploadFailedRemoteObject
+{
+    // Do nothing
+    // To be implemented by subclasses if required
 }
 
 #pragma mark-

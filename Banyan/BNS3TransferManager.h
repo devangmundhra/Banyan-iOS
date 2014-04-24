@@ -13,10 +13,10 @@
 
 @interface BNS3TransferManager : S3TransferManager
 
-- (void) uploadData:(NSData *)data
-    withContentType:(NSString *)contentType
-        forFileName:(NSString *)filename
-       successBlock:(BNS3PutSuccessfulBlock)successBlock
-         errorBlock:(BNS3PutFailedBlock)errorBlock;
+- (S3TransferOperation *) uploadData:(NSData *)data
+                     withContentType:(NSString *)contentType
+                         forFileName:(NSString *)filename
+                        successBlock:(BNS3PutSuccessfulBlock)successBlock
+                          errorBlock:(BNS3PutFailedBlock)errorBlock;
 
 @end

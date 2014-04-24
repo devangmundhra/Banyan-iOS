@@ -340,7 +340,7 @@
                 [whud hide:YES];
                 [self.addPhotoButton setImage:image];
             }
-                                           progress:^(NSUInteger receivedSize, long long expectedSize) {
+                                           progress:^(NSInteger receivedSize, NSInteger expectedSize) {
                                                whud.progress = receivedSize/expectedSize;
                                            }
                                             failure:^(NSError *error) {

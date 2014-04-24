@@ -11,11 +11,11 @@
 @implementation BNS3TransferManager
 
 
-- (void) uploadData:(NSData *)data
-    withContentType:(NSString *)contentType
-        forFileName:(NSString *)filename
-       successBlock:(BNS3PutSuccessfulBlock)successBlock
-         errorBlock:(BNS3PutFailedBlock)errorBlock
+- (S3TransferOperation *) uploadData:(NSData *)data
+                     withContentType:(NSString *)contentType
+                         forFileName:(NSString *)filename
+                        successBlock:(BNS3PutSuccessfulBlock)successBlock
+                          errorBlock:(BNS3PutFailedBlock)errorBlock
 {
     BNS3PutObjectRequest *por = [[BNS3PutObjectRequest alloc] initWithKey:filename
                                                              inBucket:AWSS3BucketName];
@@ -41,7 +41,12 @@
         [[AFNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
     }
     
-    [self upload:por];
+    S3TransferOperation *operation = [self upload:por];
+    
+    [operation addObserver:por forKeyPath:@"isCancelled" options:NSKeyValueObservingOptionNew context:nil];
+    [operation addObserver:por forKeyPath:@"isFinished" options:NSKeyValueObservingOptionNew context:nil];
+
+    return operation;
 }
 
 @end

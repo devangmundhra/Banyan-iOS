@@ -66,63 +66,64 @@
         
         NSManagedObjectID *storyID = piece.story.objectID;
 
-        [[RKObjectManager sharedManager] postObject:piece
-                                               path:nil
-                                         parameters:nil
-                                            success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                                piece.remoteStatus = RemoteObjectStatusSync;
-                                                
-                                                if (!piece.story) {
-                                                    /* This is possible in the following scenario:
-                                                     * 1. Story list refresh is occuring
-                                                     * 2. A new piece is created
-                                                     * 3. Story refresh completes before the new piece is fully uploaded, so the connection to the story of the piece is deleted
-                                                     * 4. piece.story is nil
-                                                     */
-                                                    NSError *error = nil;
-                                                    Story *story = (Story *)[[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext
-                                                                             existingObjectWithID:storyID
-                                                                             error:&error];
-                                                    if (error || !story) {
-                                                        BNLogError(@"Error %@ in fetching story %@ after the piece was created", error.userInfo, story.bnObjectId);
-                                                        story = nil;
-                                                    }
-                                                }
-                                                BNLogTrace(@"Create piece (%@) %@ for story %@", piece.bnObjectId, piece.shortText ? piece.shortText : piece.longText, piece.story.bnObjectId);
-                                            }
-                                            failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                                piece.remoteStatus = RemoteObjectStatusFailed;
-                                                if (!piece.story) {
-                                                    /* This is possible in the following scenario:
-                                                     * 1. Story list refresh is occuring
-                                                     * 2. A new piece is created
-                                                     * 3. Story refresh completes before the new piece is fully uploaded, so the connection to the story of the piece is deleted
-                                                     * 4. piece.story is nil
-                                                     */
-                                                    NSError *error = nil;
-                                                    Story *story = (Story *)[[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext
-                                                                             existingObjectWithID:storyID
-                                                                             error:&error];
-                                                    if (error || !story) {
-                                                        BNLogError(@"Error %@ in fetching story %@ after the piece was created", error.userInfo, story.bnObjectId);
-                                                        story = nil;
-                                                    }
-                                                }
-                                                if ([[error localizedDescription] rangeOfString:@"got 400"].location != NSNotFound) {
-                                                    if ([[error localizedRecoverySuggestion] rangeOfString:piece.story.resourceUri].location != NSNotFound) {
-                                                        // The story is no longer available on the server. This is now a local copy
-                                                        piece.remoteStatus = RemoteObjectStatusLocal;
-                                                        [[[UIAlertView alloc] initWithTitle:@"Error in creating piece"
-                                                                                    message:[NSString stringWithFormat:@"The story has already been deleted by someone so the piece \"%@\" will be dropped", piece.shortText?:piece.longText?:@""]
-                                                                                   delegate:nil
-                                                                          cancelButtonTitle:@"OK"
-                                                                          otherButtonTitles:nil]
-                                                         show];
-                                                        [Piece deletePiece:piece completion:nil];
-                                                    }
-                                                }
-                                                BNLogError(@"Error in create piece");
-                                            }];
+        RKObjectRequestOperation *operation = [[RKObjectManager sharedManager] appropriateObjectRequestOperationWithObject:piece method:RKRequestMethodPOST path:nil parameters:nil];
+        [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+            piece.remoteStatus = RemoteObjectStatusSync;
+            piece.ongoingOperation = nil;
+            if (!piece.story) {
+                /* This is possible in the following scenario:
+                 * 1. Story list refresh is occuring
+                 * 2. A new piece is created
+                 * 3. Story refresh completes before the new piece is fully uploaded, so the connection to the story of the piece is deleted
+                 * 4. piece.story is nil
+                 */
+                NSError *error = nil;
+                Story *story = (Story *)[[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext
+                                         existingObjectWithID:storyID
+                                         error:&error];
+                if (error || !story) {
+                    BNLogError(@"Error %@ in fetching story %@ after the piece was created", error.userInfo, story.bnObjectId);
+                    story = nil;
+                }
+            }
+            BNLogTrace(@"Created piece (%@) %@ for story %@", piece.bnObjectId, piece.shortText ? piece.shortText : piece.longText, piece.story.bnObjectId);
+        }
+                                         failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                             piece.remoteStatus = RemoteObjectStatusFailed;
+                                             piece.ongoingOperation = nil;
+                                             if (!piece.story) {
+                                                 /* This is possible in the following scenario:
+                                                  * 1. Story list refresh is occuring
+                                                  * 2. A new piece is created
+                                                  * 3. Story refresh completes before the new piece is fully uploaded, so the connection to the story of the piece is deleted
+                                                  * 4. piece.story is nil
+                                                  */
+                                                 NSError *error = nil;
+                                                 Story *story = (Story *)[[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext
+                                                                          existingObjectWithID:storyID
+                                                                          error:&error];
+                                                 if (error || !story) {
+                                                     BNLogError(@"Error %@ in fetching story %@ after the piece was created", error.userInfo, story.bnObjectId);
+                                                     story = nil;
+                                                 }
+                                             }
+                                             if ([[error localizedDescription] rangeOfString:@"got 400"].location != NSNotFound) {
+                                                 if ([[error localizedRecoverySuggestion] rangeOfString:piece.story.resourceUri].location != NSNotFound) {
+                                                     // The story is no longer available on the server. This is now a local copy
+                                                     piece.remoteStatus = RemoteObjectStatusLocal;
+                                                     [[[UIAlertView alloc] initWithTitle:@"Error in creating piece"
+                                                                                 message:[NSString stringWithFormat:@"The story has already been deleted by someone so the piece \"%@\" will be dropped", piece.shortText?:piece.longText?:@""]
+                                                                                delegate:nil
+                                                                       cancelButtonTitle:@"OK"
+                                                                       otherButtonTitles:nil]
+                                                      show];
+                                                     [Piece deletePiece:piece completion:nil];
+                                                 }
+                                             }
+                                             BNLogError(@"Error in create piece");
+                                         }];
+        piece.ongoingOperation = operation;
+        [[RKObjectManager sharedManager] enqueueObjectRequestOperation:operation];
     };
     
     if ([piece.media count]) {

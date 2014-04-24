@@ -32,7 +32,6 @@
 @end
 
 @interface BanyanAppDelegate () <UserLoginViewControllerDelegate>
-@property (strong, nonatomic) NSTimer *remoteObjectBackgroundTimer;
 @property (strong, nonatomic) ECSlidingViewController *homeViewController;
 
 @end
@@ -40,7 +39,6 @@
 @implementation BanyanAppDelegate
 
 @synthesize window = _window;
-@synthesize remoteObjectBackgroundTimer = _remoteObjectBackgroundTimer;
 @synthesize homeViewController = _homeViewController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -207,7 +205,6 @@ void uncaughtExceptionHandler(NSException *exception)
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-    [self invalidateRemoteObjectTimer];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -235,9 +232,7 @@ void uncaughtExceptionHandler(NSException *exception)
     // (e.g., returning from iOS 6.0 authorization dialog or from fast app switching).
 
     [FBSession.activeSession handleDidBecomeActive];
-    
-    if ([[AFBanyanAPIClient sharedClient] isReachable])
-        [self fireRemoteObjectTimer];
+//    [BanyanConnection uploadFailedObjects];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -625,25 +620,6 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     }
     
     return topController;
-}
-
-#pragma mark Background Timer to upload unsaved objects
-- (void) fireRemoteObjectTimer
-{
-    if (!self.remoteObjectBackgroundTimer)
-        // Instantiate the background timer to process uploading of failed remote objects every minute
-        self.remoteObjectBackgroundTimer = [NSTimer scheduledTimerWithTimeInterval:5
-                                                                            target:[BanyanConnection class]
-                                                                          selector:@selector(uploadFailedObjects)
-                                                                          userInfo:nil
-                                                                           repeats:YES];
-    [self.remoteObjectBackgroundTimer fire];
-}
-
-- (void) invalidateRemoteObjectTimer
-{
-    [self.remoteObjectBackgroundTimer invalidate];
-    self.remoteObjectBackgroundTimer = nil;
 }
 
 #pragma mark
