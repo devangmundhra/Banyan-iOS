@@ -87,10 +87,12 @@
                 }
             }
             BNLogTrace(@"Created piece (%@) %@ for story %@", piece.bnObjectId, piece.shortText ? piece.shortText : piece.longText, piece.story.bnObjectId);
+            [piece save];
         }
                                          failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                              piece.remoteStatus = RemoteObjectStatusFailed;
                                              piece.ongoingOperation = nil;
+                                             [piece save];
                                              if (!piece.story) {
                                                  /* This is possible in the following scenario:
                                                   * 1. Story list refresh is occuring

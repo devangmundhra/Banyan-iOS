@@ -52,6 +52,7 @@
                                              BNLogError(@"Error in updating piece");
                                              piece.remoteStatus = RemoteObjectStatusFailed;
                                              piece.ongoingOperation = nil;
+                                             [piece save];
                                              if ([[error localizedDescription] rangeOfString:@"got 400"].location != NSNotFound) {
                                                  if ([[error localizedRecoverySuggestion] rangeOfString:piece.story.resourceUri].location != NSNotFound) {
                                                      // The story is no longer available on the server. This is now a local copy

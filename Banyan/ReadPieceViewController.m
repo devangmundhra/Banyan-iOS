@@ -255,7 +255,11 @@ static NSString *_exclaimString;
 
     // Piece upload status button
     frame = [UIScreen mainScreen].bounds;
-    self.pieceUploadStatusButton = [BButton awesomeButtonWithOnlyIcon:FAIconSpinner color:[UIColor bb_successColorV3] style:BButtonStyleBootstrapV3];
+    self.pieceUploadStatusButton = [[BButton alloc] initWithFrame:CGRectMake(0, 0, 90, 36) color:[UIColor bb_successColorV3] style:BButtonStyleBootstrapV3];
+    [self.pieceUploadStatusButton.titleLabel setFont:[UIFont fontWithName:@"Roboto" size:11]];
+    [self.pieceUploadStatusButton.titleLabel setTextAlignment:NSTextAlignmentRight];
+    [self.pieceUploadStatusButton setTitle:@"Local " forState:UIControlStateNormal];
+    [self.pieceUploadStatusButton addAwesomeIcon:FAIconCircle beforeTitle:NO];
     self.pieceUploadStatusButton.frame = CGRectOffset(self.pieceUploadStatusButton.frame,
                                                       CGRectGetWidth(frame) - CGRectGetWidth(self.pieceUploadStatusButton.frame) - BUTTON_SPACING,
                                                       CGRectGetHeight(frame) - CGRectGetHeight(self.pieceUploadStatusButton.frame) - BUTTON_SPACING);
@@ -506,11 +510,13 @@ static NSString *_exclaimString;
     
     // Upload status
     if (self.piece.remoteStatus == RemoteObjectStatusPushing) {
-        [self.pieceUploadStatusButton setTitle:_uploadString forState:UIControlStateNormal];
+        [self.pieceUploadStatusButton setTitle:@"Uploading... " forState:UIControlStateNormal];
+        [self.pieceUploadStatusButton addAwesomeIcon:FAIconSpinner beforeTitle:NO];
         [self.pieceUploadStatusButton setColor:[UIColor bb_successColorV3]];
         self.pieceUploadStatusButton.hidden = NO;
     } else if (self.piece.remoteStatus == RemoteObjectStatusFailed) {
-        [self.pieceUploadStatusButton setTitle:_exclaimString forState:UIControlStateNormal];
+        [self.pieceUploadStatusButton setTitle:@"Upload Failed " forState:UIControlStateNormal];
+        [self.pieceUploadStatusButton addAwesomeIcon:FAIconExclamationSign beforeTitle:NO];
         [self.pieceUploadStatusButton setColor:[UIColor bb_dangerColorV3]];
         self.pieceUploadStatusButton.hidden = NO;
     } else {

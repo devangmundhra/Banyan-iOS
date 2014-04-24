@@ -78,6 +78,7 @@
                                          failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                              story.remoteStatus = RemoteObjectStatusFailed;
                                              story.ongoingOperation = nil;
+                                             [story save];
                                              if ([[error localizedDescription] rangeOfString:@"got 400"].location != NSNotFound) {
                                                  // The story is no longer available on the server. This is now a local copy
                                                  story.remoteStatus = RemoteObjectStatusLocal;
