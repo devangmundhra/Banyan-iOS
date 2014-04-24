@@ -685,8 +685,10 @@
 
 - (void)textViewDidBeginEditing:(UITextView *)textView
 {
+    self.scrollView.scrollEnabled = NO;
     textView.scrollEnabled = YES;
-
+    [textView setSelectedRange:NSMakeRange(textView.text.length, 0)];
+    
     if (textView == self.pieceTextView) {
         [UIView animateWithDuration:0.5 animations:^{
             CGRect frame = self.scrollView.bounds;
@@ -708,8 +710,6 @@
             [self.addPhotoButton removeFromSuperview];
             [self.audioPickerView removeFromSuperview];
             [self.addLocationButton removeFromSuperview];
-            self.scrollView.scrollEnabled = NO;
-            [textView setNeedsDisplay];
         }];
     }
 }
@@ -721,7 +721,6 @@
     [self.scrollView addSubview:self.addPhotoButton];
     [self.scrollView addSubview:self.audioPickerView];
     [self.scrollView addSubview:self.addLocationButton];
-    textView.scrollEnabled = NO;
 
     if (textView == self.pieceTextView) {
         [UIView animateWithDuration:0.5 animations:^{
@@ -742,8 +741,8 @@
             self.scrollView.alpha = 1;
             
         } completion:^(BOOL finished) {
+            textView.scrollEnabled = NO;
             self.scrollView.scrollEnabled = YES;
-            [textView setNeedsDisplay];
         }];
     }
     self.doneButton.enabled = [self checkForChanges];
