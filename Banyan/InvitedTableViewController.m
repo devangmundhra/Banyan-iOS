@@ -90,6 +90,24 @@ typedef enum {
     [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneInviting:)]];
     [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
     
+    NSAttributedString *titleString = nil;
+    titleString = [[NSAttributedString alloc] initWithString:@"Permissions for story"
+                                                  attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
+                                                               NSForegroundColorAttributeName: BANYAN_DARKGRAY_COLOR}];
+    NSAttributedString *tapString = [[NSAttributedString alloc] initWithString:@"\rtap for more information"
+                                                                    attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
+                                                                                 NSForegroundColorAttributeName: BANYAN_GRAY_COLOR}];
+    
+    NSMutableAttributedString *tapAttrString = [[NSMutableAttributedString alloc] initWithAttributedString:titleString];
+    [tapAttrString appendAttributedString:tapString];
+    UIButton *titleButton = [[UIButton alloc] initWithFrame:CGRectZero];
+    [titleButton setAttributedTitle:tapAttrString forState:UIControlStateNormal];
+    titleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleButton.titleLabel.numberOfLines = 2;
+    [titleButton addTarget:self action:@selector(showExplanation:) forControlEvents:UIControlEventTouchUpInside];
+    [titleButton sizeToFit];
+    self.navigationItem.titleView = titleButton;
+    
 //    self.tableView.rowHeight = 75.0f;
 }
 
@@ -104,26 +122,33 @@ typedef enum {
         [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:BNUserDefaultsFirstTimeSettingPermissions];
         [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
         [defaults synchronize];
+        [self showExplanation:nil];
+    }
+}
+
+- (IBAction)showExplanation:(id)sender
+{
 #define MZFORMSHEET_TOP_INSET 40.0
 #define MZFORMSHEET_LEFT_INSET 20.0
-        
-        HelpInfoViewController *vc = [[HelpInfoViewController alloc] initWithNibName:@"HelpInfoViewController" bundle:nil];
-        MZFormSheetController *formSheet = [[MZFormSheetController alloc] initWithViewController:vc];
-        formSheet.transitionStyle = MZFormSheetTransitionStyleSlideFromTop;
-        formSheet.portraitTopInset = MZFORMSHEET_TOP_INSET;
-        formSheet.landscapeTopInset = MZFORMSHEET_LEFT_INSET;
-        formSheet.presentedFormSheetSize = CGSizeMake(CGRectGetWidth([UIScreen mainScreen].bounds) - 2*MZFORMSHEET_LEFT_INSET,
-                                                      CGRectGetHeight([UIScreen mainScreen].bounds) - 2*MZFORMSHEET_TOP_INSET);
-        formSheet.willPresentCompletionHandler = ^(UIViewController *presentedFSViewController) {
-            // Passing data
-            __weak typeof(self) wself = self;
-            HelpInfoViewController *helpInfoVc = (HelpInfoViewController *)presentedFSViewController;
-            helpInfoVc.descriptionLabel.attributedText = [wself helpText];
-        };
-
-        [self mz_presentFormSheetController:formSheet animated:YES completionHandler:^(MZFormSheetController *formSheetController) {
-        }];
-    }
+    
+    HelpInfoViewController *vc = [[HelpInfoViewController alloc] initWithNibName:@"HelpInfoViewController" bundle:nil];
+    MZFormSheetController *formSheet = [[MZFormSheetController alloc] initWithViewController:vc];
+    formSheet.transitionStyle = MZFormSheetTransitionStyleSlideFromTop;
+    formSheet.portraitTopInset = MZFORMSHEET_TOP_INSET;
+    formSheet.landscapeTopInset = MZFORMSHEET_LEFT_INSET;
+    formSheet.presentedFormSheetSize = CGSizeMake(CGRectGetWidth([UIScreen mainScreen].bounds) - 2*MZFORMSHEET_LEFT_INSET,
+                                                  CGRectGetHeight([UIScreen mainScreen].bounds) - 2*MZFORMSHEET_TOP_INSET);
+    formSheet.willPresentCompletionHandler = ^(UIViewController *presentedFSViewController) {
+        // Passing data
+        __weak typeof(self) wself = self;
+        HelpInfoViewController *helpInfoVc = (HelpInfoViewController *)presentedFSViewController;
+        helpInfoVc.descriptionLabel.attributedText = [wself helpText];
+    };
+    
+    [self mz_presentFormSheetController:formSheet animated:YES completionHandler:^(MZFormSheetController *formSheetController) {
+    }];
+#undef MZFORMSHEET_TOP_INSET
+#undef MZFORMSHEET_LEFT_INSET
 }
 
 - (NSAttributedString *)helpText

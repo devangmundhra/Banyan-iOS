@@ -12,7 +12,8 @@
 #import "CMPopTipView.h"
 
 @interface BNImageCropperViewController ()
-@property (nonatomic,strong) IBOutlet UIBarButtonItem *saveButton;
+@property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
+@property (nonatomic,weak) IBOutlet UIBarButtonItem *saveButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *editThumbnailButton;
 
 @end
@@ -20,6 +21,7 @@
 @implementation BNImageCropperViewController
 @synthesize  saveButton = _saveButton;
 @synthesize editThumbnailButton = _editThumbnailButton;
+@synthesize toolbar = _toolbar;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -42,6 +44,26 @@
     self.checkBounds = NO;
     self.rotateEnabled = NO;
     self.outputWidth = self.cropSize.width;
+    
+    NSAttributedString *titleString = nil;
+    titleString = [[NSAttributedString alloc] initWithString:@"Edit thumbnail"
+                                                  attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
+                                                               NSForegroundColorAttributeName: BANYAN_DARKGRAY_COLOR}];
+    NSAttributedString *tapString = [[NSAttributedString alloc] initWithString:@"\rtap for more information"
+                                                                    attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
+                                                                                 NSForegroundColorAttributeName: BANYAN_GRAY_COLOR}];
+    
+    NSMutableAttributedString *tapAttrString = [[NSMutableAttributedString alloc] initWithAttributedString:titleString];
+    [tapAttrString appendAttributedString:tapString];
+    
+    UIButton *titleButton = [[UIButton alloc] initWithFrame:CGRectZero];
+    [titleButton setAttributedTitle:tapAttrString forState:UIControlStateNormal];
+    titleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleButton.titleLabel.numberOfLines = 2;
+    [titleButton addTarget:self action:@selector(titlePressed:) forControlEvents:UIControlEventTouchUpInside];
+    [titleButton sizeToFit];
+    titleButton.center = self.toolbar.center;
+    self.editThumbnailButton.customView = titleButton;
     [self reset:NO];
 }
 
@@ -54,7 +76,7 @@
 - (IBAction)titlePressed:(id)sender
 {
     CMPopTipView *popTipView = [[CMPopTipView alloc] initWithTitle:@"Why thumbnails?"
-                                                           message:@"Thumbnails helps us show the important parts of the image when a user is quickly scrolling through all the pieces"];
+                                                           message:@"Thumbnails are used to show the important parts of the image when a user is quickly scrolling through all the pieces"];
     SET_CMPOPTIPVIEW_APPEARANCES(popTipView);
     [popTipView presentPointingAtBarButtonItem:self.editThumbnailButton animated:NO];
 }
