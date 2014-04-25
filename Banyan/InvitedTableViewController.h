@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "BNPermissionsObject.h"
-#import "InvitedFBFriendsViewController.h"
 
 @class InvitedTableViewController;
 
@@ -19,7 +18,7 @@
                        contributorPermissions:(BNPermissionsObject<BNPermissionsObject> *)contributorPermissions;
 @end
 
-@interface InvitedTableViewController : UITableViewController <InvitedFBFriendsViewControllerDelegate>
+@interface InvitedTableViewController : UITableViewController
 
 @property (nonatomic, weak) id<InvitedTableViewControllerDelegate> delegate;
 

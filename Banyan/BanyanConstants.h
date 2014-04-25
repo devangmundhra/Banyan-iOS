@@ -29,6 +29,7 @@ extern NSString *const BNRefreshCurrentStoryListNotification;
 #pragma mark - NSUserDefaults
 extern NSString *const BNUserDefaultsUserInfo;
 extern NSString *const BNUserDefaultsBanyanUsersFacebookFriends;
+extern NSString *const BNUserDefaultsMyFacebookFriends;
 extern NSString *const BNUserDefaultsLastSuccessfulStoryUpdateTime;
 extern NSString *const BNUserDefaultsLastGetRequestTime;
 

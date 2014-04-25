@@ -8,12 +8,12 @@
 
 #import "InvitedTableViewController.h"
 #import "BanyanAppDelegate.h"
-#import "InvitedFBFriendsViewController.h"
+#import "InviteFBFriendsTableViewController.h"
 #import "User.h"
 #import "MZFormSheetController.h"
 #import "HelpInfoViewController.h"
 
-@interface InvitedTableViewController () <InvitedFBFriendsViewControllerDelegate>
+@interface InvitedTableViewController () <InviteFBFriendsTableViewControllerDelegate>
 
 @property (nonatomic, strong) BNPermissionsObject<BNPermissionsObject> *viewerPermission;
 @property (nonatomic, strong) BNPermissionsObject<BNPermissionsObject> *contributorPermission;
@@ -388,7 +388,7 @@ typedef enum {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    InvitedFBFriendsViewController *vc = nil;
+    InviteFBFriendsTableViewController *vc = nil;
     
     switch (indexPath.section) {
         case InvitedTableViewSectionContributor:
@@ -401,7 +401,7 @@ typedef enum {
                     break;
                     
                 case InvitedTableViewContributorsRowSelectedFB:
-                    vc = [[InvitedFBFriendsViewController alloc] initWithViewerPermissions:self.viewerPermission contributorPermission:self.contributorPermission];
+                    vc = [[InviteFBFriendsTableViewController alloc] initWithViewerPermissions:self.viewerPermission contributorPermission:self.contributorPermission];
                     vc.delegate = self;
                     [self.navigationController pushViewController:vc animated:YES];
                     break;
@@ -425,7 +425,7 @@ typedef enum {
                     break;
                     
                 case InvitedTableViewViewersRowSelectedFB:
-                    vc = [[InvitedFBFriendsViewController alloc] initWithViewerPermissions:self.viewerPermission
+                    vc = [[InviteFBFriendsTableViewController alloc] initWithViewerPermissions:self.viewerPermission
                                                                      contributorPermission:self.contributorPermission];
                     vc.delegate = self;
                     [self.navigationController pushViewController:vc animated:YES];
@@ -456,8 +456,8 @@ typedef enum {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark InvitedFBFriendsViewControllerDelegate
-- (void) invitedFBFriendsViewController:(InvitedFBFriendsViewController *)invitedFBFriendsViewController
+#pragma mark InviteFBFriendsTableViewControllerDelegate
+- (void) invitedFBFriendsViewController:(InviteFBFriendsTableViewController *)invitedFBFriendsViewController
              finishedInvitingForViewers:(NSMutableArray *)selectedViewers
                            contributors:(NSMutableArray *)selectedContributors
 {

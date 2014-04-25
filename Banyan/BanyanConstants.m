@@ -27,6 +27,7 @@ NSString *const BNRefreshCurrentStoryListNotification = @"io.banyan.Banyan:Refre
 #pragma mark - NSUserDefaults
 NSString *const BNUserDefaultsUserInfo = @"io.banyan.Banyan.userDefaults.userInfo";
 NSString *const BNUserDefaultsBanyanUsersFacebookFriends = @"io.banyan.Banyan.userDefaults.banyanUsersFacebookFriends";
+NSString *const BNUserDefaultsMyFacebookFriends = @"io.banyan.Banyan.userDefaults.myFacebookFriends";
 NSString *const BNUserDefaultsLastSuccessfulStoryUpdateTime = @"io.banyan.Banyan.userDefaults.banyanLastSuccessfulUpdatedTime";
 NSString *const BNUserDefaultsLastGetRequestTime = @"io.banyan.Banyan.userDefaults.banyanLastGetRequestTime";
 

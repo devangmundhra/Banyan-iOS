@@ -77,7 +77,6 @@
 		5148F85F18DC1310005CFA86 /* AWSS3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5148F85E18DC1310005CFA86 /* AWSS3.framework */; };
 		5148F86118DC131A005CFA86 /* AWSSNS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5148F86018DC131A005CFA86 /* AWSSNS.framework */; };
 		514CDF5418125BFF0098B0A9 /* BNPermissionsObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 514CDF5318125BFE0098B0A9 /* BNPermissionsObject.m */; };
-		514CDF5B18131F410098B0A9 /* InvitedFBFriendsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 514CDF5A18131F410098B0A9 /* InvitedFBFriendsViewController.m */; };
 		514CDF65181509B70098B0A9 /* AVCamViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 514CDF5D181509B70098B0A9 /* AVCamViewController.xib */; };
 		514CDF66181509B70098B0A9 /* AVCamCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 514CDF60181509B70098B0A9 /* AVCamCaptureManager.m */; };
 		514CDF67181509B70098B0A9 /* AVCamRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 514CDF62181509B70098B0A9 /* AVCamRecorder.m */; };
@@ -200,6 +199,8 @@
 		51BAEC3D18DAA7C400BA9C49 /* Media+Transfer.m in Sources */ = {isa = PBXBuildFile; fileRef = 51BAEC3C18DAA7C400BA9C49 /* Media+Transfer.m */; };
 		51BAEC4018DAB19C00BA9C49 /* BNS3TransferManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 51BAEC3F18DAB19C00BA9C49 /* BNS3TransferManager.m */; };
 		51BAEC4318DACFE900BA9C49 /* BNS3PutObjectRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 51BAEC4218DACFE900BA9C49 /* BNS3PutObjectRequest.m */; };
+		51BB4DFE190A5AE4002195C5 /* InviteFBFriendsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51BB4DFC190A5AE4002195C5 /* InviteFBFriendsTableViewController.m */; };
+		51BB4DFF190A5AE4002195C5 /* InviteFBFriendsTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51BB4DFD190A5AE4002195C5 /* InviteFBFriendsTableViewController.xib */; };
 		51BDA25F173EEC1500BD2C19 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51BDA25E173EEC1500BD2C19 /* ImageIO.framework */; };
 		51BDA2701741EB4100BD2C19 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51BDA26F1741EB4000BD2C19 /* AVFoundation.framework */; };
 		51BDA27417434F3D00BD2C19 /* emptyBar.png in Resources */ = {isa = PBXBuildFile; fileRef = 51BDA27217434F3D00BD2C19 /* emptyBar.png */; };
@@ -379,8 +380,6 @@
 		5148F86018DC131A005CFA86 /* AWSSNS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSSNS.framework; sourceTree = "<group>"; };
 		514CDF5218125BFE0098B0A9 /* BNPermissionsObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNPermissionsObject.h; path = Banyan/BNPermissionsObject.h; sourceTree = "<group>"; };
 		514CDF5318125BFE0098B0A9 /* BNPermissionsObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNPermissionsObject.m; path = Banyan/BNPermissionsObject.m; sourceTree = "<group>"; };
-		514CDF5918131F410098B0A9 /* InvitedFBFriendsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InvitedFBFriendsViewController.h; path = Banyan/InvitedFBFriendsViewController.h; sourceTree = "<group>"; };
-		514CDF5A18131F410098B0A9 /* InvitedFBFriendsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InvitedFBFriendsViewController.m; path = Banyan/InvitedFBFriendsViewController.m; sourceTree = "<group>"; };
 		514CDF5D181509B70098B0A9 /* AVCamViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AVCamViewController.xib; sourceTree = "<group>"; };
 		514CDF5F181509B70098B0A9 /* AVCamCaptureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVCamCaptureManager.h; sourceTree = "<group>"; };
 		514CDF60181509B70098B0A9 /* AVCamCaptureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVCamCaptureManager.m; sourceTree = "<group>"; };
@@ -557,6 +556,9 @@
 		51BAEC3F18DAB19C00BA9C49 /* BNS3TransferManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNS3TransferManager.m; path = Banyan/BNS3TransferManager.m; sourceTree = "<group>"; };
 		51BAEC4118DACFE900BA9C49 /* BNS3PutObjectRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNS3PutObjectRequest.h; path = Banyan/BNS3PutObjectRequest.h; sourceTree = "<group>"; };
 		51BAEC4218DACFE900BA9C49 /* BNS3PutObjectRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNS3PutObjectRequest.m; path = Banyan/BNS3PutObjectRequest.m; sourceTree = "<group>"; };
+		51BB4DFB190A5AE4002195C5 /* InviteFBFriendsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InviteFBFriendsTableViewController.h; path = Banyan/InviteFBFriendsTableViewController.h; sourceTree = "<group>"; };
+		51BB4DFC190A5AE4002195C5 /* InviteFBFriendsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InviteFBFriendsTableViewController.m; path = Banyan/InviteFBFriendsTableViewController.m; sourceTree = "<group>"; };
+		51BB4DFD190A5AE4002195C5 /* InviteFBFriendsTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = InviteFBFriendsTableViewController.xib; path = Banyan/InviteFBFriendsTableViewController.xib; sourceTree = "<group>"; };
 		51BDA25E173EEC1500BD2C19 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		51BDA26F1741EB4000BD2C19 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		51BDA27217434F3D00BD2C19 /* emptyBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = emptyBar.png; sourceTree = "<group>"; };
@@ -884,8 +886,9 @@
 		5129546718C9B58800E62D6B /* InviteFBFriendsVC */ = {
 			isa = PBXGroup;
 			children = (
-				514CDF5918131F410098B0A9 /* InvitedFBFriendsViewController.h */,
-				514CDF5A18131F410098B0A9 /* InvitedFBFriendsViewController.m */,
+				51BB4DFB190A5AE4002195C5 /* InviteFBFriendsTableViewController.h */,
+				51BB4DFC190A5AE4002195C5 /* InviteFBFriendsTableViewController.m */,
+				51BB4DFD190A5AE4002195C5 /* InviteFBFriendsTableViewController.xib */,
 			);
 			name = InviteFBFriendsVC;
 			sourceTree = "<group>";
@@ -1894,6 +1897,7 @@
 				51F0329A18B9508A00FFA71E /* Previous_selected@2x.png in Resources */,
 				511D742418F63C6A000926B0 /* GoogleMaps.bundle in Resources */,
 				51F0327F18B94BE700FFA71E /* heartSmallPink.png in Resources */,
+				51BB4DFF190A5AE4002195C5 /* InviteFBFriendsTableViewController.xib in Resources */,
 				51F0326518B93AE700FFA71E /* Lightening_selected@2x.png in Resources */,
 				51F0328B18B94E0C00FFA71E /* Picture_iOS.png in Resources */,
 				51170B7417F4319C0015B343 /* AboutViewController.xib in Resources */,
@@ -2052,6 +2056,7 @@
 				5189B33B15B395F300562DD0 /* Piece+Stats.m in Sources */,
 				51BAEC3D18DAA7C400BA9C49 /* Media+Transfer.m in Sources */,
 				51CE90B51796724500A2F7CB /* RemoteObject.m in Sources */,
+				51BB4DFE190A5AE4002195C5 /* InviteFBFriendsTableViewController.m in Sources */,
 				5189B33E15B395F300562DD0 /* StoryReaderController.m in Sources */,
 				5189B34315B395F300562DD0 /* Story+Create.m in Sources */,
 				5189B34415B395F300562DD0 /* Story+Delete.m in Sources */,
@@ -2091,7 +2096,6 @@
 				513203AA18AE9C15007A53FD /* BNNavigationController.m in Sources */,
 				51F86242185A3A110037D576 /* StoryOverviewController.m in Sources */,
 				51E9B2C6181F8F88004B35A5 /* BNTextField.m in Sources */,
-				514CDF5B18131F410098B0A9 /* InvitedFBFriendsViewController.m in Sources */,
 				5103FB9F166898960095B11F /* UIImage+Create.m in Sources */,
 				519232A11671CC57009686E4 /* AFGooglePlacesAPIClient.m in Sources */,
 				5192332716743F02009686E4 /* GooglePlacesObject.m in Sources */,

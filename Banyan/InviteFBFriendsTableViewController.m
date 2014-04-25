@@ -1,64 +1,46 @@
 //
-//  InvitedFBFriendsViewController.m
+//  InviteFBFriendsTableViewController.m
 //  Banyan
 //
-//  Created by Devang Mundhra on 10/19/13.
+//  Created by Devang Mundhra on 4/25/14.
 //
 //
 
-#import "InvitedFBFriendsViewController.h"
+#import "InviteFBFriendsTableViewController.h"
 #import "BNLabel.h"
 #import "User.h"
 
-@interface InvitedFBFriendsViewController ()
-
+@interface InviteFBFriendsTableViewController ()  <UISearchBarDelegate, UISearchDisplayDelegate, InviteFriendCellDelegate>
 @property (nonatomic, strong) NSArray *listContacts;
 @property (nonatomic, strong) NSMutableArray *filteredListContacts;
 @property (strong, nonatomic) NSMutableArray *contactIndex;
-@property (strong, nonatomic) IBOutlet UISearchDisplayController *searchDisplayController;
-@property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
 
 @property (nonatomic) BOOL allViewers;
 @property (nonatomic, strong) NSMutableArray *selectedViewerContacts;
 
 @property (nonatomic) BOOL allContributors;
 @property (nonatomic, strong) NSMutableArray *selectedContributorContacts;
-
 @end
 
-@implementation InvitedFBFriendsViewController
+@implementation InviteFBFriendsTableViewController
 @synthesize listContacts = _listContacts;
 @synthesize filteredListContacts = _filteredListContacts;
 @synthesize selectedViewerContacts = _selectedViewerContacts;
 @synthesize selectedContributorContacts = _selectedContributorContacts;
 @synthesize delegate = _delegate;
 @synthesize contactIndex = _contactIndex;
-@synthesize searchDisplayController;
-@synthesize searchBar;
-
-// When initialized from storyboard
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
-    if ((self = [super initWithCoder:aDecoder])) {
-        
-    }
-    return self;
-}
 
 - (id)initWithViewerPermissions:(BNPermissionsObject *)viewerPermission contributorPermission:(BNPermissionsObject *)contributorPermission
 {
-    self = [super initWithStyle:UITableViewStylePlain];
+    self = [super initWithNibName:@"InviteFBFriendsTableViewController" bundle:nil];
     if (self) {
         // Custom initialization
-        
-        searchBar = [[UISearchBar alloc] init];
-        searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
         
         BNSharedUser *currentUser = [BNSharedUser currentUser];
         NSAssert(currentUser, @"No Current user available when modifying story");
         NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
-                               currentUser.name, @"name",
-                               currentUser.facebookId, @"id", nil];
+                                        currentUser.name, @"name",
+                                        currentUser.facebookId, @"id", nil];
         
         self.selectedViewerContacts = [NSMutableArray arrayWithArray:viewerPermission.inviteeList.facebookFriends];
         self.selectedContributorContacts = [NSMutableArray arrayWithArray:contributorPermission.inviteeList.facebookFriends];
@@ -108,7 +90,7 @@
 {
     [super viewDidLoad];
     
-    self.searchBar.placeholder = @"Search for a friend";
+    self.searchDisplayController.searchBar.placeholder = @"Search for a friend";
     self.searchDisplayController.delegate = self;
     self.searchDisplayController.searchResultsDataSource = self;
     self.searchDisplayController.searchResultsDelegate = self;
@@ -128,13 +110,20 @@
     self.tableView.tableHeaderView = headerLabel;
     self.tableView.tableFooterView = nil;
     
+    // Load the facebook friends list from cache
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSArray *facebookFriends = [userDefaults arrayForKey:BNUserDefaultsMyFacebookFriends];
+    if (facebookFriends.count) {
+        self.listContacts = facebookFriends;
+        [self setContactIndex];
+    }
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-    [refreshControl addTarget:self action:@selector(loadFacebookFriendsListAndRefresh) forControlEvents:UIControlEventValueChanged];
+    [refreshControl addTarget:self action:@selector(loadFacebookFriendsListAndRefresh:) forControlEvents:UIControlEventValueChanged];
     refreshControl.tintColor = BANYAN_GREEN_COLOR;
     self.refreshControl = refreshControl;
     
     [self.refreshControl beginRefreshing];
-    [self loadFacebookFriendsListAndRefresh];
+    [self loadFacebookFriendsListAndRefresh:self];
     
     [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneInviting:)]];
 }
@@ -145,7 +134,7 @@
     [self setGAIScreenName:@"Facebook Invitation Screen"];
 }
 
-- (void)loadFacebookFriendsListAndRefresh
+- (IBAction)loadFacebookFriendsListAndRefresh:(id)sender
 {
     __weak typeof(self) wself = self;
     [FBRequestConnection startForMyFriendsWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
@@ -153,18 +142,23 @@
             NSArray *array = [result objectForKey:@"data"];
             wself.listContacts = array;
             [wself setContactIndex];
+            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+            [userDefaults setObject:array forKey:BNUserDefaultsMyFacebookFriends];
+            [userDefaults synchronize];
         } else {
             [[[UIAlertView alloc] initWithTitle:@"Cannot get friend list"
-                                        message:@"There was an error in fetching your list of friends. Please try again in a bit" delegate:nil
+                                        message:@"There was an error in fetching your list of friends from facebook.\rPlease try again in a bit" delegate:nil
                               cancelButtonTitle:@"OK"
                               otherButtonTitles:nil] show];
             [BNMisc sendGoogleAnalyticsError:error inAction:@"Fetching facebook friends" isFatal:NO];
         }
-        if (self.searchDisplayController.isActive) {
-            [self.searchDisplayController setActive:NO animated:YES];
-        }
         [wself.refreshControl endRefreshing];
         wself.refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Load friends from facebook"];
+        if (wself.searchDisplayController.isActive) {
+            if (!wself.listContacts.count) {
+                [wself.searchDisplayController setActive:NO animated:YES];
+            }
+        }
         [wself.tableView reloadData];
     }];
 }
@@ -272,7 +266,7 @@
         return TRUE;
     
     NSAssert(self.selectedContributorContacts, @"No permission object for selected contributors");
-
+    
     
     return [self.selectedContributorContacts containsObject:friend];
 }
@@ -415,12 +409,12 @@
 }
 
 - (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
-    [self.tableView reloadSectionIndexTitles];
-    [self.tableView reloadData];
+    [self.tableView reloadSectionIndexTitles]; // To hide the section index titles
+    [controller.searchResultsTableView reloadData];
 }
 
 - (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
-    [self.tableView reloadSectionIndexTitles];
+    [self.tableView reloadSectionIndexTitles]; // To show the section index titles
     [self.tableView reloadData];
 }
 
