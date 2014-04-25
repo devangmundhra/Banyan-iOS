@@ -21,7 +21,6 @@
 #import "UIImage+ResizeAdditions.h"
 #import "GooglePlacePickerViewController.h"
 #import "MBProgressHUD.h"
-#import "CMPopTipView.h"
 #import "User.h"
 #import "BNLabel.h"
 #import <CoreLocation/CoreLocation.h>
@@ -56,7 +55,6 @@
 @interface ModifyPieceViewController ()
 
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (strong, nonatomic) IBOutlet UIButton *storyTitleButton;
 @property (strong, nonatomic) IBOutlet BNTextField *pieceCaptionView;
 @property (strong, nonatomic) IBOutlet UIPlaceHolderTextView *pieceTextView;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *doneButton;
@@ -97,7 +95,6 @@
 @synthesize audioPickerView = _audioPickerView;
 @synthesize audioRecorder = _audioRecorder;
 @synthesize mediaToDelete;
-@synthesize storyTitleButton = _storyTitleButton;
 @synthesize textViewInputAccessoryView = _textViewInputAccessoryView;
 @synthesize camViewController = _camViewController;
 @synthesize kbSize;
@@ -160,9 +157,6 @@
         [firstTimeDict setObject:[NSNumber numberWithUnsignedInteger:numberOfTimes+1] forKey:BNUserDefaultsFirstTimeModifyPieceVCOpen];
         [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
         [defaults synchronize];
-        CMPopTipView *popTipView = [[CMPopTipView alloc] initWithMessage:@"Tap here to contribute to a different story"];
-        SET_CMPOPTIPVIEW_APPEARANCES(popTipView);
-        [popTipView presentPointingAtView:self.storyTitleButton inView:self.view animated:NO];
     }
     
     [self registerForKeyboardNotifications];
@@ -215,28 +209,9 @@
     [self.view addSubview:self.scrollView];
     
     frame = self.scrollView.bounds;
-    frame.size.height = 34.0f;
     frame.origin.x = VIEW_INSETS;
     frame.origin.y += VIEW_INSETS;
     frame.size.width -= 2*VIEW_INSETS;
-    self.storyTitleButton = [[UIButton alloc] initWithFrame:frame];
-    self.storyTitleButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:16];
-    self.storyTitleButton.titleLabel.numberOfLines = 2;
-    self.storyTitleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    [self.storyTitleButton addTarget:self action:@selector(storyChangeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self.storyTitleButton setBackgroundColor:[BANYAN_DARKGRAY_COLOR colorWithAlphaComponent:SUBVIEW_OPACITY]];
-    [self.storyTitleButton.layer setCornerRadius:CORNER_RADIUS];
-    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece) {
-        // Only if this is a new piece should we allow changing the story for the piece.
-        self.storyTitleButton.showsTouchWhenHighlighted = YES;
-        self.storyTitleButton.userInteractionEnabled = YES;
-    } else {
-        self.storyTitleButton.userInteractionEnabled = NO;
-    }
-    [self updateStoryTitle];
-    [self.scrollView addSubview:self.storyTitleButton];
-
-    frame.origin.y = CGRectGetMaxY(self.storyTitleButton.frame) + VIEW_INSETS;
     frame.size.height = 44.0f;
     self.pieceCaptionView = [[BNTextField alloc] initWithFrame:frame];
     self.pieceCaptionView.delegate = self;
@@ -359,6 +334,26 @@
     } else {
         self.title = @"Add Piece";
     }
+    
+
+    NSMutableAttributedString *titleString = nil;
+    titleString = [[NSMutableAttributedString alloc] initWithString:self.title
+                                                  attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
+                                                               NSForegroundColorAttributeName: BANYAN_BLACK_COLOR}];
+    NSAttributedString *tapString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\rfor story- %@", self.piece.story.title]
+                                                                    attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:12],
+                                                                                 NSForegroundColorAttributeName: BANYAN_DARKGRAY_COLOR}];
+    
+    [titleString appendAttributedString:tapString];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    titleLabel.numberOfLines = 2;
+    titleLabel.attributedText = titleString;
+
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    [titleLabel sizeToFit];
+    
+    // Set the navigation item title view depending
+    self.navigationItem.titleView = titleLabel;
     
     // Start location manger to get current location if required
     // This is done here instead of in viewDidAppear because here this will be called only once when the view is loaded.
@@ -528,36 +523,6 @@
     [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"delete audio button pressed" label:nil value:nil];
 }
 
-- (IBAction)storyChangeButtonPressed:(id)sender
-{
-    BNLogInfo(@"Current story is %@", self.piece.story.title);
-    StoryPickerViewController *vc = [[StoryPickerViewController alloc] init];
-    vc.delegate = self;
-    UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:vc];
-    [self presentViewController:nvc animated:YES completion:nil];
-    [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"story change button pressed" label:nil value:nil];
-}
-
-- (void) updateStoryTitle
-{
-    if (!self.piece.story.title)
-        return;
-        
-    NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:self.piece.story.title
-                                                                      attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
-                                                                                   NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}];
-    NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] initWithAttributedString:titleString];
-
-    if (self.editMode == ModifyPieceViewControllerEditModeAddPiece) {
-        NSAttributedString *changeStoryString = [[NSAttributedString alloc] initWithString:@"\rtap to change the story"
-                                                                                attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
-                                                                                             NSForegroundColorAttributeName: BANYAN_WHITE_COLOR}];
-        [attrString appendAttributedString:changeStoryString];
-    }
-
-    [self.storyTitleButton setAttributedTitle:attrString forState:UIControlStateNormal];
-}
-
 #pragma mark UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -572,18 +537,6 @@
     }
 }
 
-# pragma mark StoryPickerViewControllerDelegate
-- (void) storyPickerViewControllerDidPickStory:(Story *)story
-{
-    if (![self.piece.story.objectID isEqual:story.objectID]) {
-        [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"different story selected from piece" label:nil value:nil];
-    }
-    // A new story was picked.
-    // Change the story of this piece to the new story
-    self.piece.story = (Story *)[story cloneIntoNSManagedObjectContext:self.scratchMOC];
-    self.storyID = story.objectID;
-    [self updateStoryTitle];
-}
 
 # pragma mark - Keyboard notifications
 - (void)registerForKeyboardNotifications
@@ -699,13 +652,11 @@
             textView.backgroundColor = BANYAN_WHITE_COLOR;
             
             // Remove the other subviews
-            self.storyTitleButton.alpha = 0;
             self.pieceCaptionView.alpha = 0;
             self.addPhotoButton.alpha = 0;
             self.audioPickerView.alpha = 0;
             self.addLocationButton.alpha = 0;
         } completion:^(BOOL finished) {
-            [self.storyTitleButton removeFromSuperview];
             [self.pieceCaptionView removeFromSuperview];
             [self.addPhotoButton removeFromSuperview];
             [self.audioPickerView removeFromSuperview];
@@ -716,7 +667,6 @@
 
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
-    [self.scrollView addSubview:self.storyTitleButton];
     [self.scrollView addSubview:self.pieceCaptionView];
     [self.scrollView addSubview:self.addPhotoButton];
     [self.scrollView addSubview:self.audioPickerView];
@@ -733,7 +683,6 @@
             [textView.layer setCornerRadius:8];
             self.pieceTextView.backgroundColor = [BANYAN_WHITE_COLOR colorWithAlphaComponent:SUBVIEW_OPACITY];
             
-            self.storyTitleButton.alpha = 1;
             self.pieceCaptionView.alpha = 1;
             self.addPhotoButton.alpha = 1;
             self.audioPickerView.alpha = 1;
@@ -773,7 +722,6 @@
     // Get all the subviews back
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     [self.view addSubview:self.scrollView];
-    [self.scrollView addSubview:self.storyTitleButton];
     [self.scrollView addSubview:self.pieceCaptionView];
     [self.scrollView addSubview:self.pieceTextView];
     [self.scrollView addSubview:self.addPhotoButton];
@@ -781,7 +729,6 @@
     [self.scrollView addSubview:self.addLocationButton];
     [UIView animateWithDuration:1
                      animations:^{
-                         self.storyTitleButton.alpha = 1;
                          self.pieceCaptionView.alpha = 1;
                          self.pieceTextView.alpha = 1;
                          self.addPhotoButton.alpha = 1;
@@ -874,7 +821,6 @@
     [self.navigationController setNavigationBarHidden:YES animated:YES];
     [UIView animateWithDuration:1
                      animations:^{
-                         self.storyTitleButton.alpha = 0;
                          self.pieceCaptionView.alpha = 0;
                          self.pieceTextView.alpha = 0;
                          self.addPhotoButton.alpha = 0;
@@ -884,7 +830,6 @@
                          [self.camViewController showAVCamViewControllerControls];
                      }
                      completion:^(BOOL finished){
-                         [self.storyTitleButton removeFromSuperview];
                          [self.pieceCaptionView removeFromSuperview];
                          [self.pieceTextView removeFromSuperview];
                          [self.addPhotoButton removeFromSuperview];

@@ -11,12 +11,6 @@
 #import "UIImage+Create.h"
 #import <QuartzCore/QuartzCore.h>
 
-@interface HelpInfoViewController ()
-
-@property (weak, nonatomic) IBOutlet UIButton *gotitButton;
-
-@end
-
 @implementation HelpInfoViewController
 
 @synthesize descriptionLabel = _descriptionLabel;
@@ -36,15 +30,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
 
-    self.gotitButton.layer.cornerRadius = 4.0f;
-    self.gotitButton.layer.masksToBounds = YES;
-    
+    [self.gotitButton setStyle:BButtonStyleBootstrapV3];
+    [self.gotitButton setType:BButtonTypeSuccess];
     [self.gotitButton.titleLabel setFont:[UIFont fontWithName:@"Roboto" size:16]];
-    
-    [self.gotitButton setBackgroundImage:[UIImage imageWithColor:BANYAN_LIGHT_GREEN_COLOR
-                                                         forRect:self.gotitButton.bounds] forState:UIControlStateNormal];
-    [self.gotitButton setBackgroundImage:[UIImage imageWithColor:BANYAN_DARK_GREEN_COLOR
-                                                         forRect:self.gotitButton.bounds] forState:UIControlStateHighlighted];
 }
 
 - (void)viewDidAppear:(BOOL)animated

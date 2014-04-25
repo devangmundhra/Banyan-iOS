@@ -90,18 +90,17 @@ typedef enum {
     [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(doneInviting:)]];
     [self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)]];
     
-    NSAttributedString *titleString = nil;
-    titleString = [[NSAttributedString alloc] initWithString:@"Permissions for story"
+    NSMutableAttributedString *titleString = nil;
+    titleString = [[NSMutableAttributedString alloc] initWithString:@"Permissions for story"
                                                   attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto-Bold" size:16],
                                                                NSForegroundColorAttributeName: BANYAN_DARKGRAY_COLOR}];
     NSAttributedString *tapString = [[NSAttributedString alloc] initWithString:@"\rtap for more information"
                                                                     attributes:@{NSFontAttributeName: [UIFont fontWithName:@"Roboto" size:10],
                                                                                  NSForegroundColorAttributeName: BANYAN_GRAY_COLOR}];
     
-    NSMutableAttributedString *tapAttrString = [[NSMutableAttributedString alloc] initWithAttributedString:titleString];
-    [tapAttrString appendAttributedString:tapString];
+    [titleString appendAttributedString:tapString];
     UIButton *titleButton = [[UIButton alloc] initWithFrame:CGRectZero];
-    [titleButton setAttributedTitle:tapAttrString forState:UIControlStateNormal];
+    [titleButton setAttributedTitle:titleString forState:UIControlStateNormal];
     titleButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     titleButton.titleLabel.numberOfLines = 2;
     [titleButton addTarget:self action:@selector(showExplanation:) forControlEvents:UIControlEventTouchUpInside];
@@ -132,6 +131,7 @@ typedef enum {
 #define MZFORMSHEET_LEFT_INSET 20.0
     
     HelpInfoViewController *vc = [[HelpInfoViewController alloc] initWithNibName:@"HelpInfoViewController" bundle:nil];
+    [vc.gotitButton setTitle:@"Got it" forState:UIControlStateNormal];
     MZFormSheetController *formSheet = [[MZFormSheetController alloc] initWithViewController:vc];
     formSheet.transitionStyle = MZFormSheetTransitionStyleSlideFromTop;
     formSheet.portraitTopInset = MZFORMSHEET_TOP_INSET;

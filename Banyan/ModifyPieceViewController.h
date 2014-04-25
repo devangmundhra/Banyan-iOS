@@ -12,7 +12,6 @@
 #import "Story.h"
 #import "SingleImagePickerButton.h"
 #import "BNAudioRecorder.h"
-#import "StoryPickerViewController.h"
 #import "MediaPickerViewController.h"
 
 @class  ModifyPieceViewController;
@@ -26,7 +25,7 @@ typedef enum {ModifyPieceViewControllerEditModeAddPiece, ModifyPieceViewControll
 
 @end
 
-@interface ModifyPieceViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, UIAlertViewDelegate, StoryPickerViewControllerDelegate>
+@interface ModifyPieceViewController : UIViewController <UITextViewDelegate, UITextFieldDelegate, UIAlertViewDelegate>
 
 @property (strong, nonatomic) Piece *piece;
 @property (weak, nonatomic) id <ModifyPieceViewControllerDelegate> delegate;

@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BButton.h"
 
 @interface HelpInfoViewController : UIViewController
 
 @property (weak, nonatomic) IBOutlet UILabel *descriptionLabel;
 
+@property (weak, nonatomic) IBOutlet BButton *gotitButton;
 @end
