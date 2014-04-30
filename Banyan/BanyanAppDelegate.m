@@ -106,10 +106,13 @@
     });
     [AFOpenGLManager beginOpenGLLoad];
     
-    [application registerForRemoteNotificationTypes:
-     UIRemoteNotificationTypeBadge |
-     UIRemoteNotificationTypeSound |
-     UIRemoteNotificationTypeAlert];
+    // Register for push notifications only after the user has logged in
+    if ([BanyanAppDelegate loggedIn]) {
+        [application registerForRemoteNotificationTypes:
+         UIRemoteNotificationTypeBadge |
+         UIRemoteNotificationTypeSound |
+         UIRemoteNotificationTypeAlert];
+    }
     
     [self appearances];
     

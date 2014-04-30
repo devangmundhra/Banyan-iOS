@@ -32,7 +32,8 @@ typedef enum {
 
 @interface StoryListTableViewController (StoryReaderControllerDelegate) <StoryReaderControllerDelegate>
 @end
-
+@interface StoryListTableViewController (ModifyPieceViewControllerDelegate) <ModifyPieceViewControllerDelegate>
+@end
 @interface StoryListTableViewController () <UIViewControllerTransitioningDelegate>
 
 @property (strong, nonatomic) CEFlipAnimationController *animationController;
@@ -409,6 +410,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
     
     Piece *piece = [Piece newPieceDraftForStory:story];
     ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:piece];
+    addPieceViewController.delegate = self;
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:addPieceViewController];
     [navController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
     [navController setModalPresentationStyle:UIModalPresentationFullScreen];
@@ -521,6 +523,15 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
             [self storyReaderWithStory:nextStory piece:piece];
         }
     }
+}
+
+@end
+
+@implementation StoryListTableViewController (ModifyPieceViewControllerDelegate)
+
+- (void)modifyPieceViewController:(ModifyPieceViewController *)controller didFinishAddingPiece:(Piece *)piece
+{
+    // Show a pop tip view to indicate what to do next to add another piece
 }
 
 @end

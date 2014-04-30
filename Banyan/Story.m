@@ -299,7 +299,6 @@
                                                        @"stats.numViews" : @"numberOfViews",
                                                        @"stats.userViewed" : @"viewedByCurUser",
                                                        @"stats.followActivity" : @"followActivityResourceUri",
-                                                       @"firstUnviewedPieceNumByUser" : @"currentPieceIndexNum",
                                                        @"resource_uri" : @"resourceUri",
                                                        @"perma_link" : @"permaLink",
                                                        @"isLocationEnabled" : @"autoAddLocation"

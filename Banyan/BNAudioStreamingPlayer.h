@@ -11,5 +11,6 @@
 
 @interface BNAudioStreamingPlayer : UIViewController
 - (void) loadWithURL:(NSString *)url;
-- (void) pause;
+- (IBAction)pause:(id)sender;
+- (IBAction)play:(id)sender;
 @end

@@ -49,9 +49,9 @@ static NSString * const kAFBanyanAPIBaseURLString = @"https://www.banyan.io/api/
         [self setAuthorizationHeaderWithTastyPieUsername:email andToken:apikey];    }
     [self setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus isNetworkReachable) {
         if (isNetworkReachable == AFNetworkReachabilityStatusReachableViaWiFi || isNetworkReachable == AFNetworkReachabilityStatusReachableViaWWAN) {
-            BNLogInfo(@"Internet now available");
+            BNLogWarning(@"Internet now available");
         } else {
-            BNLogInfo(@"Internet now unavailable");
+            BNLogWarning(@"Internet now unavailable");
         }
     }];
     

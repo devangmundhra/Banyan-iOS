@@ -325,10 +325,15 @@ static NSString *_exclaimString;
     }
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [self.audioPlayer pause:nil];
+}
+
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    [self.audioPlayer pause];
     [self.mediaFocusManager cancelURLConnectionIfAny];
 }
 
