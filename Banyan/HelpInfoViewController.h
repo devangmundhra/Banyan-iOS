@@ -11,7 +11,7 @@
 
 @interface HelpInfoViewController : UIViewController
 
-@property (weak, nonatomic) IBOutlet UILabel *descriptionLabel;
+@property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
 
 @property (weak, nonatomic) IBOutlet BButton *gotitButton;
 @end

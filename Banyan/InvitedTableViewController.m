@@ -137,7 +137,7 @@ typedef enum {
         // Passing data
         __weak typeof(self) wself = self;
         HelpInfoViewController *helpInfoVc = (HelpInfoViewController *)presentedFSViewController;
-        helpInfoVc.descriptionLabel.attributedText = [wself helpText];
+        helpInfoVc.descriptionTextView.attributedText = [wself helpText];
     };
     
     [self mz_presentFormSheetController:formSheet animated:YES completionHandler:^(MZFormSheetController *formSheetController) {

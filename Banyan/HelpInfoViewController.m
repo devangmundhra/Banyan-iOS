@@ -13,7 +13,7 @@
 
 @implementation HelpInfoViewController
 
-@synthesize descriptionLabel = _descriptionLabel;
+@synthesize descriptionTextView = _descriptionTextView;
 @synthesize gotitButton = _gotitButton;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
