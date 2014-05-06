@@ -149,22 +149,15 @@ typedef enum {
 {
     [super viewDidAppear:animated];
     [self setGAIScreenName:@"Story List screen"];
-
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
     
     // We only show this if the use has just started the app
-    if (![firstTimeDict objectForKey:BNUserDefaultsFirstTimeStoryListVCWoSignin] && ![BanyanAppDelegate loggedIn]) {
+    if ([BNMisc isFirstTimeUserAction:BNUserDefaultsFirstTimeStoryListVCWoSignin] && ![BanyanAppDelegate loggedIn]) {
+        [BNMisc setFirstTimeUserActionDone:BNUserDefaultsFirstTimeStoryListVCWoSignin];
         CMPopTipView *popTipView = [[CMPopTipView alloc] initWithTitle:@"Sign in" message:@"Sign in (using Facebook) to see, create and contribute to more stories"];
-        [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:BNUserDefaultsFirstTimeStoryListVCWoSignin];
-        [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
-        [defaults synchronize];
         SET_CMPOPTIPVIEW_APPEARANCES(popTipView);
         [popTipView presentPointingAtBarButtonItem:self.navigationItem.rightBarButtonItem animated:NO];
-    } else if (![firstTimeDict objectForKey:BNUserDefaultsFirstTimeStoryListVCWSignin] && [BanyanAppDelegate loggedIn]) {
-        [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:BNUserDefaultsFirstTimeStoryListVCWSignin];
-        [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
-        [defaults synchronize];
+    } else if ([BNMisc isFirstTimeUserAction:BNUserDefaultsFirstTimeStoryListVCWSignin] && [BanyanAppDelegate loggedIn]) {
+        [BNMisc setFirstTimeUserActionDone:BNUserDefaultsFirstTimeStoryListVCWSignin];
         CMPopTipView *popTipView = [[CMPopTipView alloc] initWithMessage:@"Tap here to create new stories, or contribute to existing ones!"];
         SET_CMPOPTIPVIEW_APPEARANCES(popTipView);
         [popTipView presentPointingAtBarButtonItem:self.navigationItem.rightBarButtonItem animated:NO];

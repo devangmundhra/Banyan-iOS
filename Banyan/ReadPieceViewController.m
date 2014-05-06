@@ -90,7 +90,7 @@ static NSString *_exclaimString;
 + (void)initialize
 {
     NSArray *fontAwesomeStrings = [NSString fa_allFontAwesomeStrings];
-    _uploadString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconSpinner];
+    _uploadString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconTime];
     _exclaimString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconExclamationSign];
 }
 
@@ -312,13 +312,8 @@ static NSString *_exclaimString;
     
     [self addGestureRecognizerToContentView:[self.delegate dismissBackPanGestureRecognizer]];
     [self addGestureRecognizerToContentView:[self.delegate dismissAheadPanGestureRecognizer]];
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
-    if (![firstTimeDict objectForKey:BNUserDefaultsFirstTimeStoryReaderOpen] ) {
-        [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:BNUserDefaultsFirstTimeStoryReaderOpen];
-        [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
-        [defaults synchronize];
+
+    if ([BNMisc checkFirstTimeUserActionAndSetDone:BNUserDefaultsFirstTimeStoryReaderOpen]) {
         CMPopTipView *popTipView = [[CMPopTipView alloc] initWithMessage:@"Tap here to get information about the story"];
         SET_CMPOPTIPVIEW_APPEARANCES(popTipView);
         [popTipView presentPointingAtView:[self.storyInfoView.subviews objectAtIndex:0] inView:self.view animated:NO];
@@ -516,7 +511,7 @@ static NSString *_exclaimString;
     // Upload status
     if (self.piece.remoteStatus == RemoteObjectStatusPushing) {
         [self.pieceUploadStatusButton setTitle:@"Uploading... " forState:UIControlStateNormal];
-        [self.pieceUploadStatusButton addAwesomeIcon:FAIconSpinner beforeTitle:NO];
+        [self.pieceUploadStatusButton addAwesomeIcon:FAIconTime beforeTitle:NO];
         [self.pieceUploadStatusButton setColor:[UIColor bb_successColorV3]];
         self.pieceUploadStatusButton.hidden = NO;
     } else if (self.piece.remoteStatus == RemoteObjectStatusFailed) {
@@ -738,9 +733,11 @@ static NSString *_exclaimString;
 {
     UIImage *heartImage = nil;
     if (self.piece.likeActivityResourceUri.length) {
+        BNLogInfo(@"full likeactivity uri: %@", self.piece.likeActivityResourceUri);
         heartImage = [UIImage imageNamed:@"heartSymbolPink"];
     }
     else {
+        BNLogInfo(@"hollow likeactivity uri: %@", self.piece.likeActivityResourceUri);
         heartImage = [UIImage imageNamed:@"heartSymbolHollow"];
     }
     [self.likesButton setImage:heartImage forState:UIControlStateNormal];

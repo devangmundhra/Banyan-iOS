@@ -150,15 +150,6 @@
 
     [self.view endEditing:YES];
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
-    NSUInteger numberOfTimes = [[firstTimeDict objectForKey:BNUserDefaultsFirstTimeModifyPieceVCOpen] unsignedIntegerValue];
-    if (numberOfTimes < 2) {
-        [firstTimeDict setObject:[NSNumber numberWithUnsignedInteger:numberOfTimes+1] forKey:BNUserDefaultsFirstTimeModifyPieceVCOpen];
-        [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
-        [defaults synchronize];
-    }
-    
     [self registerForKeyboardNotifications];
 }
 

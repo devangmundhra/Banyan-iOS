@@ -133,10 +133,7 @@
 
 - (void) showIntroIfRequired
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
-    BOOL appAlreadyOpened = [[firstTimeDict objectForKey:BNUserDefaultsFirstTimeAppOpen] boolValue];
-    if (!appAlreadyOpened) {
+    if ([BNMisc isFirstTimeUserAction:BNUserDefaultsFirstTimeAppOpen]) {
         BNIntroViewController *introVC = [[BNIntroViewController alloc] init];
         [self.window.rootViewController presentViewController:introVC animated:NO completion:nil];
     }

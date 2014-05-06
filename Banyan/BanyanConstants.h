@@ -54,6 +54,7 @@ extern NSString *const BNUserDefaultsFirstTimeModifyPieceVCOpen;
 extern NSString *const BNUserDefaultsFirstTimeStoryReaderOpen;
 extern NSString *const BNUserDefaultsFirstTimeModifyPieceImageAdded;
 extern NSString *const BNUserDefaultsFirstTimeSettingPermissions;
+extern NSString *const BNUserDefaultsFirstTimeCreateStoryVCOpen;
 
 #pragma mark - PFObject Story Class
 // Class key

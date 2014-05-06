@@ -19,7 +19,6 @@
     if ([[story calculateUploadStatusNumber] unsignedIntegerValue] != RemoteObjectStatusSync) {
         [story cancelAnyOngoingOperation];
         [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction Skipped" action:@"story delete" label:@"pending changes" value:nil];
-        return;
     }
     
     if (story.remoteStatus != RemoteObjectStatusLocal && NUMBER_EXISTS(story.bnObjectId)) {

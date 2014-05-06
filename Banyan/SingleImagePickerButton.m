@@ -216,13 +216,8 @@
     [self.thumbnailButton setAttributedTitle:attrString
                                     forState:UIControlStateNormal];
     [self.imageView addSubview:self.thumbnailButton];
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
-    if (![firstTimeDict objectForKey:BNUserDefaultsFirstTimeModifyPieceImageAdded] ) {
-        [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:BNUserDefaultsFirstTimeModifyPieceImageAdded];
-        [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
-        [defaults synchronize];
+
+    if ([BNMisc checkFirstTimeUserActionAndSetDone:BNUserDefaultsFirstTimeModifyPieceImageAdded] ) {
         CMPopTipView *popTipView = [[CMPopTipView alloc] initWithTitle:@"Why thumbnails?"
                                                                message:@"Thumbnails helps us show the important parts of the image when a user is quickly scrolling through all the pieces"];
         SET_CMPOPTIPVIEW_APPEARANCES(popTipView);

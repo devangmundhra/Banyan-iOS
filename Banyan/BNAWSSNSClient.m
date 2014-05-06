@@ -135,10 +135,11 @@
 
 + (void) enableNotificationsFromChannel:(NSString *)channel forEndpointArn:(NSString *)arn inBackgroundWithBlock:(void (^)(bool succeeded, NSError *error))block
 {
-    if (!arn)
+    if (!arn) {
         // This can happen if there was a problem in creating the platform endpoints for this device when the app started
         return;
-
+    }
+    
     [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"enableNotification" label:channel value:nil];
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{

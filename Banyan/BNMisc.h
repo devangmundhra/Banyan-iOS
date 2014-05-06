@@ -34,6 +34,8 @@
 + (void) sendGoogleAnalyticsException:(NSException *)exception inAction:(NSString *)action isFatal:(BOOL)fatal;
 + (void) sendGoogleAnalyticsError:(NSError *)error inAction:(NSString *)action isFatal:(BOOL)fatal;
 + (CLLocationManager *)sharedLocationManager;
-
++ (BOOL) isFirstTimeUserAction:(NSString *)firstTimeAction;
++ (void) setFirstTimeUserActionDone:(NSString *)firstTimeAction;
++ (BOOL) checkFirstTimeUserActionAndSetDone:(NSString *)firstTimeAction;
 @end
 

@@ -315,6 +315,7 @@
      * 3. App is opened, and the story refresh completes before the new piece has begun to be uploaded.
      * 4. In this case, the new piece will have story = nil (since the story received from the server will not have the new piece)
      */
+    /*
     if ([RemoteObject numRemoteObjectsWithPendingChanges]) {
         // If the notification is through any kind of notification, ignore showing the alert
         if (![sender isKindOfClass:[NSNotification class]]) {
@@ -332,7 +333,7 @@
 
         return;
     }
-    
+    */
     [[self storiesPaginator] cancel];
 
     BNLogInfo(@"BanyanConnection loadDataSource BEGIN for page 1");

@@ -221,4 +221,34 @@
     
     return _sharedLocationManager;
 }
+
++ (BOOL) isFirstTimeUserAction:(NSString *)firstTimeAction
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary *firstTimeDict = [defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict];
+    return ![[firstTimeDict objectForKey:firstTimeAction] boolValue];
+}
+
++ (void) setFirstTimeUserActionDone:(NSString *)firstTimeAction
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
+    [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:firstTimeAction];
+    [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
+    [defaults synchronize];
+}
+
++ (BOOL) checkFirstTimeUserActionAndSetDone:(NSString *)firstTimeAction
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
+    BOOL retValue = ![[firstTimeDict objectForKey:firstTimeAction] boolValue];
+    
+    [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:firstTimeAction];
+    [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
+    [defaults synchronize];
+    
+    return retValue;
+}
+
 @end

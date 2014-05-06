@@ -115,12 +115,7 @@ typedef enum {
     [super viewDidAppear:animated];
     [self setGAIScreenName:@"Invitation screen"];
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
-    if (![firstTimeDict objectForKey:BNUserDefaultsFirstTimeSettingPermissions]) {
-        [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:BNUserDefaultsFirstTimeSettingPermissions];
-        [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
-        [defaults synchronize];
+    if ([BNMisc checkFirstTimeUserActionAndSetDone:BNUserDefaultsFirstTimeSettingPermissions]) {
         [self showExplanation:nil];
     }
 }

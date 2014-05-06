@@ -86,7 +86,7 @@ static NSString *_exclaimString;
         _loggedIn = [BanyanAppDelegate loggedIn];
         
         NSArray *fontAwesomeStrings = [NSString fa_allFontAwesomeStrings];
-        _uploadString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconSpinner];
+        _uploadString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconTime];
         _exclaimString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconExclamationSign];
         
         // Notifications to handle permission controls
@@ -160,7 +160,7 @@ static NSString *_exclaimString;
                                                                                  BOTTOM_VIEW_HEIGHT - 2*SPACER_DISTANCE)
                                                                 color:[UIColor bb_successColorV3]
                                                                 style:BButtonStyleBootstrapV3
-                                                                 icon:FAIconSpinner
+                                                                 icon:FAIconTime
                                                              fontSize:20.0f];
         [self.storyUploadStatusButton setTitle:_uploadString forState:UIControlStateNormal];
         [self.storyUploadStatusButton setColor:[UIColor bb_successColorV3]];

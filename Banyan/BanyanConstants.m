@@ -49,6 +49,7 @@ NSString *const BNUserDefaultsFirstTimeModifyPieceVCOpen = @"io.banyan.Banyan.Us
 NSString *const BNUserDefaultsFirstTimeStoryReaderOpen = @"io.banyan.Banyan.UserDefaults.firstTime.storyReaderOpen";
 NSString *const BNUserDefaultsFirstTimeModifyPieceImageAdded = @"io.banyan.Banyan.UserDefaults.firstTime.modifyPieceImageAdded";
 NSString *const BNUserDefaultsFirstTimeSettingPermissions = @"io.banyan.Banyan.UserDefaults.firstTime.settingPermissions";
+NSString *const BNUserDefaultsFirstTimeCreateStoryVCOpen = @"io.banyan.Banyan.UserDefaults.firstTime.createStoryVCOpen";
 
 NSString *const BNUserDefaultsDeviceToken = @"io.banyan.Banyan.UserDefaults.deviceToken";
 

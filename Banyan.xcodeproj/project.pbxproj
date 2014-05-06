@@ -1188,6 +1188,7 @@
 				51596AB21744BB0A008F5276 /* Constants and Misc */,
 				5189B2C615B387E200562DD0 /* BanyanAppDelegate.h */,
 				5189B2C715B387E200562DD0 /* BanyanAppDelegate.m */,
+				51C42542182B769D00AF90C1 /* IntroView */,
 				5189B35B15B3976700562DD0 /* Story List */,
 				51CFD93B15F57F75002926F9 /* SideNavigator View Controller */,
 				5189B35C15B397BD00562DD0 /* Helpful Categories */,
@@ -1362,7 +1363,6 @@
 				51984D42176EE10E00CD6C3E /* CoreDataTableViewController.m */,
 				5189B31715B395F300562DD0 /* StoryListTableViewController.h */,
 				5189B31815B395F300562DD0 /* StoryListTableViewController.m */,
-				51C42542182B769D00AF90C1 /* IntroView */,
 				51170B7917F907090015B343 /* Interaction Controller for Story List */,
 			);
 			name = "Story List";
@@ -1557,6 +1557,7 @@
 				511D743718FE3160000926B0 /* BNIntroViewController.m */,
 			);
 			name = IntroView;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		51CFD93015F3121C002926F9 /* Settings */ = {
@@ -2237,7 +2238,7 @@
 			baseConfigurationReference = 8ED9F22B0C2B4CE9B82B3621 /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2292,7 +2293,7 @@
 			baseConfigurationReference = 8ED9F22B0C2B4CE9B82B3621 /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (

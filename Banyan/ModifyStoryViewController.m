@@ -17,6 +17,7 @@
 #import "BNTextField.h"
 #import "Story+Edit.h"
 #import "NSObject+BlockObservation.h"
+#import "CMPopTipView.h"
 
 @interface ModifyStoryViewController (UIActionSheetDelegate) <UIActionSheetDelegate>
 @end
@@ -103,6 +104,13 @@
 {
     [super viewDidAppear:animated];
     [self setGAIScreenName:@"Modify Story"];
+    
+    if ([BNMisc checkFirstTimeUserActionAndSetDone:BNUserDefaultsFirstTimeCreateStoryVCOpen]) {
+        CMPopTipView *popTipView = [[CMPopTipView alloc] initWithMessage:@"The permission settings are important. It lets you decide who can read and contribute to this story."];
+        SET_CMPOPTIPVIEW_APPEARANCES(popTipView);
+        [popTipView presentPointingAtView:self.inviteContactsButton inView:self.scrollView animated:YES];
+    }
+    
     [self.view endEditing:YES];
 }
 

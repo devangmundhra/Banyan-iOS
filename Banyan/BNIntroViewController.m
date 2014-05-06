@@ -287,8 +287,8 @@
     
     [self.getStartedButton.titleLabel setFont:[UIFont fontWithName:@"Roboto-Bold" size:TEXT_FONT_SIZE]];
     [self.getStartedButton.titleLabel setTextAlignment:NSTextAlignmentRight];
-    [self.getStartedButton setTitle:@"Get Started            " forState:UIControlStateNormal];
-    [self.getStartedButton addAwesomeIcon:FAIconArrowRight beforeTitle:NO];
+    [self.getStartedButton setTitle:@"Get Started" forState:UIControlStateNormal];
+//    [self.getStartedButton addAwesomeIcon:FAIconArrowRight beforeTitle:NO];
     self.getStartedButton.center = self.view.center;
     self.getStartedButton.frame = CGRectOffset(self.getStartedButton.frame, timeForPage(5), BIG_SCREEN ? 230 : 205);
     [self.getStartedButton addTarget:self action:@selector(dismissIntroView:) forControlEvents:UIControlEventTouchUpInside];
@@ -460,11 +460,7 @@
 
 - (IBAction)dismissIntroView:(id)sender
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSMutableDictionary *firstTimeDict = [[defaults dictionaryForKey:BNUserDefaultsFirstTimeActionsDict] mutableCopy];
-    [firstTimeDict setObject:[NSNumber numberWithBool:YES] forKey:BNUserDefaultsFirstTimeAppOpen];
-    [defaults setObject:firstTimeDict forKey:BNUserDefaultsFirstTimeActionsDict];
-    [defaults synchronize];
+    [BNMisc setFirstTimeUserActionDone:BNUserDefaultsFirstTimeAppOpen];
     self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
