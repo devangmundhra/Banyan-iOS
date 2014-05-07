@@ -490,7 +490,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         NSUInteger i = 1;
         Story *nextStory = nil;
         do {
-            NSIndexPath *nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row+1 inSection:currentIndexPath.section];
+            NSIndexPath *nextIndexPath = [NSIndexPath indexPathForRow:currentIndexPath.row+i inSection:currentIndexPath.section];
             @try {
                 nextStory = [self.fetchedResultsController objectAtIndexPath:nextIndexPath];
                 if (nextStory.pieces.count)
