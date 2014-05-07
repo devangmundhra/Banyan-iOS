@@ -15,13 +15,16 @@
 
 - (void) setViewedWithCompletionBlock:(void (^)(bool succeeded, NSError *error))block
 {
-    if (self.viewedByCurUser)
-        return;
-    
     BNSharedUser *currentUser = [BNSharedUser currentUser];
     if (!currentUser)
         return;
 
+    if (self.viewedByCurUser || self.remoteStatus != RemoteObjectStatusSync)
+        return;
+    
+    // Proactively set this as yes even before completion to prevent multiple view activities
+    self.viewedByCurUser = YES;
+    
     Activity *activity = [Activity activityWithType:kBNActivityTypeView
                                              object:self.resourceUri];
     
