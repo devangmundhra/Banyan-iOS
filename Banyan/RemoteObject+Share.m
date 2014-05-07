@@ -172,9 +172,11 @@
     [[AFBanyanAPIClient sharedClient] postPath:@"flag_object/"
                                     parameters:@{@"content_object":self.resourceUri, @"message":message}
                                        success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                           [self remove];
                                            BNLogTrace(@"Object flagged");
                                        }
                                        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                           [BNMisc sendGoogleAnalyticsError:error inAction:@"Flag Story" isFatal:NO];
                                            BNLogError(@"An error occurred: %@", error.localizedDescription);
                                        }];
 }
