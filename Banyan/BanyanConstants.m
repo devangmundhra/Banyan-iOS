@@ -83,8 +83,6 @@ NSString *const kBNActivityTypeFollowUser = @"followUser";
 NSString *const kBNActivityTypeUnfollowUser = @"unfollowUser";
 NSString *const kBNActivityTypeFollowStory = @"followStory";
 NSString *const kBNActivityTypeView       = @"view";
-NSString *const kBNActivityTypeComment    = @"comment";
-NSString *const kBNActivityTypeJoined     = @"joined";
 
 #pragma mark - ManagedObject Media Class
 // Class key

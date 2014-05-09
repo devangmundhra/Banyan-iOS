@@ -11,6 +11,12 @@
 #import "AFBanyanAPIClient.h"
 #import "User.h"
 
+NSString *const BNAWSSNSInvitedToContributeString = @"InvitedToContribute";
+NSString *const BNAWSSNSInvitedToViewString = @"InvitedToView";
+NSString *const BNAWSSNSPieceAddedString = @"PieceAdded";
+NSString *const BNAWSSNSPieceActionString = @"PieceAction";
+NSString *const BNAWSSNSUserFollowingString = @"UserFollowing";
+
 @implementation BNAWSSNSClient
 
 + (AmazonSNSClient *)sharedClient
@@ -54,8 +60,9 @@
 
         SNSCreatePlatformEndpointResponse *resp = nil;
         BOOL fail = NO;
+        NSString *endPointKey = nil;
         @try {
-            NSString *endPointKey =  @"InvitedToContribute";
+            endPointKey = BNAWSSNSInvitedToContributeString;
             req.platformApplicationArn = AWS_APPARN_INVTOCONTRIBUTE;
             resp = [[self sharedClient] createPlatformEndpoint:req];
             if ([resp respondsToSelector:@selector(endpointArn)])
@@ -66,44 +73,44 @@
                 [BNMisc sendGoogleAnalyticsError:resp.error inAction:[NSString stringWithFormat:@"Create SNS Platform for endpoint: %@", endPointKey] isFatal:NO];
             }
             
-            endPointKey =  @"InvitedToView";
+            endPointKey = BNAWSSNSInvitedToViewString;
             req.platformApplicationArn = AWS_APPARN_INVTOVIEW;
             resp = [[self sharedClient] createPlatformEndpoint:req];
             if ([resp respondsToSelector:@selector(endpointArn)])
-                [[self endpointsDict] setObject:resp.endpointArn forKey:@"InvitedToView"];
+                [[self endpointsDict] setObject:resp.endpointArn forKey:endPointKey];
             else {
                 fail = YES;
                 BNLogError(@"Error in creating platform endpoint for %@\n", endPointKey);
                 [BNMisc sendGoogleAnalyticsError:resp.error inAction:[NSString stringWithFormat:@"Create SNS Platform for endpoint: %@", endPointKey] isFatal:NO];
             }
             
-            endPointKey = @"PieceAction";
+            endPointKey = BNAWSSNSPieceActionString;
             req.platformApplicationArn = AWS_APPARN_PIECEACTION;
             resp = [[self sharedClient] createPlatformEndpoint:req];
             if ([resp respondsToSelector:@selector(endpointArn)])
-                [[self endpointsDict] setObject:resp.endpointArn forKey:@"PieceAction"];
+                [[self endpointsDict] setObject:resp.endpointArn forKey:endPointKey];
             else {
                 fail = YES;
                 BNLogError(@"Error in creating platform endpoint for %@\n", endPointKey);
                 [BNMisc sendGoogleAnalyticsError:resp.error inAction:[NSString stringWithFormat:@"Create SNS Platform for endpoint: %@", endPointKey] isFatal:NO];
             }
             
-            endPointKey = @"PieceAdded";
+            endPointKey = BNAWSSNSPieceAddedString;
             req.platformApplicationArn = AWS_APPARN_PIECEADDED;
             resp = [[self sharedClient] createPlatformEndpoint:req];
             if ([resp respondsToSelector:@selector(endpointArn)])
-                [[self endpointsDict] setObject:resp.endpointArn forKey:@"PieceAdded"];
+                [[self endpointsDict] setObject:resp.endpointArn forKey:endPointKey];
             else {
                 fail = YES;
                 BNLogError(@"Error in creating platform endpoint for %@\n", endPointKey);
                 [BNMisc sendGoogleAnalyticsError:resp.error inAction:[NSString stringWithFormat:@"Create SNS Platform for endpoint: %@", endPointKey] isFatal:NO];
             }
             
-            endPointKey = @"UserFollowing";
+            endPointKey = BNAWSSNSUserFollowingString;
             req.platformApplicationArn = AWS_APPARN_USERFOLLOWING;
             resp = [[self sharedClient] createPlatformEndpoint:req];
             if ([resp respondsToSelector:@selector(endpointArn)])
-                [[self endpointsDict] setObject:resp.endpointArn forKey:@"UserFollowing"];
+                [[self endpointsDict] setObject:resp.endpointArn forKey:endPointKey];
             else {
                 fail = YES;
                 BNLogError(@"Error in creating platform endpoint for %@\n", endPointKey);

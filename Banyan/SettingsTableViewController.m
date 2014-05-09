@@ -313,9 +313,9 @@ typedef enum {
     };
 
     if (switchControl.on) {
-        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_INVTOCONTRIBUTE forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"InvitedToContribute"] inBackgroundWithBlock:snsNotificationCompletionBlock];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_INVTOCONTRIBUTE forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:BNAWSSNSInvitedToContributeString] inBackgroundWithBlock:snsNotificationCompletionBlock];
     } else {
-        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_INVTOCONTRIBUTE forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"InvitedToContribute"] inBackgroundWithBlock:snsNotificationCompletionBlock];
+        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_INVTOCONTRIBUTE forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:BNAWSSNSInvitedToContributeString] inBackgroundWithBlock:snsNotificationCompletionBlock];
     }
     BNLogInfo( @"The %@: %@", BNAddStoryInvitedContributePushNotification, switchControl.on ? @"ON" : @"OFF" );
 }
@@ -339,9 +339,9 @@ typedef enum {
     };
     
     if (switchControl.on) {
-        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_INVTOVIEW forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"InvitedToView"] inBackgroundWithBlock:snsNotificationCompletionBlock];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_INVTOVIEW forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:BNAWSSNSInvitedToViewString] inBackgroundWithBlock:snsNotificationCompletionBlock];
     } else {
-        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_INVTOVIEW forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"InvitedToView"] inBackgroundWithBlock:snsNotificationCompletionBlock];
+        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_INVTOVIEW forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:BNAWSSNSInvitedToViewString] inBackgroundWithBlock:snsNotificationCompletionBlock];
     }
     BNLogInfo( @"The %@: %@", BNAddStoryInvitedViewPushNotification, switchControl.on ? @"ON" : @"OFF" );
 }
@@ -365,9 +365,9 @@ typedef enum {
     };
     
     if (switchControl.on) {
-        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_PIECEADDED forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"PieceAdded"] inBackgroundWithBlock:snsNotificationCompletionBlock];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_PIECEADDED forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:BNAWSSNSPieceAddedString] inBackgroundWithBlock:snsNotificationCompletionBlock];
     } else {
-        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_PIECEADDED forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"PieceAdded"] inBackgroundWithBlock:snsNotificationCompletionBlock];
+        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_PIECEADDED forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:BNAWSSNSPieceAddedString] inBackgroundWithBlock:snsNotificationCompletionBlock];
     }
     BNLogInfo( @"The %@: %@", BNAddPieceToContributedStoryPushNotification, switchControl.on ? @"ON" : @"OFF" );
 }
@@ -391,9 +391,9 @@ typedef enum {
     };
     
     if (switchControl.on) {
-        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_PIECEACTION forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"PieceAction"] inBackgroundWithBlock:snsNotificationCompletionBlock];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_PIECEACTION forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:BNAWSSNSPieceActionString] inBackgroundWithBlock:snsNotificationCompletionBlock];
     } else {
-        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_PIECEACTION forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"PieceAction"] inBackgroundWithBlock:snsNotificationCompletionBlock];
+        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_PIECEACTION forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:BNAWSSNSPieceActionString] inBackgroundWithBlock:snsNotificationCompletionBlock];
     }
     BNLogInfo( @"The %@: %@", BNPieceActionPushNotification, switchControl.on ? @"ON" : @"OFF" );
 }
@@ -417,9 +417,9 @@ typedef enum {
     };
     
     if (switchControl.on) {
-        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_USERFOLLOWING forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"UserFollowing"] inBackgroundWithBlock:snsNotificationCompletionBlock];
+        [BNAWSSNSClient enableNotificationsFromChannel:AWS_APPARN_USERFOLLOWING forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:BNAWSSNSUserFollowingString] inBackgroundWithBlock:snsNotificationCompletionBlock];
     } else {
-        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_USERFOLLOWING forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:@"UserFollowing"] inBackgroundWithBlock:snsNotificationCompletionBlock];
+        [BNAWSSNSClient disableNotificationsFromChannel:AWS_APPARN_USERFOLLOWING forEndpointArn:[[BNAWSSNSClient endpointsDict] objectForKey:BNAWSSNSUserFollowingString] inBackgroundWithBlock:snsNotificationCompletionBlock];
     }
     BNLogInfo( @"The %@: %@", BNUserFollowingPushNotification, switchControl.on ? @"ON" : @"OFF" );
 }

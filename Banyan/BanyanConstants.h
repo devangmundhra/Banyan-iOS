@@ -87,8 +87,6 @@ extern NSString *const kBNActivityTypeFollowUser;
 extern NSString *const kBNActivityTypeUnfollowUser;
 extern NSString *const kBNActivityTypeFollowStory;
 extern NSString *const kBNActivityTypeView;
-extern NSString *const kBNActivityTypeComment;
-extern NSString *const kBNActivityTypeJoined;
 
 #pragma mark - ManagedObject Media Class
 // Class key
