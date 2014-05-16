@@ -138,10 +138,12 @@
     
     [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
         if (granted) {
-            [wself.controlButton setImage:[UIImage imageNamed:@"Stop"] forState:UIControlStateNormal];
-            [wself.controlButton removeTarget:wself action:NULL forControlEvents:UIControlEventTouchUpInside];
-            [wself.controlButton addTarget:wself action:@selector(stop:) forControlEvents:UIControlEventTouchUpInside];
-            [wself.delegate bnAudioRecorderViewToRecord:wself];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [wself.controlButton setImage:[UIImage imageNamed:@"Stop"] forState:UIControlStateNormal];
+                [wself.controlButton removeTarget:wself action:NULL forControlEvents:UIControlEventTouchUpInside];
+                [wself.controlButton addTarget:wself action:@selector(stop:) forControlEvents:UIControlEventTouchUpInside];
+                [wself.delegate bnAudioRecorderViewToRecord:wself];
+            });
         } else {
             [[[UIAlertView alloc] initWithTitle:@"Banyan does not have access to your microphone"
                                         message:@"You can enable access in Privacy Settings to record audio"

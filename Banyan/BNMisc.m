@@ -216,7 +216,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _sharedLocationManager = [[CLLocationManager alloc] init];
-        _sharedLocationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters; //kCLLocationAccuracyBest; // kCLLocationAccuracyNearestTenMeters;
+        _sharedLocationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers; //kCLLocationAccuracyBest; // kCLLocationAccuracyNearestTenMeters;
     });
     
     return _sharedLocationManager;

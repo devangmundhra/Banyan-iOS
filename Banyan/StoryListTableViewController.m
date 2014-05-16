@@ -153,7 +153,7 @@ typedef enum {
     // We only show this if the use has just started the app
     if ([BNMisc isFirstTimeUserAction:BNUserDefaultsFirstTimeStoryListVCWoSignin] && ![BanyanAppDelegate loggedIn]) {
         [BNMisc setFirstTimeUserActionDone:BNUserDefaultsFirstTimeStoryListVCWoSignin];
-        CMPopTipView *popTipView = [[CMPopTipView alloc] initWithTitle:@"Sign in" message:@"Sign in (using Facebook) to see, create and contribute to more stories"];
+        CMPopTipView *popTipView = [[CMPopTipView alloc] initWithTitle:nil message:@"Sign in (using Facebook) to see, create and contribute to more stories"];
         SET_CMPOPTIPVIEW_APPEARANCES(popTipView);
         [popTipView presentPointingAtBarButtonItem:self.navigationItem.rightBarButtonItem animated:NO];
     } else if ([BNMisc isFirstTimeUserAction:BNUserDefaultsFirstTimeStoryListVCWSignin] && [BanyanAppDelegate loggedIn]) {

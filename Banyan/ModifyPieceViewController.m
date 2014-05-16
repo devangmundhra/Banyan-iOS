@@ -964,7 +964,6 @@
 {
     BOOL isLocationEnabled = sender.getEnabledState;
     isLocationEnabled = !isLocationEnabled;
-    [self.addLocationButton locationPickerLocationEnabled:isLocationEnabled];
     if (isLocationEnabled) {
         [self locationPickerButtonTapped:sender];
     } else {
@@ -973,6 +972,7 @@
         [[BNMisc sharedLocationManager] stopUpdatingLocation];
         [[BNMisc sharedLocationManager] setDelegate:nil];
     }
+    [self.addLocationButton locationPickerLocationEnabled:isLocationEnabled];
 }
 
 @end
@@ -981,6 +981,11 @@
 - (void)googlePlacesViewControllerPickedLocation:(BNDuckTypedObject<GooglePlacesObject>*)place
 {
     self.addLocationButton.location = place;
+    
+    // User picked a location, so stop getting the location automatically
+    [[BNMisc sharedLocationManager] stopUpdatingLocation];
+    [[BNMisc sharedLocationManager] setDelegate:nil];
+    
     [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"location was picked for piece" label:place.name value:nil];
 }
 
@@ -993,18 +998,17 @@
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
     CLLocation *newLocation = [locations lastObject];
-    // test the age of the location measurement to determine if the measurement is cached
-    // in most cases you will not want to rely on cached measurements
+    // Don't use locations more than a minute old
     NSTimeInterval locationAge = -[newLocation.timestamp timeIntervalSinceNow];
-    if (locationAge > 5.0) return;
+    if (locationAge > 60.0) return;
     // test that the horizontal accuracy does not indicate an invalid measurement
     if (newLocation.horizontalAccuracy < 0) return;
     // test the measurement to see if it meets the desired accuracy
     // IMPORTANT!!! kCLLocationAccuracyBest should not be used for comparison with location coordinate or altitidue
     // accuracy because it is a negative value. Instead, compare against some predetermined "real" measure of
-    // acceptable accuracy, or depend on the timeout to stop updating. This sample depends on a 10m acceptable accuracy
+    // acceptable accuracy, or depend on the timeout to stop updating. This sample depends on a 3km acceptable accuracy
     //
-    if (newLocation.horizontalAccuracy <= 10) {
+    if (newLocation.horizontalAccuracy <= kCLLocationAccuracyThreeKilometers) {
         // IMPORTANT!!! Minimize power usage by stopping the location manager as soon as possible.
         self.currentLocation = newLocation;
         CLLocationCoordinate2D coordinate = newLocation.coordinate;
@@ -1019,7 +1023,7 @@
                 place.geometry.location.lat = [NSNumber numberWithDouble:address.coordinate.latitude];
                 place.geometry.location.lng = [NSNumber numberWithDouble:address.coordinate.longitude];
                 self.addLocationButton.location = place;
-                BNLogInfo(@"Geocoder result: %@", address);
+                BNLogInfo(@"Geocoder result: %@ accuracy %f (of %f)", address, newLocation.horizontalAccuracy, kCLLocationAccuracyThreeKilometers);
             } else {
                 BNLogError(@"Could not reverse geocode point (%f,%f): %@",
                       coordinate.latitude, coordinate.longitude, error);

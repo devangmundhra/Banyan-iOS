@@ -25,6 +25,14 @@
 @synthesize international_phone_number;
 @synthesize geometry;
 
++ (NSMutableDictionary<BNDuckTypedObject> *)duckTypedObject
+{
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    [dict setObject:@{@"location": @{}} forKey:@"geometry"];
+    NSMutableDictionary<BNDuckTypedObject> *object = [BNDuckTypedObject duckTypedObjectWrappingDictionary:dict];
+    return object;
+}
+
 # pragma mark Helper functions
 - (NSString *)getFormattedName
 {
@@ -71,4 +79,5 @@ GooglePlacesAutocompletePlaceType placeTypeFromDictionary(NSDictionary *placeDic
 NSString *placeTypeStringForPlaceType(GooglePlacesAutocompletePlaceType type) {
     return (type == PlaceTypeGeocode) ? @"geocode" : @"establishment";
 }
+
 @end

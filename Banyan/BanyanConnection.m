@@ -139,6 +139,8 @@
     // be returned by the fetch request
     // The fetch requests are executed LIFO, so pieces should be deleted before stories are deleted
     // Delete the stories not in the fetch request
+    
+    // Basically says delete stories which themselves are not dirty, and neither are the pieces dirty
     [objectManager addFetchRequestBlock:^NSFetchRequest *(NSURL *URL) {
         RKPathMatcher *pathMatcher = [RKPathMatcher pathMatcherWithPath:@"story"];
         
@@ -148,7 +150,7 @@
             NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
             // Don't delete stories or pieces that have not yet been uploaded completely.
             // We can't delete stories that are being edited or in Draft. This is because say when the app starts, we start to edit the last story.
-            // Not the story list refreshes and we get the first page of stories. Now if we delete the story with the piece being deleted, we will get
+            // Now the story list refreshes and we get the first page of stories. Now if we delete the story with the piece being deleted, we will get
             // Cocoa error 1600. So better not to delete the story even if we don't have the latest updated story when the piece is being edited.
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@) AND (SUBQUERY(pieces, $piece, $piece.remoteStatusNumber != %@).@count = 0)",
                                       [NSNumber numberWithInt:RemoteObjectStatusSync], [NSNumber numberWithInt:RemoteObjectStatusSync]];
@@ -161,7 +163,8 @@
         return nil;
     }];
     
-    // Delete the piece of the stories not in the fetch request
+    // Delete the pieces of the stories not in the fetch request
+    // Basically says all pieces are candidate for deletion if they are not dirty and the story is not dirty
     [objectManager addFetchRequestBlock:^NSFetchRequest *(NSURL *URL) {
         RKPathMatcher *pathMatcher = [RKPathMatcher pathMatcherWithPath:@"story"];
         
@@ -169,7 +172,8 @@
         BOOL match = [pathMatcher matchesPattern:[URL relativePath] tokenizeQueryStrings:YES parsedArguments:&argsDict];
         if (match) {
             NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:kBNPieceClassKey];
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@)", [NSNumber numberWithInt:RemoteObjectStatusSync]];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(remoteStatusNumber = %@) AND (story.uploadStatusNumber = %@)",
+                                      [NSNumber numberWithInt:RemoteObjectStatusSync], [NSNumber numberWithInt:RemoteObjectStatusSync]];
             [fetchRequest setPredicate:predicate];
             return fetchRequest;
         }

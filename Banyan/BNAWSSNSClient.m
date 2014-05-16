@@ -118,7 +118,7 @@ NSString *const BNAWSSNSUserFollowingString = @"UserFollowing";
             }
             
             // Even if there is a single error in getting an Arn, don't update the information on the server.
-            // The principle is that stale information is better than wrong information
+            // The principle is that stale information is better than wrong information, or is it?
             if (fail) {
                 [BNMisc sendGoogleAnalyticsEventWithCategory:@"Error" action:@"Skipping update of SNS endpoints" label:nil value:nil];
             } else {

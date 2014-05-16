@@ -16,9 +16,7 @@
 @implementation Piece (Edit)
 
 + (void) editPiece:(Piece *)piece
-{
-    [piece save];
-    
+{    
     // If the object has not been created yet, create it first.
     if (!NUMBER_EXISTS(piece.bnObjectId)) {
         if (piece.remoteStatus == RemoteObjectStatusPushing) {
@@ -33,7 +31,8 @@
     }
     
     piece.remoteStatus = RemoteObjectStatusPushing;
-    
+    [piece save];
+
     BNLogInfo(@"Trying to update piece %@", piece.bnObjectId);
     
     // Block to upload the piece

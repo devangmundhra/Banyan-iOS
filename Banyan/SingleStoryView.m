@@ -204,10 +204,7 @@ static NSString *_exclaimString;
 - (void) updateStoryLabels
 {
     self.storyAuthorsLabel.text = [NSString stringWithFormat:@"by %@", [self.story shortStringOfContributors]];
-    // If the uploadStatusNumber says not sync, confirm it by actually calculating the upload status number.
-    // Sometimes, due to caching, the uploadStatusNumber does not reflect the latest value
-    if (   [self.story.uploadStatusNumber unsignedIntegerValue] != RemoteObjectStatusSync
-        && [[self.story calculateUploadStatusNumber] unsignedIntegerValue] != RemoteObjectStatusSync) {
+    if (   [self.story.uploadStatusNumber unsignedIntegerValue] != RemoteObjectStatusSync) {
         if ([self.story.uploadStatusNumber unsignedIntegerValue] == RemoteObjectStatusPushing) {
             [self.storyUploadStatusButton setTitle:_uploadString forState:UIControlStateNormal];
             [self.storyUploadStatusButton setColor:[UIColor bb_successColorV3]];

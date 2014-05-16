@@ -97,6 +97,28 @@
     return array;
 }
 
++ (BOOL) isStoryDirty:(NSNumber *)bnObjectId
+{
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:kBNStoryClassKey];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(bnObjectId = %@)", bnObjectId];
+    [fetchRequest setPredicate:predicate];
+    
+    NSError *error = nil;
+    NSArray *array = [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (array == nil || ![array count]) {
+        // No objects could be found with that bnObjectId
+        // Since this object doesn't even exist, its not dirty
+        return NO;
+    } else {
+        if (array.count > 1) {
+            BNLogError(@"Multiple stories in local data store with object id %@", bnObjectId);
+            [BNMisc sendGoogleAnalyticsEventWithCategory:@"error" action:@"unexpected local stories with same id" label:nil value:nil];
+        }
+        Story *story = [array lastObject];
+        return story.uploadStatusNumber.unsignedIntegerValue != RemoteObjectStatusSync;
+    }
+}
+
 - (void)uploadFailedRemoteObject
 {
     if (self.remoteStatus == RemoteObjectStatusFailed) {
@@ -250,6 +272,25 @@
     [self setPrimitiveSectionIdentifier:nil];
 }
 
+- (NSNumber *)uploadStatusNumber
+{
+    [self willAccessValueForKey:@"uploadStatusNumber"];
+    NSNumber *tmp = [self primitiveUploadStatusNumber];
+    [self didAccessValueForKey:@"uploadStatusNumber"];
+    
+    if ([tmp unsignedIntegerValue] != RemoteObjectStatusSync) {
+        // If the story is not sync'ed, recalculate to make sure
+        tmp = [self calculateUploadStatusNumber];
+        if ([tmp unsignedIntegerValue] == RemoteObjectStatusSync) {
+            // Note that there was a calculation mistake here
+            [BNMisc sendGoogleAnalyticsEventWithCategory:@"Error" action:@"wrong upload status number" label:nil value:nil];
+        }
+        [self setPrimitiveUploadStatusNumber:tmp];
+    }
+    
+    return tmp;
+}
+
 - (void) saveStoryMOIdToUserDefaults
 {
     // Save this story in the UserDefaults so that next time the user will add a piece here.
@@ -284,11 +325,30 @@
     *ioValue = [BNDuckTypedObject duckTypedObjectWrappingDictionary:*ioValue];
     return YES;
 }
+
+- (BOOL)validatePieces:(id *)ioValue error:(NSError **)outError
+{
+    if ([self.uploadStatusNumber unsignedIntegerValue] != RemoteObjectStatusSync) {
+        BNLogTrace(@"Skipping setting pieces for story %@ (%@)", [self primitiveValueForKey:@"title"], [self primitiveValueForKey:@"bnObjectId"]);
+        *ioValue = [self primitiveValueForKey:@"pieces"];
+    }
+    return YES;
+}
+
+- (BOOL)validateMedia:(id *)ioValue error:(NSError **)outError
+{
+    if ([self.uploadStatusNumber unsignedIntegerValue] != RemoteObjectStatusSync) {
+        BNLogTrace(@"Skipping setting media for story %@ (%@)", [self primitiveValueForKey:@"title"], [self primitiveValueForKey:@"bnObjectId"]);
+        *ioValue = [self primitiveValueForKey:@"media"];
+    }
+    return YES;
+}
+
 @end
 
 @implementation Story (RestKitMappings)
 
-+ (RKEntityMapping *)storyMappingForRKGET
++ (RKDynamicMapping *)storyMappingForRKGET
 {
     RKEntityMapping *storyMapping = [RKEntityMapping mappingForEntityForName:kBNStoryClassKey
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
@@ -304,14 +364,29 @@
                                                        @"isLocationEnabled" : @"autoAddLocation"
                                                        }];
     storyMapping.identificationAttributes = @[@"bnObjectId"];
-    
     [storyMapping addAttributeMappingsFromArray:@[@"bnObjectId", @"title", @"readAccess", @"writeAccess", @"tags",
                                                   @"createdAt", @"updatedAt", @"location", @"timeStamp"]];
     [storyMapping addPropertyMappingsFromArray:@[[RKRelationshipMapping relationshipMappingFromKeyPath:@"pieces" toKeyPath:@"pieces" withMapping:[Piece pieceMappingForRKGET]],
                                                  [RKRelationshipMapping relationshipMappingFromKeyPath:@"media" toKeyPath:@"media" withMapping:[Media mediaMappingForRKGET]],
                                                  [RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:[User UserMappingForRKGET]]]];
     
-    return storyMapping;
+    RKEntityMapping *emptyStoryMapping = [RKEntityMapping mappingForEntityForName:kBNStoryClassKey
+                                                        inManagedObjectStore:[RKManagedObjectStore defaultStore]];
+    emptyStoryMapping.identificationAttributes = @[@"bnObjectId"];
+    [emptyStoryMapping addAttributeMappingsFromArray:@[@"bnObjectId"]];
+    [emptyStoryMapping addPropertyMappingsFromArray:@[[RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:[User UserMappingForRKGET]]]];
+    
+    RKDynamicMapping* dynamicMapping = [[RKDynamicMapping alloc] init];
+    [dynamicMapping setObjectMappingForRepresentationBlock:^RKObjectMapping *(id representation) {
+        NSNumber *bnObjectId = [representation valueForKey:@"bnObjectId"];
+        if ([Story isStoryDirty:bnObjectId]) {
+            BNLogTrace(@"Using emptyStoryMapping for story with id %@", bnObjectId);
+            return emptyStoryMapping;
+        } else {
+            return storyMapping;
+        }
+    }];
+    return dynamicMapping;
 }
 
 + (RKObjectMapping *)storyRequestMappingForRKPOST

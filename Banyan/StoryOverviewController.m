@@ -86,6 +86,31 @@ static NSString *const unfollowStoryString = @"Unfollow story";
     
     self.view.backgroundColor = BANYAN_WHITE_COLOR;
     
+    [self setStoryTitleInNavigationItem];
+    
+    // Piece collection view
+    CGRect frame = self.view.bounds;
+#define COLL_VIEW_INSET 4
+    UICollectionViewFlowLayout *collViewLayout = [[UICollectionViewFlowLayout alloc] init];
+    CGFloat pcSz = ceilf(CGRectGetWidth(frame)/3) - 3*COLL_VIEW_INSET;
+    collViewLayout.itemSize = CGSizeMake(pcSz, pcSz);
+    collViewLayout.sectionInset = UIEdgeInsetsMake(COLL_VIEW_INSET, COLL_VIEW_INSET, COLL_VIEW_INSET, COLL_VIEW_INSET);
+    collViewLayout.headerReferenceSize = CGSizeMake(frame.size.width, STORYOVERVIEW_HEADERVIEW_HEIGHT);
+#undef COLL_VIEW_INSET
+    frame.size.height -= STORYOVERVIEW_HEADERVIEW_HEIGHT;
+    self.piecesCollectionView = [[UICollectionView alloc] initWithFrame:frame collectionViewLayout:collViewLayout];
+    self.piecesCollectionView.backgroundColor = BANYAN_WHITE_COLOR;
+    self.piecesCollectionView.dataSource = self;
+    self.piecesCollectionView.delegate = self;
+    self.piecesCollectionView.showsVerticalScrollIndicator = NO;
+    [self.piecesCollectionView registerClass:[StoryOverviewPieceCell class] forCellWithReuseIdentifier:CellIdentifier];
+    [self.piecesCollectionView registerClass:[StoryOverviewHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:HeaderIdentifier];
+    
+    [self.view addSubview:self.piecesCollectionView];
+}
+
+- (void) setStoryTitleInNavigationItem
+{
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.navigationController.navigationBar.frame) - 80,
                                                                     CGRectGetHeight(self.navigationController.navigationBar.frame))];
     titleLabel.numberOfLines = 2;
@@ -110,29 +135,9 @@ static NSString *const unfollowStoryString = @"Unfollow story";
     
     [titleString appendAttributedString:appendString];
     titleLabel.attributedText = titleString;
-
+    
     // Story title label
     self.navigationItem.titleView = titleLabel;
-    
-    // Piece collection view
-    CGRect frame = self.view.bounds;
-#define COLL_VIEW_INSET 4
-    UICollectionViewFlowLayout *collViewLayout = [[UICollectionViewFlowLayout alloc] init];
-    CGFloat pcSz = ceilf(CGRectGetWidth(frame)/3) - 3*COLL_VIEW_INSET;
-    collViewLayout.itemSize = CGSizeMake(pcSz, pcSz);
-    collViewLayout.sectionInset = UIEdgeInsetsMake(COLL_VIEW_INSET, COLL_VIEW_INSET, COLL_VIEW_INSET, COLL_VIEW_INSET);
-    collViewLayout.headerReferenceSize = CGSizeMake(frame.size.width, STORYOVERVIEW_HEADERVIEW_HEIGHT);
-#undef COLL_VIEW_INSET
-    frame.size.height -= STORYOVERVIEW_HEADERVIEW_HEIGHT;
-    self.piecesCollectionView = [[UICollectionView alloc] initWithFrame:frame collectionViewLayout:collViewLayout];
-    self.piecesCollectionView.backgroundColor = BANYAN_WHITE_COLOR;
-    self.piecesCollectionView.dataSource = self;
-    self.piecesCollectionView.delegate = self;
-    self.piecesCollectionView.showsVerticalScrollIndicator = NO;
-    [self.piecesCollectionView registerClass:[StoryOverviewPieceCell class] forCellWithReuseIdentifier:CellIdentifier];
-    [self.piecesCollectionView registerClass:[StoryOverviewHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:HeaderIdentifier];
-    
-    [self.view addSubview:self.piecesCollectionView];
 }
 
 #pragma mark notifications
@@ -159,7 +164,7 @@ static NSString *const unfollowStoryString = @"Unfollow story";
 
 - (void) refreshUI
 {
-    self.navigationItem.title = self.story.title;
+    [self setStoryTitleInNavigationItem];
     [self.piecesCollectionView reloadData];
 }
 

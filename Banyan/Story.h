@@ -46,7 +46,7 @@
 @end
 
 @interface Story (RestKitMappings)
-+ (RKEntityMapping *)storyMappingForRKGET;
++ (RKDynamicMapping *)storyMappingForRKGET;
 + (RKObjectMapping *)storyRequestMappingForRKPOST;
 + (RKEntityMapping *)storyResponseMappingForRKPOST;
 + (RKObjectMapping *)storyRequestMappingForRKPUT;
