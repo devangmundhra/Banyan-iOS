@@ -10,6 +10,7 @@
 
 @interface UIImage (Create)
 
++ (UIImage *) imageFromText:(NSString *)text withFont:(UIFont *)font withColor:(UIColor *)color;
 + (UIImage*) imageFilledWith:(UIColor*)color using:(UIImage*)startImage;
 + (UIImage *) imageFromText:(NSString *)text withSize:(CGFloat)fontSize;
 + (UIImage *) imageWithColor:(UIColor *)color forRect:(CGRect)rect;

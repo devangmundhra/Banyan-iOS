@@ -60,12 +60,10 @@ typedef enum {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         
-        NSDictionary *copyViewerPermission =
-        (__bridge NSDictionary *)(CFPropertyListCreateDeepCopy(kCFAllocatorDefault,
+        NSDictionary *copyViewerPermission = CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault,
                                                                (__bridge CFPropertyListRef)(viewerPermission),
                                                                kCFPropertyListImmutable));
-        NSDictionary *copyContributorPermission =
-        (__bridge NSDictionary *)(CFPropertyListCreateDeepCopy(kCFAllocatorDefault,
+        NSDictionary *copyContributorPermission = CFBridgingRelease(CFPropertyListCreateDeepCopy(kCFAllocatorDefault,
                                                                (__bridge CFPropertyListRef)(contributorPermission),
                                                                kCFPropertyListImmutable));
         

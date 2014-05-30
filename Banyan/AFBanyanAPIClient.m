@@ -11,8 +11,8 @@
 #import "BanyanAppDelegate.h"
 
 #ifdef DEBUG
-static NSString * const kAFBanyanAPIBaseURLString = @"http://dev.banyan.io/api/v1/";
-//static NSString * const kAFBanyanAPIBaseURLString = @"http://127.0.0.1:8000/api/v1/";
+//static NSString * const kAFBanyanAPIBaseURLString = @"http://dev.banyan.io/api/v1/";
+static NSString * const kAFBanyanAPIBaseURLString = @"http://127.0.0.1:8000/api/v1/";
 #else
 static NSString * const kAFBanyanAPIBaseURLString = @"https://www.banyan.io/api/v1/";
 #endif

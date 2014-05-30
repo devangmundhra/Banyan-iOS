@@ -236,7 +236,7 @@
     cell.delegate = self;
     
     // Set the name
-    [cell setName:[friend objectForKey:@"name"]];
+    [cell setFriend:friend];
     
     // Set/disable write button. If write is allowed, read is automatically allowed.
     

@@ -369,7 +369,7 @@ static NSString *_exclaimString;
     [self.storyFrontViewControl addTarget:self action:@selector(toggleBackView:) forControlEvents:UIControlEventTouchUpInside];
     [self.storyFrontViewControl setImage:frontViewControlImage forState:UIControlStateNormal];
     // Set the button's frame
-    CGRect frontViewControlButtonFrame;
+    CGRect frontViewControlButtonFrame = CGRectZero;
     frontViewControlButtonFrame.size.width = floor(frontViewControlImage.size.width) + 2*TABLE_CELL_MARGIN;
     frontViewControlButtonFrame.origin.x = floor(CGRectGetWidth(self.topSwipeView.frame) - CGRectGetWidth(frontViewControlButtonFrame));
     frontViewControlButtonFrame.origin.y = floor(self.topSwipeView.frontView.frame.origin.y);

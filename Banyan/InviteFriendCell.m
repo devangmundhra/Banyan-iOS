@@ -7,9 +7,13 @@
 //
 
 #import "InviteFriendCell.h"
+#import "UIImage+Create.h"
+#import <QuartzCore/QuartzCore.h>
+#import "UIImageView+WebCache.h"
 
 @interface InviteFriendCell ()
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *profilePicImageView;
 @property (weak, nonatomic) IBOutlet UIButton *readButton;
 @property (weak, nonatomic) IBOutlet UIButton *writeButton;
 
@@ -17,7 +21,7 @@
 
 @implementation InviteFriendCell
 @synthesize nameLabel, readButton, writeButton;
-@synthesize delegate;
+@synthesize delegate, profilePicImageView;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -54,14 +58,29 @@
 - (void) setup
 {
     nameLabel.font = [UIFont fontWithName:@"Roboto" size:14];
+    nameLabel.backgroundColor = BANYAN_WHITE_COLOR;
     
     // Read button
     [readButton addTarget:self action:@selector(readButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     readButton.exclusiveTouch = YES;
+    readButton.backgroundColor = BANYAN_WHITE_COLOR;
     
     // Write button
     [writeButton addTarget:self action:@selector(writeButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     writeButton.exclusiveTouch = YES;
+    writeButton.backgroundColor = BANYAN_WHITE_COLOR;
+    
+    CGFloat profilePicSize = 35;
+    
+    CGRect frame = CGRectMake(10, self.center.y - roundf(profilePicSize/2) - 2, profilePicSize, profilePicSize);
+    profilePicImageView.frame = frame;
+    
+    CALayer *layer = profilePicImageView.layer;
+    [layer setCornerRadius:profilePicSize/2];
+    [layer setMasksToBounds:YES];
+    [layer setBorderWidth:1.0f];
+    [layer setBorderColor:[BANYAN_DARKBROWN_COLOR colorWithAlphaComponent:0.4].CGColor];
+    profilePicImageView.contentMode = UIViewContentModeScaleAspectFit;
     
     self.selectionStyle = UITableViewCellSelectionStyleDefault;
 }
@@ -97,8 +116,29 @@
     }
 }
 
-- (void) setName:(NSString *)name
+- (void) setFriend:(NSDictionary *)fbFriend
 {
+    NSString *name = [fbFriend objectForKey:@"name"];
+    // Get the initials
+    NSMutableString * firstCharacters = [NSMutableString string];
+    NSArray * words = [name componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    if (words.count >= 2) {
+        words = @[[words firstObject], [words lastObject]];
+    }
+    for (NSString * word in words) {
+        if ([word length] > 0) {
+            NSString * firstLetter = [word substringWithRange:[word rangeOfComposedCharacterSequenceAtIndex:0]];
+            [firstCharacters appendString:[firstLetter uppercaseString]];
+        }
+    }
+    
+    NSString *friendId = [fbFriend objectForKey:@"id"];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture", friendId]];
+    UIImage *phImage = [UIImage imageFromText:firstCharacters
+                                     withFont:[UIFont fontWithName:@"Roboto" size:16]
+                                    withColor:BANYAN_DARKBROWN_COLOR];
+    
+    [profilePicImageView setImageWithURL:url placeholderImage:phImage];
     nameLabel.text = name;
 }
 
