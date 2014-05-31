@@ -12,7 +12,7 @@
 #import "BNLabel.h"
 #import "MZFormSheetController.h"
 #import "BanyanAppDelegate.h"
-#import "ContributorsTableViewController.h"
+#import "BNGeneralizedTableViewController.h"
 
 @interface StoryOverviewHeaderView ()
 @property (strong, nonatomic) IBOutlet BNLabel *storyDateLabel;
@@ -104,7 +104,8 @@
 
 - (IBAction)contributorsDetailsButtonPressed:(id)sender
 {
-    UIViewController *vc = [[ContributorsTableViewController alloc] initWithStyle:UITableViewStylePlain];
+    BNGeneralizedTableViewController *vc = [[BNGeneralizedTableViewController alloc] initWithStyle:UITableViewStylePlain type:BNGeneralizedTableViewTypeStoryContributors];
+    vc.sectionString = @"Contributors";
     
     MZFormSheetController *formSheet = [[MZFormSheetController alloc] initWithViewController:vc];
     formSheet.transitionStyle = MZFormSheetTransitionStyleSlideFromTop;
@@ -114,7 +115,7 @@
     __weak StoryOverviewHeaderView *wself = self;
     formSheet.willPresentCompletionHandler = ^(UIViewController *presentedFSViewController) {
         // Passing data
-        ContributorsTableViewController *conVC = (ContributorsTableViewController *)presentedFSViewController;
+        BNGeneralizedTableViewController *conVC = (BNGeneralizedTableViewController *)presentedFSViewController;
         conVC.dataSource = wself.arrayOfContributors;
         [conVC.tableView reloadData];
     };

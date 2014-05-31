@@ -25,6 +25,8 @@
 #import "Piece+Share.h"
 #import "CMPopTipView.h"
 #import "BButton.h"
+#import "MZFormSheetController.h"
+#import "BNGeneralizedTableViewController.h"
 
 static NSString *const deletePieceString = @"Delete piece";
 static NSString *const flagPieceString = @"Flag piece";
@@ -51,9 +53,8 @@ static NSString *const retryUploadString = @"Retry upload";
 @property (strong, nonatomic) IBOutlet BNAudioStreamingPlayer *audioPlayer;
 
 @property (strong, nonatomic) IBOutlet UIView *pieceInfoView;
-@property (strong, nonatomic) IBOutlet UIButton *contributorsButton;
-@property (strong, nonatomic) IBOutlet UIButton *viewsButton;
-@property (strong, nonatomic) IBOutlet UIButton *likesButton;
+@property (strong, nonatomic) IBOutlet UIButton *likeButton;
+@property (strong, nonatomic) IBOutlet UIButton *likesCountButton;
 @property (strong, nonatomic) IBOutlet BNLabel *authorLabel;
 @property (strong, nonatomic) IBOutlet BNLabel *timeLabel;
 @property (strong, nonatomic) IBOutlet BNLabel *locationLabel;
@@ -66,6 +67,8 @@ static NSString *const retryUploadString = @"Retry upload";
 
 static NSString *_uploadString;
 static NSString *_exclaimString;
+static NSString *_heartEmptyString;
+static NSString *_heartFullString;
 
 @implementation ReadPieceViewController
 @synthesize contentView = _contentView;
@@ -73,9 +76,8 @@ static NSString *_exclaimString;
 @synthesize pieceCaptionView = _pieceCaptionView;
 @synthesize pieceTextView = _pieceTextView;
 @synthesize pieceInfoView = _pieceInfoView;
-@synthesize contributorsButton = _contributorsButton;
-@synthesize viewsButton = _viewsButton;
-@synthesize likesButton = _likesButton;
+@synthesize likeButton = _likeButton;
+@synthesize likesCountButton = _likesCountButton;
 @synthesize authorLabel = _authorLabel;
 @synthesize timeLabel = _timeLabel;
 @synthesize locationLabel = _locationLabel;
@@ -92,6 +94,8 @@ static NSString *_exclaimString;
     NSArray *fontAwesomeStrings = [NSString fa_allFontAwesomeStrings];
     _uploadString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconTime];
     _exclaimString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconExclamationSign];
+    _heartEmptyString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconHeartEmpty];
+    _heartFullString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconHeart];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -204,15 +208,50 @@ static NSString *_exclaimString;
 
     self.pieceInfoView = [[UIView alloc] initWithFrame:CGRectZero];
     self.authorLabel = [[BNLabel alloc] initWithFrame:CGRectZero];
-    self.timeLabel = [[BNLabel alloc] initWithFrame:CGRectZero];
-    self.locationLabel = [[BNLabel alloc] initWithFrame:CGRectZero];
+    self.authorLabel.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSET_BIG, 0, TEXT_INSET_SMALL);
+    self.authorLabel.font = [UIFont fontWithName:@"Roboto" size:16];
+    self.authorLabel.minimumScaleFactor = 0.8;
+    self.authorLabel.backgroundColor= [UIColor clearColor];
+    self.authorLabel.textAlignment = NSTextAlignmentLeft;
+    self.authorLabel.numberOfLines = 2;
 
-    self.likesButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.likesButton.exclusiveTouch = YES;
-    [self.likesButton addTarget:self action:@selector(likeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    self.timeLabel = [[BNLabel alloc] initWithFrame:CGRectZero];
+    self.timeLabel.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSET_BIG, 0, TEXT_INSET_SMALL);
+    self.timeLabel.font = [UIFont fontWithName:@"Roboto-Condensed" size:12];
+    self.timeLabel.minimumScaleFactor = 0.8;
+    self.timeLabel.backgroundColor = [UIColor clearColor];
+    self.timeLabel.textAlignment = NSTextAlignmentLeft;
+    
+    self.locationLabel = [[BNLabel alloc] initWithFrame:CGRectZero];
+    self.locationLabel.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSET_SMALL, 0, TEXT_INSET_SMALL);
+    self.locationLabel.font = [UIFont fontWithName:@"Roboto-Condensed" size:12];
+    self.locationLabel.minimumScaleFactor = 0.8;
+    self.locationLabel.backgroundColor = [UIColor clearColor];
+    self.locationLabel.textAlignment = NSTextAlignmentLeft;
+    self.locationLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+
+    self.likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.likeButton.exclusiveTouch = YES;
+    [self.likeButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -2*TEXT_INSET_SMALL, 0, 0)];
+    [self.likeButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
+    [self.likeButton setContentVerticalAlignment:UIControlContentVerticalAlignmentTop];
+    [self.likeButton setTitleColor:BANYAN_PINK_COLOR forState:UIControlStateNormal];
+    self.likeButton.titleLabel.font = [UIFont fontWithName:@"FontAwesome" size:16];
+    [self.likeButton addTarget:self action:@selector(likeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.likesCountButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.likesCountButton.exclusiveTouch = YES;
+    [self.likesCountButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 2*TEXT_INSET_SMALL, 0, 0)];
+    [self.likesCountButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
+    [self.likesCountButton setContentVerticalAlignment:UIControlContentVerticalAlignmentTop];
+    self.likesCountButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:16];
+    [self.likesCountButton setTitleColor:BANYAN_PINK_COLOR forState:UIControlStateNormal];
+    [self.likesCountButton addTarget:self action:@selector(likesCountButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+
     [self.pieceInfoView addSubview:self.authorLabel];
     [self.pieceInfoView addSubview:self.timeLabel];
-    [self.pieceInfoView addSubview:self.likesButton];
+    [self.pieceInfoView addSubview:self.likeButton];
+    [self.pieceInfoView addSubview:self.likesCountButton];
     [self.pieceInfoView addSubview:self.locationLabel];
     [self.contentView addSubview:self.pieceInfoView];
     
@@ -337,13 +376,14 @@ static NSString *_exclaimString;
     self.pieceCaptionView.frame = CGRectZero;
     self.pieceTextView.frame = CGRectZero;
     self.imageView.frame = CGRectZero;
-    self.audioPlayer.view.frame = CGRectZero; self.audioPlayer.view.hidden = YES;
-    
+    self.audioPlayer.view.frame = CGRectZero;
+    self.audioPlayer.view.hidden = YES;
+
     Media *imageMedia = [Media getMediaOfType:@"gif" inMediaSet:self.piece.media];
     if (![imageMedia.localURL length] && ![imageMedia.remoteURL length])
         imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
     Media *audioMedia = [Media getMediaOfType:@"audio" inMediaSet:self.piece.media];
-    
+
     // Allocate custom parts of the view depending on what the piece contains
     BOOL hasAudio = [audioMedia.localURL length] || [audioMedia.remoteURL length];
     BOOL hasImage = [imageMedia.localURL length] || [imageMedia.remoteURL length];
@@ -386,33 +426,26 @@ static NSString *_exclaimString;
         self.pieceInfoView.frame = frame;
         [self.contentView bringSubviewToFront:self.pieceInfoView];
         // author label
-        self.authorLabel.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSET_BIG, 0, TEXT_INSET_SMALL);
         self.authorLabel.text = self.piece.author.name;
-        self.authorLabel.font = [UIFont fontWithName:@"Roboto" size:16];
-        self.authorLabel.minimumScaleFactor = 0.8;
-        self.authorLabel.backgroundColor= [UIColor clearColor];
-        self.authorLabel.textAlignment = NSTextAlignmentLeft;
-        self.authorLabel.numberOfLines = 2;
         [self.authorLabel sizeToFit];
         
-        if ([BanyanAppDelegate loggedIn])
+        if ([BanyanAppDelegate loggedIn] && self.piece.bnObjectId)
         {
+            CGFloat buttonSize = 36.0f;
             frame = [UIScreen mainScreen].bounds;
             // like button
-            self.likesButton.frame = CGRectMake(CGRectGetMaxX(frame)-44-3*TEXT_INSET_SMALL, 0, 44, floor(CGRectGetHeight(self.authorLabel.frame)));
-            self.likesButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:14];
-            [self.likesButton setImageEdgeInsets:UIEdgeInsetsMake(5, 4, 5, 4)];
-            [self.likesButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 3*TEXT_INSET_SMALL, 0, 0)];
-            [self.likesButton setTitleColor:BANYAN_PINK_COLOR forState:UIControlStateNormal];
+            self.likeButton.frame = CGRectMake(CGRectGetMaxX(frame)-3*TEXT_INSET_SMALL-buttonSize-TEXT_INSET_SMALL-buttonSize,
+                                                0, buttonSize, buttonSize);
+            
+            // like count button
+            frame = self.likeButton.bounds;
+            frame.origin.x = CGRectGetMaxX(self.likeButton.frame) + TEXT_INSET_SMALL;
+            self.likesCountButton.frame = frame;
+            
             [self togglePieceLikeButtonLabel];
         }
         // date label
         self.timeLabel.text = [NSString stringWithFormat:@"%@",[[BNMisc dateTimeFormatter] stringFromDate:self.piece.createdAt]];
-        self.timeLabel.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSET_BIG, 0, TEXT_INSET_SMALL);
-        self.timeLabel.font = [UIFont fontWithName:@"Roboto-Condensed" size:12];
-        self.timeLabel.minimumScaleFactor = 0.8;
-        self.timeLabel.backgroundColor = [UIColor clearColor];
-        self.timeLabel.textAlignment = NSTextAlignmentLeft;
         [self.timeLabel sizeToFit];
         frame = self.timeLabel.frame;
         frame.origin = CGPointMake(0, CGRectGetMaxY(self.authorLabel.frame));
@@ -421,12 +454,6 @@ static NSString *_exclaimString;
         // location label
         if ([self.piece.location.name length]) {
             self.locationLabel.text = [NSString stringWithFormat:@"at %@", self.piece.location.name];
-            self.locationLabel.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSET_SMALL, 0, TEXT_INSET_SMALL);
-            self.locationLabel.font = [UIFont fontWithName:@"Roboto-Condensed" size:12];
-            self.locationLabel.minimumScaleFactor = 0.8;
-            self.locationLabel.backgroundColor = [UIColor clearColor];
-            self.locationLabel.textAlignment = NSTextAlignmentLeft;
-            self.locationLabel.lineBreakMode = NSLineBreakByTruncatingTail;
             frame = self.locationLabel.frame;
             frame.origin = CGPointMake(CGRectGetMaxX(self.timeLabel.frame), CGRectGetMaxY(self.authorLabel.frame));
             frame.size.height = CGRectGetHeight(self.timeLabel.frame);
@@ -504,9 +531,6 @@ static NSString *_exclaimString;
         self.timeLabel.textColor = BANYAN_WHITE_COLOR;
         self.locationLabel.textColor = BANYAN_WHITE_COLOR;
     }
-    
-    [self.contributorsButton setTitle:@"Contributors" forState:UIControlStateNormal];
-    [self.contributorsButton setEnabled:NO];
     
     // Upload status
     if (self.piece.remoteStatus == RemoteObjectStatusPushing) {
@@ -731,17 +755,23 @@ static NSString *_exclaimString;
 
 - (void)togglePieceLikeButtonLabel
 {
-    UIImage *heartImage = nil;
+    NSString *heartString = nil;
     if (self.piece.likeActivityResourceUri.length) {
         BNLogInfo(@"full likeactivity uri: %@", self.piece.likeActivityResourceUri);
-        heartImage = [UIImage imageNamed:@"heartSymbolPink"];
+        heartString = _heartFullString;
     }
     else {
         BNLogInfo(@"hollow likeactivity uri: %@", self.piece.likeActivityResourceUri);
-        heartImage = [UIImage imageNamed:@"heartSymbolHollow"];
+        heartString = _heartEmptyString;
     }
-    [self.likesButton setImage:heartImage forState:UIControlStateNormal];
-    [self.likesButton setTitle:[NSString stringWithFormat:@"%d", self.piece.numberOfLikes ] forState:UIControlStateNormal];
+    [self.likeButton setTitle:heartString forState:UIControlStateNormal];
+    
+    if (self.piece.numberOfLikes > 0) {
+        self.likesCountButton.hidden = NO;
+        [self.likesCountButton setTitle:[NSString stringWithFormat:@"%d", self.piece.numberOfLikes ] forState:UIControlStateNormal];
+    } else {
+        self.likesCountButton.hidden = YES;
+    }
 }
 
 - (IBAction)likeButtonPressed:(UIButton *)sender
@@ -763,6 +793,40 @@ static NSString *_exclaimString;
     } else {
         [self.piece likeWithCompletionBlock:likeCompletionBlock];
     }
+}
+
+- (IBAction)likesCountButtonPressed:(UIButton *)sender
+{
+    void (^showLikers)(NSArray *) = ^(NSArray *likers) {
+        BNGeneralizedTableViewController *vc = [[BNGeneralizedTableViewController alloc] initWithStyle:UITableViewStylePlain type:BNGeneralizedTableViewTypePieceLikers];
+        vc.sectionString = @"People who love this piece";
+        
+        MZFormSheetController *formSheet = [[MZFormSheetController alloc] initWithViewController:vc];
+        formSheet.transitionStyle = MZFormSheetTransitionStyleSlideFromTop;
+        formSheet.shadowRadius = 2.0;
+        formSheet.shadowOpacity = 0.3;
+        formSheet.shouldDismissOnBackgroundViewTap = YES;
+        formSheet.willPresentCompletionHandler = ^(UIViewController *presentedFSViewController) {
+            // Passing data
+            BNGeneralizedTableViewController *conVC = (BNGeneralizedTableViewController *)presentedFSViewController;
+            conVC.dataSource = likers;
+            [conVC.tableView reloadData];
+        };
+        
+        [APP_DELEGATE.topMostController mz_presentFormSheetController:formSheet animated:YES completionHandler:^(MZFormSheetController *formSheetController) {
+            
+        }];
+    };
+    
+    // Get list of all likers for this piece
+    [[AFBanyanAPIClient sharedClient] getPath:[NSString stringWithFormat:@"piece/%@/%@?format=json", self.piece.bnObjectId, kBNActivityTypeLike]
+                                   parameters:nil
+                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                          NSArray *likers = [responseObject objectForKey:@"objects"];
+                                          showLikers(likers);
+                                      }
+                                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                      }];
 }
 
 - (void)showFocusView:(UITapGestureRecognizer *)gestureRecognizer
