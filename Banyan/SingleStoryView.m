@@ -39,7 +39,6 @@ static UIImage *_addPieceImage;
 static UIImage *_flagStoryImage;
 static UIImage *_flagStoryImageSelected;
 static UIImage *_hideStoryImage;
-static NSDateFormatter *_dateFormatter;
 static UIFont *_boldFont;
 static UIFont *_boldFontSmall;
 static UIFont *_mediumFont;
@@ -72,11 +71,6 @@ static NSString *_exclaimString;
         _hideStoryImage = [UIImage imageNamed:@"hideStoryButton"];
         _shareWhiteImage = [UIImage imageNamed:@"shareButtonWhite"];
         
-        _dateFormatter = [[NSDateFormatter alloc] init];
-        [_dateFormatter setTimeStyle:NSDateFormatterNoStyle];
-        [_dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-        [_dateFormatter setDoesRelativeDateFormatting:YES];
-        
         _boldFont = [UIFont fontWithName:@"Roboto-Bold" size:20];
         _boldFontSmall = [UIFont fontWithName:@"Roboto-Bold" size:16];
         _mediumFont = [UIFont fontWithName:@"Roboto-Medium" size:12];
@@ -85,9 +79,8 @@ static NSString *_exclaimString;
         
         _loggedIn = [BanyanAppDelegate loggedIn];
         
-        NSArray *fontAwesomeStrings = [NSString fa_allFontAwesomeStrings];
-        _uploadString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconTime];
-        _exclaimString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconExclamationSign];
+        _uploadString = [NSString fa_stringForFontAwesomeIcon:FAClockO];
+        _exclaimString = [NSString fa_stringForFontAwesomeIcon:FAExclamationCircle];
         
         // Notifications to handle permission controls
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -160,7 +153,7 @@ static NSString *_exclaimString;
                                                                                  BOTTOM_VIEW_HEIGHT - 2*SPACER_DISTANCE)
                                                                 color:[UIColor bb_successColorV3]
                                                                 style:BButtonStyleBootstrapV3
-                                                                 icon:FAIconTime
+                                                                 icon:FAClockO
                                                              fontSize:20.0f];
         [self.storyUploadStatusButton setTitle:_uploadString forState:UIControlStateNormal];
         [self.storyUploadStatusButton setColor:[UIColor bb_successColorV3]];
@@ -287,7 +280,7 @@ static NSString *_exclaimString;
     // Time label
     point = CGPointMake(TABLE_CELL_MARGIN+_clockSymbolImage.size.width+SPACER_DISTANCE, TOP_VIEW_HEIGHT/2+SPACER_DISTANCE);
     [[UIColor grayColor] set];
-    string = [_dateFormatter stringFromDate:self.story.createdAt];
+    string = [[BNMisc dateFormatterNoTimeMediumDateRelative] stringFromDate:self.story.createdAt];
     size = CGSizeMake(CGRectGetWidth(self.frame)/2 - TABLE_CELL_MARGIN - BUTTON_SPACING, TOP_VIEW_HEIGHT/2);
     
     paraStyle = [[NSMutableParagraphStyle alloc] init];

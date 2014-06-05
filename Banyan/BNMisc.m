@@ -43,6 +43,20 @@
     return _dateFormatterNoTimeMediumDateRelative;
 }
 
++ (NSDateFormatter *) dateFormatterShortTimeMediumDateRelative
+{
+    static NSDateFormatter *_dateFormatterNoTimeMediumDateRelative = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateFormatterNoTimeMediumDateRelative = [[NSDateFormatter alloc] init];
+        [_dateFormatterNoTimeMediumDateRelative setTimeStyle:NSDateFormatterShortStyle];
+        [_dateFormatterNoTimeMediumDateRelative setDateStyle:NSDateFormatterMediumStyle];
+        [_dateFormatterNoTimeMediumDateRelative setDoesRelativeDateFormatting:YES];
+    });
+    
+    return _dateFormatterNoTimeMediumDateRelative;
+}
+
 + (NSDateFormatter *) dateTimeFormatter
 {
     static NSDateFormatter *_dateTimeFormatter = nil;
@@ -77,6 +91,19 @@
         _dateTimeFormatter = [[NSDateFormatter alloc] init];
         [_dateTimeFormatter setTimeStyle:NSDateFormatterShortStyle];
         [_dateTimeFormatter setDateStyle:NSDateFormatterLongStyle];
+    });
+    
+    return _dateTimeFormatter;
+}
+
++ (NSDateFormatter *) pythonISODateFormatter
+{
+    static NSDateFormatter *_dateTimeFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateTimeFormatter = [[NSDateFormatter alloc] init];
+        [_dateTimeFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+        _dateTimeFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.S";
     });
     
     return _dateTimeFormatter;

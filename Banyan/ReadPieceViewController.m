@@ -27,6 +27,7 @@
 #import "BButton.h"
 #import "MZFormSheetController.h"
 #import "BNGeneralizedTableViewController.h"
+#import "NSString+FontAwesome.h"
 
 static NSString *const deletePieceString = @"Delete piece";
 static NSString *const flagPieceString = @"Flag piece";
@@ -91,11 +92,10 @@ static NSString *_heartFullString;
 
 + (void)initialize
 {
-    NSArray *fontAwesomeStrings = [NSString fa_allFontAwesomeStrings];
-    _uploadString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconTime];
-    _exclaimString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconExclamationSign];
-    _heartEmptyString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconHeartEmpty];
-    _heartFullString = [NSString fa_stringFromFontAwesomeStrings:fontAwesomeStrings forIcon:FAIconHeart];
+    _uploadString = [NSString fa_stringForFontAwesomeIcon:FAClockO];
+    _exclaimString = [NSString fa_stringForFontAwesomeIcon:FAExclamationCircle];
+    _heartEmptyString = [NSString fa_stringForFontAwesomeIcon:FAHeartO];
+    _heartFullString = [NSString fa_stringForFontAwesomeIcon:FAHeart];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -298,7 +298,7 @@ static NSString *_heartFullString;
     [self.pieceUploadStatusButton.titleLabel setFont:[UIFont fontWithName:@"Roboto" size:11]];
     [self.pieceUploadStatusButton.titleLabel setTextAlignment:NSTextAlignmentRight];
     [self.pieceUploadStatusButton setTitle:@"Local " forState:UIControlStateNormal];
-    [self.pieceUploadStatusButton addAwesomeIcon:FAIconCircle beforeTitle:NO];
+    [self.pieceUploadStatusButton addAwesomeIcon:FAInfoCircle beforeTitle:NO];
     self.pieceUploadStatusButton.frame = CGRectOffset(self.pieceUploadStatusButton.frame,
                                                       CGRectGetWidth(frame) - CGRectGetWidth(self.pieceUploadStatusButton.frame) - BUTTON_SPACING,
                                                       CGRectGetHeight(frame) - CGRectGetHeight(self.pieceUploadStatusButton.frame) - BUTTON_SPACING);
@@ -535,12 +535,12 @@ static NSString *_heartFullString;
     // Upload status
     if (self.piece.remoteStatus == RemoteObjectStatusPushing) {
         [self.pieceUploadStatusButton setTitle:@"Uploading... " forState:UIControlStateNormal];
-        [self.pieceUploadStatusButton addAwesomeIcon:FAIconTime beforeTitle:NO];
+        [self.pieceUploadStatusButton addAwesomeIcon:FAClockO beforeTitle:NO];
         [self.pieceUploadStatusButton setColor:[UIColor bb_successColorV3]];
         self.pieceUploadStatusButton.hidden = NO;
     } else if (self.piece.remoteStatus == RemoteObjectStatusFailed) {
         [self.pieceUploadStatusButton setTitle:@"Upload Failed " forState:UIControlStateNormal];
-        [self.pieceUploadStatusButton addAwesomeIcon:FAIconExclamationSign beforeTitle:NO];
+        [self.pieceUploadStatusButton addAwesomeIcon:FAExclamationCircle beforeTitle:NO];
         [self.pieceUploadStatusButton setColor:[UIColor bb_dangerColorV3]];
         self.pieceUploadStatusButton.hidden = NO;
     } else {
@@ -757,11 +757,9 @@ static NSString *_heartFullString;
 {
     NSString *heartString = nil;
     if (self.piece.likeActivityResourceUri.length) {
-        BNLogInfo(@"full likeactivity uri: %@", self.piece.likeActivityResourceUri);
         heartString = _heartFullString;
     }
     else {
-        BNLogInfo(@"hollow likeactivity uri: %@", self.piece.likeActivityResourceUri);
         heartString = _heartEmptyString;
     }
     [self.likeButton setTitle:heartString forState:UIControlStateNormal];

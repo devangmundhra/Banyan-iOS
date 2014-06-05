@@ -10,6 +10,8 @@
 #import "BNLabel.h"
 #import "User.h"
 
+static NSString *CellIdentifier = @"InviteFriendCell";
+
 @interface InviteFBFriendsTableViewController ()  <UISearchBarDelegate, UISearchDisplayDelegate, InviteFriendCellDelegate>
 @property (nonatomic, strong) NSArray *listContacts;
 @property (nonatomic, strong) NSMutableArray *filteredListContacts;
@@ -96,7 +98,7 @@
     self.searchDisplayController.searchResultsDelegate = self;
     self.searchDisplayController.displaysSearchBarInNavigationBar = YES;
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"InviteFriendCell" bundle:nil] forCellReuseIdentifier:@"InviteFriendCell"];
+    [self.tableView registerNib:[UINib nibWithNibName:@"InviteFriendCell" bundle:nil] forCellReuseIdentifier:CellIdentifier];
     self.searchDisplayController.searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
     self.tableView.scrollEnabled = YES;
     
@@ -216,7 +218,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"InviteFriendCell";
     InviteFriendCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         NSArray *nibs = [[NSBundle mainBundle] loadNibNamed:@"InviteFriendCell" owner:self options:nil];

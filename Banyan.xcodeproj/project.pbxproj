@@ -186,6 +186,11 @@
 		51BDA2701741EB4100BD2C19 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51BDA26F1741EB4000BD2C19 /* AVFoundation.framework */; };
 		51BDA27517434F3D00BD2C19 /* emptyBar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51BDA27317434F3D00BD2C19 /* emptyBar@2x.png */; };
 		51BDA27F1743821400BD2C19 /* Media.m in Sources */ = {isa = PBXBuildFile; fileRef = 51BDA27E1743821400BD2C19 /* Media.m */; };
+		51C250F4193C578800511A04 /* SideNavigatorTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C250F2193C578800511A04 /* SideNavigatorTableViewCell.m */; };
+		51C250F5193C578800511A04 /* SideNavigatorTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51C250F3193C578800511A04 /* SideNavigatorTableViewCell.xib */; };
+		51C250FD193D249500511A04 /* BNNotificationsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C250FC193D249500511A04 /* BNNotificationsView.m */; };
+		51C25106193E7F5600511A04 /* BNNotificationsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C25104193E7F5600511A04 /* BNNotificationsTableViewCell.m */; };
+		51C25107193E7F5600511A04 /* BNNotificationsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51C25105193E7F5600511A04 /* BNNotificationsTableViewCell.xib */; };
 		51C4252D1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C4252C1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.m */; };
 		51C4253018270CF900AF90C1 /* BNDuckTypedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C4252F18270CF900AF90C1 /* BNDuckTypedObject.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		51C4253A1828E15100AF90C1 /* NextStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C425381828E15100AF90C1 /* NextStoryViewController.m */; };
@@ -499,6 +504,14 @@
 		51BDA27317434F3D00BD2C19 /* emptyBar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "emptyBar@2x.png"; sourceTree = "<group>"; };
 		51BDA27D1743821400BD2C19 /* Media.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Media.h; path = Banyan/Media.h; sourceTree = "<group>"; };
 		51BDA27E1743821400BD2C19 /* Media.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Media.m; path = Banyan/Media.m; sourceTree = "<group>"; };
+		51C250F1193C578800511A04 /* SideNavigatorTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideNavigatorTableViewCell.h; sourceTree = "<group>"; };
+		51C250F2193C578800511A04 /* SideNavigatorTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SideNavigatorTableViewCell.m; sourceTree = "<group>"; };
+		51C250F3193C578800511A04 /* SideNavigatorTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SideNavigatorTableViewCell.xib; sourceTree = "<group>"; };
+		51C250FB193D249500511A04 /* BNNotificationsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNNotificationsView.h; sourceTree = "<group>"; };
+		51C250FC193D249500511A04 /* BNNotificationsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNNotificationsView.m; sourceTree = "<group>"; };
+		51C25103193E7F5600511A04 /* BNNotificationsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNNotificationsTableViewCell.h; sourceTree = "<group>"; };
+		51C25104193E7F5600511A04 /* BNNotificationsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNNotificationsTableViewCell.m; sourceTree = "<group>"; };
+		51C25105193E7F5600511A04 /* BNNotificationsTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BNNotificationsTableViewCell.xib; sourceTree = "<group>"; };
 		51C4252B1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNDuckTypedObjectToDataTransformer.h; path = Banyan/BNDuckTypedObjectToDataTransformer.h; sourceTree = "<group>"; };
 		51C4252C1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNDuckTypedObjectToDataTransformer.m; path = Banyan/BNDuckTypedObjectToDataTransformer.m; sourceTree = "<group>"; };
 		51C4252E18270CF900AF90C1 /* BNDuckTypedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNDuckTypedObject.h; path = Banyan/BNDuckTypedObject.h; sourceTree = "<group>"; };
@@ -1423,6 +1436,28 @@
 			name = BNGeneralizedTVC;
 			sourceTree = "<group>";
 		};
+		51C250FE193D249900511A04 /* Notifications View */ = {
+			isa = PBXGroup;
+			children = (
+				51C250FB193D249500511A04 /* BNNotificationsView.h */,
+				51C250FC193D249500511A04 /* BNNotificationsView.m */,
+				51C25103193E7F5600511A04 /* BNNotificationsTableViewCell.h */,
+				51C25104193E7F5600511A04 /* BNNotificationsTableViewCell.m */,
+				51C25105193E7F5600511A04 /* BNNotificationsTableViewCell.xib */,
+			);
+			name = "Notifications View";
+			sourceTree = "<group>";
+		};
+		51C250FF193D2A2000511A04 /* SideNavigatorTableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				51C250F1193C578800511A04 /* SideNavigatorTableViewCell.h */,
+				51C250F2193C578800511A04 /* SideNavigatorTableViewCell.m */,
+				51C250F3193C578800511A04 /* SideNavigatorTableViewCell.xib */,
+			);
+			name = SideNavigatorTableViewCell;
+			sourceTree = "<group>";
+		};
 		51C425311827873E00AF90C1 /* DuckTyped */ = {
 			isa = PBXGroup;
 			children = (
@@ -1477,8 +1512,10 @@
 			children = (
 				51170B6017F3D73D0015B343 /* SideNavigatorViewController.h */,
 				51170B6117F3D73D0015B343 /* SideNavigatorViewController.m */,
+				51C250FF193D2A2000511A04 /* SideNavigatorTableViewCell */,
 				51F862341859749A0037D576 /* BNZoomAnimationController.h */,
 				51F862351859749A0037D576 /* BNZoomAnimationController.m */,
+				51C250FE193D249900511A04 /* Notifications View */,
 				51170B7517F431A00015B343 /* About View Controller */,
 				51170B6417F425E90015B343 /* Following Friend View Controller */,
 				51CFD93015F3121C002926F9 /* Settings */,
@@ -1736,6 +1773,7 @@
 				5189B34E15B395F300562DD0 /* UserLoginViewController.xib in Resources */,
 				518AB38018BDBF8F00F8000C /* IntroBkg3@2x.png in Resources */,
 				518AB38218BDBF8F00F8000C /* IntroBkg2@2x.png in Resources */,
+				51C250F5193C578800511A04 /* SideNavigatorTableViewCell.xib in Resources */,
 				51170B6F17F42CD50015B343 /* ProfileViewController.xib in Resources */,
 				51F032BA18B95C2200FFA71E /* Stop@2x.png in Resources */,
 				514CDF65181509B70098B0A9 /* AVCamViewController.xib in Resources */,
@@ -1746,6 +1784,7 @@
 				512B1DEF18FF841D00691251 /* kids_share.png in Resources */,
 				5144EC6D1712277600F0B265 /* locationSymbol@2x.png in Resources */,
 				51929D611867B7940061BD6C /* BNImageCropperViewController.xib in Resources */,
+				51C25107193E7F5600511A04 /* BNNotificationsTableViewCell.xib in Resources */,
 				512B1E2C18FFB30500691251 /* top_screenshot_color_nologo@2x.png in Resources */,
 				51E2145018B9181E00619150 /* Pencil@2x.png in Resources */,
 				51D5E6E7182220A5005CA2F4 /* hideStoryButton@2x.png in Resources */,
@@ -1875,6 +1914,7 @@
 				5112D109181E5DB9003E8C37 /* UIImage+ImageEffects.m in Sources */,
 				512598BF17B0D5C500FEFCF0 /* SingleImagePickerButton.m in Sources */,
 				5189B33815B395F300562DD0 /* Piece+Create.m in Sources */,
+				51C250FD193D249500511A04 /* BNNotificationsView.m in Sources */,
 				5189B33915B395F300562DD0 /* Piece+Delete.m in Sources */,
 				5189B33A15B395F300562DD0 /* Piece+Edit.m in Sources */,
 				51F86255185D72870037D576 /* BNGeneralizedTableViewController.m in Sources */,
@@ -1894,6 +1934,7 @@
 				5189B34D15B395F300562DD0 /* UserLoginViewController.m in Sources */,
 				51F8622D1858EA050037D576 /* UIViewController+BNSlidingViewControllerAdditions.m in Sources */,
 				51E9B2C2181F8DD3004B35A5 /* BNLabel.m in Sources */,
+				51C25106193E7F5600511A04 /* BNNotificationsTableViewCell.m in Sources */,
 				51E9B2BF181F8BCA004B35A5 /* StoryPickerViewController.m in Sources */,
 				51B49A131898E8620073F184 /* GooglePlacePickerViewController.m in Sources */,
 				51B5989E15EB31B300DF4D9D /* BanyanConstants.m in Sources */,
@@ -1936,6 +1977,7 @@
 				517A018C1706D92E00665F0F /* LocationPickerButton.m in Sources */,
 				511D743418F9D1EA000926B0 /* GooglePlacePickerTableViewCell.m in Sources */,
 				517A01D4170983B400665F0F /* MediaPickerViewController.m in Sources */,
+				51C250F4193C578800511A04 /* SideNavigatorTableViewCell.m in Sources */,
 				517A01D7170A7A9E00665F0F /* MediaPickerButton.m in Sources */,
 				517A01DA170BFA3000665F0F /* InviteFriendCell.m in Sources */,
 				51B2351A17168C69004241C1 /* BNImageLabel.m in Sources */,

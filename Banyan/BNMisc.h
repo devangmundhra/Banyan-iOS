@@ -15,10 +15,12 @@
 + (NSString *)longCurrentDate;
 + (NSString *)shortCurrentDate;
 + (NSString *) genRandStringLength: (int) len;
++ (NSDateFormatter *) dateFormatterShortTimeMediumDateRelative;
 + (NSDateFormatter *) dateFormatterNoTimeMediumDateRelative;
 + (NSDateFormatter *) dateTimeFormatter;
 + (NSDateFormatter *) longDateFormatter;
 + (NSDateFormatter *) shortDateFormatter;
++ (NSDateFormatter *) pythonISODateFormatter;
 + (NSString *) gifFromArray:(NSArray *)imagesArray;
 + (void) showLocationServicesAlertIfRequired;
 
