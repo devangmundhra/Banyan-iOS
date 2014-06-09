@@ -194,7 +194,7 @@
         NSError *activationError = nil;
         [[AVAudioSession sharedInstance] setActive:YES error: &activationError];
         
-        [audioRecorder recordForDuration:RECORD_DURATION+0.7]; // record for upto RECORD_DURATION seconds
+        [audioRecorder recordForDuration:RECORD_DURATION]; // record for upto RECORD_DURATION seconds
         timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timerAction:) userInfo:aRView repeats:YES];
         // The RunLoop will be the Main thread runloop since this is called in response to user event
     }

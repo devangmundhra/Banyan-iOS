@@ -66,7 +66,22 @@
         // Update user details and get updates on FB friends
         [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
             if (!error) {
-                [self updateUserCredentials:result withCompletionBlock:nil];
+                [self updateUserCredentials:result
+                        withCompletionBlock:^(bool succeeded, NSError *error) {
+                            if (!succeeded) {
+                                if (error.code != -1004) { // Unable to connect error
+                                    [[[UIAlertView alloc] initWithTitle:@"Unable to login"
+                                                                message:@"There was an error in logging you in to the Banyan server.\rPlease login again."
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil]
+                                     show];
+                                    BNLogError("Unable to login error: %@", error);
+                                    [BNMisc sendGoogleAnalyticsError:error inAction:@"User login" isFatal:NO];
+                                    [self logout];
+                                }
+                            }
+                        }];
             } else {
                 [self facebookRequest:connection didFailWithError:error];
             }
@@ -212,12 +227,7 @@ void uncaughtExceptionHandler(NSException *exception)
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     
-    // Cancel GET requests for fetching stories when app is going in background
-    [[RKObjectManager sharedManager] cancelAllObjectRequestOperationsWithMethod:RKRequestMethodGET matchingPathPattern:@"story/"];
-    NSError *error = nil;
-    if (![[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:&error]) {
-        NSAssert2(false, @"Unresolved Core Data Save error %@", error, [error userInfo]);
-    }
+    [self cleanupBeforeExit];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -232,13 +242,25 @@ void uncaughtExceptionHandler(NSException *exception)
     // (e.g., returning from iOS 6.0 authorization dialog or from fast app switching).
 
     [FBSession.activeSession handleDidBecomeActive];
-//    [BanyanConnection uploadFailedObjects];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    // Cancel GET requests for fetching stories when app is going in background
+    [self cleanupBeforeExit];
     [FBSession.activeSession close];
+}
+
+- (void) cleanupBeforeExit
+{
+    BNLogInfo(@"Cleanup");
+    // Cancel GET requests for fetching stories when app is going in background
+    [[RKObjectManager sharedManager] cancelAllObjectRequestOperationsWithMethod:RKRequestMethodGET matchingPathPattern:@"story/"];
+    NSError *error = nil;
+    if (![[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:&error]) {
+        NSAssert2(false, @"Unresolved Core Data Save error %@", error, [error userInfo]);
+    }
 }
 
 # pragma mark push notifications
@@ -257,7 +279,10 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
-//    [BNAWSSNSClient registerDeviceToken:@"1111111111111111111111111111111111111111111111111111111111111111"];
+    // Save the device token
+//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//    [defaults setObject:@"1111111111111111111111111111111111111111111111111111111111111111" forKey:BNUserDefaultsDeviceToken];
+//    [defaults synchronize];
     [BNMisc sendGoogleAnalyticsError:error inAction:@"register for remote notification" isFatal:NO];
     BNLogWarning(@"Failed to register for notification for error: %@", error.localizedDescription);
 }
@@ -398,15 +423,11 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
     NSString *accessToken = [[FBSession.activeSession accessTokenData] accessToken];
     NSMutableDictionary *postInfo = [NSMutableDictionary dictionary];
-    /* 
-     * For now don't send the user info. Once the app pulls the info from facebook,
-     * lets just use it that way. This is because we might allow a person to change his/her name on
-     * the app in the future. Just send the new access token that was retrieved from facebook.
     [postInfo setObject:user.first_name forKey:@"first_name"];
     [postInfo setObject:user.last_name forKey:@"last_name"];
     [postInfo setObject:user.name forKey:@"name"];
     [postInfo setObject:[user objectForKey:@"email"] forKey:@"email"];
-     */
+
     [postInfo setObject:@{@"access_token": accessToken, @"id": user.id} forKey:@"facebook"];
     
     [[AFBanyanAPIClient sharedClient] postPath:@"users/"

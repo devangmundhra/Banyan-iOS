@@ -127,6 +127,7 @@ NSString *const BNAWSSNSUserFollowingString = @"UserFollowing";
                                                   success:nil
                                                   failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                                       BNLogError(@"An error occurred: %@", error.localizedDescription);
+                                                      [BNMisc sendGoogleAnalyticsError:error inAction:@"update device installation" isFatal:NO];
                                                   }];
                 if (block) {
                     block();

@@ -326,24 +326,6 @@
     return YES;
 }
 
-- (BOOL)validatePieces:(id *)ioValue error:(NSError **)outError
-{
-    if ([self.uploadStatusNumber unsignedIntegerValue] != RemoteObjectStatusSync) {
-        BNLogTrace(@"Skipping setting pieces for story %@ (%@)", [self primitiveValueForKey:@"title"], [self primitiveValueForKey:@"bnObjectId"]);
-        *ioValue = [self primitiveValueForKey:@"pieces"];
-    }
-    return YES;
-}
-
-- (BOOL)validateMedia:(id *)ioValue error:(NSError **)outError
-{
-    if ([self.uploadStatusNumber unsignedIntegerValue] != RemoteObjectStatusSync) {
-        BNLogTrace(@"Skipping setting media for story %@ (%@)", [self primitiveValueForKey:@"title"], [self primitiveValueForKey:@"bnObjectId"]);
-        *ioValue = [self primitiveValueForKey:@"media"];
-    }
-    return YES;
-}
-
 @end
 
 @implementation Story (RestKitMappings)
@@ -374,7 +356,6 @@
                                                         inManagedObjectStore:[RKManagedObjectStore defaultStore]];
     emptyStoryMapping.identificationAttributes = @[@"bnObjectId"];
     [emptyStoryMapping addAttributeMappingsFromArray:@[@"bnObjectId"]];
-    [emptyStoryMapping addPropertyMappingsFromArray:@[[RKRelationshipMapping relationshipMappingFromKeyPath:@"author" toKeyPath:@"author" withMapping:[User UserMappingForRKGET]]]];
     
     RKDynamicMapping* dynamicMapping = [[RKDynamicMapping alloc] init];
     [dynamicMapping setObjectMappingForRepresentationBlock:^RKObjectMapping *(id representation) {

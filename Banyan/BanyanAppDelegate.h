@@ -52,4 +52,5 @@
 + (BOOL)loggedIn;
 - (UIViewController*) topMostController;
 + (NSURL *)applicationDocumentsDirectory;
+- (void) cleanupBeforeExit;
 @end

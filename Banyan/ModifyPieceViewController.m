@@ -445,7 +445,7 @@
         }
         [media remove];
     }
-    
+
     self.piece = (Piece *)[self.piece cloneIntoNSManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
     
     // Refresh the story with the updated piece relationship in main context

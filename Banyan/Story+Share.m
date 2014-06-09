@@ -144,6 +144,7 @@ NSString *const copyLinkToStoryString = @"Copy link to story";
         params.caption = self.title;
         params.description = @"";
         params.friends = fbIds;
+        params.link = [NSURL URLWithString:self.permaLink];
         Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.media];
         params.picture = [NSURL URLWithString:imageMedia.remoteURL];
         params.ref = @"Story";

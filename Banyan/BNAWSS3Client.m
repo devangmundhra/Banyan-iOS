@@ -74,18 +74,18 @@ inBackgroundWithBlock:(void (^)(bool succeeded, NSString *url, NSString *filenam
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (deleteObjectResponse.error != nil) {
                     [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
-                    block(NO, deleteObjectResponse.error);
+                    if (block) block(NO, deleteObjectResponse.error);
                 }
                 else {
                     [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
-                    block(YES, nil);
+                    if (block) block(YES, nil);
                 }
             });
         }
         @catch (NSException *exception) {
             // Error here
             [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
-            block(NO, nil);
+            if (block) block(NO, nil);
         }
     });
 }
