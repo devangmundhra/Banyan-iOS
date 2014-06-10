@@ -34,7 +34,7 @@ typedef enum {
 @property (nonatomic, retain) NSString * permaLink;
 @property (nonatomic, retain) NSNumber * timeStamp;
 @property (nonatomic, retain) NSString *resourceUri;
-
+@property (nonatomic) float uploadProgress;
 // Stats
 @property (nonatomic) BOOL viewedByCurUser;
 @property (nonatomic, copy) NSString *likeActivityResourceUri;
@@ -46,6 +46,8 @@ typedef enum {
 
 @property (nonatomic, strong) BNS3TransferManager *transferManager;
 @property (atomic, strong) RKObjectRequestOperation *ongoingOperation;
+
+- (void) updateUploadProgress;
 
 // Revision management
 - (RemoteObject *) cloneIntoNSManagedObjectContext:(NSManagedObjectContext *)newContext;

@@ -17,6 +17,7 @@
                      withContentType:(NSString *)contentType
                          forFileName:(NSString *)filename
                         successBlock:(BNS3PutSuccessfulBlock)successBlock
+                       progressBlock:(BNS3PutProgressBlock)progressBlock
                           errorBlock:(BNS3PutFailedBlock)errorBlock;
 
 @end

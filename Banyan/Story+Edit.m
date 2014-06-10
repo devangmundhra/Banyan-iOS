@@ -67,13 +67,16 @@
         BNLogTrace(@"Edit Story %@", story);
         
         RKObjectRequestOperation *operation = [[RKObjectManager sharedManager] appropriateObjectRequestOperationWithObject:story method:RKRequestMethodPUT path:nil parameters:nil];
-
+        UIBackgroundTaskIdentifier bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+            [operation cancel];
+        }];
         [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
             BNLogTrace(@"Update story successful %@", story);
             story.remoteStatus = RemoteObjectStatusSync;
             story.ongoingOperation = nil;
             // Be eager in uploading pieces if available
             [story uploadFailedRemoteObject];
+            [[UIApplication sharedApplication] endBackgroundTask:bgTask];
         }
                                          failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                              story.remoteStatus = RemoteObjectStatusFailed;
@@ -91,6 +94,7 @@
                                                   show];
                                              }
                                              BNLogError(@"Error in updating story %@", story.bnObjectId);
+                                             [[UIApplication sharedApplication] endBackgroundTask:bgTask];
                                          }];
         story.ongoingOperation = operation;
         [[RKObjectManager sharedManager] enqueueObjectRequestOperation:operation];
@@ -98,13 +102,13 @@
     
     if ([story.media count]) {
         // Story should only have 1 media at most
-        assert(story.media.count <= 1);
+        NSAssert1((story.media.count <= 1), @"The story has more than expected media objects", story.bnObjectId);
         
         // If all the media haven't been uploaded yet, don't edit the story
         BOOL mediaBeingUploaded = NO;
         for (Media *media in story.media) {
             if ([media.localURL length]) {
-                assert(media.remoteStatus != MediaRemoteStatusSync);
+                NSAssert(media.remoteStatus != MediaRemoteStatusSync, @"Media already being uploaded");
                 
                 if (media.remoteStatus == MediaRemoteStatusProcessing || media.remoteStatus == MediaRemoteStatusPushing) {
                     mediaBeingUploaded = YES;
@@ -116,6 +120,9 @@
                      BNLogTrace(@"Successfully uploaded %@ [%@] when editing story %@", media.mediaTypeName, media.filename, story.title);
                      story.remoteStatus = RemoteObjectStatusFailed; // So that this is called again to update the media array
                      [Story editStory:story];
+                 }
+                 progress:^(float progress, long long totalBytes) {
+                     [story updateUploadProgress];
                  }
                  failure:^(NSError *error) {
                      story.remoteStatus = RemoteObjectStatusFailed;

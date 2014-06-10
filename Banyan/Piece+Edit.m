@@ -37,15 +37,21 @@
     
     // Block to upload the piece
     void (^updatePiece)(Piece *) = ^(Piece *piece) {
-        BNLogTrace(@"Update piece %@ for story %@", piece, piece.story);
+        BNLogTrace(@"Update piece %@ for story %@", piece.bnObjectId, piece.story.bnObjectId);
         
-        RKObjectRequestOperation *operation = [[RKObjectManager sharedManager] appropriateObjectRequestOperationWithObject:piece method:RKRequestMethodPUT path:nil parameters:nil];
-
+        RKObjectRequestOperation *operation = [[RKObjectManager sharedManager] appropriateObjectRequestOperationWithObject:piece
+                                                                                                                    method:RKRequestMethodPUT
+                                                                                                                      path:nil
+                                                                                                                parameters:nil];
+        UIBackgroundTaskIdentifier bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+            [operation cancel];
+        }];
         [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
             BNLogTrace(@"Update piece successful %@", piece);
             piece.remoteStatus = RemoteObjectStatusSync;
             piece.ongoingOperation = nil;
             [piece save];
+            [[UIApplication sharedApplication] endBackgroundTask:bgTask];
         }
                                          failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                              BNLogError(@"Error in updating piece");
@@ -65,6 +71,7 @@
                                                      [Piece deletePiece:piece completion:nil];
                                                  }
                                              }
+                                             [[UIApplication sharedApplication] endBackgroundTask:bgTask];
                                          }];
         piece.ongoingOperation = operation;
         [[RKObjectManager sharedManager] enqueueObjectRequestOperation:operation];
@@ -88,6 +95,9 @@
                      BNLogTrace(@"Successfully uploaded %@ [%@] when editing piece %@", media.mediaTypeName, media.filename, piece.shortText.length ? piece.shortText : @"");
                      piece.remoteStatus = RemoteObjectStatusFailed; // So that this is called again to update the media array
                      [Piece editPiece:piece];
+                 }
+                 progress:^(float progress, long long totalBytes) {
+                     [piece updateUploadProgress];
                  }
                  failure:^(NSError *error) {
                      piece.remoteStatus = RemoteObjectStatusFailed;

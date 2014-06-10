@@ -32,6 +32,7 @@ static char operationKey;
 @dynamic viewedByCurUser, likeActivityResourceUri, numberOfLikes, numberOfViews;
 @dynamic timeStamp;
 @dynamic resourceUri;
+@dynamic uploadProgress;
 @synthesize ongoingOperation = _ongoingOperation;
 @synthesize transferManager = _transferManager;
 
@@ -44,7 +45,11 @@ static char operationKey;
     NSError *error = nil;
     RemoteObject *obj = (RemoteObject *)[newContext existingObjectWithID:self.objectID error:&error];
     NSAssert1(obj, @"cloneIntoNSManagedObjectContext_object", error.localizedDescription);
-    [newContext refreshObject:obj mergeChanges:YES];
+    
+    // For now, don't merge changes.
+    // This is causing a crash when there is a KVO on uploadProgress in ReadPieceViewController, and a
+    // media is deleted in ModifyPieveViewController
+    [newContext refreshObject:obj mergeChanges:NO];
     return obj;
 }
 
@@ -216,6 +221,51 @@ static char operationKey;
 {
     // Do nothing
     // To be implemented by subclasses if required
+}
+
+- (void) updateUploadProgress
+{
+    if (self.remoteStatus != RemoteObjectStatusPushing) {
+        self.uploadProgress = 1.0;
+        return;
+    }
+    // Assume that the JSON representation of this object is 10kB.
+    NSUInteger totalBytes = 100*1024;
+    // Since this object is still being updated, assume that it hasn't been uploaded at all.
+    // This can be assumed because we expect the JSON representation of this object that is being
+    // uploaded to the server to be pretty small such that we can assume a step function in terms
+    // of data upload.
+    NSUInteger bytesWritten = 0;
+
+    // Add the media
+    for (Media *media in self.media) {
+        if (media.remoteStatus != MediaRemoteStatusPushing && media.remoteStatus != MediaRemoteStatusProcessing) {
+            continue;
+        }
+        
+        totalBytes += [media.filesize unsignedIntegerValue];
+        bytesWritten += media.progress * [media.filesize unsignedIntegerValue];
+        
+        if ([media.mediaType isEqualToString:@"image"]) {
+            // If the media is an image media, and if it is still being uploaded,
+            // then the thumbnail has either not been uploaded yet, or is currently
+            // being uploaded. In either case, add the thumbnail bytes to bytes to be written.
+            // We'll again assume that the size of the thumbnail is small enough so that
+            // we can assume the upload to be a step function
+            totalBytes += UIImageJPEGRepresentation(media.thumbnail, 1).length;
+        }
+    }
+    self.uploadProgress = (float)bytesWritten/totalBytes;
+}
+
+- (void)willTurnIntoFault;
+{
+    [super willTurnIntoFault];
+    
+    if ([self observationInfo])
+    {
+        BNLogInfo(@"%@ has observers:\n%@", [self objectID], [self observationInfo]);
+    }
 }
 
 #pragma mark-

@@ -67,6 +67,9 @@
         NSManagedObjectID *storyID = piece.story.objectID;
 
         RKObjectRequestOperation *operation = [[RKObjectManager sharedManager] appropriateObjectRequestOperationWithObject:piece method:RKRequestMethodPOST path:nil parameters:nil];
+        UIBackgroundTaskIdentifier bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+            [operation cancel];
+        }];
         [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
             piece.remoteStatus = RemoteObjectStatusSync;
             piece.ongoingOperation = nil;
@@ -88,6 +91,7 @@
             }
             BNLogTrace(@"Created piece (%@) %@ for story %@", piece.bnObjectId, piece.shortText ? piece.shortText : piece.longText, piece.story.bnObjectId);
             [piece save];
+            [[UIApplication sharedApplication] endBackgroundTask:bgTask];
         }
                                          failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                              piece.remoteStatus = RemoteObjectStatusFailed;
@@ -123,6 +127,7 @@
                                                  }
                                              }
                                              BNLogError(@"Error in create piece");
+                                             [[UIApplication sharedApplication] endBackgroundTask:bgTask];
                                          }];
         piece.ongoingOperation = operation;
         [[RKObjectManager sharedManager] enqueueObjectRequestOperation:operation];
@@ -146,6 +151,9 @@
                      BNLogTrace(@"Successfully uploaded %@ [%@] when creating piece %@", media.mediaTypeName, media.filename, piece.shortText.length ? piece.shortText : @"");
                      piece.remoteStatus = RemoteObjectStatusPushing; // So that the new piece can be uploaded now with all the media
                      [Piece createNewPiece:piece];
+                 }
+                 progress:^(float progress, long long totalBytes) {
+                     [piece updateUploadProgress];
                  }
                  failure:^(NSError *error) {
                      piece.remoteStatus = RemoteObjectStatusFailed;

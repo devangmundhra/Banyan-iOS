@@ -7,6 +7,7 @@
 //
 
 #import "BNS3TransferManager.h"
+#import "BanyanAppDelegate.h"
 
 @implementation BNS3TransferManager
 
@@ -15,6 +16,7 @@
                      withContentType:(NSString *)contentType
                          forFileName:(NSString *)filename
                         successBlock:(BNS3PutSuccessfulBlock)successBlock
+                       progressBlock:(BNS3PutProgressBlock)progressBlock
                           errorBlock:(BNS3PutFailedBlock)errorBlock
 {
     BNS3PutObjectRequest *por = [[BNS3PutObjectRequest alloc] initWithKey:filename
@@ -22,14 +24,20 @@
     por.contentType = contentType;
     por.data        = data;
     por.requestTag = filename;
-    
+    UIBackgroundTaskIdentifier bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [por cancel];
+        [APP_DELEGATE cleanupBeforeExit];
+    }];
     por.successBlock = ^(NSString *url){
         [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
-        successBlock(url);
+        if (successBlock) successBlock(url);
+        [[UIApplication sharedApplication] endBackgroundTask:bgTask];
     };
+    por.progressBlock = progressBlock;
     por.failBlock = ^(NSError *error){
         [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
-        errorBlock(error);
+        if (errorBlock) errorBlock(error);
+        [[UIApplication sharedApplication] endBackgroundTask:bgTask];
     };
     
     por.delegate = por;

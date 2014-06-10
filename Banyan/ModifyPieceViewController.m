@@ -123,9 +123,13 @@
         self.scratchMOC = [[RKManagedObjectStore defaultStore] newChildManagedObjectContextWithConcurrencyType:NSMainQueueConcurrencyType tracksChanges:YES];
         BNLogTrace(@"Scratch MOC for modify piece vc: %@", self.scratchMOC);
         self.piece = (Piece *)[piece cloneIntoNSManagedObjectContext:self.scratchMOC];
+
+        /*
+         Skip for now
         // Just in case the connection between the piece and story is lost (say because the piece is currently being created and the story is refreshed),
         // this context will still have the correct relationship
         [piece.story cloneIntoNSManagedObjectContext:self.scratchMOC];
+         */
         self.storyID = piece.story.objectID;
         if (self.piece.remoteStatus == RemoteObjectStatusLocal) {
             self.editMode = ModifyPieceViewControllerEditModeAddPiece;
@@ -435,6 +439,7 @@
     if (mediaToDelete.count) {
         [BNMisc sendGoogleAnalyticsEventWithCategory:@"User Interaction" action:@"media deleted from piece" label:nil value:[NSNumber numberWithUnsignedInteger:mediaToDelete.count]];
     }
+
     for (Media *media in mediaToDelete) {
         // If its a local image, don't delete it
         if ([media.remoteURL length]) {
@@ -445,13 +450,15 @@
         }
         [media remove];
     }
-
+    
     self.piece = (Piece *)[self.piece cloneIntoNSManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
     
+    /*
+     Skip for now
     // Refresh the story with the updated piece relationship in main context
     // This is because refresh object does not refresh the relationships (only attributes)
     [self.piece.story cloneIntoNSManagedObjectContext:[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext];
-    
+    */
     if (self.storyAlbumCoverOptionSwitch.on) {
         // The user has asked us to make this as the cover image of the story.
         // Delete any previous media for this story

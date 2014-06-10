@@ -49,19 +49,23 @@
         BNLogTrace(@"Adding story %@", story);
         
         RKObjectRequestOperation *operation = [[RKObjectManager sharedManager] appropriateObjectRequestOperationWithObject:story method:RKRequestMethodPOST path:nil parameters:nil];
-
+        UIBackgroundTaskIdentifier bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+            [operation cancel];
+        }];
         [operation setCompletionBlockWithSuccess:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
             BNLogTrace(@"Create story successful %@", story);
             story.remoteStatus = RemoteObjectStatusSync;
             story.ongoingOperation = nil;
             // Be eager in uploading pieces if available
             [story uploadFailedRemoteObject];
+            [[UIApplication sharedApplication] endBackgroundTask:bgTask];
         }
                                          failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                              story.remoteStatus = RemoteObjectStatusFailed;
                                              story.ongoingOperation = nil;
                                              [story save];
                                              BNLogError(@"Error in create story");
+                                             [[UIApplication sharedApplication] endBackgroundTask:bgTask];
                                          }];
         story.ongoingOperation = operation;
         [[RKObjectManager sharedManager] enqueueObjectRequestOperation:operation];
@@ -87,6 +91,9 @@
                      BNLogTrace(@"Successfully uploaded %@ [%@] when creating story %@", media.mediaTypeName, media.filename, story.title);
                      story.remoteStatus = RemoteObjectStatusPushing; // So that the story can be uploaded now with all the media
                      [Story createNewStory:story];
+                 }
+                 progress:^(float progress, long long totalBytes) {
+                     [story updateUploadProgress];
                  }
                  failure:^(NSError *error) {
                      story.remoteStatus = RemoteObjectStatusFailed;

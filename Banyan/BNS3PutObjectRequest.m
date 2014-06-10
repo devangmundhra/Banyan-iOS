@@ -13,11 +13,13 @@
 
 @implementation BNS3PutObjectRequest
 @synthesize successBlock = _successBlock;
+@synthesize progressBlock = _progressBlock;
 @synthesize failBlock = _failBlock;
 
 - (void)dealloc
 {
     self.successBlock = nil;
+    self.progressBlock = nil;
     self.failBlock = nil;
 }
 
@@ -74,12 +76,16 @@
     // Release the completion blocks once the operation is over so that the related
     // resources (like Media) in the blocks are released too
     self.successBlock = nil;
+    self.progressBlock = nil;
     self.failBlock = nil;
 }
 
 -(void)request:(AmazonServiceRequest *)request didSendData:(long long)bytesWritten totalBytesWritten:(long long)totalBytesWritten totalBytesExpectedToWrite:(long long)totalBytesExpectedToWrite
 {
     BNLogInfo(@"didSendData called (%@): %llu - %llu / %llu", self.requestTag, bytesWritten, totalBytesWritten, totalBytesExpectedToWrite);
+    if (self.progressBlock) {
+        self.progressBlock((float)totalBytesWritten/totalBytesExpectedToWrite, totalBytesExpectedToWrite);
+    }
 }
 
 -(void)request:(AmazonServiceRequest *)request didFailWithError:(NSError *)error
@@ -91,6 +97,7 @@
     // Release the completion blocks once the operation is over so that the related
     // resources (like Media) in the blocks are released too
     self.successBlock = nil;
+    self.progressBlock = nil;
     self.failBlock = nil;
 }
 

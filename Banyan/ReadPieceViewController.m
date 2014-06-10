@@ -1,6 +1,6 @@
 //
 //  ReadSceneViewController.m
-//  Storied
+//  Banyan
 //
 //  Created by Devang Mundhra on 3/31/12.
 //  Copyright (c) 2012 Banyan. All rights reserved.
@@ -294,7 +294,7 @@ static NSString *_heartFullString;
 
     // Piece upload status button
     frame = [UIScreen mainScreen].bounds;
-    self.pieceUploadStatusButton = [[BButton alloc] initWithFrame:CGRectMake(0, 0, 90, 36) color:[UIColor bb_successColorV3] style:BButtonStyleBootstrapV3];
+    self.pieceUploadStatusButton = [[BButton alloc] initWithFrame:CGRectMake(0, 0, 100, 36) color:[UIColor bb_successColorV3] style:BButtonStyleBootstrapV3];
     [self.pieceUploadStatusButton.titleLabel setFont:[UIFont fontWithName:@"Roboto" size:11]];
     [self.pieceUploadStatusButton.titleLabel setTextAlignment:NSTextAlignmentRight];
     [self.pieceUploadStatusButton setTitle:@"Local " forState:UIControlStateNormal];
@@ -307,6 +307,8 @@ static NSString *_heartFullString;
     [self.pieceUploadStatusButton addTarget:self action:@selector(pieceUploadActionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view insertSubview:self.pieceUploadStatusButton aboveSubview:self.contentView];
     
+    [self.piece addObserver:self forKeyPath:@"uploadProgress" options:NSKeyValueObservingOptionNew context:nil];
+
     [self refreshUI];
     
     // Do any additional setup after loading the view from its nib.
@@ -533,14 +535,17 @@ static NSString *_heartFullString;
     }
     
     // Upload status
+    [self updateUploadStatusButton];
+}
+
+- (void) updateUploadStatusButton
+{
     if (self.piece.remoteStatus == RemoteObjectStatusPushing) {
-        [self.pieceUploadStatusButton setTitle:@"Uploading... " forState:UIControlStateNormal];
-        [self.pieceUploadStatusButton addAwesomeIcon:FAClockO beforeTitle:NO];
+        [self.pieceUploadStatusButton setTitle:[NSString stringWithFormat:@"Uploading (%.0f%%)...", self.piece.uploadProgress*100] forState:UIControlStateNormal];
         [self.pieceUploadStatusButton setColor:[UIColor bb_successColorV3]];
         self.pieceUploadStatusButton.hidden = NO;
     } else if (self.piece.remoteStatus == RemoteObjectStatusFailed) {
-        [self.pieceUploadStatusButton setTitle:@"Upload Failed " forState:UIControlStateNormal];
-        [self.pieceUploadStatusButton addAwesomeIcon:FAExclamationCircle beforeTitle:NO];
+        [self.pieceUploadStatusButton setTitle:@"Upload Failed" forState:UIControlStateNormal];
         [self.pieceUploadStatusButton setColor:[UIColor bb_dangerColorV3]];
         self.pieceUploadStatusButton.hidden = NO;
     } else {
@@ -607,6 +612,13 @@ static NSString *_heartFullString;
     
     if (self.piece.story && [updatedObjects containsObject:self.piece.story]) {
         [self updateStoryTitle];
+    }
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([object isEqual:self.piece] && [keyPath isEqualToString:@"uploadProgress"]) {
+        [self updateUploadStatusButton];
     }
 }
 
@@ -860,6 +872,7 @@ static NSString *_heartFullString;
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self.piece removeObserver:self forKeyPath:@"uploadProgress"];
 }
 
 @end

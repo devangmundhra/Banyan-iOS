@@ -512,6 +512,7 @@
 		51C25103193E7F5600511A04 /* BNNotificationsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNNotificationsTableViewCell.h; sourceTree = "<group>"; };
 		51C25104193E7F5600511A04 /* BNNotificationsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BNNotificationsTableViewCell.m; sourceTree = "<group>"; };
 		51C25105193E7F5600511A04 /* BNNotificationsTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BNNotificationsTableViewCell.xib; sourceTree = "<group>"; };
+		51C2510E1947C03700511A04 /* Banyan 1.0.3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Banyan 1.0.3.xcdatamodel"; sourceTree = "<group>"; };
 		51C4252B1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNDuckTypedObjectToDataTransformer.h; path = Banyan/BNDuckTypedObjectToDataTransformer.h; sourceTree = "<group>"; };
 		51C4252C1826DFF100AF90C1 /* BNDuckTypedObjectToDataTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNDuckTypedObjectToDataTransformer.m; path = Banyan/BNDuckTypedObjectToDataTransformer.m; sourceTree = "<group>"; };
 		51C4252E18270CF900AF90C1 /* BNDuckTypedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNDuckTypedObject.h; path = Banyan/BNDuckTypedObject.h; sourceTree = "<group>"; };
@@ -2236,10 +2237,11 @@
 		51A8DC9316928AE00017E86F /* Banyan.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				51C2510E1947C03700511A04 /* Banyan 1.0.3.xcdatamodel */,
 				511D743518FB9A99000926B0 /* Banyan 1.0.2.xcdatamodel */,
 				51A8DC9416928AE00017E86F /* Banyan.xcdatamodel */,
 			);
-			currentVersion = 511D743518FB9A99000926B0 /* Banyan 1.0.2.xcdatamodel */;
+			currentVersion = 51C2510E1947C03700511A04 /* Banyan 1.0.3.xcdatamodel */;
 			path = Banyan.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

@@ -10,8 +10,9 @@
 #import "Media+Transfer.h"
 #import "Story.h"
 
-NSString *const shareAsAPicOnFbString = @"Share as a picture on Facebook";
+NSString *const shareOnFacebookPieceString = @"Share link on Facebook";
 NSString *const copyLinkToPieceString = @"Copy link to piece";
+NSString *const saveImagePieceString = @"Download picture to camera roll";
 
 @interface Piece (UIActionSheetDelegate) <UIActionSheetDelegate>
 @end
@@ -20,13 +21,19 @@ NSString *const copyLinkToPieceString = @"Copy link to piece";
 
 - (void) shareOnFacebook
 {
-    UIActionSheet *shareSheet = [[UIActionSheet alloc] initWithTitle:@"How would you like to share this piece" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:shareAsAPicOnFbString, copyLinkToPieceString, nil];
+    UIActionSheet *shareSheet = nil;
+    Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.media];
     
+    if (imageMedia != nil) {
+        shareSheet = [[UIActionSheet alloc] initWithTitle:@"How would you like to share this piece" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:shareOnFacebookPieceString, saveImagePieceString, copyLinkToPieceString, nil];
+    } else {
+        shareSheet = [[UIActionSheet alloc] initWithTitle:@"How would you like to share this piece" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:shareOnFacebookPieceString, copyLinkToPieceString, nil];
+    }
+
     [shareSheet showInView:APP_DELEGATE.topMostController.view];
 }
 
-
-- (void) shareAsPictureOnFacebook
+- (void) shareLinkOnFacebook
 {
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:APP_DELEGATE.topMostController.view animated:YES];
     hud.labelText = @"Sharing piece";
@@ -66,10 +73,10 @@ NSString *const copyLinkToPieceString = @"Copy link to piece";
 {
     [BNMisc sendGoogleAnalyticsSocialInteractionWithNetwork:@"Banyan" action:[actionSheet buttonTitleAtIndex:buttonIndex]
                                                      target:[NSString stringWithFormat:@"Piece_%@", self.bnObjectId]];
-    if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:shareAsAPicOnFbString]) {
+    if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:shareOnFacebookPieceString]) {
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            [self shareAsPictureOnFacebook];
+            [self shareLinkOnFacebook];
         });
     } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:copyLinkToPieceString]) {
         UIPasteboard *pb = [UIPasteboard generalPasteboard];
@@ -84,6 +91,9 @@ NSString *const copyLinkToPieceString = @"Copy link to piece";
             }
             [hud hide:YES afterDelay:1];
         });
+    } else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:saveImagePieceString]) {
+        Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.media];
+        [imageMedia saveMediaOnDevice];
     }
 }
 

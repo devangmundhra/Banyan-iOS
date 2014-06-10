@@ -11,7 +11,7 @@
 @interface Media (Transfer)
 
 - (void)cancelUpload;
-- (void)uploadWithSuccess:(void (^)())success failure:(void (^)(NSError *error))failure;
+- (void) uploadWithSuccess:(void (^)())success progress:(void (^)(float progressPct, long long totalBytes))progress failure:(void (^)(NSError *error))failure;
 - (void) deleteWitSuccess:(void (^)(void))successBlock failure:(void (^)(NSError *error))errorBlock;
 - (void) getImageForMediaWithSuccess:(void (^)(UIImage *image))success
                             progress:(void (^)(NSInteger receivedSize, NSInteger expectedSize))progress
@@ -24,5 +24,5 @@
                         progress:(void (^)(NSInteger receivedSize, NSInteger expectedSize))progress
                          failure:(void (^)(NSError *error))failure
                 includeThumbnail:(BOOL) includeThumbnail;
-
+- (void) saveMediaOnDevice;
 @end
