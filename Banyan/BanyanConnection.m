@@ -345,7 +345,24 @@
     return;
 }
 
-+ (void)loadPiecesForStory:(Story *)story withParams:(NSDictionary *)params completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *))errorBlock
++ (void)loadStoryWithId:(NSString *)storyId withParams:(NSDictionary *)params completionBlock:(void (^)(Story *story))completionBlock errorBlock:(void (^)(NSError *error))errorBlock
+{
+    [[RKObjectManager sharedManager] getObjectsAtPath:[NSString stringWithFormat:@"story/%@/?format=json", storyId]
+                                           parameters:params
+                                              success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                                  NSArray *stories = [mappingResult array];
+                                                  NSAssert1(stories.count <= 1, @"Error in getting a single story from remote notificaiton", storyId);
+                                                  Story *story = [stories lastObject];
+                                                  if (completionBlock)
+                                                      completionBlock(story);
+                                              }
+                                              failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                                  if (errorBlock)
+                                                      errorBlock(error);
+                                              }];
+}
+
++ (void)loadPiecesForStory:(Story *)story withParams:(NSDictionary *)params completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *error))errorBlock
 {
     NSAssert(false, @"Not implemented yet");
     [[RKObjectManager sharedManager] getObjectsAtPath:nil

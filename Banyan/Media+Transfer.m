@@ -8,7 +8,6 @@
 
 #import "Media+Transfer.h"
 #import <AssetsLibrary/AssetsLibrary.h>
-#import "SDWebImage/SDWebImageDownloader.h"
 #import "SDWebImage/SDWebImageManager.h"
 #import "UIImage+ResizeAdditions.h"
 #import "RemoteObject.h"
@@ -228,31 +227,31 @@ static char operationKey;
             return;
         }
     }
-    
+    SDWebImageManager *manager = [SDWebImageManager sharedManager];
     if (includeThumbnail && [self.thumbnailURL length]) {
-        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:self.thumbnailURL]
-                                                              options:SDWebImageDownloaderUseNSURLCache
-                                                             progress:progress
-                                                            completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
-                                                                if (image) {
-                                                                    if (success) success(image);
-                                                                }
-                                                                else {
-                                                                    if (failure) failure(error);
-                                                                }
-                                                            }];
+        [manager downloadWithURL:[NSURL URLWithString:self.thumbnailURL]
+                         options:0
+                        progress:progress
+                       completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished) {
+                           if (image) {
+                               if (success) success(image);
+                           }
+                           else {
+                               if (failure) failure(error);
+                           }
+                       }];
     } else if ([self.remoteURL length]) {
-        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:self.remoteURL]
-                                                              options:SDWebImageDownloaderUseNSURLCache
-                                                             progress:progress
-                                                            completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
-                                                                if (image) {
-                                                                    if (success) success(image);
-                                                                }
-                                                                else {
-                                                                    if (failure) failure(error);
-                                                                }
-                                                            }];
+        [manager downloadWithURL:[NSURL URLWithString:self.remoteURL]
+                         options:0
+                        progress:progress
+                       completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished) {
+                           if (image) {
+                               if (success) success(image);
+                           }
+                           else {
+                               if (failure) failure(error);
+                           }
+                       }];
     } else if ([self.localURL length]) {
         ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
         [library assetForURL:[NSURL URLWithString:self.localURL] resultBlock:^(ALAsset *asset) {
@@ -288,9 +287,10 @@ static char operationKey;
     [self getImageForMediaWithSuccess:^(UIImage *image) {
         [library writeImageToSavedPhotosAlbum:image.CGImage orientation:(ALAssetOrientation)image.imageOrientation completionBlock:^(NSURL *assetURL, NSError *error )
          {completionHandler(error);}];
-    } progress:nil failure:^(NSError *error) {
-        completionHandler(error);
-    } includeThumbnail:NO];
+    }
+                             progress:nil
+                              failure:^(NSError *error) {completionHandler(error);}
+                     includeThumbnail:NO];
 }
 
 @end

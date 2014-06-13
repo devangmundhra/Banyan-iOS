@@ -73,7 +73,7 @@ RUN_SYNC_ON_MAINTHREAD(block)
             }
             [self setImageWithURL:[NSURL URLWithString:media.remoteURL]
                  placeholderImage:placeHolderImage
-                          options:0
+                          options:SDWebImageProgressiveDownload
                          progress:^(NSInteger receivedSize, NSInteger expectedSize) {
                              hud.progress = (float)receivedSize/expectedSize;
                          }

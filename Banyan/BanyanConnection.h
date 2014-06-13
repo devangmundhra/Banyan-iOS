@@ -16,5 +16,8 @@
 + (RKPaginator *) storiesPaginator;
 + (void) loadDataSource:(id)sender;
 + (void) uploadFailedObjects;
-
++ (void)loadStoryWithId:(NSString *)storyId
+             withParams:(NSDictionary *)params
+        completionBlock:(void (^)(Story *story))completionBlock
+             errorBlock:(void (^)(NSError *error))errorBlock;
 @end

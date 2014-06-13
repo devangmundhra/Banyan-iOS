@@ -142,7 +142,7 @@
     if (launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]) {
         [self application:application didReceiveRemoteNotification:launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]];
     }
-
+    
     return YES;
 }
 
@@ -333,47 +333,42 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
         __weak typeof(hud) whud = hud;
 
         // There was a new story. Get the story and launch it
-        [[RKObjectManager sharedManager] getObjectsAtPath:[NSString stringWithFormat:@"story/%@/?format=json", storyId]
-                                               parameters:nil
-                                                  success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-                                                      // Reset the badge to zero
-                                                      [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-                                                      NSTimeInterval opInterval = [opStartDate timeIntervalSinceNow];
-                                                      if (opInterval < -OP_TIMEOUT_INTERVAL) {
-                                                          // We give OP_TIMEOUT_INTERVAL seconds from the app launch for the story to be successfully
-                                                          // received and opened, so that if a user starts another operation, he/she is not
-                                                          // interrupted by some random story being opened
-                                                          BNLogInfo(@"Ignoring action from notificaiton as operation interval was %f seconds", opInterval);
-                                                          return;
-                                                      }
-                                                      NSArray *stories = [mappingResult array];
-                                                      NSAssert1(stories.count <= 1, @"Error in getting a single story from remote notificaiton", storyId);
-                                                      Story *story = [stories lastObject];
-                                                      if (story) {
-                                                          Piece *piece = nil;
-                                                          if (pieceId) {
-                                                              // Open the story with the specific piece
-                                                              piece = [Piece pieceForStory:story withAttribute:@"bnObjectId" asValue:pieceId];
-                                                          } else {
-                                                              // Open the story from the first piece
-                                                              if (story.pieces.count > 0) {
-                                                                  piece = [story.pieces objectAtIndex:0];
-                                                              }
-                                                          }
-                                                          // Story reader, open piece
-                                                          if (piece && topStoryListVC && display) {
-                                                              // If the top view controller is a StoryListController, then read the story, otherwise nothing
-                                                              [self.homeViewController resetTopViewAnimated:NO onComplete:nil];
-                                                              StoryListTableViewController *topStoryListVC = (StoryListTableViewController *)topNavController.topViewController;
-                                                              [topStoryListVC storyReaderWithStory:story piece:piece];
-                                                          }
-                                                      }
-                                                      RUN_SYNC_ON_MAINTHREAD(^{[whud hide:YES];});
-                                                  }
-                                                  failure:^(RKObjectRequestOperation *operation, NSError *error) {
-                                                      RUN_SYNC_ON_MAINTHREAD(^{[whud hide:YES];});
-                                                  }];
-        
+        [BanyanConnection loadStoryWithId:storyId withParams:nil
+                          completionBlock:^(Story *story) {
+                              // Reset the badge to zero
+                              [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+                              NSTimeInterval opInterval = [opStartDate timeIntervalSinceNow];
+                              if (opInterval < -OP_TIMEOUT_INTERVAL) {
+                                  // We give OP_TIMEOUT_INTERVAL seconds from the app launch for the story to be successfully
+                                  // received and opened, so that if a user starts another operation, he/she is not
+                                  // interrupted by some random story being opened
+                                  BNLogInfo(@"Ignoring action from notificaiton as operation interval was %f seconds", opInterval);
+                                  return;
+                              }
+                              if (story) {
+                                  Piece *piece = nil;
+                                  if (pieceId) {
+                                      // Open the story with the specific piece
+                                      piece = [Piece pieceForStory:story withAttribute:@"bnObjectId" asValue:pieceId];
+                                  } else {
+                                      // Open the story from the first piece
+                                      if (story.pieces.count > 0) {
+                                          piece = [story.pieces objectAtIndex:0];
+                                      }
+                                  }
+                                  // Story reader, open piece
+                                  if (piece && topStoryListVC && display) {
+                                      // If the top view controller is a StoryListController, then read the story, otherwise nothing
+                                      [self.homeViewController resetTopViewAnimated:NO onComplete:nil];
+                                      StoryListTableViewController *topStoryListVC = (StoryListTableViewController *)topNavController.topViewController;
+                                      [topStoryListVC storyReaderWithStory:story piece:piece];
+                                  }
+                              }
+                              RUN_SYNC_ON_MAINTHREAD(^{[whud hide:YES];});
+                          }
+                               errorBlock:^(NSError *error) {
+                                   RUN_SYNC_ON_MAINTHREAD(^{[whud hide:YES];});
+                               }];
     } else {
         // Do nothing
     }
