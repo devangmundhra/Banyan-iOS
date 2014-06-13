@@ -258,16 +258,6 @@ static char operationKey;
     self.uploadProgress = (float)bytesWritten/totalBytes;
 }
 
-- (void)willTurnIntoFault;
-{
-    [super willTurnIntoFault];
-    
-    if ([self observationInfo])
-    {
-        BNLogInfo(@"%@ has observers:\n%@", [self objectID], [self observationInfo]);
-    }
-}
-
 #pragma mark-
 #pragma mark RestKit dynamic mapping
 - (BOOL)validateLocation:(id *)ioValue error:(NSError **)outError
