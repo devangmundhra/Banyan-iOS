@@ -232,7 +232,7 @@ static NSString *_heartFullString;
 
     self.likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.likeButton.exclusiveTouch = YES;
-    [self.likeButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -2*TEXT_INSET_SMALL, 0, 0)];
+    [self.likeButton setTitleEdgeInsets:UIEdgeInsetsMake(TEXT_INSET_SMALL, -2*TEXT_INSET_SMALL, 0, 0)];
     [self.likeButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
     [self.likeButton setContentVerticalAlignment:UIControlContentVerticalAlignmentTop];
     [self.likeButton setTitleColor:BANYAN_PINK_COLOR forState:UIControlStateNormal];
@@ -245,6 +245,7 @@ static NSString *_heartFullString;
     [self.likesCountButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [self.likesCountButton setContentVerticalAlignment:UIControlContentVerticalAlignmentTop];
     self.likesCountButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:16];
+    
     [self.likesCountButton setTitleColor:BANYAN_PINK_COLOR forState:UIControlStateNormal];
     [self.likesCountButton addTarget:self action:@selector(likesCountButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 
@@ -778,7 +779,7 @@ static NSString *_heartFullString;
     
     if (self.piece.numberOfLikes > 0) {
         self.likesCountButton.hidden = NO;
-        [self.likesCountButton setTitle:[NSString stringWithFormat:@"%d", self.piece.numberOfLikes ] forState:UIControlStateNormal];
+        [self.likesCountButton setTitle:[NSString stringWithFormat:@"%d", self.piece.numberOfLikes] forState:UIControlStateNormal];
     } else {
         self.likesCountButton.hidden = YES;
     }
