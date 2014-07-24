@@ -42,6 +42,8 @@
 #define AVIARY_KEY @"qv6LJ4O2qEqxH9twpUiIKg"
 #define AVIARY_SECRET @"hG0n4Foxw0qN10P0E1SlIA"
 
+#define BANYAN_APP_ID @"824087526"
+
 @interface BanyanAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;

@@ -17,6 +17,7 @@
 #import "Story+Share.h"
 #import "Story+Stats.h"
 #import "MBProgressHUD.h"
+#import "Appirater.h"
 
 static NSString *CellIdentifier = @"StoryOverview_PieceCell";
 static NSString *HeaderIdentifier = @"StoryOverview_Header";
@@ -341,6 +342,7 @@ static NSString *const unfollowStoryString = @"Unfollow story";
         // Share
         [self.story shareOnFacebook];
     }
+    [Appirater userDidSignificantEvent:YES];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

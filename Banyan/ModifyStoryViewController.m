@@ -18,6 +18,7 @@
 #import "Story+Edit.h"
 #import "NSObject+BlockObservation.h"
 #import "CMPopTipView.h"
+#import "Appirater.h"
 
 @interface ModifyStoryViewController (UIActionSheetDelegate) <UIActionSheetDelegate>
 @end
@@ -325,6 +326,8 @@
     [self dismissEditViewWithCompletionBlock:^{
         [self.delegate modifyStoryViewControllerDidSelectStory:self.story];
     }];
+    
+    [Appirater userDidSignificantEvent:NO];
 }
 
 - (IBAction)cancel:(id)sender

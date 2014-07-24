@@ -18,6 +18,7 @@ pod 'TTTAttributedLabel'
 pod 'GoogleAnalytics-iOS-SDK'
 pod 'JazzHands'
 pod 'BButton'
+pod 'Appirater', :git => "https://github.com/arashpayan/appirater.git"
 
 # Testing and Search are optional components
 # pod 'RestKit/Testing',  :git => 'https://github.com/RestKit/RestKit.git'

@@ -24,6 +24,7 @@
 #import "User.h"
 #import "BNLabel.h"
 #import <CoreLocation/CoreLocation.h>
+#import "Appirater.h"
 
 @interface ModifyPieceViewController (CLLocationManagerDelegate) <CLLocationManagerDelegate>
 @end
@@ -508,6 +509,8 @@
         if (self.delegate)
             [self.delegate modifyPieceViewController:self didFinishAddingPiece:self.piece];
     }];
+    
+    [Appirater userDidSignificantEvent:YES];
 }
 
 - (IBAction)deleteAudioAlert:(UIButton *)sender

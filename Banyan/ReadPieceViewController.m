@@ -28,6 +28,7 @@
 #import "MZFormSheetController.h"
 #import "BNGeneralizedTableViewController.h"
 #import "NSString+FontAwesome.h"
+#import "Appirater.h"
 
 static NSString *const deletePieceString = @"Delete piece";
 static NSString *const flagPieceString = @"Flag piece";
@@ -783,6 +784,7 @@ static NSString *_heartFullString;
     } else {
         self.likesCountButton.hidden = YES;
     }
+    [Appirater userDidSignificantEvent:YES];
 }
 
 - (IBAction)likeButtonPressed:(UIButton *)sender

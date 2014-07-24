@@ -2,6 +2,7 @@ PODS:
   - AFNetworking (1.3.4)
   - AFNetworking-TastyPie (0.0.1):
     - AFNetworking (~> 1.0)
+  - Appirater (2.0.3)
   - BButton (4.0.1)
   - BNSwipeableView (0.0.1)
   - CMPopTipView (2.1.0)
@@ -48,6 +49,7 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking-TastyPie (from `https://github.com/rhfung/AFNetworking-TastyPie.git`, tag `0.0.1`)
+  - Appirater (from `https://github.com/arashpayan/appirater.git`)
   - BButton
   - BNSwipeableView (from `https://github.com/devangmundhra/BNSwipeableView.git`)
   - CMPopTipView (~> 2.1.0)
@@ -69,6 +71,8 @@ EXTERNAL SOURCES:
   AFNetworking-TastyPie:
     :git: https://github.com/rhfung/AFNetworking-TastyPie.git
     :tag: 0.0.1
+  Appirater:
+    :git: https://github.com/arashpayan/appirater.git
   BNSwipeableView:
     :git: https://github.com/devangmundhra/BNSwipeableView.git
   RestKit:
@@ -79,6 +83,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AFNetworking: 80c4e0652b08eb34e25b9c0ff3c82556fe5967b4
   AFNetworking-TastyPie: 33bc74095412fc36c1f9acffe9e44ac388ae7158
+  Appirater: 2f5c1f8fd4a856d225c06b6aa1238ce395a96813
   BButton: 396a5e59648e3f687b7d8201b88ebdbad6e36b59
   BNSwipeableView: f10ecb74337225b5659861e150b96e2b8464fc7a
   CMPopTipView: b9f9300c3209943f65d2b7e696dc2a682e867da3

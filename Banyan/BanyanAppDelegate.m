@@ -24,6 +24,7 @@
 #import <GoogleMaps/GoogleMaps.h>
 #import "BNIntroViewController.h"
 #import <AviarySDK/AviarySDK.h>
+#import "Appirater.h"
 
 @interface BanyanAppDelegateTWMessageBarStyleSheet : NSObject <TWMessageBarStyleSheet>
 
@@ -143,6 +144,20 @@
         [self application:application didReceiveRemoteNotification:launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]];
     }
     
+    // Appirater settings
+    [Appirater setAppId:BANYAN_APP_ID];
+    [Appirater setDaysUntilPrompt:5];
+    [Appirater setUsesUntilPrompt:15];
+    [Appirater setSignificantEventsUntilPrompt:15];
+    [Appirater setTimeBeforeReminding:5];
+    [Appirater setCustomAlertTitle:@"Love Banyan?"];
+    [Appirater setCustomAlertMessage:@"Show some love on the App Store!"];
+
+#ifdef DEBUG
+    [Appirater setDebug:YES];
+#endif
+    
+    [Appirater appLaunched:YES];
     return YES;
 }
 
@@ -233,6 +248,7 @@ void uncaughtExceptionHandler(NSException *exception)
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    [Appirater appEnteredForeground:YES];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
