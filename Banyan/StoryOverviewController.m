@@ -341,8 +341,8 @@ static NSString *const unfollowStoryString = @"Unfollow story";
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:shareString]) {
         // Share
         [self.story shareOnFacebook];
+        [Appirater userDidSignificantEvent:YES];
     }
-    [Appirater userDidSignificantEvent:YES];
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

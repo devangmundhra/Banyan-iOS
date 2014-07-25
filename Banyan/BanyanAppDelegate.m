@@ -146,15 +146,15 @@
     
     // Appirater settings
     [Appirater setAppId:BANYAN_APP_ID];
-    [Appirater setDaysUntilPrompt:5];
-    [Appirater setUsesUntilPrompt:15];
-    [Appirater setSignificantEventsUntilPrompt:15];
+    [Appirater setDaysUntilPrompt:4];
+    [Appirater setUsesUntilPrompt:12];
+    [Appirater setSignificantEventsUntilPrompt:9];
     [Appirater setTimeBeforeReminding:5];
     [Appirater setCustomAlertTitle:@"Love Banyan?"];
-    [Appirater setCustomAlertMessage:@"Show some love on the App Store!"];
+    [Appirater setCustomAlertMessage:@"Consider showing some love on the App Store!"];
 
 #ifdef DEBUG
-    [Appirater setDebug:YES];
+//    [Appirater setDebug:YES];
 #endif
     
     [Appirater appLaunched:YES];
@@ -223,7 +223,20 @@ void uncaughtExceptionHandler(NSException *exception)
     BOOL urlWasHandled = [FBAppCall handleOpenURL:url
                                 sourceApplication:sourceApplication
                                   fallbackHandler:^(FBAppCall *call) {
-                                      // handle deep links and responses for Login or Share Dialog here
+                                      // If there is an active session
+                                      if (FBSession.activeSession.isOpen) {
+                                          // Check the incoming link
+                                          [self handleAppLinkData:call.appLinkData];
+                                      } else if (call.accessTokenData) {
+                                          // If token data is passed in and there's
+                                          // no active session.
+                                          if ([self handleAppLinkToken:call.accessTokenData]) {
+                                              // Attempt to open the session using the
+                                              // cached token and if successful then
+                                              // check the incoming link
+                                              [self handleAppLinkData:call.appLinkData];
+                                          }
+                                      }
                                   }];
     
     return urlWasHandled;
@@ -602,6 +615,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                                          }];
 }
 
+
+// Helper methods
 - (void) restKitCoreDataInitialization
 {
     // Initialize managed object store
@@ -640,6 +655,92 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     [RKManagedObjectStore setDefaultStore:managedObjectStore];
     
     BNLogTrace(@"\rPersistent Store Ctx: %@\rMain Ctx: %@", managedObjectStore.persistentStoreManagedObjectContext, managedObjectStore.mainQueueManagedObjectContext);
+}
+
+#pragma mark - Helper methods
+// Helper method to handle incoming request app link
+- (void) handleAppLinkData:(FBAppLinkData *)appLinkData
+{
+    NSString *targetURLString = appLinkData.originalQueryParameters[@"target_url"];
+    if (targetURLString) {
+        NSURL *targetURL = [NSURL URLWithString:targetURLString];
+        NSDictionary *targetParams = [BNMisc parseURLParams:[targetURL query]];
+        NSString *ref = [targetParams valueForKey:@"ref"];
+        // Check for the ref parameter to check if this is one of
+        // our incoming news feed link, otherwise it can be an
+        // an attribution link
+        if ([ref isEqualToString:@"notif"]) {
+            // Get the request id
+            NSString *requestIDParam = targetParams[@"request_ids"];
+            NSArray *requestIDs = [requestIDParam
+                                   componentsSeparatedByString:@","];
+            
+            // Get the request data from a Graph API call to the
+            // request id endpoint
+            [self notificationGet:requestIDs[0]];
+        }
+    }
+}
+
+// Helper method to check incoming token data
+- (BOOL)handleAppLinkToken:(FBAccessTokenData *)appLinkToken
+{
+    // Initialize a new blank session instance...
+    FBSession *appLinkSession = [[FBSession alloc] initWithAppID:nil
+                                                     permissions:nil
+                                                 defaultAudience:FBSessionDefaultAudienceNone
+                                                 urlSchemeSuffix:nil
+                                              tokenCacheStrategy:[FBSessionTokenCachingStrategy nullCacheInstance] ];
+    [FBSession setActiveSession:appLinkSession];
+    // ... and open it from the App Link's Token.
+    return [appLinkSession openFromAccessTokenData:appLinkToken
+                                 completionHandler:^(FBSession *session,
+                                                     FBSessionState status,
+                                                     NSError *error) {
+                                     // Log any errors
+                                     if (error) {
+                                         [BNMisc sendGoogleAnalyticsError:error inAction:@"Facebook open session" isFatal:NO];
+                                         BNLogInfo(@"Error using cached token to open a session: %@",
+                                               error.localizedDescription);
+                                     }
+                                 }];
+}
+
+// Helper function to get the request data
+- (void) notificationGet:(NSString *)requestid
+{
+    [FBRequestConnection startWithGraphPath:requestid
+                          completionHandler:^(FBRequestConnection *connection,
+                                              id result,
+                                              NSError *error) {
+                              if (!error) {
+                                  if (result[@"data"]) {
+                                      [self loadRemoteObjectFromUserInfo:result displayIfPossible:YES];
+                                  }
+                                  
+                                  // Delete the request notification
+                                  [self notificationClear:result[@"id"]];
+                              }
+                          }];
+}
+
+/*
+ * Helper function to delete the request notification
+ */
+- (void) notificationClear:(NSString *)requestid {
+    // Delete the request notification
+    [FBRequestConnection startWithGraphPath:requestid
+                                 parameters:nil
+                                 HTTPMethod:@"DELETE"
+                          completionHandler:^(FBRequestConnection *connection,
+                                              id result,
+                                              NSError *error) {
+                              if (!error) {
+                                  BNLogInfo(@"Request deleted");
+                              } else {
+                                  [BNMisc sendGoogleAnalyticsError:error inAction:@"Fb notification clear" isFatal:NO];
+                              }
+                          }];
 }
 
 #pragma mark MISCELLANEOUS METHODS

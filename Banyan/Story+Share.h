@@ -10,5 +10,5 @@
 #import "RemoteObject+Share.h"
 
 @interface Story (Share)
-
+- (void)sendInviteRequest;
 @end

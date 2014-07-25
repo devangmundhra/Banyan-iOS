@@ -39,5 +39,7 @@
 + (BOOL) isFirstTimeUserAction:(NSString *)firstTimeAction;
 + (void) setFirstTimeUserActionDone:(NSString *)firstTimeAction;
 + (BOOL) checkFirstTimeUserActionAndSetDone:(NSString *)firstTimeAction;
++ (NSDictionary*)parseURLParams:(NSString *)query;
+
 @end
 

@@ -13,6 +13,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "BNMisc.h"
 #import "Story+Permissions.h"
+#import "Story+Share.h"
 #import "BNLabel.h"
 #import "BNTextField.h"
 #import "Story+Edit.h"
@@ -326,6 +327,10 @@
     [self dismissEditViewWithCompletionBlock:^{
         [self.delegate modifyStoryViewControllerDidSelectStory:self.story];
     }];
+    
+    if (!samePermissions && NUMBER_EXISTS(self.story.bnObjectId)) {
+        [self.story sendInviteRequest];
+    }
     
     [Appirater userDidSignificantEvent:NO];
 }

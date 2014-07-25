@@ -13,6 +13,7 @@
 #import "User.h"
 #import "Story+Stats.h"
 #import "BanyanAppDelegate.h"
+#import "Story+Share.h"
 
 @implementation Story (Create)
 
@@ -59,6 +60,7 @@
             // Be eager in uploading pieces if available
             [story uploadFailedRemoteObject];
             [[UIApplication sharedApplication] endBackgroundTask:bgTask];
+            [story sendInviteRequest];
         }
                                          failure:^(RKObjectRequestOperation *operation, NSError *error) {
                                              story.remoteStatus = RemoteObjectStatusFailed;

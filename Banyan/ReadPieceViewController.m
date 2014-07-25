@@ -38,6 +38,8 @@ static NSString *const shareString = @"Share";
 static NSString *const cancelString = @"Cancel";
 static NSString *const cancelUploadString = @"Cancel upload";
 static NSString *const retryUploadString = @"Retry upload";
+static CGFloat likeButtonSize = 36.0f;
+static NSTimeInterval animationDuration = 1.0f;
 
 @interface ReadPieceViewController (UIScrollViewDelegate) <UIScrollViewDelegate>
 @end
@@ -233,23 +235,32 @@ static NSString *_heartFullString;
 
     self.likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.likeButton.exclusiveTouch = YES;
-    [self.likeButton setTitleEdgeInsets:UIEdgeInsetsMake(TEXT_INSET_SMALL, -2*TEXT_INSET_SMALL, 0, 0)];
-    [self.likeButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
-    [self.likeButton setContentVerticalAlignment:UIControlContentVerticalAlignmentTop];
     [self.likeButton setTitleColor:BANYAN_PINK_COLOR forState:UIControlStateNormal];
     self.likeButton.titleLabel.font = [UIFont fontWithName:@"FontAwesome" size:16];
     [self.likeButton addTarget:self action:@selector(likeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    self.likeButton.layer.cornerRadius = likeButtonSize/2;
+    self.likeButton.layer.shadowOffset = CGSizeMake(0, 0);
+    self.likeButton.layer.shadowRadius = 15.0f;
+    self.likeButton.layer.shadowOpacity = 0.4;
+    self.likeButton.layer.shadowPath = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, likeButtonSize, likeButtonSize)].CGPath;
+    self.likeButton.layer.shadowColor = [BANYAN_PINK_COLOR CGColor];
+    self.likeButton.clipsToBounds = YES;
+    self.likeButton.showsTouchWhenHighlighted = YES;
     
     self.likesCountButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.likesCountButton.exclusiveTouch = YES;
-    [self.likesCountButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 2*TEXT_INSET_SMALL, 0, 0)];
-    [self.likesCountButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
-    [self.likesCountButton setContentVerticalAlignment:UIControlContentVerticalAlignmentTop];
     self.likesCountButton.titleLabel.font = [UIFont fontWithName:@"Roboto-Bold" size:16];
-    
     [self.likesCountButton setTitleColor:BANYAN_PINK_COLOR forState:UIControlStateNormal];
     [self.likesCountButton addTarget:self action:@selector(likesCountButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-
+    self.likesCountButton.layer.cornerRadius = likeButtonSize/2;
+    self.likesCountButton.layer.shadowOffset = CGSizeMake(0, 0);
+    self.likesCountButton.layer.shadowRadius = 15.0f;
+    self.likesCountButton.layer.shadowOpacity = 0.4;
+    self.likesCountButton.layer.shadowPath = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, likeButtonSize, likeButtonSize)].CGPath;
+    self.likesCountButton.layer.shadowColor = [BANYAN_PINK_COLOR CGColor];
+    self.likesCountButton.clipsToBounds = YES;
+    self.likesCountButton.showsTouchWhenHighlighted = YES;
+    
     [self.pieceInfoView addSubview:self.authorLabel];
     [self.pieceInfoView addSubview:self.timeLabel];
     [self.pieceInfoView addSubview:self.likeButton];
@@ -435,11 +446,10 @@ static NSString *_heartFullString;
         
         if ([BanyanAppDelegate loggedIn] && self.piece.bnObjectId)
         {
-            CGFloat buttonSize = 36.0f;
             frame = [UIScreen mainScreen].bounds;
             // like button
-            self.likeButton.frame = CGRectMake(CGRectGetMaxX(frame)-3*TEXT_INSET_SMALL-buttonSize-TEXT_INSET_SMALL-buttonSize,
-                                                0, buttonSize, buttonSize);
+            self.likeButton.frame = CGRectMake(CGRectGetMaxX(frame)-3*TEXT_INSET_SMALL-likeButtonSize-TEXT_INSET_SMALL-likeButtonSize,
+                                                0, likeButtonSize, likeButtonSize);
             
             // like count button
             frame = self.likeButton.bounds;
@@ -734,13 +744,13 @@ static NSString *_heartFullString;
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:editPieceString]) {
         ModifyPieceViewController *addPieceViewController = [[ModifyPieceViewController alloc] initWithPiece:self.piece];
         UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:addPieceViewController];
-        //    addSceneViewController.delegate = self;
         [navController setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
         [self presentViewController:navController animated:YES completion:nil];
     }
     else if ([[actionSheet buttonTitleAtIndex:buttonIndex] isEqualToString:shareString]) {
         // Share
         [self.piece shareOnFacebook];
+        [Appirater userDidSignificantEvent:YES];
     }
     else {
         BNLogWarning(@"StoryReaderController_actionSheetclickedButtonAtIndex %@", [actionSheet buttonTitleAtIndex:buttonIndex]);
@@ -780,9 +790,16 @@ static NSString *_heartFullString;
     
     if (self.piece.numberOfLikes > 0) {
         self.likesCountButton.hidden = NO;
+        [UIView animateWithDuration:animationDuration/2 animations:^{
+            self.likesCountButton.alpha = 1;
+        }];
         [self.likesCountButton setTitle:[NSString stringWithFormat:@"%d", self.piece.numberOfLikes] forState:UIControlStateNormal];
     } else {
-        self.likesCountButton.hidden = YES;
+        [UIView animateWithDuration:animationDuration/2 animations:^{
+            self.likesCountButton.alpha = 0;
+        } completion:^(BOOL finished) {
+            self.likesCountButton.hidden = YES;
+        }];
     }
     [Appirater userDidSignificantEvent:YES];
 }
@@ -801,15 +818,50 @@ static NSString *_heartFullString;
         }
     };
     
+    UILabel *fullLabel = [[UILabel alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    fullLabel.backgroundColor = BANYAN_CLEAR_COLOR;
+    fullLabel.text = _heartFullString;
+    fullLabel.font = [UIFont fontWithName:@"FontAwesome" size:MIN(CGRectGetWidth([UIScreen mainScreen].bounds), CGRectGetHeight([UIScreen mainScreen].bounds)) - TEXT_INSET_BIG];
+    fullLabel.textAlignment = NSTextAlignmentCenter;
+    fullLabel.textColor = BANYAN_PINK_COLOR;
+    
+    UILabel *emptyLabel = [[UILabel alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    emptyLabel.backgroundColor = BANYAN_CLEAR_COLOR;
+    emptyLabel.text = _heartEmptyString;
+    emptyLabel.font = [UIFont fontWithName:@"FontAwesome" size:MIN(CGRectGetWidth([UIScreen mainScreen].bounds), CGRectGetHeight([UIScreen mainScreen].bounds)) - TEXT_INSET_BIG];
+    emptyLabel.textAlignment = NSTextAlignmentCenter;
+    emptyLabel.textColor = BANYAN_PINK_COLOR;
+    
+    UILabel *startLabel = nil;
+    UILabel *endLabel = nil;
+    
     if (self.piece.likeActivityResourceUri.length) {
         [self.piece unlikeWithCompletionBlock:likeCompletionBlock];
+        startLabel = fullLabel;
+        endLabel = emptyLabel;
     } else {
         [self.piece likeWithCompletionBlock:likeCompletionBlock];
+        startLabel = emptyLabel;
+        endLabel = fullLabel;
     }
+    
+    [[[UIApplication sharedApplication] keyWindow] addSubview:startLabel];
+    endLabel.alpha = 0.0f;
+    [[[UIApplication sharedApplication] keyWindow] addSubview:endLabel];
+    
+    
+    [UIView animateWithDuration:animationDuration animations:^{
+        startLabel.alpha = 0.0;
+        endLabel.alpha = 1.0;
+    } completion:^(BOOL finished) {
+        [startLabel removeFromSuperview];
+        [endLabel removeFromSuperview];
+    }];
 }
 
 - (IBAction)likesCountButtonPressed:(UIButton *)sender
 {
+    sender.enabled = NO;
     void (^showLikers)(NSArray *) = ^(NSArray *likers) {
         BNGeneralizedTableViewController *vc = [[BNGeneralizedTableViewController alloc] initWithStyle:UITableViewStylePlain type:BNGeneralizedTableViewTypePieceLikers];
         vc.sectionString = @"People who love this piece";
@@ -827,7 +879,7 @@ static NSString *_heartFullString;
         };
         
         [APP_DELEGATE.topMostController mz_presentFormSheetController:formSheet animated:YES completionHandler:^(MZFormSheetController *formSheetController) {
-            
+            sender.enabled = YES;
         }];
     };
     
@@ -839,6 +891,7 @@ static NSString *_heartFullString;
                                           showLikers(likers);
                                       }
                                       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                          sender.enabled = YES;
                                       }];
 }
 

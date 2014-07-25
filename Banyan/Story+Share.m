@@ -172,6 +172,75 @@ NSString *const copyLinkToStoryString = @"Copy link to story";
     });
 }
 
+// Invite selected facebook users to join in the story
+- (void)sendInviteRequest
+{
+    if (!NUMBER_EXISTS(self.bnObjectId)) {
+        [BNMisc sendGoogleAnalyticsEventWithCategory:@"Error" action:@"share" label:@"facebook share without story upload" value:nil];
+        return;
+    }
+    
+//    NSError *error = nil;
+//    NSData *jsonData = [NSJSONSerialization
+//                        dataWithJSONObject:@{@"story": self.bnObjectId,}
+//                        options:0
+//                        error:&error];
+//    if (error) {
+//        [BNMisc sendGoogleAnalyticsError:error inAction:@"Facebook invites: JSON error" isFatal:NO];
+//        BNLogError(@"JSON error: %@", error);
+//        return;
+//    }
+//    
+//    NSString *storyStr = [[NSString alloc]
+//                          initWithData:jsonData
+//                          encoding:NSUTF8StringEncoding];
+    NSMutableDictionary* params = [@{@"data" : @{@"story": self.bnObjectId,}} mutableCopy];
+    
+    NSMutableArray *idArray = [NSMutableArray array];
+    for (NSDictionary *friend in self.readAccess.inviteeList.facebookFriends) {
+        [idArray addObject:[friend objectForKey:@"id"]];
+    }
+    for (NSDictionary *friend in self.writeAccess.inviteeList.facebookFriends) {
+        [idArray addObject:[friend objectForKey:@"id"]];
+    }
+    
+    // Filter and only show targeted friends
+    if ([idArray count] > 0) {
+        NSString *selectIDsStr = [idArray componentsJoinedByString:@","];
+        params[@"suggestions"] = selectIDsStr;
+    }
+    
+    // Display the requests dialog
+    [FBWebDialogs
+     presentRequestsDialogModallyWithSession:nil
+     message:[NSString stringWithFormat:@"%@ has invited you to join the story %@", self.author.name, self.title]
+     title:@"Invite via Fb!"
+     parameters:params
+     handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
+         if (error) {
+             // Error launching the dialog or sending request.
+             [BNMisc sendGoogleAnalyticsError:error inAction:@"Facebook invites" isFatal:NO];
+             BNLogError(@"Error in facebook invite request to %@.", idArray);
+         } else {
+             if (result == FBWebDialogResultDialogNotCompleted) {
+                 // User clicked the "x" icon
+                 BNLogInfo(@"User canceled facebook invite request.");
+             } else {
+                 // Handle the send request callback
+                 NSDictionary *urlParams = [BNMisc parseURLParams:[resultURL query]];
+                 if (![urlParams valueForKey:@"request"]) {
+                     // User clicked the Cancel button
+                     BNLogInfo(@"User canceled facebook invite request.");
+                 } else {
+                     // User clicked the Send button
+                     NSString *requestID = [urlParams valueForKey:@"request"];
+                     BNLogInfo(@"Request ID: %@", requestID);
+                 }
+             }
+         }
+     }];
+}
+
 @end
 
 @implementation Story (UIActionSheetDelegate)
