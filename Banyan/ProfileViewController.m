@@ -47,7 +47,9 @@
     if (self.user) {
         self.title = self.user.name;
         userId = self.user.userId;
-        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonPressed:)];
+        UIImage *backArrowImage = [UIImage imageNamed:@"Previous"];
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithImage:backArrowImage style:UIBarButtonItemStyleBordered target:self action:@selector(cancelButtonPressed:)];
+        self.navigationItem.leftBarButtonItem = backButton;
     } else {
         BNSharedUser *currentUser = [BNSharedUser currentUser];
         self.title = currentUser.name;

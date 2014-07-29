@@ -20,4 +20,13 @@
              withParams:(NSDictionary *)params
         completionBlock:(void (^)(Story *story))completionBlock
              errorBlock:(void (^)(NSError *error))errorBlock;
++ (void)loadPieceWithId:(NSString *)pieceId
+             withParams:(NSDictionary *)params
+        completionBlock:(void (^)(Piece *piece))completionBlock
+             errorBlock:(void (^)(NSError *error))errorBlock;
++ (void)loadUserWithId:(NSString *)userId
+            withParams:(NSDictionary *)params
+       completionBlock:(void (^)(User *user))completionBlock
+            errorBlock:(void (^)(NSError *error))errorBlock;
+
 @end

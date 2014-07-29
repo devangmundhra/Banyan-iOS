@@ -134,6 +134,13 @@
                                                                                      keyPath:nil
                                                                                  statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)]];
     
+    // User descriptors
+    [objectManager addResponseDescriptor:[RKResponseDescriptor responseDescriptorWithMapping:[User UserMappingForRKGET]
+                                                                                      method:RKRequestMethodGET
+                                                                                 pathPattern:@"users/:userId/"
+                                                                                     keyPath:nil
+                                                                                 statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)]];
+
     // Fetch request blocks for deleting orphaned objects
     // All entities returned by the fetch request are candidates for deletion. If a managedObject should not be deleted, they should not
     // be returned by the fetch request
@@ -345,13 +352,16 @@
     return;
 }
 
-+ (void)loadStoryWithId:(NSString *)storyId withParams:(NSDictionary *)params completionBlock:(void (^)(Story *story))completionBlock errorBlock:(void (^)(NSError *error))errorBlock
++ (void)loadStoryWithId:(NSString *)storyId
+             withParams:(NSDictionary *)params
+        completionBlock:(void (^)(Story *story))completionBlock
+             errorBlock:(void (^)(NSError *error))errorBlock
 {
     [[RKObjectManager sharedManager] getObjectsAtPath:[NSString stringWithFormat:@"story/%@/?format=json", storyId]
                                            parameters:params
                                               success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
                                                   NSArray *stories = [mappingResult array];
-                                                  NSAssert1(stories.count <= 1, @"Error in getting a single story from remote notificaiton", storyId);
+                                                  NSAssert1(stories.count <= 1, @"Error in getting a single story from server", storyId);
                                                   Story *story = [stories lastObject];
                                                   if (completionBlock)
                                                       completionBlock(story);
@@ -362,6 +372,59 @@
                                               }];
 }
 
++ (void)loadPieceWithId:(NSString *)pieceId
+             withParams:(NSDictionary *)params
+        completionBlock:(void (^)(Piece *piece))completionBlock
+             errorBlock:(void (^)(NSError *error))errorBlock
+{
+    // First get the story information, then get all the pieces for that story (no piece without story)
+    [[AFBanyanAPIClient sharedClient] getPath:[NSString stringWithFormat:@"piece/%@/?format=json", pieceId]
+                                   parameters:nil
+                                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                          BNLogTrace("Got piece %@", responseObject);
+                                          NSString *storyUri = [responseObject objectForKey:@"story"];
+                                          NSString *storyId = [BNMisc getObjectIdFromResourceUri:storyUri];
+                                          [self loadStoryWithId:storyId
+                                                     withParams:nil
+                                                completionBlock:^(Story *story) {
+                                                    Piece *piece = nil;
+                                                    piece = [Piece pieceForStory:story withAttribute:@"bnObjectId" asValue:pieceId];
+                                                    if (piece) {
+                                                        completionBlock(piece);
+                                                    } else {
+                                                        if (errorBlock) {
+                                                            NSError *error = [NSError errorWithDomain:BNErrorDomain code:BNErrorCodeException userInfo:@{@"story_id": storyId,
+                                                                                                                                                         @"piece_id": pieceId}];
+                                                            errorBlock(error);
+                                                        }
+                                                    }
+                                                }
+                                                     errorBlock:errorBlock];
+                                      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                          if (errorBlock)
+                                              errorBlock(error);
+                                      }];
+}
+
++ (void)loadUserWithId:(NSString *)userId
+            withParams:(NSDictionary *)params
+       completionBlock:(void (^)(User *user))completionBlock
+            errorBlock:(void (^)(NSError *error))errorBlock
+{
+    [[RKObjectManager sharedManager] getObjectsAtPath:[NSString stringWithFormat:@"users/%@/?format=json", userId]
+                                           parameters:params
+                                              success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+                                                  NSArray *users = [mappingResult array];
+                                                  NSAssert1(users.count <= 1, @"Error in getting a single user from server", userId);
+                                                  User *user = [users lastObject];
+                                                  if (completionBlock)
+                                                      completionBlock(user);
+                                              }
+                                              failure:^(RKObjectRequestOperation *operation, NSError *error) {
+                                                  if (errorBlock)
+                                                      errorBlock(error);
+                                              }];
+}
 + (void)loadPiecesForStory:(Story *)story withParams:(NSDictionary *)params completionBlock:(void (^)())completionBlock errorBlock:(void (^)(NSError *error))errorBlock
 {
     NSAssert(false, @"Not implemented yet");

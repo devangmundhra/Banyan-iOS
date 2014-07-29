@@ -138,8 +138,6 @@
 		51984D43176EE10E00CD6C3E /* CoreDataTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51984D42176EE10E00CD6C3E /* CoreDataTableViewController.m */; };
 		51984D46176EEB5600CD6C3E /* SinglePieceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 51984D45176EEB5600CD6C3E /* SinglePieceView.m */; };
 		519AFA7215C26F5D00F68F3C /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */; };
-		519E01D7190613D70067FB64 /* AviarySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 519E01D5190613D70067FB64 /* AviarySDK.framework */; };
-		519E01D8190613D70067FB64 /* AviarySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 519E01D6190613D70067FB64 /* AviarySDKResources.bundle */; };
 		51A1E0A3186C30BB00162BD6 /* RemoteObject+Share.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A1E0A2186C30BB00162BD6 /* RemoteObject+Share.m */; };
 		51A1E0A9186C318000162BD6 /* Story+Share.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A1E0A8186C318000162BD6 /* Story+Share.m */; };
 		51A1E0AC186C350E00162BD6 /* Piece+Share.m in Sources */ = {isa = PBXBuildFile; fileRef = 51A1E0AB186C350E00162BD6 /* Piece+Share.m */; };
@@ -201,6 +199,9 @@
 		51D17B161900EB9A00CBB00D /* share_intro@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51D17B151900EB9A00CBB00D /* share_intro@2x.png */; };
 		51D5E6E7182220A5005CA2F4 /* hideStoryButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51D5E6E5182220A5005CA2F4 /* hideStoryButton@2x.png */; };
 		51D7AF1118D2F33E00E00FF4 /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51D7AF1018D2F33E00E00FF4 /* libGoogleAnalyticsServices.a */; };
+		51DBA89019876E54005E6048 /* AviarySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51DBA88E19876E54005E6048 /* AviarySDK.framework */; };
+		51DBA89119876E54005E6048 /* AviarySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 51DBA88F19876E54005E6048 /* AviarySDKResources.bundle */; };
+		51DBA89319876EFB005E6048 /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 51DBA89219876EFB005E6048 /* libz.1.2.5.dylib */; };
 		51E2145018B9181E00619150 /* Pencil@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51E2144C18B9181E00619150 /* Pencil@2x.png */; };
 		51E2145218B9181E00619150 /* Scroll@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51E2144E18B9181E00619150 /* Scroll@2x.png */; };
 		51E2145E18B9185000619150 /* Camera_Rotate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 51E2145818B9185000619150 /* Camera_Rotate@2x.png */; };
@@ -439,8 +440,6 @@
 		51984D44176EEB5600CD6C3E /* SinglePieceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SinglePieceView.h; path = Banyan/SinglePieceView.h; sourceTree = "<group>"; };
 		51984D45176EEB5600CD6C3E /* SinglePieceView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SinglePieceView.m; path = Banyan/SinglePieceView.m; sourceTree = "<group>"; };
 		519AFA7115C26F5D00F68F3C /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
-		519E01D5190613D70067FB64 /* AviarySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AviarySDK.framework; sourceTree = "<group>"; };
-		519E01D6190613D70067FB64 /* AviarySDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AviarySDKResources.bundle; sourceTree = "<group>"; };
 		51A1E0A1186C30BB00162BD6 /* RemoteObject+Share.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "RemoteObject+Share.h"; path = "Banyan/RemoteObject+Share.h"; sourceTree = "<group>"; };
 		51A1E0A2186C30BB00162BD6 /* RemoteObject+Share.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "RemoteObject+Share.m"; path = "Banyan/RemoteObject+Share.m"; sourceTree = "<group>"; };
 		51A1E0A7186C318000162BD6 /* Story+Share.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Story+Share.h"; path = "Banyan/Story+Share.h"; sourceTree = "<group>"; };
@@ -530,6 +529,9 @@
 		51D17B151900EB9A00CBB00D /* share_intro@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share_intro@2x.png"; sourceTree = "<group>"; };
 		51D5E6E5182220A5005CA2F4 /* hideStoryButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hideStoryButton@2x.png"; sourceTree = "<group>"; };
 		51D7AF1018D2F33E00E00FF4 /* libGoogleAnalyticsServices.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGoogleAnalyticsServices.a; path = "Pods/GoogleAnalytics-iOS-SDK/libGoogleAnalyticsServices.a"; sourceTree = "<group>"; };
+		51DBA88E19876E54005E6048 /* AviarySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AviarySDK.framework; sourceTree = "<group>"; };
+		51DBA88F19876E54005E6048 /* AviarySDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AviarySDKResources.bundle; sourceTree = "<group>"; };
+		51DBA89219876EFB005E6048 /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = usr/lib/libz.1.2.5.dylib; sourceTree = SDKROOT; };
 		51E2144C18B9181E00619150 /* Pencil@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Pencil@2x.png"; sourceTree = "<group>"; };
 		51E2144E18B9181E00619150 /* Scroll@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Scroll@2x.png"; sourceTree = "<group>"; };
 		51E2145818B9185000619150 /* Camera_Rotate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Camera_Rotate@2x.png"; sourceTree = "<group>"; };
@@ -596,6 +598,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51DBA89319876EFB005E6048 /* libz.1.2.5.dylib in Frameworks */,
 				5189B3BF15B39BBF00562DD0 /* SystemConfiguration.framework in Frameworks */,
 				517A01BC17095F0E00665F0F /* OpenGLES.framework in Frameworks */,
 				511D741818F51FEC000926B0 /* libicucore.dylib in Frameworks */,
@@ -609,7 +612,7 @@
 				5112D106181E4EEA003E8C37 /* Accelerate.framework in Frameworks */,
 				5112D057181A4CE5003E8C37 /* CoreVideo.framework in Frameworks */,
 				512598BC17AB918D00FEFCF0 /* libsqlite3.dylib in Frameworks */,
-				519E01D7190613D70067FB64 /* AviarySDK.framework in Frameworks */,
+				51DBA89019876E54005E6048 /* AviarySDK.framework in Frameworks */,
 				51596AB71745E285008F5276 /* CoreMedia.framework in Frameworks */,
 				51BDA2701741EB4100BD2C19 /* AVFoundation.framework in Frameworks */,
 				51BDA25F173EEC1500BD2C19 /* ImageIO.framework in Frameworks */,
@@ -951,7 +954,7 @@
 		517A01AA1709539800665F0F /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
-				519E01D4190613D70067FB64 /* AviarySDK */,
+				51DBA88D19876E54005E6048 /* AviarySDK */,
 			);
 			name = Vendors;
 			sourceTree = "<group>";
@@ -1029,6 +1032,7 @@
 		5189B2B615B387E200562DD0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				51DBA89219876EFB005E6048 /* libz.1.2.5.dylib */,
 				511D742118F63C1B000926B0 /* GoogleMaps.framework */,
 				511D742318F63C6A000926B0 /* GoogleMaps.bundle */,
 				511D741718F51FEC000926B0 /* libicucore.dylib */,
@@ -1312,15 +1316,6 @@
 			name = "UIImage Categories";
 			sourceTree = "<group>";
 		};
-		519E01D4190613D70067FB64 /* AviarySDK */ = {
-			isa = PBXGroup;
-			children = (
-				519E01D5190613D70067FB64 /* AviarySDK.framework */,
-				519E01D6190613D70067FB64 /* AviarySDKResources.bundle */,
-			);
-			path = AviarySDK;
-			sourceTree = "<group>";
-		};
 		51A8494E171D24F000367039 /* Location using Google */ = {
 			isa = PBXGroup;
 			children = (
@@ -1523,6 +1518,15 @@
 				51170B6A17F4262A0015B343 /* Profile View Controller */,
 			);
 			name = "SideNavigator View Controller";
+			sourceTree = "<group>";
+		};
+		51DBA88D19876E54005E6048 /* AviarySDK */ = {
+			isa = PBXGroup;
+			children = (
+				51DBA88E19876E54005E6048 /* AviarySDK.framework */,
+				51DBA88F19876E54005E6048 /* AviarySDKResources.bundle */,
+			);
+			path = AviarySDK;
 			sourceTree = "<group>";
 		};
 		51E2144918B906BB00619150 /* Camera Buttons */ = {
@@ -1781,6 +1785,7 @@
 				517A01DD170BFA5B00665F0F /* InviteFriendCell.xib in Resources */,
 				5129546518C9B56600E62D6B /* HelpInfoViewController.xib in Resources */,
 				5144EC6B1712277600F0B265 /* cameraSymbol@2x.png in Resources */,
+				51DBA89119876E54005E6048 /* AviarySDKResources.bundle in Resources */,
 				51F0329218B94F3C00FFA71E /* Cog_selected@2x.png in Resources */,
 				512B1DEF18FF841D00691251 /* kids_share.png in Resources */,
 				5144EC6D1712277600F0B265 /* locationSymbol@2x.png in Resources */,
@@ -1800,7 +1805,6 @@
 				51F0329E18B9509200FFA71E /* Previous@2x.png in Resources */,
 				51B49A1B1898E8DF0073F184 /* locateButton@2x.png in Resources */,
 				518153521713F474006F73D3 /* addPieceButton@2x.png in Resources */,
-				519E01D8190613D70067FB64 /* AviarySDKResources.bundle in Resources */,
 				512B1E3418FFB6B100691251 /* plusplus.png in Resources */,
 				518153541713F474006F73D3 /* backViewHideButton@2x.png in Resources */,
 				518153561713F474006F73D3 /* backViewShowButton@2x.png in Resources */,

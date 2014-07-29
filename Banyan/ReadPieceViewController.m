@@ -29,6 +29,7 @@
 #import "BNGeneralizedTableViewController.h"
 #import "NSString+FontAwesome.h"
 #import "Appirater.h"
+#import "ProfileViewController.h"
 
 static NSString *const deletePieceString = @"Delete piece";
 static NSString *const flagPieceString = @"Flag piece";
@@ -59,7 +60,7 @@ static NSTimeInterval animationDuration = 1.0f;
 @property (strong, nonatomic) IBOutlet UIView *pieceInfoView;
 @property (strong, nonatomic) IBOutlet UIButton *likeButton;
 @property (strong, nonatomic) IBOutlet UIButton *likesCountButton;
-@property (strong, nonatomic) IBOutlet BNLabel *authorLabel;
+@property (strong, nonatomic) IBOutlet UIButton *authorButton;
 @property (strong, nonatomic) IBOutlet BNLabel *timeLabel;
 @property (strong, nonatomic) IBOutlet BNLabel *locationLabel;
 
@@ -82,7 +83,7 @@ static NSString *_heartFullString;
 @synthesize pieceInfoView = _pieceInfoView;
 @synthesize likeButton = _likeButton;
 @synthesize likesCountButton = _likesCountButton;
-@synthesize authorLabel = _authorLabel;
+@synthesize authorButton = _authorButton;
 @synthesize timeLabel = _timeLabel;
 @synthesize locationLabel = _locationLabel;
 @synthesize piece = _piece;
@@ -210,14 +211,20 @@ static NSString *_heartFullString;
     [self.view addSubview:self.contentView];
 
     self.pieceInfoView = [[UIView alloc] initWithFrame:CGRectZero];
-    self.authorLabel = [[BNLabel alloc] initWithFrame:CGRectZero];
-    self.authorLabel.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSET_BIG, 0, TEXT_INSET_SMALL);
-    self.authorLabel.font = [UIFont fontWithName:@"Roboto" size:16];
-    self.authorLabel.minimumScaleFactor = 0.8;
-    self.authorLabel.backgroundColor= [UIColor clearColor];
-    self.authorLabel.textAlignment = NSTextAlignmentLeft;
-    self.authorLabel.numberOfLines = 2;
-
+    self.authorButton = [[UIButton alloc] initWithFrame:CGRectZero];
+    self.authorButton.contentEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSET_BIG, 0, TEXT_INSET_SMALL);
+    self.authorButton.titleLabel.font = [UIFont fontWithName:@"Roboto" size:16];
+    self.authorButton.titleLabel.minimumScaleFactor = 0.8;
+    self.authorButton.backgroundColor= [UIColor clearColor];
+    self.authorButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+    self.authorButton.titleLabel.numberOfLines = 2;
+    self.authorButton.exclusiveTouch = YES;
+    [self.authorButton addTarget:self action:@selector(authorButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    self.authorButton.layer.shadowOffset = CGSizeMake(0, 0);
+    self.authorButton.layer.shadowRadius = 1.0f;
+    self.authorButton.layer.shadowOpacity = 1;
+    self.authorButton.clipsToBounds = YES;
+    
     self.timeLabel = [[BNLabel alloc] initWithFrame:CGRectZero];
     self.timeLabel.textEdgeInsets = UIEdgeInsetsMake(0, TEXT_INSET_BIG, 0, TEXT_INSET_SMALL);
     self.timeLabel.font = [UIFont fontWithName:@"Roboto-Condensed" size:12];
@@ -261,7 +268,7 @@ static NSString *_heartFullString;
     self.likesCountButton.clipsToBounds = YES;
     self.likesCountButton.showsTouchWhenHighlighted = YES;
     
-    [self.pieceInfoView addSubview:self.authorLabel];
+    [self.pieceInfoView addSubview:self.authorButton];
     [self.pieceInfoView addSubview:self.timeLabel];
     [self.pieceInfoView addSubview:self.likeButton];
     [self.pieceInfoView addSubview:self.likesCountButton];
@@ -441,8 +448,8 @@ static NSString *_heartFullString;
         self.pieceInfoView.frame = frame;
         [self.contentView bringSubviewToFront:self.pieceInfoView];
         // author label
-        self.authorLabel.text = self.piece.author.name;
-        [self.authorLabel sizeToFit];
+        [self.authorButton setTitle:self.piece.author.name forState:UIControlStateNormal];
+        [self.authorButton sizeToFit];
         
         if ([BanyanAppDelegate loggedIn] && self.piece.bnObjectId)
         {
@@ -462,14 +469,14 @@ static NSString *_heartFullString;
         self.timeLabel.text = [NSString stringWithFormat:@"%@",[[BNMisc dateTimeFormatter] stringFromDate:self.piece.createdAt]];
         [self.timeLabel sizeToFit];
         frame = self.timeLabel.frame;
-        frame.origin = CGPointMake(0, CGRectGetMaxY(self.authorLabel.frame));
+        frame.origin = CGPointMake(0, CGRectGetMaxY(self.authorButton.frame));
         self.timeLabel.frame = frame;
         
         // location label
         if ([self.piece.location.name length]) {
             self.locationLabel.text = [NSString stringWithFormat:@"at %@", self.piece.location.name];
             frame = self.locationLabel.frame;
-            frame.origin = CGPointMake(CGRectGetMaxX(self.timeLabel.frame), CGRectGetMaxY(self.authorLabel.frame));
+            frame.origin = CGPointMake(CGRectGetMaxX(self.timeLabel.frame), CGRectGetMaxY(self.authorButton.frame));
             frame.size.height = CGRectGetHeight(self.timeLabel.frame);
             frame.size.width = CGRectGetWidth([UIScreen mainScreen].bounds) - frame.origin.x - SIDE_MARGIN;
             self.locationLabel.frame = frame;
@@ -535,13 +542,15 @@ static NSString *_heartFullString;
     if (hasDescription || !hasImage) {
         self.pieceCaptionView.textColor =
         self.pieceTextView.textColor = BANYAN_BLACK_COLOR;
-        self.authorLabel.textColor =
+        [self.authorButton setTitleColor:BANYAN_DARKGRAY_COLOR forState:UIControlStateNormal];
+        self.authorButton.layer.shadowColor = [BANYAN_LIGHTGRAY_COLOR CGColor];
         self.timeLabel.textColor = BANYAN_DARKGRAY_COLOR;
         self.locationLabel.textColor = BANYAN_DARKGRAY_COLOR;
     } else {
         self.pieceCaptionView.textColor =
         self.pieceTextView.textColor = BANYAN_WHITE_COLOR;
-        self.authorLabel.textColor =
+        [self.authorButton setTitleColor:BANYAN_WHITE_COLOR forState:UIControlStateNormal];
+        self.authorButton.layer.shadowColor = [BANYAN_DARKGRAY_COLOR CGColor];
         self.timeLabel.textColor = BANYAN_WHITE_COLOR;
         self.locationLabel.textColor = BANYAN_WHITE_COLOR;
     }
@@ -893,6 +902,13 @@ static NSString *_heartFullString;
                                       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                           sender.enabled = YES;
                                       }];
+}
+
+- (IBAction)authorButtonPressed:(UIButton *)sender
+{
+    ProfileViewController *vc = [[ProfileViewController alloc] initWithNibName:@"ProfileViewController" bundle:nil];
+    vc.user = self.piece.author;
+    [self presentViewController:[[UINavigationController alloc] initWithRootViewController:vc] animated:YES completion:nil];
 }
 
 - (void)showFocusView:(UITapGestureRecognizer *)gestureRecognizer

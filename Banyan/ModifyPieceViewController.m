@@ -839,6 +839,8 @@
                          [self.scrollView removeFromSuperview];
                      }
      ];
+    // Since the user is going to use the editor soon, optimize for the icons to appear
+    [AFOpenGLManager beginOpenGLLoad];
 }
 
 - (IBAction)addPhotoButtonTappedForGallery:(id)sender

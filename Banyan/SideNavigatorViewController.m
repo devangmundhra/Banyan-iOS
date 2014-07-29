@@ -24,6 +24,9 @@
 
 static NSString *CellIdentifier = @"SideNavigationCell";
 
+@interface SideNavigatorViewController (BNNotificationsViewDelegate) <BNNotificationsViewDelegate>
+@end
+
 @interface SideNavigatorViewController ()
 
 @property (strong, nonatomic) UIButton *actionButton;
@@ -356,6 +359,7 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
                                           } else {
                                               BNNotificationsView *view = [[BNNotificationsView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), notifications.count*BNNotificationsTableViewCellHeight)];
                                               view.notifications = notifications;
+                                              view.delegate = self;
                                               self.notificationExpansionView = view;
                                           }
                                           [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:SidePanelOptionLoggedInNotifications inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
@@ -383,6 +387,34 @@ typedef NS_ENUM(NSUInteger, SidePanelOptionLoggedOut) {
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+@end
+
+@implementation SideNavigatorViewController (BNNotificationsViewDelegate)
+
+- (void) notificationView:(BNNotificationsView *)notificationView didSelectStory:(Story *)story piece:(Piece *)piece
+{
+    [self.slidingViewController resetTopViewAnimated:YES onComplete:^{
+        StoryListTableViewController *topStoryListVC = [[StoryListTableViewController alloc] init];
+        self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:topStoryListVC];
+        // Needed so that the new view controller gets enough time to load the view before displaying the new one
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+        [topStoryListVC storyReaderWithStory:story piece:piece];
+    }];
+}
+
+- (void) notificationView:(BNNotificationsView *)notificationView didSelectUser:(User *)user
+{
+    [self.slidingViewController resetTopViewAnimated:YES onComplete:^{
+        StoryListTableViewController *topStoryListVC = [[StoryListTableViewController alloc] init];
+        self.slidingViewController.topViewController = [[UINavigationController alloc] initWithRootViewController:topStoryListVC];
+        // Needed so that the new view controller gets enough time to load the view before displaying the new one
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+        ProfileViewController *vc = [[ProfileViewController alloc] initWithNibName:@"ProfileViewController" bundle:nil];
+        vc.user = user;
+        [self presentViewController:[[UINavigationController alloc] initWithRootViewController:vc] animated:YES completion:nil];
+    }];
 }
 
 @end

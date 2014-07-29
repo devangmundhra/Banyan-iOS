@@ -34,6 +34,7 @@
     piece.author = [User currentUser];
     piece.createdAt = piece.updatedAt = [NSDate date];
     piece.timeStamp = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSinceReferenceDate]];
+    piece.viewedByCurUser = YES;
 
     return piece;
 }

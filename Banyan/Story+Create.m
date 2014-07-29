@@ -31,6 +31,7 @@
     story.author = [User currentUser];
     story.createdAt = story.updatedAt = [NSDate date];
     story.timeStamp = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSinceReferenceDate]];
+    story.viewedByCurUser = YES;
 
     return story;
 }

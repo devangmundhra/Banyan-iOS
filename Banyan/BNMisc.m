@@ -291,4 +291,11 @@
     }
     return params;
 }
+
++ (NSString *)getObjectIdFromResourceUri:(NSString *)uri
+{
+    // URI are of the form : /api/v1/story/12/
+    NSArray* uri_pieces = [uri componentsSeparatedByString: @"/"];
+    return [uri_pieces objectAtIndex:uri_pieces.count-2];
+}
 @end

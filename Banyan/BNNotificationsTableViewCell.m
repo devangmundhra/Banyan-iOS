@@ -35,6 +35,7 @@ NSString *const kBNNotificationTypeContribInvite = @"contrib_inv";
 {
     // Initialization code
     self.backgroundColor = BANYAN_CLEAR_COLOR;
+    self.selectionStyle = UITableViewCellSelectionStyleDefault;
     
     self.symbolLabel.font = [UIFont fontWithName:@"FontAwesome" size:12];
     self.symbolLabel.backgroundColor = BANYAN_CLEAR_COLOR;

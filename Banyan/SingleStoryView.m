@@ -280,7 +280,7 @@ static NSString *_exclaimString;
     // Time label
     point = CGPointMake(TABLE_CELL_MARGIN+_clockSymbolImage.size.width+SPACER_DISTANCE, TOP_VIEW_HEIGHT/2+SPACER_DISTANCE);
     [[UIColor grayColor] set];
-    string = [[BNMisc dateFormatterNoTimeMediumDateRelative] stringFromDate:self.story.createdAt];
+    string = [[BNMisc dateFormatterNoTimeMediumDateRelative] stringFromDate:self.story.updatedAt];
     size = CGSizeMake(CGRectGetWidth(self.frame)/2 - TABLE_CELL_MARGIN - BUTTON_SPACING, TOP_VIEW_HEIGHT/2);
     
     paraStyle = [[NSMutableParagraphStyle alloc] init];

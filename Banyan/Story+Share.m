@@ -180,21 +180,22 @@ NSString *const copyLinkToStoryString = @"Copy link to story";
         return;
     }
     
-//    NSError *error = nil;
-//    NSData *jsonData = [NSJSONSerialization
-//                        dataWithJSONObject:@{@"story": self.bnObjectId,}
-//                        options:0
-//                        error:&error];
-//    if (error) {
-//        [BNMisc sendGoogleAnalyticsError:error inAction:@"Facebook invites: JSON error" isFatal:NO];
-//        BNLogError(@"JSON error: %@", error);
-//        return;
-//    }
-//    
-//    NSString *storyStr = [[NSString alloc]
-//                          initWithData:jsonData
-//                          encoding:NSUTF8StringEncoding];
-    NSMutableDictionary* params = [@{@"data" : @{@"story": self.bnObjectId,}} mutableCopy];
+    NSError *error = nil;
+    NSData *jsonData = [NSJSONSerialization
+                        dataWithJSONObject:@{@"story": self.bnObjectId,}
+                        options:0
+                        error:&error];
+    if (error) {
+        [BNMisc sendGoogleAnalyticsError:error inAction:@"Facebook invites: JSON error" isFatal:NO];
+        BNLogError(@"JSON error: %@", error);
+        return;
+    }
+    
+    NSString *storyStr = [[NSString alloc]
+                          initWithData:jsonData
+                          encoding:NSUTF8StringEncoding];
+    
+    NSMutableDictionary* params = [@{@"data" : storyStr} mutableCopy];
     
     NSMutableArray *idArray = [NSMutableArray array];
     for (NSDictionary *friend in self.readAccess.inviteeList.facebookFriends) {

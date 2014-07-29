@@ -353,7 +353,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                 RUN_SYNC_ON_MAINTHREAD(^{
                     hud = [MBProgressHUD showHUDAddedTo:APP_DELEGATE.topMostController.view animated:YES];
                     hud.mode = MBProgressHUDModeIndeterminate;
-                    hud.labelText = pieceId ? @"Trying to fetch piece from the server" : @"Trying to fetch story from the server";
+                    hud.labelText = pieceId ? @"Fetching piece from the server" : @"Fetching story from the server";
                     hud.labelFont = [UIFont fontWithName:@"Roboto" size:12];
                     [hud hide:YES afterDelay:OP_TIMEOUT_INTERVAL];
                 });
@@ -396,7 +396,11 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                               RUN_SYNC_ON_MAINTHREAD(^{[whud hide:YES];});
                           }
                                errorBlock:^(NSError *error) {
-                                   RUN_SYNC_ON_MAINTHREAD(^{[whud hide:YES];});
+                                   RUN_SYNC_ON_MAINTHREAD(^{
+                                       whud.mode = MBProgressHUDModeText;
+                                       whud.labelText = pieceId ? @"Error in fetching piece" : @"Error in fetching story";
+                                       [whud hide:YES afterDelay:2];
+                                   });
                                }];
     } else {
         // Do nothing
@@ -715,7 +719,25 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                                               NSError *error) {
                               if (!error) {
                                   if (result[@"data"]) {
-                                      [self loadRemoteObjectFromUserInfo:result displayIfPossible:YES];
+                                      NSString *jsonString = result[@"data"];
+                                      NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+                                      if (!jsonData) {
+                                          [BNMisc sendGoogleAnalyticsError:error inAction:@"JSON decode" isFatal:NO];
+                                          BNLogTrace(@"JSON decode error: %@", error);
+                                          return;
+                                      }
+                                      NSError *jsonError = nil;
+                                      NSDictionary *requestData =
+                                      [NSJSONSerialization JSONObjectWithData:jsonData
+                                                                      options:0
+                                                                        error:&jsonError];
+                                      if (jsonError) {
+                                          [BNMisc sendGoogleAnalyticsError:error inAction:@"JSON decode" isFatal:NO];
+                                          BNLogTrace(@"JSON decode error: %@", error);
+                                          return;
+                                      }
+                                      
+                                      [self loadRemoteObjectFromUserInfo:@{@"data": requestData} displayIfPossible:YES];
                                   }
                                   
                                   // Delete the request notification

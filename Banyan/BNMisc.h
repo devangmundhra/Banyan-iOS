@@ -40,6 +40,7 @@
 + (void) setFirstTimeUserActionDone:(NSString *)firstTimeAction;
 + (BOOL) checkFirstTimeUserActionAndSetDone:(NSString *)firstTimeAction;
 + (NSDictionary*)parseURLParams:(NSString *)query;
++ (NSString *)getObjectIdFromResourceUri:(NSString *)uri;
 
 @end
 
