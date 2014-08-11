@@ -119,22 +119,10 @@
 - (void) setFriend:(NSDictionary *)fbFriend
 {
     NSString *name = [fbFriend objectForKey:@"name"];
-    // Get the initials
-    NSMutableString * firstCharacters = [NSMutableString string];
-    NSArray * words = [name componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    if (words.count >= 2) {
-        words = @[[words firstObject], [words lastObject]];
-    }
-    for (NSString * word in words) {
-        if ([word length] > 0) {
-            NSString * firstLetter = [word substringWithRange:[word rangeOfComposedCharacterSequenceAtIndex:0]];
-            [firstCharacters appendString:[firstLetter uppercaseString]];
-        }
-    }
     
     NSString *friendId = [fbFriend objectForKey:@"id"];
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture", friendId]];
-    UIImage *phImage = [UIImage imageFromText:firstCharacters
+    UIImage *phImage = [UIImage imageFromText:[BNMisc getInitialsFromName:name]
                                      withFont:[UIFont fontWithName:@"Roboto" size:16]
                                     withColor:BANYAN_DARKBROWN_COLOR];
     

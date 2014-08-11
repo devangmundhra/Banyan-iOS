@@ -41,6 +41,7 @@
 + (BOOL) checkFirstTimeUserActionAndSetDone:(NSString *)firstTimeAction;
 + (NSDictionary*)parseURLParams:(NSString *)query;
 + (NSString *)getObjectIdFromResourceUri:(NSString *)uri;
++ (NSString *)getInitialsFromName:(NSString *)name;
 
 @end
 

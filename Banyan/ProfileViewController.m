@@ -12,6 +12,7 @@
 #import "UIViewController+BNSlidingViewControllerAdditions.h"
 #import "AFBanyanAPIClient.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "UIImage+Create.h"
 
 @interface ProfileViewController ()
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
@@ -89,14 +90,25 @@
                                    parameters:nil
                                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                           NSDictionary *userDetails = [responseObject objectForKey:@"user_details"];
-                                          [self.coverImageView setImageWithURL:[NSURL URLWithString:REPLACE_NULL_WITH_NIL([userDetails objectForKey:@"cover"])]];
-                                          [self.profileImageView setImageWithURL:[NSURL URLWithString:REPLACE_NULL_WITH_NIL([userDetails objectForKey:@"picture"])]];
-                                          self.locationLabel.text = REPLACE_NULL_WITH_NIL([userDetails objectForKey:@"location"]);
-                                          if (self.locationLabel.text) {
-                                              self.globeImage.hidden = NO;
+                                          if ([userDetails isKindOfClass:[NSDictionary class]]) {
+                                              [self.coverImageView setImageWithURL:[NSURL URLWithString:REPLACE_NULL_WITH_NIL([userDetails objectForKey:@"cover"])]];
+                                              [self.profileImageView setImageWithURL:[NSURL URLWithString:REPLACE_NULL_WITH_NIL([userDetails objectForKey:@"picture"])]];
+                                              self.locationLabel.text = REPLACE_NULL_WITH_NIL([userDetails objectForKey:@"location"]);
+                                              if (self.locationLabel.text) {
+                                                  self.globeImage.hidden = NO;
+                                              } else {
+                                                  self.globeImage.hidden = YES;
+                                              }
                                           } else {
-                                              self.globeImage.hidden = YES;
+                                              // There was an error in getting the user details from facebook. Maybe the user did not give permissions for
+                                              // profile pic and cover image. Just show the initials
+                                              UIImage *phImage = [UIImage imageFromText:[BNMisc getInitialsFromName:self.user.name]
+                                                                               withFont:[UIFont fontWithName:@"Roboto" size:32]
+                                                                              withColor:BANYAN_DARKBROWN_COLOR];
+                                              self.profileImageView.contentMode = UIViewContentModeCenter;
+                                              [self.profileImageView setImage:phImage];
                                           }
+
                                           NSDictionary *usageDetails = [responseObject objectForKey:@"usage_details"];
                                           NSNumber *numStories = [usageDetails objectForKey:@"num_stories"];
                                           NSNumber *numPieces = [usageDetails objectForKey:@"num_pieces"];

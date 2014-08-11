@@ -298,4 +298,21 @@
     NSArray* uri_pieces = [uri componentsSeparatedByString: @"/"];
     return [uri_pieces objectAtIndex:uri_pieces.count-2];
 }
+
++ (NSString *)getInitialsFromName:(NSString *)name
+{
+    NSMutableString * firstCharacters = [NSMutableString string];
+    NSArray * words = [name componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    if (words.count >= 2) {
+        words = @[[words firstObject], [words lastObject]];
+    }
+    for (NSString * word in words) {
+        if ([word length] > 0) {
+            NSString * firstLetter = [word substringWithRange:[word rangeOfComposedCharacterSequenceAtIndex:0]];
+            [firstCharacters appendString:[firstLetter uppercaseString]];
+        }
+    }
+    return [firstCharacters copy];
+}
+
 @end
