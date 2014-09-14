@@ -91,8 +91,8 @@
                                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                           NSDictionary *userDetails = [responseObject objectForKey:@"user_details"];
                                           if ([userDetails isKindOfClass:[NSDictionary class]]) {
-                                              [self.coverImageView setImageWithURL:[NSURL URLWithString:REPLACE_NULL_WITH_NIL([userDetails objectForKey:@"cover"])]];
-                                              [self.profileImageView setImageWithURL:[NSURL URLWithString:REPLACE_NULL_WITH_NIL([userDetails objectForKey:@"picture"])]];
+                                              [self.coverImageView sd_setImageWithURL:[NSURL URLWithString:REPLACE_NULL_WITH_NIL([userDetails objectForKey:@"cover"])]];
+                                              [self.profileImageView sd_setImageWithURL:[NSURL URLWithString:REPLACE_NULL_WITH_NIL([userDetails objectForKey:@"picture"])]];
                                               self.locationLabel.text = REPLACE_NULL_WITH_NIL([userDetails objectForKey:@"location"]);
                                               if (self.locationLabel.text) {
                                                   self.globeImage.hidden = NO;

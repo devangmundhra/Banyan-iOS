@@ -229,29 +229,29 @@ static char operationKey;
     }
     SDWebImageManager *manager = [SDWebImageManager sharedManager];
     if (includeThumbnail && [self.thumbnailURL length]) {
-        [manager downloadWithURL:[NSURL URLWithString:self.thumbnailURL]
-                         options:0
-                        progress:progress
-                       completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished) {
-                           if (image) {
-                               if (success) success(image);
-                           }
-                           else {
-                               if (failure) failure(error);
-                           }
-                       }];
+        [manager downloadImageWithURL:[NSURL URLWithString:self.thumbnailURL]
+                              options:0
+                             progress:progress
+                            completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                if (image) {
+                                    if (success) success(image);
+                                }
+                                else {
+                                    if (failure) failure(error);
+                                }
+                            }];
     } else if ([self.remoteURL length]) {
-        [manager downloadWithURL:[NSURL URLWithString:self.remoteURL]
-                         options:0
-                        progress:progress
-                       completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished) {
-                           if (image) {
-                               if (success) success(image);
-                           }
-                           else {
-                               if (failure) failure(error);
-                           }
-                       }];
+        [manager downloadImageWithURL:[NSURL URLWithString:self.remoteURL]
+                              options:0
+                             progress:progress
+                            completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                if (image) {
+                                    if (success) success(image);
+                                }
+                                else {
+                                    if (failure) failure(error);
+                                }
+                            }];
     } else if ([self.localURL length]) {
         ALAssetsLibrary *library =[[ALAssetsLibrary alloc] init];
         [library assetForURL:[NSURL URLWithString:self.localURL] resultBlock:^(ALAsset *asset) {

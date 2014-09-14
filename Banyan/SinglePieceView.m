@@ -97,7 +97,7 @@ static UIFont *_regularFont;
 
 - (void) loadPiece
 {
-    [self cancelCurrentImageLoad];
+    [self sd_cancelCurrentImageLoad];
     if (self.piece) {
         Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.piece.media];
         [self showMedia:imageMedia includeThumbnail:YES withPostProcess:nil];
@@ -130,7 +130,7 @@ static UIFont *_regularFont;
     _piece = nil;
     self.pieceIndexNum = 0;
     self.textLabel.textColor = BANYAN_BLACK_COLOR;
-    [self cancelCurrentImageLoad];
+    [self sd_cancelCurrentImageLoad];
 }
 
 - (void) dealloc

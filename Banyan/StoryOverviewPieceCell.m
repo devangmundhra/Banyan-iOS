@@ -73,7 +73,7 @@
 
 - (void)prepareForReuse
 {
-    [self.imageView cancelCurrentImageLoad];
+    [self.imageView sd_cancelCurrentImageLoad];
     self.imageView.image = nil;
     self.pieceLabel.text = nil;
 }

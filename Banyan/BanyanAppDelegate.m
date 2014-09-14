@@ -25,6 +25,7 @@
 #import "BNIntroViewController.h"
 #import <AviarySDK/AviarySDK.h>
 #import "Appirater.h"
+#import <Crashlytics/Crashlytics.h>
 
 @interface BanyanAppDelegateTWMessageBarStyleSheet : NSObject <TWMessageBarStyleSheet>
 
@@ -441,7 +442,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 }
 
 # pragma mark UserLoginViewControllerDelegate methods
-- (void) loginViewControllerDidLoginWithFacebookUser:(id<FBGraphUser>)user withCompletionBlock:(void (^)(bool succeeded, NSError *error))block
+- (void) loginViewController:(UserLoginViewController *)loginVC didLoginWithFacebookUser:(id<FBGraphUser>)user
+         withCompletionBlock:(void (^)(bool succeeded, NSError *error))block
 {
     [self updateUserCredentials:user withCompletionBlock:block];
 }
@@ -456,7 +458,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     [postInfo setObject:user.name forKey:@"name"];
     [postInfo setObject:[user objectForKey:@"email"] forKey:@"email"];
 
-    [postInfo setObject:@{@"access_token": accessToken, @"id": user.id} forKey:@"facebook"];
+    [postInfo setObject:@{@"access_token": accessToken, @"id": user.objectID} forKey:@"facebook"];
     
     [[AFBanyanAPIClient sharedClient] postPath:@"users/"
                                     parameters:postInfo
@@ -603,10 +605,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
  * Opens a Facebook session and optionally shows the login UX.
  */
 - (BOOL)openSessionWithAllowLoginUI:(BOOL)allowLoginUI {
-    NSArray *permissions = [[NSArray alloc] initWithObjects:
-                            @"email",
-                            @"user_about_me",
-                            nil];
+    NSArray *permissions = [[NSArray alloc] initWithObjects:@"public_profile", @"email", @"user_friends", nil];
     
     return [FBSession openActiveSessionWithReadPermissions:permissions
                                               allowLoginUI:allowLoginUI

@@ -126,7 +126,7 @@
                                      withFont:[UIFont fontWithName:@"Roboto" size:16]
                                     withColor:BANYAN_DARKBROWN_COLOR];
     
-    [profilePicImageView setImageWithURL:url placeholderImage:phImage];
+    [profilePicImageView sd_setImageWithURL:url placeholderImage:phImage];
     nameLabel.text = name;
 }
 

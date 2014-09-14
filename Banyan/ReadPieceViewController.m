@@ -535,8 +535,8 @@ static NSString *_heartFullString;
     if (hasImage) {
         [self.imageView showMedia:imageMedia includeThumbnail:NO withPostProcess:nil];
     } else {
-        [self.imageView setImageWithURL:nil];
-        [self.imageView cancelCurrentImageLoad];
+        [self.imageView sd_setImageWithURL:nil];
+        [self.imageView sd_cancelCurrentImageLoad];
     }
     
     if (hasDescription || !hasImage) {

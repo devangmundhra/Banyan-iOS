@@ -121,12 +121,12 @@
 
 - (void)prepareForReuse
 {
-    [self.imageView cancelCurrentImageLoad];
+    [self.imageView sd_cancelCurrentImageLoad];
 }
 
 - (void)displayAsAddStoryButton
 {
-    [self.imageView cancelCurrentImageLoad];
+    [self.imageView sd_cancelCurrentImageLoad];
     self.imageView.hidden = YES;
     self.fullLabel.hidden = NO;
     self.fullLabel.text = @"Create a new story";

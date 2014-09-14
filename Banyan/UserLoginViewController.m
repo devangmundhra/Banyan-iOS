@@ -11,6 +11,8 @@
 #import "BanyanAppDelegate.h"
 #import "MBProgressHUD.h"
 
+NSString *const fbLoginNoUserEmailAlert = @"User email not found";
+
 @interface UserLoginViewController (TTTAttributedLabelDelegate) <TTTAttributedLabelDelegate, UIActionSheetDelegate>
 @end
 
@@ -57,8 +59,9 @@
     [self.eulaLabel addLinkToURL:[NSURL URLWithString:@"https://www.banyan.io/terms"] withRange:range];
     self.eulaLabel.delegate = self;
 
+    self.fbLoginView.delegate = self;
     // Note: if you update permissions here, also update them on the server (social_auth settings)
-    self.fbLoginView.readPermissions = [NSArray arrayWithObjects: @"basic_info", @"email", nil];
+    self.fbLoginView.readPermissions = [NSArray arrayWithObjects: @"public_profile", @"email", @"user_friends", nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -70,6 +73,11 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)dealloc
+{
+    self.fbLoginView.delegate = nil;
 }
 
 #pragma mark target actions
@@ -84,12 +92,29 @@
 - (void)loginViewFetchedUserInfo:(FBLoginView *)loginView
                             user:(id<FBGraphUser>)user
 {
+    if (![FBSession.activeSession isOpen]) {
+        [self dismissViewControllerAnimated:YES completion:^{
+            [APP_DELEGATE logout];
+        }];
+        return;
+    }
+    
+    if (![FBSession.activeSession.permissions containsObject:@"email"] || ![user objectForKey:@"email"]) {
+        [[[UIAlertView alloc] initWithTitle:fbLoginNoUserEmailAlert
+                                    message:@"Banyan needs your email address to register you to the app.\rPlease log in again and allow email permission on facebook."
+                                   delegate:self
+                          cancelButtonTitle:@"Cancel login"
+                          otherButtonTitles:@"Try again", nil] show];
+        return;
+    }
+    
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
     hud.labelText = @"Registering with Banyan";
     hud.labelFont = [UIFont fontWithName:@"Roboto" size:14];
     __weak MBProgressHUD *whud = hud;
     __weak UserLoginViewController *wself = self;
-    [self.delegate loginViewControllerDidLoginWithFacebookUser:user withCompletionBlock:^(bool succeeded, NSError *error) {
+    [self.delegate loginViewController:self didLoginWithFacebookUser:user withCompletionBlock:^(bool succeeded, NSError *error) {
+        [whud hide:YES];
         if (!succeeded) {
             [[[UIAlertView alloc] initWithTitle:@"Error when registering with Banyan"
                                         message:@"Sorry for the inconvenience. Please try in a bit"
@@ -98,7 +123,6 @@
                               otherButtonTitles:nil] show];
             [APP_DELEGATE logout];
         }
-        [whud hide:YES];
         [wself dismissViewControllerAnimated:YES completion:nil];
     }];
 }
@@ -137,6 +161,16 @@
     }
 }
 
+- (void)loginViewShowingLoggedInUser:(FBLoginView *)loginView
+{
+    
+}
+
+- (void)loginViewShowingLoggedOutUser:(FBLoginView *)loginView
+{
+    
+}
+
 #pragma Memory Management
 - (void)didReceiveMemoryWarning
 {
@@ -167,4 +201,27 @@ clickedButtonAtIndex:(NSInteger)buttonIndex
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:actionSheet.title]];
 }
 
+#pragma mark - UIAlertViewDelegate
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if ([alertView.title isEqualToString:fbLoginNoUserEmailAlert]) {
+        if (buttonIndex == 1) {
+            if ([FBSession openActiveSessionWithAllowLoginUI:YES]) {
+                self.fbLoginView.delegate = nil;
+                [FBSession.activeSession
+                 requestNewReadPermissions:@[@"email"]
+                 completionHandler:^(FBSession *session, NSError *error) {
+                     self.fbLoginView.delegate = self;
+                     if (error || ![session.permissions containsObject:@"email"]) {
+                         [session closeAndClearTokenInformation];
+                     }
+                 }];
+            }
+        } else if (buttonIndex == [alertView cancelButtonIndex]) {
+            [self dismissViewControllerAnimated:YES completion:^{
+                [APP_DELEGATE logout];
+            }];
+        }
+    }
+}
 @end

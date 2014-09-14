@@ -139,14 +139,12 @@ NSString *const copyLinkToStoryString = @"Copy link to story";
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        FBShareDialogParams *params = [[FBShareDialogParams alloc] init];
-        params.dataFailuresFatal = NO;
-        params.caption = self.title;
-        params.description = @"";
-        params.friends = fbIds;
-        params.link = [NSURL URLWithString:self.permaLink];
         Media *imageMedia = [Media getMediaOfType:@"image" inMediaSet:self.media];
-        params.picture = [NSURL URLWithString:imageMedia.remoteURL];
+
+        FBLinkShareParams *params = [[FBLinkShareParams alloc] initWithLink:[NSURL URLWithString:self.permaLink]
+                                                                       name:self.title caption:self.title description:@"" picture:[NSURL URLWithString:imageMedia.remoteURL]];
+        params.dataFailuresFatal = NO;
+        params.friends = fbIds;
         params.ref = @"Story";
         if ([FBDialogs canPresentShareDialogWithParams:params]) {
             [FBDialogs presentShareDialogWithParams:params clientState:nil handler:^(FBAppCall *call, NSDictionary *results, NSError *error) {

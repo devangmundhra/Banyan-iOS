@@ -8,16 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
+extern NSString *const fbLoginNoUserEmailAlert;
+
 @class UserLoginViewController;
 
 @protocol UserLoginViewControllerDelegate <NSObject>
 
-- (void) loginViewControllerDidLoginWithFacebookUser:(id<FBGraphUser>)user
-                                 withCompletionBlock:(void (^)(bool succeeded, NSError *error))block;
+- (void) loginViewController:(UserLoginViewController *)loginVC didLoginWithFacebookUser:(id<FBGraphUser>)user
+                                    withCompletionBlock:(void (^)(bool succeeded, NSError *error))block;
 
 @end
 
-@interface UserLoginViewController : UIViewController
+@interface UserLoginViewController : UIViewController <UIAlertViewDelegate>
 
 @property (weak, nonatomic) IBOutlet id<UserLoginViewControllerDelegate> delegate;
 

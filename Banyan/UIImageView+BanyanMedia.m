@@ -34,8 +34,8 @@ RUN_SYNC_ON_MAINTHREAD(block)
     // If we are just showing thumbnails, then no need to show a progress indicator.
     // Just show a placeholder image
     if (!media) {
-        [self cancelCurrentImageLoad];
-        [self setImageWithURL:nil];
+        [self sd_cancelCurrentImageLoad];
+        [self sd_setImageWithURL:nil];
         return;
     }
     
@@ -58,9 +58,9 @@ RUN_SYNC_ON_MAINTHREAD(block)
     UIImage *placeHolderImage = nil;
     __weak UIImageView *wself = self;
     if (includeThumbnail && [media.thumbnailURL length]) {
-        [self setImageWithURL:[NSURL URLWithString:media.thumbnailURL]
+        [self sd_setImageWithURL:[NSURL URLWithString:media.thumbnailURL]
              placeholderImage:placeHolderImage
-                    completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+                    completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                         PROCESS_IMAGE(image);
                     }];
     } else if ([media.remoteURL length]) {
@@ -71,13 +71,13 @@ RUN_SYNC_ON_MAINTHREAD(block)
                 hud = [MBProgressHUD showHUDAddedTo:wself animated:YES];
                 hud.mode = MBProgressHUDModeDeterminate;
             }
-            [self setImageWithURL:[NSURL URLWithString:media.remoteURL]
+            [self sd_setImageWithURL:[NSURL URLWithString:media.remoteURL]
                  placeholderImage:placeHolderImage
                           options:SDWebImageProgressiveDownload
                          progress:^(NSInteger receivedSize, NSInteger expectedSize) {
                              hud.progress = (float)receivedSize/expectedSize;
                          }
-                        completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+                        completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                             RUN_SYNC_ON_MAINTHREAD(^{[hud hide:YES];});
                             PROCESS_IMAGE(image);
                         }];

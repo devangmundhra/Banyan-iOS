@@ -44,12 +44,7 @@
     UIFont *font = [UIFont systemFontOfSize:fontSize];    
     CGSize size  = [text sizeWithAttributes:@{NSFontAttributeName: font}];
     
-    // check if UIGraphicsBeginImageContextWithOptions is available (iOS is 4.0+)
-    if (UIGraphicsBeginImageContextWithOptions != NULL)
-        UIGraphicsBeginImageContextWithOptions(size,NO,0.0);
-    else
-        // iOS is < 4.0
-        UIGraphicsBeginImageContext(size);
+    UIGraphicsBeginImageContextWithOptions(size,NO,0.0);
     
     // optional: add a shadow, to avoid clipping the shadow you should make the context size bigger
     //
@@ -72,12 +67,7 @@
     // set the size
     CGSize size  = [text sizeWithAttributes:@{NSFontAttributeName: font}];
     
-    // check if UIGraphicsBeginImageContextWithOptions is available (iOS is 4.0+)
-    if (UIGraphicsBeginImageContextWithOptions != NULL)
-        UIGraphicsBeginImageContextWithOptions(size,NO,0.0);
-    else
-        // iOS is < 4.0
-        UIGraphicsBeginImageContext(size);
+    UIGraphicsBeginImageContextWithOptions(size,NO,0.0);
     
     // optional: add a shadow, to avoid clipping the shadow you should make the context size bigger
     //
