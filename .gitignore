@@ -27,3 +27,4 @@ Banyan.xcworkspace/xcuserdata/devangmundhra.xcuserdatad/
 Pods
 *.framework
 Banyan/AviarySDK/
+Banyan/KVO+Blocks/.svn/*
