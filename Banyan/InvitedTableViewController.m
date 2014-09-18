@@ -13,7 +13,9 @@
 #import "MZFormSheetController.h"
 #import "HelpInfoViewController.h"
 
-@interface InvitedTableViewController () <InviteFBFriendsTableViewControllerDelegate>
+static NSString *NoFBFriendPermAlertString = @"Cannot get friend list";
+
+@interface InvitedTableViewController () <InviteFBFriendsTableViewControllerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) BNPermissionsObject<BNPermissionsObject> *viewerPermission;
 @property (nonatomic, strong) BNPermissionsObject<BNPermissionsObject> *contributorPermission;
@@ -381,6 +383,22 @@ typedef enum {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    // If the user has selected to invite Facebook friends and hasn't given the permissions yet, alert the user
+    if (![FBSession.activeSession.permissions containsObject:@"user_friends"])
+    {
+        if ((indexPath.section == InvitedTableViewSectionContributor && indexPath.row == InvitedTableViewContributorsRowSelectedFB)
+            || (indexPath.section == InvitedTableViewSectionViewer && indexPath.row != InvitedTableViewViewersRowPublic))
+        {
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+            [[[UIAlertView alloc] initWithTitle:NoFBFriendPermAlertString
+                                        message:@"It looks like Banyan doesn't have the permissions to access your friends list.\rUpdate permissions in facebook to invite your friends to the story." delegate:self
+                              cancelButtonTitle:@"Skip"
+                              otherButtonTitles:@"Update", nil] show];
+            [BNMisc sendGoogleAnalyticsEventWithCategory:@"error" action:@"Facebook permission for friends" label:@"alert" value:nil];
+            return;
+        }
+    }
+    
     InviteFBFriendsTableViewController *vc = nil;
     
     switch (indexPath.section) {
@@ -463,6 +481,25 @@ typedef enum {
     self.viewerPermission.inviteeList.facebookFriends = selectedViewers;
     self.contributorPermission.inviteeList.facebookFriends = selectedContributors;
     [self.tableView reloadData];
+}
+
+#pragma mark - UIAlertViewDelegate
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if ([alertView.title isEqualToString:NoFBFriendPermAlertString]) {
+        if (buttonIndex == 1) {
+            if ([FBSession openActiveSessionWithAllowLoginUI:YES]) {
+                [FBSession.activeSession
+                 requestNewReadPermissions:@[@"user_friends"]
+                 completionHandler:^(FBSession *session, NSError *error) {
+                     if (!error && [session.permissions containsObject:@"user_friends"]) {
+                         [BNMisc sendGoogleAnalyticsEventWithCategory:@"error" action:@"Facebook permission for friends" label:@"user updated" value:nil];
+                     }
+                 }];
+            }
+        } else if (buttonIndex == [alertView cancelButtonIndex]) {
+        }
+    }
 }
 
 @end

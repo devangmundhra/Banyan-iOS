@@ -125,10 +125,17 @@
     
     // Register for push notifications only after the user has logged in
     if ([BanyanAppDelegate loggedIn]) {
-        [application registerForRemoteNotificationTypes:
-         UIRemoteNotificationTypeBadge |
-         UIRemoteNotificationTypeSound |
-         UIRemoteNotificationTypeAlert];
+#ifdef __IPHONE_8_0
+        //Right, that is the point
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:(UIRemoteNotificationTypeBadge
+                                                                                             |UIRemoteNotificationTypeSound
+                                                                                             |UIRemoteNotificationTypeAlert) categories:nil];
+        [application registerUserNotificationSettings:settings];
+#else
+        //register to receive notifications
+        UIRemoteNotificationType myTypes = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound;
+        [application registerForRemoteNotificationTypes:myTypes];
+#endif
     }
     
     [self appearances];
@@ -316,6 +323,24 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken
     [BNMisc sendGoogleAnalyticsError:error inAction:@"register for remote notification" isFatal:NO];
     BNLogWarning(@"Failed to register for notification for error: %@", error.localizedDescription);
 }
+
+#ifdef __IPHONE_8_0
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
+{
+    //register to receive notifications
+    [application registerForRemoteNotifications];
+}
+
+- (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void(^)())completionHandler
+{
+    //handle the actions
+    if ([identifier isEqualToString:@"declineAction"]){
+    }
+    else if ([identifier isEqualToString:@"answerAction"]){
+        [self application:application didReceiveRemoteNotification:userInfo];
+    }
+}
+#endif
 
 - (void)application:(UIApplication *)application
 didReceiveRemoteNotification:(NSDictionary *)userInfo

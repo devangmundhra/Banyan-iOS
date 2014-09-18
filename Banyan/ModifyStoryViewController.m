@@ -187,11 +187,12 @@
     // Default is selected permissions for writers
     self.writeAccessList = [BNPermissionsObject permissionsObject];
 
-    // Default is limited permissions for viewers
+    // Default is limited permissions for viewers, if user_friends permission available
+    // Default is selected otherwise
     self.readAccessList = [BNPermissionsObject permissionsObject];
     BNSharedUser *currentUser = [BNSharedUser currentUser];
     NSAssert(currentUser, @"No Current user available when modifying story");
-    if (currentUser) {
+    if (currentUser && [FBSession.activeSession.permissions containsObject:@"user_friends"]) {
         NSDictionary *selfInvitation = [NSDictionary dictionaryWithObjectsAndKeys:
                                         currentUser.name, @"name",
                                         currentUser.facebookId, @"id", nil];

@@ -11,9 +11,8 @@
 #import "User.h"
 
 static NSString *CellIdentifier = @"InviteFriendCell";
-static NSString *NoFBFriendPermAlertString = @"Cannot get friend list";
 
-@interface InviteFBFriendsTableViewController ()  <UISearchBarDelegate, UISearchDisplayDelegate, InviteFriendCellDelegate, UIAlertViewDelegate>
+@interface InviteFBFriendsTableViewController ()  <UISearchBarDelegate, UISearchDisplayDelegate, InviteFriendCellDelegate>
 @property (nonatomic, strong) NSArray *listContacts;
 @property (nonatomic, strong) NSMutableArray *filteredListContacts;
 @property (strong, nonatomic) NSMutableArray *contactIndex;
@@ -143,20 +142,13 @@ static NSString *NoFBFriendPermAlertString = @"Cannot get friend list";
     [FBRequestConnection startForMyFriendsWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (!error) {
             NSArray *array = [result objectForKey:@"data"];
-            if (array.count != 0 || [FBSession.activeSession.permissions containsObject:@"user_friends"]) {
+            if (array.count != 0) {
                 wself.listContacts = array;
                 [wself setContactIndex];
                 NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
                 [userDefaults setObject:array forKey:BNUserDefaultsMyFacebookFriends];
                 [userDefaults synchronize];
-            } else {
-                [[[UIAlertView alloc] initWithTitle:NoFBFriendPermAlertString
-                                            message:@"It looks like Banyan doesn't have the permissions to access your friends list.\rUpdate permissions in facebook to invite your friends to your story" delegate:self
-                                  cancelButtonTitle:@"Skip"
-                                  otherButtonTitles:@"Update", nil] show];
-                [BNMisc sendGoogleAnalyticsError:error inAction:@"No facebook friends permission" isFatal:NO];
             }
-
         } else {
             [[[UIAlertView alloc] initWithTitle:@"Cannot get friend list"
                                         message:@"There was an error in fetching your list of friends from facebook.\rPlease try again in a bit" delegate:nil
@@ -427,26 +419,6 @@ static NSString *NoFBFriendPermAlertString = @"Cannot get friend list";
 - (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
     [self.tableView reloadSectionIndexTitles]; // To show the section index titles
     [self.tableView reloadData];
-}
-
-#pragma mark - UIAlertViewDelegate
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    if ([alertView.title isEqualToString:NoFBFriendPermAlertString]) {
-        if (buttonIndex == 1) {
-            if ([FBSession openActiveSessionWithAllowLoginUI:YES]) {
-                [FBSession.activeSession
-                 requestNewReadPermissions:@[@"user_friends"]
-                 completionHandler:^(FBSession *session, NSError *error) {
-                     if (!error && [session.permissions containsObject:@"user_friends"]) {
-                         [self.refreshControl beginRefreshing];
-                         [self loadFacebookFriendsListAndRefresh:self];
-                     }
-                 }];
-            }
-        } else if (buttonIndex == [alertView cancelButtonIndex]) {
-        }
-    }
 }
 
 #pragma Memory Management
