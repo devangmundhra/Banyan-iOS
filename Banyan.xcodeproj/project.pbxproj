@@ -426,6 +426,7 @@
 		518AB37C18BDBF8F00F8000C /* IntroBkg2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "IntroBkg2@2x.png"; sourceTree = "<group>"; };
 		518AB38E18BF2F5200F8000C /* Flag_Story_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Flag_Story_selected@2x.png"; sourceTree = "<group>"; };
 		518AB39018BF2F5200F8000C /* Flag_Story@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Flag_Story@2x.png"; sourceTree = "<group>"; };
+		518B58171A034A2800653BFB /* BanyanCredentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BanyanCredentials.h; sourceTree = "<group>"; };
 		518CAA2817DBA23500D641A6 /* BNAWSSNSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BNAWSSNSClient.h; path = Banyan/BNAWSSNSClient.h; sourceTree = "<group>"; };
 		518CAA2917DBA23500D641A6 /* BNAWSSNSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BNAWSSNSClient.m; path = Banyan/BNAWSSNSClient.m; sourceTree = "<group>"; };
 		5192329F1671CC57009686E4 /* AFGooglePlacesAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFGooglePlacesAPIClient.h; path = Banyan/AFGooglePlacesAPIClient.h; sourceTree = "<group>"; };
@@ -910,6 +911,7 @@
 				51596AB01744BAF7008F5276 /* BNMisc.m */,
 				51B5989C15EB31B300DF4D9D /* BanyanConstants.h */,
 				51B5989D15EB31B300DF4D9D /* BanyanConstants.m */,
+				518B58171A034A2800653BFB /* BanyanCredentials.h */,
 			);
 			name = "Constants and Misc";
 			sourceTree = "<group>";

@@ -8,13 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-#ifdef DEBUG
-#define AWS_ACCESS_KEY @"AKIAIMJYZAZYRAR454YA"
-#define AWS_SECRET_KEY @"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"
-#else
-#define AWS_ACCESS_KEY @"AKIAIQNNBF3SFGNBWULA"
-#define AWS_SECRET_KEY @"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"
-#endif
+#define BANYAN_APP_ID @"824087526"
+
+#define APP_DELEGATE ((BanyanAppDelegate *)([UIApplication sharedApplication].delegate))
+
+// Add the following credentials for debugging
 
 #ifdef DEBUG
 #define AWS_APPARN_INVTOCONTRIBUTE @"arn:aws:sns:us-east-1:925059984507:app/APNS_SANDBOX/Banyan_SBX_InvToContribute"
@@ -30,19 +28,24 @@
 #define AWS_APPARN_USERFOLLOWING @"arn:aws:sns:us-east-1:925059984507:app/APNS/Banyan_PROD_UserFollowing"
 #endif
 
-#define FACEBOOK_APP_ID @"244613942300893"
+#ifdef DEBUG
+#define AWS_ACCESS_KEY @""
+#define AWS_SECRET_KEY @""
+#else
+#define AWS_ACCESS_KEY @""
+#define AWS_SECRET_KEY @""
+#endif
 
-#define GOOGLE_IOS_API_KEY @"AIzaSyCKFJXEsw7Cwwp_nlV065trhx7tvL6Fw68"
-#define GOOGLE_BROWSER_API_KEY @"AIzaSyBwOBP068EO-Ubi0Qzu8uwFnZZHaIVwNyg"
-#define GOOGLE_ANALYTICS_ID @"UA-35913422-2"
+#define FACEBOOK_APP_ID @""
 
-#define CRASHLYTICS_API_KEY @"2af776d8f9dd545aa2bcb6afef1d780cfc5a1ee0"
-#define APP_DELEGATE ((BanyanAppDelegate *)([UIApplication sharedApplication].delegate))
+#define GOOGLE_IOS_API_KEY @""
+#define GOOGLE_BROWSER_API_KEY @""
+#define GOOGLE_ANALYTICS_ID @""
 
-#define AVIARY_KEY @"qv6LJ4O2qEqxH9twpUiIKg"
-#define AVIARY_SECRET @"hG0n4Foxw0qN10P0E1SlIA"
+#define CRASHLYTICS_API_KEY @""
 
-#define BANYAN_APP_ID @"824087526"
+#define AVIARY_KEY @""
+#define AVIARY_SECRET @""
 
 @interface BanyanAppDelegate : UIResponder <UIApplicationDelegate>
 
